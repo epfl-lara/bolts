@@ -3,3 +3,6 @@ cache
 
 // Stainless log file
 last.log
+
+// Inox solver debug output
+tip-sessions
