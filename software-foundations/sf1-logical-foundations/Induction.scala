@@ -33,7 +33,32 @@ object Induction {
 
   /** **** Exercise: 2 stars, recommended (basic_induction)  */
 
-  
+  @induct 
+  def mult_0_r(n: Nat) = {
+    n * O == O
+  } holds
+
+  @induct 
+  def plus_n_Sm(n: Nat, m: Nat) = {
+    S (n + m) == n + (S(m))
+  } holds
+
+  // here, we do the induction manually, as we need to use the previous lemma
+  // during the induction
+  def plus_comm(n: Nat, m: Nat): Boolean = {
+    n match {
+      case O => assert(plus_n_O(m))
+      case S(n2) => 
+        assert(plus_comm(n2,m)) // induction hypothesis: n2 + m == m + n2
+        assert(plus_n_Sm(m,n2)) // S(m + n2) == m + S(n2)
+    }
+    n + m == m + n
+  } holds
+
+  @induct
+  def plus_assoc(n: Nat, m: Nat, p: Nat) = {
+    n + (m + p) == (n + m) + p
+  }
 
   /** [] */
 
