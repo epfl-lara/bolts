@@ -1,0 +1,5 @@
+// Stainless cache directory
+cache
+
+// Stainless log file
+last.log
