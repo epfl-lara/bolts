@@ -213,7 +213,7 @@ object Basics {
   implicit class NatNotation(val n: Nat) {
     def +(n2: Nat) = plus(n, n2)
     def -(n2: Nat) = minus(n, n2)
-    def *(n2: Nat) = mult(n, n2)
+    def *(n2: Nat) = mult(n, n2) 
   }
 
   println((zero + one) + one)
