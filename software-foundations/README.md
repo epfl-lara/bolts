@@ -3,11 +3,11 @@ available at: https://softwarefoundations.cis.upenn.edu
 
 You can use Stainless to verify the safety properties of all the programs:
 
-    stainless sf1-logical-foundations/*.scala
+    stainless-scalac sf1-logical-foundations/*.scala
 
 To check for termination of all of your programs:
 
-    stainless sf1-logical-foundations/*.scala --termination
+    stainless-scalac sf1-logical-foundations/*.scala --termination
 
 To compile a particular file with scalac (e.g. for Basics.scala)
 

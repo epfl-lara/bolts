@@ -324,57 +324,42 @@ object Basics {
   /** **** Exercise: 2 stars, optional (decreasing)  */
 
 
-  // We here define a `test` function whose termination is not obvious for 
-  // Stainless. To show that the function terminates, we define a measure, and 
-  // when invoking some lemmas, Stainless is able to show that the measure is 
-  // well-founded and decreasing on each recursive call.
-
-  // The proof of the lemmas makes heavy use of induction, which is explained
-  // in Induction.scala in more detail
-  def test(n: Nat, m: Nat): Nat = {
-    decreases(natToBigInt(minus(m, n)))  // required to prove termination
-    if (blt_nat(n, m)) {
-      assert(positiveDifference(n,m)) // required to prove that minus(m, n) == S(x) for some x
-      assert(positiveBigInt(minus(m, n))) // to show that natToBigInt(minus(m, n)) > 0
-      assert(minusDiag(n)) // to show minus(n, n) == O
-      assert(natToBigInt(minus(m, n)) > natToBigInt(minus(n, n))) // what we needed to prove to show that the measure decreases
-      test(n,n)
-    }
-    else O
-  }
-
-  // This proves by induction that if "(blt_nat(n, m) == True", then minus(m,n)
-  // is strictly positive.
-  def positiveDifference(n: Nat, m: Nat): Boolean = {
-    require(blt_nat(n, m))
-
-    (m,n) match {
-      case (S(m2),O) => 
-      case (S(m2),S(n2)) => assert(positiveDifference(n2,m2))
-    }
-
-    minus(m, n) != O
-  } holds
-
-  // This proves by induction on n that natToBigInt(S(x)) > 0
-  @induct
-  def positiveBigInt(n: Nat): Boolean = {
-    require(n != O)
-    natToBigInt(n) > 0
-  }
-
-  // This proves by induction on n that minus(n, n) == O
-  @induct
-  def minusDiag(n: Nat): Boolean = { 
-    minus(n, n) == O
-  } holds
-
   def natToBigInt(n: Nat): BigInt = {
     n match {
       case O => BigInt(0)
       case S(n2) => natToBigInt(n2) + 1
     }
   } ensuring(res => res >= 0)
+
+
+  // We here define a `test` function whose termination is not obvious for 
+  // Stainless. To show that the function terminates, we define a measure, and 
+  // when invoking some lemma, Stainless is able to show that the measure is 
+  // well-founded and decreasing on each recursive call.
+
+  // The proof of the lemmas makes use of induction, which is explained
+  // in Induction.scala in more detail
+  def test(n: Nat, m: Nat): Nat = {
+    decreases(natToBigInt(m))  // required to prove termination
+    if (blt_nat(n, m)) {
+      assert(smallerBigInt(n,m)) // to show that the measures decreases
+      test(n,n)
+    }
+    else O
+  }
+
+  // This proves by induction that if blt_nat(n, m), then
+  // natToBigInt(n) < natToBigInt(m)
+  def smallerBigInt(n: Nat, m: Nat): Boolean = {
+    require(blt_nat(n, m))
+
+    (n,m) match {
+      case (S(n2),S(m2)) => assert(smallerBigInt(n2,m2))
+      case _ => ()
+    }
+
+    natToBigInt(n) < natToBigInt(m)
+  } holds
 
   /** [] */
 
