@@ -148,6 +148,9 @@ object Induction {
 
   /** **** Exercise: 3 stars, optional (more_exercises)  */
 
+  // For these exercises, we use the Bool type defined in Basics, rather than 
+  // the native Boolean type
+
   @induct
   def leb_refl(n: Nat) = {
     leb(n,n)
@@ -157,63 +160,200 @@ object Induction {
     !beq_nat(O,S(n))
   } holds
 
-// Theorem zero_nbeq_S : forall n:nat,
-//   beq_nat 0 (S n) = false.
-// Proof.
-//   intro. simpl. reflexivity.
-// Qed.
+  def andb_false_r(b: Bool) = {
+    andb(b,False) == False
+  } holds
 
-// Theorem andb_false_r : forall b : bool,
-//   andb b false = false.
-// Proof.
-//   destruct b; reflexivity.
-// Qed.
+  @induct // the induction is on the first variable, (here, p)
+  def plus_ble_compat_l(p: Nat, n: Nat, m: Nat) = {
+    require(leb(n,m))
 
-// Theorem plus_ble_compat_l : forall n m p : nat,
-//   leb n m = true -> leb (p + n) (p + m) = true.
-// Proof.
-//   induction p as [ | p' IH]; intros; simpl.
-//   - apply H.
-//   - rewrite IH.
-//     + reflexivity.
-//     + apply H.
-// Qed.
+    leb(p+n,p+m)
+  } holds
 
-// Theorem S_nbeq_0 : forall n:nat,
-//   beq_nat (S n) 0 = false.
-// Proof.
-//   simpl. intuition.
-// Qed.
+  def S_nbeq_0(n: Nat) = {
+    !beq_nat(S(n), O)
+  } holds
 
-// Theorem mult_1_l : forall n:nat, 1 * n = n.
-// Proof.
-//   intros. simpl. rewrite plus_n_O. reflexivity.
-// Qed.
+  def mult_1_l(n: Nat) = {
+    assert(plus_n_O(n))
+    one * n == n
+  } holds
 
-// Theorem all3_spec : forall b c : bool,
-//     orb
-//       (andb b c)
-//       (orb (negb b)
-//                (negb c))
-//   = true.
-// Proof.
-//   intros. destruct b; destruct c; simpl; reflexivity.
-// Qed.
+  def all3_spec(b: Bool, c: Bool) = {
+    orb(
+      andb(b,c),
+      orb(negb(b),negb(c))
+    ) == True
+  } holds
+
+  def mult_plus_distr_r(n: Nat, m: Nat, p: Nat): Boolean = {
+    n match {
+      case O => ()
+      case S(n2) =>
+        // induction hypothesis: (n2 + m) * p = (n2 * p) + (m * p)
+        assert(mult_plus_distr_r(n2,m,p))
+        assert(plus_assoc(p, n2 * p, m * p)) // associativity
+
+        // these assertions show the reasoning, but are not required for the
+        // proof to go through
+        // assert((n + m) * p == (S(n2 + m) * p)) // by definition of +
+        // assert((n + m) * p == p + (n2 + m) * p) // by definition of *
+        // assert((n + m) * p == p + (n2 * p + m * p)) // by induction hypothesis
+        // assert((n + m) * p == p + n2 * p + m * p) // by associativity
+        // assert((n + m) * p == (n * p) + (m * p)) // by definition of *
+    }
+    (n + m) * p == (n * p) + (m * p)
+  } holds
+
+  def mult_assoc(n: Nat, m: Nat, p: Nat): Boolean = {
+    n match {
+      case O => ()
+      case S(n2) =>
+        assert(mult_assoc(n2, m, p)) // induction hypothesis
+        assert(mult_plus_distr_r(m, n2 * m, p))
+
+        // these assertions show the reasoning, but are not required
+        // assert(n * (m * p) == m * p + n2 * (m * p)) // by definition of *
+        // assert(n * (m * p) == m * p + (n2 * m) * p) // by induction hypothesis
+        // assert(n * (m * p) == (m + n2 * m) * p) // by mult_plus_distr_r
+        // assert(n * (m * p) == (n * m) * p) // by definition of *
+
+    }
+
+    n * (m * p) == (n * m) * p
+  } holds
+
+  /** [] */
+
+  /** **** Exercise: 2 stars, optional (beq_nat_refl)  */
+  
+  @induct
+  def beq_nat_refl(n: Nat) = {
+    beq_nat(n,n)
+  } holds
+
+  /** [] */
+
+  /** **** Exercise: 3 stars, recommended (binary_commute)  */
+
+  def bin_incr(b: Bin): Boolean = {
+    b match {
+      case TwicePlusOne(b2) =>
+        assert(bin_incr(b2)) // induction hypothesis
+        assert(plus_n_Sm(bin_to_nat(b2), bin_to_nat(b2)))
+
+        // these assertions show the reasoning, but are not required
+        // assert(bin_to_nat(incr(b)) == bin_to_nat(Twice(incr(b2)))) // by definition of incr
+        // assert(bin_to_nat(incr(b)) == bin_to_nat(incr(b2)) + bin_to_nat(incr(b2))) // by definition of bin_to_nat
+        // assert(bin_to_nat(incr(b)) == S(bin_to_nat(b2)) + S(bin_to_nat(b2))) // by induction hypothesis
+        // assert(bin_to_nat(incr(b)) == S(bin_to_nat(b2) + S(bin_to_nat(b2)))) // by definition of +
+        // assert(bin_to_nat(incr(b)) == S(S(bin_to_nat(b2) + bin_to_nat(b2)))) // by plus_n_Sm
+        // assert(bin_to_nat(incr(b)) == S(bin_to_nat(b))) // by definition of bin_to_nat
+
+      case _ => ()
+    }
+
+    bin_to_nat(incr(b)) == S(bin_to_nat(b))
+  } holds
+
+  /** [] */
+
+  /** **** Exercise: 5 stars, advanced (binary_inverse)  */
+  
+  /** (a) */
+  
+  def nat_to_bin(n: Nat): Bin = n match {
+    case O => Z
+    case S(n2) => incr(nat_to_bin(n2))
+  }
+
+  def nat_to_bin_to_nat(n: Nat): Boolean = {
+    n match {
+      case O => ()
+      case S(n2) =>
+        assert(nat_to_bin_to_nat(n2)) // induction hypothesis
+        assert(bin_incr(nat_to_bin(n2))) // lemma
+
+        // these assertions show the reasoning, but are not required
+        // assert(bin_to_nat(nat_to_bin(n)) == bin_to_nat(incr(nat_to_bin(n2)))) // by definition of nat_to_bin
+        // assert(bin_to_nat(nat_to_bin(n)) == S(bin_to_nat(nat_to_bin(n2)))) // by definition of nat_to_bin
+        // assert(bin_to_nat(nat_to_bin(n)) == S(n2)) // by induction hypothesis
+        // assert(bin_to_nat(nat_to_bin(n)) == n)
+    }
+
+    bin_to_nat(nat_to_bin(n)) == n  
+  } holds 
+
+  /** (c) */
+
+  def z_or_twice(b: Bin) = b match {
+    case Z => Z
+    case _ => Twice(b)
+  }
+
+  def normalize(b: Bin): Bin = b match {
+    case Z => Z
+    case Twice(b2) => z_or_twice(normalize(b2))
+    case TwicePlusOne(b2) => TwicePlusOne(normalize(b2))
+  }
+
+  def plus_bin(a: Bin, b: Bin): Bin = (a,b) match {
+    case (Z,_) => b
+    case (_,Z) => a
+    case (Twice(a2), Twice(b2)) => Twice(plus_bin(a2,b2))
+    case (Twice(a2), TwicePlusOne(b2)) => TwicePlusOne(plus_bin(a2,b2))
+    case (TwicePlusOne(a2), Twice(b2)) => TwicePlusOne(plus_bin(a2,b2))
+    case (TwicePlusOne(a2), TwicePlusOne(b2)) => Twice(incr(plus_bin(a2,b2)))
+  }
+
+  @library
+  def nat_to_bin_plus(a: Nat, b: Nat) = {
+    nat_to_bin(a+b) == plus_bin(nat_to_bin(a), nat_to_bin(b))
+  } holds
+
+  @library
+  def plus_bin_diag(b: Bin) = {
+    plus_bin(b,b) == z_or_twice(b)
+  } holds
+
+  @library
+  def nat_to_bin_succ(n: Nat) = {
+    nat_to_bin(S(n)) == incr(nat_to_bin(n))
+  }
+
+  def bin_to_nat_to_bin(b: Bin): Boolean = {
+
+    b match {
+      case Z => ()
+      case Twice(b2) =>
+        assert(nat_to_bin_plus(bin_to_nat(b2), bin_to_nat(b2))) // call to lemma
+        assert(plus_bin_diag(normalize(b2))) // call to lemma
+        assert(bin_to_nat_to_bin(b2)) // induction hypothesis
+
+        // these assertions show the reasoning, but are not required
+        // assert(nat_to_bin(bin_to_nat(b)) == nat_to_bin(bin_to_nat(b2) + bin_to_nat(b2))) // by definition of bin_to_nat
+        // assert(nat_to_bin(bin_to_nat(b)) == plus_bin(nat_to_bin(bin_to_nat(b2)),nat_to_bin(bin_to_nat(b2)))) // by lemma nat_to_bin_plus
+        // assert(nat_to_bin(bin_to_nat(b)) == plus_bin(normalize(b2),normalize(b2))) // by induction hypothesis
+        // assert(nat_to_bin(bin_to_nat(b)) == z_or_twice(normalize(b2))) // by lemma plus_bin_diag
+        // assert(nat_to_bin(bin_to_nat(b)) == normalize(b)) // by definition of normalize
+      case TwicePlusOne(b2) =>
+        assert(nat_to_bin_succ(bin_to_nat(b2) + bin_to_nat(b2))) // call to lemma
+        assert(nat_to_bin_plus(bin_to_nat(b2), bin_to_nat(b2))) // call to lemma
+        assert(plus_bin_diag(normalize(b2))) // call to lemma
+        assert(bin_to_nat_to_bin(b2)) // induction hypothesis
+
+        // these assertions show the reasoning, but are not required
+        // assert(nat_to_bin(bin_to_nat(b)) == nat_to_bin(S(bin_to_nat(b2) + bin_to_nat(b2)))) // by definition of bin_to_nat
+        // assert(nat_to_bin(bin_to_nat(b)) == incr(nat_to_bin(bin_to_nat(b2) + bin_to_nat(b2)))) // by lemma nat_to_bin_succ
+        // assert(nat_to_bin(bin_to_nat(b)) == incr(plus_bin(nat_to_bin(bin_to_nat(b2)),nat_to_bin(bin_to_nat(b2))))) // by lemma nat_to_bin_plus
+        // assert(nat_to_bin(bin_to_nat(b)) == incr(plus_bin(normalize(b2),normalize(b2)))) // by induction hypothesis
+        // assert(nat_to_bin(bin_to_nat(b)) == incr(z_or_twice(normalize(b2)))) // by lemma plus_bin_diag
+        // assert(nat_to_bin(bin_to_nat(b)) == TwicePlusOne(normalize(b2))) // by definitions of incr and z_or_twice
+        // assert(nat_to_bin(bin_to_nat(b)) == normalize(b)) // by definition of normalize
+    }
  
-// Theorem mult_plus_distr_r : forall n m p : nat,
-//   (n + m) * p = (n * p) + (m * p).
-// Proof.
-//   induction n as [ | n' IH]; intros; simpl.
-//   - reflexivity.
-//   - rewrite IH. rewrite plus_assoc. reflexivity.
-// Qed.
-
-// Theorem mult_assoc : forall n m p : nat,
-//   n * (m * p) = (n * m) * p.
-// Proof.
-//   induction n as [ | n' IH]; intros; simpl.
-//   - reflexivity.
-//   - rewrite IH. rewrite mult_plus_distr_r. reflexivity.
-// Qed.
+    nat_to_bin(bin_to_nat(b)) == normalize(b)
+  } holds
 
 }
