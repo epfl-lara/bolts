@@ -307,48 +307,67 @@ object Induction {
     case (TwicePlusOne(a2), TwicePlusOne(b2)) => Twice(incr(plus_bin(a2,b2)))
   }
 
-  @library
-  def nat_to_bin_plus(a: Nat, b: Nat) = {
+  def plus_bin_incr_l(a: Bin, b: Bin): Boolean = {
+    a match {
+      case Z => ()
+      case Twice(a2) => ()
+      case TwicePlusOne(a2) =>
+        b match {
+          case Z => ()
+          case Twice(b2) => 
+            assert(plus_bin_incr_l(a2,b2)) // induction hypothesis needed in this case
+          case TwicePlusOne(b2) =>
+            assert(plus_bin_incr_l(a2,b2)) // induction hypothesis needed in this case
+        }
+    }
+
+    incr(plus_bin(a,b)) == plus_bin(incr(a),b)
+  } holds
+
+
+  def nat_to_bin_plus(a: Nat, b: Nat): Boolean = {
+    a match {
+      case O => ()
+      case S(a2) =>
+        assert(nat_to_bin_plus(a2,b)) // induction hypothesis
+        assert(plus_bin_incr_l(nat_to_bin(a2), nat_to_bin(b))) // call to lemma
+
+        // these assertions show the reasoning, but are not required
+        // assert(nat_to_bin(a+b) == nat_to_bin(S(a2+b))) // by definition of +
+        // assert(nat_to_bin(a+b) == incr(nat_to_bin((a2+b)))) // by definition of nat_to_bin
+        // assert(nat_to_bin(a+b) == incr(plus_bin(nat_to_bin(a2), nat_to_bin(b)))) // by induction hypothesis
+        // assert(nat_to_bin(a+b) == plus_bin(incr(nat_to_bin(a2)), nat_to_bin(b))) // by lemma plus_bin_incr_l
+        // assert(nat_to_bin(a+b) == plus_bin(nat_to_bin(S(a2)), nat_to_bin(b))) // by definition of nat_to_bin
+        // assert(nat_to_bin(a+b) == plus_bin(nat_to_bin(a), nat_to_bin(b))) // qed
+    }
+
     nat_to_bin(a+b) == plus_bin(nat_to_bin(a), nat_to_bin(b))
   } holds
-
-  @library
-  def plus_bin_diag(b: Bin) = {
-    plus_bin(b,b) == z_or_twice(b)
-  } holds
-
-  @library
-  def nat_to_bin_succ(n: Nat) = {
-    nat_to_bin(S(n)) == incr(nat_to_bin(n))
-  }
 
   def bin_to_nat_to_bin(b: Bin): Boolean = {
 
     b match {
-      case Z => ()
+      case Z => () 
       case Twice(b2) =>
         assert(nat_to_bin_plus(bin_to_nat(b2), bin_to_nat(b2))) // call to lemma
-        assert(plus_bin_diag(normalize(b2))) // call to lemma
         assert(bin_to_nat_to_bin(b2)) // induction hypothesis
 
         // these assertions show the reasoning, but are not required
         // assert(nat_to_bin(bin_to_nat(b)) == nat_to_bin(bin_to_nat(b2) + bin_to_nat(b2))) // by definition of bin_to_nat
         // assert(nat_to_bin(bin_to_nat(b)) == plus_bin(nat_to_bin(bin_to_nat(b2)),nat_to_bin(bin_to_nat(b2)))) // by lemma nat_to_bin_plus
         // assert(nat_to_bin(bin_to_nat(b)) == plus_bin(normalize(b2),normalize(b2))) // by induction hypothesis
-        // assert(nat_to_bin(bin_to_nat(b)) == z_or_twice(normalize(b2))) // by lemma plus_bin_diag
+        // assert(nat_to_bin(bin_to_nat(b)) == z_or_twice(normalize(b2))) // by case analysis on b2, and using assertions from inside the inductive call
         // assert(nat_to_bin(bin_to_nat(b)) == normalize(b)) // by definition of normalize
       case TwicePlusOne(b2) =>
-        assert(nat_to_bin_succ(bin_to_nat(b2) + bin_to_nat(b2))) // call to lemma
         assert(nat_to_bin_plus(bin_to_nat(b2), bin_to_nat(b2))) // call to lemma
-        assert(plus_bin_diag(normalize(b2))) // call to lemma
         assert(bin_to_nat_to_bin(b2)) // induction hypothesis
 
         // these assertions show the reasoning, but are not required
         // assert(nat_to_bin(bin_to_nat(b)) == nat_to_bin(S(bin_to_nat(b2) + bin_to_nat(b2)))) // by definition of bin_to_nat
-        // assert(nat_to_bin(bin_to_nat(b)) == incr(nat_to_bin(bin_to_nat(b2) + bin_to_nat(b2)))) // by lemma nat_to_bin_succ
+        // assert(nat_to_bin(bin_to_nat(b)) == incr(nat_to_bin(bin_to_nat(b2) + bin_to_nat(b2)))) // by definition of nat_to_bin
         // assert(nat_to_bin(bin_to_nat(b)) == incr(plus_bin(nat_to_bin(bin_to_nat(b2)),nat_to_bin(bin_to_nat(b2))))) // by lemma nat_to_bin_plus
         // assert(nat_to_bin(bin_to_nat(b)) == incr(plus_bin(normalize(b2),normalize(b2)))) // by induction hypothesis
-        // assert(nat_to_bin(bin_to_nat(b)) == incr(z_or_twice(normalize(b2)))) // by lemma plus_bin_diag
+        // assert(nat_to_bin(bin_to_nat(b)) == incr(z_or_twice(normalize(b2)))) // by case analysis on b2, and using assertions from inside the inductive call
         // assert(nat_to_bin(bin_to_nat(b)) == TwicePlusOne(normalize(b2))) // by definitions of incr and z_or_twice
         // assert(nat_to_bin(bin_to_nat(b)) == normalize(b)) // by definition of normalize
     }
