@@ -374,5 +374,9 @@ object Induction {
  
     nat_to_bin(bin_to_nat(b)) == normalize(b)
   } holds
+  
+  /** [] */
+
+  def main(args: Array[String]) {}
 
 }
