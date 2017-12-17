@@ -162,64 +162,54 @@ object stlc {
     require(t.fv.contains(x) && inferType(c, t).isDefined)
 
     t match {
-      case Var(y) if x == y  =>
-        check(c.contains(x))
-
-      case Var(y) if x != y =>
-        check(c.contains(x))
-
-      case Abs(y, _, t1) if x == y =>
-        false
-
       case Abs(y, ty, t1) if x != y =>
-        check(inferType(c.updated(y, ty), t1).isDefined) &&
-        check(t1.fv.contains(x)) &&
-        check(lemma_free_in_ctx(c.updated(y, ty), x, t1)) &&
-        check(c.contains(x))
+        assert(inferType(c.updated(y, ty), t1).isDefined)
+        assert(t1.fv.contains(x))
+        assert(lemma_free_in_ctx(c.updated(y, ty), x, t1))
 
       case App(f, arg) =>
         assert(f.fv.contains(x) ==> lemma_free_in_ctx(c, x, f))
         assert(arg.fv.contains(x) ==> lemma_free_in_ctx(c, x, arg))
-        check(c.contains(x))
 
       case If(cnd, thn, els) =>
         assert(cnd.fv.contains(x) ==> lemma_free_in_ctx(c, x, cnd))
         assert(thn.fv.contains(x) ==> lemma_free_in_ctx(c, x, thn))
         assert(els.fv.contains(x) ==> lemma_free_in_ctx(c, x, els))
 
-        check(c.contains(x))
+      case _ => ()
+    }
 
-      case True() =>
-        check(c.contains(x))
+    c.contains(x)
+  }.holds
 
-      case False() =>
-        check(c.contains(x))
+  def emptyCtx: Map[BigInt, Ty] = Map()
+
+  @induct
+  def corollary_typeable_empty__closed_pre(t: Term): Boolean = {
+    require(inferType(emptyCtx, t).isDefined)
+
+    forall { (x: BigInt) =>
+      t.fv.contains(x) ==> !lemma_free_in_ctx(emptyCtx, x, t)
     }
   }.holds
 
   @induct
-  def corollary_typeable_empty__closed(t: Term) = {
-    require(inferType(Map[BigInt, Ty](), t).isDefined)
+  def corollary_typeable_empty__closed(t: Term): Boolean = {
+    require(inferType(emptyCtx, t).isDefined)
 
-    assert {
-      forall { (x: BigInt) =>
-        t.fv.contains(x) ==> !lemma_free_in_ctx(Map[BigInt, Ty](), x, t)
-      }
-    }
+    assert(corollary_typeable_empty__closed_pre(t))
 
     t match {
       case Abs(x, ty, body) =>
-        assert(inferType(Map[BigInt, Ty]().updated(x, ty), body).isDefined)
-        check(t.isClosed)
+        assert(inferType(emptyCtx.updated(x, ty), body).isDefined)
 
-      case t =>
-        check(t.isClosed)
+      case _ => ()
     }
 
+    t.isClosed
   }.holds
 
-  // @induct
-  def corollary_ctx_invariance(c: Map[BigInt, Ty], d: Map[BigInt, Ty], t: Term): Boolean = {
+  def lemma_context_invariance(c: Map[BigInt, Ty], d: Map[BigInt, Ty], t: Term): Boolean = {
     require {
       inferType(c, t).isDefined &&
       inferType(d, t).isDefined &&
@@ -228,33 +218,69 @@ object stlc {
 
     t match {
       case Var(y) =>
-        check(inferType(c, t).get == inferType(d, t).get)
+        inferType(c, t).get == inferType(d, t).get
 
       case Abs(x, ty, body) =>
         assert(inferType(c.updated(x, ty), body).isDefined)
         assert(inferType(d.updated(x, ty), body).isDefined)
-        assert(corollary_ctx_invariance(c.updated(x, ty), d.updated(x, ty), body))
-        check(inferType(c, t).get == inferType(d, t).get)
+        assert(lemma_context_invariance(c.updated(x, ty), d.updated(x, ty), body))
+
+        inferType(c, t).get == inferType(d, t).get
 
       case App(f, arg) =>
-        assert(corollary_ctx_invariance(c, d, f))
-        assert(corollary_ctx_invariance(c, d, arg))
-        check(inferType(c, t).get == inferType(d, t).get)
+        assert(lemma_context_invariance(c, d, f))
+        assert(lemma_context_invariance(c, d, arg))
+
+        inferType(c, t).get == inferType(d, t).get
 
       case If(cnd, thn, els) =>
-        assert(corollary_ctx_invariance(c, d, cnd))
-        assert(corollary_ctx_invariance(c, d, thn))
-        assert(corollary_ctx_invariance(c, d, els))
+        assert(lemma_context_invariance(c, d, cnd))
+        assert(lemma_context_invariance(c, d, thn))
+        assert(lemma_context_invariance(c, d, els))
 
-        check(inferType(c, t).get == inferType(d, t).get)
+        inferType(c, t).get == inferType(d, t).get
 
       case True() =>
-        check(inferType(c, t).get == inferType(d, t).get)
+        inferType(c, t).get == inferType(d, t).get
 
       case False() =>
-        check(inferType(c, t).get == inferType(d, t).get)
+        inferType(c, t).get == inferType(d, t).get
+    }
+  }.holds
+
+  def lemma_substitution_preserves_typing(c: Map[BigInt, Ty], x: BigInt, s: Term, t: Term): Boolean = {
+    require {
+      inferType(emptyCtx, s).isDefined &&
+      inferType(c, s).isDefined &&
+      inferType(c.updated(x, inferType(emptyCtx, s).get), t).isDefined
     }
 
+    val S  = inferType(emptyCtx, s).get
+    val cs = c.updated(x, S)
+    val T  = inferType(cs, t).get
+
+    t match {
+      case Var(y) if x == y =>
+        assert(T == S)
+        assert(corollary_typeable_empty__closed(s))
+        assert(lemma_context_invariance(emptyCtx, c, s))
+
+      case Abs(y, ty, body) if x == y =>
+        assert(lemma_context_invariance(cs, c, t))
+
+      case Abs(y, ty, body) if x != y =>
+        val cx  = c.updated(y, ty)
+        val csx = cx.updated(x, S)
+        val cxs = cs.updated(y, ty)
+
+        assert(lemma_context_invariance(cxs, csx, body))
+        assert(lemma_substitution_preserves_typing(cx, x, s, body))
+
+      case _ =>
+        assert(lemma_context_invariance(cs, c, t))
+    }
+
+    inferType(c, subst(x, s, t)) == inferType(c.updated(x, inferType(emptyCtx, s).get), t)
   }.holds
 
 }
