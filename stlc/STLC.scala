@@ -2,6 +2,7 @@
 import stainless.lang._
 import stainless.annotation._
 import stainless.proof._
+import stainless.math
 
 object stlc {
 
@@ -18,6 +19,10 @@ object stlc {
       case _                => false
     }
 
+    def isNF: Boolean = {
+      step == None[Term]()
+    }
+
     def fv: Set[BigInt] = this match {
       case Var(id)           => Set(id)
       case App(f, arg)       => f.fv ++ arg.fv
@@ -31,33 +36,47 @@ object stlc {
       !fv.contains(x)
     }
 
-    def step: Option[Term] = this match {
-      case App(Abs(x, _, body), arg) if arg.isValue =>
-        Some(subst(x, arg, body))
+    def size: BigInt = {
+      this match {
+        case Var(_)            => BigInt(1)
+        case True()            => BigInt(1)
+        case False()           => BigInt(1)
+        case App(f, arg)       => math.max(f.size, arg.size) + 1
+        case Abs(_, _, body)   => body.size + 1
+        case If(cnd, thn, els) => math.max(math.max(cnd.size, thn.size), els.size) + 1
+      }
+    } ensuring (_ >= 1)
 
-      case App(f, arg) if f.step.isDefined =>
-        Some(App(f.step.get, arg))
+    def step: Option[Term] = {
+      decreases(this.size)
 
-      case App(f, arg) if f.isValue && arg.step.isDefined =>
-        Some(App(f, arg.step.get))
+      this match {
+        case App(Abs(x, _, body), arg) if arg.isValue =>
+          Some(subst(x, arg, body))
 
-      case If(cnd, thn, els) if cnd.isValue =>
-        cnd match {
-          case True()  => Some(thn)
-          case False() => Some(els)
-          case _       => None()
-        }
+        case App(f, arg) if f.step.isDefined =>
+          Some(App(f.step.get, arg))
 
-      case If(cnd, thn, els) if cnd.step.isDefined =>
-        Some(If(cnd.step.get, thn, els))
+        case App(f, arg) if f.isValue && arg.step.isDefined =>
+          Some(App(f, arg.step.get))
 
-      case _ =>
-        None()
+        case If(cnd, thn, els) if cnd.isValue =>
+          cnd match {
+            case True()  => Some(thn)
+            case False() => Some(els)
+            case _       => None()
+          }
+
+        case If(cnd, thn, els) if cnd.step.isDefined =>
+          Some(If(cnd.step.get, thn, els))
+
+        case _ =>
+          None()
+      }
     }
 
     def reducesTo(t: Term, n: BigInt): Boolean = {
       require(n >= 0)
-
       decreases(n)
 
       this == t || {
@@ -158,6 +177,12 @@ object stlc {
     ty.isDefined && ty.get == TBool()
   }.holds
 
+  @induct
+  def theorem_progress(t: Term): Boolean = {
+    require(inferType(emptyCtx, t).isDefined)
+    t.isValue || t.step.isDefined
+  }.holds
+
   def lemma_free_in_ctx(c: Map[BigInt, Ty], x: BigInt, t: Term): Boolean = {
     require(t.fv.contains(x) && inferType(c, t).isDefined)
 
@@ -209,6 +234,7 @@ object stlc {
     t.isClosed
   }.holds
 
+  @induct
   def lemma_context_invariance(c: Map[BigInt, Ty], d: Map[BigInt, Ty], t: Term): Boolean = {
     require {
       inferType(c, t).isDefined &&
@@ -217,38 +243,30 @@ object stlc {
     }
 
     t match {
-      case Var(y) =>
-        inferType(c, t).get == inferType(d, t).get
-
+      // TODO
       case Abs(x, ty, body) =>
         assert(inferType(c.updated(x, ty), body).isDefined)
         assert(inferType(d.updated(x, ty), body).isDefined)
         assert(lemma_context_invariance(c.updated(x, ty), d.updated(x, ty), body))
 
-        inferType(c, t).get == inferType(d, t).get
-
       case App(f, arg) =>
         assert(lemma_context_invariance(c, d, f))
         assert(lemma_context_invariance(c, d, arg))
 
-        inferType(c, t).get == inferType(d, t).get
-
+      // TODO
       case If(cnd, thn, els) =>
         assert(lemma_context_invariance(c, d, cnd))
-        assert(lemma_context_invariance(c, d, thn))
-        assert(lemma_context_invariance(c, d, els))
+        assert(lemma_context_invariance(c, d, thn)) // TODO
+        assert(lemma_context_invariance(c, d, els)) // TODO
 
-        inferType(c, t).get == inferType(d, t).get
-
-      case True() =>
-        inferType(c, t).get == inferType(d, t).get
-
-      case False() =>
-        inferType(c, t).get == inferType(d, t).get
+      case _ => ()
     }
+
+    inferType(c, t).get == inferType(d, t).get
   }.holds
 
-  def lemma_substitution_preserves_typing(c: Map[BigInt, Ty], x: BigInt, s: Term, t: Term): Boolean = {
+  @induct
+  def lemma_substitution_preserves_typing(c: Map[BigInt, Ty], x: BigInt, t: Term, s: Term): Boolean = {
     require {
       inferType(emptyCtx, s).isDefined &&
       inferType(c, s).isDefined &&
@@ -264,23 +282,65 @@ object stlc {
         assert(T == S)
         assert(corollary_typeable_empty__closed(s))
         assert(lemma_context_invariance(emptyCtx, c, s))
+        assert(inferType(c, subst(x, s, t)) == inferType(c.updated(x, inferType(emptyCtx, s).get), t))
 
       case Abs(y, ty, body) if x == y =>
+        assert(inferType(cs, t).isDefined)
         assert(lemma_context_invariance(cs, c, t))
+        assert(inferType(c, subst(x, s, t)) == inferType(c.updated(x, inferType(emptyCtx, s).get), t))
 
-      case Abs(y, ty, body) if x != y =>
+      case Abs(y, ty, body) =>
         val cx  = c.updated(y, ty)
         val csx = cx.updated(x, S)
         val cxs = cs.updated(y, ty)
 
+        assert(inferType(cxs, body).isDefined)
+        assert(inferType(csx, body).isDefined)
+        assert(inferType(cx.updated(x, inferType(emptyCtx, s).get), body).isDefined)
+
         assert(lemma_context_invariance(cxs, csx, body))
         assert(lemma_substitution_preserves_typing(cx, x, s, body))
+        assert(inferType(c, subst(x, s, t)) == inferType(c.updated(x, inferType(emptyCtx, s).get), t))
 
-      case _ =>
-        assert(lemma_context_invariance(cs, c, t))
+      case t => ()
     }
 
     inferType(c, subst(x, s, t)) == inferType(c.updated(x, inferType(emptyCtx, s).get), t)
+  }.holds
+
+  @induct
+  def theorem_preservation(t: Term): Boolean = {
+    require(inferType(emptyCtx, t).isDefined && !t.isNF)
+
+    t match {
+      case App(Abs(x, ty, body), arg) if arg.isValue => assert {
+        lemma_substitution_preserves_typing(emptyCtx, x, body, arg)
+      }
+
+      // TODO: App + If
+
+      case _ => ()
+    }
+
+    inferType(emptyCtx, t.step.get) == inferType(emptyCtx, t)
+  }.holds
+
+  def isStuck(t: Term): Boolean = {
+    t.isNF && !t.isValue
+  }
+
+  def corollary_soundness(t: Term, s: Term, ty: Ty, n: BigInt): Boolean = {
+    require(inferType(emptyCtx, t) == Some(ty) && n >= 0 && t.reducesTo(s, n))
+    decreases(n)
+
+    assert(theorem_progress(t))
+
+    if (t != s) {
+     assert(theorem_preservation(t))
+     assert(corollary_soundness(t.step.get, s, ty, n - 1))
+    }
+
+    !isStuck(s)
   }.holds
 
 }
