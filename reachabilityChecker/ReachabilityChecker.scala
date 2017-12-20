@@ -1,14 +1,10 @@
-/*
-Author: Sarah Sallinger
-*/
+/* Author: Sarah Sallinger */
 import stainless.collection._
 import stainless.lang._
 import stainless.annotation._
 import stainless.proof._
 
 import scala.language.postfixOps
-
-//This version currently takes ~ 1h to verify on my machine with i5 and 8GB RAM.
 
 object ReachabilityChecker {
 
@@ -24,11 +20,111 @@ object ReachabilityChecker {
 
   case class System(transitions: List[(State, State)])
 
-  abstract class Result
+  // -------------------------------------------------------------------
+  // Main functions and their correctness:
+  // -------------------------------------------------------------------
+  
+  def correctTrace(s: System,
+                   initial: State,
+                   target: State,
+                   k: BigInt): Boolean = {
+    val res = kReachabilityCheck(List(initial), s, target, k, initial)
+
+    res match {
+      case Trace(t) => initial == t.head && t.last == target && isTrace(s, t)
+      case _ => true
+    }
+  }.holds
+
+
+  sealed abstract class Result
   case object Unknown extends Result
   case object Unreachable extends Result
   case class Trace(states: List[State]) extends Result
 
+  def kReachabilityCheck(currentTrace: List[State],
+                         s: System,
+                         target: State,
+                         k: BigInt,
+                         initial: State): Result = {
+    require(
+      simple(currentTrace) &&
+        !currentTrace.isEmpty &&
+        isTrace(s, currentTrace) &&
+        canTransitionSucc(s.transitions, currentTrace.last) &&
+        currentTrace.head == initial
+    )
+
+    if (currentTrace.last == target)
+      Trace(currentTrace)
+    else if (k == 0)
+      Unknown
+    else {
+      exploreSuccessors(successors(s.transitions, currentTrace.last),
+                        currentTrace,
+                        s,
+                        target,
+                        k - 1,
+                        false,
+                        initial)
+    }
+  } ensuring (res =>
+                res match {
+                  case Trace(t) =>
+                    isTrace(s, t) && !t.isEmpty && t.head == initial && t.last == target && simple(t)
+                  case _ => true
+                })
+
+  def exploreSuccessors(succ: List[State],
+                        currentTrace: List[State],
+                        s: System,
+                        target: State,
+                        k: BigInt,
+                        unknown: Boolean,
+                        initial: State): Result = {
+    require(
+      simple(currentTrace) &&
+        !currentTrace.isEmpty &&
+        isTrace(s, currentTrace) &&
+        canTransition(s.transitions, currentTrace.last, succ) &&
+        currentTrace.head == initial)
+
+    succ match {
+      case Nil() => if (unknown) Unknown else Unreachable
+      case Cons(x, xs) =>
+        if (!currentTrace.contains(x) && // needed for simpleAppend
+            prependTrace(currentTrace, s, x) &&
+            simpleAppend(currentTrace, x)) {
+
+          val res =
+            kReachabilityCheck(currentTrace :+ x, s, target, k, initial)
+          res match {
+            case Trace(t) => res //target found
+            case Unknown =>
+              exploreSuccessors(xs, currentTrace, s, target, k, true, initial)
+            case Unreachable =>
+              exploreSuccessors(xs,
+                                currentTrace,
+                                s,
+                                target,
+                                k,
+                                unknown,
+                                initial)
+          }
+        } else
+          exploreSuccessors(xs, currentTrace, s, target, k, unknown, initial)
+    }
+  } ensuring (res =>
+                res match {
+                  case Trace(t) =>
+                    isTrace(s, t) && !t.isEmpty && t.head == initial && t.last == target && simple(t)
+                  case _ => true
+                })
+
+  // -------------------------------------------------------------------
+  // Auxiliary functions for running the reachability check and for expressing its specification
+  // -------------------------------------------------------------------
+  
   def successors(tr: List[(State, State)], s: State): List[State] = {
     tr match {
       case Nil() => List()
@@ -103,40 +199,6 @@ object ReachabilityChecker {
     subset(l1, x :: l2)
   } holds
 
-  def kReachabilityCheck(currentTrace: List[State],
-                         s: System,
-                         target: State,
-                         k: BigInt,
-                         initial: State): Result = {
-    require(
-      simple(currentTrace) &&
-        !currentTrace.isEmpty &&
-        isTrace(s, currentTrace) &&
-        canTransitionSucc(s.transitions, currentTrace.last) &&
-        currentTrace.head == initial
-    )
-
-    if (currentTrace.last == target)
-      Trace(currentTrace)
-    else if (k == 0)
-      Unknown
-    else {
-      exploreSuccessors(successors(s.transitions, currentTrace.last),
-                        currentTrace,
-                        s,
-                        target,
-                        k - 1,
-                        false,
-                        initial)
-    }
-  } ensuring (res =>
-                res match {
-                  case Trace(t) =>
-                    isTrace(s, t) && !t.isEmpty && t.head == initial && t.last == target && simple(
-                      t)
-                  case _ => true
-                })
-
   @induct
   def prependTrace(t: List[State], s: System, st: State): Boolean = {
     require(isTrace(s, t) && s.transitions.contains((t.last, st)))
@@ -153,52 +215,6 @@ object ReachabilityChecker {
     x == l.last && (target == x || !l.contains(target))
   } holds
 
-  def exploreSuccessors(succ: List[State],
-                        currentTrace: List[State],
-                        s: System,
-                        target: State,
-                        k: BigInt,
-                        unknown: Boolean,
-                        initial: State): Result = {
-    require(
-      simple(currentTrace) &&
-        !currentTrace.isEmpty &&
-        isTrace(s, currentTrace) &&
-        canTransition(s.transitions, currentTrace.last, succ) &&
-        currentTrace.head == initial)
-
-    succ match {
-      case Nil() => if (unknown) Unknown else Unreachable
-      case Cons(x, xs) =>
-        if (!currentTrace.contains(x) && // needed for simpleAppend
-            prependTrace(currentTrace, s, x) &&
-            simpleAppend(currentTrace, x)) {
-
-          val res =
-            kReachabilityCheck(currentTrace :+ x, s, target, k, initial)
-          res match {
-            case Trace(t) => res //target found
-            case Unknown =>
-              exploreSuccessors(xs, currentTrace, s, target, k, true, initial)
-            case Unreachable =>
-              exploreSuccessors(xs,
-                                currentTrace,
-                                s,
-                                target,
-                                k,
-                                unknown,
-                                initial)
-          }
-        } else
-          exploreSuccessors(xs, currentTrace, s, target, k, unknown, initial)
-    }
-  } ensuring (res =>
-                res match {
-                  case Trace(t) =>
-                    isTrace(s, t) && !t.isEmpty && t.head == initial && t.last == target && simple(
-                      t)
-                  case _ => true
-                })
 
   def isTrace(s: System, t: List[State]): Boolean = {
     t match {
@@ -208,21 +224,6 @@ object ReachabilityChecker {
       case _ => true
     }
   }
-
-  def correctTrace(s: System,
-                   initial: State,
-                   target: State,
-                   k: BigInt): Boolean = {
-    val res = kReachabilityCheck(List(initial), s, target, k, initial)
-
-    res match {
-      case Trace(t) =>
-        initial == t.head &&
-          t.last == target &&
-          isTrace(s, t)
-      case _ => true
-    }
-  } holds
 
   @induct
   def inSuccessors(tr: List[(State, State)], s1: State, s2: State): Boolean = {
