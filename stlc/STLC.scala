@@ -234,38 +234,80 @@ object stlc {
     t.isClosed
   }.holds
 
-  @induct
+  // def lemma_context_invariance(c: Map[BigInt, Ty], d: Map[BigInt, Ty], t: Term): Boolean = {
+  //   require {
+  //     inferType(c, t).isDefined &&
+  //     inferType(d, t).isDefined &&
+  //     forall { (x: BigInt) => t.fv.contains(x) ==> (c.get(x) == d.get(x)) }
+  //   }
+
+  //   t match {
+  //     // TODO
+  //     case Abs(x, ty, body) =>
+  //       assert(inferType(c.updated(x, ty), body).isDefined)
+  //       assert(inferType(d.updated(x, ty), body).isDefined)
+  //       assert(lemma_context_invariance(c.updated(x, ty), d.updated(x, ty), body))
+
+  //     case App(f, arg) =>
+  //       assert(lemma_context_invariance(c, d, f))
+  //       assert(lemma_context_invariance(c, d, arg))
+
+  //     // TODO
+  //     case If(cnd, thn, els) =>
+  //       assert(lemma_context_invariance(c, d, cnd))
+  //       assert(lemma_context_invariance(c, d, thn)) // TODO
+  //       assert(lemma_context_invariance(c, d, els)) // TODO
+
+  //     case _ => ()
+  //   }
+
+  //   inferType(c, t).get == inferType(d, t).get
+  // }.holds
+
+  type Context = Map[BigInt,Ty]
+
+  def equivalentAt(t: Term, x: BigInt, c: Context, d: Context) = {
+    t.fv.contains(x) ==> (c.get(x) == d.get(x))
+  }
+
   def lemma_context_invariance(c: Map[BigInt, Ty], d: Map[BigInt, Ty], t: Term): Boolean = {
     require {
-      inferType(c, t).isDefined &&
-      inferType(d, t).isDefined &&
-      forall { (x: BigInt) => t.fv.contains(x) ==> (c.get(x) == d.get(x)) }
+      forall { (x: BigInt) => equivalentAt(t,x,c,d) }
     }
 
     t match {
-      // TODO
+      case Var(x) =>
+        assert(equivalentAt(t,x,c,d))
+        assert(inferType(c, t) == inferType(d, t))
       case Abs(x, ty, body) =>
-        assert(inferType(c.updated(x, ty), body).isDefined)
-        assert(inferType(d.updated(x, ty), body).isDefined)
+        // assert(inferType(c.updated(x, ty), body).isDefined)
+        // assert(inferType(d.updated(x, ty), body).isDefined)
         assert(lemma_context_invariance(c.updated(x, ty), d.updated(x, ty), body))
+        assert(inferType(c, t) == inferType(d, t))
 
       case App(f, arg) =>
+        // assert(forall { (x: BigInt) => equivalentAt(f,x,c,d) })
+        // assert(forall { (x: BigInt) => equivalentAt(arg,x,c,d) })
         assert(lemma_context_invariance(c, d, f))
         assert(lemma_context_invariance(c, d, arg))
+        assert(inferType(c, t) == inferType(d, t))
 
-      // TODO
       case If(cnd, thn, els) =>
+        // assert(forall { (x: BigInt) => equivalentAt(cnd,x,c,d) })
+        // assert(forall { (x: BigInt) => equivalentAt(thn,x,c,d) })
+        // assert(forall { (x: BigInt) => equivalentAt(els,x,c,d) })
         assert(lemma_context_invariance(c, d, cnd))
-        assert(lemma_context_invariance(c, d, thn)) // TODO
-        assert(lemma_context_invariance(c, d, els)) // TODO
+        assert(lemma_context_invariance(c, d, thn))
+        assert(lemma_context_invariance(c, d, els))
+        assert(inferType(c, t) == inferType(d, t))
 
-      case _ => ()
+      case _ => 
+        assert(inferType(c, t) == inferType(d, t))
     }
 
-    inferType(c, t).get == inferType(d, t).get
+    inferType(c, t) == inferType(d, t)
   }.holds
 
-  @induct
   def lemma_substitution_preserves_typing(c: Map[BigInt, Ty], x: BigInt, t: Term, s: Term): Boolean = {
     require {
       inferType(emptyCtx, s).isDefined &&
@@ -308,40 +350,40 @@ object stlc {
     inferType(c, subst(x, s, t)) == inferType(c.updated(x, inferType(emptyCtx, s).get), t)
   }.holds
 
-  @induct
-  def theorem_preservation(t: Term): Boolean = {
-    require(inferType(emptyCtx, t).isDefined && !t.isNF)
+  // @induct
+  // def theorem_preservation(t: Term): Boolean = {
+  //   require(inferType(emptyCtx, t).isDefined && !t.isNF)
 
-    t match {
-      case App(Abs(x, ty, body), arg) if arg.isValue => assert {
-        lemma_substitution_preserves_typing(emptyCtx, x, body, arg)
-      }
+  //   t match {
+  //     case App(Abs(x, ty, body), arg) if arg.isValue => assert {
+  //       lemma_substitution_preserves_typing(emptyCtx, x, body, arg)
+  //     }
 
-      // TODO: App + If
+  //     // TODO: App + If
 
-      case _ => ()
-    }
+  //     case _ => ()
+  //   }
 
-    inferType(emptyCtx, t.step.get) == inferType(emptyCtx, t)
-  }.holds
+  //   inferType(emptyCtx, t.step.get) == inferType(emptyCtx, t)
+  // }.holds
 
   def isStuck(t: Term): Boolean = {
     t.isNF && !t.isValue
   }
 
-  def corollary_soundness(t: Term, s: Term, ty: Ty, n: BigInt): Boolean = {
-    require(inferType(emptyCtx, t) == Some(ty) && n >= 0 && t.reducesTo(s, n))
-    decreases(n)
+  // def corollary_soundness(t: Term, s: Term, ty: Ty, n: BigInt): Boolean = {
+  //   require(inferType(emptyCtx, t) == Some(ty) && n >= 0 && t.reducesTo(s, n))
+  //   decreases(n)
 
-    assert(theorem_progress(t))
+  //   assert(theorem_progress(t))
 
-    if (t != s) {
-     assert(theorem_preservation(t))
-     assert(corollary_soundness(t.step.get, s, ty, n - 1))
-    }
+  //   if (t != s) {
+  //    assert(theorem_preservation(t))
+  //    assert(corollary_soundness(t.step.get, s, ty, n - 1))
+  //   }
 
-    !isStuck(s)
-  }.holds
+  //   !isStuck(s)
+  // }.holds
 
 }
 
