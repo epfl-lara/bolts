@@ -27,9 +27,6 @@ object Basics {
     case Sunday => Monday
   }
 
-  println(next_weekday(Friday))
-  println(next_weekday(next_weekday(Friday)))
-
   def test_next_weeday() = {
     next_weekday(next_weekday(Saturday)) == Tuesday
   } holds
@@ -59,7 +56,7 @@ object Basics {
   def test_orb4() = { orb(True, True) == True } holds
 
   // When using the operators && and || on an element of type Bool, the Scala
-  // compiler will understand that Bool has to be wraprintlned in a 
+  // compiler will understand that Bool has to be wrapped in a 
   // BoolNotation, and the Bool will be implicitly converted to BoolNotation
   implicit class BoolNotation(val b: Bool) {
     def &&(b2: Bool) = andb(b, b2)
@@ -145,15 +142,12 @@ object Basics {
   val ten = S(nine)
   val eleven = S(ten)
   val twelve = S(eleven)
-  println(four)
 
   def minusTwo(n: Nat): Nat = n match {
     case O => O
     case S(O) => O
     case S(S(n2)) => n2
   }
-
-  println(minusTwo(four))
 
   def evenb(n: Nat): Boolean = n match {
     case O => true
@@ -170,13 +164,6 @@ object Basics {
     case O => m
     case S(n2) => S(plus(n2, m))
   }
-
-  println(plus(three, two))
-  
-  // Stainless also supports arithmetic operations directly on the Int and 
-  // BigInt types
-  println(2 + 3)
-
 
   def mult(n: Nat, m: Nat): Nat = n match {
     case O => O
@@ -215,8 +202,6 @@ object Basics {
     def -(n2: Nat) = minus(n, n2)
     def *(n2: Nat) = mult(n, n2) 
   }
-
-  println((zero + one) + one)
 
   def beq_nat(n: Nat, m: Nat): Boolean = n match {
     case O => 
@@ -367,20 +352,14 @@ object Basics {
   /** **** Exercise: 2 stars (boolean_functions) */
   // Here, we again go back to using the Bool type defined above
 
-
-  // states that the function f is defined for all elements of the domain X
-  def isTotal[X,Y](f: X => Y) = {
-    forall((x: X) => f.pre(x))
-  }
-
   def identity_fn_applied_twice(f: Bool => Bool) = {
-    require(isTotal(f) && forall((x: Bool) => f(x) == x))
+    require(forall((x: Bool) => f(x) == x))
 
     forall((b: Bool) => f(f(b)) == b)
   } holds
 
   def negation_fn_applied_twice(f: Bool => Bool) = {
-    require(isTotal(f) && forall((x: Bool) => f(x) == negb(x)))
+    require(forall((x: Bool) => f(x) == negb(x)))
 
     forall((b: Bool) => f(f(b)) == b)
   } holds
