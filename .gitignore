@@ -6,3 +6,6 @@ last.log
 
 // Inox solver debug output
 tip-sessions
+
+// Inox smt debug folder
+smt-sessions
