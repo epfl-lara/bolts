@@ -29,7 +29,10 @@ object Lists {
     def sum(xs: List[Int]): Int = { 
       if (xs.isEmpty) 0 
       else xs.head + sum(xs.tail)
-    } ensuring ((xs.isEmpty && sum(xs)==0) || (sum(xs)==xs.last + sum(xs.init)))
+    } ensuring (res => 
+      (xs.isEmpty && res == 0) || 
+      (res == xs.last + sum(xs.init))
+    )
   
   /**
    * This method returns the largest element in a list of integers. If the
@@ -53,5 +56,5 @@ object Lists {
       }
       
       recmax(xs.tail, xs.head)
-    } ensuring(xs.tail.isEmpty || max(xs)>=max(xs.tail))
+    } ensuring(res => xs.tail.isEmpty || res >= max(xs.tail))
   }
