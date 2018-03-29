@@ -5,7 +5,7 @@ package recfun
 import stainless.lang._
 import stainless.collection._
 
-object Main extends App {
+object Main {
   // Exercise 1
   def pascal(c: BigInt, r: BigInt): BigInt = {
     require(c>=0 && r>=0 && c<=r)
