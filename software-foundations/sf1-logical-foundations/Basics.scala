@@ -338,11 +338,12 @@ object Basics {
   def smallerBigInt(n: Nat, m: Nat): Boolean = {
     require(blt_nat(n, m))
 
-    (n,m) match {
-      case (S(n2),S(m2)) => assert(smallerBigInt(n2,m2))
-      case _ => ()
-    }
-
+    // FIXME: change this to an assertion when they are no longer simplified away for postconditions
+    
+    ((n,m) match {
+      case (S(n2),S(m2)) => smallerBigInt(n2,m2)
+      case _ => true
+    }) &&
     natToBigInt(n) < natToBigInt(m)
   } holds
 
