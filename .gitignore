@@ -1,5 +1,5 @@
 // Stainless cache directory
-cache
+.stainless-cache
 
 // Stainless log file
 last.log
