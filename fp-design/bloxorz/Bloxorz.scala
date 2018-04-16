@@ -79,12 +79,13 @@ object Bloxorz {
 
       def done(b: Block): Boolean = b.b1 == goal && b.b2 == goal
 
+      // FIXME: prove the postcondition
       def neighborsWithHistory(b: Block, history: List[Move]): List[(Block, List[Move])] = {
         b.legalNeighbors.map(elem => (elem._1, elem._2::history))
       }ensuring(res => res.size <= numOfNeighbors)
       // && !res.exists( e1 => res.exists( e2 => e1._1 == e2._1 && res.indexOf(e1) != res.indexOf(e2) ) ) )
 
-      // takes longer to verify
+      // FIXME: prove the postcondition
       def newNeighborsOnly(neighbors: List[(Block, List[Move])], explored: Set[Block]): List[(Block, List[Move])] = {
         require(neighbors.size <= numOfNeighbors)
         neighbors filterNot (elem => explored contains elem._1)
@@ -177,7 +178,8 @@ object Bloxorz {
     }
  
 
-    case class Level() extends Solver with StringParserTerrain {
+    // FIXME: with StringParserTerrain should be uncommented when multiple inheritance is supported
+    case class Level() extends Solver /* with StringParserTerrain */ {
 
       def terrainList: List[Char] =     'o' :: 'o' :: 'o' :: '-' :: '-' :: '-' :: '-' :: '-' :: '-' :: '-' :: '\n' :: 
                                         'o' :: 'S' :: 'o' :: 'o' :: 'o' :: 'o' :: '-' :: '-' :: '-' :: '-' :: '\n' ::
