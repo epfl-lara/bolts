@@ -2,7 +2,7 @@ import stainless.lang._
 import stainless.collection._
 import stainless._
 
-object ExpicitSubstitution {
+object ExplicitSubstitution {
 
     sealed abstract class Term
     case class Var(x: BigInt) extends Term
