@@ -2,7 +2,7 @@ import stainless.lang._
 import stainless.collection._
 import stainless.annotation._
 
-object ExpicitSubstitution {
+object ExplicitSubstitution {
 
 
     sealed abstract class Term
