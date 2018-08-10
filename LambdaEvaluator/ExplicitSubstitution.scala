@@ -70,9 +70,8 @@ object ExpicitSubstitution {
             case Abs(x, body) => 
                 if (x != e.s.x) {
                     if (fv(e.s.m) contains x) {
-                        val f = (fv(e.s.m) ++ fv(body)).unique
-                        //val step = f.size
-                        val newX = newVar(f, x + 1, f.size)
+                        val set = (fv(e.s.m) ++ fv(body)).unique
+                        val newX = newVar(set, x + 1, set.size)
                         Abs(newX, ApplySubst(ApplySubst(body, Subst(x, Var(newX))), e.s))
                     }
                     else Abs(x, ApplySubst(body, e.s)) 
