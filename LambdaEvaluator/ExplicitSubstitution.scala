@@ -66,7 +66,7 @@ object ExplicitSubstitution {
             case Var(x) =>
                 if (e.s.x == x) e.s.m
                 else e.m
-            case App(f, arg) => App(ApplySubst(f, e.s), ApplySubst(arg, e.s))
+            case App(f, arg) => App(eval(ApplySubst(f, e.s)), eval(ApplySubst(arg, e.s)))
             case Abs(x, body) =>
                 if (x != e.s.x) {
                     if (fv(e.s.m) contains x) {
@@ -74,12 +74,12 @@ object ExplicitSubstitution {
                         val newX = newVar(set, x + 1, set.size)
                         Abs(newX, ApplySubst(ApplySubst(body, Subst(x, Var(newX))), e.s))
                     }
-                    else Abs(x, ApplySubst(body, e.s))
+                    else Abs(x, eval(ApplySubst(body, e.s)))
                 } else e.m
             case ApplySubst(m, s) => ApplySubst(eval(ApplySubst(m, s)), e.s)
         }
 
-    } ensuring { res => (!(fv(res) contains e.s.x) || (fv(e.s.m) contains e.s.x))}
+    }
 
     //evaluates the term
     def loopingEval(t: Term, n: BigInt): Option[Term] = {
@@ -149,33 +149,37 @@ object ExplicitSubstitution {
         }
 
     } ensuring { res => (res match {
-        case Some(r) => isReduced(r)
+        case Some(r) => isReduced(r) && noSubst(r)
         case None() => true
     })}
 
 
     //checks if two terms are alpha equivalent (that is, equal upon renaming of the bound variables)
     def alphaEquivalent(t1: Term, t2: Term): Boolean = {
+        require(noSubst(t1) && noSubst(t2))
 
         t1 match {
             case Var(x) => t2 match {
                 case Var(y) => x == y
-                case ApplySubst(m, s) => alphaEquivalent(t1, eval(ApplySubst(m, s)))
                 case _ => false
             }
             case App(f, a) => t2 match {
                 case App(f2, a2) => alphaEquivalent(f, f2) && alphaEquivalent(a, a2)
-                case ApplySubst(m, s) => alphaEquivalent(t1, eval(ApplySubst(m, s)))
                 case _ => false
             }
             case Abs(x, body) => t2 match {
                 case Abs(x2, body2) => if (x == x2) alphaEquivalent(body, body2) else !(fv(body2) contains x) && alphaEquivalent(body, eval(ApplySubst(body2, Subst(x2, Var(x)))))
-                case ApplySubst(m, s) => alphaEquivalent(t1, eval(ApplySubst(m, s)))
                 case _ => false
             }
-            case ApplySubst(m, s) => alphaEquivalent(eval(ApplySubst(m, s)), t2)
+            case _ => false
         }
     }
+
+    def alphaReflexive(t: Term) = {
+        require(noSubst(t))
+
+        alphaEquivalent(t, t)
+    } holds
 
 
     def unique(t1: Term, t2: Term, s: Subst, n: BigInt) = {
@@ -208,8 +212,11 @@ object ExplicitSubstitution {
 
     //λx.y [y:x] = λz.x
     def captureAvoidingTest = {
-       loopingEval(ApplySubst(Abs(0, Var(1)), Subst(1, Var(0))), 20) match {
-            case Some(t) => alphaEquivalent(t, Abs(1, Var(0)))
+       loopingStrongEval(ApplySubst(Abs(0, Var(1)), Subst(1, Var(0))), 50) match {
+            case Some(t) => {
+                assert(noSubst(t))
+                alphaEquivalent(t, Abs(1, Var(0)))
+            }
             case _ => false
        }
     } holds
@@ -217,8 +224,8 @@ object ExplicitSubstitution {
 
 //=================================================
 
-    def powerN(f: Var, M: Var, n: BigInt): Term = {
-        require(n >= 0)
+    def powerN(f: Term, M: Term, n: BigInt): Term = {
+        require(n >= 0 && noSubst(f) && noSubst(M))
         if (n == 0) M else App(f, powerN(f, M, n - 1))
     } ensuring{ res => noSubst(res) }
 
@@ -230,22 +237,86 @@ object ExplicitSubstitution {
 
 
     val Aplus = Abs(0, Abs(1, Abs(2, Abs(3, App(App(Var(0), Var(2)), App(App(Var(1), Var(2)), Var(3)))))))
-    val Astar = Abs(0, Abs(1, Abs(2, App(Var(0), App(Var(1), Var(2))))))
+    val Astar = Abs(3, Abs(1, Abs(0, App(Var(3), App(Var(1), Var(0))))))
 
     def testAdd = {
-        loopingStrongEval(App(App(Aplus, churchN(3)), churchN(4)), 50) match {
+        loopingStrongEval(App(App(Aplus, churchN(3)), churchN(4)), 80) match {
             case Some(t) => alphaEquivalent(t, churchN(7))
             case _ => false
         }
     } holds
 
-
     def testMult = {
-        loopingStrongEval(App(App(Astar, churchN(2)), churchN(3)), 50) match {
-            case Some(t) => alphaEquivalent(t, churchN(6))
+        loopingStrongEval(App(App(Astar, churchN(2)), churchN(3)), 80) match {
+            case Some(t) => t == churchN(6) //alphaEquivalent(t, churchN(6))
             case _ => false
         }
     } holds
+
+
+    def substitutionLemma(t: Term, s1: Subst, s2: Subst) = {
+        require(noSubst(t) && noSubst(s1.m) && noSubst(s2.m) && !((fv(s2.m) ++ fv(t)) contains s1.x) && s1.x != s2.x)
+
+        eval(ApplySubst(eval(ApplySubst(t, s1)), s2)) == eval(ApplySubst(eval(ApplySubst(t, s2)), Subst(s1.x, eval(ApplySubst(s1.m, s2)))))
+    } holds
+
+    /*def lemma1Church(n: BigInt, m: BigInt, step: BigInt): Boolean = {
+        require(n > 0 && m >= 0)
+
+        val cn = App(churchN(n), Var(5))
+
+        if (m == 0) {
+            loopingEval(powerN(cn, Var(1), m), step) match {
+                case Some(t) => t == Var(1)
+                case _ => true
+            }
+        } else {
+            assert(powerN(cn, Var(1), m) == App(cn, powerN(cn, Var(1), m - 1)))
+            assert(lemma1Church(n, m - 1))
+            assert(App(cn, powerN(cn, Var(1), m - 1)) == App(cn, powerN(Var(5), Var(1), n * (m- 1))))
+
+            assert()
+
+            loopingEval(powerN(cn, Var(1), m), step) match {
+                case Some(t) => t == powerN(Var(5), Var(1), n * m)
+                case _ => true
+            }
+        }
+    } holds*/
+
+    /*def addOneStep(n: BigInt, m: BigInt, step: BigInt) = {
+        require((loopingStrongEval(App(App(Aplus, churchN(n)), churchN(m - 1)), step) match {
+                    case Some(t) => alphaEquivalent(t, churchN(n + (m - 1)))
+                    case _ => true
+                }))
+       // assert(churchN(m) == )
+
+        loopingStrongEval(App(App(Aplus, churchN(n)), churchN(m)), step) match {
+            case Some(t) => alphaEquivalent(t, churchN(n + m))
+            case _ => true
+        }
+    } holds
+
+    def add(n: BigInt, m: BigInt, step: BigInt): Boolean = {
+        require(n > 0 && m > 0 && step > 0)
+
+        m match {
+            case BigInt(1) => loopingStrongEval(App(App(Aplus, churchN(n)), churchN(1)), step) match {
+                case Some(t) => alphaEquivalent(t, churchN(1 + n))
+                case _ => true
+            }
+            case _ =>  {
+                assert(add(n, m - 1, step))
+                assert(addOneStep(n, m, step))
+
+                loopingStrongEval(App(App(Aplus, churchN(n)), churchN(m)), step) match {
+                    case Some(t) => alphaEquivalent(t, churchN(n + m))
+                    case _ => true
+                }
+            }
+        }
+
+    } holds*/
 
 
 //=================================================
