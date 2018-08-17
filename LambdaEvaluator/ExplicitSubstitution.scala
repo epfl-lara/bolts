@@ -194,6 +194,12 @@ object ExplicitSubstitution {
         loopingEval(ApplySubst(t1, Subst(x, s1)), n) == loopingEval(ApplySubst(t2, Subst(x, s2)), n)
     } holds
 
+    def substitutionLemma(t: Term, s1: Subst, s2: Subst) = {
+        require(noSubst(t) && noSubst(s1.m) && noSubst(s2.m) && !((fv(s2.m) ++ fv(t)) contains s1.x) && s1.x != s2.x)
+
+        eval(ApplySubst(eval(ApplySubst(t, s1)), s2)) == eval(ApplySubst(eval(ApplySubst(t, s2)), Subst(s1.x, eval(ApplySubst(s1.m, s2)))))
+    } holds
+
     //λx.x((λy.yy)x)x = λx.x(xx)x
     def example1 = {
         loopingStrongEval(Abs(0, App(App(Var(0), App(Abs(1, App(Var(1), Var(1))), Var(0))), Var(0))), 20) match {
@@ -213,10 +219,7 @@ object ExplicitSubstitution {
     //λx.y [y:x] = λz.x
     def captureAvoidingTest = {
        loopingStrongEval(ApplySubst(Abs(0, Var(1)), Subst(1, Var(0))), 50) match {
-            case Some(t) => {
-                assert(noSubst(t))
-                alphaEquivalent(t, Abs(1, Var(0)))
-            }
+            case Some(t) => alphaEquivalent(t, Abs(1, Var(0)))
             case _ => false
        }
     } holds
@@ -248,75 +251,10 @@ object ExplicitSubstitution {
 
     def testMult = {
         loopingStrongEval(App(App(Astar, churchN(2)), churchN(3)), 80) match {
-            case Some(t) => t == churchN(6) //alphaEquivalent(t, churchN(6))
+            case Some(t) => t == churchN(6)
             case _ => false
         }
     } holds
-
-
-    def substitutionLemma(t: Term, s1: Subst, s2: Subst) = {
-        require(noSubst(t) && noSubst(s1.m) && noSubst(s2.m) && !((fv(s2.m) ++ fv(t)) contains s1.x) && s1.x != s2.x)
-
-        eval(ApplySubst(eval(ApplySubst(t, s1)), s2)) == eval(ApplySubst(eval(ApplySubst(t, s2)), Subst(s1.x, eval(ApplySubst(s1.m, s2)))))
-    } holds
-
-    /*def lemma1Church(n: BigInt, m: BigInt, step: BigInt): Boolean = {
-        require(n > 0 && m >= 0)
-
-        val cn = App(churchN(n), Var(5))
-
-        if (m == 0) {
-            loopingEval(powerN(cn, Var(1), m), step) match {
-                case Some(t) => t == Var(1)
-                case _ => true
-            }
-        } else {
-            assert(powerN(cn, Var(1), m) == App(cn, powerN(cn, Var(1), m - 1)))
-            assert(lemma1Church(n, m - 1))
-            assert(App(cn, powerN(cn, Var(1), m - 1)) == App(cn, powerN(Var(5), Var(1), n * (m- 1))))
-
-            assert()
-
-            loopingEval(powerN(cn, Var(1), m), step) match {
-                case Some(t) => t == powerN(Var(5), Var(1), n * m)
-                case _ => true
-            }
-        }
-    } holds*/
-
-    /*def addOneStep(n: BigInt, m: BigInt, step: BigInt) = {
-        require((loopingStrongEval(App(App(Aplus, churchN(n)), churchN(m - 1)), step) match {
-                    case Some(t) => alphaEquivalent(t, churchN(n + (m - 1)))
-                    case _ => true
-                }))
-       // assert(churchN(m) == )
-
-        loopingStrongEval(App(App(Aplus, churchN(n)), churchN(m)), step) match {
-            case Some(t) => alphaEquivalent(t, churchN(n + m))
-            case _ => true
-        }
-    } holds
-
-    def add(n: BigInt, m: BigInt, step: BigInt): Boolean = {
-        require(n > 0 && m > 0 && step > 0)
-
-        m match {
-            case BigInt(1) => loopingStrongEval(App(App(Aplus, churchN(n)), churchN(1)), step) match {
-                case Some(t) => alphaEquivalent(t, churchN(1 + n))
-                case _ => true
-            }
-            case _ =>  {
-                assert(add(n, m - 1, step))
-                assert(addOneStep(n, m, step))
-
-                loopingStrongEval(App(App(Aplus, churchN(n)), churchN(m)), step) match {
-                    case Some(t) => alphaEquivalent(t, churchN(n + m))
-                    case _ => true
-                }
-            }
-        }
-
-    } holds*/
 
 
 //=================================================
