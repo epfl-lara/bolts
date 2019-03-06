@@ -1,5 +1,6 @@
 import stainless.lang._
-
+// Good benchmark for quantifiers.
+// Using Extended Euclid gives more general proof.
 object GCD {
 
   @inline
@@ -179,13 +180,21 @@ object GCD {
     if (b) BigInt(1)
     else BigInt(0)
   }
+
+  // solver seems to know this anyway and uses it
+  def modLemma(a: BigInt, b: BigInt): Unit = {
+    require(b != 0)
+  }.ensuring(_ => a % b == a - (a/b)*b)
+
   
   def euclid(a: BigInt, b: BigInt): BigInt = {
     require(a > 0 && b >= 0)
     if (b == 0) a
-    else euclid(b, a - (a/b)*b)
+    else euclid(b, a % b)
   }
-  
+
+  // This says that if r is gcd, then euclid computes it.
+  // If we know that gcd(a,b,_) is a total relation, then correctness follows
   def euclid_correctness(a: BigInt, b: BigInt, r: BigInt): Boolean = {
     require(a > 0 && b >= 0 && gcd(a,b,r))
     decreases(booleanToInt(a < b), a+b)
