@@ -3,7 +3,6 @@ import stainless.annotation._
 
 
 object GCD {
-
   @inline
   def exists[T](p: T => Boolean) = !forall((x: T) => !p(x))
 
@@ -21,7 +20,7 @@ object GCD {
     require(p(t))
 
     exists(p)
-  } holds
+  }.holds
 
   def gcd(a: BigInt, b: BigInt, r: BigInt, x: BigInt, y: BigInt) = {
     a * x + b * y == r && divides(r, a) && divides(r, b)
@@ -39,7 +38,7 @@ object GCD {
     assert(introductionExists(j + c * i, (k: BigInt) => a == k * r))
 
     divides(r, a)
-  } holds
+  }.holds
 
 
   def booleanToInt(b: Boolean): BigInt = {
@@ -48,11 +47,10 @@ object GCD {
   }
 
   def euclid(a: BigInt, b: BigInt): (BigInt, BigInt, BigInt) = {
-    if (b == 0) {
+    if (b == 0)
       (a, 1, 0)
-    }
     else {
-      val (r, x, y) = euclid(b, a - (a / b) * b)
+      val (r, x, y) = euclid(b, a % b)
       (r, y, x - (a / b) * y)
     }
   }
@@ -64,20 +62,14 @@ object GCD {
     val (r, x, y) = euclid(a, b)
 
     b match {
-      case BigInt(0) => {
+      case BigInt(0) => 
         assert(introductionExists(BigInt(1), (k: BigInt) => a == k * a))
         assert(introductionExists(BigInt(0), (k: BigInt) => 0 == k * a))
-
         gcd(a, b, r, x, y)
-      }
-      case _ => {
+      case _ => 
         assert(euclidCorrectness(b, a - (a / b) * b))
         assert(euclidOneStep(a, b, r))
-
         gcd(a, b, r, x, y)
-      }
     }
-
-  } holds
-
+  }.holds
 }
