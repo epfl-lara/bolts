@@ -23,30 +23,42 @@ object Huffman {
    */
     sealed abstract class CodeTree(){
       lazy val chars: Set[Char] = {
-          this match {
-            case Fork(left, right) => left.chars ++ right.chars
-            case Leaf(char, weight) => Set(char)
-          }
+        decreases(this)
+        this match {
+          case Fork(left, right) => left.chars ++ right.chars
+          case Leaf(char, weight) => Set(char)
+        }
       } ensuring(res => res != Set.empty[Char])
     }
     case class Fork(left: CodeTree, right: CodeTree) extends CodeTree
     case class Leaf(char: Char, weight: BigInt) extends CodeTree
 
-
-    sealed abstract class OptChar
-    case class Some(value: Char) extends OptChar
-    case object None extends OptChar
-
-
     // Part 1: Basics
+    def max(x: BigInt, y: BigInt) = if (x > y) x else y
+
+    def persistentAssert(cond: Boolean): Unit = {
+      require(cond)
+      ()
+    } ensuring(_ => cond)
+
     def weight(tree: CodeTree): BigInt = {
+      decreases(tree)
       tree match {
         case Fork(left, right) => weight(left) + weight(right)
         case Leaf(char, weight) => weight
       }
     }
 
+    def chars(tree: CodeTree): List[Char] = {
+      decreases(tree)
+      tree match  {
+        case Fork(left, right) => chars(left) ++ chars(right)
+        case Leaf(char, weight) => List(char)
+      }
+    } ensuring(res => !res.isEmpty)
+
     def chars(trees: List[CodeTree]): Set[Char] = {
+      decreases(trees)
       if (trees.isEmpty) Set[Char]()
       else trees.head.chars ++ chars(trees.tail)
     } ensuring(res => trees.isEmpty || res != Set.empty[Char])
@@ -67,6 +79,13 @@ object Huffman {
       }
     }
 
+    def isFork(tree: CodeTree): Boolean = {
+      tree match {
+        case Fork(_, _) => true
+        case _ => false
+      }
+    }
+
   // Part 2: Generating Huffman trees
 
   /**
@@ -82,6 +101,7 @@ object Huffman {
 
     def distinct(chars: List[Char], acc: List[Char]): List[Char] = {
       require(isDistinctList(acc) && chars.size+acc.size>0)
+      decreases(chars)
       chars match {
         case y::ys => {
           if (isDistinctList(y::acc)) distinct(ys, y::acc)
@@ -93,6 +113,7 @@ object Huffman {
 
     def listEqu(list: List[Char], zipWith: List[BigInt]): Boolean = {
       require(list.size == zipWith.size)
+      decreases(list)
       (list zip zipWith).map(elem => elem._1) == list because {
         if (list.isEmpty) true
         else listEqu(list.tail, zipWith.tail)
@@ -100,6 +121,7 @@ object Huffman {
     }.holds
 
     def isDistinctList(list: List[Char]): Boolean = {
+      decreases(list)
       list match {
         case x::xs => !(xs.contains(x)) && isDistinctList(xs)
         case _ => true
@@ -107,6 +129,7 @@ object Huffman {
     }
 
     def isDistinctList(list: List[CodeTree]): Boolean = {
+      decreases(list)
       list match {
         case x::xs => xs.forall(elem => (elem.chars & x.chars) == Set.empty[Char]) && isDistinctList(xs)
         case _ => true
@@ -117,6 +140,7 @@ object Huffman {
 
     def insert(l:CodeTree, list: List[CodeTree]): List[CodeTree] = {
       require(sortedByWeight(list))
+      decreases(list)
       list match {
         case y::ys => if (weight(l) < weight(y)) l::list
                       else y::insert(l, ys)
@@ -127,6 +151,7 @@ object Huffman {
 
 
     def sortLeafList(list: List[CodeTree]): List[CodeTree] = {
+      decreases(list)
       list match {
         case l::ls => insert(l, sortLeafList(list.tail))
         case _ => List[CodeTree]()
@@ -146,6 +171,7 @@ object Huffman {
       require(!freqs.isEmpty && isDistinctList(freqs.map(elem => elem._1)))
       def foreach(freqs: List[(Char, BigInt)]): List[CodeTree] = {
         require(isDistinctList(freqs.map(elem => elem._1)))
+        decreases(freqs)
         if (freqs.isEmpty) List[CodeTree]()
         else new Leaf(freqs.head._1, freqs.head._2) ::foreach(freqs.tail)
       } ensuring(res => chars(res) == freqs.map(elem => elem._1).content && res.size == freqs.size)
@@ -154,14 +180,12 @@ object Huffman {
                      chars(res) == freqs.map(elem => elem._1).content && res.size == freqs.size)
 
 
-
   /**
    * Checks whether the list `trees` contains only one single code tree.
    */
     def singleton(trees: List[CodeTree]): Boolean = {
       trees.size == 1
-    } ensuring(res => (res && trees.size == 1) || (!res && trees.size != 1))
-
+    }
 
   /**
    * The parameter `trees` of this function is a list of code trees ordered
@@ -196,6 +220,7 @@ object Huffman {
    */
     def until(trees: List[CodeTree]): List[CodeTree] = {
       require(!trees.isEmpty && sortedByWeight(trees))
+      decreases(trees.size)
       if (singleton(trees)) trees
       else until(combine(trees))
     } ensuring(res => res.size <= trees.size && singleton(res) && !res.isEmpty && chars(trees) == chars(res))
@@ -220,26 +245,51 @@ object Huffman {
    * the resulting list of characters.
    */
     def decode(tree: CodeTree, bits: List[Boolean]): List[Char] = {
+      require(isFork(tree))
+      decreases(bits.size)
+
       if (bits.isEmpty) List()
       else {
+        assert(decodeCharLength(tree, bits))
         decodeChar(tree, bits) match {
-          case Some(c) => c :: decode(tree, bits.drop(encodeChar(tree, c).size))
-          case None => List()
+          case Some((c, rest)) => c :: decode(tree, rest)
+          case None() => List()
         }
       }
     }
 
-    def decodeChar(tree: CodeTree, bits: List[Boolean]): OptChar = {
-      tree match  {
+    def decodeCharLength(tree: CodeTree, bits: List[Boolean]): Boolean = {
+      decreases(tree)
+
+      persistentAssert(
+        tree match  {
+          case Fork(left, right) => {
+            if (bits.isEmpty) true
+            else if (!bits.head) decodeCharLength(left, bits.tail)
+            else decodeCharLength(right, bits.tail)
+          }
+          case Leaf(char, weight) => true
+        }
+      )
+
+      decodeChar(tree, bits) match {
+        case Some((_, rest)) =>
+          rest.size <= bits.size && (isFork(tree) ==> rest.size < bits.size)
+        case _ => true
+      }
+    }.holds
+
+    def decodeChar(tree: CodeTree, bits: List[Boolean]): Option[(Char, List[Boolean])] = {
+      decreases(tree)
+      tree match {
         case Fork(left, right) => {
-          if (bits.isEmpty) None
+          if (bits.isEmpty) None()
           else if (!bits.head) decodeChar(left, bits.tail)
           else decodeChar(right, bits.tail)
         }
-        case Leaf(char, weight) => Some(char)
+        case Leaf(char, weight) => Some(char, bits)
       }
     }
-
 
   /**
    * A Huffman coding tree for the French language.
@@ -273,11 +323,12 @@ object Huffman {
    * into a sequence of bits.
    */
     def encode(tree: CodeTree)(text: List[Char]): List[Boolean] = {
-      if (!text.forall(elem => tree.chars.contains(elem))) List()
-      else text.flatMap(elem => encodeChar(tree, elem))
+      require(text.content subsetOf tree.chars)
+      text.flatMap(elem => encodeChar(tree, elem))
     }
 
     def encodeChar(tree: CodeTree, cx: Char): List[Boolean] = {
+      decreases(tree)
       tree match  {
         case Fork(left, right) => {
           if (!tree.chars.contains(cx)) List()
@@ -291,120 +342,57 @@ object Huffman {
 
   // Encoding/decoding proof
 
-    def proof(text: List[Char]): Boolean = {
-      require(!text.isEmpty && !isLeaf(createCodeTree(text)))
+    def decodeOneChar(tree: CodeTree, cx: Char, bits: List[Boolean]): Boolean = {
+      require(tree.chars.contains(cx) && isFork(tree))
+      decreases(tree)
+
+      tree match {
+        case Fork(left, right) => {
+          if (encodeChar(tree, cx).isEmpty) ()
+          else if (!encodeChar(tree, cx).head) {
+            persistentAssert(isLeaf(left) || decodeOneChar(left, cx, bits))
+          } else {
+            persistentAssert(isLeaf(right) || decodeOneChar(right, cx, bits))
+          }
+        }
+        case Leaf(char, weight) => ()
+      }
+
+      decodeChar(tree, encodeChar(tree, cx) ++ bits) match {
+        case Some((c, rest)) => c == cx && rest == bits
+        case None() => false
+      }
+    }.holds
+
+    def decodeEncode(tree: CodeTree, text: List[Char]): Boolean = {
+      require(
+        text.content.subsetOf(tree.chars) &&
+        isFork(tree)
+      )
+      decreases(text)
+
+      if (text.isEmpty) {
+        ()
+      } else {
+        persistentAssert(decodeOneChar(tree, text.head, encode(tree)(text.tail)))
+        persistentAssert(decodeEncode(tree, text.tail))
+      }
+
+      decode(tree, encode(tree)(text)) == text
+    }.holds
+
+    def decodeEncode(text: List[Char]): Boolean = {
+      require(!text.isEmpty && isFork(createCodeTree(text)))
       val tree = createCodeTree(text)
-      decode(tree, encode(tree)(text)) == text because checkAlphabet(text) && checkContent(text, tree) && proof(tree, text)
+      persistentAssert(decodeEncode(tree, text))
+      decode(tree, encode(tree)(text)) == text
     }.holds
 
-    def checkChar(char: Char, tree: CodeTree): Boolean = {
-      (isLeaf(tree) || !tree.chars.contains(char) ||
-      (decodeChar(tree,encodeChar(tree, char)) match {
-        case Some(c) => c == char
-        case _ => false
-      })) because {
-        tree match {
-          case Leaf(c, w) => true
-          case Fork(left, right) => {
-            if (left.chars.contains(char)) checkChar(char, left)
-            else if (right.chars.contains(char)) checkChar(char, right)
-            else true
-          }
-        }
-      }
-    }.holds
-
-    def notEmpty(tree: CodeTree, text: List[Char]): Boolean = {
-      require(!text.isEmpty && !isLeaf(tree) && text.forall(char => tree.chars.contains(char)))
-      checkChar(text.head, tree) && checkHead(tree, text) && decodeChar(tree, encode(tree)(text)) != None
-    }.holds
-
-    def checkHead(tree:CodeTree, text: List[Char]): Boolean = {
-      require(!text.isEmpty && !isLeaf(tree) && text.forall(char => tree.chars.contains(char)))
-      checkChar(text.head, tree) && checkLen(tree, encodeChar(tree, text.head), encode(tree)(text.tail)) &&
-      ((decodeChar(tree, encodeChar(tree, text.head)), decodeChar(tree, encode(tree)(text))) match {
-        case (Some(c1), Some(c2)) => c1 == c2
-        case (_) => false
-      })
-    }.holds
-
-    def proveHead(tree:CodeTree, text: List[Char]): Boolean = {
-      require(!text.isEmpty && !isLeaf(tree) && text.forall(char => tree.chars.contains(char)))
-      notEmpty(tree, text) && checkHead(tree,text) && checkChar(text.head, tree) &&
-      (decodeChar(tree, encode(tree)(text)) match {
-        case Some(char) => char == text.head
-        case None => false
-      })
-    }.holds
-
-    def checkLen(tree: CodeTree, bits: List[Boolean], list: List[Boolean]): Boolean = {
-      isLeaf(tree) || bits.isEmpty ||
-      ((decodeChar(tree, bits), decodeChar(tree, bits++list)) match {
-        case (Some(c1), Some(c2)) => c1 == c2
-        case (None, _) => true
-        case (_) => false
-      }) because {
-        tree match {
-          case Fork(left, right) => {
-            if (bits.isEmpty) true
-            else if (!bits.head) checkLen(left, bits.tail, list)
-            else checkLen(right, bits.tail, list)
-          }
-          case Leaf(char, weight) => true
-        }
-      }
-    }.holds
-
-    def checkDrop(list1:List[Boolean], list2:List[Boolean]): Boolean = {
-      (list1++list2).drop(list1.size) == list2 because {
-        if (list1.isEmpty) true
-        else checkDrop(list1.tail, list2)
-      }
-    }.holds
-
-    def checkEncodeTail(tree: CodeTree, text: List[Char]): Boolean = {
-      require(!isLeaf(tree) && text.forall(char => tree.chars.contains(char)) && !text.isEmpty)
-      notEmpty(tree, text) && (decodeChar(tree, encode(tree)(text)) match {
-        case Some(char) => checkDrop(encodeChar(tree, char), encode(tree)(text.tail))
-        case None => false
-      }) && decode(tree, encode(tree)(text).drop(encodeChar(tree, text.head).size)) == decode(tree, encode(tree)(text.tail))
-    }.holds
-
-    def helperProof(tree: CodeTree, text: List[Char]): Boolean = {
-      require(!isLeaf(tree) && text.forall(char => tree.chars.contains(char)) && !text.isEmpty)
-      val bits = encode(tree)(text)
-      proveHead(tree, text) && checkEncodeTail(tree, text) &&
-      decode(tree, bits) == text.head :: decode(tree, encode(tree)(text.tail)) //&&
-      //(text.size == 1 || helperProof(tree, text.tail))
-    }.holds
-
-    def proof(tree: CodeTree, text: List[Char]): Boolean = {
-      require(!isLeaf(tree) && text.forall(char => tree.chars.contains(char)) && !text.isEmpty)
-      decode(tree, encode(tree)(text)) == text because {
-        if (text.size>1) helperProof(tree, text) && proof(tree, text.tail)
-        else checkChar(text.head, tree)
-      }
-    }.holds
-
-    def checkContent(text: List[Char], tree: CodeTree): Boolean = {
-      require(text.filter(elem => !tree.chars.contains(elem)).isEmpty)
-      text.forall(char => tree.chars.contains(char)) because {
-        if (text.isEmpty) true
-        else checkContent(text.tail, tree)
-      }
-    }.holds
-
-
-
-
- // CodeTree verification
-
-    def checkAlphabet(list: List[Char]): Boolean = {
-      require(!list.isEmpty)
-      createCodeTree(list).chars == list.content
-    }.holds
-
+  /**
+    * CodeTree functions
+    */
     def consistent(tree: CodeTree): Boolean = {
+      decreases(tree)
       tree match{
         case Fork(left, right) => consistent(left) && consistent(right) && isDistinctList(List(left, right))
         case Leaf(char, weight) => true
@@ -412,11 +400,13 @@ object Huffman {
     }
 
     def consistent(trees: List[CodeTree]): Boolean = {
+      decreases(trees)
       if (trees.size == 0) true
       else consistent(trees.head) && consistent(trees.tail) && isDistinctList(trees)
     }
 
     def depth(tree: CodeTree, char: Char): BigInt = {
+      decreases(tree)
       tree match{
         case Fork(left, right) => {
           if (left.chars.contains(char))
@@ -431,40 +421,30 @@ object Huffman {
     }
 
     def height(tree: CodeTree): BigInt = {
+      decreases(tree)
       tree match {
         case Fork(left, right) => {
-          if (height(left) > height(right)) height(left) + 1
-          else height(right) + 1
+          val hl = height(left)
+          val hr = height(right)
+          max(hl, hr) + 1
         }
         case Leaf(char, weight) => 0
       }
     }
 
     def height(trees: List[CodeTree]): BigInt = {
+      decreases(trees)
       if (trees.isEmpty) 0
-      else if (height(trees.head) > height(trees.tail)) height(trees.head)
-      else height(trees.tail)
+      else {
+        val headHeight = height(trees.head)
+        val tailHeight = height(trees.tail)
+        max(headHeight, tailHeight)
+      }
     }
-
-
-
-    def checkCharEqu(char1: Char, char2: Char, tree: CodeTree): Boolean = {
-      require(char1 == char2)
-      isLeaf(tree) || encodeChar(tree, char1) == encodeChar(tree, char2)
-    }.holds
-
-    def checkTextEqu(text1: List[Char], text2: List[Char], tree: CodeTree): Boolean = {
-      require(text1 == text2)
-      isLeaf(tree) || encode(tree)(text1) == encode(tree)(text2)
-    }.holds
-
-    def checkBitsEqu(bits1: List[Boolean], bits2: List[Boolean], tree: CodeTree): Boolean = {
-      require(bits1 == bits2)
-      isLeaf(tree) || decode(tree, bits1) == decode(tree, bits2)
-    }.holds
 
     def checkCharDiff(char1: Char, char2: Char, tree: CodeTree): Boolean = {
       require(char1 != char2)
+      decreases(tree)
       (isLeaf(tree) || encodeChar(tree, char1).isEmpty || encodeChar(tree, char1) != encodeChar(tree, char2)) because {
         tree match {
           case Leaf(c, w) => true
@@ -472,75 +452,6 @@ object Huffman {
         }
       }
     }.holds
-
-    def checkEncodeChar(char: Char, tree: CodeTree): Boolean = {
-      tree match{
-        case Leaf(c, w) => encodeChar(tree, char).isEmpty
-        case Fork(left, right) => {
-          if (left.chars.contains(char)) encodeChar(tree, char).head == false && checkEncodeChar(char, left) && checkEncodeChar(char, right)
-          else if (right.chars.contains(char)) encodeChar(tree, char).head == true && checkEncodeChar(char, left) && checkEncodeChar(char, right)
-          else encodeChar(tree, char).isEmpty
-        }
-      }
-    }.holds
-
-    def checkConcatEncode(tree: CodeTree, char: Char, text: List[Char]): Boolean = {
-      require(!isLeaf(tree) && text.forall(char => tree.chars.contains(char)) && tree.chars.contains(char))
-      encode(tree)(List(char)) ++ encode(tree)(text) == encode(tree)(char::text) because {
-        if (text.isEmpty) true
-        else checkConcatEncode(tree, char, text.tail)
-      }
-    }.holds
-
-    def checkContainsEncode(tree: CodeTree, char: Char): Boolean = {
-      tree.chars.contains(char) && !encodeChar(tree, char).isEmpty || encodeChar(tree, char).isEmpty
-    }.holds
-
-    def checkContainsDecode(tree: CodeTree, bits: List[Boolean]): Boolean = {
-      (decodeChar(tree, bits) match {
-        case Some(char) => tree.chars.contains(char)
-        case None => true
-       }) because {
-         tree match {
-           case Leaf(c, w) => true
-           case Fork(left, right) => bits.isEmpty || checkContainsDecode(left, bits.tail) && checkContainsDecode(right, bits.tail)
-         }
-       }
-    }.holds
-
-
-    def checkChar(char: Char, text: List[Char]): Boolean = {
-      require(!text.isEmpty)
-      checkChar(char, createCodeTree(text))
-    }.holds
-
-    def checkDecodeChar(tree: CodeTree, char: Char) = {
-      require(!isLeaf(tree) && tree.chars.contains(char))
-      decode(tree,encode(tree)(List(char))) == List(char) because checkChar(char, tree)
-    }.holds
-
-    def proofLen1(tree: CodeTree, text: List[Char]): Boolean = {
-      require(text.size == 1 && !isLeaf(tree) && text.forall(char => tree.chars.contains(char)))
-      decode(tree, encode(tree)(text)) == text because checkChar(text.head, tree)
-    }.holds
-
-    def checkDecodeText(tree: CodeTree, bits: List[Boolean]): Boolean = {
-      require(!isLeaf(tree) && !decode(tree, bits).isEmpty)
-      decodeChar(tree, bits) match {
-        case Some(char) => decode(tree, bits) == char :: decode(tree, bits.drop(encodeChar(tree, char).size))
-        case _ => false
-      }
-    }.holds
-
-/*
-    def checkFrenchCodeTree(): Boolean = {
-      val char = 's'
-      val tree = frenchCode
-      decode(tree,encodeChar(tree, char)).head == char && decode(tree,encode(tree)(List(char))).head == char
-    }.holds
-*/
-
-
 
  // Part 4b: Encoding using code table
 
@@ -559,16 +470,10 @@ object Huffman {
    *
    */
     def convert(tree: CodeTree): Map[Char, List[Boolean]] = {
-      def chars(tree: CodeTree): List[Char] = {
-        tree match  {
-          case Fork(left, right) => chars(left) ++ chars(right)
-          case Leaf(char, weight) => List(char)
-        }
-      } ensuring(res => !res.isEmpty)
-
       val text = chars(tree)
 
       def convertHelp(tree: CodeTree, acc: List[Boolean]): Map[Char, List[Boolean]] = {
+        decreases(tree)
         val text = chars(tree)
         tree match  {
           case Fork(left, right) => mergeCodeTables(convertHelp(left, (acc++List(false))),convertHelp(right, (acc++List(true))), text)
@@ -588,6 +493,7 @@ object Huffman {
    * on the two parameter code tables.
    */
     def mergeCodeTables(a: Map[Char, List[Boolean]], b: Map[Char, List[Boolean]], text: List[Char]): Map[Char, List[Boolean]] = {
+      decreases(text)
    //   a++b
 
       if (text.isEmpty) Map[Char, List[Boolean]]()
@@ -612,6 +518,7 @@ object Huffman {
     }
 
     def encodeTable(table: Map[Char, List[Boolean]], text: List[Char]): List[Boolean] = {
+      decreases(text)
       if (text.isEmpty) List[Boolean]()
       else codeBits(table)(text.head) ++ encodeTable(table, text.tail)
     }
