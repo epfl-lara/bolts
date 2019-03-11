@@ -478,22 +478,4 @@ case class Cons(val head: Tweet, val tail: TweetList) extends TweetList {
 
 object GoogleVsApple {
   // TODO: Finish the exercise
-
-  val allTweets: TweetSet = Empty()
-
-  lazy val googleTweets: TweetSet = {
-    allTweets.filter(t => (t.text==1))
-  }
-
-  lazy val appleTweets: TweetSet = {
-    allTweets.filter(t => (t.text==2))
-  }
-
-  /**
-   * A list of all tweets mentioning a keyword from either apple or google,
-   * sorted by the number of retweets.
-   */
-  lazy val trending: TweetList =
-    (appleTweets union googleTweets).descendingByRetweet
-
 }
