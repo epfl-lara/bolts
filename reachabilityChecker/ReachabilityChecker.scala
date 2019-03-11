@@ -141,11 +141,6 @@ object ReachabilityChecker {
     }
   }
 
-  def persistentAssert(cond: Boolean) = {
-    require(cond)
-    ()
-  } ensuring(_ => cond)
-
   // @induct
   def successorsTransition(tr: List[(State, State)],
                            s: State,
@@ -154,18 +149,18 @@ object ReachabilityChecker {
     decreases(tr)
 
     tr match {
-      case Nil() => persistentAssert(tr.contains((s, st)))
+      case Nil() => check(tr.contains((s, st)))
       case Cons((s1, s2), trs) =>
         if (s1 == s) {
-          if (s2 == st) persistentAssert(tr.contains((s, st)))
+          if (s2 == st) check(tr.contains((s, st)))
           else {
             assert(successorsTransition(trs, s, st))
-            persistentAssert(tr.contains((s, st)))
+            check(tr.contains((s, st)))
           }
         }
         else {
           assert(successorsTransition(trs, s, st))
-          persistentAssert(tr.contains((s, st)))
+          check(tr.contains((s, st)))
         }
     }
 
@@ -231,7 +226,7 @@ object ReachabilityChecker {
     require(subset(l1, l2))
     decreases(l1)
 
-    persistentAssert(l1.isEmpty || subsetExtend(l1.tail, l2, x))
+    check(l1.isEmpty || subsetExtend(l1.tail, l2, x))
 
     subset(l1, x :: l2)
   } holds
@@ -240,7 +235,7 @@ object ReachabilityChecker {
     require(isTrace(s, t) && (t.isEmpty || s.transitions.contains((t.last, st))))
     decreases(t)
 
-    persistentAssert(t.isEmpty || addStateToTrace(t.tail, s, st))
+    check(t.isEmpty || addStateToTrace(t.tail, s, st))
 
     isTrace(s, t :+ st)
   } holds
@@ -251,7 +246,7 @@ object ReachabilityChecker {
 
     val l = t :+ x
 
-    persistentAssert(t.isEmpty || noTarget(t.tail, target, x))
+    check(t.isEmpty || noTarget(t.tail, target, x))
 
     x == l.last && (target == x || !l.contains(target))
   } holds
@@ -271,7 +266,7 @@ object ReachabilityChecker {
     require(tr.contains((s1, s2)))
     decreases(tr)
 
-    persistentAssert(tr.isEmpty || tr.head == (s1,s2) || inSuccessors(tr.tail, s1, s2))
+    check(tr.isEmpty || tr.head == (s1,s2) || inSuccessors(tr.tail, s1, s2))
 
     successors(tr, s1).contains(s2)
   } holds
@@ -317,7 +312,7 @@ object ReachabilityChecker {
     val res =
       kReachabilityCheck(currentTrace, s, target, l.length - 1, initial)
 
-    persistentAssert(if (currentTrace.last == target)
+    check(if (currentTrace.last == target)
        true
      else if (l.length - 1 == 0)
        false
@@ -512,7 +507,7 @@ object ReachabilityChecker {
     decreases((l.length, BigInt(1)))
     val sim = simpleTrace(s, l)
 
-    persistentAssert(l match {
+    check(l match {
       case Nil() => true
       case Cons(x, xs) =>
         if (!xs.contains(x)) {
@@ -538,7 +533,7 @@ object ReachabilityChecker {
 
     val rc = removeCycle(s, l, duplicateState)
 
-    persistentAssert(l.isEmpty || l.head == duplicateState || removeCycleNoAdd(s, l.tail, duplicateState, st))
+    check(l.isEmpty || l.head == duplicateState || removeCycleNoAdd(s, l.tail, duplicateState, st))
 
     !rc.contains(st)
   } holds
@@ -550,7 +545,7 @@ object ReachabilityChecker {
     require(isTrace(s, l) && l.contains(duplicateState))
     decreases(l)
 
-    persistentAssert(l.isEmpty || l.head == duplicateState || removeCycleLast(s, l.tail, duplicateState))
+    check(l.isEmpty || l.head == duplicateState || removeCycleLast(s, l.tail, duplicateState))
 
     l.last == (duplicateState :: removeCycle(s, l, duplicateState)).last
   } holds
@@ -560,7 +555,7 @@ object ReachabilityChecker {
     require(simple(t) && !t.contains(x))
     decreases(t)
 
-    persistentAssert(t.isEmpty || simpleAppend(t.tail, x))
+    check(t.isEmpty || simpleAppend(t.tail, x))
 
     simple(t :+ x)
   } holds
