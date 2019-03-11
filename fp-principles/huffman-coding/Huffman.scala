@@ -36,11 +36,6 @@ object Huffman {
     // Part 1: Basics
     def max(x: BigInt, y: BigInt) = if (x > y) x else y
 
-    def persistentAssert(cond: Boolean): Unit = {
-      require(cond)
-      ()
-    } ensuring(_ => cond)
-
     def weight(tree: CodeTree): BigInt = {
       decreases(tree)
       tree match {
@@ -261,7 +256,7 @@ object Huffman {
     def decodeCharLength(tree: CodeTree, bits: List[Boolean]): Boolean = {
       decreases(tree)
 
-      persistentAssert(
+      check(
         tree match  {
           case Fork(left, right) => {
             if (bits.isEmpty) true
@@ -350,9 +345,9 @@ object Huffman {
         case Fork(left, right) => {
           if (encodeChar(tree, cx).isEmpty) ()
           else if (!encodeChar(tree, cx).head) {
-            persistentAssert(isLeaf(left) || decodeOneChar(left, cx, bits))
+            check(isLeaf(left) || decodeOneChar(left, cx, bits))
           } else {
-            persistentAssert(isLeaf(right) || decodeOneChar(right, cx, bits))
+            check(isLeaf(right) || decodeOneChar(right, cx, bits))
           }
         }
         case Leaf(char, weight) => ()
@@ -374,8 +369,8 @@ object Huffman {
       if (text.isEmpty) {
         ()
       } else {
-        persistentAssert(decodeOneChar(tree, text.head, encode(tree)(text.tail)))
-        persistentAssert(decodeEncode(tree, text.tail))
+        check(decodeOneChar(tree, text.head, encode(tree)(text.tail)))
+        check(decodeEncode(tree, text.tail))
       }
 
       decode(tree, encode(tree)(text)) == text
@@ -384,7 +379,7 @@ object Huffman {
     def decodeEncode(text: List[Char]): Boolean = {
       require(!text.isEmpty && isFork(createCodeTree(text)))
       val tree = createCodeTree(text)
-      persistentAssert(decodeEncode(tree, text))
+      check(decodeEncode(tree, text))
       decode(tree, encode(tree)(text)) == text
     }.holds
 
