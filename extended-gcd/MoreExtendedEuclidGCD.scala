@@ -12,16 +12,20 @@ object GCD {
     r.ka * r.x + r.kb * r.y == BigInt(1)
   }
 
+  def abs(x: BigInt) = if (x < 0) -x else x
+
   def euclid(a: BigInt, b: BigInt): Result = {
+    decreases(abs(b), abs(a))
     if (b == 0) {
       Result(a, BigInt(1), BigInt(0), BigInt(1), BigInt(0))
     } else {
       val r1 = euclid(b, a % b)
+      assert(gcd(b, a % b, r1))
       // r1.gcd will be also our gcd
       // Witness for divisibility of b:
       assert(b == r1.ka * r1.gcd)
       val kb = r1.ka
-      // Witness for divisibility of a:      
+      // Witness for divisibility of a:
       assert(a % b == r1.kb * r1.gcd)
       assert(a == b*(a/b) + a % b)
       assert(a == r1.ka * r1.gcd * (a/b) + r1.kb * r1.gcd)
@@ -44,7 +48,7 @@ object GCD {
     }
   } ensuring(res => gcd(a, b, res))
 
-  def divisorsDivideGCD(a: BigInt, b: BigInt, r: Result, 
+  def divisorsDivideGCD(a: BigInt, b: BigInt, r: Result,
                     d1: BigInt, ka1: BigInt, kb1: BigInt): Unit = {
     require(gcd(a, b, r) && a == ka1*d1 && b == kb1*d1)
     assert(r.ka * r.x + r.kb * r.y == BigInt(1))
@@ -52,13 +56,19 @@ object GCD {
     assert(r.gcd * r.ka == a)
     assert(r.gcd * r.kb == b)
     assert(a * r.x + b * r.y == r.gcd)
-    assert(ka1*d1 * r.x + kb1*d1 * r.y == r.gcd)    
+    assert(ka1*d1 * r.x + kb1*d1 * r.y == r.gcd)
   } ensuring(_ => r.gcd == (ka1*r.x + kb1*r.y)*d1)
 
-  def gcdIsGreatest(a: BigInt, b: BigInt, r: Result, 
+  def positiveMultiple(a: BigInt, b: BigInt, c: BigInt): Unit = {
+    require(a == b * c && a > 0 && c > 0 && b >= 1)
+    ()
+  } ensuring(_ => a >= c)
+
+  def gcdIsGreatest(a: BigInt, b: BigInt, r: Result,
                     d1: BigInt, ka1: BigInt, kb1: BigInt): Unit = {
     require(gcd(a, b, r) && a == ka1*d1 && b == kb1*d1 && r.gcd > 0 && d1 > 0)
     divisorsDivideGCD(a, b, r, d1, ka1, kb1)
+    positiveMultiple(r.gcd, ka1*r.x + kb1*r.y, d1)
     assert(ka1*r.x + kb1*r.y >= 1)
   } ensuring(_ => r.gcd >= d1)
 }
