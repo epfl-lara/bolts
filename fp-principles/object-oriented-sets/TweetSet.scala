@@ -25,6 +25,19 @@ sealed abstract class TweetSet {
   // The subset of elements in this set for which predicate `p` is true
   def filter(p: Tweet => Boolean): TweetSet
 
+  // For each recursive function such as `filterAcc`, we use a lexicographic
+  // measure of the form (size, 1) for the abstract function, and (size, 0) for
+  // the concrete function. In Stainless, abstract functions end up being
+  // dispatch functions that call the concrete functions. And the recursive
+  // calls that appear in the concrete function refer to the abstract function.
+  // The lexicographic measure is therefore approriate:
+  // * Either the dispatch function calls the concrete function with the same
+  //   argument (i.e. the size does not change) but the second component of the
+  //   measure decreases from 1 to 0,
+  // * or the concrete function calls the dispatch function on an argument of
+  //   a smaller size (and the second component is then allowed to go from 0 to
+  //   1).
+
   // Helper method for `filter` that propagates accumulated tweets
   def filterAcc(p: Tweet => Boolean, acc: TweetSet): TweetSet = {
     decreases((size, 1))
@@ -117,7 +130,7 @@ sealed abstract class TweetSet {
   }
 
   /**
-   * Returns true if the tree is acutally a binary search tree
+   * Returns true if the tree is actually a binary search tree
    */
   def isSearchTree: Boolean = {
     decreases((this, 1))
