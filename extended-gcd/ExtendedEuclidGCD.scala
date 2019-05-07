@@ -2,7 +2,7 @@ import stainless.lang._
 import stainless.annotation._
 
 
-object GCD {
+object ExtendedEuclidGCD {
   @inline
   def exists[T](p: T => Boolean) = !forall((x: T) => !p(x))
 

@@ -1,7 +1,7 @@
 import stainless.lang._
 import stainless.annotation._
 
-object GCD {
+object MoreExtendedEuclidGCD {
   case class Result(gcd: BigInt, // GCD value
 		    ka: BigInt, kb: BigInt,  // witnesses for divisibility (quotients)
 		    x: BigInt, y: BigInt)    // witnesses that ka,kb are mutually prime
