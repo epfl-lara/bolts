@@ -56,7 +56,7 @@ object Basics {
   def test_orb4() = { orb(True, True) == True } holds
 
   // When using the operators && and || on an element of type Bool, the Scala
-  // compiler will understand that Bool has to be wrapped in a 
+  // compiler will understand that Bool has to be wrapped in a
   // BoolNotation, and the Bool will be implicitly converted to BoolNotation
   implicit class BoolNotation(val b: Bool) {
     def &&(b2: Bool) = andb(b, b2)
@@ -74,7 +74,7 @@ object Basics {
   def test_nandb2() = { nandb(False, False) == True } holds
   def test_nandb3() = { nandb(False, True) == True } holds
   def test_nandb4() = { nandb(True, True) == False } holds
-  
+
   /** [] */
 
 
@@ -86,10 +86,10 @@ object Basics {
   def test_andb32() = { andb3(False, True, True) == False } holds
   def test_andb33() = { andb3(True, False, True) == False } holds
   def test_andb34() = { andb3(True, True, False) == False } holds
-  
+
   /** [] */
 
-  
+
   // From there on, we use the standard Boolean type of Stainless
 
 
@@ -98,7 +98,7 @@ object Basics {
   case object Green extends RGB
   case object Blue extends RGB
 
-  sealed abstract class Color 
+  sealed abstract class Color
   case object Black extends Color
   case object White extends Color
   case class Primary(p: RGB) extends Color
@@ -110,7 +110,7 @@ object Basics {
   }
 
   def isred(c: Color): Boolean = c match {
-    case Black => false 
+    case Black => false
     case White => false
     case Primary(Red) => true
     case Primary(_) => false
@@ -136,7 +136,7 @@ object Basics {
   val four = S(three)
   val five = S(four)
   val six = S(five)
-  val seven = S(six) 
+  val seven = S(six)
   val eight = S(seven)
   val nine = S(eight)
   val ten = S(nine)
@@ -149,10 +149,13 @@ object Basics {
     case S(S(n2)) => n2
   }
 
-  def evenb(n: Nat): Boolean = n match {
-    case O => true
-    case S(O) => false
-    case S(S(n2)) => evenb(n2)
+  def evenb(n: Nat): Boolean = {
+    decreases(n)
+    n match {
+      case O => true
+      case S(O) => false
+      case S(S(n2)) => evenb(n2)
+    }
   }
 
   def oddb(n: Nat): Boolean = !evenb(n)
@@ -160,38 +163,53 @@ object Basics {
   def test_oddb1() = { oddb(S(O)) } holds
   def test_oddb2() = { !oddb(four) } holds
 
-  def plus(n: Nat, m: Nat): Nat = n match {
-    case O => m
-    case S(n2) => S(plus(n2, m))
+  def plus(n: Nat, m: Nat): Nat = {
+    decreases(n)
+    n match {
+      case O => m
+      case S(n2) => S(plus(n2, m))
+    }
   }
 
-  def mult(n: Nat, m: Nat): Nat = n match {
-    case O => O
-    case S(n2) => plus(m, mult(n2, m))
+  def mult(n: Nat, m: Nat): Nat = {
+    decreases(n)
+    n match {
+      case O => O
+      case S(n2) => plus(m, mult(n2, m))
+    }
   }
 
   def test_mult1() = { mult(three, three) == nine }
 
-  def minus(n: Nat, m: Nat): Nat = (n,m) match {
-    case (O, _) => O
-    case (S(_), O) => n
-    case (S(n2), S(m2)) => minus(n2, m2)
+  def minus(n: Nat, m: Nat): Nat = {
+    decreases(n)
+    (n,m) match {
+      case (O, _) => O
+      case (S(_), O) => n
+      case (S(n2), S(m2)) => minus(n2, m2)
+    }
   }
 
-  def exp(base: Nat, power: Nat): Nat = power match {
-    case O => S(O)
-    case S(p) => mult(base, exp(base, p))
+  def exp(base: Nat, power: Nat): Nat = {
+    decreases(power)
+    power match {
+      case O => S(O)
+      case S(p) => mult(base, exp(base, p))
+    }
   }
 
   /** **** Exercise: 1 star (factorial) */
 
-  def factorial(n: Nat): Nat = n match {
-    case O => S(O)
-    case S(n2) => mult(n, factorial(n2))
+  def factorial(n: Nat): Nat = {
+    decreases(n)
+    n match {
+      case O => S(O)
+      case S(n2) => mult(n, factorial(n2))
+    }
   }
 
   def test_factorial1() = { factorial(three) == six } holds
-  
+
   // commented out because that takes a while to verify
   // def test_factorial2() = { factorial(five) == mult(ten, twelve) } holds
 
@@ -200,29 +218,35 @@ object Basics {
   implicit class NatNotation(val n: Nat) {
     def +(n2: Nat) = plus(n, n2)
     def -(n2: Nat) = minus(n, n2)
-    def *(n2: Nat) = mult(n, n2) 
+    def *(n2: Nat) = mult(n, n2)
   }
 
-  def beq_nat(n: Nat, m: Nat): Boolean = n match {
-    case O => 
-      m match {
-        case O => true
-        case S(_) => false
-      }
-    case S(n2) => 
-      m match {
-        case O => false
-        case S(m2) => beq_nat(n2, m2)
-      }
+  def beq_nat(n: Nat, m: Nat): Boolean = {
+    decreases(n)
+    n match {
+      case O =>
+        m match {
+          case O => true
+          case S(_) => false
+        }
+      case S(n2) =>
+        m match {
+          case O => false
+          case S(m2) => beq_nat(n2, m2)
+        }
+    }
   }
 
-  def leb(n: Nat, m: Nat): Boolean = n match {
-    case O => true
-    case S(n2) =>
-      m match {
-        case O => false
-        case S(m2) => leb(n2, m2)
-      }
+  def leb(n: Nat, m: Nat): Boolean = {
+    decreases(n)
+    n match {
+      case O => true
+      case S(n2) =>
+        m match {
+          case O => false
+          case S(m2) => leb(n2, m2)
+        }
+    }
   }
 
   def test_leb1() = { leb(two, two) } holds
@@ -240,9 +264,9 @@ object Basics {
   /** [] */
 
   def plus_O_n(n: Nat) = { O + n == n } holds
-  
+
   def plus_1_l(n: Nat) = { one + n == S(n) } holds
-  
+
   def mult_0_l(n: Nat) = { O * n == O } holds
 
   def plus_id_example(n: Nat, m: Nat): Boolean = {
@@ -289,7 +313,7 @@ object Basics {
   def andb3_exchange(b: Bool, c: Bool, d: Bool) = { andb(andb(b, c), d) == andb(andb(b, d), c) }
 
   /** **** Exercise: 2 stars (andb_true_elim2)  */
-  
+
   def andb_true_elim2(b: Bool, c: Bool): Boolean = {
     require(andb(b, c) == True)
 
@@ -305,11 +329,12 @@ object Basics {
   } holds
 
   /** [] */
-  
+
   /** **** Exercise: 2 stars, optional (decreasing)  */
 
 
   def natToBigInt(n: Nat): BigInt = {
+    decreases(n)
     n match {
       case O => BigInt(0)
       case S(n2) => natToBigInt(n2) + 1
@@ -317,9 +342,9 @@ object Basics {
   } ensuring(res => res >= 0)
 
 
-  // We here define a `test` function whose termination is not obvious for 
-  // Stainless. To show that the function terminates, we define a measure, and 
-  // when invoking some lemma, Stainless is able to show that the measure is 
+  // We here define a `test` function whose termination is not obvious for
+  // Stainless. To show that the function terminates, we define a measure, and
+  // when invoking some lemma, Stainless is able to show that the measure is
   // well-founded and decreasing on each recursive call.
 
   // The proof of the lemmas makes use of induction, which is explained
@@ -337,13 +362,13 @@ object Basics {
   // natToBigInt(n) < natToBigInt(m)
   def smallerBigInt(n: Nat, m: Nat): Boolean = {
     require(blt_nat(n, m))
+    decreases(n)
 
-    // FIXME: change this to an assertion when they are no longer simplified away for postconditions
-    
-    ((n,m) match {
+    (n,m) match {
       case (S(n2),S(m2)) => smallerBigInt(n2,m2)
       case _ => true
-    }) &&
+    }
+
     natToBigInt(n) < natToBigInt(m)
   } holds
 
@@ -351,19 +376,7 @@ object Basics {
 
 
   /** **** Exercise: 2 stars (boolean_functions) */
-  // Here, we again go back to using the Bool type defined above
-
-  def identity_fn_applied_twice(f: Bool => Bool) = {
-    require(forall((x: Bool) => f(x) == x))
-
-    forall((b: Bool) => f(f(b)) == b)
-  } holds
-
-  def negation_fn_applied_twice(f: Bool => Bool) = {
-    require(forall((x: Bool) => f(x) == negb(x)))
-
-    forall((b: Bool) => f(f(b)) == b)
-  } holds
+  // Skipped due to the use of quantifiers
 
   /** [] */
 
@@ -377,26 +390,32 @@ object Basics {
   /** [] */
 
   /** **** Exercise: 3 stars (binary)  */
-  
-  sealed abstract class Bin 
-  case object Z extends Bin 
+
+  sealed abstract class Bin
+  case object Z extends Bin
   case class Twice(b: Bin) extends Bin
   case class TwicePlusOne(b: Bin) extends Bin
 
-  def incr(b: Bin): Bin = b match {
-    case Z => TwicePlusOne(Z)
-    case Twice(b) => TwicePlusOne(b)
-    case TwicePlusOne(b) => Twice(incr(b))
+  def incr(b: Bin): Bin = {
+    decreases(b)
+    b match {
+      case Z => TwicePlusOne(Z)
+      case Twice(b) => TwicePlusOne(b)
+      case TwicePlusOne(b) => Twice(incr(b))
+    }
   }
 
-  def bin_to_nat(b: Bin): Nat = b match {
-    case Z => O
-    case Twice(b) =>
-      val x = bin_to_nat(b)
-      x + x
-    case TwicePlusOne(b) =>
-      val x = bin_to_nat(b)
-      S(x + x)
+  def bin_to_nat(b: Bin): Nat = {
+    decreases(b)
+    b match {
+      case Z => O
+      case Twice(b) =>
+        val x = bin_to_nat(b)
+        x + x
+      case TwicePlusOne(b) =>
+        val x = bin_to_nat(b)
+        S(x + x)
+    }
   }
 
   val one_bin = TwicePlusOne(Z)
@@ -409,14 +428,14 @@ object Basics {
   val eight_bin = Twice(four_bin)
   val nine_bin = TwicePlusOne(four_bin)
   val ten_bin = Twice(five_bin)
-  
-  
+
+
   def test_bin_incr1() = {  bin_to_nat(six_bin) == six } holds
   def test_bin_incr2() = {  bin_to_nat(eight_bin) == eight } holds
   def test_bin_incr3() = {  bin_to_nat(incr(five_bin)) == S(bin_to_nat(five_bin)) } holds
   def test_bin_incr4() = {  bin_to_nat(incr(ten_bin)) == S(bin_to_nat(ten_bin)) } holds
   def test_bin_incr5() = {  bin_to_nat(incr(incr(one_bin))) == three } holds
-  
+
   /** [] */
 
   def main(args: Array[String]) {}
