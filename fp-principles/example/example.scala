@@ -4,6 +4,9 @@
 package example
 
 import stainless.collection._
+import stainless.lang._
+import stainless.annotation._
+import stainless.proof._
 
 object Lists {
   /**
@@ -26,14 +29,17 @@ object Lists {
    * @param xs A list of natural numbers
    * @return The sum of all elements in `xs`
    */
-    def sum(xs: List[Int]): Int = { 
-      if (xs.isEmpty) 0 
-      else xs.head + sum(xs.tail)
-    } ensuring (res => 
-      (xs.isEmpty && res == 0) || 
-      (res == xs.last + sum(xs.init))
-    )
-  
+  def sum(xs: List[Int]): Int = {
+    decreases(xs)
+    if (xs.isEmpty) 0
+    else xs.head + sum(xs.tail)
+  }
+
+  def sumInit(@induct xs: List[Int]) = {
+    (xs.isEmpty && sum(xs) == 0) ||
+    (sum(xs) == xs.last + sum(xs.init))
+  } holds
+
   /**
    * This method returns the largest element in a list of integers. If the
    * list `xs` is empty it throws a `java.util.NoSuchElementException`.
@@ -46,15 +52,43 @@ object Lists {
    * @param xs A list of natural numbers
    * @return The largest element in `xs`
    */
-    def max(xs: List[Int]): Int = {
-      require(!xs.isEmpty)
-
-      def recmax(xs: List[Int], max:Int): Int = {
-        if (xs.isEmpty) max
-        else if (max>xs.head) recmax(xs.tail, max)
-        else recmax(xs.tail, xs.head)
-      }
-      
-      recmax(xs.tail, xs.head)
-    } ensuring(res => xs.tail.isEmpty || res >= max(xs.tail))
+  def recmax(xs: List[Int], max:Int): Int = {
+    decreases(xs)
+    if (xs.isEmpty) max
+    else if (max > xs.head) recmax(xs.tail, max)
+    else recmax(xs.tail, xs.head)
   }
+
+  def max(xs: List[Int]): Int = {
+    require(!xs.isEmpty)
+
+    recmax(xs.tail, xs.head)
+  }
+
+  def recmaxGreater(xs: List[Int], max1: Int, max2: Int): Boolean = {
+    require(max1 >= max2)
+    decreases(xs)
+
+    if (!xs.isEmpty) {
+      if (max1 > xs.head)
+        if (max2 > xs.head) check(recmaxGreater(xs.tail, max1, max2))
+        else check(recmaxGreater(xs.tail, max1, xs.head))
+    }
+
+    recmax(xs, max1) >= recmax(xs, max2)
+  } holds
+
+  def maxTail(xs: List[Int]) = {
+    require(!xs.isEmpty && !xs.tail.isEmpty)
+
+    assert(max(xs) == recmax(xs.tail, xs.head))
+    assert(max(xs.tail) == recmax(xs.tail.tail, xs.tail.head))
+
+    if (xs.head > xs.tail.head)
+      check(recmaxGreater(xs.tail.tail, xs.head, xs.tail.head))
+    else
+      check(recmaxGreater(xs.tail.tail, xs.tail.head, xs.head))
+
+    max(xs) >= max(xs.tail)
+  } holds
+}
