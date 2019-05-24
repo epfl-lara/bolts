@@ -4,6 +4,7 @@ import stainless.lang._
 
 object Fulcrum {
   def sum(l: List[BigInt]): BigInt = {
+    decreases(l.size)
     l match {
       case Nil() => BigInt(0)
       case Cons(x, xs) => x + sum(xs)
@@ -17,6 +18,7 @@ object Fulcrum {
 
   def lemmaTailDrop[T](l: List[T], i: BigInt): Boolean = {
     require(i >= 0 && i < l.size)
+    decreases(l.size)
     l match {
       case Nil() => ()
       case Cons(x, xs) =>
@@ -27,12 +29,14 @@ object Fulcrum {
 
   def lemmaHeadDrop(l: List[BigInt], i: BigInt): Boolean = {
     require(i >= 0 && i < l.size)
+    decreases(l.size)
     if(i > BigInt(0)) lemmaHeadDrop(l.tail, i - 1)
     (l.drop(i))(0) == l(i)
   } holds
 
   def lemmaSumTake(l: List[BigInt], i: BigInt): Boolean = {
     require(i >= 0 && i < l.size && !l.isEmpty)
+    decreases(l.size)
     if(i > BigInt(0)) lemmaSumTake(l.tail, i - 1)
     sum(l.take(i + 1)) == sum(l.take(i)) + l(i)
   } holds
@@ -45,6 +49,7 @@ object Fulcrum {
 
   def isLessThanPartialFulcrum(l: List[BigInt], i: BigInt, v: BigInt): Boolean = {
     require(i >= 0 && i <= l.size)
+    decreases(i)
     if(i == BigInt(0)) v <= fDiff(l, 0)
     else v <= fDiff(l, i) && isLessThanPartialFulcrum(l, i - 1, v)
   }
@@ -70,6 +75,7 @@ object Fulcrum {
       isLessThanPartialFulcrum(l, i, v) &&
       v1 <= v
     )
+    decreases(i)
     if(i > BigInt(0)) fulcrumLessLemma(l, i - 1, v1, v)
     isLessThanPartialFulcrum(l, i, v1)
   } holds
@@ -88,14 +94,15 @@ object Fulcrum {
       rVal == sum(l.drop(i)) && lVal == sum(l.take(i)) &&
       rList == l.drop(i) && isPartialFulcrum(l, iMin, minDiff, i)
     )
+    decreases(rList.size)
     rList match {
       case Nil() => (iMin, minDiff)
       case (x :: xs) =>
         val newlVal = lVal + x
         val newrVal = rVal - x
-        val actualDiff = abs(newlVal - newrVal)
-        val newMinDiff = if(actualDiff > minDiff) minDiff else actualDiff
-        val newI = if(actualDiff > minDiff) iMin else i
+        val currentDiff = abs(newlVal - newrVal)
+        val newMinDiff = if(currentDiff >= minDiff) minDiff else currentDiff
+        val newI = if(currentDiff >= minDiff) iMin else i + 1
         if(i == l.size) {
           (newI, newMinDiff)
         }
@@ -103,13 +110,8 @@ object Fulcrum {
           lemmaHeadDrop(l, i)
           lemmaTailDrop(l, i)
           lemmaSumTake(l, i)
-          if(actualDiff >= minDiff) {
-            aux(xs, i + 1, iMin, minDiff, newlVal, newrVal, l)
-          }
-          else {
-            fulcrumLessLemma(l, i, actualDiff, minDiff)
-            aux(xs, i + 1, i + 1, actualDiff, newlVal, newrVal, l)
-          }
+          if(currentDiff < minDiff) fulcrumLessLemma(l, i, currentDiff, minDiff)
+          aux(xs, i + 1, newI, newMinDiff, newlVal, newrVal, l)
         }
     }
   } ensuring(res => res._1 >= 0 && res._1 <= l.size && isFulcrum(l, res._1, res._2))
@@ -118,4 +120,16 @@ object Fulcrum {
     val s = sum(l)
     aux(l, 0, 0, abs(s), 0, s, l) 
   } ensuring(res => res._1 >= 0 && res._1 <= l.size && isFulcrum(l, res._1, res._2))
+
+  @ignore def main(args: Array[String]): Unit = {
+    val l1: List[BigInt] = List(4, 2, -5, 0, 8)
+    val l2: List[BigInt] = List()
+    val l3: List[BigInt] = List(-3, 1, 0)
+    val l4: List[BigInt] = List(7, 3, 4, 5, 2, 1, -3)
+
+    println(l1, Fulcrum.fulcrum(l1))
+    println(l2, Fulcrum.fulcrum(l2))
+    println(l3, Fulcrum.fulcrum(l3))
+    println(l4, Fulcrum.fulcrum(l4))
+  }
 }
