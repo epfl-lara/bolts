@@ -1,11 +1,11 @@
-// Stainless cache directory
+# Stainless cache directory
 .stainless-cache
 
-// Stainless log file
+# Stainless log file
 last.log
 
-// Inox solver debug output
+# Inox solver debug output
 tip-sessions
 
-// Inox smt debug folder
+# Inox smt debug folder
 smt-sessions
