@@ -3,7 +3,7 @@ import stainless.lang._
 import stainless.collection._
 import stainless.lang.StaticChecks._
 
-object QuickSort {
+object QuickSortSizeOccur {
 
   def isSorted(list: List[BigInt]): Boolean = {
     list match {

@@ -2,7 +2,7 @@
 import stainless.lang._
 import stainless.collection._
 
-object QuickSort {
+object QuickSortSize {
 
   def isSorted(list: List[BigInt]): Boolean = {
     list match {
