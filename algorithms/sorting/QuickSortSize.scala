@@ -5,6 +5,7 @@ import stainless.collection._
 object QuickSortSize {
 
   def isSorted(list: List[BigInt]): Boolean = {
+    decreases(list)
     list match {
       case Cons(x, xs @ Cons(y, _)) => x <= y && isSorted(xs)
       case _ => true
@@ -13,6 +14,7 @@ object QuickSortSize {
 
   def appendSorted(l1: List[BigInt], l2: List[BigInt]): List[BigInt] = {
     require(isSorted(l1) && isSorted(l2) && (l1.isEmpty || l2.isEmpty || l1.last <= l2.head))
+    decreases(l1)
     l1 match {
       case Nil() => l2
       case Cons(x, xs) => Cons(x, appendSorted(xs, l2))
