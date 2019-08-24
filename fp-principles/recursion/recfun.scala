@@ -4,6 +4,7 @@ package recfun
 
 import stainless.lang._
 import stainless.collection._
+import scala.language.postfixOps
 
 object Main {
   // Exercise 1

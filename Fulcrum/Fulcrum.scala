@@ -2,6 +2,8 @@ import stainless.annotation._
 import stainless.collection._
 import stainless.lang._
 
+import scala.language.postfixOps
+
 object Fulcrum {
   def sum(l: List[BigInt]): BigInt = {
     decreases(l.size)

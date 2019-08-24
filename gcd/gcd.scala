@@ -1,3 +1,4 @@
+import scala.language.postfixOps
 import stainless.lang._
 // Good benchmark for quantifiers.
 // Using Extended Euclid gives more general proof.
