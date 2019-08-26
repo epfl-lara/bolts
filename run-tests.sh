@@ -48,7 +48,6 @@ done
 TC_TESTS="fp-principles/example \
           fp-principles/functional-sets \
           fp-principles/huffman-coding \
-          fp-principles/object-oriented-sets \
           fp-principles/recursion \
           Fulcrum \
           LeftPad \
