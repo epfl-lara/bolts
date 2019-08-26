@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-STAINLESS_SCALAC="stainless-scalac --timeout=600 --vc-cache=false --fail-early"
+STAINLESS_SCALAC="stainless-scalac --timeout=300 --vc-cache=false --fail-early"
 
 STD_TESTS="algorithms \
            extended-gcd \
