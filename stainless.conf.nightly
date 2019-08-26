@@ -1,2 +1,3 @@
 vc-cache = false
 timeout = 300
+fail-early = true
