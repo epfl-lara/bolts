@@ -47,6 +47,7 @@ done
 
 TC_TESTS="fp-principles/example \
           fp-principles/functional-sets \
+          fp-principles/object-oriented-sets \
           fp-principles/huffman-coding \
           fp-principles/recursion \
           Fulcrum \
