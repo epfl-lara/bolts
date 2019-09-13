@@ -181,12 +181,12 @@ object Bloxorz {
     // FIXME: with StringParserTerrain should be uncommented when multiple inheritance is supported
     case class Level() extends Solver /* with StringParserTerrain */ {
 
-      def terrainList: List[Char] =     'o' :: 'o' :: 'o' :: '-' :: '-' :: '-' :: '-' :: '-' :: '-' :: '-' :: '\n' :: 
-                                        'o' :: 'S' :: 'o' :: 'o' :: 'o' :: 'o' :: '-' :: '-' :: '-' :: '-' :: '\n' ::
-                                        'o' :: 'o' :: 'o' :: 'o' :: 'o' :: 'o' :: 'o' :: 'o' :: 'o' :: '-' :: '\n' ::
-                                        '-' :: 'o' :: 'o' :: 'o' :: 'o' :: 'o' :: 'o' :: 'o' :: 'o' :: 'o' :: '\n' ::
-                                        '-' :: '-' :: '-' :: '-' :: '-' :: 'o' :: 'o' :: 'T' :: 'o' :: 'o' :: '\n' ::
-                                        '-' :: '-' :: '-' :: '-' :: '-' :: '-' :: 'o' :: 'o' :: 'o' :: '-' :: '\n' :: Nil()
+      def terrainList: List[Char] = List( 'o', 'o', 'o', '-', '-', '-', '-', '-', '-', '-', '\n', 
+                                          'o', 'S', 'o', 'o', 'o', 'o', '-', '-', '-', '-', '\n',
+                                          'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', '-', '\n',
+                                          '-', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', '\n',
+                                          '-', '-', '-', '-', '-', 'o', 'o', 'T', 'o', 'o', '\n',
+                                          '-', '-', '-', '-', '-', '-', 'o', 'o', 'o', '-', '\n')
 
                                   /*
                                         '-' :: '-' :: 'S' :: 'T' :: '-' :: '-' :: '\n' ::
