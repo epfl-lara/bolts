@@ -18,24 +18,24 @@ object Lists {
    * `List`:
    *
    *  - `xs.isEmpty: Boolean` returns `true` if the list `xs` is empty
-   *  - `xs.head: Int` returns the head element of the list `xs`. If the list
+   *  - `xs.head: BigInt` returns the head element of the list `xs`. If the list
    *    is empty an exception is thrown
-   *  - `xs.tail: List[Int]` returns the tail of the list `xs`, i.e. the the
+   *  - `xs.tail: List[BigInt]` returns the tail of the list `xs`, i.e. the the
    *    list `xs` without its `head` element
    *
    *  ''Hint:'' instead of writing a `for` or `while` loop, think of a recursive
    *  solution.
    *
-   * @param xs A list of natural numbers
+   * @param xs A list of integers
    * @return The sum of all elements in `xs`
    */
-  def sum(xs: List[Int]): Int = {
+  def sum(xs: List[BigInt]): BigInt = {
     decreases(xs)
-    if (xs.isEmpty) 0
+    if (xs.isEmpty) BigInt(0)
     else xs.head + sum(xs.tail)
   }
 
-  def sumInit(@induct xs: List[Int]) = {
+  def sumInit(@induct xs: List[BigInt]) = {
     (xs.isEmpty && sum(xs) == 0) ||
     (sum(xs) == xs.last + sum(xs.init))
   }.holds
@@ -52,20 +52,20 @@ object Lists {
    * @param xs A list of natural numbers
    * @return The largest element in `xs`
    */
-  def recmax(xs: List[Int], max:Int): Int = {
+  def recmax(xs: List[BigInt], max: BigInt): BigInt = {
     decreases(xs)
     if (xs.isEmpty) max
     else if (max > xs.head) recmax(xs.tail, max)
     else recmax(xs.tail, xs.head)
   }
 
-  def max(xs: List[Int]): Int = {
+  def max(xs: List[BigInt]): BigInt = {
     require(!xs.isEmpty)
 
     recmax(xs.tail, xs.head)
   }
 
-  def recmaxGreater(xs: List[Int], max1: Int, max2: Int): Boolean = {
+  def recmaxGreater(xs: List[BigInt], max1: BigInt, max2: BigInt): Boolean = {
     require(max1 >= max2)
     decreases(xs)
 
@@ -78,7 +78,7 @@ object Lists {
     recmax(xs, max1) >= recmax(xs, max2)
   }.holds
 
-  def maxTail(xs: List[Int]) = {
+  def maxTail(xs: List[BigInt]) = {
     require(!xs.isEmpty && !xs.tail.isEmpty)
 
     assert(max(xs) == recmax(xs.tail, xs.head))
