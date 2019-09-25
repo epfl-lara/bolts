@@ -71,7 +71,7 @@ object FunSets {
   // ensuring(res => forallCheck(res, p))
 
   def filterIterForallCheck(a: BigInt, s: BigInt => Boolean, p: BigInt => Boolean): Boolean = {
-    decreases(if (a < 0) -(a + 1) else 0, max(0, bound - a + 1))
+    decreases(if (a < 0) -(a + 1) else BigInt(0), max(BigInt(0), bound - a + 1))
     val res = filter(s, p)
 
     if (a > bound) ()
@@ -94,7 +94,7 @@ object FunSets {
 
   // Check for bounded range if all `s` satisfy `p`
   def iterForallCheck(a: BigInt, s: BigInt => Boolean, p: BigInt => Boolean): Boolean = {
-    decreases(if (a < 0) -(a + 1) else 0, max(0, bound - a + 1))
+    decreases(if (a < 0) -(a + 1) else BigInt(0), max(BigInt(0), bound - a + 1))
     if (a > bound) true
     else if (s(a) && !p(a)) false
     else iterForallCheck(a+1, s, p)
@@ -116,7 +116,7 @@ object FunSets {
 
   // Set computed by applying `f` to each element of `s`
   def iterMap(newset: BigInt => Boolean, a: BigInt, s: BigInt => Boolean, f: BigInt => BigInt): BigInt => Boolean = {
-    decreases(if (a < 0) -(a + 1) else 0, max(0, bound - a + 1))
+    decreases(if (a < 0) -(a + 1) else BigInt(0), max(BigInt(0), bound - a + 1))
     if(a > bound) newset
     else if (s(a)) iterMap(union(newset, singletonSet(f(a))), a+1, s, f)
     else iterMap(newset, a+1, s, f)
