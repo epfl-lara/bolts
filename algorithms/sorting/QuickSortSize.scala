@@ -26,7 +26,7 @@ object QuickSortSize {
   }
 
   def quickSort(list: List[BigInt]): List[BigInt] = {
-    decreases(list.size, 0)
+    decreases(list.size, BigInt(0))
     list match {
       case Nil() => Nil[BigInt]()
       case Cons(x, xs) => par(x, Nil(), Nil(), xs)
