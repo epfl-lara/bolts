@@ -2,19 +2,6 @@
 
 STAINLESS_SCALAC="stainless-scalac --config-file=stainless.conf.nightly"
 
-STD_TESTS="algorithms \
-           extended-gcd \
-           fp-principles/example \
-           fp-principles/functional-sets \
-           fp-principles/huffman-coding \
-           fp-principles/object-oriented-sets \
-           fp-principles/recursion \
-           Fulcrum \
-           gcd \
-           LeftPad \
-           reachabilityChecker \
-           software-foundations"
-
 function run_tests {
   option=$1
   project=$2
@@ -39,13 +26,10 @@ function run_tests {
   echo ""
 }
 
-for project in $STD_TESTS; do
-  run_tests "" "$project"
-done
-
 # The `--type-checker` option does not support `forall` so all files containing `forall` are ignored.
 
-TC_TESTS="fp-principles/example \
+TC_TESTS="algorithms
+          fp-principles/example \
           fp-principles/functional-sets \
           fp-principles/object-oriented-sets \
           fp-principles/huffman-coding \
@@ -59,3 +43,8 @@ for project in $TC_TESTS; do
   run_tests "--type-checker" "$project"
 done
 
+STD_TESTS="gcd extended-gcd"
+
+for project in $STD_TESTS; do
+  run_tests "--type-checker=false --infer-measures=false" "$project"
+done
