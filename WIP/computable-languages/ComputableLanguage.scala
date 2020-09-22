@@ -38,8 +38,18 @@ object ComputableLanguage {
   case class Cons[A](h: A, t: List[A]) extends List[A]
   case class Nil[A]() extends List[A]
 
+  def epsilon[A] = Nil[A]()
   
   case class Lang[A](contains: List[A] => Boolean) {
+    def ||(that: Lang[A]): Lang[A] = 
+      Lang((w: List[A]) => this.contains(w) || that.contains(w))
+    
+    def &&(that: Lang[A]): Lang[A] = 
+      Lang((w: List[A]) => this.contains(w) && that.contains(w))
+    
+    def complement: Lang[A] =
+      Lang((w: List[A]) => !this.contains(w))
+
     def ++(that: Lang[A]): Lang[A] = {
         def f(w: List[A]): Boolean = {            
             val n: BigInt = w.size
@@ -52,6 +62,11 @@ object ComputableLanguage {
             checkFrom(n)
         }
         Lang(f)
+    }
+    def power(n: BigInt): Lang[A] = {
+      require(0 <= n)
+      if (n==0) emptyWordSingleton[A]
+      else this ++ power(n-1)
     }
     def *(): Lang[A] = {
         def f(w: List[A]): Boolean = {
@@ -69,4 +84,7 @@ object ComputableLanguage {
         Lang(f)
     }
   }
+  def emptyLanguage[A] = Lang((w: List[A]) => false) //  {}
+  def emptyWordSingleton[A] = Lang((w: List[A]) => (w == Nil[A]())) // {epsilon}
+
 }
