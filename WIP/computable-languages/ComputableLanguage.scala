@@ -42,14 +42,29 @@ object ComputableLanguage {
   case class Lang[A](contains: List[A] => Boolean) {
     def ++(that: Lang[A]): Lang[A] = {
         def f(w: List[A]): Boolean = {            
-          val n: BigInt = w.size
-          def checkFrom(i: BigInt): Boolean = {
-            require(0 <= i && i <= n)
-            decreases(i)
-            (this.contains(w.slice(0, i)) && that.contains(w.slice(i, n))) ||
-             (i > 0 && checkFrom(i - 1))
-          }
-          checkFrom(n)
+            val n: BigInt = w.size
+            def checkFrom(i: BigInt): Boolean = {
+              require(0 <= i && i <= n)
+              decreases(i)
+              (this.contains(w.slice(0, i)) && that.contains(w.slice(i, n))) ||
+               (i > 0 && checkFrom(i - 1))
+            }
+            checkFrom(n)
+        }
+        Lang(f)
+    }
+    def *(): Lang[A] = {
+        def f(w: List[A]): Boolean = {
+            val n: BigInt = w.size
+            def checkFromTo(from: BigInt, k: BigInt, to: BigInt): Boolean = {
+                require(0 <= from && from < k && k <= to && to <= n)
+                decreases(to - from, to - k)
+                contains(w.slice(from, to)) ||
+                (k < to && checkFromTo(from, k+1, to)) ||
+                (from + 1 < k && k < to &&
+                 checkFromTo(from, from + 1, k) && checkFromTo(k, k + 1, to))
+            }
+            (n==0) || checkFromTo(0, 1, n)
         }
         Lang(f)
     }
