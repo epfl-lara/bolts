@@ -15,25 +15,41 @@ object ComputableLanguage {
         }
     }
 
+    def power(n: BigInt): List[A] = {
+      require(0 <= n)
+      if (n==0) Nil[A]()
+      else this ++ power(n-1)
+    }
+
     def apply(index: BigInt): A = {
-        require(0 <= index && index < size)
-        this match {
-            case Cons(h,t) =>
-               if (index == BigInt(0)) h
-               else t(index-1)
-        }
+      require(0 <= index && index < size)
+      this match {
+        case Cons(h,t) =>
+          if (index == BigInt(0)) h
+          else t(index-1)
+      }
     }
 
     def slice(from: BigInt, to: BigInt): List[A] = {
-        require(0 <= from && from <= to && to <= size)
-        this match {
-          case Nil() => Nil[A]()
-          case Cons(h,t) =>
-            if (from == 0 && to == 0) Nil[A]()
-            else if (from == 0) Cons[A](h, t.slice(0, to-1))
-            else t.slice(from-1, to-1)
-        }
-    }.ensuring(res => res.size == to - from)              
+      require(0 <= from && from <= to && to <= size)
+      this match {
+        case Nil() => Nil[A]()
+        case Cons(h,t) =>
+          if (from == 0 && to == 0) Nil[A]()
+          else if (from == 0) Cons[A](h, t.slice(0, to-1))
+          else t.slice(from-1, to-1)
+      }
+    }.ensuring(res => res.size == to - from)
+
+    def startsWith(that: List[A]): Boolean =  
+      that.size <= size && slice(0, that.size)==that
+
+    def prefixOf(that: List[A]): Boolean = that.startsWith(this)
+
+    def endsWith(that: List[A]): Boolean = 
+      that.size <= size && slice(size - that.size, size)==that
+
+    def suffixOf(that: List[A]): Boolean = that.endsWith(this)
   }
   case class Cons[A](h: A, t: List[A]) extends List[A]
   case class Nil[A]() extends List[A]
@@ -83,8 +99,15 @@ object ComputableLanguage {
         }
         Lang(f)
     }
+
+    def nullable: Boolean = contains(Nil[A]())
+
+    def derivative(a: A): Lang[A] = 
+      Lang((w: List[A]) => contains(Cons(a,w)))
+
+      def derivativeW(as: List[A]): Lang[A] = 
+      Lang((w: List[A]) => contains(as ++ w))
   }
   def emptyLanguage[A] = Lang((w: List[A]) => false) //  {}
   def emptyWordSingleton[A] = Lang((w: List[A]) => (w == Nil[A]())) // {epsilon}
-
 }
