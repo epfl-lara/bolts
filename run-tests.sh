@@ -26,9 +26,12 @@ function run_tests {
   echo ""
 }
 
-# The `--type-checker` option does not support `forall` so all files containing `forall` are ignored.
+# Tests that use the usual --type-checker=true verification condition generator:
 
-TC_TESTS="algorithms
+TC_TESTS="algorithms \
+          dispenser \
+          add-digits \
+          data-structures/amortized-queue \
           fp-principles/example \
           fp-principles/functional-sets \
           fp-principles/object-oriented-sets \
@@ -42,6 +45,8 @@ TC_TESTS="algorithms
 for project in $TC_TESTS; do
   run_tests "--type-checker" "$project"
 done
+
+# The `--type-checker` option does not support `forall` so files containing `forall` are done in STD_TESTS:
 
 STD_TESTS="gcd extended-gcd"
 
