@@ -149,14 +149,6 @@ object InorderSet {
         (if(l.contains(e)) res.size == l.size - 1 else res == l)
     )
 
-    // def deleteFirstSpread(@induct xs: List[BigInt], y: BigInt, ys: List[BigInt], e: BigInt): Boolean = (
-    //     deleteFirst(xs ++ (y :: ys), e) == (if(xs.contains(e)) {
-    //         deleteFirst(xs, e) ++ (y :: ys)
-    //     } else {
-    //         (xs) ++ deleteFirst(y :: ys, e)
-    //     })
-    // ).holds
-
     def deleteFirstLemma(@induct xs: List[BigInt], y: BigInt, ys: List[BigInt], e: BigInt): Boolean = {
         require(isInorder(xs ++ (y :: ys)))
         deleteFirst(xs ++ (y :: ys), e) == {
@@ -167,5 +159,23 @@ object InorderSet {
                 xs ++ deleteFirst(y :: ys, e)
             }
         }
+    }.holds
+
+    def deleteSmallerLemma(@induct xs: List[BigInt], y: BigInt, ys: List[BigInt], e: BigInt): Boolean = {
+        require(isInorder(xs ++ (y :: ys)) && e < y)
+        check(smaller(y, ys, e))
+        deleteFirst(xs ++ (y :: ys), e) == (deleteFirst(xs, e) ++ (y :: ys))
+    }.holds
+
+    def deleteEqualLemma(xs: List[BigInt], y: BigInt, ys: List[BigInt], e: BigInt): Boolean = {
+        require(isInorder(xs ++ (y :: ys)) && y == e)
+        check(deleteBiggerLemma(xs, y, ys, e))
+        deleteFirst(xs ++ (y :: ys), e) == (xs ++ ys)
+    }.holds
+
+    def deleteBiggerLemma(@induct xs: List[BigInt], y: BigInt, ys: List[BigInt], e: BigInt): Boolean = {
+        require(isInorder(xs ++ (y :: ys)) && y <= e)
+        check(bigger(xs, y, e))
+        deleteFirst(xs ++ (y :: ys), e) == (xs ++ deleteFirst(y :: ys, e))
     }.holds
 }
