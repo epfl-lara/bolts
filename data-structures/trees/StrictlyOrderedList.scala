@@ -6,7 +6,7 @@ import stainless.collection._
 import stainless.lang._
 import stainless.proof._
 
-object InorderSet {
+object StrictlyOrderedList {
     // Some helpers
     def concatLast(@induct left: List[BigInt], right: List[BigInt]): Boolean = {
         right.nonEmpty ==> ((left ++ right).last == right.last)
@@ -20,7 +20,7 @@ object InorderSet {
         (left ++ (elem :: right)) == ((left :+ elem) ++ right)
     }.holds
 
-    // InorderSet is a strictly sorted List
+    // StrictlyOrderedList is a strictly sorted List
     def isInorder(l: List[BigInt]): Boolean = l match {
         case Cons(h1, Cons(h2, _)) if(h1 >= h2) => false
         case Cons(_, t) => isInorder(t)

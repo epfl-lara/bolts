@@ -1,12 +1,14 @@
 /* Copyright 2009-2021 EPFL, Lausanne */
 /* Modified by Clément Burgelin */
+/* Paper used for insertion : https://doi.org/10.1007/978-3-319-43144-4_19 */
+/* Paper used for deletion : https://doi.org/10.1017/S0956796814000227 */
 
 import stainless.annotation._
 import stainless.collection._
 import stainless.lang._
 import stainless.proof._
 
-import InorderSet._
+import StrictlyOrderedList._
 
 object RedBlackTree {
   sealed abstract class Color {
@@ -498,7 +500,7 @@ object RedBlackTree {
         val preRot = Node(c, l, v, tr)
         ListSpecs.appendAssoc(l.toList, v :: tr.toList, List(max))
         assert(preRot.toList :+ max == n.toList)
-        InorderSet.inorderSpread(preRot.toList, max)
+        inorderSpread(preRot.toList, max)
         assert(redNodesHaveBlackChildren(l))
         assert(tr.color == BB || redNodesHaveBlackChildren(tr))
         assert(isValidPreRotateNode(preRot))
