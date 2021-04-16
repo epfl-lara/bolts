@@ -53,6 +53,21 @@ object RedBlackTree {
       case Empty(c) => c
       case Node(c,_,_,_) => c
     })
+
+    def contains(elem: BigInt): Boolean = {
+      require(isBST(this))
+      this match {
+        case Empty(_) => false
+        case Node(_, left, value, right) =>
+          (elem == value) || (if(elem < value) {
+            check(smaller(left.toList, value, right.toList, elem))
+            left.contains(elem)
+          } else {
+            check(bigger(left.toList, value, right.toList, elem))
+            right.contains(elem)
+          })
+      }
+    } ensuring(res => res == this.toList.contains(elem))
   }
   
   case class Empty(c: Color) extends Tree
