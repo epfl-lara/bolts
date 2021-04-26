@@ -145,16 +145,6 @@ object TupleListOps {
   }.ensuring(res => invariantList(res) && !containsKey(res, key))
 
   @inlineOnce
-  def isStrictlySorted[B](l: List[Long]): Boolean = {
-    l match {
-      case Nil()                               => true
-      case Cons(_, Nil())                      => true
-      case Cons(h1, Cons(h2, _)) if (h1 >= h2) => false
-      case Cons(_, t)                          => isStrictlySorted(t)
-    }
-  }
-
-  @inlineOnce
   def isStrictlySorted[B](l: List[(Long, B)]): Boolean = {
     l match {
       case Nil()                                     => true
