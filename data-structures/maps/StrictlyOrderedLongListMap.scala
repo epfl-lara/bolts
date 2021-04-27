@@ -303,7 +303,7 @@ object ListMapLongKeyLemmas {
   @opaque
   def removeValidProp[B](lm: ListMapLongKey[B], p: ((Long, B)) => Boolean, a: Long): Unit = {
     require(lm.forall(p))
-    decreases(lm.toList)
+    decreases(lm.toList.size)
     if (!lm.isEmpty)
       removeValidProp(lm.tail, p, a)
 
