@@ -486,12 +486,13 @@ object MutableLongMap {
     @inline
     def isPivot(a: Array[Long], from: Int, to: Int, pivot: Int) : Boolean = arrayCountValidKeysTailRec(a, from, pivot) + arrayCountValidKeysTailRec(a, pivot, to) == arrayCountValidKeysTailRec(a, from, to)
 
-    def lemma1(a: Array[Long], from: Int, to: Int): Unit = {
+    def lemmaCountingValidKeysAtTheEnd(a: Array[Long], from: Int, to: Int): Unit = {
       require(a.length < Integer.MAX_VALUE && from >= 0 && to > from && to <= a.length)
 
+      //WEIRD - If I remove the two checks, it does not pass anymore
       decreases(to - from)
         if(from + 1 < to){
-          lemma1(a, from + 1, to)
+          lemmaCountingValidKeysAtTheEnd(a, from + 1, to)
         check(if(validKeyInArray(a(to-1))) 
                         arrayCountValidKeysTailRec(a, from, to - 1) + 1 == arrayCountValidKeysTailRec(a, from, to)
                     else 
@@ -514,32 +515,12 @@ object MutableLongMap {
       require(a.length < Integer.MAX_VALUE && from >= 0 && to > from && to <= a.length && pivot >= from  && pivot < to - 1 &&
         isPivot(a, from, to, pivot))
 
-          if(validKeyInArray(a(pivot))){
-            lemma1(a, from, pivot + 1)
-
-            assert(arrayCountValidKeysTailRec(a, from, pivot) + 1 == arrayCountValidKeysTailRec(a, from, pivot + 1))    //TODO        
-
-
-            check( isPivot(a, from, to, pivot + 1))
-            
-            } else {
-              assert(arrayCountValidKeysTailRec(a, pivot, pivot + 1) == 0)
-              assert(arrayCountValidKeysTailRec(a, pivot+1, to) == arrayCountValidKeysTailRec(a, pivot, to))
-
-              lemma1(a, from, pivot + 1)
-
-              assert(arrayCountValidKeysTailRec(a, from, pivot) == arrayCountValidKeysTailRec(a, from, pivot + 1))  //TODO
-              
-            check( isPivot(a, from, to, pivot + 1))
-          }
-          check( isPivot(a, from, to, pivot + 1))
-          ()
-        
+        lemmaCountingValidKeysAtTheEnd(a, from, pivot + 1)
         
     }.ensuring(_ => isPivot(a, from, to, pivot + 1) )
 
     @pure
-    def lemmalemmaSumOfNumOfKeysOfSubArraysIsEqualToWholeFromTo(a: Array[Long], from: Int, to: Int, pivot: Int, knownPivot: Int): Unit = {
+    def lemmaSumOfNumOfKeysOfSubArraysIsEqualToWholeFromTo(a: Array[Long], from: Int, to: Int, pivot: Int, knownPivot: Int): Unit = {
       require(
         a.length < Integer.MAX_VALUE && from >= 0 && to >= from && to <= a.length && 
           pivot >= from && pivot < to &&
@@ -550,18 +531,15 @@ object MutableLongMap {
       decreases(pivot - knownPivot)
       if (knownPivot != pivot) {
         lemmaKnownPivotPlusOneIsPivot(a, from, to, knownPivot)
-        check(isPivot(a, from, to, knownPivot + 1))
-        lemmalemmaSumOfNumOfKeysOfSubArraysIsEqualToWholeFromTo(a, from, to, pivot, knownPivot + 1)
-        check(isPivot(a, from, to, pivot))
+        lemmaSumOfNumOfKeysOfSubArraysIsEqualToWholeFromTo(a, from, to, pivot, knownPivot + 1)
       }
-      ()
     }.ensuring(_ => isPivot(a, from, to, pivot))
 
     @pure
     def lemmaSumOfNumOfKeysOfSubArraysIsEqualToWhole(a: Array[Long], from: Int, to: Int, pivot: Int): Unit = {
       require(a.length < Integer.MAX_VALUE && from >= 0 && to >= from && to <= a.length && pivot >= from && pivot <= to)
 
-      lemmalemmaSumOfNumOfKeysOfSubArraysIsEqualToWholeFromTo(a, from, to, pivot, from)
+      lemmaSumOfNumOfKeysOfSubArraysIsEqualToWholeFromTo(a, from, to, pivot, from)
 
     }.ensuring(_ => arrayCountValidKeysTailRec(a, from, pivot) + arrayCountValidKeysTailRec(a, pivot, to) == arrayCountValidKeysTailRec(a, from, to))
 
