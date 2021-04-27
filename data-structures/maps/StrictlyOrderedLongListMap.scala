@@ -70,9 +70,12 @@ case class ListMapLongKey[B](toList: List[(Long, B)]) {
   }.ensuring(res => !res.contains(key))
 
   @inlineOnce
-  def --(keys: List[Long]): ListMapLongKey[B] = keys match {
+  def --(keys: List[Long]): ListMapLongKey[B] = {
+    decreases(keys)
+    keys match {
     case Nil()           => this
     case Cons(key, rest) => (this - key) -- rest
+  }
   }
   @inline
   def forall(p: ((Long, B)) => Boolean): Boolean = {
@@ -186,6 +189,7 @@ object TupleListOps {
 
   def lemmaGetValueByKeyIsDefinedImpliesContainsKey[B](l: List[(Long, B)], key: Long): Unit = {
     require(invariantList(l) && getValueByKey(l, key).isDefined)
+    decreases(l)
     l match {
       case head :: tl if(head._1 != key) => lemmaGetValueByKeyIsDefinedImpliesContainsKey(tl, key)
       case _ => ()
@@ -194,6 +198,7 @@ object TupleListOps {
 
   def lemmaContainsKeyImpliesGetValueByKeyDefined[B](l: List[(Long, B)], key: Long): Unit = {
     require(invariantList(l) && containsKey(l, key))
+    decreases(l)
     l match {
       case head :: tl if(head._1 != key) => lemmaContainsKeyImpliesGetValueByKeyDefined(tl, key)
       case _ => ()
@@ -298,7 +303,7 @@ object ListMapLongKeyLemmas {
   @opaque
   def removeValidProp[B](lm: ListMapLongKey[B], p: ((Long, B)) => Boolean, a: Long): Unit = {
     require(lm.forall(p))
-
+    decreases(lm.toList)
     if (!lm.isEmpty)
       removeValidProp(lm.tail, p, a)
 
