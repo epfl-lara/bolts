@@ -782,7 +782,7 @@ object MutableLongMap {
         arrayCountValidKeysTailRec(a, from + 1, to)
       }
     }
-  }.ensuring(res => res >= 0 && res <= to)
+  }.ensuring(res => res >= 0 && res <= a.length - from)
 
   @tailrec
   @pure
