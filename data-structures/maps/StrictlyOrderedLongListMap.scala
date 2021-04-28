@@ -186,7 +186,7 @@ object TupleListOps {
   }
 
   // ----------- LEMMAS -----------------------------------------------------
-
+  @opaque
   def lemmaGetValueByKeyIsDefinedImpliesContainsKey[B](l: List[(Long, B)], key: Long): Unit = {
     require(invariantList(l) && getValueByKey(l, key).isDefined)
     decreases(l)
@@ -196,6 +196,7 @@ object TupleListOps {
     }
   }.ensuring(_ => containsKey(l, key))
 
+  @opaque
   def lemmaContainsKeyImpliesGetValueByKeyDefined[B](l: List[(Long, B)], key: Long): Unit = {
     require(invariantList(l) && containsKey(l, key))
     decreases(l)
@@ -205,6 +206,7 @@ object TupleListOps {
     }
   }.ensuring(_ => getValueByKey(l, key).isDefined)
 
+  @opaque
   def lemmaForallGetValueByKeySameWithASmallerHead[B](l: List[(Long, B)], keys: List[Long], value: B, newHead: (Long, B)): Unit = {
     require(invariantList(l) && !l.isEmpty && keys.forall(getValueByKey(l, _) == Some(value)) && newHead._1 < l.head._1)
     decreases(keys)
@@ -220,6 +222,7 @@ object TupleListOps {
 
   }.ensuring(_ => keys.forall(k => getValueByKey(newHead :: l, k) == Some(value)))
 
+  @opaque
   def lemmaInsertStrictlySortedDoesNotModifyOtherKeyValues[B](l: List[(Long, B)], newKey: Long, newValue: B, otherKey: Long): Unit = {
     require(invariantList(l) && newKey != otherKey)
     decreases(l)
@@ -232,6 +235,7 @@ object TupleListOps {
   }.ensuring(_ => containsKey(insertStrictlySorted(l, newKey, newValue), otherKey) == containsKey(l, otherKey) &&
                   getValueByKey(insertStrictlySorted(l, newKey, newValue), otherKey) == getValueByKey(l, otherKey) )
 
+  @opaque
   def lemmaInsertStrictlySortedDoesNotModifyOtherKeysNotContained[B](l: List[(Long, B)], newKey: Long, newValue: B, otherKey: Long): Unit = {
     require(invariantList(l) && !containsKey(l, otherKey) && otherKey != newKey)
     decreases(l)
@@ -242,6 +246,7 @@ object TupleListOps {
     }
   }.ensuring(_ => !containsKey(insertStrictlySorted(l, newKey, newValue), otherKey))
 
+  @opaque
   def lemmaInsertStrictlySortedDoesNotModifyOtherKeysContained[B](l: List[(Long, B)], newKey: Long, newValue: B, otherKey: Long): Unit = {
     require(invariantList(l) && containsKey(l, otherKey) && otherKey != newKey)
     decreases(l)
@@ -252,11 +257,13 @@ object TupleListOps {
     }
   }.ensuring(_ => containsKey(insertStrictlySorted(l, newKey, newValue), otherKey))
 
+  @opaque
   def lemmaNotContainsKeyThenNotContainsTuple[B](@induct l: List[(Long, B)], key: Long, value: B): Unit = {
     require(invariantList(l) && !containsKey(l, key))
 
   }.ensuring(_ => !l.contains((key, value)))
 
+  @opaque
   def lemmaContainsTupleThenContainsKey[B](l: List[(Long, B)], key: Long, value: B): Unit = {
     require(invariantList(l) && l.contains((key, value)))
     decreases(l)
@@ -267,6 +274,7 @@ object TupleListOps {
     }
   }.ensuring(_ => containsKey(l, key))
 
+  @opaque
   def lemmaContainsTupThenGetReturnValue[B](l: List[(Long, B)], key: Long, value: B): Unit = {
     require(invariantList(l) && containsKey(l, key) && l.contains((key, value)))
     decreases(l)
