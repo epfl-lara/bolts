@@ -261,7 +261,6 @@ object MutableLongMap {
     // NOTE: ((x | MissingBit) ^ MissingBit) == x is proven true by stainless for x in range 0 to MAX_ARRAY_SIZE with this value of MissingBit
 
     @inlineOnce
-    @opaque
     /** Returns
       *
       * @param k
@@ -290,7 +289,6 @@ object MutableLongMap {
     )
 
     @inlineOnce
-    @opaque
     def seekEntryOrOpen(k: Long): (Int, Int) = {
       require(valid)
 
@@ -537,7 +535,7 @@ object MutableLongMap {
 
     @pure
     def lemmaSumOfNumOfKeysOfSubArraysIsEqualToWhole(a: Array[Long], from: Int, to: Int, pivot: Int): Unit = {
-      require(a.length < Integer.MAX_VALUE && from >= 0 && to >= from && to <= a.length && pivot >= from && pivot <= to)
+      require(a.length < Integer.MAX_VALUE && from >= 0 && to >= from && to <= a.length && pivot >= from && pivot < to)
 
       lemmaSumOfNumOfKeysOfSubArraysIsEqualToWholeFromTo(a, from, to, pivot, from)
 
