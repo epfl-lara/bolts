@@ -437,61 +437,61 @@ object MutableLongMap {
     // }.ensuring(_ => getCurrentListMap(0).contains(_keys(i)))
     
     
-    //TODO
-    @opaque
-    def lemmaCurrentListMapContainsFromThenContainsFromZero(from: Int, i: Int): Unit = {
-      require(
-        valid && from >= 0 && from < _keys.length &&
-          i >= from && i < _keys.length &&
-          validKeyInArray(_keys(i)) && getCurrentListMap(from).contains(_keys(i))
-      )
-      lemmaCurrentListMapContainsFromThenContainsFromSmaller(from, 0, i)
+    // //TODO
+    // @opaque
+    // def lemmaCurrentListMapContainsFromThenContainsFromZero(from: Int, i: Int): Unit = {
+    //   require(
+    //     valid && from >= 0 && from < _keys.length &&
+    //       i >= from && i < _keys.length &&
+    //       validKeyInArray(_keys(i)) && getCurrentListMap(from).contains(_keys(i))
+    //   )
+    //   lemmaCurrentListMapContainsFromThenContainsFromSmaller(from, 0, i)
 
-    }.ensuring(_ => getCurrentListMap(0).contains(_keys(i)) && getCurrentListMap(0)(_keys(i)) == _values(i))
+    // }.ensuring(_ => getCurrentListMap(0).contains(_keys(i)) && getCurrentListMap(0)(_keys(i)) == _values(i))
 
-    //TODO
-    @opaque
-    def lemmaCurrentListMapContainsFromThenContainsFromSmaller(from: Int, newFrom: Int, i: Int): Unit = {
-      require(
-        valid && from >= 0 && from < _keys.length &&
-          newFrom >= 0 && newFrom <= from &&
-          i >= from && i < _keys.length &&
-          validKeyInArray(_keys(i)) && getCurrentListMap(from).contains(_keys(i))
-      )
+    // //TODO
+    // @opaque
+    // def lemmaCurrentListMapContainsFromThenContainsFromSmaller(from: Int, newFrom: Int, i: Int): Unit = {
+    //   require(
+    //     valid && from >= 0 && from < _keys.length &&
+    //       newFrom >= 0 && newFrom <= from &&
+    //       i >= from && i < _keys.length &&
+    //       validKeyInArray(_keys(i)) && getCurrentListMap(from).contains(_keys(i))
+    //   )
 
-      // if (from > newFrom) {
-      //   lemmaCurrentListMapContainsFromThenContainsFromSmaller(from, newFrom, i)
-      // }
+    //   // if (from > newFrom) {
+    //   //   lemmaCurrentListMapContainsFromThenContainsFromSmaller(from, newFrom, i)
+    //   // }
 
-    }.ensuring(_ => getCurrentListMap(newFrom).contains(_keys(i)))
+    // }.ensuring(_ => getCurrentListMap(newFrom).contains(_keys(i)))
 
-    //TODO
-    @opaque
-    def lemmaCurrentStateListMapContainsKeyImpliesArrayContainsKey(k: Long): Unit = {
-      require(valid && getCurrentListMap(0).contains(k))
-    }.ensuring(_ => if (k != 0 && k != Long.MinValue) arrayContainsKeyTailRec(_keys, k, 0) else if (k == 0) (extraKeys & 1) != 0 else (extraKeys & 2) != 0)
+    // //TODO
+    // @opaque
+    // def lemmaCurrentStateListMapContainsKeyImpliesArrayContainsKey(k: Long): Unit = {
+    //   require(valid && getCurrentListMap(0).contains(k))
+    // }.ensuring(_ => if (k != 0 && k != Long.MinValue) arrayContainsKeyTailRec(_keys, k, 0) else if (k == 0) (extraKeys & 1) != 0 else (extraKeys & 2) != 0)
 
-    @opaque
-    def lemmaCurrentStateListMapContainsKeyFromImpliesArrayContainsKeyFrom(k: Long, from: Int): Unit = {
-      require(valid && from >= 0 && from < _keys.length && getCurrentListMap(from).contains(k))
+    // @opaque
+    // def lemmaCurrentStateListMapContainsKeyFromImpliesArrayContainsKeyFrom(k: Long, from: Int): Unit = {
+    //   require(valid && from >= 0 && from < _keys.length && getCurrentListMap(from).contains(k))
 
-    }.ensuring(_ => if (k != 0 && k != Long.MinValue) arrayContainsKeyTailRec(_keys, k, from) else if (k == 0) (extraKeys & 1) != 0 else (extraKeys & 2) != 0)
+    // }.ensuring(_ => if (k != 0 && k != Long.MinValue) arrayContainsKeyTailRec(_keys, k, from) else if (k == 0) (extraKeys & 1) != 0 else (extraKeys & 2) != 0)
 
-    //TODO
-    @pure
-    @opaque
-    def lemmaCurrentStateListMapContainsKeyFromTheArray(k: Long): Unit = {
-      require(valid && arrayContainsKeyTailRec(_keys, k, 0))
-    }.ensuring(_ => getCurrentListMap(0).contains(k))
+    // //TODO
+    // @pure
+    // @opaque
+    // def lemmaCurrentStateListMapContainsKeyFromTheArray(k: Long): Unit = {
+    //   require(valid && arrayContainsKeyTailRec(_keys, k, 0))
+    // }.ensuring(_ => getCurrentListMap(0).contains(k))
 
-    //TODO
-    @pure
-    @opaque
-    def lemmaCurrentStateListMapFromContainsKeyFrom(k: Long, from: Int): Unit = {
-      require(valid && from >= 0 && from < _keys.length && arrayContainsKeyTailRec(_keys, k, from))
+    // //TODO
+    // @pure
+    // @opaque
+    // def lemmaCurrentStateListMapFromContainsKeyFrom(k: Long, from: Int): Unit = {
+    //   require(valid && from >= 0 && from < _keys.length && arrayContainsKeyTailRec(_keys, k, from))
 
-      assert((ListMapLongKey.empty[Long] + (k, 10)).contains(k))
-    }.ensuring(_ => getCurrentListMap(from).contains(k))
+    //   assert((ListMapLongKey.empty[Long] + (k, 10)).contains(k))
+    // }.ensuring(_ => getCurrentListMap(from).contains(k))
 
     @inline
     def isPivot(a: Array[Long], from: Int, to: Int, pivot: Int) : Boolean = {
