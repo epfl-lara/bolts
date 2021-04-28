@@ -201,6 +201,41 @@ object MutableLongMap {
     // && (if(res) contains(key) else true)
     )
 
+    /**
+      * Removes the given key from the array
+      *
+      * @param key
+      * @return
+      */
+    def subtractOne(key: Long): Boolean = {
+      require(valid)
+    if (key == -key) {
+      if (key == 0L) {
+        extraKeys &= 0x2
+        zeroValue = 0
+        true
+      }
+      else {
+        extraKeys &= 0x1
+        minValue = 0
+        true
+      }
+    }
+    else {
+      val (i, state) = seekEntry(key)
+      // if (i >= 0) {
+      if(state == 0){
+        _size -= 1
+        // _vacant += 1
+        _keys(i) = Long.MinValue
+        _values(i) = 0
+        true
+      } else {
+        false
+      }
+    }
+  }.ensuring(_ => valid)
+
     /** Compute the index in the array for a given key
       * with hashing and magic stuff
       *
