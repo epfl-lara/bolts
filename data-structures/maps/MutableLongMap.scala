@@ -435,7 +435,7 @@ object MutableLongMap {
     //   lemmaCurrentListMapContainsFromThenContainsFromZero(i, i)
 
     // }.ensuring(_ => getCurrentListMap(0).contains(_keys(i)))
-
+    @opaque
     def lemmaCurrentListMapContainsFromThenContainsFromZero(from: Int, i: Int): Unit = {
       require(
         valid && from >= 0 && from < _keys.length &&
@@ -446,6 +446,7 @@ object MutableLongMap {
 
     }.ensuring(_ => getCurrentListMap(0).contains(_keys(i)) && getCurrentListMap(0)(_keys(i)) == _values(i))
 
+    @opaque
     def lemmaCurrentListMapContainsFromThenContainsFromSmaller(from: Int, newFrom: Int, i: Int): Unit = {
       require(
         valid && from >= 0 && from < _keys.length &&
@@ -460,21 +461,25 @@ object MutableLongMap {
 
     }.ensuring(_ => getCurrentListMap(newFrom).contains(_keys(i)))
 
+    @opaque
     def lemmalemmaCurrentStateListMapContainsKeyImpliesArrayContainsKey(k: Long): Unit = {
       require(valid && getCurrentListMap(0).contains(k))
     }.ensuring(_ => if (k != 0 && k != Long.MinValue) arrayContainsKeyTailRec(_keys, k, 0) else if (k == 0) (extraKeys & 1) != 0 else (extraKeys & 2) != 0)
 
+    @opaque
     def lemmaCurrentStateListMapContainsKeyFromImpliesArrayContainsKeyFrom(k: Long, from: Int): Unit = {
       require(valid && from >= 0 && from < _keys.length && getCurrentListMap(from).contains(k))
 
     }.ensuring(_ => if (k != 0 && k != Long.MinValue) arrayContainsKeyTailRec(_keys, k, from) else if (k == 0) (extraKeys & 1) != 0 else (extraKeys & 2) != 0)
 
     @pure
+    @opaque
     def lemmaCurrentStateListMapContainsKeyFromTheArray(k: Long): Unit = {
       require(valid && arrayContainsKeyTailRec(_keys, k, 0))
     }.ensuring(_ => getCurrentListMap(0).contains(k))
 
     @pure
+    @opaque
     def lemmaCurrentStateListMapFromContainsKeyFrom(k: Long, from: Int): Unit = {
       require(valid && from >= 0 && from < _keys.length && arrayContainsKeyTailRec(_keys, k, from))
 
@@ -487,19 +492,17 @@ object MutableLongMap {
       arrayCountValidKeysTailRec(a, from, pivot) + arrayCountValidKeysTailRec(a, pivot, to) == arrayCountValidKeysTailRec(a, from, to)
     }
 
+    @pure
+    @opaque
     def lemmaCountingValidKeysAtTheEnd(a: Array[Long], from: Int, to: Int): Unit = {
       require(a.length < Integer.MAX_VALUE && from >= 0 && to > from && to <= a.length)
 
-      //WEIRD - If I remove the two checks, it does not pass anymore
       decreases(to - from)
         if(from + 1 < to){
           lemmaCountingValidKeysAtTheEnd(a, from + 1, to)
-        check(if(validKeyInArray(a(to-1))) 
-                        arrayCountValidKeysTailRec(a, from, to - 1) + 1 == arrayCountValidKeysTailRec(a, from, to)
-                    else 
-                        arrayCountValidKeysTailRec(a, from, to - 1) == arrayCountValidKeysTailRec(a, from, to))
         } else {
-          assert(from + 1 == to)
+          // checks are needed
+          check(from + 1 == to)
           check(if(validKeyInArray(a(to-1))) 
                         arrayCountValidKeysTailRec(a, from, to - 1) + 1 == arrayCountValidKeysTailRec(a, from, to)
                     else 
@@ -512,6 +515,7 @@ object MutableLongMap {
                         )
 
     @pure
+    @opaque
     def lemmaKnownPivotPlusOneIsPivot(a: Array[Long], from: Int, to: Int, pivot: Int): Unit = {
       require(a.length < Integer.MAX_VALUE && from >= 0 && to > from && to <= a.length && pivot >= from  && pivot < to - 1 &&
         isPivot(a, from, to, pivot))
@@ -521,6 +525,7 @@ object MutableLongMap {
     }.ensuring(_ => isPivot(a, from, to, pivot + 1) )
 
     @pure
+    @opaque
     def lemmaSumOfNumOfKeysOfSubArraysIsEqualToWholeFromTo(a: Array[Long], from: Int, to: Int, pivot: Int, knownPivot: Int): Unit = {
       require(
         a.length < Integer.MAX_VALUE && from >= 0 && to >= from && to <= a.length && 
@@ -537,6 +542,7 @@ object MutableLongMap {
     }.ensuring(_ => isPivot(a, from, to, pivot))
 
     @pure
+    @opaque
     def lemmaSumOfNumOfKeysOfSubArraysIsEqualToWhole(a: Array[Long], from: Int, to: Int, pivot: Int): Unit = {
       require(a.length < Integer.MAX_VALUE && from >= 0 && to >= from && to <= a.length && pivot >= from && pivot <= to)
 
@@ -549,6 +555,7 @@ object MutableLongMap {
     }.ensuring(_ => arrayCountValidKeysTailRec(a, from, pivot) + arrayCountValidKeysTailRec(a, pivot, to) == arrayCountValidKeysTailRec(a, from, to))
 
     @pure
+    @opaque
     def lemmaValidKeyIncreasesNumOfKeys(a: Array[Long], from: Int, to: Int): Unit = {
       require(a.length < Integer.MAX_VALUE && from >= 0 && to >= from && to < a.length && validKeyInArray(a(to)))
 
@@ -557,6 +564,7 @@ object MutableLongMap {
     }.ensuring(_ => arrayCountValidKeysTailRec(a, from, to + 1) == arrayCountValidKeysTailRec(a, from, to) + 1)
 
     @pure
+    @opaque
     def lemmaNotValidKeyDoesNotIncreaseNumOfKeys(a: Array[Long], from: Int, to: Int): Unit = {
       require(a.length < Integer.MAX_VALUE && from >= 0 && to >= from && to < a.length && !validKeyInArray(a(to)))
 
@@ -565,6 +573,7 @@ object MutableLongMap {
     }.ensuring(_ => arrayCountValidKeysTailRec(a, from, to + 1) == arrayCountValidKeysTailRec(a, from, to))
 
     @pure
+    @opaque
     def lemmaAddValidKeyAndNumKeysToImpliesToALength(a: Array[Long], i: Int, k: Long, to: Int): Unit = {
       require(
         i >= 0 && i < a.length && a(i) == 0 && validKeyInArray(k) && a.length < Integer.MAX_VALUE &&
@@ -586,6 +595,7 @@ object MutableLongMap {
     }.ensuring(_ => arrayCountValidKeysTailRec(a.updated(i, k), i + 1, a.length) == arrayCountValidKeysTailRec(a, i + 1, a.length))
 
     @pure
+    @opaque
     def lemmaAddValidKeyAndNumKeysFromImpliesFromZero(a: Array[Long], i: Int, k: Long, from: Int): Unit = {
       require(
         i >= 0 && i < a.length && a(i) == 0 && validKeyInArray(k) && a.length < Integer.MAX_VALUE &&
@@ -606,6 +616,7 @@ object MutableLongMap {
     })
 
     @pure
+    @opaque
     def lemmaAddValidKeyIncreasesNumberOfValidKeysInArray(a: Array[Long], i: Int, k: Long): Unit = {
       require(i >= 0 && i < a.length && a(i) == 0 && validKeyInArray(k) && a.length < Integer.MAX_VALUE)
 
@@ -617,12 +628,14 @@ object MutableLongMap {
     }.ensuring(_ => arrayCountValidKeysTailRec(a.updated(i, k), 0, a.length) == arrayCountValidKeysTailRec(a, 0, a.length) + 1)
 
     @pure
+    @opaque
     def lemmaValidKeyAtIImpliesCountKeysIsOne(a: Array[Long], i: Int): Unit = {
       require(i >= 0 && i < a.length && validKeyInArray(a(i)) && a.length < Integer.MAX_VALUE)
 
     }.ensuring(_ => arrayCountValidKeysTailRec(a, i, i + 1) == 1)
 
     @pure
+    @opaque
     def lemmaArrayEqualsFromToReflexivity(a: Array[Long], from: Int, to: Int): Unit = {
       require(from >= 0 && from < to && to <= a.length && a.length < Integer.MAX_VALUE)
       decreases(to - from)
@@ -633,6 +646,7 @@ object MutableLongMap {
     }.ensuring(_ => arraysEqualsFromTo(a, a, from, to))
 
     @pure
+    @opaque
     def lemmaValidKeyIndexImpliesArrayContainsKey(k: Long, i: Int): Unit = {
       require(valid && validKeyIndex(k, i))
       assert(_keys(i) == k)
@@ -646,6 +660,7 @@ object MutableLongMap {
     }.ensuring(_ => arrayContainsKeyTailRec(_keys, k, 0))
 
     @pure
+    @opaque
     def lemmaArrayContainsFromImpliesContainsFromZero(
         a: Array[Long],
         k: Long,
