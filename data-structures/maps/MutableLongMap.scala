@@ -462,7 +462,7 @@ object MutableLongMap {
     }.ensuring(_ => getCurrentListMap(newFrom).contains(_keys(i)))
 
     @opaque
-    def lemmalemmaCurrentStateListMapContainsKeyImpliesArrayContainsKey(k: Long): Unit = {
+    def lemmaCurrentStateListMapContainsKeyImpliesArrayContainsKey(k: Long): Unit = {
       require(valid && getCurrentListMap(0).contains(k))
     }.ensuring(_ => if (k != 0 && k != Long.MinValue) arrayContainsKeyTailRec(_keys, k, 0) else if (k == 0) (extraKeys & 1) != 0 else (extraKeys & 2) != 0)
 
@@ -488,7 +488,7 @@ object MutableLongMap {
 
     @inline
     def isPivot(a: Array[Long], from: Int, to: Int, pivot: Int) : Boolean = {
-      require(a.length < Integer.MAX_VALUE && from >= 0 && to > from && to <= a.length)
+      require(a.length < Integer.MAX_VALUE && from >= 0 && to > from && to <= a.length && pivot >= from && pivot < to)
       arrayCountValidKeysTailRec(a, from, pivot) + arrayCountValidKeysTailRec(a, pivot, to) == arrayCountValidKeysTailRec(a, from, to)
     }
 
@@ -607,6 +607,10 @@ object MutableLongMap {
       if (from > 0) {
         lemmaSumOfNumOfKeysOfSubArraysIsEqualToWhole(a, from - 1, i + 1, from)
         lemmaSumOfNumOfKeysOfSubArraysIsEqualToWhole(a.updated(i, k), from - 1, i + 1, from)
+
+        check(arrayCountValidKeysTailRec(a, from - 1, from) + arrayCountValidKeysTailRec(a, from , i + 1) == arrayCountValidKeysTailRec(a, from - 1, i + 1)) //needed
+        check(arrayCountValidKeysTailRec(a.updated(i, k), from - 1, from) + arrayCountValidKeysTailRec(a.updated(i, k), from , i + 1) == arrayCountValidKeysTailRec(a.updated(i, k), from - 1, i + 1)) //needed
+        
         lemmaAddValidKeyAndNumKeysFromImpliesFromZero(a, i, k, from - 1)
       }
       assert(true)
