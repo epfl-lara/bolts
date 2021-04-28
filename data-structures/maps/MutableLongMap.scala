@@ -435,6 +435,9 @@ object MutableLongMap {
     //   lemmaCurrentListMapContainsFromThenContainsFromZero(i, i)
 
     // }.ensuring(_ => getCurrentListMap(0).contains(_keys(i)))
+    
+    
+    //TODO
     @opaque
     def lemmaCurrentListMapContainsFromThenContainsFromZero(from: Int, i: Int): Unit = {
       require(
@@ -446,6 +449,7 @@ object MutableLongMap {
 
     }.ensuring(_ => getCurrentListMap(0).contains(_keys(i)) && getCurrentListMap(0)(_keys(i)) == _values(i))
 
+    //TODO
     @opaque
     def lemmaCurrentListMapContainsFromThenContainsFromSmaller(from: Int, newFrom: Int, i: Int): Unit = {
       require(
@@ -461,6 +465,7 @@ object MutableLongMap {
 
     }.ensuring(_ => getCurrentListMap(newFrom).contains(_keys(i)))
 
+    //TODO
     @opaque
     def lemmaCurrentStateListMapContainsKeyImpliesArrayContainsKey(k: Long): Unit = {
       require(valid && getCurrentListMap(0).contains(k))
@@ -472,12 +477,14 @@ object MutableLongMap {
 
     }.ensuring(_ => if (k != 0 && k != Long.MinValue) arrayContainsKeyTailRec(_keys, k, from) else if (k == 0) (extraKeys & 1) != 0 else (extraKeys & 2) != 0)
 
+    //TODO
     @pure
     @opaque
     def lemmaCurrentStateListMapContainsKeyFromTheArray(k: Long): Unit = {
       require(valid && arrayContainsKeyTailRec(_keys, k, 0))
     }.ensuring(_ => getCurrentListMap(0).contains(k))
 
+    //TODO
     @pure
     @opaque
     def lemmaCurrentStateListMapFromContainsKeyFrom(k: Long, from: Int): Unit = {
@@ -537,8 +544,11 @@ object MutableLongMap {
       decreases(pivot - knownPivot)
       if (knownPivot != pivot) {
         lemmaKnownPivotPlusOneIsPivot(a, from, to, knownPivot)
+        check(isPivot(a, from, to, knownPivot + 1))
         lemmaSumOfNumOfKeysOfSubArraysIsEqualToWholeFromTo(a, from, to, pivot, knownPivot + 1)
+        check(isPivot(a, from, to, pivot))
       }
+      check(isPivot(a, from, to, pivot))
     }.ensuring(_ => isPivot(a, from, to, pivot))
 
     @pure
