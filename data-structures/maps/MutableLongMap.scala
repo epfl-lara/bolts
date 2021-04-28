@@ -482,7 +482,10 @@ object MutableLongMap {
     }.ensuring(_ => getCurrentListMap(from).contains(k))
 
     @inline
-    def isPivot(a: Array[Long], from: Int, to: Int, pivot: Int) : Boolean = arrayCountValidKeysTailRec(a, from, pivot) + arrayCountValidKeysTailRec(a, pivot, to) == arrayCountValidKeysTailRec(a, from, to)
+    def isPivot(a: Array[Long], from: Int, to: Int, pivot: Int) : Boolean = {
+      require(a.length < Integer.MAX_VALUE && from >= 0 && to > from && to <= a.length)
+      arrayCountValidKeysTailRec(a, from, pivot) + arrayCountValidKeysTailRec(a, pivot, to) == arrayCountValidKeysTailRec(a, from, to)
+    }
 
     def lemmaCountingValidKeysAtTheEnd(a: Array[Long], from: Int, to: Int): Unit = {
       require(a.length < Integer.MAX_VALUE && from >= 0 && to > from && to <= a.length)
@@ -535,9 +538,13 @@ object MutableLongMap {
 
     @pure
     def lemmaSumOfNumOfKeysOfSubArraysIsEqualToWhole(a: Array[Long], from: Int, to: Int, pivot: Int): Unit = {
-      require(a.length < Integer.MAX_VALUE && from >= 0 && to >= from && to <= a.length && pivot >= from && pivot < to)
+      require(a.length < Integer.MAX_VALUE && from >= 0 && to >= from && to <= a.length && pivot >= from && pivot <= to)
 
-      lemmaSumOfNumOfKeysOfSubArraysIsEqualToWholeFromTo(a, from, to, pivot, from)
+      if(pivot < to){
+        lemmaSumOfNumOfKeysOfSubArraysIsEqualToWholeFromTo(a, from, to, pivot, from)
+      } else {
+        check(to == pivot) //it is needed
+      }
 
     }.ensuring(_ => arrayCountValidKeysTailRec(a, from, pivot) + arrayCountValidKeysTailRec(a, pivot, to) == arrayCountValidKeysTailRec(a, from, to))
 
