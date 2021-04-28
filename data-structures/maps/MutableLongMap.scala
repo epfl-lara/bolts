@@ -215,11 +215,6 @@ object MutableLongMap {
       (x ^ (x >>> 13)) & mask
     }.ensuring(res => valid && res < _keys.length)
 
-    private def imbalanced: Boolean = {
-      require(valid)
-      2 * (_size) > mask
-    }.ensuring(_ => valid)
-
     /** Seek for the first empty entry in the Array for a given key
       *
       * @param k the key
