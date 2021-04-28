@@ -311,7 +311,7 @@ object MutableLongMap {
       }
 
     }.ensuring(res =>
-      valid &&
+      valid && 
         (
           ((res._2 == 0) && validKeyIndex(k, res._1)) ||
             (res._2 == MissingBit && inRange(res._1) && _keys(res._1) == 0)
@@ -326,7 +326,13 @@ object MutableLongMap {
       if (q == k) (e, 0)
       else if (q == 0) (e, MissingBit)
       else {
-        val res = seekEntryOrOpenTailRec2(x, e)(k)
+        // e is the index of Long.MinValue i.e. the spot of a key that was removed
+        // we need to search from there until we see a zero. Maybe the key we're
+        // searching was added after the removed one and is therefore after in the array.
+        // If we find a zero before finding the key, we return the index of the Long.MinValue to 
+        // reuse the spot
+        assert(_keys(e) == Long.MinValue) // it passes
+        val res = seekEntryOrOpenTailRec2(x, e)(k, e)
         res
       }
     }.ensuring(res =>
@@ -352,11 +358,11 @@ object MutableLongMap {
       if (q == k || q + q == 0) (x, q, ee)
       else
         seekEntryOrOpenTailRec1(x + 1, (ee + 2 * (x + 1) * x - 3) & mask)
-    }.ensuring(res => valid && (inRange(res._3)) && res._2 == _keys(res._3))
+    }.ensuring(res => valid && (res._2 == 0 || res._2 + res._2 == 0) && (inRange(res._3)) && res._2 == _keys(res._3))
 
     @tailrec
     private def seekEntryOrOpenTailRec2(x: Int, ee: Int)(implicit
-        k: Long
+        k: Long, vacantSpotIndex: Int
     ): (Int, Int) = {
       require(valid && inRange(ee))
       decreases(-x)
@@ -364,7 +370,7 @@ object MutableLongMap {
       if (q == k) {
         (ee, 0)
       } else if (q == 0) {
-        (ee, MissVacant)
+        (vacantSpotIndex, MissVacant)
       } else {
         seekEntryOrOpenTailRec2(x + 1, (ee + 2 * (x + 1) * x - 3) & mask)
       }
@@ -373,7 +379,7 @@ object MutableLongMap {
       valid && ((res._2 == 0 && validKeyIndex(
         k,
         res._1
-      )) || (res._2 == MissVacant && validZeroKeyIndex(res._1)))
+      )) || (res._2 == MissVacant && true))
     )
 
       @inline
