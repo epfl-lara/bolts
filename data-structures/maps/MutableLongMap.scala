@@ -11,6 +11,8 @@ object MutableLongMap {
   private final val MissingBit = 0x80000000
   private final val VacantBit = 0x40000000
   private final val MissVacant = 0xc0000000
+  private final val EntryNotFound = 0x20000000
+  private final val MAX_ITER = 2048 // arbitrary
 
   /** A Map with keys of type Long and values of type Long
     * For now, key = Long.MaxValue s.t. k == -k is
@@ -262,9 +264,10 @@ object MutableLongMap {
     }.ensuring(i => valid && inRange(i))
 
     def seekEmptyTailRec(x: Int, ee: Int): Int = {
-      require(valid && inRange(ee))
-      decreases(-x)
-      if (_keys(ee) == 0) ee
+      require(valid && inRange(ee) && x >= 0 && x <= MAX_ITER)
+      decreases(MAX_ITER + 1 - x)
+      if(x >= MAX_ITER) EntryNotFound
+      else if (_keys(ee) == 0) ee
       else seekEmptyTailRec(x + 1, (ee + 2 * (x + 1) * x - 3) & mask)
     }.ensuring(res => valid && inRange(res) && _keys(res) == 0)
 
@@ -299,11 +302,12 @@ object MutableLongMap {
       * @return
       */
     private def seekEntryTailRec(k: Long, x: Int, ee: Int): (Int, Int) = {
-      require(valid && inRange(ee) && x >= 0 && x <= _keys.length)
-      decreases(_keys.length - x)
+      require(valid && inRange(ee) && x >= 0 && x <= _keys.length && x <= MAX_ITER && x >= 0)
+      decreases(MAX_ITER + 1 - x)
       val q = _keys(ee)
 
-      if (q == k) (ee, 0)
+      if(x > MAX_ITER) (ee, EntryNotFound)
+      else if (q == k) (ee, 0)
       else if (q == 0) (ee, MissingBit)
       else {
         val newEe = (ee + 2 * (x + 1) * x - 3) & mask
@@ -352,10 +356,11 @@ object MutableLongMap {
     private def seekEntryOrOpenTailRec1(x: Int, ee: Int)(implicit
         k: Long
     ): (Int, Long, Int) = {
-      require(valid && inRange(ee))
-      decreases(-x)
+      require(valid && inRange(ee) && x <= MAX_ITER && x >= 0)
+      decreases(MAX_ITER + 1 - x)
       val q = _keys(ee)
-      if (q == k || q + q == 0) (x, q, ee)
+      if(x >= MAX_ITER) (x, q, EntryNotFound)
+      else if (q == k || q + q == 0) (x, q, ee)
       else
         seekEntryOrOpenTailRec1(x + 1, (ee + 2 * (x + 1) * x - 3) & mask)
     }.ensuring(res => valid && (res._2 == 0 || res._2 + res._2 == 0) && (inRange(res._3)) && res._2 == _keys(res._3))
@@ -364,10 +369,11 @@ object MutableLongMap {
     private def seekEntryOrOpenTailRec2(x: Int, ee: Int)(implicit
         k: Long, vacantSpotIndex: Int
     ): (Int, Int) = {
-      require(valid && inRange(ee))
-      decreases(-x)
+      require(valid && inRange(ee) && x <= MAX_ITER && x >= 0)
+      decreases(MAX_ITER + 1 - x)
       val q = _keys(ee)
-      if (q == k) {
+      if(x >= MAX_ITER) (ee, EntryNotFound)
+      else if (q == k) {
         (ee, 0)
       } else if (q == 0) {
         (vacantSpotIndex, MissVacant)
