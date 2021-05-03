@@ -56,7 +56,7 @@ case class ListMapLongKey[B](toList: List[(Long, B)]) {
 
   }.ensuring(res => res.contains(keyValue._1) && res.get(keyValue._1) == Some(keyValue._2))
 
-  @inlineOnce
+  // @inlineOnce
   def ++(keyValues: List[(Long, B)]): ListMapLongKey[B] = {
     decreases(keyValues)
     keyValues match {
@@ -64,12 +64,12 @@ case class ListMapLongKey[B](toList: List[(Long, B)]) {
       case Cons(keyValue, rest) => (this + keyValue) ++ rest
     }
   }
-  @inlineOnce
+  // @inlineOnce
   def -(key: Long): ListMapLongKey[B] = {
     ListMapLongKey(TupleListOps.removeStrictlySorted(toList, key))
   }.ensuring(res => !res.contains(key))
 
-  @inlineOnce
+  // @inlineOnce
   def --(keys: List[Long]): ListMapLongKey[B] = {
     decreases(keys)
     keys match {
@@ -118,8 +118,8 @@ object TupleListOps {
     decreases(l)
 
     l match {
-      case head :: tl if (head._2 == value) => head :: filterByValue(tl, value)
-      case head :: tl if (head._2 != value) => filterByValue(tl, value)
+      case Cons(head, tl) if (head._2 == value) => head :: filterByValue(tl, value)
+      case Cons(head, tl)  if (head._2 != value) => filterByValue(tl, value)
       case Nil()                            => Nil[(Long, B)]()
     }
   }.ensuring(res =>
@@ -162,7 +162,7 @@ object TupleListOps {
     }
   }.ensuring(res => invariantList(res) && !containsKey(res, key))
 
-  @inlineOnce
+
   def isStrictlySorted[B](l: List[(Long, B)]): Boolean = {
     decreases(l)
     l match {
