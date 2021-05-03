@@ -445,28 +445,13 @@ object MutableLongMap {
 
     //-------------------LEMMAS------------------------------------------------
 
-    // BUGGY
     @pure
     def lemmaZeroIsInCurrentListMapIFFDefined(): Unit = {
       require(valid)
       val from = 0
       val res = getCurrentListMap(from)
-      
-
-      assert(valid)
-      assert((if (from < _keys.length && validKeyInArray(_keys(from))) res.contains(_keys(from)) && res(_keys(from)) == _values(from) else true))
-      assert((if ((extraKeys & 1) != 0) res.contains(0) && res(0) == zeroValue else !res.contains(0)))
-      assert((if ((extraKeys & 2) != 0) res.contains(Long.MinValue) && res(Long.MinValue) == minValue else !res.contains(Long.MinValue)))
-      
-      // if ((extraKeys & 1) != 0) {
-      //   check(res.contains(0))
-      //   } else {
-      //     check(!res.contains(0))
-      //     }
-      //     ()
-    }//.ensuring(_ => valid && (if ((extraKeys & 1) != 0) getCurrentListMap(0).contains(0) else !getCurrentListMap(0).contains(0)))
+    }.ensuring(_ => valid && (if ((extraKeys & 1) != 0) getCurrentListMap(0).contains(0) else !getCurrentListMap(0).contains(0)))
           
-    //BUGGY
     @pure
     def lemmaValidKeyInArrayIsInListMap(i: Int): Unit = {
       require(
@@ -493,15 +478,14 @@ object MutableLongMap {
 
     }.ensuring(_ => getCurrentListMap(0).contains(_keys(i)))
 
-    // //TODO
     @opaque
     def lemmaCurrentListMapContainsFromThenContainsFromSmaller(from: Int, newFrom: Int, i: Int): Unit = {
-      require(
-        valid && from >= 0 && from < _keys.length &&
-          newFrom >= 0 && newFrom <= from &&
-          i >= from && i < _keys.length &&
-          validKeyInArray(_keys(i)) && getCurrentListMap(from).contains(_keys(i))
-      )
+      require(valid)
+      require(from >= 0 && from < _keys.length)
+      require(newFrom >= 0 && newFrom <= from)
+      require(i >= from && i < _keys.length)
+      require(validKeyInArray(_keys(i)) && getCurrentListMap(from).contains(_keys(i)))
+
       decreases(from - newFrom)
       if (from > newFrom) {
         lemmaCurrentListMapContainsFromThenContainsFromMinusOne(from, i)
