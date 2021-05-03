@@ -47,7 +47,7 @@ object MutableLongMap {
       _keys.length == _values.length &&
       mask >= 0 &&
       _size >= 0 &&
-      _size < mask + 1 && //ensures that there is always at least one key in array _keys == 0 to avoid infinite loop in the seek... functions
+      _size < mask + 1 && 
       size >= _size &&
       extraKeys >= 0 &&
       extraKeys <= 3 &&
@@ -103,7 +103,7 @@ object MutableLongMap {
       require(valid)
       if (key == -key) (((key >>> 63).toInt + 1) & extraKeys) != 0
       else seekEntry(key)._2 != 0
-    }.ensuring(b => valid)
+    }.ensuring(res => valid && (if(getCurrentListMap(0).contains(key)) res else !res))
 
     /** Retrieves the value associated with a key.
       *  If the key does not exist in the map, the `defaultEntry` for that key
@@ -200,7 +200,7 @@ object MutableLongMap {
       }
 
     }.ensuring(res => valid
-    // && (if(res) contains(key) else true)
+    && (if(res) getCurrentListMap(0).contains(key) else true)
     )
 
     /**
@@ -265,7 +265,7 @@ object MutableLongMap {
 
     def seekEmptyTailRec(x: Int, ee: Int): Int = {
       require(valid && inRange(ee) && x >= 0 && x <= MAX_ITER)
-      decreases(MAX_ITER + 1 - x)
+      decreases(MAX_ITER - x)
       if(x >= MAX_ITER) EntryNotFound
       else if (_keys(ee) == 0) ee
       else seekEmptyTailRec(x + 1, (ee + 2 * (x + 1) * x - 3) & mask)
@@ -345,7 +345,7 @@ object MutableLongMap {
          else if (res._2 == MissingBit)
            validZeroKeyIndex(res._1) && !arrayContainsKeyTailRec(_keys, k, 0)
          else
-           res._2 == MissVacant && validZeroKeyIndex(
+           res._2 == MissVacant && inRange(res._1) && validZeroKeyIndex(
              res._1
            ) && !arrayContainsKeyTailRec(_keys, k, 0)
          // true
@@ -388,7 +388,8 @@ object MutableLongMap {
       )) || (res._2 == MissVacant && true))
     )
 
-      @inline
+    @inline
+    // @opaque
     def getCurrentListMap(from: Int): ListMapLongKey[Long] = {
       require(valid && from >= 0 && from <= _keys.length)
 
@@ -421,6 +422,7 @@ object MutableLongMap {
         (if ((extraKeys & 2) != 0) res.contains(Long.MinValue) && res(Long.MinValue) == minValue else !res.contains(Long.MinValue))
     )
 
+    // @inlineOnce
     def getCurrentListMapNoExtraKeys(from: Int): ListMapLongKey[Long] = {
       require(valid && from >= 0 && from <= _keys.length)
       decreases(_keys.length + 1 -from)
@@ -443,69 +445,90 @@ object MutableLongMap {
 
     //-------------------LEMMAS------------------------------------------------
 
-    //BUGGY
-    // @pure
-    // def lemmaZeroIsInCurrentListMapIFFDefined(): Unit = {
-    //   require(valid)
-    //   val from = 0
-    //   val extraKeysBefore = extraKeys
-    //   val res = getCurrentListMap(from)
+    // BUGGY
+    @pure
+    def lemmaZeroIsInCurrentListMapIFFDefined(): Unit = {
+      require(valid)
+      val from = 0
+      val res = getCurrentListMap(from)
       
-    //   assert(extraKeysBefore == extraKeys)
-    //   assert(valid)
-    //   assert((if (from < _keys.length && validKeyInArray(_keys(from))) res.contains(_keys(from)) && res(_keys(from)) == _values(from) else true))
-    //   assert((if ((extraKeys & 1) != 0) res.contains(0) && res(0) == zeroValue else !res.contains(0)))
-    //   assert((if ((extraKeys & 2) != 0) res.contains(Long.MinValue) && res(Long.MinValue) == minValue else !res.contains(Long.MinValue)))
+
+      assert(valid)
+      assert((if (from < _keys.length && validKeyInArray(_keys(from))) res.contains(_keys(from)) && res(_keys(from)) == _values(from) else true))
+      assert((if ((extraKeys & 1) != 0) res.contains(0) && res(0) == zeroValue else !res.contains(0)))
+      assert((if ((extraKeys & 2) != 0) res.contains(Long.MinValue) && res(Long.MinValue) == minValue else !res.contains(Long.MinValue)))
       
-    //   if ((extraKeys & 1) != 0) {
-    //     check(res.contains(0))
-    //     } else {
-    //       check(!res.contains(0))
-    //       }
-    //       ()
-    //       }.ensuring(_ => valid && (if ((extraKeys & 1) != 0) getCurrentListMap(0).contains(0) else !getCurrentListMap(0).contains(0)))
+      // if ((extraKeys & 1) != 0) {
+      //   check(res.contains(0))
+      //   } else {
+      //     check(!res.contains(0))
+      //     }
+      //     ()
+    }//.ensuring(_ => valid && (if ((extraKeys & 1) != 0) getCurrentListMap(0).contains(0) else !getCurrentListMap(0).contains(0)))
           
     //BUGGY
-    // @pure
-    // def lemmaValidKeyInArrayIsInListMap(i: Int): Unit = {
-    //   require(
-    //     valid &&
-    //       i >= 0 && i < _keys.length &&
-    //       validKeyInArray(_keys(i))
-    //   )
-    //   assert(getCurrentListMap(i).contains(_keys(i)))
-    //   lemmaCurrentListMapContainsFromThenContainsFromZero(i, i)
+    @pure
+    def lemmaValidKeyInArrayIsInListMap(i: Int): Unit = {
+      require(
+        valid &&
+          i >= 0 && i < _keys.length &&
+          validKeyInArray(_keys(i))
+      )
+      assert(getCurrentListMap(i).contains(_keys(i)))
+      lemmaCurrentListMapContainsFromThenContainsFromZero(i, i)
 
-    // }.ensuring(_ => getCurrentListMap(0).contains(_keys(i)))
+    }.ensuring(_ => getCurrentListMap(0).contains(_keys(i)))
     
     
+    @opaque
+    @inline
+    def lemmaCurrentListMapContainsFromThenContainsFromZero(from: Int, i: Int): Unit = {
+      require(
+        valid && from >= 0 && from < _keys.length &&
+          i >= from && i < _keys.length &&
+          validKeyInArray(_keys(i)) && getCurrentListMap(from).contains(_keys(i))
+      )
+      lemmaCurrentListMapContainsFromThenContainsFromSmaller(from, 0, i)
+      check(getCurrentListMap(0).contains(_keys(i)))
+
+    }.ensuring(_ => getCurrentListMap(0).contains(_keys(i)))
+
     // //TODO
-    // @opaque
-    // def lemmaCurrentListMapContainsFromThenContainsFromZero(from: Int, i: Int): Unit = {
-    //   require(
-    //     valid && from >= 0 && from < _keys.length &&
-    //       i >= from && i < _keys.length &&
-    //       validKeyInArray(_keys(i)) && getCurrentListMap(from).contains(_keys(i))
-    //   )
-    //   lemmaCurrentListMapContainsFromThenContainsFromSmaller(from, 0, i)
+    @opaque
+    def lemmaCurrentListMapContainsFromThenContainsFromSmaller(from: Int, newFrom: Int, i: Int): Unit = {
+      require(
+        valid && from >= 0 && from < _keys.length &&
+          newFrom >= 0 && newFrom <= from &&
+          i >= from && i < _keys.length &&
+          validKeyInArray(_keys(i)) && getCurrentListMap(from).contains(_keys(i))
+      )
+      decreases(from - newFrom)
+      if (from > newFrom) {
+        lemmaCurrentListMapContainsFromThenContainsFromMinusOne(from, i)
+        lemmaCurrentListMapContainsFromThenContainsFromSmaller(from - 1, newFrom, i)
+      }
 
-    // }.ensuring(_ => getCurrentListMap(0).contains(_keys(i)) && getCurrentListMap(0)(_keys(i)) == _values(i))
+      check(getCurrentListMap(newFrom).contains(_keys(i)))
+      assume(getCurrentListMap(newFrom).contains(_keys(i)))
 
-    // //TODO
-    // @opaque
-    // def lemmaCurrentListMapContainsFromThenContainsFromSmaller(from: Int, newFrom: Int, i: Int): Unit = {
-    //   require(
-    //     valid && from >= 0 && from < _keys.length &&
-    //       newFrom >= 0 && newFrom <= from &&
-    //       i >= from && i < _keys.length &&
-    //       validKeyInArray(_keys(i)) && getCurrentListMap(from).contains(_keys(i))
-    //   )
+    }.ensuring(_ => getCurrentListMap(newFrom).contains(_keys(i)))
 
-    //   // if (from > newFrom) {
-    //   //   lemmaCurrentListMapContainsFromThenContainsFromSmaller(from, newFrom, i)
-    //   // }
+    @opaque
+    def lemmaCurrentListMapContainsFromThenContainsFromMinusOne(from: Int, i: Int): Unit = {
+      require(valid)
+      require(from > 0 && from < _keys.length)
+      require(i >= from && i < _keys.length)
+      require(validKeyInArray(_keys(i)) && getCurrentListMap(from).contains(_keys(i)))
 
-    // }.ensuring(_ => getCurrentListMap(newFrom).contains(_keys(i)))
+      val currentLMFrom : ListMapLongKey[Long] = getCurrentListMap(from)
+      val currentLMFromMinusOne : ListMapLongKey[Long] = getCurrentListMap(from - 1)
+      if(validKeyInArray(_keys(from - 1))){
+        check(currentLMFromMinusOne == currentLMFrom + (_keys(i), _values(i)))
+      } else {
+        check(currentLMFromMinusOne == currentLMFrom)
+      }
+
+    }.ensuring(_ => getCurrentListMap(from - 1).contains(_keys(i)))
 
     // //TODO
     // @opaque
