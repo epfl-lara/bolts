@@ -391,10 +391,11 @@ object MutableLongMap {
     @inline
     // @opaque
     def getCurrentListMap(from: Int): ListMapLongKey[Long] = {
-      require(valid && from >= 0 && from <= _keys.length)
+      require(valid)
+      require(from >= 0 && from <= _keys.length)
 
       val res = if ((extraKeys & 1) != 0 && (extraKeys & 2) != 0) {
-        // it means there is a mapping for the key 0 and the Lon.MIN_VALUE
+        // it means there is a mapping for the key 0 and the Long.MIN_VALUE
         (getCurrentListMapNoExtraKeys(from) + (0L, zeroValue)) + (Long.MinValue, minValue)
       } else if ((extraKeys & 1) != 0 && (extraKeys & 2) == 0) {
         // it means there is a mapping for the key 0
