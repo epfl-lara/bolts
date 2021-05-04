@@ -457,7 +457,6 @@ object MutableLongMap {
     //   val res = getCurrentListMap(from)
     // }.ensuring(_ => valid && (if ((extraKeys & 1) != 0) getCurrentListMap(0).contains(0) else !getCurrentListMap(0).contains(0)))
 
-    @inline
     @opaque
     @pure
     def lemma(k: Long, otherKey: Long, value: Long, lm: ListMapLongKey[Long]): Unit = {
@@ -469,7 +468,6 @@ object MutableLongMap {
 
     //PASS
     @opaque
-    @inline
     @pure
     def lemmaGetCurrentListMapContainsImpliesContainsFromPlusOneIfNotAtFromNoExtraKeyMin(k: Long, from: Int): Unit = {
       require(valid)
@@ -496,7 +494,6 @@ object MutableLongMap {
 
     //PASS
     @opaque
-    @inline
     @pure
     def lemmaGetCurrentListMapContainsImpliesContainsFromPlusOneIfNotAtFromNoExtraKeyZero(k: Long, from: Int): Unit = {
       require(valid)
@@ -523,7 +520,6 @@ object MutableLongMap {
 
     //PASS
     @opaque
-    @inline
     @pure
     def lemmaGetCurrentListMapContainsImpliesContainsFromPlusOneIfNotAtFromBothExtraKeys(k: Long, from: Int): Unit = {
       require(valid)
@@ -543,8 +539,8 @@ object MutableLongMap {
     }.ensuring(_ => valid && getCurrentListMap(from + 1).contains(k))
 
     
+    //PASS
     @opaque
-    @inline
     @pure
     def lemmaGetCurrentListMapContainsImpliesContainsFromPlusOneIfNotAtFrom(k: Long, from: Int): Unit = {
       require(valid)
