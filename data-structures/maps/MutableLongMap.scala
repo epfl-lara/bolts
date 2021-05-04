@@ -456,6 +456,57 @@ object MutableLongMap {
     //   val from = 0
     //   val res = getCurrentListMap(from)
     // }.ensuring(_ => valid && (if ((extraKeys & 1) != 0) getCurrentListMap(0).contains(0) else !getCurrentListMap(0).contains(0)))
+
+    @opaque
+    @inline
+    @pure
+    def lemmaGetCurrentListMapContainsImpliesContainsFromPlusOneIfNotAtFrom(k: Long, from: Int): Unit = {
+      require(valid)
+      require(from >= 0 && from < _keys.length) 
+      require(k != 0 && k != Long.MinValue)
+      require(getCurrentListMap(from).contains(k) && _keys(from) != k)
+
+      val currentListMap: ListMapLongKey[Long] = getCurrentListMap(from)
+      val currentListMapPlusOne: ListMapLongKey[Long] = getCurrentListMap(from + 1)
+
+      if(validKeyInArray(_keys(from))){
+        assert(getCurrentListMapNoExtraKeys(from + 1) + (_keys(from), _values(from)) == getCurrentListMapNoExtraKeys(from))
+        
+        if ((extraKeys & 1) != 0 && (extraKeys & 2) != 0) {
+          assert(currentListMap == (getCurrentListMapNoExtraKeys(from) + (0L, zeroValue)) + (Long.MinValue, minValue))
+          assert(currentListMapPlusOne == (getCurrentListMapNoExtraKeys(from + 1) + (0L, zeroValue)) + (Long.MinValue, minValue))
+        } else if ((extraKeys & 1) != 0 && (extraKeys & 2) == 0) {
+          assert(currentListMap ==  getCurrentListMapNoExtraKeys(from) + (0L, zeroValue))
+          assert(currentListMapPlusOne ==  getCurrentListMapNoExtraKeys(from + 1) + (0L, zeroValue))
+        } else if ((extraKeys & 2) != 0 && (extraKeys & 1) == 0) {
+          assert(currentListMap == getCurrentListMapNoExtraKeys(from) + (Long.MinValue, minValue))
+          assert(currentListMapPlusOne == getCurrentListMapNoExtraKeys(from + 1) + (Long.MinValue, minValue))
+        } else {
+          assert(currentListMap == getCurrentListMapNoExtraKeys(from))
+          assert(currentListMapPlusOne == getCurrentListMapNoExtraKeys(from + 1))
+        }
+
+      } else {
+        //Here proven directly which is cool
+        assert(getCurrentListMapNoExtraKeys(from + 1) == getCurrentListMapNoExtraKeys(from))
+        if ((extraKeys & 1) != 0 && (extraKeys & 2) != 0) {
+          assert(currentListMap == (getCurrentListMapNoExtraKeys(from) + (0L, zeroValue)) + (Long.MinValue, minValue))
+          assert(currentListMapPlusOne == (getCurrentListMapNoExtraKeys(from + 1) + (0L, zeroValue)) + (Long.MinValue, minValue))
+        } else if ((extraKeys & 1) != 0 && (extraKeys & 2) == 0) {
+          assert(currentListMap ==  getCurrentListMapNoExtraKeys(from) + (0L, zeroValue))
+          assert(currentListMapPlusOne ==  getCurrentListMapNoExtraKeys(from + 1) + (0L, zeroValue))
+        } else if ((extraKeys & 2) != 0 && (extraKeys & 1) == 0) {
+          assert(currentListMap == getCurrentListMapNoExtraKeys(from) + (Long.MinValue, minValue))
+          assert(currentListMapPlusOne == getCurrentListMapNoExtraKeys(from + 1) + (Long.MinValue, minValue))
+        } else {
+          assert(currentListMap == getCurrentListMapNoExtraKeys(from))
+          assert(currentListMapPlusOne == getCurrentListMapNoExtraKeys(from + 1))
+        }
+
+      }
+      
+
+    }.ensuring(_ => valid && getCurrentListMap(from + 1).contains(k))
           
     @pure
     def lemmaValidKeyInArrayIsInListMap(i: Int): Unit = {
@@ -467,7 +518,7 @@ object MutableLongMap {
       assert(getCurrentListMap(i).contains(_keys(i)))
       lemmaCurrentListMapContainsFromThenContainsFromZero(i, i)
 
-    }.ensuring(_ => getCurrentListMap(0).contains(_keys(i)))
+    }.ensuring(_ => valid && getCurrentListMap(0).contains(_keys(i)))
     
     
     @opaque
@@ -520,10 +571,12 @@ object MutableLongMap {
     }.ensuring(_ => getCurrentListMap(from - 1).contains(_keys(i)))
 
     @opaque
+    @pure
     def lemmaCurrentStateListMapContainsKeyImpliesArrayContainsKeyFrom(k: Long, from: Int): Unit = {
-      require(valid && getCurrentListMap(from).contains(k))
+      require(valid)
       require(from >= 0 && from < _keys.length)
-      val currentListMap: ListMapLongKey[Long] = getCurrentListMap(0)
+      require(getCurrentListMap(from).contains(k))
+      val currentListMap: ListMapLongKey[Long] = getCurrentListMap(from)
       if(k == 0){
         assert((extraKeys & 1) != 0)
       } else if(k == Long.MinValue) {
@@ -533,11 +586,13 @@ object MutableLongMap {
         if(_keys(from) == k) {
           assert(getCurrentListMap(from).contains(_keys(from)))
         } else {
+          lemmaGetCurrentListMapContainsImpliesContainsFromPlusOneIfNotAtFrom(k, from)
           assert(getCurrentListMap(from + 1).contains(k))
           // lemmaCurrentStateListMapContainsKeyImpliesArrayContainsKeyFrom(k, from + 1)
         }
       }
-    }.ensuring(_ => if (k != 0 && k != Long.MinValue) arrayContainsKeyTailRec(_keys, k, from) else if (k == 0) (extraKeys & 1) != 0 else (extraKeys & 2) != 0)
+    }.ensuring(_ => valid &&
+                  (if (k != 0 && k != Long.MinValue) arrayContainsKeyTailRec(_keys, k, from) else if (k == 0) (extraKeys & 1) != 0 else (extraKeys & 2) != 0))
 
     // //TODO
     // @opaque
