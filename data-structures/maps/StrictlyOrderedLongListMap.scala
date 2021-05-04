@@ -360,6 +360,7 @@ object ListMapLongKeyLemmas {
   }.ensuring(_ => (lm + (a -> b))(a0) == lm(a0))
 
   @opaque
+  @inline
   def addStillContains[B](lm: ListMapLongKey[B], a: Long, b: B, a0: Long): Unit = {
     require(lm.contains(a0))
 
