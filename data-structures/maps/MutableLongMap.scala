@@ -462,6 +462,9 @@ object MutableLongMap {
     def lemma(k: Long, otherKey: Long, value: Long, lm: ListMapLongKey[Long]): Unit = {
       require((lm + (otherKey, value)).contains(k))
       require(k != otherKey)
+      if(!lm.contains(k)){
+        ListMapLongKeyLemmas.addStillNotContains(lm, otherKey, value, k)
+      }
 
     }.ensuring(_ => lm.contains(k))
 
