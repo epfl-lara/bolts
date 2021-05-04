@@ -457,6 +457,92 @@ object MutableLongMap {
     //   val res = getCurrentListMap(from)
     // }.ensuring(_ => valid && (if ((extraKeys & 1) != 0) getCurrentListMap(0).contains(0) else !getCurrentListMap(0).contains(0)))
 
+    @inline
+    @opaque
+    @pure
+    def lemma(k: Long, otherKey: Long, value: Long, lm: ListMapLongKey[Long]): Unit = {
+      require((lm + (otherKey, value)).contains(k))
+      require(k != otherKey)
+
+    }.ensuring(_ => lm.contains(k))
+
+
+    //PASS
+    @opaque
+    @inline
+    @pure
+    def lemmaGetCurrentListMapContainsImpliesContainsFromPlusOneIfNotAtFromNoExtraKeyMin(k: Long, from: Int): Unit = {
+      require(valid)
+      require((extraKeys & 2) == 0)
+      require(from >= 0 && from < _keys.length) 
+      require(k != 0 && k != Long.MinValue)
+      require(getCurrentListMap(from).contains(k) && _keys(from) != k)
+      
+      if(validKeyInArray(_keys(from))){        
+        if ((extraKeys & 1) != 0) {
+          lemma(k, 0L, zeroValue, getCurrentListMapNoExtraKeys(from + 1) + (_keys(from), _values(from)))
+          lemma(k, _keys(from), _values(from), getCurrentListMapNoExtraKeys(from + 1))
+
+          ListMapLongKeyLemmas.addStillContains(getCurrentListMapNoExtraKeys(from + 1), 0L, zeroValue, k)
+
+        } else {
+          lemma(k, _keys(from), _values(from), getCurrentListMapNoExtraKeys(from + 1))
+        }
+
+      }
+      
+
+    }.ensuring(_ => valid && getCurrentListMap(from + 1).contains(k))
+
+    //PASS
+    @opaque
+    @inline
+    @pure
+    def lemmaGetCurrentListMapContainsImpliesContainsFromPlusOneIfNotAtFromNoExtraKeyZero(k: Long, from: Int): Unit = {
+      require(valid)
+      require((extraKeys & 1) == 0)
+      require(from >= 0 && from < _keys.length) 
+      require(k != 0 && k != Long.MinValue)
+      require(getCurrentListMap(from).contains(k) && _keys(from) != k)
+
+      if(validKeyInArray(_keys(from))){
+        if ((extraKeys & 2) != 0) {
+
+          lemma(k, Long.MinValue, minValue, getCurrentListMapNoExtraKeys(from + 1) + (_keys(from), _values(from)))
+          lemma(k, _keys(from), _values(from), getCurrentListMapNoExtraKeys(from + 1))
+          
+          ListMapLongKeyLemmas.addStillContains(getCurrentListMapNoExtraKeys(from + 1), Long.MinValue, minValue, k)
+
+        } else {
+          lemma(k, _keys(from), _values(from), getCurrentListMapNoExtraKeys(from + 1))
+        }
+      }
+      
+
+    }.ensuring(_ => valid && getCurrentListMap(from + 1).contains(k))
+
+    //PASS
+    @opaque
+    @inline
+    @pure
+    def lemmaGetCurrentListMapContainsImpliesContainsFromPlusOneIfNotAtFromBothExtraKeys(k: Long, from: Int): Unit = {
+      require(valid)
+      require((extraKeys & 1) != 0 && (extraKeys & 2) != 0)
+      require(from >= 0 && from < _keys.length) 
+      require(k != 0 && k != Long.MinValue)
+      require(getCurrentListMap(from).contains(k) && _keys(from) != k)
+
+      if(validKeyInArray(_keys(from))){
+          lemma(k, Long.MinValue, minValue, getCurrentListMapNoExtraKeys(from + 1) + (_keys(from), _values(from)) + (0L, zeroValue))
+          lemma(k, 0L, zeroValue, getCurrentListMapNoExtraKeys(from + 1) + (_keys(from), _values(from)))
+          lemma(k, _keys(from), _values(from), getCurrentListMapNoExtraKeys(from + 1))
+          
+          ListMapLongKeyLemmas.addStillContains(getCurrentListMapNoExtraKeys(from + 1), 0L, zeroValue, k)
+          ListMapLongKeyLemmas.addStillContains(getCurrentListMapNoExtraKeys(from + 1) + (0L, zeroValue), Long.MinValue, minValue, k)
+      }
+    }.ensuring(_ => valid && getCurrentListMap(from + 1).contains(k))
+
+    
     @opaque
     @inline
     @pure
@@ -466,43 +552,14 @@ object MutableLongMap {
       require(k != 0 && k != Long.MinValue)
       require(getCurrentListMap(from).contains(k) && _keys(from) != k)
 
-      val currentListMap: ListMapLongKey[Long] = getCurrentListMap(from)
-      val currentListMapPlusOne: ListMapLongKey[Long] = getCurrentListMap(from + 1)
-
       if(validKeyInArray(_keys(from))){
-        assert(getCurrentListMapNoExtraKeys(from + 1) + (_keys(from), _values(from)) == getCurrentListMapNoExtraKeys(from))
-        
-        if ((extraKeys & 1) != 0 && (extraKeys & 2) != 0) {
-          assert(currentListMap == (getCurrentListMapNoExtraKeys(from) + (0L, zeroValue)) + (Long.MinValue, minValue))
-          assert(currentListMapPlusOne == (getCurrentListMapNoExtraKeys(from + 1) + (0L, zeroValue)) + (Long.MinValue, minValue))
-        } else if ((extraKeys & 1) != 0 && (extraKeys & 2) == 0) {
-          assert(currentListMap ==  getCurrentListMapNoExtraKeys(from) + (0L, zeroValue))
-          assert(currentListMapPlusOne ==  getCurrentListMapNoExtraKeys(from + 1) + (0L, zeroValue))
-        } else if ((extraKeys & 2) != 0 && (extraKeys & 1) == 0) {
-          assert(currentListMap == getCurrentListMapNoExtraKeys(from) + (Long.MinValue, minValue))
-          assert(currentListMapPlusOne == getCurrentListMapNoExtraKeys(from + 1) + (Long.MinValue, minValue))
+        if ((extraKeys & 1) == 0) {
+          lemmaGetCurrentListMapContainsImpliesContainsFromPlusOneIfNotAtFromNoExtraKeyZero(k, from)
+        } else if((extraKeys & 2) == 0){
+          lemmaGetCurrentListMapContainsImpliesContainsFromPlusOneIfNotAtFromNoExtraKeyMin(k, from)
         } else {
-          assert(currentListMap == getCurrentListMapNoExtraKeys(from))
-          assert(currentListMapPlusOne == getCurrentListMapNoExtraKeys(from + 1))
+          lemmaGetCurrentListMapContainsImpliesContainsFromPlusOneIfNotAtFromBothExtraKeys(k, from)
         }
-
-      } else {
-        //Here proven directly which is cool
-        assert(getCurrentListMapNoExtraKeys(from + 1) == getCurrentListMapNoExtraKeys(from))
-        if ((extraKeys & 1) != 0 && (extraKeys & 2) != 0) {
-          assert(currentListMap == (getCurrentListMapNoExtraKeys(from) + (0L, zeroValue)) + (Long.MinValue, minValue))
-          assert(currentListMapPlusOne == (getCurrentListMapNoExtraKeys(from + 1) + (0L, zeroValue)) + (Long.MinValue, minValue))
-        } else if ((extraKeys & 1) != 0 && (extraKeys & 2) == 0) {
-          assert(currentListMap ==  getCurrentListMapNoExtraKeys(from) + (0L, zeroValue))
-          assert(currentListMapPlusOne ==  getCurrentListMapNoExtraKeys(from + 1) + (0L, zeroValue))
-        } else if ((extraKeys & 2) != 0 && (extraKeys & 1) == 0) {
-          assert(currentListMap == getCurrentListMapNoExtraKeys(from) + (Long.MinValue, minValue))
-          assert(currentListMapPlusOne == getCurrentListMapNoExtraKeys(from + 1) + (Long.MinValue, minValue))
-        } else {
-          assert(currentListMap == getCurrentListMapNoExtraKeys(from))
-          assert(currentListMapPlusOne == getCurrentListMapNoExtraKeys(from + 1))
-        }
-
       }
       
 
