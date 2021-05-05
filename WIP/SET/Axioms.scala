@@ -24,7 +24,7 @@ abstract class SET {
     Ax.subseteqDef(Ax.eqClass(this), Ax.eqClass(that))
   }
 
-  @ghost
+  @ghost @inline
   final def U(that: SET): SET = {
     SET.union2(this, that)
   }
