@@ -637,15 +637,61 @@ object MutableLongMap {
         assert((extraKeys & 1) != 0)
       } else if(k == Long.MinValue) {
         assert((extraKeys & 2) != 0)
-      }else {
+      } else {
         assert(k != 0 && k != Long.MinValue)
-        if(_keys(from) == k) {
-          assert(getCurrentListMap(from).contains(_keys(from)))
+        if(from + 1 < _keys.length){
+          if(_keys(from) == k) {
+            assert(getCurrentListMap(from).contains(_keys(from)))
+            check(arrayContainsKeyTailRec(_keys, k, from))
+          } else {
+              lemmaGetCurrentListMapContainsImpliesContainsFromPlusOneIfNotAtFrom(k, from)
+              assert(getCurrentListMap(from + 1).contains(k))
+              // lemmaCurrentStateListMapContainsKeyImpliesArrayContainsKeyFrom(k, from + 1)
+              check(arrayContainsKeyTailRec(_keys, k, from))
+          }
         } else {
-          lemmaGetCurrentListMapContainsImpliesContainsFromPlusOneIfNotAtFrom(k, from)
-          assert(getCurrentListMap(from + 1).contains(k))
-          // lemmaCurrentStateListMapContainsKeyImpliesArrayContainsKeyFrom(k, from + 1)
+            assert(from == _keys.length - 1)
+            assert(getCurrentListMapNoExtraKeys(from + 1) == ListMapLongKey.empty[Long])
+            assert(getCurrentListMap(from).contains(k))
+            if(validKeyInArray(_keys(from))){
+              assert(getCurrentListMapNoExtraKeys(from) == ListMapLongKey.empty[Long] + (_keys(from), _values(from)))
+              if ((extraKeys & 1) != 0 && (extraKeys & 2) != 0) {
+                lemmaContainsAfterAddingDifferentThenContainsBefore(k, Long.MinValue, minValue, (getCurrentListMapNoExtraKeys(from) + (0L, zeroValue)))
+                lemmaContainsAfterAddingDifferentThenContainsBefore(k, 0L, zeroValue, getCurrentListMapNoExtraKeys(from))
+                assert(getCurrentListMapNoExtraKeys(from).contains(k))
+              } else if ((extraKeys & 1) != 0 && (extraKeys & 2) == 0) {
+                lemmaContainsAfterAddingDifferentThenContainsBefore(k, 0L, zeroValue, getCurrentListMapNoExtraKeys(from))
+                assert(getCurrentListMapNoExtraKeys(from).contains(k))
+              } else if ((extraKeys & 2) != 0 && (extraKeys & 1) == 0) {
+                lemmaContainsAfterAddingDifferentThenContainsBefore(k, Long.MinValue, minValue, getCurrentListMapNoExtraKeys(from))
+                assert(getCurrentListMapNoExtraKeys(from).contains(k))
+              } else {
+                assert(getCurrentListMapNoExtraKeys(from).contains(k))
+              }
+               assert(getCurrentListMapNoExtraKeys(from).contains(k))
+               ListMapLongKeyLemmas.emptyContainsNothing[Long](k)
+               assert(!ListMapLongKey.empty[Long].contains(k))
+               if(k != _keys(from)){
+                 ListMapLongKeyLemmas.addStillNotContains(ListMapLongKey.empty[Long], _keys(from), _values(from), k)
+               }
+              assert(_keys(from) == k)
+              check(arrayContainsKeyTailRec(_keys, k, from))
+            } else {
+              assert(getCurrentListMapNoExtraKeys(from) == ListMapLongKey.empty[Long])
+              if ((extraKeys & 1) != 0 && (extraKeys & 2) != 0) {
+                lemmaContainsAfterAddingDifferentThenContainsBefore(k, Long.MinValue, minValue, (getCurrentListMapNoExtraKeys(from) + (0L, zeroValue)))
+                lemmaContainsAfterAddingDifferentThenContainsBefore(k, 0L, zeroValue, getCurrentListMapNoExtraKeys(from))
+              } else if ((extraKeys & 1) != 0 && (extraKeys & 2) == 0) {
+                lemmaContainsAfterAddingDifferentThenContainsBefore(k, 0L, zeroValue, getCurrentListMapNoExtraKeys(from))
+              } else if ((extraKeys & 2) != 0 && (extraKeys & 1) == 0) {
+                lemmaContainsAfterAddingDifferentThenContainsBefore(k, Long.MinValue, minValue, getCurrentListMapNoExtraKeys(from))
+              }
+              assert(!getCurrentListMap(from).contains(k))
+            }
+            
+            
         }
+        
       }
     }.ensuring(_ => valid &&
                   (if (k != 0 && k != Long.MinValue) arrayContainsKeyTailRec(_keys, k, from) else if (k == 0) (extraKeys & 1) != 0 else (extraKeys & 2) != 0))

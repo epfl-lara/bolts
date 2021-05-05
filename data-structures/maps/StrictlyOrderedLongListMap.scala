@@ -296,6 +296,11 @@ object ListMapLongKeyLemmas {
   import ListSpecs._
 
   @opaque
+  def emptyContainsNothing[B](k: Long): Unit = {
+
+  }.ensuring(_ => !ListMapLongKey.empty[B].contains(k))
+
+  @opaque
   def addValidProp[B](lm: ListMapLongKey[B], p: ((Long, B)) => Boolean, a: Long, b: B): Unit = {
     require(lm.forall(p) && p(a, b))
     decreases(lm.toList.size)
