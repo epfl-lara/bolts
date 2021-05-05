@@ -1,11 +1,6 @@
 package SET
-
 import stainless.annotation._
 import stainless.lang.StaticChecks._
-import stainless.proof._
-
-abstract class SETMeaning {
-}
 
 abstract class SET {
   // Subclassing does not define behavior (axioms do).
@@ -27,6 +22,11 @@ abstract class SET {
   @ghost
   final def subsetEq(that: SET): Boolean = {
     Ax.subseteqDef(Ax.eqClass(this), Ax.eqClass(that))
+  }
+
+  @ghost
+  final def union(that: SET): Boolean = {
+    Ax.unionDef(Ax.eqClass(this), Ax.eqClass(that))
   }
 }
 
@@ -63,13 +63,18 @@ object SET {
   def apply(e1: SET, e2: SET): SET = uPair(e1, e2)
 }
 
+// Only for use in eqClass to apply == to it.
+abstract class SETMeaning { }
+
 object Ax {
   @extern @ghost
   def eqClass(s: SET): SETMeaning = {
     /* Kernel of the equivalence relation on the stainless representation
-       of the SET class, maps set representations into actual sets.
-       It allows us to use built-in equality for the usual extensional
-       equality of sets. */
+       of the SET class, maps set representations into their equivalence classes
+       that are actual mathematical sets and are denoted by SETMeaning.
+       This definition allows solvers to efficiently use 
+       reflexivity, transitivity, and (when also used for `in`) 
+       congruence of the equality.  */
     ???
   }
   @extern @ghost
@@ -92,7 +97,8 @@ object Ax {
   // subseteq
   // ...............................  
   // used in the infix operator method of SET
-  @extern def subseteqDef(s1: SETMeaning, s2: SETMeaning): Boolean =  {
+  @extern
+  def subseteqDef(s1: SETMeaning, s2: SETMeaning): Boolean =  {
     ???
   }
   
@@ -110,53 +116,3 @@ object Ax {
              ((w in a) && !(w in b)))
 }
 
-object Basic {
-  // .............................................................
-  // equality properties that follow from definition via eqKernel
-  // .............................................................
-  def refl(s: SET): Unit = { 
-    ()
-  } ensuring (_ => s === s)
-
-  def sym(s1: SET, s2: SET): Unit = {
-    ()
-  } ensuring (_ => (s1 =!= s2) || (s2 === s1))
-
-  def tran(s1: SET, s2: SET, s3: SET): Unit = {
-    ()
-  } ensuring(_ => (s1 =!= s2) || (s2 =!= s3) || (s1 === s3))
-
-  def congL(a: SET, b: SET, a1: SET): Unit = {
-    ()
-  } ensuring(_ => !(a in b) || (a =!= a1) || (a1 in b))
-  
-  def congR(a: SET, b: SET, b1: SET): Unit = {
-    ()
-  } ensuring(_ => !(a in b) || !(b === b1) || (a in b1))
-
-  // two subsets imply equality
-  def subsetsEq(a: SET, b: SET): Unit = {
-    val w = Ax.notEqWitn(a, b)      
-    Ax.subseteq(a, b, w)
-    Ax.subseteq(b, a, w)
-  } ensuring(_ => !(a subsetEq b) || !(b subsetEq a) || (a === b))
-
-  @ghost
-  def one : SET = {
-    val one = SET(SET.empty)
-  
-    SET.singletonDef(SET.empty, SET.empty)
-    assert(SET.empty in one)
-    SET.emptyDef(SET.empty)
-    assert(!(SET.empty in SET.empty))
-    assert(SET.empty =!= one)
-    val w = Ax.notSubseteqWitn(SET.empty, one)
-    SET.emptyDef(w)
- 
-    one
-  } ensuring(one =>
-    (SET.empty in one)
-    && (SET.empty =!= one)
-    && (SET.empty subsetEq one))
-  
-}
