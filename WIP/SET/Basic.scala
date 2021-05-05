@@ -30,9 +30,9 @@ object Basic {
 
   // two subsets imply equality
   def subsetsEq(a: SET, b: SET): Unit = {
-    val w = Ax.notEqWitn(a, b)      
-    Ax.subseteq(a, b, w)
-    Ax.subseteq(b, a, w)
+    val w = SET.notEqWitn(a, b)      
+    SET.subseteq(a, b, w)
+    SET.subseteq(b, a, w)
   } ensuring(_ => !(a subsetEq b) || !(b subsetEq a) || (a === b))
 
   @ghost
@@ -44,7 +44,7 @@ object Basic {
     SET.emptyDef(SET.empty)
     assert(!(SET.empty in SET.empty))
     assert(SET.empty =!= one)
-    val w = Ax.notSubseteqWitn(SET.empty, one)
+    val w = SET.notSubseteqWitn(SET.empty, one)
     SET.emptyDef(w)
  
     one
