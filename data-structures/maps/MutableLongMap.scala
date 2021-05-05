@@ -686,19 +686,13 @@ object MutableLongMap {
     }.ensuring(_ => valid &&
                   (if (k != 0 && k != Long.MinValue) arrayContainsKeyTailRec(_keys, k, from) else if (k == 0) (extraKeys & 1) != 0 else (extraKeys & 2) != 0))
 
-    // //TODO
-    // @opaque
-    // def lemmaCurrentStateListMapContainsKeyImpliesArrayContainsKey(k: Long): Unit = {
-    //   require(valid && getCurrentListMap(0).contains(k))
-    //   if(k == 0){
-    //     assert((extraKeys & 1) != 0)
-    //   } else if(k == Long.MinValue) {
-    //     assert((extraKeys & 2) != 0)
-    //   }else {
-    //   lemmaCurrentStateListMapContainsKeyImpliesArrayContainsKeyFrom(k, 0)
-    //   }
+    //PASS
+    @opaque
+    def lemmaCurrentStateListMapContainsKeyImpliesArrayContainsKey(k: Long): Unit = {
+      require(valid && getCurrentListMap(0).contains(k))
+      lemmaCurrentStateListMapContainsKeyImpliesArrayContainsKeyFrom(k, 0)
       
-    // }.ensuring(_ => if (k != 0 && k != Long.MinValue) arrayContainsKeyTailRec(_keys, k, 0) else if (k == 0) (extraKeys & 1) != 0 else (extraKeys & 2) != 0)
+    }.ensuring(_ => if (k != 0 && k != Long.MinValue) arrayContainsKeyTailRec(_keys, k, 0) else if (k == 0) (extraKeys & 1) != 0 else (extraKeys & 2) != 0)
 
     // @opaque
     // def lemmaCurrentStateListMapContainsKeyFromImpliesArrayContainsKeyFrom(k: Long, from: Int): Unit = {
