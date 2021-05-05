@@ -563,7 +563,9 @@ object MutableLongMap {
       
 
     }.ensuring(_ => valid && getCurrentListMap(from + 1).contains(k))
-          
+         
+    //PASS
+    @opaque
     @pure
     def lemmaValidKeyInArrayIsInListMap(i: Int): Unit = {
       require(
@@ -576,9 +578,10 @@ object MutableLongMap {
 
     }.ensuring(_ => valid && getCurrentListMap(0).contains(_keys(i)))
     
-    
+    //PASS
     @opaque
     @inline
+    @pure
     def lemmaCurrentListMapContainsFromThenContainsFromZero(from: Int, i: Int): Unit = {
       require(
         valid && from >= 0 && from < _keys.length &&
@@ -590,7 +593,9 @@ object MutableLongMap {
 
     }.ensuring(_ => getCurrentListMap(0).contains(_keys(i)))
 
+    //PASS
     @opaque
+    @pure
     def lemmaCurrentListMapContainsFromThenContainsFromSmaller(from: Int, newFrom: Int, i: Int): Unit = {
       require(valid)
       require(from >= 0 && from < _keys.length)
@@ -609,7 +614,9 @@ object MutableLongMap {
 
     }.ensuring(_ => getCurrentListMap(newFrom).contains(_keys(i)))
 
+    //PASS
     @opaque
+    @pure
     def lemmaCurrentListMapContainsFromThenContainsFromMinusOne(from: Int, i: Int): Unit = {
       require(valid)
       require(from > 0 && from < _keys.length)
@@ -626,6 +633,7 @@ object MutableLongMap {
 
     }.ensuring(_ => getCurrentListMap(from - 1).contains(_keys(i)))
 
+    //TODO
     @opaque
     @pure
     def lemmaCurrentStateListMapContainsKeyImpliesArrayContainsKeyFrom(k: Long, from: Int): Unit = {
