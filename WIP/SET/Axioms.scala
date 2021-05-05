@@ -25,8 +25,8 @@ abstract class SET {
   }
 
   @ghost
-  final def union(that: SET): Boolean = {
-    Ax.unionDef(Ax.eqClass(this), Ax.eqClass(that))
+  final def U(that: SET): SET = {
+    SET.union2(this, that)
   }
 }
 
@@ -61,6 +61,27 @@ object SET {
   def apply(elem: SET): SET = singleton(elem)
   @ghost
   def apply(e1: SET, e2: SET): SET = uPair(e1, e2)
+
+  @ghost
+  def union(s: SET): SET = {
+    Ax.eqRep(unionM(Ax.eqClass(s)))
+  }
+  @ghost @extern 
+  def unionM(s: SETMeaning): SETMeaning = {
+    (??? : SETMeaning)
+  }
+  @ghost @extern  
+  def unionDefLB(y: SET, x: SET, s: SET): Unit = {
+    ()
+  } ensuring(_ => !(y in x) || !(x in s) || (y in union(s)))
+
+  @ghost @extern  
+  def unionDefUB(y: SET, s: SET): SET = {
+    (??? : SET)
+  } ensuring(x => !(y in union(s)) || ((y in x) && (x in s)))
+
+  @ghost
+  def union2(s1: SET, s2: SET): SET = union(SET(s1, s2))
 }
 
 // Only for use in eqClass to apply == to it.
@@ -81,6 +102,11 @@ object Ax {
   def elem(sm1: SETMeaning, sm2: SETMeaning): Boolean = {
     ???
   }
+
+  @extern @ghost
+  def eqRep(m: SETMeaning): SET = {
+    (??? : SET)
+  } ensuring((s: SET) => eqClass(s) == m)
   
   // ...............................
   // extensionality of set equality
