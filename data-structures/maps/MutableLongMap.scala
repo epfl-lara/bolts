@@ -459,7 +459,7 @@ object MutableLongMap {
 
     @opaque
     @pure
-    def lemma(k: Long, otherKey: Long, value: Long, lm: ListMapLongKey[Long]): Unit = {
+    def lemmaContainsAfterAddingDifferentThenContainsBefore(k: Long, otherKey: Long, value: Long, lm: ListMapLongKey[Long]): Unit = {
       require((lm + (otherKey, value)).contains(k))
       require(k != otherKey)
       if(!lm.contains(k)){
@@ -481,13 +481,13 @@ object MutableLongMap {
       
       if(validKeyInArray(_keys(from))){        
         if ((extraKeys & 1) != 0) {
-          lemma(k, 0L, zeroValue, getCurrentListMapNoExtraKeys(from + 1) + (_keys(from), _values(from)))
-          lemma(k, _keys(from), _values(from), getCurrentListMapNoExtraKeys(from + 1))
+          lemmaContainsAfterAddingDifferentThenContainsBefore(k, 0L, zeroValue, getCurrentListMapNoExtraKeys(from + 1) + (_keys(from), _values(from)))
+          lemmaContainsAfterAddingDifferentThenContainsBefore(k, _keys(from), _values(from), getCurrentListMapNoExtraKeys(from + 1))
 
           ListMapLongKeyLemmas.addStillContains(getCurrentListMapNoExtraKeys(from + 1), 0L, zeroValue, k)
 
         } else {
-          lemma(k, _keys(from), _values(from), getCurrentListMapNoExtraKeys(from + 1))
+          lemmaContainsAfterAddingDifferentThenContainsBefore(k, _keys(from), _values(from), getCurrentListMapNoExtraKeys(from + 1))
         }
 
       }
@@ -508,13 +508,13 @@ object MutableLongMap {
       if(validKeyInArray(_keys(from))){
         if ((extraKeys & 2) != 0) {
 
-          lemma(k, Long.MinValue, minValue, getCurrentListMapNoExtraKeys(from + 1) + (_keys(from), _values(from)))
-          lemma(k, _keys(from), _values(from), getCurrentListMapNoExtraKeys(from + 1))
+          lemmaContainsAfterAddingDifferentThenContainsBefore(k, Long.MinValue, minValue, getCurrentListMapNoExtraKeys(from + 1) + (_keys(from), _values(from)))
+          lemmaContainsAfterAddingDifferentThenContainsBefore(k, _keys(from), _values(from), getCurrentListMapNoExtraKeys(from + 1))
           
           ListMapLongKeyLemmas.addStillContains(getCurrentListMapNoExtraKeys(from + 1), Long.MinValue, minValue, k)
 
         } else {
-          lemma(k, _keys(from), _values(from), getCurrentListMapNoExtraKeys(from + 1))
+          lemmaContainsAfterAddingDifferentThenContainsBefore(k, _keys(from), _values(from), getCurrentListMapNoExtraKeys(from + 1))
         }
       }
       
@@ -532,9 +532,9 @@ object MutableLongMap {
       require(getCurrentListMap(from).contains(k) && _keys(from) != k)
 
       if(validKeyInArray(_keys(from))){
-          lemma(k, Long.MinValue, minValue, getCurrentListMapNoExtraKeys(from + 1) + (_keys(from), _values(from)) + (0L, zeroValue))
-          lemma(k, 0L, zeroValue, getCurrentListMapNoExtraKeys(from + 1) + (_keys(from), _values(from)))
-          lemma(k, _keys(from), _values(from), getCurrentListMapNoExtraKeys(from + 1))
+          lemmaContainsAfterAddingDifferentThenContainsBefore(k, Long.MinValue, minValue, getCurrentListMapNoExtraKeys(from + 1) + (_keys(from), _values(from)) + (0L, zeroValue))
+          lemmaContainsAfterAddingDifferentThenContainsBefore(k, 0L, zeroValue, getCurrentListMapNoExtraKeys(from + 1) + (_keys(from), _values(from)))
+          lemmaContainsAfterAddingDifferentThenContainsBefore(k, _keys(from), _values(from), getCurrentListMapNoExtraKeys(from + 1))
           
           ListMapLongKeyLemmas.addStillContains(getCurrentListMapNoExtraKeys(from + 1), 0L, zeroValue, k)
           ListMapLongKeyLemmas.addStillContains(getCurrentListMapNoExtraKeys(from + 1) + (0L, zeroValue), Long.MinValue, minValue, k)
