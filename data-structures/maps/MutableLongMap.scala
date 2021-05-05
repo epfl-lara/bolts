@@ -673,19 +673,26 @@ object MutableLongMap {
                assert(!ListMapLongKey.empty[Long].contains(k))
                if(k != _keys(from)){
                  ListMapLongKeyLemmas.addStillNotContains(ListMapLongKey.empty[Long], _keys(from), _values(from), k)
+                 check(false)
                }
               assert(_keys(from) == k)
               check(arrayContainsKeyTailRec(_keys, k, from))
             } else {
-              assert(getCurrentListMapNoExtraKeys(from) == ListMapLongKey.empty[Long])
+              ListMapLongKeyLemmas.emptyContainsNothing[Long](k)
               if ((extraKeys & 1) != 0 && (extraKeys & 2) != 0) {
+                ListMapLongKeyLemmas.addStillNotContains(getCurrentListMapNoExtraKeys(from), 0L, zeroValue, k)
+                ListMapLongKeyLemmas.addStillNotContains(getCurrentListMapNoExtraKeys(from), Long.MinValue, minValue, k)
                 lemmaContainsAfterAddingDifferentThenContainsBefore(k, Long.MinValue, minValue, (getCurrentListMapNoExtraKeys(from) + (0L, zeroValue)))
                 lemmaContainsAfterAddingDifferentThenContainsBefore(k, 0L, zeroValue, getCurrentListMapNoExtraKeys(from))
               } else if ((extraKeys & 1) != 0 && (extraKeys & 2) == 0) {
+                ListMapLongKeyLemmas.addStillNotContains(getCurrentListMapNoExtraKeys(from), 0L, zeroValue, k)
                 lemmaContainsAfterAddingDifferentThenContainsBefore(k, 0L, zeroValue, getCurrentListMapNoExtraKeys(from))
               } else if ((extraKeys & 2) != 0 && (extraKeys & 1) == 0) {
+                ListMapLongKeyLemmas.addStillNotContains(getCurrentListMapNoExtraKeys(from), Long.MinValue, minValue, k)
                 lemmaContainsAfterAddingDifferentThenContainsBefore(k, Long.MinValue, minValue, getCurrentListMapNoExtraKeys(from))
               }
+              check(false)
+              
               assert(!getCurrentListMap(from).contains(k))
             }
             
