@@ -22,7 +22,6 @@ case class ListMapLongKey[B](toList: List[(Long, B)]) {
     ListMapLongKey(toList.tail)
   }
 
-  @inline
   def contains(key: Long): Boolean = {
     val res = TupleListOps.containsKey(toList, key)
     if(res){
@@ -36,17 +35,17 @@ case class ListMapLongKey[B](toList: List[(Long, B)]) {
   def get(key: Long): Option[B] = {
     TupleListOps.getValueByKey(toList, key)
   }
+
   @inline
   def keysOf(value: B): List[Long] = {
     TupleListOps.getKeysOf(toList, value)
   }
-  @inline
+
   def apply(key: Long): B = {
     require(contains(key))
     get(key).get
   }
 
-  @inline
   def +(keyValue: (Long, B)): ListMapLongKey[B] = {
 
     val newList = TupleListOps.insertStrictlySorted(toList, keyValue._1, keyValue._2)
@@ -375,6 +374,7 @@ object ListMapLongKeyLemmas {
   }.ensuring(_ => (lm + (a, b)).contains(a0))
 
   @opaque
+  @inlineOnce
   def addStillNotContains[B](lm: ListMapLongKey[B], a: Long, b: B, a0: Long): Unit = {
     require(!lm.contains(a0) && a != a0)
 
