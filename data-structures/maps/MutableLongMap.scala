@@ -262,12 +262,14 @@ object MutableLongMap {
       * @param k the key
       * @return the index in the array corresponding
       */
+    @pure
     def seekEmpty(k: Long): Int = {
       require(valid)
 
       seekEmptyTailRec(0, toIndex(k))
     }.ensuring(i => valid)
 
+    @pure
     def seekEmptyTailRec(x: Int, ee: Int): Int = {
       require(valid && inRange(ee) && x >= 0 && x <= MAX_ITER)
       decreases(MAX_ITER - x)
@@ -300,6 +302,7 @@ object MutableLongMap {
       * @param ee
       * @return
       */
+    @pure
     private def seekEntryTailRec(k: Long, x: Int, ee: Int): (Int, Int) = {
       require(valid && inRange(ee) && x >= 0 && x <= _keys.length && x <= MAX_ITER && x >= 0)
       decreases(MAX_ITER + 1 - x)
@@ -315,6 +318,7 @@ object MutableLongMap {
 
     }.ensuring(res => valid)
 
+    @pure
     def seekEntryOrOpen(k: Long): (Int, Int) = {
       require(valid)
 
@@ -334,6 +338,7 @@ object MutableLongMap {
     }.ensuring(res => valid)
 
     @tailrec
+    @pure
     private def seekEntryOrOpenTailRec1(x: Int, ee: Int)(implicit
         k: Long
     ): (Int, Long, Int) = {
@@ -347,6 +352,7 @@ object MutableLongMap {
     }.ensuring(res => valid)
 
     @tailrec
+    @pure
     private def seekEntryOrOpenTailRec2(x: Int, ee: Int)(implicit
         k: Long, vacantSpotIndex: Int
     ): (Int, Int) = {
@@ -365,7 +371,7 @@ object MutableLongMap {
     }.ensuring(res => valid)
 
 
-
+    @pure
     def getCurrentListMap(from: Int): ListMapLongKey[Long] = {
       require(valid)
       require(from >= 0 && from <= _keys.length)
@@ -402,6 +408,7 @@ object MutableLongMap {
     )
 
 
+    @pure
     def getCurrentListMapNoExtraKeys(from: Int): ListMapLongKey[Long] = {
       require(valid && from >= 0 && from <= _keys.length)
       decreases(_keys.length + 1 -from)
@@ -458,6 +465,7 @@ object MutableLongMap {
     //------------------BEGIN--------------------------------------------------------------------------------------------------------------------------------
     //PASS
     @opaque
+    @pure
     def lemmaKeyInListMapIsInArray(k: Long): Unit = {
       require(valid && getCurrentListMap(0).contains(k))
       lemmaListMapContainsThenArrayContainsFrom(k, 0)
@@ -703,6 +711,7 @@ object MutableLongMap {
 
 
     @inline
+    @pure
     def isPivot(a: Array[Long], from: Int, to: Int, pivot: Int) : Boolean = {
       require(a.length < Integer.MAX_VALUE && from >= 0 && to > from && to <= a.length && pivot >= from && pivot < to)
       arrayCountValidKeysTailRec(a, from, pivot) + arrayCountValidKeysTailRec(a, pivot, to) == arrayCountValidKeysTailRec(a, from, to)
@@ -1004,6 +1013,7 @@ object MutableLongMap {
   // ARRAY UTILITY FUNCTIONS ----------------------------------------------------------------------------------------
 
   @inline
+  @pure
   def validKeyInArray(l: Long): Boolean = {
     l != 0 && l != Long.MinValue
   }
