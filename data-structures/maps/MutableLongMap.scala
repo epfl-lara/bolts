@@ -99,11 +99,29 @@ object MutableLongMap {
       _size >= IndexMask
     }.ensuring(_ => valid)
 
+    @pure
     def contains(key: Long): Boolean = {
       require(valid)
-      if (key == -key) (((key >>> 63).toInt + 1) & extraKeys) != 0
-      else seekEntry(key)._2 != 0
-    }.ensuring(res => valid && (if(getCurrentListMap(0).contains(key)) res else !res))
+      // if (key == -key) (((key >>> 63).toInt + 1) & extraKeys) != 0
+      if(key == 0) (extraKeys & 1) != 0
+      else if(key == Long.MinValue) (extraKeys & 2) != 0
+      else { 
+        if(getCurrentListMap(0).contains(key)){
+          lemmaInListMapThenSeekEntryFinds(key)
+          check(seekEntry(key)._2 == 0)  
+          val res = seekEntry(key)._2 == 0
+          check(res && getCurrentListMap(0).contains(key) || !res && !getCurrentListMap(0).contains(key))
+          res
+        } else {
+          lemmaNotInListMapThenSeekEntryFindsMissingBit(key)
+          check(seekEntry(key)._2 == MissingBit)
+          val res = seekEntry(key)._2 == 0
+          check(res && getCurrentListMap(0).contains(key) || !res && !getCurrentListMap(0).contains(key))
+          res
+        }
+
+      }
+    }.ensuring(res => valid && (res && getCurrentListMap(0).contains(key) || !res && !getCurrentListMap(0).contains(key)))
 
     /** Retrieves the value associated with a key.
       *  If the key does not exist in the map, the `defaultEntry` for that key
@@ -278,6 +296,7 @@ object MutableLongMap {
       */
 
     @inline
+    @pure
     def seekEntry(k: Long): (Int, Int) = {
       require(valid)
 
@@ -388,6 +407,19 @@ object MutableLongMap {
       )) || (res._2 == MissVacant && true))
     )
 
+    
+    def getCurrentListMapWithoutInline(): ListMapLongKey[Long] = {
+      require(valid)
+      getCurrentListMap(0)
+    }.ensuring(res =>
+      valid &&
+        (if (0 < _keys.length && validKeyInArray(_keys(0))) res.contains(_keys(0)) && res(_keys(0)) == _values(0) else 
+            // if (from < _keys.length) res == getCurrentListMap(from + 1) else
+               true) &&
+        (if ((extraKeys & 1) != 0) res.contains(0) && res(0) == zeroValue else !res.contains(0)) &&
+        (if ((extraKeys & 2) != 0) res.contains(Long.MinValue) && res(Long.MinValue) == minValue else !res.contains(Long.MinValue))
+    )
+
     @inline
     // @opaque
     def getCurrentListMap(from: Int): ListMapLongKey[Long] = {
@@ -457,6 +489,29 @@ object MutableLongMap {
     //   val res = getCurrentListMap(from)
     // }.ensuring(_ => valid && (if ((extraKeys & 1) != 0) getCurrentListMap(0).contains(0) else !getCurrentListMap(0).contains(0)))
 
+    //------------------SEEKENTRY RELATED--------------------------------------------------------------------------------------------------------------------
+    //------------------BEGIN--------------------------------------------------------------------------------------------------------------------------------
+    
+    @opaque
+    @pure
+    @inlineOnce
+    def lemmaInListMapThenSeekEntryFinds(k: Long): Unit = {
+      require(valid)
+      require(getCurrentListMap(0).contains(k))
+    }.ensuring(_ => seekEntry(k)._2 == 0 && inRange(seekEntry(k)._1))
+
+    @opaque
+    @pure
+    @inlineOnce
+    def lemmaNotInListMapThenSeekEntryFindsMissingBit(k: Long): Unit = {
+      require(valid)
+      require(!getCurrentListMap(0).contains(k))
+    }.ensuring(_ => seekEntry(k)._2 == MissingBit)
+
+
+    //------------------END----------------------------------------------------------------------------------------------------------------------------------
+    //------------------SEEKENTRY RELATED--------------------------------------------------------------------------------------------------------------------
+    
     //------------------EQUIVALENCE BETWEEN LISTMAP AND ARRAY------------------------------------------------------------------------------------------------
     //------------------BEGIN--------------------------------------------------------------------------------------------------------------------------------
     //PASS
