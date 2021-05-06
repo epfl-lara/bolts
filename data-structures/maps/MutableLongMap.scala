@@ -446,7 +446,7 @@ object MutableLongMap {
          else res.isEmpty)
     )
 
-    //-------------------LEMMAS------------------------------------------------
+    //-------------------LEMMAS------------------------------------------------------------------------------------------------------------------------------
 
     //Big so too slow
 
@@ -457,7 +457,8 @@ object MutableLongMap {
     //   val res = getCurrentListMap(from)
     // }.ensuring(_ => valid && (if ((extraKeys & 1) != 0) getCurrentListMap(0).contains(0) else !getCurrentListMap(0).contains(0)))
 
-    //------------------EQUIVALENCE BETWEEN LISTMAP AND ARRAY -----------------
+    //------------------EQUIVALENCE BETWEEN LISTMAP AND ARRAY------------------------------------------------------------------------------------------------
+    //------------------BEGIN--------------------------------------------------------------------------------------------------------------------------------
     //PASS
     @opaque
     def lemmaKeyInListMapIsInArray(k: Long): Unit = {
@@ -483,7 +484,7 @@ object MutableLongMap {
 
     @opaque
     @pure
-    def lemmaContainsAfterAddingDifferentThenContainsBefore(k: Long, otherKey: Long, value: Long, lm: ListMapLongKey[Long]): Unit = {
+    def lemmaInListMapAfterAddingDiffThenInBefore(k: Long, otherKey: Long, value: Long, lm: ListMapLongKey[Long]): Unit = {
       require((lm + (otherKey, value)).contains(k))
       require(k != otherKey)
       if(!lm.contains(k)){
@@ -505,13 +506,13 @@ object MutableLongMap {
       
       if(validKeyInArray(_keys(from))){        
         if ((extraKeys & 1) != 0) {
-          lemmaContainsAfterAddingDifferentThenContainsBefore(k, 0L, zeroValue, getCurrentListMapNoExtraKeys(from + 1) + (_keys(from), _values(from)))
-          lemmaContainsAfterAddingDifferentThenContainsBefore(k, _keys(from), _values(from), getCurrentListMapNoExtraKeys(from + 1))
+          lemmaInListMapAfterAddingDiffThenInBefore(k, 0L, zeroValue, getCurrentListMapNoExtraKeys(from + 1) + (_keys(from), _values(from)))
+          lemmaInListMapAfterAddingDiffThenInBefore(k, _keys(from), _values(from), getCurrentListMapNoExtraKeys(from + 1))
 
           ListMapLongKeyLemmas.addStillContains(getCurrentListMapNoExtraKeys(from + 1), 0L, zeroValue, k)
 
         } else {
-          lemmaContainsAfterAddingDifferentThenContainsBefore(k, _keys(from), _values(from), getCurrentListMapNoExtraKeys(from + 1))
+          lemmaInListMapAfterAddingDiffThenInBefore(k, _keys(from), _values(from), getCurrentListMapNoExtraKeys(from + 1))
         }
 
       }
@@ -532,13 +533,13 @@ object MutableLongMap {
       if(validKeyInArray(_keys(from))){
         if ((extraKeys & 2) != 0) {
 
-          lemmaContainsAfterAddingDifferentThenContainsBefore(k, Long.MinValue, minValue, getCurrentListMapNoExtraKeys(from + 1) + (_keys(from), _values(from)))
-          lemmaContainsAfterAddingDifferentThenContainsBefore(k, _keys(from), _values(from), getCurrentListMapNoExtraKeys(from + 1))
+          lemmaInListMapAfterAddingDiffThenInBefore(k, Long.MinValue, minValue, getCurrentListMapNoExtraKeys(from + 1) + (_keys(from), _values(from)))
+          lemmaInListMapAfterAddingDiffThenInBefore(k, _keys(from), _values(from), getCurrentListMapNoExtraKeys(from + 1))
           
           ListMapLongKeyLemmas.addStillContains(getCurrentListMapNoExtraKeys(from + 1), Long.MinValue, minValue, k)
 
         } else {
-          lemmaContainsAfterAddingDifferentThenContainsBefore(k, _keys(from), _values(from), getCurrentListMapNoExtraKeys(from + 1))
+          lemmaInListMapAfterAddingDiffThenInBefore(k, _keys(from), _values(from), getCurrentListMapNoExtraKeys(from + 1))
         }
       }
       
@@ -556,9 +557,9 @@ object MutableLongMap {
       require(getCurrentListMap(from).contains(k) && _keys(from) != k)
 
       if(validKeyInArray(_keys(from))){
-          lemmaContainsAfterAddingDifferentThenContainsBefore(k, Long.MinValue, minValue, getCurrentListMapNoExtraKeys(from + 1) + (_keys(from), _values(from)) + (0L, zeroValue))
-          lemmaContainsAfterAddingDifferentThenContainsBefore(k, 0L, zeroValue, getCurrentListMapNoExtraKeys(from + 1) + (_keys(from), _values(from)))
-          lemmaContainsAfterAddingDifferentThenContainsBefore(k, _keys(from), _values(from), getCurrentListMapNoExtraKeys(from + 1))
+          lemmaInListMapAfterAddingDiffThenInBefore(k, Long.MinValue, minValue, getCurrentListMapNoExtraKeys(from + 1) + (_keys(from), _values(from)) + (0L, zeroValue))
+          lemmaInListMapAfterAddingDiffThenInBefore(k, 0L, zeroValue, getCurrentListMapNoExtraKeys(from + 1) + (_keys(from), _values(from)))
+          lemmaInListMapAfterAddingDiffThenInBefore(k, _keys(from), _values(from), getCurrentListMapNoExtraKeys(from + 1))
           
           ListMapLongKeyLemmas.addStillContains(getCurrentListMapNoExtraKeys(from + 1), 0L, zeroValue, k)
           ListMapLongKeyLemmas.addStillContains(getCurrentListMapNoExtraKeys(from + 1) + (0L, zeroValue), Long.MinValue, minValue, k)
@@ -598,7 +599,7 @@ object MutableLongMap {
           i >= from && i < _keys.length &&
           validKeyInArray(_keys(i)) && getCurrentListMap(from).contains(_keys(i))
       )
-      lemmaCurrentListMapContainsFromThenContainsFromSmaller(from, 0, i)
+      lemmaInListMapFromThenInFromSmaller(from, 0, i)
       check(getCurrentListMap(0).contains(_keys(i)))
 
     }.ensuring(_ => getCurrentListMap(0).contains(_keys(i)))
@@ -606,7 +607,7 @@ object MutableLongMap {
     //PASS
     @opaque
     @pure
-    def lemmaCurrentListMapContainsFromThenContainsFromSmaller(from: Int, newFrom: Int, i: Int): Unit = {
+    def lemmaInListMapFromThenInFromSmaller(from: Int, newFrom: Int, i: Int): Unit = {
       require(valid)
       require(from >= 0 && from < _keys.length)
       require(newFrom >= 0 && newFrom <= from)
@@ -615,8 +616,8 @@ object MutableLongMap {
 
       decreases(from - newFrom)
       if (from > newFrom) {
-        lemmaCurrentListMapContainsFromThenContainsFromMinusOne(from, i)
-        lemmaCurrentListMapContainsFromThenContainsFromSmaller(from - 1, newFrom, i)
+        lemmaInListMapFromThenInFromMinusOne(from, i)
+        lemmaInListMapFromThenInFromSmaller(from - 1, newFrom, i)
       }
 
       check(getCurrentListMap(newFrom).contains(_keys(i)))
@@ -627,7 +628,7 @@ object MutableLongMap {
     //PASS
     @opaque
     @pure
-    def lemmaCurrentListMapContainsFromThenContainsFromMinusOne(from: Int, i: Int): Unit = {
+    def lemmaInListMapFromThenInFromMinusOne(from: Int, i: Int): Unit = {
       require(valid)
       require(from > 0 && from < _keys.length)
       require(i >= from && i < _keys.length)
@@ -663,12 +664,12 @@ object MutableLongMap {
             assert(getCurrentListMapNoExtraKeys(from + 1) == ListMapLongKey.empty[Long])
             if(validKeyInArray(_keys(from))){
               if ((extraKeys & 1) != 0 && (extraKeys & 2) != 0) {
-                lemmaContainsAfterAddingDifferentThenContainsBefore(k, Long.MinValue, minValue, (getCurrentListMapNoExtraKeys(from) + (0L, zeroValue)))
-                lemmaContainsAfterAddingDifferentThenContainsBefore(k, 0L, zeroValue, getCurrentListMapNoExtraKeys(from))
+                lemmaInListMapAfterAddingDiffThenInBefore(k, Long.MinValue, minValue, (getCurrentListMapNoExtraKeys(from) + (0L, zeroValue)))
+                lemmaInListMapAfterAddingDiffThenInBefore(k, 0L, zeroValue, getCurrentListMapNoExtraKeys(from))
               } else if ((extraKeys & 1) != 0 && (extraKeys & 2) == 0) {
-                lemmaContainsAfterAddingDifferentThenContainsBefore(k, 0L, zeroValue, getCurrentListMapNoExtraKeys(from))
+                lemmaInListMapAfterAddingDiffThenInBefore(k, 0L, zeroValue, getCurrentListMapNoExtraKeys(from))
               } else if ((extraKeys & 2) != 0 && (extraKeys & 1) == 0) {
-                lemmaContainsAfterAddingDifferentThenContainsBefore(k, Long.MinValue, minValue, getCurrentListMapNoExtraKeys(from))
+                lemmaInListMapAfterAddingDiffThenInBefore(k, Long.MinValue, minValue, getCurrentListMapNoExtraKeys(from))
               }
                ListMapLongKeyLemmas.emptyContainsNothing[Long](k)
                if(k != _keys(from)){
@@ -680,14 +681,14 @@ object MutableLongMap {
               if ((extraKeys & 1) != 0 && (extraKeys & 2) != 0) {
                 ListMapLongKeyLemmas.addStillNotContains(getCurrentListMapNoExtraKeys(from), 0L, zeroValue, k)
                 ListMapLongKeyLemmas.addStillNotContains(getCurrentListMapNoExtraKeys(from), Long.MinValue, minValue, k)
-                lemmaContainsAfterAddingDifferentThenContainsBefore(k, Long.MinValue, minValue, (getCurrentListMapNoExtraKeys(from) + (0L, zeroValue)))
-                lemmaContainsAfterAddingDifferentThenContainsBefore(k, 0L, zeroValue, getCurrentListMapNoExtraKeys(from))
+                lemmaInListMapAfterAddingDiffThenInBefore(k, Long.MinValue, minValue, (getCurrentListMapNoExtraKeys(from) + (0L, zeroValue)))
+                lemmaInListMapAfterAddingDiffThenInBefore(k, 0L, zeroValue, getCurrentListMapNoExtraKeys(from))
               } else if ((extraKeys & 1) != 0 && (extraKeys & 2) == 0) {
                 ListMapLongKeyLemmas.addStillNotContains(getCurrentListMapNoExtraKeys(from), 0L, zeroValue, k)
-                lemmaContainsAfterAddingDifferentThenContainsBefore(k, 0L, zeroValue, getCurrentListMapNoExtraKeys(from))
+                lemmaInListMapAfterAddingDiffThenInBefore(k, 0L, zeroValue, getCurrentListMapNoExtraKeys(from))
               } else if ((extraKeys & 2) != 0 && (extraKeys & 1) == 0) {
                 ListMapLongKeyLemmas.addStillNotContains(getCurrentListMapNoExtraKeys(from), Long.MinValue, minValue, k)
-                lemmaContainsAfterAddingDifferentThenContainsBefore(k, Long.MinValue, minValue, getCurrentListMapNoExtraKeys(from))
+                lemmaInListMapAfterAddingDiffThenInBefore(k, Long.MinValue, minValue, getCurrentListMapNoExtraKeys(from))
               }
               check(false) 
             }
@@ -695,6 +696,13 @@ object MutableLongMap {
       }
     }.ensuring(_ => valid &&
                   (if (k != 0 && k != Long.MinValue) arrayContainsKeyTailRec(_keys, k, from) else if (k == 0) (extraKeys & 1) != 0 else (extraKeys & 2) != 0))
+
+
+    //------------------END----------------------------------------------------------------------------------------------------------------------------------
+    //------------------EQUIVALENCE BETWEEN LISTMAP AND ARRAY------------------------------------------------------------------------------------------------
+
+    //------------------ARRAY RELATED------------------------------------------------------------------------------------------------------------------------
+    //------------------BEGIN--------------------------------------------------------------------------------------------------------------------------------
 
 
     @inline
@@ -896,6 +904,9 @@ object MutableLongMap {
       assert(arrayContainsKeyTailRec(a, k, 0))
 
     }.ensuring(_ => arrayContainsKeyTailRec(a, k, 0))
+
+    //------------------END----------------------------------------------------------------------------------------------------------------------------------
+    //------------------ARRAY RELATED------------------------------------------------------------------------------------------------------------------------
 
   }
 
