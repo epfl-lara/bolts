@@ -16,6 +16,7 @@ case class ListMapLongKey[B](toList: List[(Long, B)]) {
     require(!isEmpty)
     toList.head
   }
+
   @inline
   def tail: ListMapLongKey[B] = {
     require(!isEmpty)
@@ -24,7 +25,7 @@ case class ListMapLongKey[B](toList: List[(Long, B)]) {
 
   def contains(key: Long): Boolean = {
     val res = TupleListOps.containsKey(toList, key)
-    if(res){
+    if (res) {
       TupleListOps.lemmaContainsKeyImpliesGetValueByKeyDefined(toList, key)
     }
     res
@@ -72,9 +73,9 @@ case class ListMapLongKey[B](toList: List[(Long, B)]) {
   def --(keys: List[Long]): ListMapLongKey[B] = {
     decreases(keys)
     keys match {
-    case Nil()           => this
-    case Cons(key, rest) => (this - key) -- rest
-  }
+      case Nil()           => this
+      case Cons(key, rest) => (this - key) -- rest
+    }
   }
   @inline
   def forall(p: ((Long, B)) => Boolean): Boolean = {
@@ -118,8 +119,8 @@ object TupleListOps {
 
     l match {
       case Cons(head, tl) if (head._2 == value) => head :: filterByValue(tl, value)
-      case Cons(head, tl)  if (head._2 != value) => filterByValue(tl, value)
-      case Nil()                            => Nil[(Long, B)]()
+      case Cons(head, tl) if (head._2 != value) => filterByValue(tl, value)
+      case Nil()                                => Nil[(Long, B)]()
     }
   }.ensuring(res =>
     invariantList(res) && res.forall(_._2 == value) &&
@@ -161,7 +162,6 @@ object TupleListOps {
     }
   }.ensuring(res => invariantList(res) && !containsKey(res, key))
 
-
   def isStrictlySorted[B](l: List[(Long, B)]): Boolean = {
     decreases(l)
     l match {
@@ -176,10 +176,10 @@ object TupleListOps {
     require(invariantList(l))
     decreases(l)
     l match {
-      case head :: tl if(head._1 == key) => true
-      case head :: tl if(head._1 > key) => false
-      case head :: tl if(head._1 < key) => containsKey(tl, key)
-      case Nil() => false
+      case head :: tl if (head._1 == key) => true
+      case head :: tl if (head._1 > key)  => false
+      case head :: tl if (head._1 < key)  => containsKey(tl, key)
+      case Nil()                          => false
 
     }
   }
@@ -190,8 +190,8 @@ object TupleListOps {
     require(invariantList(l) && getValueByKey(l, key).isDefined)
     decreases(l)
     l match {
-      case head :: tl if(head._1 != key) => lemmaGetValueByKeyIsDefinedImpliesContainsKey(tl, key)
-      case _ => ()
+      case head :: tl if (head._1 != key) => lemmaGetValueByKeyIsDefinedImpliesContainsKey(tl, key)
+      case _                              => ()
     }
   }.ensuring(_ => containsKey(l, key))
 
@@ -200,8 +200,8 @@ object TupleListOps {
     require(invariantList(l) && containsKey(l, key))
     decreases(l)
     l match {
-      case head :: tl if(head._1 != key) => lemmaContainsKeyImpliesGetValueByKeyDefined(tl, key)
-      case _ => ()
+      case head :: tl if (head._1 != key) => lemmaContainsKeyImpliesGetValueByKeyDefined(tl, key)
+      case _                              => ()
     }
   }.ensuring(_ => getValueByKey(l, key).isDefined)
 
@@ -216,7 +216,7 @@ object TupleListOps {
         lemmaContainsKeyImpliesGetValueByKeyDefined(newHead :: l, head)
         lemmaForallGetValueByKeySameWithASmallerHead(l, tl, value, newHead)
       }
-      case _     => ()
+      case _ => ()
     }
 
   }.ensuring(_ => keys.forall(k => getValueByKey(newHead :: l, k) == Some(value)))
@@ -231,8 +231,10 @@ object TupleListOps {
       case _                                   => ()
     }
 
-  }.ensuring(_ => containsKey(insertStrictlySorted(l, newKey, newValue), otherKey) == containsKey(l, otherKey) &&
-                  getValueByKey(insertStrictlySorted(l, newKey, newValue), otherKey) == getValueByKey(l, otherKey) )
+  }.ensuring(_ =>
+    containsKey(insertStrictlySorted(l, newKey, newValue), otherKey) == containsKey(l, otherKey) &&
+      getValueByKey(insertStrictlySorted(l, newKey, newValue), otherKey) == getValueByKey(l, otherKey)
+  )
 
   @opaque
   def lemmaInsertStrictlySortedDoesNotModifyOtherKeysNotContained[B](l: List[(Long, B)], newKey: Long, newValue: B, otherKey: Long): Unit = {
@@ -281,8 +283,8 @@ object TupleListOps {
     l match {
       case head :: Nil()                  => ()
       case head :: tl if (head._1 == key) => lemmaNotContainsKeyThenNotContainsTuple(tl, key, value)
-      case head :: tl => lemmaContainsTupThenGetReturnValue(tl, key, value)
-      case Nil() => ()
+      case head :: tl                     => lemmaContainsTupThenGetReturnValue(tl, key, value)
+      case Nil()                          => ()
     }
   }.ensuring(_ => getValueByKey(l, key) == Some(value))
 }
@@ -295,9 +297,7 @@ object ListMapLongKeyLemmas {
   import ListSpecs._
 
   @opaque
-  def emptyContainsNothing[B](k: Long): Unit = {
-
-  }.ensuring(_ => !ListMapLongKey.empty[B].contains(k))
+  def emptyContainsNothing[B](k: Long): Unit = {}.ensuring(_ => !ListMapLongKey.empty[B].contains(k))
 
   @opaque
   def addValidProp[B](lm: ListMapLongKey[B], p: ((Long, B)) => Boolean, a: Long, b: B): Unit = {
