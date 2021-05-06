@@ -105,23 +105,10 @@ object MutableLongMap {
       // if (key == -key) (((key >>> 63).toInt + 1) & extraKeys) != 0
       if(key == 0) (extraKeys & 1) != 0
       else if(key == Long.MinValue) (extraKeys & 2) != 0
-      else { 
-        if(getCurrentListMap(0).contains(key)){
-          lemmaInListMapThenSeekEntryFinds(key)
-          check(seekEntry(key)._2 == 0)  
-          val res = seekEntry(key)._2 == 0
-          check(res && getCurrentListMap(0).contains(key) || !res && !getCurrentListMap(0).contains(key))
-          res
-        } else {
-          lemmaNotInListMapThenSeekEntryFindsMissingBit(key)
-          check(seekEntry(key)._2 == MissingBit)
-          val res = seekEntry(key)._2 == 0
-          check(res && getCurrentListMap(0).contains(key) || !res && !getCurrentListMap(0).contains(key))
-          res
-        }
-
-      }
-    }.ensuring(res => valid && (res && getCurrentListMap(0).contains(key) || !res && !getCurrentListMap(0).contains(key)))
+      else seekEntry(key)._2 == 0
+    }.ensuring(res => valid 
+    //&& (res && getCurrentListMap(0).contains(key) || !res && !getCurrentListMap(0).contains(key)))
+    )
 
     /** Retrieves the value associated with a key.
       *  If the key does not exist in the map, the `defaultEntry` for that key
@@ -279,7 +266,7 @@ object MutableLongMap {
       require(valid)
 
       seekEmptyTailRec(0, toIndex(k))
-    }.ensuring(i => valid && inRange(i))
+    }.ensuring(i => valid)
 
     def seekEmptyTailRec(x: Int, ee: Int): Int = {
       require(valid && inRange(ee) && x >= 0 && x <= MAX_ITER)
@@ -287,7 +274,7 @@ object MutableLongMap {
       if(x >= MAX_ITER) EntryNotFound
       else if (_keys(ee) == 0) ee
       else seekEmptyTailRec(x + 1, (ee + 2 * (x + 1) * x - 3) & mask)
-    }.ensuring(res => valid && inRange(res) && _keys(res) == 0)
+    }.ensuring(res => valid )
 
     /** Given a key, seek for its index into the array
       *
@@ -295,7 +282,6 @@ object MutableLongMap {
       * @return the index of the given key into the array
       */
 
-    @inline
     @pure
     def seekEntry(k: Long): (Int, Int) = {
       require(valid)
@@ -303,16 +289,10 @@ object MutableLongMap {
       // seekEntryTailRecLemma(k, 0, toIndex(k))
       seekEntryTailRec(k, 0, toIndex(k))
 
-    }.ensuring(res =>
-      valid &&
-        (
-          ((res._2 == 0) && validKeyIndex(k, res._1)) ||
-            (res._2 == MissingBit && inRange(res._1) && _keys(res._1) == 0)
-        )
-    ) //using _size to be sure that i is valid in the range
+    }.ensuring(res => valid) 
+    //using _size to be sure that i is valid in the range
     // NOTE: ((x | MissingBit) ^ MissingBit) == x is proven true by stainless for x in range 0 to MAX_ARRAY_SIZE with this value of MissingBit
 
-    @inlineOnce
     /** Returns
       *
       * @param k
@@ -333,15 +313,8 @@ object MutableLongMap {
         seekEntryTailRec(k, x + 1, newEe)
       }
 
-    }.ensuring(res =>
-      valid && 
-        (
-          ((res._2 == 0) && validKeyIndex(k, res._1)) ||
-            (res._2 == MissingBit && inRange(res._1) && _keys(res._1) == 0)
-        )
-    )
+    }.ensuring(res => valid)
 
-    @inlineOnce
     def seekEntryOrOpen(k: Long): (Int, Int) = {
       require(valid)
 
@@ -358,18 +331,7 @@ object MutableLongMap {
         val res = seekEntryOrOpenTailRec2(x, e)(k, e)
         res
       }
-    }.ensuring(res =>
-      valid &&
-        (if (res._2 == 0) validKeyIndex(k, res._1)
-         else if (res._2 == MissingBit)
-           validZeroKeyIndex(res._1) && !arrayContainsKeyTailRec(_keys, k, 0)
-         else
-           res._2 == MissVacant && inRange(res._1) && validZeroKeyIndex(
-             res._1
-           ) && !arrayContainsKeyTailRec(_keys, k, 0)
-         // true
-        )
-    )
+    }.ensuring(res => valid)
 
     @tailrec
     private def seekEntryOrOpenTailRec1(x: Int, ee: Int)(implicit
@@ -382,7 +344,7 @@ object MutableLongMap {
       else if (q == k || q + q == 0) (x, q, ee)
       else
         seekEntryOrOpenTailRec1(x + 1, (ee + 2 * (x + 1) * x - 3) & mask)
-    }.ensuring(res => valid && (res._2 == 0 || res._2 + res._2 == 0) && (inRange(res._3)) && res._2 == _keys(res._3))
+    }.ensuring(res => valid)
 
     @tailrec
     private def seekEntryOrOpenTailRec2(x: Int, ee: Int)(implicit
@@ -400,28 +362,10 @@ object MutableLongMap {
         seekEntryOrOpenTailRec2(x + 1, (ee + 2 * (x + 1) * x - 3) & mask)
       }
 
-    }.ensuring(res =>
-      valid && ((res._2 == 0 && validKeyIndex(
-        k,
-        res._1
-      )) || (res._2 == MissVacant && true))
-    )
+    }.ensuring(res => valid)
 
-    
-    def getCurrentListMapWithoutInline(): ListMapLongKey[Long] = {
-      require(valid)
-      getCurrentListMap(0)
-    }.ensuring(res =>
-      valid &&
-        (if (0 < _keys.length && validKeyInArray(_keys(0))) res.contains(_keys(0)) && res(_keys(0)) == _values(0) else 
-            // if (from < _keys.length) res == getCurrentListMap(from + 1) else
-               true) &&
-        (if ((extraKeys & 1) != 0) res.contains(0) && res(0) == zeroValue else !res.contains(0)) &&
-        (if ((extraKeys & 2) != 0) res.contains(Long.MinValue) && res(Long.MinValue) == minValue else !res.contains(Long.MinValue))
-    )
 
-    @inline
-    // @opaque
+
     def getCurrentListMap(from: Int): ListMapLongKey[Long] = {
       require(valid)
       require(from >= 0 && from <= _keys.length)
@@ -457,7 +401,7 @@ object MutableLongMap {
         (if ((extraKeys & 2) != 0) res.contains(Long.MinValue) && res(Long.MinValue) == minValue else !res.contains(Long.MinValue))
     )
 
-    // @inlineOnce
+
     def getCurrentListMapNoExtraKeys(from: Int): ListMapLongKey[Long] = {
       require(valid && from >= 0 && from <= _keys.length)
       decreases(_keys.length + 1 -from)
@@ -494,7 +438,6 @@ object MutableLongMap {
     
     @opaque
     @pure
-    @inlineOnce
     def lemmaInListMapThenSeekEntryFinds(k: Long): Unit = {
       require(valid)
       require(getCurrentListMap(0).contains(k))
@@ -502,7 +445,6 @@ object MutableLongMap {
 
     @opaque
     @pure
-    @inlineOnce
     def lemmaNotInListMapThenSeekEntryFindsMissingBit(k: Long): Unit = {
       require(valid)
       require(!getCurrentListMap(0).contains(k))
