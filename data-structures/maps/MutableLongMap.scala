@@ -381,7 +381,6 @@ object MutableLongMap {
         (getCurrentListMapNoExtraKeys(from) + (0L, zeroValue)) + (Long.MinValue, minValue)
       } else if ((extraKeys & 1) != 0 && (extraKeys & 2) == 0) {
         // it means there is a mapping for the key 0
-
         getCurrentListMapNoExtraKeys(from) + (0L, zeroValue)
       } else if ((extraKeys & 2) != 0 && (extraKeys & 1) == 0) {
         // it means there is a mapping for the key Long.MIN_VALUE
@@ -401,7 +400,7 @@ object MutableLongMap {
     }.ensuring(res =>
       valid &&
         (if (from < _keys.length && validKeyInArray(_keys(from))) res.contains(_keys(from)) && res(_keys(from)) == _values(from) else 
-            // if (from < _keys.length) res == getCurrentListMap(from + 1) else
+            // else if (from < _keys.length) res == getCurrentListMap(from + 1) else
                true) &&
         (if ((extraKeys & 1) != 0) res.contains(0) && res(0) == zeroValue else !res.contains(0)) &&
         (if ((extraKeys & 2) != 0) res.contains(Long.MinValue) && res(Long.MinValue) == minValue else !res.contains(Long.MinValue))
@@ -486,8 +485,27 @@ object MutableLongMap {
     }.ensuring(_ => valid && getCurrentListMap(0).contains(_keys(i)))
 
     
+    @opaque
+    @pure
+    def lemmaListMapRecursiveValidKeyArray(from: Int): Unit = {
+      require(valid)
+      require(from >= 0 && from < _keys.length)
+      require(validKeyInArray(_keys(from)))
+
+      if ((extraKeys & 1) != 0 && (extraKeys & 2) != 0) {
+        ListMapLongKeyLemmas.addCommutativeForDiffKeys(getCurrentListMapNoExtraKeys(from + 1) + (0L, zeroValue), Long.MinValue, minValue, _keys(from), _values(from))
+        ListMapLongKeyLemmas.addCommutativeForDiffKeys(getCurrentListMapNoExtraKeys(from + 1), 0L, zeroValue, _keys(from), _values(from))
+      } else if ((extraKeys & 1) != 0 && (extraKeys & 2) == 0) {
+        ListMapLongKeyLemmas.addCommutativeForDiffKeys(getCurrentListMapNoExtraKeys(from + 1), 0L, zeroValue, _keys(from), _values(from))
+      } else if ((extraKeys & 2) != 0 && (extraKeys & 1) == 0) {
+        ListMapLongKeyLemmas.addCommutativeForDiffKeys(getCurrentListMapNoExtraKeys(from + 1), Long.MinValue, minValue, _keys(from), _values(from))
+      }
+
+
+    }.ensuring(_ => getCurrentListMap(from) == getCurrentListMap(from + 1) + (_keys(from), _values(from)))
 
     @opaque
+    @inlineOnce
     @pure
     def lemmaInListMapAfterAddingDiffThenInBefore(k: Long, otherKey: Long, value: Long, lm: ListMapLongKey[Long]): Unit = {
       require((lm + (otherKey, value)).contains(k))
@@ -596,7 +614,6 @@ object MutableLongMap {
     
     //PASS
     @opaque
-    @inline
     @pure
     def lemmaInListMapFromThenFromZero(from: Int, i: Int): Unit = {
       require(
@@ -611,6 +628,7 @@ object MutableLongMap {
 
     //PASS
     @opaque
+    @inlineOnce
     @pure
     def lemmaInListMapFromThenInFromSmaller(from: Int, newFrom: Int, i: Int): Unit = {
       require(valid)
