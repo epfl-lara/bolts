@@ -192,14 +192,13 @@ object TupleListOps {
     decreases(l)
 
     l match {
-      case head :: tl if(head._1 < key1 && head._1 < key2) => {
+      case head :: tl if (head._1 < key1 && head._1 < key2) => {
         lemmaInsertStrictlySortedCommutative(tl, key1, v1, key2, v2)
       }
       case _ => ()
     }
 
   }.ensuring(_ => insertStrictlySorted(insertStrictlySorted(l, key1, v1), key2, v2) == insertStrictlySorted(insertStrictlySorted(l, key2, v2), key1, v1))
-
 
   @opaque
   def lemmaAddNewKeyIncrementSize[B](l: List[(Long, B)], key: Long, value: B): Unit = {
@@ -209,31 +208,30 @@ object TupleListOps {
 
     val inserted = insertStrictlySorted(l, key, value)
     l match {
-      case Cons(head, tl) if (head._1 < key)  => {
+      case Cons(head, tl) if (head._1 < key) => {
         lemmaAddNewKeyIncrementSize(tl, key, value)
-        
+
       }
       case Cons(head, tl) if (head._1 == key) => check(false)
-      case _ => 
+      case _                                  =>
     }
-
 
   }.ensuring(_ => insertStrictlySorted(l, key, value).length == l.length + 1)
 
   @opaque
   def lemmaAddExistingKeyPreservesSize[B](l: List[(Long, B)], key: Long, value: B): Unit = {
     require(invariantList(l))
-    require(containsKey(l, key)) 
+    require(containsKey(l, key))
 
     val inserted = insertStrictlySorted(l, key, value)
     l match {
-      case Cons(head, tl) if (head._1 < key)  => {
+      case Cons(head, tl) if (head._1 < key) => {
         lemmaAddExistingKeyPreservesSize(tl, key, value)
       }
       case Cons(head, tl) if (head._1 == key) => {
         assert(inserted == Cons((key, value), tl))
       }
-      case _ => 
+      case _ =>
     }
 
   }.ensuring(_ => insertStrictlySorted(l, key, value).length == l.length)
