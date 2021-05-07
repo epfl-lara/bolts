@@ -190,125 +190,13 @@ object TupleListOps {
     require(key1 != key2)
     require(invariantList(l))
     decreases(l)
-    val l1 = insertStrictlySorted(insertStrictlySorted(l, key1, v1), key2, v2)
-    val l2 = insertStrictlySorted(insertStrictlySorted(l, key2, v2), key1, v1)
-    
 
     l match {
       case head :: tl if(head._1 < key1 && head._1 < key2) => {
         lemmaInsertStrictlySortedCommutative(tl, key1, v1, key2, v2)
-        
-        // if(key1 < key2){
-        //   check(insertStrictlySorted(insertStrictlySorted(l, key1, v1), key2, v2) == insertStrictlySorted(insertStrictlySorted(l, key2, v2), key1, v1))
-        // } else {
-        //   assert(key2 < key1)
-
-        //   check(insertStrictlySorted(insertStrictlySorted(l, key1, v1), key2, v2) == insertStrictlySorted(insertStrictlySorted(l, key2, v2), key1, v1))
-        // }
       }
-      case head :: tl if(head._1 < key1 && head._1 == key2) => 
-      case head :: tl if(head._1 < key1 && head._1 > key2) => 
-      case head :: tl if(head._1 == key1 && head._1 < key2) => 
-      case head :: tl if(head._1 > key1 && head._1 < key2) => 
-      case head :: tl if(head._1 == key1 && head._1 == key2) => 
-      case head :: tl if(head._1 > key1 && head._1 == key2) => 
-      case head :: tl if(head._1 == key1 && head._1 > key2) => 
-      case head :: tl if(head._1 > key1 && head._1 > key2) => 
-      case Nil() => ()
+      case _ => ()
     }
-    // if (containsKey(l, key1)) {
-    //   if (containsKey(l, key2)) {
-    //     lemmaAddExistingKeyPreservesSize(l, key1, v1)
-    //     lemmaInsertStrictlySortedDoesNotModifyOtherKeysContained(l, key1, v1, key2)
-    //     lemmaAddExistingKeyPreservesSize(insertStrictlySorted(l, key1, v1), key2, v2)
-    //     lemmaAddExistingKeyPreservesSize(l, key2, v2)
-    //     lemmaInsertStrictlySortedDoesNotModifyOtherKeysContained(l, key2, v2, key1)
-    //     lemmaAddExistingKeyPreservesSize(insertStrictlySorted(l, key2, v2), key1, v1)
-
-    //     assert(l1.length == l2.length)
-    //     l1 match {
-    //       case Nil() =>
-    //         l2 match {
-    //           case head2 :: tl2 => check(insertStrictlySorted(insertStrictlySorted(l, key1, v1), key2, v2) == insertStrictlySorted(insertStrictlySorted(l, key2, v2), key1, v1))
-    //           case Nil()        => check(insertStrictlySorted(insertStrictlySorted(l, key1, v1), key2, v2) == insertStrictlySorted(insertStrictlySorted(l, key2, v2), key1, v1))
-    //         }
-    //       case head1 :: tl1 =>
-    //         l2 match {
-    //           case head2 :: tl2 => {
-    //             assert(head1 == head2)
-    //             if(head1._1 != key1){
-    //               assert(containsKey(tl1, key1))
-    //             }
-    //             check(insertStrictlySorted(insertStrictlySorted(l, key1, v1), key2, v2) == insertStrictlySorted(insertStrictlySorted(l, key2, v2), key1, v1)) //TODO
-    //           }
-    //           case Nil()        => check(insertStrictlySorted(insertStrictlySorted(l, key1, v1), key2, v2) == insertStrictlySorted(insertStrictlySorted(l, key2, v2), key1, v1))
-    //         }
-    //     }
-    //   } else {
-    //     lemmaAddExistingKeyPreservesSize(l, key1, v1)
-    //     lemmaInsertStrictlySortedDoesNotModifyOtherKeysNotContained(l, key1, v1, key2)
-    //     lemmaAddNewKeyIncrementSize(insertStrictlySorted(l, key1, v1), key2, v2) 
-    //     lemmaAddNewKeyIncrementSize(l, key2, v2)
-    //     lemmaInsertStrictlySortedDoesNotModifyOtherKeysContained(l, key2, v2, key1)
-    //     lemmaAddExistingKeyPreservesSize(insertStrictlySorted(l, key2, v2), key1, v1)
-    //     assert(l1.length == l2.length)
-    //     l1 match {
-    //       case Nil() =>
-    //         l2 match {
-    //           case head2 :: tl2 => check(insertStrictlySorted(insertStrictlySorted(l, key1, v1), key2, v2) == insertStrictlySorted(insertStrictlySorted(l, key2, v2), key1, v1))
-    //           case Nil()        => check(insertStrictlySorted(insertStrictlySorted(l, key1, v1), key2, v2) == insertStrictlySorted(insertStrictlySorted(l, key2, v2), key1, v1))
-    //         }
-    //       case head1 :: tl1 =>
-    //         l2 match {
-    //           case head2 :: tl2 => check(insertStrictlySorted(insertStrictlySorted(l, key1, v1), key2, v2) == insertStrictlySorted(insertStrictlySorted(l, key2, v2), key1, v1)) //TODO
-    //           case Nil()        => check(insertStrictlySorted(insertStrictlySorted(l, key1, v1), key2, v2) == insertStrictlySorted(insertStrictlySorted(l, key2, v2), key1, v1))
-    //         }
-    //     }
-    //   }
-    // } else {
-    //   if (containsKey(l, key2)) {
-    //     lemmaAddNewKeyIncrementSize(l, key1, v1)
-    //     lemmaInsertStrictlySortedDoesNotModifyOtherKeysContained(l, key1, v1, key2)
-    //     lemmaAddExistingKeyPreservesSize(insertStrictlySorted(l, key1, v1), key2, v2)
-    //     lemmaAddExistingKeyPreservesSize(l, key2, v2)
-    //     lemmaInsertStrictlySortedDoesNotModifyOtherKeysNotContained(l, key2, v2, key1)
-    //     lemmaAddNewKeyIncrementSize(insertStrictlySorted(l, key2, v2), key1, v1)
-    //     assert(l1.length == l2.length)
-    //     l1 match {
-    //       case Nil() =>
-    //         l2 match {
-    //           case head2 :: tl2 => check(insertStrictlySorted(insertStrictlySorted(l, key1, v1), key2, v2) == insertStrictlySorted(insertStrictlySorted(l, key2, v2), key1, v1))
-    //           case Nil()        => check(insertStrictlySorted(insertStrictlySorted(l, key1, v1), key2, v2) == insertStrictlySorted(insertStrictlySorted(l, key2, v2), key1, v1))
-    //         }
-    //       case head1 :: tl1 =>
-    //         l2 match {
-    //           case head2 :: tl2 => check(insertStrictlySorted(insertStrictlySorted(l, key1, v1), key2, v2) == insertStrictlySorted(insertStrictlySorted(l, key2, v2), key1, v1)) //TODO
-    //           case Nil()        => check(insertStrictlySorted(insertStrictlySorted(l, key1, v1), key2, v2) == insertStrictlySorted(insertStrictlySorted(l, key2, v2), key1, v1))
-    //         }
-    //     }
-    //   } else {
-    //     lemmaAddNewKeyIncrementSize(l, key1, v1)
-    //     lemmaInsertStrictlySortedDoesNotModifyOtherKeysNotContained(l, key1, v1, key2)
-    //     lemmaAddNewKeyIncrementSize(insertStrictlySorted(l, key1, v1), key2, v2)
-    //     lemmaAddNewKeyIncrementSize(l, key2, v2)
-    //     lemmaInsertStrictlySortedDoesNotModifyOtherKeysNotContained(l, key2, v2, key1)
-    //     lemmaAddNewKeyIncrementSize(insertStrictlySorted(l, key2, v2), key1, v1)
-    //     assert(l1.length == l2.length)
-    //     l1 match {
-    //       case Nil() =>
-    //         l2 match {
-    //           case head2 :: tl2 => check(insertStrictlySorted(insertStrictlySorted(l, key1, v1), key2, v2) == insertStrictlySorted(insertStrictlySorted(l, key2, v2), key1, v1))
-    //           case Nil()        => check(insertStrictlySorted(insertStrictlySorted(l, key1, v1), key2, v2) == insertStrictlySorted(insertStrictlySorted(l, key2, v2), key1, v1))
-    //         }
-    //       case head1 :: tl1 =>
-    //         l2 match {
-    //           case head2 :: tl2 => check(insertStrictlySorted(insertStrictlySorted(l, key1, v1), key2, v2) == insertStrictlySorted(insertStrictlySorted(l, key2, v2), key1, v1)) //TODO
-    //           case Nil()        => check(insertStrictlySorted(insertStrictlySorted(l, key1, v1), key2, v2) == insertStrictlySorted(insertStrictlySorted(l, key2, v2), key1, v1))
-    //         }
-    //     }
-    //   }
-    // }
-    
 
   }.ensuring(_ => insertStrictlySorted(insertStrictlySorted(l, key1, v1), key2, v2) == insertStrictlySorted(insertStrictlySorted(l, key2, v2), key1, v1))
 
