@@ -482,6 +482,11 @@ object MutableLongMap {
 
     }.ensuring(_ => valid && getCurrentListMap(0).contains(_keys(i)))
 
+    // @opaque
+    // def lemmaSizeEquivListMapArray(): Unit = {
+    //   require(valid)
+    // }.ensuring(_ => getCurrentListMap(0).size == size)
+
     @opaque
     @pure
     def lemmaListMapRecursiveValidKeyArray(from: Int): Unit = {
@@ -651,7 +656,10 @@ object MutableLongMap {
       val currentLMFrom: ListMapLongKey[Long] = getCurrentListMap(from)
       val currentLMFromMinusOne: ListMapLongKey[Long] = getCurrentListMap(from - 1)
       if (validKeyInArray(_keys(from - 1))) {
-        check(currentLMFromMinusOne == currentLMFrom + (_keys(i), _values(i)))
+        lemmaListMapRecursiveValidKeyArray(from - 1)
+        check(getCurrentListMap(from - 1) == getCurrentListMap(from) + (_keys(from - 1), _values(from - 1)))
+        ListMapLongKeyLemmas.addStillContains(getCurrentListMap(from), _keys(from - 1), _values(from - 1), _keys(i))
+        check(getCurrentListMap(from - 1).contains(_keys(i)))
       } else {
         check(currentLMFromMinusOne == currentLMFrom)
       }
