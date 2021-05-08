@@ -18,8 +18,9 @@ case class ListMapLongKey[B](toList: List[(Long, B)]) {
   }
 
   @inline
-  def size: BigInt = {
-    toList.length
+  def size: Int = {
+    require(toList.size < Integer.MIN_VALUE)
+     TupleListOps.intSize(toList)
   }
 
   @inline
@@ -89,6 +90,15 @@ case class ListMapLongKey[B](toList: List[(Long, B)]) {
 }
 
 object TupleListOps {
+
+  def intSize[B](l:  List[(Long, B)]): Int = {
+    require(l.length < Integer.MIN_VALUE)
+    decreases(l)
+    l match{
+      case head :: tl => 1 + intSize(tl)
+      case Nil() => 0
+    }
+  }.ensuring(res => res >= 0)
 
   @inline
   def invariantList[B](l: List[(Long, B)]): Boolean = {
