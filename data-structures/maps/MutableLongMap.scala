@@ -125,6 +125,7 @@ object MutableLongMap {
         else minValue
       } else {
         val tupl = seekEntry(key)
+        lemmaSeekEntryGivesInRangeIndex(key)
         if (tupl._2 != 0) defaultEntry(key) else _values(tupl._1)
       }
     }.ensuring(res => valid
@@ -455,6 +456,12 @@ object MutableLongMap {
       require(!getCurrentListMap(0).contains(k))
     }.ensuring(_ => seekEntry(k)._2 == MissingBit)
 
+    @opaque
+    @pure
+    def lemmaSeekEntryGivesInRangeIndex(k: Long): Unit = {
+      require(valid)
+    }.ensuring(_ => seekEntry(k)._2 != 0 || inRange(seekEntry(k)._1))
+
     //------------------END----------------------------------------------------------------------------------------------------------------------------------
     //------------------SEEKENTRY RELATED--------------------------------------------------------------------------------------------------------------------
 
@@ -638,10 +645,6 @@ object MutableLongMap {
         lemmaInListMapFromThenInFromMinusOne(from, i)
         lemmaInListMapFromThenInFromSmaller(from - 1, newFrom, i)
       }
-
-      check(getCurrentListMap(newFrom).contains(_keys(i)))
-      assume(getCurrentListMap(newFrom).contains(_keys(i)))
-
     }.ensuring(_ => getCurrentListMap(newFrom).contains(_keys(i)))
 
     //PASS
@@ -657,13 +660,8 @@ object MutableLongMap {
       val currentLMFromMinusOne: ListMapLongKey[Long] = getCurrentListMap(from - 1)
       if (validKeyInArray(_keys(from - 1))) {
         lemmaListMapRecursiveValidKeyArray(from - 1)
-        check(getCurrentListMap(from - 1) == getCurrentListMap(from) + (_keys(from - 1), _values(from - 1)))
         ListMapLongKeyLemmas.addStillContains(getCurrentListMap(from), _keys(from - 1), _values(from - 1), _keys(i))
-        check(getCurrentListMap(from - 1).contains(_keys(i)))
-      } else {
-        check(currentLMFromMinusOne == currentLMFrom)
       }
-
     }.ensuring(_ => getCurrentListMap(from - 1).contains(_keys(i)))
 
     //PASS
@@ -683,7 +681,6 @@ object MutableLongMap {
             lemmaListMapContainsThenArrayContainsFrom(k, from + 1)
           }
         } else {
-          assert(getCurrentListMapNoExtraKeys(from + 1) == ListMapLongKey.empty[Long])
           if (validKeyInArray(_keys(from))) {
             if ((extraKeys & 1) != 0 && (extraKeys & 2) != 0) {
               lemmaInListMapAfterAddingDiffThenInBefore(k, Long.MinValue, minValue, (getCurrentListMapNoExtraKeys(from) + (0L, zeroValue)))
@@ -863,7 +860,6 @@ object MutableLongMap {
 
         lemmaAddValidKeyAndNumKeysFromImpliesFromZero(a, i, k, from - 1)
       }
-      assert(true)
 
     }.ensuring(_ => {
       arrayCountValidKeysTailRec(a.updated(i, k), 0, i + 1) == arrayCountValidKeysTailRec(a, 0, i + 1) + 1
@@ -893,7 +889,6 @@ object MutableLongMap {
     def lemmaArrayEqualsFromToReflexivity(a: Array[Long], from: Int, to: Int): Unit = {
       require(from >= 0 && from < to && to <= a.length && a.length < Integer.MAX_VALUE)
       decreases(to - from)
-      assert(a(from) == a(from))
       if (from + 1 < to) {
         lemmaArrayEqualsFromToReflexivity(a, from + 1, to)
       }
@@ -903,14 +898,7 @@ object MutableLongMap {
     @opaque
     def lemmaValidKeyIndexImpliesArrayContainsKey(k: Long, i: Int): Unit = {
       require(valid && validKeyIndex(k, i))
-      assert(_keys(i) == k)
-
-      assert(i >= 0)
-      assert(i < _keys.length)
-      assert(arrayContainsKeyTailRec(_keys, k, i))
-
       lemmaArrayContainsFromImpliesContainsFromZero(_keys, k, i)
-
     }.ensuring(_ => arrayContainsKeyTailRec(_keys, k, 0))
 
     @pure
@@ -925,12 +913,8 @@ object MutableLongMap {
       )
       decreases(from)
       if (from > 0) {
-        assert(arrayContainsKeyTailRec(a, k, from - 1))
         lemmaArrayContainsFromImpliesContainsFromZero(a, k, from - 1)
       }
-
-      assert(arrayContainsKeyTailRec(a, k, 0))
-
     }.ensuring(_ => arrayContainsKeyTailRec(a, k, 0))
 
     //------------------END----------------------------------------------------------------------------------------------------------------------------------
