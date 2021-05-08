@@ -175,29 +175,58 @@ object MutableLongMap {
         }
 
       } else {
-
+        check(valid)
         val tupl = seekEntryOrOpen(key)
         val i = tupl._1
-        if (tupl._2 == MissingBit || tupl._2 == MissVacant) {
-          if (!isFull) {
+        if(tupl._2 == EntryNotFound){
+          //the key is not in the array, it was not able to find an empty space, the map is maybe full
+          check(valid)
+          if(getCurrentListMap(0).contains(key)){
+            lemmaInListMapThenSeekEntryOrOpenFindsIt(key)
+            check(false)
+          } else {
+            lemmaNotInListMapThenSeekEntryOrOpenFindsFreeOrNothing(key)
+          }
+          check(!getCurrentListMap(0).contains(key))
+          check(valid)
+          false
 
+        } else if (tupl._2 == MissingBit || tupl._2 == MissVacant) {
+          check(valid)
+          if(getCurrentListMap(0).contains(key)){
+            lemmaInListMapThenSeekEntryOrOpenFindsIt(key)
+            check(false)
+          } else {
+            lemmaNotInListMapThenSeekEntryOrOpenFindsFreeOrNothing(key)
+            check(_keys(i) == 0 || _keys(i) == Long.MinValue)
+          }
+          check(valid)
             val _oldSize = _size
             val _oldNKeys = arrayCountValidKeysTailRec(_keys, 0, _keys.length)
-
-            assert(valid)
-            assert(!arrayContainsKeyTailRec(_keys, key, 0))
+            check(_keys(i) == 0 || _keys(i) == Long.MinValue)
             assert(inRange(i))
-            assert(_keys(i) == 0)
-            assert(!isFull)
+            if(arrayContainsKeyTailRec(_keys, key, 0)){
+              lemmaArrayContainsKeyThenInListMap(key, 0)
+              check(false)
+            }
+            check(!arrayContainsKeyTailRec(_keys, key, 0))
+            assert(valid)
 
             addNewKeyToArrayAtAndUpdateSize(key, i)
             _values(i) = v
 
             true
-          } else {
-            false
-          }
+
         } else {
+          if(getCurrentListMap(0).contains(key)){
+            lemmaInListMapThenSeekEntryOrOpenFindsIt(key)
+            assert(_keys(i) == key)
+          } else {
+            lemmaNotInListMapThenSeekEntryOrOpenFindsFreeOrNothing(key)
+            check(_keys(i) == 0 || _keys(i) == Long.MinValue)
+            check(false)
+          }
+          assert(_keys(i) == key)
           _keys(i) = key
           _values(i) = v
 
@@ -207,7 +236,7 @@ object MutableLongMap {
 
     }.ensuring(res =>
       valid
-        && (if (res) getCurrentListMap(0).contains(key) else true)
+        // && (if (res) getCurrentListMap(0).contains(key) else true)
     )
 
     /** Removes the given key from the array
@@ -317,6 +346,16 @@ object MutableLongMap {
 
     }.ensuring(res => valid)
 
+    /**
+      * Search the index of the given key. If the key is in the array, it finds its index (0 is returned as second element).
+      * If the key is not in the array, it finds either:
+      *   - A free space with a 0 value (MissingBit is returned as second element)
+      *   - A freed space with a Long.MinValue value (MissingVacant is returned as a second element)
+      *   - Nothing (EntryNotFound is returned as a second value)
+      *
+      * @param k
+      * @return
+      */
     @pure
     def seekEntryOrOpen(k: Long): (Int, Int) = {
       require(valid)
@@ -447,14 +486,46 @@ object MutableLongMap {
     def lemmaInListMapThenSeekEntryFinds(k: Long): Unit = {
       require(valid)
       require(getCurrentListMap(0).contains(k))
-    }.ensuring(_ => seekEntry(k)._2 == 0 && inRange(seekEntry(k)._1))
+    }.ensuring(_ => valid && seekEntry(k)._2 == 0 && inRange(seekEntry(k)._1) && _keys(seekEntry(k)._1) == k)
 
     @opaque
     @pure
     def lemmaNotInListMapThenSeekEntryFindsMissingBit(k: Long): Unit = {
       require(valid)
       require(!getCurrentListMap(0).contains(k))
-    }.ensuring(_ => seekEntry(k)._2 == MissingBit)
+    }.ensuring(_ => valid && seekEntry(k)._2 == MissingBit)
+
+
+    @opaque
+    @pure
+    def lemmaInListMapThenSeekEntryOrOpenFindsIt(k: Long): Unit = {
+      require(valid)
+      require(getCurrentListMap(0).contains(k))
+
+    }.ensuring(_ => valid && seekEntryOrOpen(k)._2 == 0 && inRange(seekEntryOrOpen(k)._1) && _keys(seekEntryOrOpen(k)._1) == k)
+
+    @opaque
+    @pure
+    def lemmaNotInListMapThenSeekEntryOrOpenFindsFreeOrNothing(k: Long): Unit = {
+      require(valid)
+      require(!getCurrentListMap(0).contains(k))
+
+    }.ensuring(_ => {
+      val tu = seekEntryOrOpen(k)
+          valid && 
+          (
+            (tu._2 == MissingBit && inRange(tu._1) && _keys(tu._1) == 0) ||
+            (tu._2 == MissVacant && inRange(tu._1) && _keys(tu._1) == Long.MinValue) ||
+            tu._2 == EntryNotFound
+          )       
+    })
+  
+    @opaque
+    @pure
+    def lemmaSeekEntryOrOpenReturnsValidIndex(k: Long): Unit = {
+      require(valid)
+
+    }.ensuring(_ => inRange(seekEntryOrOpen(k)._1))
 
     @opaque
     @pure
@@ -471,7 +542,8 @@ object MutableLongMap {
     @opaque
     @pure
     def lemmaKeyInListMapIsInArray(k: Long): Unit = {
-      require(valid && getCurrentListMap(0).contains(k))
+      require(valid)
+      require(getCurrentListMap(0).contains(k))
       lemmaListMapContainsThenArrayContainsFrom(k, 0)
 
     }.ensuring(_ => if (k != 0 && k != Long.MinValue) arrayContainsKeyTailRec(_keys, k, 0) else if (k == 0) (extraKeys & 1) != 0 else (extraKeys & 2) != 0)
@@ -489,10 +561,39 @@ object MutableLongMap {
 
     }.ensuring(_ => valid && getCurrentListMap(0).contains(_keys(i)))
 
+    @opaque
+    @pure
+    def lemmaArrayContainsKeyThenInListMap(k: Long, from: Int): Unit = {
+      require(valid)
+      require(validKeyInArray(k))
+      require(from >= 0 && from < _keys.length)
+      require(arrayContainsKeyTailRec(_keys, k, from))
+      decreases( _keys.length - from)
+
+      if(_keys(from) == k){
+        lemmaValidKeyInArrayIsInListMap(from)
+      } else {
+        lemmaArrayContainsFromAndNotEqualThenContainsFromPlusOne(k, from)
+        lemmaArrayContainsKeyThenInListMap(k, from + 1)
+      }
+
+    }.ensuring(_ => valid && getCurrentListMap(0).contains(k))
+
     // @opaque
     // def lemmaSizeEquivListMapArray(): Unit = {
     //   require(valid)
     // }.ensuring(_ => getCurrentListMap(0).size == size)
+
+
+    @opaque
+    @pure
+    def lemmaArrayContainsFromAndNotEqualThenContainsFromPlusOne(k: Long, from: Int) : Unit = {
+      require(valid)
+      require(from >= 0 && from < _keys.length)
+      require(arrayContainsKeyTailRec(_keys, k, from))
+      require(_keys(from) != k)
+
+    }.ensuring( _ => arrayContainsKeyTailRec(_keys, k, from + 1))
 
     @opaque
     @pure
