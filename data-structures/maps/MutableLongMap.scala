@@ -47,7 +47,7 @@ object MutableLongMap {
       _keys.length == _values.length &&
       mask >= 0 &&
       _size >= 0 &&
-      _size < mask + 1 &&
+      _size <= mask + 1 &&
       size >= _size &&
       extraKeys >= 0 &&
       extraKeys <= 3 &&
@@ -133,23 +133,19 @@ object MutableLongMap {
     )
 
     private def addNewKeyToArrayAtAndUpdateSize(key: Long, i: Int): Unit = {
-      require(
-        valid && !arrayContainsKeyTailRec(_keys, key, 0) && inRange(i) && _keys(
-          i
-        ) == 0 && !isFull && validKeyInArray(key)
-      )
+      require(valid)
+      require(!arrayContainsKeyTailRec(_keys, key, 0))
+      require(inRange(i))
+      require(!validKeyInArray(_keys(i))) 
+      require(validKeyInArray(key))
 
       lemmaAddValidKeyIncreasesNumberOfValidKeysInArray(_keys, i, key)
+      
       _keys(i) = key
-
       _size += 1
 
       lemmaArrayContainsFromImpliesContainsFromZero(_keys, key, i)
-
       lemmaValidKeyAtIImpliesCountKeysIsOne(_keys, i)
-
-      ()
-
     }.ensuring(_ => valid && arrayContainsKeyTailRec(_keys, key, 0))
 
     /** Updates the map to include a new key-value pair. Return a boolean indicating if the update was successful.
@@ -923,11 +919,11 @@ object MutableLongMap {
     @pure
     @opaque
     def lemmaAddValidKeyAndNumKeysToImpliesToALength(a: Array[Long], i: Int, k: Long, to: Int): Unit = {
-      require(
-        i >= 0 && i < a.length && a(i) == 0 && validKeyInArray(k) && a.length < Integer.MAX_VALUE &&
-          to >= 0 && to <= a.length && to > i &&
-          (arrayCountValidKeysTailRec(a.updated(i, k), i + 1, to) == arrayCountValidKeysTailRec(a, i + 1, to))
-      )
+      require(i >= 0 && i < a.length)
+      require(!validKeyInArray(a(i)) && validKeyInArray(k))
+      require(a.length < Integer.MAX_VALUE)
+      require(to >= 0 && to <= a.length && to > i)
+      require((arrayCountValidKeysTailRec(a.updated(i, k), i + 1, to) == arrayCountValidKeysTailRec(a, i + 1, to)))
       decreases(a.length + 1 - to)
 
       if (to != a.length) {
@@ -945,11 +941,13 @@ object MutableLongMap {
     @pure
     @opaque
     def lemmaAddValidKeyAndNumKeysFromImpliesFromZero(a: Array[Long], i: Int, k: Long, from: Int): Unit = {
-      require(
-        i >= 0 && i < a.length && a(i) == 0 && validKeyInArray(k) && a.length < Integer.MAX_VALUE &&
-          from >= 0 && from <= a.length && i >= from &&
-          (arrayCountValidKeysTailRec(a.updated(i, k), from, i + 1) == arrayCountValidKeysTailRec(a, from, i + 1) + 1)
-      )
+      require(i >= 0 && i < a.length )
+      require(!validKeyInArray(a(i)))
+      require(validKeyInArray(k))
+      require(a.length < Integer.MAX_VALUE)
+      require(from >= 0 && from <= a.length && i >= from)
+      require((arrayCountValidKeysTailRec(a.updated(i, k), from, i + 1) == arrayCountValidKeysTailRec(a, from, i + 1) + 1))
+
       decreases(from)
 
       if (from > 0) {
@@ -969,7 +967,7 @@ object MutableLongMap {
     @pure
     @opaque
     def lemmaAddValidKeyIncreasesNumberOfValidKeysInArray(a: Array[Long], i: Int, k: Long): Unit = {
-      require(i >= 0 && i < a.length && a(i) == 0 && validKeyInArray(k) && a.length < Integer.MAX_VALUE)
+      require(i >= 0 && i < a.length && !validKeyInArray(a(i)) && validKeyInArray(k) && a.length < Integer.MAX_VALUE)
 
       lemmaAddValidKeyAndNumKeysFromImpliesFromZero(a, i, k, i)
       lemmaAddValidKeyAndNumKeysToImpliesToALength(a, i, k, i + 1)
@@ -1132,9 +1130,9 @@ object MutableLongMap {
       from: Int,
       to: Int
   ): Int = {
-    require(
-      from <= to && from >= 0 && to <= a.length && a.length < Integer.MAX_VALUE
-    )
+    require(from <= to && from >= 0 && to <= a.length)
+    require(a.length < Integer.MAX_VALUE)
+
     decreases(a.length - from)
     if (from >= to) {
       0
