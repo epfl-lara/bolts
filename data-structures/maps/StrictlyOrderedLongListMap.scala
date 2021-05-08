@@ -18,6 +18,11 @@ case class ListMapLongKey[B](toList: List[(Long, B)]) {
   }
 
   @inline
+  def size: BigInt = {
+    toList.length
+  }
+
+  @inline
   def tail: ListMapLongKey[B] = {
     require(!isEmpty)
     ListMapLongKey(toList.tail)
