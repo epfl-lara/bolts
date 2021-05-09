@@ -24,6 +24,11 @@ case class ListMapLongKey[B](toList: List[(Long, B)]) {
      TupleListOps.intSize(toList)
   }
 
+  def nKeys: Int = {
+    require(toList.size < Integer.MIN_VALUE)
+    TupleListOps.intSizeKeys(TupleListOps.getKeysList(toList))
+  }
+
   @inline
   def tail: ListMapLongKey[B] = {
     require(!isEmpty)
@@ -102,27 +107,27 @@ object TupleListOps {
     isStrictlySorted(l)
   }
   
-  // def getKeysList[B](l: List[(Long, B)]) : List[Long] = {
-  //   require(invariantList(l))
-  //   decreases(l)
-  //   l match {
-  //     case Cons(head, tl) => Cons(head._1, getKeysList(tl))
-  //     case Nil() => Nil[Long]()
-  //   }
-  // }.ensuring(res => isStrictlySortedLong(res) && res.length == l.length)
+  def getKeysList[B](l: List[(Long, B)]) : List[Long] = {
+    require(invariantList(l))
+    decreases(l)
+    l match {
+      case Cons(head, tl) => Cons(head._1, getKeysList(tl))
+      case Nil() => Nil[Long]()
+    }
+  }.ensuring(res => isStrictlySortedLong(res) && res.length == l.length)
 
-  // def intSizeKeys(l: List[Long]): Int = {
-  //   require(l.length < Integer.MAX_VALUE)
-  //   decreases(l)
+  def intSizeKeys(l: List[Long]): Int = {
+    require(l.length < Integer.MAX_VALUE)
+    decreases(l)
 
-  //   l match{
-  //     case Cons(head, tl) => 1 + intSizeKeys(tl)
-  //     case Nil() => 0
-  //   }
-  // }.ensuring(res => res >= 0)
+    l match{
+      case Cons(head, tl) => 1 + intSizeKeys(tl)
+      case Nil() => 0
+    }
+  }
 
   def intSize[B](l:  List[(Long, B)]): Int = {
-    require(l.length < Integer.MAX_VALUE)
+    require(l.length <= Integer.MAX_VALUE)
     decreases(l)
     l match{
       case Cons(head, tl) => 1 + intSize(tl)
@@ -235,12 +240,6 @@ object TupleListOps {
   }
 
   // ----------- LEMMAS -----------------------------------------------------
-
-  // @opaque
-  // def lemmaListAndKeysListAreSameIntSize[B](l: List[(Long, B)]): Unit = {
-  //   require(invariantList(l))
-  //   require(l.length < Integer.MAX_VALUE)
-  // }.ensuring(_ => intSizeKeys(getKeysList(l)) == intSize(l))
 
   @opaque
   def lemmaInsertStrictlySortedCommutative[B](l: List[(Long, B)], key1: Long, v1: B, key2: Long, v2: B): Unit = {
