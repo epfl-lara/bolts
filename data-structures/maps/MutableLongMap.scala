@@ -182,7 +182,6 @@ object MutableLongMap {
           val _oldKeys = _keys
           
           zeroValue = v
-
           check(_keys == _oldKeys)
           check(valid) //TODO
           extraKeys |= 1
@@ -328,20 +327,20 @@ object MutableLongMap {
       * @return the index in the array corresponding
       */
     @pure
-    def seekEmpty(k: Long): Int = {
+    def seekEmptyZero(k: Long): Int = {
       require(valid)
 
-      seekEmptyTailRec(0, toIndex(k))
-    }.ensuring(i => valid)
+      seekEmptyZeroTailRec(0, toIndex(k))
+    }.ensuring(res => valid && (res == EntryNotFound || _keys(res) == 0))
 
     @pure
-    def seekEmptyTailRec(x: Int, ee: Int): Int = {
+    def seekEmptyZeroTailRec(x: Int, ee: Int): Int = {
       require(valid && inRange(ee) && x >= 0 && x <= MAX_ITER)
       decreases(MAX_ITER - x)
       if (x >= MAX_ITER) EntryNotFound
       else if (_keys(ee) == 0) ee
-      else seekEmptyTailRec(x + 1, (ee + 2 * (x + 1) * x - 3) & mask)
-    }.ensuring(res => valid)
+      else seekEmptyZeroTailRec(x + 1, (ee + 2 * (x + 1) * x - 3) & mask)
+    }.ensuring(res => valid && (res == EntryNotFound || _keys(res) == 0))
 
     /** Given a key, seek for its index into the array
      * returns
@@ -1232,7 +1231,7 @@ object MutableLongMap {
         ._1
         .toString() + " ," + l.seekEntryOrOpen(4002)._2.toString() + ")\n"
     )
-    printf("seekEmpty with k = 4002 : " + l.seekEmpty(4002).toString() + "\n")
+    printf("seekEmptyZero with k = 4002 : " + l.seekEmptyZero(4002).toString() + "\n")
 
     printf("_size = " + l._size + "\n")
     printf("VacantBit = " + VacantBit + "\n")
