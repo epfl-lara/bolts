@@ -179,14 +179,18 @@ object MutableLongMap {
 
       if (key == -key) {
         if (key == 0) {
-          val _oldKeys = _keys
+
+          check(valid) //OK
+          check(arrayForallSeekEntryFound(0)) //OK
           
           zeroValue = v
-          check(_keys == _oldKeys)
-          check(valid) //TODO
+          
+          check(arrayForallSeekEntryFound(0)) //OK
+          
           extraKeys |= 1
-
-          check(valid) //TODO
+          
+          check(arrayForallSeekEntryFound(0)) //Timeouts
+          check(valid) //OK
           true
         } else {
           minValue = v
@@ -590,7 +594,8 @@ object MutableLongMap {
       if(i == toIndex((k))){
         check(seekEntryOrOpen(k)._2 == 0 && inRange(seekEntryOrOpen(k)._1) && _keys(seekEntryOrOpen(k)._1) == k)
       } else {
-        //TODO
+
+        check(seekEntryOrOpen(k)._2 == 0 && inRange(seekEntryOrOpen(k)._1) && _keys(seekEntryOrOpen(k)._1) == k) //TODO
       } 
 
     }.ensuring(_ => valid && seekEntryOrOpen(k)._2 == 0 && inRange(seekEntryOrOpen(k)._1) && _keys(seekEntryOrOpen(k)._1) == k)
