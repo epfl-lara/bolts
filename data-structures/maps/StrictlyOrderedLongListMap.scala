@@ -127,13 +127,20 @@ object TupleListOps {
   }
 
   def intSize[B](l:  List[(Long, B)]): Int = {
-    require(l.length <= Integer.MAX_VALUE)
     decreases(l)
     l match{
-      case Cons(head, tl) => 1 + intSize(tl)
+      case Cons(head, tl) => {
+        val s1 = intSize(tl)
+        if(s1 < Integer.MAX_VALUE){
+          1 + s1
+        } else {
+          0
+        }
+      }
+
       case Nil() => 0
     }
-  }
+  }.ensuring(res => res >= 0)
 
   def getKeysOf[B](l: List[(Long, B)], value: B): List[Long] = {
     require(invariantList(l))
