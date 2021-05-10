@@ -375,12 +375,12 @@ object MutableLongMap {
       require(simpleValid)
       require(inRange(ee))
       require(x >= 0)
-      require(x <= MAX_ITER + 1)
+      require(x <= MAX_ITER)
 
       decreases(MAX_ITER + 1 - x)
       val q = _keys(ee)
 
-      if (x > MAX_ITER) (ee, EntryNotFound)
+      if (x >= MAX_ITER) (ee, EntryNotFound)
       else if (q == k){
         (ee, 0)
       }
@@ -407,7 +407,8 @@ object MutableLongMap {
       require(valid)
 
       val (x, q, e) = seekKeyOrZeroOrLongMinValueTailRec(0, toIndex(k))(k)
-      if (q == k) (e, 0)
+      if(e == EntryNotFound) (e, EntryNotFound)
+      else if (q == k) (e, 0)
       else if (q == 0) (e, MissingBit)
       else {
         // e is the index of Long.MinValue i.e. the spot of a key that was removed
@@ -415,26 +416,38 @@ object MutableLongMap {
         // searching was added after the removed one and is therefore after in the array.
         // If we find a zero before finding the key, we return the index of the Long.MinValue to
         // reuse the spot
-        assert(_keys(e) == Long.MinValue) // it passes
+        assert(_keys(e) == Long.MinValue)
+        assert(inRange(e))
         val res = seekKeyOrZeroReturnVacantTailRec(x, e)(k, e)
         res
       }
-    }.ensuring(res => valid)
+    }.ensuring(res => valid && 
+                      (
+                        res._2 == EntryNotFound ||
+                        (res._2 == 0 && _keys(res._1) == k) ||
+                        (res._2 == MissingBit && _keys(res._1) == 0) ||
+                        (res._2 == MissVacant && _keys(res._1) == Long.MinValue) 
+                      )                  
+    )
 
     @tailrec
     @pure
     private def seekKeyOrZeroOrLongMinValueTailRec(x: Int, ee: Int)(implicit
         k: Long
     ): (Int, Long, Int) = {
-      require(valid && inRange(ee) && x <= MAX_ITER && x >= 0)
-      decreases(MAX_ITER + 1 - x)
+      require(valid && inRange(ee))
+      require(x <= MAX_ITER && x >= 0)
+      decreases(MAX_ITER - x)
       val q = _keys(ee)
       if (x >= MAX_ITER) (x, q, EntryNotFound)
       else if (q == k || q + q == 0) (x, q, ee)
       else
         seekKeyOrZeroOrLongMinValueTailRec(x + 1, (ee + 2 * (x + 1) * x - 3) & mask)
     }.ensuring(res => valid && 
-              (res._3 == EntryNotFound || _keys(res._3) == k || _keys(res._3) == 0 || _keys(res._3) == Long.MinValue)
+              (
+                (res._3 == EntryNotFound && res._1 >= MAX_ITER) || 
+                (res._3 != EntryNotFound && res._1 >= 0 && res._1 < MAX_ITER && _keys(res._3) == res._2 && 
+                    (res._2 == k || res._2 == 0 || res._2 == Long.MinValue)))
     )
 
     @tailrec
@@ -446,7 +459,7 @@ object MutableLongMap {
       require(valid)
       require(inRange(ee))
       require(x <= MAX_ITER && x >= 0)
-      require(vacantSpotIndex >= 0 && vacantSpotIndex < _keys.length)
+      require(inRange(vacantSpotIndex))
       require(_keys(vacantSpotIndex) == Long.MinValue)
 
       decreases(MAX_ITER + 1 - x)
