@@ -319,7 +319,7 @@ object MutableLongMap {
       val h = ((k ^ (k >>> 32)) & 0xffffffffL).toInt
       val x = (h ^ (h >>> 16)) * 0x85ebca6b
       (x ^ (x >>> 13)) & mask
-    }.ensuring(res => simpleValid && res < _keys.length)
+    }.ensuring(res => simpleValid && res < _keys.length &&  res >= 0)
 
     /** Seek for the first empty entry in the Array for a given key
       *
@@ -554,6 +554,17 @@ object MutableLongMap {
     def lemmaInListMapThenSeekEntryOrOpenFindsIt(k: Long): Unit = {
       require(valid)
       require(getCurrentListMap(0).contains(k))
+      require(validKeyInArray(k))
+
+      lemmaKeyInListMapIsInArray(k)
+      
+      lemmaInListMapThenSeekEntryFinds(k)
+      val i = seekEntry(k)._1
+      if(i == toIndex((k))){
+        check(seekEntryOrOpen(k)._2 == 0 && inRange(seekEntryOrOpen(k)._1) && _keys(seekEntryOrOpen(k)._1) == k)
+      } else {
+        //TODO
+      } 
 
     }.ensuring(_ => valid && seekEntryOrOpen(k)._2 == 0 && inRange(seekEntryOrOpen(k)._1) && _keys(seekEntryOrOpen(k)._1) == k)
 
