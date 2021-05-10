@@ -139,16 +139,18 @@ object MutableLongMap {
     def apply(key: Long): Long = {
       require(valid)
       if (key == -key) {
-        if ((((key >>> 63).toInt + 1) & extraKeys) == 0) defaultEntry(key)
-        else if (key == 0) zeroValue
-        else minValue
+        // if ((((key >>> 63).toInt + 1) & extraKeys) == 0) defaultEntry(key)
+        if (key == 0) zeroValue
+        else if(key == Long.MinValue) minValue
+        else defaultEntry(key)
       } else {
         val tupl = seekEntry(key)
         lemmaSeekEntryGivesInRangeIndex(key)
         if (tupl._2 != 0) defaultEntry(key) else _values(tupl._1)
       }
     }.ensuring(res => valid
-    // (if(contains(key) && key != -key) res == _values(seekEntry(key)._1) else true)
+    && (if(key == 0) res == zeroValue else if(key == Long.MinValue) res == minValue 
+        else if(contains(key)) res == _values(seekEntry(key)._1) else res == defaultEntry(key))
     )
 
     private def addNewKeyToArrayAtAndUpdateSize(key: Long, i: Int): Unit = {
