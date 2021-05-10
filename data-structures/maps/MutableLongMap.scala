@@ -343,7 +343,8 @@ object MutableLongMap {
     }.ensuring(res => valid && (res == EntryNotFound || _keys(res) == 0))
 
     /** Given a key, seek for its index into the array
-     * returns
+     * returns a tuple with (index, error_code)
+     * the index is the index of the key if error_code == 0
       *
       * @param k the key
       * @return the index of the given key into the array
@@ -432,7 +433,9 @@ object MutableLongMap {
       else if (q == k || q + q == 0) (x, q, ee)
       else
         seekKeyOrZeroOrLongMinValueTailRec(x + 1, (ee + 2 * (x + 1) * x - 3) & mask)
-    }.ensuring(res => valid)
+    }.ensuring(res => valid && 
+              (res._3 == EntryNotFound || _keys(res._3) == k || _keys(res._3) == 0 || _keys(res._3) == Long.MinValue)
+    )
 
     @tailrec
     @pure
@@ -440,7 +443,12 @@ object MutableLongMap {
         k: Long,
         vacantSpotIndex: Int
     ): (Int, Int) = {
-      require(valid && inRange(ee) && x <= MAX_ITER && x >= 0)
+      require(valid)
+      require(inRange(ee))
+      require(x <= MAX_ITER && x >= 0)
+      require(vacantSpotIndex >= 0 && vacantSpotIndex < _keys.length)
+      require(_keys(vacantSpotIndex) == Long.MinValue)
+
       decreases(MAX_ITER + 1 - x)
       val q = _keys(ee)
       if (x >= MAX_ITER) (ee, EntryNotFound)
@@ -452,7 +460,13 @@ object MutableLongMap {
         seekKeyOrZeroReturnVacantTailRec(x + 1, (ee + 2 * (x + 1) * x - 3) & mask)
       }
 
-    }.ensuring(res => valid)
+    }.ensuring(res => valid && 
+              (
+                res._2 == EntryNotFound || 
+                (res._2 == MissVacant && res._1 == vacantSpotIndex && _keys(res._1) == Long.MinValue) ||
+                (res._2 == 0 && _keys(res._1) == k)
+              )
+    )
 
     @pure
     def getCurrentListMap(from: Int): ListMapLongKey[Long] = {
