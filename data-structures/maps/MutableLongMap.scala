@@ -529,27 +529,16 @@ object MutableLongMap {
 
     @opaque
     @pure
-    def lemmaInListMapThenSeekEntryFinds(k: Long, i: Int): Unit = {
+    def lemmaInListMapThenSeekEntryFinds(k: Long): Unit = {
       require(valid)
-      require(i >= 0)
-      require(i < _keys.length)
       require(getCurrentListMap(0).contains(k))
       require(validKeyInArray(k))
       
       lemmaKeyInListMapIsInArray(k)
       assert(arrayContainsKeyTailRec(_keys, k, 0))
       assert(arrayForallSeekEntryFound(0))
-      if(_keys(i) == k){
-        lemmaArrayForallSeekEntryFoundFromSmallerThenFromBigger(0, i)
-        assert(arrayForallSeekEntryFound(i))
-        assert(seekEntry(k) == (i, 0))
-        assert(_keys(i) == k)
-        check(valid)
-        check(seekEntry(k)._2 == 0 && inRange(seekEntry(k)._1) && _keys(seekEntry(k)._1) == k)
-        } else {
-          check(valid)
-          check(seekEntry(k)._2 == 0 && inRange(seekEntry(k)._1) && _keys(seekEntry(k)._1) == k)
-      }
+      val i = arrayScanForKey(_keys, k, 0)
+      lemmaArrayForallSeekEntryFoundFromSmallerThenFromBigger(0, i)
 
     }.ensuring(_ => valid && seekEntry(k)._2 == 0 && inRange(seekEntry(k)._1) && _keys(seekEntry(k)._1) == k)
 
