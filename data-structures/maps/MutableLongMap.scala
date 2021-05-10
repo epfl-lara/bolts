@@ -1244,6 +1244,17 @@ object MutableLongMap {
     }
   }
 
+  @tailrec
+  @pure
+  def arrayScanForKey(a: Array[Long], k: Long, from: Int): Int = {
+    require(from >= 0 && from < a.length && a.length < Integer.MAX_VALUE)
+    require(arrayContainsKeyTailRec(a, k, from))
+    decreases(a.length - from)
+    
+    if(a(from) == k) from 
+    else arrayScanForKey(a, k, from + 1)
+  }.ensuring(res => res >= 0 && res < a.length && a(res) == k)
+
   /** Return true iff the two arrays contain the same elements from the index "from" included to the index
     * "to" not included
     *
