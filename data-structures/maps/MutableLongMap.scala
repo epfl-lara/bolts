@@ -185,7 +185,7 @@ object MutableLongMap {
           
           zeroValue = v
           
-          check(arrayForallSeekEntryFound(0)) //OK
+          check(arrayForallSeekEntryFound(0)) //Timeouts
           
           extraKeys |= 1
           
