@@ -39,7 +39,7 @@ object MutableLongMap {
   ) {
 //   ) extends LongMap[Long] {
 
-    @inline
+    @inlineOnce
     def valid: Boolean = {
       //class invariant
       mask == IndexMask &&
@@ -52,7 +52,17 @@ object MutableLongMap {
       extraKeys >= 0 &&
       extraKeys <= 3 &&
       arrayCountValidKeysTailRec(_keys, 0, _keys.length) == _size
+      // arrayForallSeekEntryFound(0)
+      // I have to ensure that the _keys array has no duplicate
 
+    }
+
+    @pure
+    def arrayForallSeekEntryFound(i: Int): Boolean = {
+      require(i >= 0)
+      if(i >= _keys.length) true
+      else if(validKeyInArray(_keys(i))) seekEntry(_keys(i)) == (i, 0) && arrayForallSeekEntryFound(i + 1)
+      else arrayForallSeekEntryFound(i + 1)
     }
 
     /** Checks if i is a valid index in the Array of values
@@ -303,6 +313,7 @@ object MutableLongMap {
     }.ensuring(res => valid)
 
     /** Given a key, seek for its index into the array
+     * returns
       *
       * @param k the key
       * @return the index of the given key into the array
@@ -315,7 +326,8 @@ object MutableLongMap {
       // seekEntryTailRecLemma(k, 0, toIndex(k))
       seekEntryTailRec(k, 0, toIndex(k))
 
-    }.ensuring(res => valid)
+    }.ensuring(res => valid && (res._2 != 0 || _keys(res._1) == k))
+
     //using _size to be sure that i is valid in the range
     // NOTE: ((x | MissingBit) ^ MissingBit) == x is proven true by stainless for x in range 0 to MAX_ARRAY_SIZE with this value of MissingBit
 
@@ -328,19 +340,25 @@ object MutableLongMap {
       */
     @pure
     private def seekEntryTailRec(k: Long, x: Int, ee: Int): (Int, Int) = {
-      require(valid && inRange(ee) && x >= 0 && x <= _keys.length && x <= MAX_ITER && x >= 0)
+      // require(valid)
+      require(inRange(ee))
+      require(x >= 0)
+      require(x <= MAX_ITER + 1)
+
       decreases(MAX_ITER + 1 - x)
       val q = _keys(ee)
 
       if (x > MAX_ITER) (ee, EntryNotFound)
-      else if (q == k) (ee, 0)
+      else if (q == k){
+        (ee, 0)
+      }
       else if (q == 0) (ee, MissingBit)
       else {
         val newEe = (ee + 2 * (x + 1) * x - 3) & mask
         seekEntryTailRec(k, x + 1, newEe)
       }
 
-    }.ensuring(res => valid)
+    }.ensuring(res => (res._2 != 0 || _keys(res._1) == k))
 
     /**
       * Search the index of the given key. If the key is in the array, it finds its index (0 is returned as second element).
@@ -534,6 +552,23 @@ object MutableLongMap {
 
     //------------------EQUIVALENCE BETWEEN LISTMAP AND ARRAY------------------------------------------------------------------------------------------------
     //------------------BEGIN--------------------------------------------------------------------------------------------------------------------------------
+
+    def lemmaKeyInListMapThenSameValueInArray(k: Long, i: Int): Unit = {
+      require(valid)
+      require(getCurrentListMap(0).contains(k))
+      require(inRange(i))
+      require(_keys(i) == k)
+
+      if(k != 0 && k != Long.MinValue){
+        lemmaKeyInListMapIsInArray(k)
+        lemmaListMapApplyFromThenApplyFromZero(k, _values(i), i)
+      }
+    }.ensuring(_ => if (k == 0) (extraKeys & 1) != 0 && getCurrentListMap(0).apply(k) == zeroValue else 
+                    if(k == Long.MinValue) (extraKeys & 2) != 0 && getCurrentListMap(0).apply(k) == minValue else
+                    arrayContainsKeyTailRec(_keys, k, 0) && getCurrentListMap(0).apply(k) == _values(i))
+
+
+    
     //PASS
     @opaque
     @pure
@@ -542,7 +577,8 @@ object MutableLongMap {
       require(getCurrentListMap(0).contains(k))
       lemmaListMapContainsThenArrayContainsFrom(k, 0)
 
-    }.ensuring(_ => if (k != 0 && k != Long.MinValue) arrayContainsKeyTailRec(_keys, k, 0) else if (k == 0) (extraKeys & 1) != 0 else (extraKeys & 2) != 0)
+    }.ensuring(_ => if (k != 0 && k != Long.MinValue) arrayContainsKeyTailRec(_keys, k, 0) else
+                    if (k == 0) (extraKeys & 1) != 0 else (extraKeys & 2) != 0)
 
     //PASS
     @opaque
@@ -579,6 +615,40 @@ object MutableLongMap {
     // def lemmaSizeEquivListMapArray(): Unit = {
     //   require(valid)
     // }.ensuring(_ => getCurrentListMap(0).size == size)
+
+    @opaque
+    @pure
+    def lemmaListMapApplyFromThenApplyFromZero(k: Long, v: Long, from: Int): Unit = {
+        require(valid)
+        require(from >= 0 && from < _keys.length)
+        require(getCurrentListMap(from).contains(k))
+        require(getCurrentListMap(from).apply(k) == v)
+
+        decreases(from)
+        
+        check(getCurrentListMap(from).contains(k))
+        check(getCurrentListMap(from).apply(k) == v)
+        
+        if(from > 0){
+          if(validKeyInArray(_keys(from - 1))){
+            lemmaListMapRecursiveValidKeyArray(from - 1)
+            ListMapLongKeyLemmas.addStillContains(getCurrentListMap(from), _keys(from - 1), _values(from - 1), k)
+            check(k != _keys(from - 1))
+
+            ListMapLongKeyLemmas.addApplyDifferent(getCurrentListMap(from), _keys(from - 1), _values(from - 1), k)
+            check(getCurrentListMap(from - 1).contains(k))
+            check(getCurrentListMap(from - 1).apply(k) == v)
+          } else {
+              
+              check(getCurrentListMap(from - 1).contains(k))
+          }
+        
+          lemmaListMapApplyFromThenApplyFromZero(k, v, from - 1)
+        }
+        check(getCurrentListMap(0).contains(k))
+        check(getCurrentListMap(0).apply(k) == v)
+
+    }.ensuring(_ => getCurrentListMap(0).contains(k) && getCurrentListMap(0).apply(k) == v)
 
 
     @opaque
@@ -820,6 +890,8 @@ object MutableLongMap {
 
     //------------------ARRAY RELATED------------------------------------------------------------------------------------------------------------------------
     //------------------BEGIN--------------------------------------------------------------------------------------------------------------------------------
+
+    
 
     @inline
     @pure
@@ -1114,6 +1186,7 @@ object MutableLongMap {
     printf("VacantBit = " + VacantBit + "\n")
     printf("ok")
   }
+
 
   // ARRAY UTILITY FUNCTIONS ----------------------------------------------------------------------------------------
 
