@@ -43,7 +43,7 @@ object MutableLongMap {
     def valid: Boolean = {
       //class invariant
       simpleValid &&
-      arrayCountValidKeysTailRec(_keys, 0, _keys.length) == _size
+      arrayCountValidKeysTailRec(_keys, 0, _keys.length) == _size &&
       arrayForallSeekEntryFound(0)
       // I have to ensure that the _keys array has no duplicate
     }
