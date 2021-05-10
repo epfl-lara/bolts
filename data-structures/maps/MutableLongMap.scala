@@ -42,6 +42,14 @@ object MutableLongMap {
     @inlineOnce
     def valid: Boolean = {
       //class invariant
+      simpleValid &&
+      arrayCountValidKeysTailRec(_keys, 0, _keys.length) == _size
+      arrayForallSeekEntryFound(0)
+      // I have to ensure that the _keys array has no duplicate
+    }
+
+    @inline
+    def simpleValid: Boolean = {
       mask == IndexMask &&
       _values.length == mask + 1 &&
       _keys.length == _values.length &&
@@ -50,16 +58,14 @@ object MutableLongMap {
       _size <= mask + 1 &&
       size >= _size &&
       extraKeys >= 0 &&
-      extraKeys <= 3 &&
-      arrayCountValidKeysTailRec(_keys, 0, _keys.length) == _size
-      // arrayForallSeekEntryFound(0)
-      // I have to ensure that the _keys array has no duplicate
-
+      extraKeys <= 3
     }
 
     @pure
     def arrayForallSeekEntryFound(i: Int): Boolean = {
       require(i >= 0)
+      require(i <= _keys.length)
+      decreases(_keys.length - i)
       if(i >= _keys.length) true
       else if(validKeyInArray(_keys(i))) seekEntry(_keys(i)) == (i, 0) && arrayForallSeekEntryFound(i + 1)
       else arrayForallSeekEntryFound(i + 1)
@@ -84,26 +90,28 @@ object MutableLongMap {
       * @return
       */
     @inline
+    @pure
     def validKeyIndex(k: Long, i: Int): Boolean = {
       require(valid)
       if (inRange(i)) _keys(i) == k else false
     }
 
     @inline
+    @pure
     def validZeroKeyIndex(i: Int): Boolean = {
       require(valid && inRange(i))
       inRange(i) && _keys(i) == 0
     }
-
+    @pure
     def size: Int = {
       _size + (extraKeys + 1) / 2
     }
-
+    @pure
     def isEmpty: Boolean = {
       require(valid)
       _size == 0
     }.ensuring(_ => valid)
-
+    @pure
     def isFull: Boolean = {
       require(valid)
       _size >= IndexMask
@@ -127,6 +135,7 @@ object MutableLongMap {
       * @param key
       * @return
       */
+    @pure
     def apply(key: Long): Long = {
       require(valid)
       if (key == -key) {
@@ -283,13 +292,14 @@ object MutableLongMap {
       * @param k the key
       * @return
       */
+    @pure
     private def toIndex(k: Long): Int = {
-      require(valid)
+      require(simpleValid)
       // Part of the MurmurHash3 32 bit finalizer
       val h = ((k ^ (k >>> 32)) & 0xffffffffL).toInt
       val x = (h ^ (h >>> 16)) * 0x85ebca6b
       (x ^ (x >>> 13)) & mask
-    }.ensuring(res => valid && res < _keys.length)
+    }.ensuring(res => simpleValid && res < _keys.length)
 
     /** Seek for the first empty entry in the Array for a given key
       *
@@ -321,12 +331,13 @@ object MutableLongMap {
 
     @pure
     def seekEntry(k: Long): (Int, Int) = {
-      require(valid)
+      require(simpleValid)
+      decreases(1)
 
       // seekEntryTailRecLemma(k, 0, toIndex(k))
       seekEntryTailRec(k, 0, toIndex(k))
 
-    }.ensuring(res => valid && (res._2 != 0 || _keys(res._1) == k))
+    }.ensuring(res => simpleValid && (res._2 != 0 || _keys(res._1) == k))
 
     //using _size to be sure that i is valid in the range
     // NOTE: ((x | MissingBit) ^ MissingBit) == x is proven true by stainless for x in range 0 to MAX_ARRAY_SIZE with this value of MissingBit
@@ -340,7 +351,7 @@ object MutableLongMap {
       */
     @pure
     private def seekEntryTailRec(k: Long, x: Int, ee: Int): (Int, Int) = {
-      // require(valid)
+      require(simpleValid)
       require(inRange(ee))
       require(x >= 0)
       require(x <= MAX_ITER + 1)
@@ -358,7 +369,7 @@ object MutableLongMap {
         seekEntryTailRec(k, x + 1, newEe)
       }
 
-    }.ensuring(res => (res._2 != 0 || _keys(res._1) == k))
+    }.ensuring(res => simpleValid && (res._2 != 0 || _keys(res._1) == k))
 
     /**
       * Search the index of the given key. If the key is in the array, it finds its index (0 is returned as second element).
