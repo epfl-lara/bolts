@@ -65,6 +65,7 @@ object MutableLongMap {
     def arrayForallSeekEntryFound(i: Int): Boolean = {
       require(i >= 0)
       require(i <= _keys.length)
+      require(simpleValid)
       decreases(_keys.length - i)
       if(i >= _keys.length) true
       else if(validKeyInArray(_keys(i))) seekEntry(_keys(i)) == (i, 0) && arrayForallSeekEntryFound(i + 1)
@@ -539,11 +540,15 @@ object MutableLongMap {
       assert(arrayContainsKeyTailRec(_keys, k, 0))
       assert(arrayForallSeekEntryFound(0))
       if(_keys(i) == k){
+        lemmaArrayForallSeekEntryFoundFromSmallerThenFromBigger(0, i)
         assert(arrayForallSeekEntryFound(i))
         assert(seekEntry(k) == (i, 0))
         assert(_keys(i) == k)
-      } else {
-
+        check(valid)
+        check(seekEntry(k)._2 == 0 && inRange(seekEntry(k)._1) && _keys(seekEntry(k)._1) == k)
+        } else {
+          check(valid)
+          check(seekEntry(k)._2 == 0 && inRange(seekEntry(k)._1) && _keys(seekEntry(k)._1) == k)
       }
 
     }.ensuring(_ => valid && seekEntry(k)._2 == 0 && inRange(seekEntry(k)._1) && _keys(seekEntry(k)._1) == k)
@@ -937,8 +942,20 @@ object MutableLongMap {
     //------------------ARRAY RELATED------------------------------------------------------------------------------------------------------------------------
     //------------------BEGIN--------------------------------------------------------------------------------------------------------------------------------
 
-    
+    @opaque
+    @pure
+    def lemmaArrayForallSeekEntryFoundFromSmallerThenFromBigger(from: Int, newFrom: Int): Unit = {
+    require(from >= 0 && from <= _keys.length)
+    require(newFrom >= from && newFrom <= _keys.length)
+    require(simpleValid)  
+    require(arrayForallSeekEntryFound(from))
 
+    decreases(newFrom - from)
+
+    if(from < newFrom){
+      lemmaArrayForallSeekEntryFoundFromSmallerThenFromBigger(from + 1, newFrom)
+    }
+    }.ensuring(_ => arrayForallSeekEntryFound(newFrom))
     @inline
     @pure
     def isPivot(a: Array[Long], from: Int, to: Int, pivot: Int): Boolean = {
