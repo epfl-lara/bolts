@@ -405,7 +405,7 @@ object MutableLongMap {
     def seekEntryOrOpen(k: Long): (Int, Int) = {
       require(valid)
 
-      val (x, q, e) = seekEntryOrOpenTailRec1(0, toIndex(k))(k)
+      val (x, q, e) = seekKeyOrZeroOrLongMinValueTailRec(0, toIndex(k))(k)
       if (q == k) (e, 0)
       else if (q == 0) (e, MissingBit)
       else {
@@ -415,14 +415,14 @@ object MutableLongMap {
         // If we find a zero before finding the key, we return the index of the Long.MinValue to
         // reuse the spot
         assert(_keys(e) == Long.MinValue) // it passes
-        val res = seekEntryOrOpenTailRec2(x, e)(k, e)
+        val res = seekKeyOrZeroReturnVacantTailRec(x, e)(k, e)
         res
       }
     }.ensuring(res => valid)
 
     @tailrec
     @pure
-    private def seekEntryOrOpenTailRec1(x: Int, ee: Int)(implicit
+    private def seekKeyOrZeroOrLongMinValueTailRec(x: Int, ee: Int)(implicit
         k: Long
     ): (Int, Long, Int) = {
       require(valid && inRange(ee) && x <= MAX_ITER && x >= 0)
@@ -431,12 +431,12 @@ object MutableLongMap {
       if (x >= MAX_ITER) (x, q, EntryNotFound)
       else if (q == k || q + q == 0) (x, q, ee)
       else
-        seekEntryOrOpenTailRec1(x + 1, (ee + 2 * (x + 1) * x - 3) & mask)
+        seekKeyOrZeroOrLongMinValueTailRec(x + 1, (ee + 2 * (x + 1) * x - 3) & mask)
     }.ensuring(res => valid)
 
     @tailrec
     @pure
-    private def seekEntryOrOpenTailRec2(x: Int, ee: Int)(implicit
+    private def seekKeyOrZeroReturnVacantTailRec(x: Int, ee: Int)(implicit
         k: Long,
         vacantSpotIndex: Int
     ): (Int, Int) = {
@@ -449,7 +449,7 @@ object MutableLongMap {
       } else if (q == 0) {
         (vacantSpotIndex, MissVacant)
       } else {
-        seekEntryOrOpenTailRec2(x + 1, (ee + 2 * (x + 1) * x - 3) & mask)
+        seekKeyOrZeroReturnVacantTailRec(x + 1, (ee + 2 * (x + 1) * x - 3) & mask)
       }
 
     }.ensuring(res => valid)
