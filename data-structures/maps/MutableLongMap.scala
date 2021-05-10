@@ -178,16 +178,21 @@ object MutableLongMap {
 
       if (key == -key) {
         if (key == 0) {
+          val _oldKeys = _keys
+          
           zeroValue = v
+
+          check(_keys == _oldKeys)
+          check(valid) //TODO
           extraKeys |= 1
 
-          check(valid) //OK
+          check(valid) //TODO
           true
         } else {
           minValue = v
           extraKeys |= 2
 
-          check(valid) //OK
+          check(valid) //TODO
           true
         }
 
@@ -229,8 +234,17 @@ object MutableLongMap {
             check(!arrayContainsKeyTailRec(_keys, key, 0))
             assert(valid)
 
-            addNewKeyToArrayAtAndUpdateSize(key, i)
+            lemmaAddValidKeyIncreasesNumberOfValidKeysInArray(_keys, i, key)
+
+
+            _keys(i) = key
+            _size += 1
+
+            lemmaArrayContainsFromImpliesContainsFromZero(_keys, key, i)
+            lemmaValidKeyAtIImpliesCountKeysIsOne(_keys, i)
             _values(i) = v
+
+            check(valid) //TODO
 
             true
 
@@ -243,9 +257,13 @@ object MutableLongMap {
             check(_keys(i) == 0 || _keys(i) == Long.MinValue)
             check(false)
           }
+          check(valid)
           assert(_keys(i) == key)
-          _keys(i) = key
+
           _values(i) = v
+
+          check(arrayForallSeekEntryFound(0)) //TODO
+          check(valid)
 
           true
         }
@@ -510,9 +528,24 @@ object MutableLongMap {
 
     @opaque
     @pure
-    def lemmaInListMapThenSeekEntryFinds(k: Long): Unit = {
+    def lemmaInListMapThenSeekEntryFinds(k: Long, i: Int): Unit = {
       require(valid)
+      require(i >= 0)
+      require(i < _keys.length)
       require(getCurrentListMap(0).contains(k))
+      require(validKeyInArray(k))
+      
+      lemmaKeyInListMapIsInArray(k)
+      assert(arrayContainsKeyTailRec(_keys, k, 0))
+      assert(arrayForallSeekEntryFound(0))
+      if(_keys(i) == k){
+        assert(arrayForallSeekEntryFound(i))
+        assert(seekEntry(k) == (i, 0))
+        assert(_keys(i) == k)
+      } else {
+
+      }
+
     }.ensuring(_ => valid && seekEntry(k)._2 == 0 && inRange(seekEntry(k)._1) && _keys(seekEntry(k)._1) == k)
 
     @opaque
