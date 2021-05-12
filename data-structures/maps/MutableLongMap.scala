@@ -364,12 +364,16 @@ object MutableLongMap {
     @pure
     def seekEntry(k: Long): (Int, Int) = {
       require(simpleValid)
+      require(validKeyInArray(k))
       decreases(1)
 
       // seekEntryTailRecLemma(k, 0, toIndex(k))
       seekEntryTailRecDecoupled(k, 0, toIndex(k))(_keys, mask)
 
-    }.ensuring(res => simpleValid && (res._2 != 0 || _keys(res._1) == k))
+    }.ensuring(res => simpleValid && 
+                      (res._2 == 0 || res._2 == MissingBit || res._2 == EntryNotFound) && 
+                      (res._2 != 0 || (inRange(res._1) && _keys(res._1) == k))
+              )
 
     //using _size to be sure that i is valid in the range
     // NOTE: ((x | MissingBit) ^ MissingBit) == x is proven true by stainless for x in range 0 to MAX_ARRAY_SIZE with this value of MissingBit
@@ -385,6 +389,7 @@ object MutableLongMap {
     private def seekEntryTailRec(k: Long, x: Int, ee: Int): (Int, Int) = {
       require(simpleValid)
       require(inRange(ee))
+      require(validKeyInArray(k))
       require(x >= 0)
       require(x <= MAX_ITER)
 
@@ -400,7 +405,10 @@ object MutableLongMap {
         seekEntryTailRec(k, x + 1, newEe)
       }
 
-    }.ensuring(res => simpleValid && (res._2 != 0 || _keys(res._1) == k))
+    }.ensuring(res => simpleValid &&
+                      (res._2 == 0 || res._2 == MissingBit || res._2 == EntryNotFound) && 
+                      (res._2 != 0 || (inRange(res._1) && _keys(res._1) == k))
+              )
 
     @pure
     private def seekEntryTailRecDecoupled(k: Long, x: Int, ee: Int)(implicit _keys: Array[Long], mask: Int): (Int, Int) = {
@@ -411,6 +419,7 @@ object MutableLongMap {
       require(ee >= 0 && ee < mask + 1)
       require(x >= 0)
       require(x <= MAX_ITER)
+      require(validKeyInArray(k))
 
       decreases(MAX_ITER + 1 - x)
       val q = _keys(ee)
@@ -424,7 +433,10 @@ object MutableLongMap {
         seekEntryTailRecDecoupled(k, x + 1, newEe)
       }
 
-    }.ensuring(res => simpleValid && (res._2 != 0 || _keys(res._1) == k))
+    }.ensuring(res => simpleValid &&
+                      (res._2 == 0 || res._2 == MissingBit || res._2 == EntryNotFound) && 
+                      (res._2 != 0 || (inRange(res._1) && _keys(res._1) == k))
+              )
 
     /** Search the index of the given key. If the key is in the array, it finds its index (0 is returned as second element).
       * If the key is not in the array, it finds either:
@@ -607,18 +619,25 @@ object MutableLongMap {
     @pure
     def lemmaNotInListMapThenSeekEntryFindsMissingBit(k: Long): Unit = {
       require(valid)
+      require(validKeyInArray(k))
       require(!getCurrentListMap(0).contains(k))
       if (validKeyInArray(k)) {
         if (arrayContainsKeyTailRec(_keys, k, 0)) {
           val i = arrayScanForKey(_keys, k, 0)
-          assert(arrayForallSeekEntryFound(0))
-          assert(_keys(i) == k)
-          assert(validKeyInArray(k))
-          assert(seekEntry(k) == (i, 0))
+          lemmaArrayForallSeekEntryFoundFromSmallerThenFromBigger(0, i)
+          lemmaValidKeyInArrayIsInListMap(i)
           check(false)
-        } else {}
-      } else {}
-    }.ensuring(_ => valid && seekEntry(k)._2 == MissingBit)
+        } else {
+          if(seekEntry(k)._2 == 0){
+            //found but not in array --> Contradiction
+            val i = seekEntry(k)._1
+            lemmaValidKeyInArrayIsInListMap(i)
+            check(false)
+          }
+          }
+        } 
+
+    }.ensuring(_ => valid && (seekEntry(k)._2 == MissingBit || seekEntry(k)._2 == EntryNotFound))
 
     @opaque
     @pure
@@ -661,7 +680,7 @@ object MutableLongMap {
     def lemmaSeekEntryOrOpenReturnsValidIndex(k: Long): Unit = {
       require(valid)
 
-    }.ensuring(_ => inRange(seekEntryOrOpen(k)._1))
+    }.ensuring(_ => seekEntryOrOpen(k)._2 != 0 || inRange(seekEntryOrOpen(k)._1))
 
     @opaque
     @pure
