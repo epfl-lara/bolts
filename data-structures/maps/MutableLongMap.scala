@@ -1406,7 +1406,9 @@ object MutableLongMap {
   @tailrec
   @pure
   def arrayContainsKeyTailRec(a: Array[Long], k: Long, from: Int): Boolean = {
-    require(from < a.length && from >= 0 && a.length < Integer.MAX_VALUE)
+    require(from >= 0)
+    require(from < a.length)
+    require(a.length < Integer.MAX_VALUE)
 
     decreases(a.length - from)
     if (a(from) == k) {
