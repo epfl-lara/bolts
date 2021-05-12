@@ -44,8 +44,9 @@ object MutableLongMap {
       //class invariant
       simpleValid &&
       arrayCountValidKeysTailRec(_keys, 0, _keys.length) == _size &&
-      arrayForallSeekEntryFound(0)
+      arrayForallSeekEntryFound(0) &&
       // I have to ensure that the _keys array has no duplicate
+      arrayNoDuplicates(_keys, 0, Nil[Long]())
     }
 
     @inline
@@ -68,7 +69,14 @@ object MutableLongMap {
       require(simpleValid)
       decreases(_keys.length - i)
       if(i >= _keys.length) true
-      else if(validKeyInArray(_keys(i))) seekEntry(_keys(i)) == (i, 0) && arrayScanForKey(_keys, _keys(i), 0) == i && arrayForallSeekEntryFound(i + 1)
+      else if(validKeyInArray(_keys(i))){
+        assert(arrayContainsKeyTailRec(_keys, _keys(i), i))
+        lemmaArrayContainsFromImpliesContainsFromZero(_keys, _keys(i), i)
+        seekEntryTailRecDecoupled(_keys(i), 0, toIndex(_keys(i)))(_keys, mask) == (i, 0) &&
+        arrayScanForKey(_keys, _keys(i), 0) == i && 
+        arrayForallSeekEntryFound(i + 1)
+      } 
+           
       else arrayForallSeekEntryFound(i + 1)
     }
 
@@ -360,7 +368,7 @@ object MutableLongMap {
       decreases(1)
 
       // seekEntryTailRecLemma(k, 0, toIndex(k))
-      seekEntryTailRec(k, 0, toIndex(k))
+      seekEntryTailRecDecoupled(k, 0, toIndex(k))(_keys, mask)
 
     }.ensuring(res => simpleValid && (res._2 != 0 || _keys(res._1) == k))
 
@@ -392,6 +400,31 @@ object MutableLongMap {
       else {
         val newEe = (ee + 2 * (x + 1) * x - 3) & mask
         seekEntryTailRec(k, x + 1, newEe)
+      }
+
+    }.ensuring(res => simpleValid && (res._2 != 0 || _keys(res._1) == k))
+
+    @pure
+    private def seekEntryTailRecDecoupled(k: Long, x: Int, ee: Int)(implicit _keys: Array[Long], mask: Int): (Int, Int) = {
+      require(simpleValid)
+      require(mask == IndexMask)
+      require(mask >= 0)
+      require(_keys.length == mask + 1)
+      require(ee >= 0 && ee < mask + 1)
+      require(x >= 0)
+      require(x <= MAX_ITER)
+
+      decreases(MAX_ITER + 1 - x)
+      val q = _keys(ee)
+
+      if (x >= MAX_ITER) (ee, EntryNotFound)
+      else if (q == k){
+        (ee, 0)
+      }
+      else if (q == 0) (ee, MissingBit)
+      else {
+        val newEe = (ee + 2 * (x + 1) * x - 3) & mask
+        seekEntryTailRecDecoupled(k, x + 1, newEe)
       }
 
     }.ensuring(res => simpleValid && (res._2 != 0 || _keys(res._1) == k))
@@ -729,6 +762,8 @@ object MutableLongMap {
           if(validKeyInArray(_keys(from - 1))){
             lemmaListMapRecursiveValidKeyArray(from - 1)
             ListMapLongKeyLemmas.addStillContains(getCurrentListMap(from), _keys(from - 1), _values(from - 1), k)
+            check(arrayNoDuplicates(_keys, 0))
+            check(arrayNoDuplicates(_keys, from - 1))
             check(k != _keys(from - 1))
 
             ListMapLongKeyLemmas.addApplyDifferent(getCurrentListMap(from), _keys(from - 1), _values(from - 1), k)
@@ -986,6 +1021,59 @@ object MutableLongMap {
 
     //------------------ARRAY RELATED------------------------------------------------------------------------------------------------------------------------
     //------------------BEGIN--------------------------------------------------------------------------------------------------------------------------------
+
+    @opaque
+    @pure
+    def lemmaArrayNoDuplicateWithAnAccThenWithSubSeqAcc(a: Array[Long], acc: List[Long], newAcc: List[Long], from: Int): Unit = {
+      require(a.length < Integer.MAX_VALUE)
+      require(from >= 0)
+      require(from <= a.length)
+      require(ListOps.noDuplicate(acc))
+      require(ListSpecs.subseq(newAcc, acc))
+      require({
+        ListSpecs.noDuplicateSubseq(newAcc, acc)
+        arrayNoDuplicates(a, from, acc)
+        })
+      decreases(a.length - from)
+
+      if(from < a.length){
+        val k = a(from)
+        if(validKeyInArray(k)){
+          if(!acc.contains(k)){
+            lemmaArrayNoDuplicateWithAnAccThenWithSubSeqAcc(a, Cons(k, acc), Cons(k, newAcc), from + 1)
+            ListSpecs.noDuplicateSubseq(Cons(k, newAcc), Cons(k, acc))
+          }
+        } else {
+          lemmaArrayNoDuplicateWithAnAccThenWithSubSeqAcc(a, acc, newAcc, from + 1)
+        }
+      }
+
+    }.ensuring(_ => arrayNoDuplicates(a, from, newAcc))
+
+    @opaque
+    @pure
+    def lemmaNoDuplicateFromThenFromBigger(a: Array[Long], from: Int, newFrom: Int): Unit = {
+      require(a.length < Integer.MAX_VALUE)
+      require(from >= 0)
+      require(from <= a.length)
+      require(newFrom >= from && newFrom <= a.length)
+      require(arrayNoDuplicates(a, from))
+      
+      decreases(newFrom - from)
+
+
+      if(from != newFrom){
+        assert(from < a.length)
+        if(newFrom != a.length){
+          if(validKeyInArray(a(from))){
+            lemmaArrayNoDuplicateWithAnAccThenWithSubSeqAcc(a, Cons(a(from), Nil()), Nil(), from + 1)
+          }
+            lemmaNoDuplicateFromThenFromBigger(a, from + 1, newFrom )
+        }
+        }
+        
+    }.ensuring(_ => arrayNoDuplicates(a, newFrom))
+    
 
     @opaque
     @pure
@@ -1354,16 +1442,17 @@ object MutableLongMap {
 
   @tailrec
   @pure
-  def arrayNoDuplicates(a: Array[Long], from: Int, acc: List[Long]): Boolean = {
+  def arrayNoDuplicates(a: Array[Long], from: Int, acc: List[Long] = Nil[Long]()): Boolean = {
     require(from >= 0 && from <= a.length)
     require(a.length < Integer.MAX_VALUE)
     require(ListOps.noDuplicate(acc))
     decreases(a.length - from)
 
     if(from >= a.length) true
-    else if(acc.contains(a(from))) false
-    else arrayNoDuplicates(a, from + 1, Cons(a(from), acc) )
-  }.ensuring( res => ListOps.noDuplicate(acc))
+    else if(validKeyInArray(a(from)) && acc.contains(a(from))) false
+    else if(validKeyInArray(a(from))) arrayNoDuplicates(a, from + 1, Cons(a(from), acc))
+    else arrayNoDuplicates(a, from + 1,acc)
+  }
 
   /** Return true iff the two arrays contain the same elements from the index "from" included to the index
     * "to" not included
