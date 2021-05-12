@@ -26,7 +26,7 @@ object MutableLongMap {
     * @param _values
     */
   @mutable
-  case class LongMapLongV(
+  final case class LongMapLongV(
       var mask: Int = IndexMask,
       var extraKeys: Int = 0,
       var zeroValue: Long = 0,
@@ -68,7 +68,7 @@ object MutableLongMap {
       require(simpleValid)
       decreases(_keys.length - i)
       if(i >= _keys.length) true
-      else if(validKeyInArray(_keys(i))) seekEntry(_keys(i)) == (i, 0) && arrayForallSeekEntryFound(i + 1)
+      else if(validKeyInArray(_keys(i))) seekEntry(_keys(i)) == (i, 0) && arrayScanForKey(_keys, _keys(i), 0) == i && arrayForallSeekEntryFound(i + 1)
       else arrayForallSeekEntryFound(i + 1)
     }
 
@@ -248,7 +248,7 @@ object MutableLongMap {
             lemmaValidKeyAtIImpliesCountKeysIsOne(_keys, i)
             _values(i) = v
 
-            check(valid) //TODO
+            check(arrayForallSeekEntryFound(0)) //TODO
 
             true
 
@@ -577,6 +577,20 @@ object MutableLongMap {
     def lemmaNotInListMapThenSeekEntryFindsMissingBit(k: Long): Unit = {
       require(valid)
       require(!getCurrentListMap(0).contains(k))
+      if(validKeyInArray(k)){
+        if(arrayContainsKeyTailRec(_keys, k, 0)){
+          val i = arrayScanForKey(_keys, k, 0)
+          assert(arrayForallSeekEntryFound(0))
+          assert(_keys(i) == k)
+          assert(validKeyInArray(k))
+          assert(seekEntry(k) == (i, 0))
+          check(false)
+        } else {
+  
+        }
+      } else {
+
+      }
     }.ensuring(_ => valid && seekEntry(k)._2 == MissingBit)
 
 
@@ -1337,6 +1351,19 @@ object MutableLongMap {
     if(a(from) == k) from 
     else arrayScanForKey(a, k, from + 1)
   }.ensuring(res => res >= 0 && res < a.length && a(res) == k)
+
+  @tailrec
+  @pure
+  def arrayNoDuplicates(a: Array[Long], from: Int, acc: List[Long]): Boolean = {
+    require(from >= 0 && from <= a.length)
+    require(a.length < Integer.MAX_VALUE)
+    require(ListOps.noDuplicate(acc))
+    decreases(a.length - from)
+
+    if(from >= a.length) true
+    else if(acc.contains(a(from))) false
+    else arrayNoDuplicates(a, from + 1, Cons(a(from), acc) )
+  }.ensuring( res => ListOps.noDuplicate(acc))
 
   /** Return true iff the two arrays contain the same elements from the index "from" included to the index
     * "to" not included
