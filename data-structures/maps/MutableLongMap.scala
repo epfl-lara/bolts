@@ -340,6 +340,7 @@ object MutableLongMap {
     @pure
     def seekEmptyZero(k: Long): Int = {
       require(valid)
+      require(validKeyInArray(k))
 
       seekEmptyZeroTailRec(0, toIndex(k))
     }.ensuring(res => valid && (res == EntryNotFound || _keys(res) == 0))
@@ -347,6 +348,7 @@ object MutableLongMap {
     @pure
     def seekEmptyZeroTailRec(x: Int, ee: Int): Int = {
       require(valid && inRange(ee) && x >= 0 && x <= MAX_ITER)
+
       decreases(MAX_ITER - x)
       if (x >= MAX_ITER) EntryNotFound
       else if (_keys(ee) == 0) ee
@@ -450,6 +452,7 @@ object MutableLongMap {
     @pure
     def seekEntryOrOpen(k: Long): (Int, Int) = {
       require(valid)
+      require(validKeyInArray(k))
 
       val (x, q, e) = seekKeyOrZeroOrLongMinValueTailRec(0, toIndex(k))(k)
       if (e == EntryNotFound) (e, EntryNotFound)
@@ -483,6 +486,8 @@ object MutableLongMap {
     ): (Int, Long, Int) = {
       require(valid && inRange(ee))
       require(x <= MAX_ITER && x >= 0)
+      require(validKeyInArray(k))
+
       decreases(MAX_ITER - x)
       val q = _keys(ee)
       if (x >= MAX_ITER) (x, q, EntryNotFound)
@@ -507,6 +512,7 @@ object MutableLongMap {
       require(x <= MAX_ITER && x >= 0)
       require(inRange(vacantSpotIndex))
       require(_keys(vacantSpotIndex) == Long.MinValue)
+      require(validKeyInArray(k))
 
       decreases(MAX_ITER + 1 - x)
       val q = _keys(ee)
