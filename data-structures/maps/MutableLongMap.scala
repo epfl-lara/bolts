@@ -191,27 +191,7 @@ object MutableLongMap {
       require(valid)
 
       if (key == -key) {
-        if (key == 0) {
-
-          check(valid) //OK
-          check(arrayForallSeekEntryFound(0)) //OK
-
-          zeroValue = v
-
-          check(arrayForallSeekEntryFound(0)) //Timeouts
-
-          extraKeys |= 1
-
-          check(arrayForallSeekEntryFound(0)) //Timeouts
-          check(valid) //OK
-          true
-        } else {
-          minValue = v
-          extraKeys |= 2
-
-          check(valid) //TODO
-          true
-        }
+        updateHelperZeroMinValue(key, v)
 
       } else {
         check(valid)
@@ -260,7 +240,7 @@ object MutableLongMap {
           lemmaValidKeyAtIImpliesCountKeysIsOne(_keys, i)
           _values(i) = v
 
-          check(arrayForallSeekEntryFound(0)) //TODO
+          check(arrayForallSeekEntryFound(0)(_keys, mask)) //TODO
 
           true
 
@@ -278,7 +258,7 @@ object MutableLongMap {
 
           _values(i) = v
 
-          check(arrayForallSeekEntryFound(0)) //TODO
+          check(arrayForallSeekEntryFound(0)(_keys, mask)) //TODO
           check(valid)
 
           true
@@ -288,6 +268,34 @@ object MutableLongMap {
     }.ensuring(res => valid
     // && (if (res) getCurrentListMap(0).contains(key) else true)
     )
+
+    def updateHelperZeroMinValue(key: Long, v: Long): Boolean = {
+      require(valid)
+      require(key == 0 || key == Long.MinValue)
+      
+      if (key == 0) {
+
+          check(valid) //OK
+          check(arrayForallSeekEntryFound(0)(_keys, mask)) //OK
+
+          zeroValue = v
+
+          check(arrayForallSeekEntryFound(0)(_keys, mask)) //Timeouts
+
+          extraKeys |= 1
+
+          check(arrayForallSeekEntryFound(0)(_keys, mask)) //Timeouts
+          check(valid) //OK
+          true
+        } else {
+          minValue = v
+          extraKeys |= 2
+
+          check(valid) //TODO
+          true
+        }
+
+    }.ensuring(valid)
 
     /** Removes the given key from the array
       *
