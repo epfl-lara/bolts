@@ -134,9 +134,25 @@ object MutableLongMap {
       // if (key == -key) (((key >>> 63).toInt + 1) & extraKeys) != 0
       if (key == 0) (extraKeys & 1) != 0
       else if (key == Long.MinValue) (extraKeys & 2) != 0
-      else seekEntry(key)._2 == 0
+      else {
+        val tupl = seekEntry(key)
+        if(tupl._2 != 0){
+          if (getCurrentListMap(0).contains(key)) {
+            lemmaKeyInListMapIsInArray(key)
+            val i = arrayScanForKey(_keys, key, 0)
+            lemmaArrayForallSeekEntryFoundFromSmallerThenFromBigger(0, i)
+            check(false)
+          }
+          false
+        } else {
+          val i = tupl._1
+          lemmaArrayContainsFromImpliesContainsFromZero(_keys, key, i)
+          lemmaValidKeyInArrayIsInListMap(i)
+          true
+        }
+      }
     }.ensuring(res => valid
-    //&& (res && getCurrentListMap(0).contains(key) || !res && !getCurrentListMap(0).contains(key)))
+      && (res == getCurrentListMap(0).contains(key))
     )
 
     /** Retrieves the value associated with a key.
@@ -151,19 +167,23 @@ object MutableLongMap {
       require(valid)
       if (key == -key) {
         // if ((((key >>> 63).toInt + 1) & extraKeys) == 0) defaultEntry(key)
-        if (key == 0) zeroValue
-        else if (key == Long.MinValue) minValue
+        if (key == 0 && (extraKeys & 1) != 0) zeroValue
+        else if (key == Long.MinValue && (extraKeys & 2) != 0) minValue
         else defaultEntry(key)
       } else {
         val tupl = seekEntry(key)
         lemmaSeekEntryGivesInRangeIndex(key)
-        if (tupl._2 != 0) defaultEntry(key) else _values(tupl._1)
+        if (tupl._2 != 0) defaultEntry(key) else {
+          val i = tupl._1
+          lemmaArrayContainsFromImpliesContainsFromZero(_keys, key, i)
+          lemmaValidKeyInArrayIsInListMap(i)
+          lemmaKeyInListMapThenSameValueInArray(key, i)
+          _values(i)
+        }
       }
     }.ensuring(res =>
       valid
-        && (if (key == 0) res == zeroValue
-            else if (key == Long.MinValue) res == minValue
-            else if (contains(key)) res == _values(seekEntry(key)._1)
+        && (if (contains(key)) Some(res) == getCurrentListMap(0).get(key)
             else res == defaultEntry(key))
     )
 
@@ -627,7 +647,7 @@ object MutableLongMap {
 
       lemmaKeyInListMapIsInArray(k)
       assert(arrayContainsKeyTailRec(_keys, k, 0))
-      assert(arrayForallSeekEntryFound(0))
+      assert(arrayForallSeekEntryFound(0)(_keys, mask))
       val i = arrayScanForKey(_keys, k, 0)
       lemmaArrayForallSeekEntryFoundFromSmallerThenFromBigger(0, i)
 
@@ -671,7 +691,6 @@ object MutableLongMap {
       if (i == toIndex((k))) {
         check(seekEntryOrOpen(k)._2 == 0 && inRange(seekEntryOrOpen(k)._1) && _keys(seekEntryOrOpen(k)._1) == k)
       } else {
-
         check(seekEntryOrOpen(k)._2 == 0 && inRange(seekEntryOrOpen(k)._1) && _keys(seekEntryOrOpen(k)._1) == k) //TODO
       }
 
@@ -687,8 +706,8 @@ object MutableLongMap {
       val tu = seekEntryOrOpen(k)
       valid &&
       (
-        (tu._2 == MissingBit && inRange(tu._1) && _keys(tu._1) == 0) ||
-          (tu._2 == MissVacant && inRange(tu._1) && _keys(tu._1) == Long.MinValue) ||
+        (tu._2 == MissingBit && inRange(tu._1) && _keys(tu._1) == 0 && seekEntryTailRecDecoupled(k, 0, toIndex(k))(_keys.updated(tu._1, k), mask)._2 == 0) ||
+          (tu._2 == MissVacant && inRange(tu._1) && _keys(tu._1) == Long.MinValue && seekEntryTailRecDecoupled(k, 0, toIndex(k))(_keys.updated(tu._1, k), mask)._2 == 0) ||
           tu._2 == EntryNotFound
       )
     })
@@ -1173,14 +1192,14 @@ object MutableLongMap {
       require(from >= 0 && from <= _keys.length)
       require(newFrom >= from && newFrom <= _keys.length)
       require(simpleValid)
-      require(arrayForallSeekEntryFound(from))
+      require(arrayForallSeekEntryFound(from)(_keys, mask))
 
       decreases(newFrom - from)
 
       if (from < newFrom) {
         lemmaArrayForallSeekEntryFoundFromSmallerThenFromBigger(from + 1, newFrom)
       }
-    }.ensuring(_ => arrayForallSeekEntryFound(newFrom))
+    }.ensuring(_ => arrayForallSeekEntryFound(newFrom)(_keys, mask))
     @inline
     @pure
     def isPivot(a: Array[Long], from: Int, to: Int, pivot: Int): Boolean = {
