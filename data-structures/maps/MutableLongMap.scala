@@ -27,13 +27,13 @@ object MutableLongMap {
     */
   @mutable
   final case class LongMapLongV(
-      var mask: Int = IndexMask,
-      var extraKeys: Int = 0,
-      var zeroValue: Long = 0,
-      var minValue: Long = 0,
-      var _size: Int = 0,
-      var _keys: Array[Long] = Array.fill(IndexMask + 1)(0),
-      var _values: Array[Long] = Array.fill(IndexMask + 1)(0),
+      private var mask: Int = IndexMask,
+      private var extraKeys: Int = 0,
+      private var zeroValue: Long = 0,
+      private var minValue: Long = 0,
+      private var _size: Int = 0,
+      private var _keys: Array[Long] = Array.fill(IndexMask + 1)(0),
+      private var _values: Array[Long] = Array.fill(IndexMask + 1)(0),
       val defaultEntry: Long => Long = (x => 0),
       var repackingKeyCount: Int = 0
   ) {
@@ -1390,7 +1390,7 @@ object MutableLongMap {
     printf("working 1...\n")
 
     l.update(0, 43)
-    assert(l.zeroValue == 43)
+    // assert(l.zeroValue == 43)
     assert(l(0) == 43)
 
     printf("working 2...\n")
@@ -1458,7 +1458,7 @@ object MutableLongMap {
     )
     printf("seekEmptyZero with k = 4002 : " + l.seekEmptyZero(4002).toString() + "\n")
 
-    printf("_size = " + l._size + "\n")
+    // printf("_size = " + l._size + "\n")
     printf("VacantBit = " + VacantBit + "\n")
     printf("ok")
   }
