@@ -6,12 +6,11 @@ import stainless.proof._
 object ArrayList {
     type T = BigInt
 
-    // @library
     @pure
     def listLength(l: List[T]): Int = {
         // require(l.nonEmpty ==> 0 < listLength(l.tail) && listLength(l.tail) < 2147483646)
         l match {
-            case head :: tl => {
+            case Cons(head, tl) => {
                 val tlLen = listLength(tl)
                 if(tlLen < Int.MaxValue) {
                     tlLen + 1
