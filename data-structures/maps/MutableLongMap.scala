@@ -567,6 +567,103 @@ object MutableLongMap {
     )
 
     @pure
+    def seekEntryOrOpenDecoupled(k: Long)(implicit  _keys: Array[Long], mask: Int): (Int, Int) = {
+      require(simpleValid)
+      require(mask == IndexMask)
+      require(mask >= 0)
+      require(_keys.length == mask + 1)
+
+      require(validKeyInArray(k))
+
+      val (x, q, e) = seekKeyOrZeroOrLongMinValueTailRecDecoupled(0, toIndex(k))(k, _keys, mask)
+      if (e == EntryNotFound) (e, EntryNotFound)
+      else if (q == k) (e, 0)
+      else if (q == 0) (e, MissingBit)
+      else {
+        // e is the index of Long.MinValue i.e. the spot of a key that was removed
+        // we need to search from there until we see a zero. Maybe the key we're
+        // searching was added after the removed one and is therefore after in the array.
+        // If we find a zero before finding the key, we return the index of the Long.MinValue to
+        // reuse the spot
+        assert(_keys(e) == Long.MinValue)
+        assert(inRange(e))
+        val res = seekKeyOrZeroReturnVacantTailRecDecoupled(x, e, e)(k, _keys, mask)
+        res
+      }
+    }.ensuring(res =>
+      simpleValid &&
+        (
+          res._2 == EntryNotFound ||
+            (res._2 == 0 && _keys(res._1) == k) ||
+            (res._2 == MissingBit && _keys(res._1) == 0) ||
+            (res._2 == MissVacant && _keys(res._1) == Long.MinValue)
+        )
+    )
+
+    @tailrec
+    @pure
+    private def seekKeyOrZeroOrLongMinValueTailRecDecoupled(x: Int, ee: Int)(implicit
+        k: Long, _keys: Array[Long], mask: Int
+    ): (Int, Long, Int) = {
+      require(simpleValid)
+      require(mask == IndexMask)
+      require(mask >= 0)
+      require(_keys.length == mask + 1)
+
+      require(inRange(ee))
+      require(x <= MAX_ITER && x >= 0)
+      require(validKeyInArray(k))
+
+      decreases(MAX_ITER - x)
+      val q = _keys(ee)
+      if (x >= MAX_ITER) (x, q, EntryNotFound)
+      else if (q == k || q + q == 0) (x, q, ee)
+      else
+        seekKeyOrZeroOrLongMinValueTailRecDecoupled(x + 1, (ee + 2 * (x + 1) * x - 3) & mask)
+    }.ensuring(res =>
+      simpleValid &&
+        ((res._3 == EntryNotFound && res._1 >= MAX_ITER) ||
+          (res._3 != EntryNotFound && res._1 >= 0 && res._1 < MAX_ITER && _keys(res._3) == res._2 &&
+            (res._2 == k || res._2 == 0 || res._2 == Long.MinValue)))
+    )
+
+    @tailrec
+    @pure
+    private def seekKeyOrZeroReturnVacantTailRecDecoupled(x: Int, ee: Int, vacantSpotIndex: Int)(implicit
+        k: Long, _keys: Array[Long], mask: Int
+    ): (Int, Int) = {
+      require(simpleValid)
+      require(mask == IndexMask)
+      require(mask >= 0)
+      require(_keys.length == mask + 1)
+
+      require(inRange(ee))
+      require(x <= MAX_ITER && x >= 0)
+      require(inRange(vacantSpotIndex))
+      require(_keys(vacantSpotIndex) == Long.MinValue)
+      require(validKeyInArray(k))
+
+      decreases(MAX_ITER + 1 - x)
+      val q = _keys(ee)
+      if (x >= MAX_ITER) (ee, EntryNotFound)
+      else if (q == k) {
+        (ee, 0)
+      } else if (q == 0) {
+        (vacantSpotIndex, MissVacant)
+      } else {
+        seekKeyOrZeroReturnVacantTailRecDecoupled(x + 1, (ee + 2 * (x + 1) * x - 3) & mask, vacantSpotIndex)
+      }
+
+    }.ensuring(res =>
+      simpleValid &&
+        (
+          res._2 == EntryNotFound ||
+            (res._2 == MissVacant && res._1 == vacantSpotIndex && _keys(res._1) == Long.MinValue) ||
+            (res._2 == 0 && _keys(res._1) == k)
+        )
+    )
+
+    @pure
     def getCurrentListMap(from: Int): ListMapLongKey[Long] = {
       require(valid)
       require(from >= 0 && from <= _keys.length)
@@ -638,6 +735,14 @@ object MutableLongMap {
     //------------------SEEKENTRY RELATED--------------------------------------------------------------------------------------------------------------------
     //------------------BEGIN--------------------------------------------------------------------------------------------------------------------------------
 
+    @opaque
+    @pure
+    def testLemma(k: Long, i: Int): Unit = {
+      require(valid && validKeyInArray(k) && seekEntryOrOpen(k) == (i, 0))
+      assume(seekEntry(k) == (i, 0))
+
+    }.ensuring(_ => seekEntry(k) == (i, 0))
+    
     @opaque
     @pure
     def lemmaInListMapThenSeekEntryFinds(k: Long): Unit = {
