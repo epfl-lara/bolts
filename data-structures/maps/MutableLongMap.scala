@@ -44,7 +44,7 @@ object MutableLongMap {
       //class invariant
       simpleValid &&
       arrayCountValidKeysTailRec(_keys, 0, _keys.length) == _size &&
-      arrayForallSeekEntryFound(0)(_keys, mask) &&
+      arrayForallSeekEntryOrOpenFound(0)(_keys, mask) &&
       // I have to ensure that the _keys array has no duplicate
       arrayNoDuplicates(_keys, 0)
     }
@@ -80,6 +80,26 @@ object MutableLongMap {
         arrayScanForKey(_keys, _keys(i), 0) == i &&
         arrayForallSeekEntryFound(i + 1)
       } else arrayForallSeekEntryFound(i + 1)
+    }
+
+    @pure
+    def arrayForallSeekEntryOrOpenFound(i: Int)(implicit _keys: Array[Long], mask: Int): Boolean = {
+      require(mask == IndexMask)
+      require(_keys.length == mask + 1)
+      require(i >= 0)
+      require(i <= _keys.length)
+      require(simpleValid)
+
+      decreases(_keys.length - i)
+
+      if (i >= _keys.length) true
+      else if (validKeyInArray(_keys(i))) {
+        assert(arrayContainsKeyTailRec(_keys, _keys(i), i))
+        lemmaArrayContainsFromImpliesContainsFromZero(_keys, _keys(i), i)
+        seekEntryOrOpenDecoupled(_keys(i))(_keys, mask) == (i, 0) &&
+        arrayScanForKey(_keys, _keys(i), 0) == i &&
+        arrayForallSeekEntryOrOpenFound(i + 1)
+      } else arrayForallSeekEntryOrOpenFound(i + 1)
     }
 
     /** Checks if i is a valid index in the Array of values
@@ -260,7 +280,7 @@ object MutableLongMap {
           lemmaValidKeyAtIImpliesCountKeysIsOne(_keys, i)
           _values(i) = v
 
-          check(arrayForallSeekEntryFound(0)(_keys, mask)) //TODO
+          check(arrayForallSeekEntryOrOpenFound(0)(_keys, mask)) //TODO
 
           true
 
@@ -278,7 +298,7 @@ object MutableLongMap {
 
           _values(i) = v
 
-          check(arrayForallSeekEntryFound(0)(_keys, mask)) //TODO
+          check(arrayForallSeekEntryOrOpenFound(0)(_keys, mask)) //TODO
           check(valid)
 
           true
