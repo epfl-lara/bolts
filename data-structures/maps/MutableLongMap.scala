@@ -756,13 +756,23 @@ object MutableLongMap {
     //------------------SEEKENTRY RELATED--------------------------------------------------------------------------------------------------------------------
     //------------------BEGIN--------------------------------------------------------------------------------------------------------------------------------
 
+    //TODO
     @opaque
     @pure
-    def testLemma(k: Long, i: Int): Unit = {
-      require(valid && validKeyInArray(k) && seekEntryOrOpen(k) == (i, 0))
-      assume(seekEntry(k) == (i, 0))
+    def lemmaSeekEntryOrOpenFindsThenSeekEntryFinds(k: Long, i: Int): Unit = {
+      require(valid && validKeyInArray(k))
+      require(seekEntryOrOpen(k) == (i, 0))
 
-    }.ensuring(_ => seekEntry(k) == (i, 0))
+    }.ensuring(_ => seekEntry(k) == (i,0))
+
+    //TODO
+    @opaque
+    @pure
+    def lemmaSeekEntryOrOpenMissThenSeekEntryMiss(k: Long, i: Int): Unit = {
+      require(valid && validKeyInArray(k))
+      require(seekEntryOrOpen(k)._2 != 0)
+
+    }.ensuring(_ => seekEntry(k)._2 != 0)
     
     @opaque
     @pure
@@ -788,8 +798,9 @@ object MutableLongMap {
       if (validKeyInArray(k)) {
         if (arrayContainsKeyTailRec(_keys, k, 0)) {
           val i = arrayScanForKey(_keys, k, 0)
-          lemmaArrayForallSeekEntryFoundFromSmallerThenFromBigger(0, i)
           lemmaValidKeyInArrayIsInListMap(i)
+          lemmaSeekEntryOrOpenFindsThenSeekEntryFinds(k, i)
+          lemmaArrayForallSeekEntryOrOpenFoundFromSmallerThenFromBigger(0, i)
           check(false)
         } else {
           if(seekEntry(k)._2 == 0){
@@ -856,6 +867,7 @@ object MutableLongMap {
       )
     })
 
+    //TODO
     @opaque
     @pure
     def lemmaSeekEntryOrOpenReturnsValidIndex(k: Long): Unit = {
@@ -863,6 +875,7 @@ object MutableLongMap {
 
     }.ensuring(_ => seekEntryOrOpen(k)._2 != 0 || inRange(seekEntryOrOpen(k)._1))
 
+    //TODO
     @opaque
     @pure
     def lemmaSeekEntryGivesInRangeIndex(k: Long): Unit = {
