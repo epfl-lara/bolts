@@ -343,7 +343,7 @@ object MutableLongMap {
       * @param key
       * @return
       */
-    def subtractOne(key: Long): Boolean = {
+    def substractOne(key: Long): Boolean = {
       require(valid)
       if (key == -key) {
         if (key == 0L) {
@@ -366,10 +366,12 @@ object MutableLongMap {
           _size -= 1
           // _vacant += 1
           lemmaRemoveValidKeyDecreasesNumberOfValidKeysInArray(_keys, i, Long.MinValue)
+          lemmaPutNonValidKeyPreservesNoDuplicate(_keys, Long.MinValue, i, 0, List())
           _keys(i) = Long.MinValue
           _values(i) = 0
 
           check(arrayCountValidKeysTailRec(_keys, 0, _keys.length) == _size)
+
           check(arrayForallSeekEntryOrOpenFound(0)(_keys, mask)) //TODO
           check(arrayNoDuplicates(_keys, 0)) //TODO
 
@@ -1212,6 +1214,38 @@ object MutableLongMap {
 
     //------------------ARRAY RELATED------------------------------------------------------------------------------------------------------------------------
     //------------------BEGIN--------------------------------------------------------------------------------------------------------------------------------
+
+
+    @opaque
+    @pure
+    def lemmaPutNonValidKeyPreservesNoDuplicate(a:Array[Long], l: Long, i: Int, from: Int, acc: List[Long]): Unit = {
+      require(a.length < Integer.MAX_VALUE)
+      require(from >= 0)
+      require(from < a.length)
+      require(ListOps.noDuplicate(acc))
+      require(!acc.contains(0) && !acc.contains(Long.MinValue))
+      require(arrayNoDuplicates(a, 0))
+      require(arrayNoDuplicates(a, from, acc))
+      require(i >= 0 && i < a.length)
+      require(!validKeyInArray(l))
+      decreases(a.length - from)
+
+      if(from + 1 < a.length){
+        if(validKeyInArray(a(from))){
+          lemmaListSubSeqRefl(acc)
+          lemmaArrayNoDuplicateWithAnAccThenWithSubSeqAcc(a, a(from) :: acc, acc, from + 1)
+        }
+        if(from == i ){
+          lemmaPutNonValidKeyPreservesNoDuplicate(a, l, i, from + 1, acc)
+        } else {
+          if(validKeyInArray(a(from))){
+            lemmaPutNonValidKeyPreservesNoDuplicate(a, l, i, from + 1, a(from)::acc)
+          } else {
+            lemmaPutNonValidKeyPreservesNoDuplicate(a, l, i, from + 1, acc)
+          }
+        }
+      }
+    }.ensuring(_ => arrayNoDuplicates(a.updated(i, l), from, acc))
 
     @opaque
     @pure
