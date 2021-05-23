@@ -869,7 +869,6 @@ object MutableLongMap {
       )
     })
 
-    //TODO
     @opaque
     @pure
     def lemmaSeekEntryOrOpenReturnsValidIndex(k: Long): Unit = {
@@ -878,7 +877,6 @@ object MutableLongMap {
 
     }.ensuring(_ => seekEntryOrOpen(k)._2 == EntryNotFound || inRange(seekEntryOrOpen(k)._1))
 
-    //TODO
     @opaque
     @pure
     def lemmaSeekEntryGivesInRangeIndex(k: Long): Unit = {
@@ -909,7 +907,6 @@ object MutableLongMap {
         arrayContainsKeyTailRec(_keys, k, 0) && getCurrentListMap(0).apply(k) == _values(i)
     )
 
-    //PASS
     @opaque
     @pure
     def lemmaKeyInListMapIsInArray(k: Long): Unit = {
@@ -919,7 +916,6 @@ object MutableLongMap {
 
     }.ensuring(_ => if (k != 0 && k != Long.MinValue) arrayContainsKeyTailRec(_keys, k, 0) else if (k == 0) (extraKeys & 1) != 0 else (extraKeys & 2) != 0)
 
-    //PASS
     @opaque
     @pure
     def lemmaValidKeyInArrayIsInListMap(i: Int): Unit = {
@@ -927,7 +923,6 @@ object MutableLongMap {
       require(i >= 0 && i < _keys.length)
       require(validKeyInArray(_keys(i)))
 
-      assert(getCurrentListMap(i).contains(_keys(i)))
       lemmaInListMapFromThenFromZero(i, i)
 
     }.ensuring(_ => valid && getCurrentListMap(0).contains(_keys(i)))
@@ -949,11 +944,6 @@ object MutableLongMap {
       }
 
     }.ensuring(_ => valid && getCurrentListMap(0).contains(k))
-
-    // @opaque
-    // def lemmaSizeEquivListMapArray(): Unit = {
-    //   require(valid)
-    // }.ensuring(_ => getCurrentListMap(0).size == size)
 
     @opaque
     @pure
@@ -1021,7 +1011,6 @@ object MutableLongMap {
 
     }.ensuring(_ => lm.contains(k))
 
-    //PASS
     @opaque
     @pure
     def lemmaInListMapFromThenFromPlsOneIfNotEqToFstNoXMin(k: Long, from: Int): Unit = {
@@ -1046,7 +1035,6 @@ object MutableLongMap {
 
     }.ensuring(_ => valid && getCurrentListMap(from + 1).contains(k))
 
-    //PASS
     @opaque
     @pure
     def lemmaInListMapFromThenFromPlsOneIfNotEqToFstNoXZero(k: Long, from: Int): Unit = {
@@ -1071,7 +1059,6 @@ object MutableLongMap {
 
     }.ensuring(_ => valid && getCurrentListMap(from + 1).contains(k))
 
-    //PASS
     @opaque
     @pure
     def lemmaInListMapFromThenFromPlsOneIfNotEqToFstXKeys(k: Long, from: Int): Unit = {
@@ -1091,7 +1078,6 @@ object MutableLongMap {
       }
     }.ensuring(_ => valid && getCurrentListMap(from + 1).contains(k))
 
-    //PASS
     @opaque
     @pure
     def lemmaInListMapFromThenFromPlsOneIfNotEqToFst(k: Long, from: Int): Unit = {
@@ -1112,7 +1098,6 @@ object MutableLongMap {
 
     }.ensuring(_ => valid && getCurrentListMap(from + 1).contains(k))
 
-    //PASS
     @opaque
     @pure
     def lemmaInListMapFromThenFromZero(from: Int, i: Int): Unit = {
@@ -1122,11 +1107,9 @@ object MutableLongMap {
           validKeyInArray(_keys(i)) && getCurrentListMap(from).contains(_keys(i))
       )
       lemmaInListMapFromThenInFromSmaller(from, 0, i)
-      check(getCurrentListMap(0).contains(_keys(i)))
 
     }.ensuring(_ => getCurrentListMap(0).contains(_keys(i)))
 
-    //PASS
     @opaque
     @inlineOnce
     @pure
@@ -1144,7 +1127,6 @@ object MutableLongMap {
       }
     }.ensuring(_ => getCurrentListMap(newFrom).contains(_keys(i)))
 
-    //PASS
     @opaque
     @pure
     def lemmaInListMapFromThenInFromMinusOne(from: Int, i: Int): Unit = {
@@ -1161,7 +1143,6 @@ object MutableLongMap {
       }
     }.ensuring(_ => getCurrentListMap(from - 1).contains(_keys(i)))
 
-    //PASS
     @opaque
     @pure
     def lemmaListMapContainsThenArrayContainsFrom(k: Long, from: Int): Unit = {
@@ -1264,9 +1245,7 @@ object MutableLongMap {
       decreases(a.length - from)
 
       
-      if(from == a.length - 1){
-          //OK
-      } else {
+      if(from != a.length - 1){
         if(validKeyInArray(a(from))){
           lemmaListSubSeqRefl(Cons(a(from), acc))
           ListSpecs.subseqTail(Cons(a(from), acc), Cons(a(from), acc))
@@ -1275,8 +1254,6 @@ object MutableLongMap {
         }
         lemmaArrayNoDuplicateFromNotContainsKeysInAcc(a, from + 1, k, acc)
       }
-      // }
-      // check(!arrayContainsKeyTailRec(a, a(from), from + 1)) //TODO
 
     }.ensuring(_ => !arrayContainsKeyTailRec(a, k, from))
 
