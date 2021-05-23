@@ -868,19 +868,21 @@ object MutableLongMap {
       )
     })
 
-    // //TODO
+    //TODO
     @opaque
     @pure
     def lemmaSeekEntryOrOpenReturnsValidIndex(k: Long): Unit = {
       require(valid)
+      require(validKeyInArray(k))
 
     }.ensuring(_ => seekEntryOrOpen(k)._2 == EntryNotFound || inRange(seekEntryOrOpen(k)._1))
 
-    // //TODO
+    //TODO
     @opaque
     @pure
     def lemmaSeekEntryGivesInRangeIndex(k: Long): Unit = {
       require(valid)
+      require(validKeyInArray(k))
     }.ensuring(_ => seekEntry(k)._2 != 0 || inRange(seekEntry(k)._1))
 
     //------------------END----------------------------------------------------------------------------------------------------------------------------------
