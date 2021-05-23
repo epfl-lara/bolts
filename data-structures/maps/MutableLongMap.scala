@@ -349,10 +349,14 @@ object MutableLongMap {
         if (key == 0L) {
           extraKeys &= 0x2
           zeroValue = 0
+
+          check(arrayForallSeekEntryOrOpenFound(0)(_keys, mask)) //TODO ASK
           true
         } else {
           extraKeys &= 0x1
           minValue = 0
+
+          check(arrayForallSeekEntryOrOpenFound(0)(_keys, mask)) //TODO ASK
           true
         }
       } else {
@@ -361,10 +365,17 @@ object MutableLongMap {
         if (state == 0) {
           _size -= 1
           // _vacant += 1
+          lemmaRemoveValidKeyDecreasesNumberOfValidKeysInArray(_keys, i, Long.MinValue)
           _keys(i) = Long.MinValue
           _values(i) = 0
+
+          check(arrayCountValidKeysTailRec(_keys, 0, _keys.length) == _size)
+          check(arrayForallSeekEntryOrOpenFound(0)(_keys, mask)) //TODO
+          check(arrayNoDuplicates(_keys, 0)) //TODO
+
           true
         } else {
+          check(valid)
           false
         }
       }
@@ -1430,6 +1441,67 @@ object MutableLongMap {
       }
 
     }.ensuring(_ => arrayCountValidKeysTailRec(a, from, pivot) + arrayCountValidKeysTailRec(a, pivot, to) == arrayCountValidKeysTailRec(a, from, to))
+
+    @pure
+    @opaque
+    def lemmaRemoveValidKeyAndNumKeysToImpliesToALength(a: Array[Long], i: Int, k: Long, to: Int): Unit = {
+      require(i >= 0 && i < a.length)
+      require(validKeyInArray(a(i)))
+      require(!validKeyInArray(k))
+      require(a.length < Integer.MAX_VALUE)
+      require(to >= 0 && to <= a.length && to > i)
+      require((arrayCountValidKeysTailRec(a.updated(i, k), i + 1, to) == arrayCountValidKeysTailRec(a, i + 1, to)))
+      decreases(a.length + 1 - to)
+
+      if (to != a.length) {
+        if (validKeyInArray(a(to))) {
+          lemmaValidKeyIncreasesNumOfKeys(a, i + 1, to)
+          lemmaValidKeyIncreasesNumOfKeys(a.updated(i, k), i + 1, to)
+        } else {
+          lemmaNotValidKeyDoesNotIncreaseNumOfKeys(a, i + 1, to)
+          lemmaNotValidKeyDoesNotIncreaseNumOfKeys(a.updated(i, k), i + 1, to)
+        }
+        lemmaRemoveValidKeyAndNumKeysToImpliesToALength(a, i, k, to + 1)
+      }
+    }.ensuring(_ => arrayCountValidKeysTailRec(a.updated(i, k), i + 1, a.length) == arrayCountValidKeysTailRec(a, i + 1, a.length))
+
+    @pure
+    @opaque
+    def lemmaRemoveValidKeyAndNumKeysFromImpliesFromZero(a: Array[Long], i: Int, k: Long, from: Int): Unit = {
+      require(i >= 0 && i < a.length)
+      require(validKeyInArray(a(i)))
+      require(!validKeyInArray(k))
+      require(a.length < Integer.MAX_VALUE)
+      require(from >= 0 && from <= a.length && i >= from)
+      require((arrayCountValidKeysTailRec(a.updated(i, k), from, i + 1) == arrayCountValidKeysTailRec(a, from, i + 1) - 1))
+
+      decreases(from)
+
+      if (from > 0) {
+        lemmaSumOfNumOfKeysOfSubArraysIsEqualToWhole(a, from - 1, i + 1, from)
+        lemmaSumOfNumOfKeysOfSubArraysIsEqualToWhole(a.updated(i, k), from - 1, i + 1, from)
+
+        check(arrayCountValidKeysTailRec(a, from - 1, from) + arrayCountValidKeysTailRec(a, from, i + 1) == arrayCountValidKeysTailRec(a, from - 1, i + 1)) //needed
+        check(arrayCountValidKeysTailRec(a.updated(i, k), from - 1, from) + arrayCountValidKeysTailRec(a.updated(i, k), from, i + 1) == arrayCountValidKeysTailRec(a.updated(i, k), from - 1, i + 1)) //needed
+
+        lemmaRemoveValidKeyAndNumKeysFromImpliesFromZero(a, i, k, from - 1)
+      }
+
+    }.ensuring(_ => {
+      arrayCountValidKeysTailRec(a.updated(i, k), 0, i + 1) == arrayCountValidKeysTailRec(a, 0, i + 1) - 1
+    })
+
+     @pure
+    @opaque
+    def lemmaRemoveValidKeyDecreasesNumberOfValidKeysInArray(a: Array[Long], i: Int, k: Long): Unit = {
+      require(i >= 0 && i < a.length && validKeyInArray(a(i)) && !validKeyInArray(k) && a.length < Integer.MAX_VALUE)
+
+      lemmaRemoveValidKeyAndNumKeysFromImpliesFromZero(a, i, k, i)
+      lemmaRemoveValidKeyAndNumKeysToImpliesToALength(a, i, k, i + 1)
+      lemmaSumOfNumOfKeysOfSubArraysIsEqualToWhole(a, 0, a.length, i + 1)
+      lemmaSumOfNumOfKeysOfSubArraysIsEqualToWhole(a.updated(i, k), 0, a.length, i + 1)
+
+    }.ensuring(_ => arrayCountValidKeysTailRec(a.updated(i, k), 0, a.length) == arrayCountValidKeysTailRec(a, 0, a.length) - 1)
 
     @pure
     @opaque
