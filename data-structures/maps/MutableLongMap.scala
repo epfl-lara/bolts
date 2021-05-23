@@ -160,7 +160,8 @@ object MutableLongMap {
           if (getCurrentListMap(0).contains(key)) {
             lemmaKeyInListMapIsInArray(key)
             val i = arrayScanForKey(_keys, key, 0)
-            lemmaArrayForallSeekEntryFoundFromSmallerThenFromBigger(0, i)
+            lemmaArrayForallSeekEntryOrOpenFoundFromSmallerThenFromBigger(0, i)
+            lemmaSeekEntryOrOpenFindsThenSeekEntryFinds(key, i)
             check(false)
           }
           false
@@ -867,15 +868,15 @@ object MutableLongMap {
       )
     })
 
-    //TODO
+    // //TODO
     @opaque
     @pure
     def lemmaSeekEntryOrOpenReturnsValidIndex(k: Long): Unit = {
       require(valid)
 
-    }.ensuring(_ => seekEntryOrOpen(k)._2 != 0 || inRange(seekEntryOrOpen(k)._1))
+    }.ensuring(_ => seekEntryOrOpen(k)._2 == EntryNotFound || inRange(seekEntryOrOpen(k)._1))
 
-    //TODO
+    // //TODO
     @opaque
     @pure
     def lemmaSeekEntryGivesInRangeIndex(k: Long): Unit = {
