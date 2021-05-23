@@ -784,9 +784,10 @@ object MutableLongMap {
 
       lemmaKeyInListMapIsInArray(k)
       assert(arrayContainsKeyTailRec(_keys, k, 0))
-      assert(arrayForallSeekEntryFound(0)(_keys, mask))
+      assert(arrayForallSeekEntryOrOpenFound(0)(_keys, mask))
       val i = arrayScanForKey(_keys, k, 0)
-      lemmaArrayForallSeekEntryFoundFromSmallerThenFromBigger(0, i)
+      lemmaArrayForallSeekEntryOrOpenFoundFromSmallerThenFromBigger(0, i)
+      lemmaSeekEntryOrOpenFindsThenSeekEntryFinds(k, i)
 
     }.ensuring(_ => valid && seekEntry(k)._2 == 0 && inRange(seekEntry(k)._1) && _keys(seekEntry(k)._1) == k)
 
