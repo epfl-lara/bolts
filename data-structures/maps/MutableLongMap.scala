@@ -281,8 +281,9 @@ object MutableLongMap {
           lemmaValidKeyAtIImpliesCountKeysIsOne(_keys, i)
           _values(i) = v
 
+          check(simpleValid)
           check(arrayForallSeekEntryOrOpenFound(0)(_keys, mask)) //TODO
-
+          check(valid)
           true
 
         } else {
@@ -317,15 +318,15 @@ object MutableLongMap {
       if (key == 0) {
 
           check(valid) //OK
-          check(arrayForallSeekEntryFound(0)(_keys, mask)) //OK
+          check(arrayForallSeekEntryOrOpenFound(0)(_keys, mask)) //Timeouts
 
           zeroValue = v
 
-          check(arrayForallSeekEntryFound(0)(_keys, mask)) //Timeouts
+          check(arrayForallSeekEntryOrOpenFound(0)(_keys, mask)) //Timeouts
 
           extraKeys |= 1
 
-          check(arrayForallSeekEntryFound(0)(_keys, mask)) //Timeouts
+          check(arrayForallSeekEntryOrOpenFound(0)(_keys, mask)) //Timeouts
           check(valid) //OK
           true
         } else {
@@ -363,17 +364,20 @@ object MutableLongMap {
         val (i, state) = seekEntry(key)
         // if (i >= 0) {
         if (state == 0) {
-          _size -= 1
           // _vacant += 1
           lemmaRemoveValidKeyDecreasesNumberOfValidKeysInArray(_keys, i, Long.MinValue)
           lemmaPutNonValidKeyPreservesNoDuplicate(_keys, Long.MinValue, i, 0, List())
+          lemmaPutLongMinValuePreservesForallSeekEntryOrOpen(_keys, i)(mask)
+          check(arrayForallSeekEntryOrOpenFound(0)(_keys.updated(i, Long.MinValue), mask)) //PASSES BUT HOW TO MAKE IT PASS LATER ON?
+          _size -= 1
+          check(arrayForallSeekEntryOrOpenFound(0)(_keys.updated(i, Long.MinValue), mask)) //TODO
           _keys(i) = Long.MinValue
           _values(i) = 0
 
-          check(arrayCountValidKeysTailRec(_keys, 0, _keys.length) == _size)
+          check(arrayCountValidKeysTailRec(_keys, 0, _keys.length) == _size) //OK
 
           check(arrayForallSeekEntryOrOpenFound(0)(_keys, mask)) //TODO
-          check(arrayNoDuplicates(_keys, 0)) //TODO
+          check(arrayNoDuplicates(_keys, 0)) 
 
           true
         } else {
@@ -769,6 +773,20 @@ object MutableLongMap {
 
     //------------------SEEKENTRY RELATED--------------------------------------------------------------------------------------------------------------------
     //------------------BEGIN--------------------------------------------------------------------------------------------------------------------------------
+    
+    //TODO
+    @opaque
+    @pure
+    def lemmaPutLongMinValuePreservesForallSeekEntryOrOpen(a: Array[Long], i: Int)(implicit mask: Int): Unit = {
+      require(mask == IndexMask)
+      require(a.length == mask + 1)
+      require(i >= 0)
+      require(i <= a.length)
+      require(simpleValid)
+
+      require(arrayForallSeekEntryOrOpenFound(0)(a, mask))
+
+    }.ensuring(_ => arrayForallSeekEntryOrOpenFound(0)(a.updated(i, Long.MinValue), mask))
 
     //TODO
     @opaque
