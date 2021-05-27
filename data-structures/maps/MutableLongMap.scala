@@ -57,6 +57,7 @@ object MutableLongMap {
     import LongMapLongV.lemmaPutNewValidKeyPreservesNoDuplicate
     import LongMapLongV.seekEntryDecoupled
     import LongMapLongV.inRange
+    import LongMapLongV.validMask
 
     @inlineOnce
     def valid: Boolean = {
@@ -70,7 +71,7 @@ object MutableLongMap {
 
     @inline
     def simpleValid: Boolean = {
-      mask == IndexMask &&
+      validMask(mask) &&
       _values.length == mask + 1 &&
       _keys.length == _values.length &&
       mask >= 0 &&
@@ -430,10 +431,10 @@ object MutableLongMap {
     @opaque
     @pure
     def lemmaPutLongMinValuePreservesForallSeekEntryOrOpen(a: Array[Long], i: Int)(implicit mask: Int): Unit = {
-      require(mask == IndexMask)
+      require(validMask(mask))
       require(a.length == mask + 1)
       require(i >= 0)
-      require(i <= a.length)
+      require(i < a.length)
       require(simpleValid)
 
       require(arrayForallSeekEntryOrOpenFound(0)(a, mask))
@@ -444,12 +445,13 @@ object MutableLongMap {
     @opaque
     @pure
     def lemmaPutValidKeyPreservesForallSeekEntryOrOpen(k: Long, a: Array[Long], i: Int)(implicit mask: Int): Unit = {
-      require(mask == IndexMask)
+      require(validMask(mask))
       require(a.length == mask + 1)
       require(i >= 0)
-      require(i <= a.length)
+      require(i < a.length)
       require(validKeyInArray(k))
       require(!arrayContainsKeyTailRec(a, k, 0))
+      require(seekEntryOrOpenDecoupled(k)(a, mask) == (i, MissingBit) || seekEntryOrOpenDecoupled(k)(a, mask) == (i, MissVacant))
       require(simpleValid)
 
       require(arrayForallSeekEntryOrOpenFound(0)(a, mask))
@@ -901,6 +903,40 @@ object MutableLongMap {
 
   object LongMapLongV {
 
+  @pure
+  @inline
+  def validMask(mask: Int): Boolean = {
+      mask == 0x00000000 ||
+      mask == 0x00000001 ||
+      mask == 0x00000003 ||
+      mask == 0x00000007 ||
+      mask == 0x0000000f ||
+      mask == 0x0000001f ||
+      mask == 0x0000003f ||
+      mask == 0x0000007f ||
+      mask == 0x000000ff ||
+      mask == 0x000001ff ||
+      mask == 0x000003ff ||
+      mask == 0x000007ff ||
+      mask == 0x00000fff ||
+      mask == 0x00001fff ||
+      mask == 0x00003fff ||
+      mask == 0x00007fff ||
+      mask == 0x0000ffff ||
+      mask == 0x0001ffff ||
+      mask == 0x0003ffff ||
+      mask == 0x0007ffff ||
+      mask == 0x000fffff ||
+      mask == 0x001fffff ||
+      mask == 0x003fffff ||
+      mask == 0x007fffff ||
+      mask == 0x00ffffff ||
+      mask == 0x01ffffff ||
+      mask == 0x03ffffff ||
+      mask == 0x07ffffff //MAX is IndexMask
+      
+  }
+
   /** Checks if i is a valid index in the Array of values
       *
       * @param i
@@ -914,7 +950,7 @@ object MutableLongMap {
 
     @pure
     def arrayForallSeekEntryOrOpenFound(i: Int)(implicit _keys: Array[Long], mask: Int): Boolean = {
-      require(mask == IndexMask)
+      require(validMask(mask))
       require(_keys.length == mask + 1)
       require(i >= 0)
       require(i <= _keys.length)
@@ -957,7 +993,7 @@ object MutableLongMap {
       */
     @pure
     def seekEntryDecoupled(k: Long)(implicit _keys: Array[Long], mask: Int): (Int, Int) = {
-      require(mask == IndexMask)
+      require(validMask(mask))
       require(_keys.length == mask + 1)
       require(validKeyInArray(k))
       decreases(1)
@@ -978,7 +1014,7 @@ object MutableLongMap {
       */
     @pure
     private def seekEntryTailRecDecoupled(k: Long, x: Int, ee: Int)(implicit _keys: Array[Long], mask: Int): (Int, Int) = {
-      require(mask == IndexMask)
+      require(validMask(mask))
       require(mask >= 0)
       require(_keys.length == mask + 1)
       require(ee >= 0 && ee < mask + 1)
@@ -1015,7 +1051,7 @@ object MutableLongMap {
       */
     @pure
     def seekEntryOrOpenDecoupled(k: Long)(implicit _keys: Array[Long], mask: Int): (Int, Int) = {
-      require(mask == IndexMask)
+      require(validMask(mask))
       require(mask >= 0)
       require(_keys.length == mask + 1)
 
@@ -1052,7 +1088,7 @@ object MutableLongMap {
         _keys: Array[Long],
         mask: Int
     ): (Int, Long, Int) = {
-      require(mask == IndexMask)
+      require(validMask(mask))
       require(mask >= 0)
       require(_keys.length == mask + 1)
 
@@ -1079,7 +1115,7 @@ object MutableLongMap {
         _keys: Array[Long],
         mask: Int
     ): (Int, Int) = {
-      require(mask == IndexMask)
+      require(validMask(mask))
       require(mask >= 0)
       require(_keys.length == mask + 1)
 
@@ -1405,7 +1441,7 @@ object MutableLongMap {
     @opaque
     @pure
     def lemmaArrayForallSeekEntryOrOpenFoundFromSmallerThenFromBigger(a: Array[Long], mask: Int, from: Int, newFrom: Int): Unit = {
-      require(mask == IndexMask)
+      require(validMask(mask))
       require(a.length == mask + 1)
       require(from >= 0 && from <= a.length)
       require(newFrom >= from && newFrom <= a.length)
