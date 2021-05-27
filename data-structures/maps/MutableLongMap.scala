@@ -37,14 +37,23 @@ object MutableLongMap {
       val defaultEntry: Long => Long = (x => 0),
       var repackingKeyCount: Int = 0
   ) {
-//   ) extends LongMap[Long] {
+    import LongMapLongV.validKeyInArray
+    import LongMapLongV.arrayCountValidKeysTailRec
+    import LongMapLongV.arrayContainsKeyTailRec
+    import LongMapLongV.arrayScanForKey
+    import LongMapLongV.arrayNoDuplicates
+    import LongMapLongV.arraysEqualsFromTo
+    import LongMapLongV.seekEntryOrOpenDecoupled
+    import LongMapLongV.toIndex    
+    import LongMapLongV.lemmaArrayContainsFromImpliesContainsFromZero
+    import LongMapLongV.arrayForallSeekEntryOrOpenFound
 
     @inlineOnce
     def valid: Boolean = {
       //class invariant
       simpleValid &&
       arrayCountValidKeysTailRec(_keys, 0, _keys.length) == _size &&
-      LongMapLongV.arrayForallSeekEntryOrOpenFound(0)(_keys, mask) &&
+      arrayForallSeekEntryOrOpenFound(0)(_keys, mask) &&
       // I have to ensure that the _keys array has no duplicate
       arrayNoDuplicates(_keys, 0)
     }
@@ -75,8 +84,8 @@ object MutableLongMap {
       if (i >= _keys.length) true
       else if (validKeyInArray(_keys(i))) {
         assert(arrayContainsKeyTailRec(_keys, _keys(i), i))
-        LongMapLongV.lemmaArrayContainsFromImpliesContainsFromZero(_keys, _keys(i), i)
-        seekEntryTailRecDecoupled(_keys(i), 0, LongMapLongV.toIndex(_keys(i), mask))(_keys, mask) == (i, 0) &&
+        lemmaArrayContainsFromImpliesContainsFromZero(_keys, _keys(i), i)
+        seekEntryTailRecDecoupled(_keys(i), 0, toIndex(_keys(i), mask))(_keys, mask) == (i, 0) &&
         arrayScanForKey(_keys, _keys(i), 0) == i &&
         arrayForallSeekEntryFound(i + 1)
       } else arrayForallSeekEntryFound(i + 1)
@@ -147,7 +156,7 @@ object MutableLongMap {
           false
         } else {
           val i = tupl._1
-          LongMapLongV.lemmaArrayContainsFromImpliesContainsFromZero(_keys, key, i)
+          lemmaArrayContainsFromImpliesContainsFromZero(_keys, key, i)
           lemmaValidKeyInArrayIsInListMap(i)
           true
         }
@@ -176,7 +185,7 @@ object MutableLongMap {
         lemmaSeekEntryGivesInRangeIndex(key)
         if (tupl._2 != 0) defaultEntry(key) else {
           val i = tupl._1
-          LongMapLongV.lemmaArrayContainsFromImpliesContainsFromZero(_keys, key, i)
+          lemmaArrayContainsFromImpliesContainsFromZero(_keys, key, i)
           lemmaValidKeyInArrayIsInListMap(i)
           lemmaKeyInListMapThenSameValueInArray(key, i)
           _values(i)
@@ -200,7 +209,7 @@ object MutableLongMap {
       _keys(i) = key
       _size += 1
 
-      LongMapLongV.lemmaArrayContainsFromImpliesContainsFromZero(_keys, key, i)
+      lemmaArrayContainsFromImpliesContainsFromZero(_keys, key, i)
       lemmaValidKeyAtIImpliesCountKeysIsOne(_keys, i)
     }.ensuring(_ => valid && arrayContainsKeyTailRec(_keys, key, 0))
 
@@ -259,11 +268,11 @@ object MutableLongMap {
           _keys(i) = key
           _size += 1
 
-          LongMapLongV.lemmaArrayContainsFromImpliesContainsFromZero(_keys, key, i)
+          lemmaArrayContainsFromImpliesContainsFromZero(_keys, key, i)
           lemmaValidKeyAtIImpliesCountKeysIsOne(_keys, i)
           _values(i) = v
 
-          check(LongMapLongV.arrayForallSeekEntryOrOpenFound(0)(_keys, mask)) //TODO
+          check(arrayForallSeekEntryOrOpenFound(0)(_keys, mask)) //TODO
           check(arrayNoDuplicates(_keys, 0)) //TODO
           check(valid)
           true
@@ -282,7 +291,7 @@ object MutableLongMap {
 
           _values(i) = v
 
-          check(LongMapLongV.arrayForallSeekEntryOrOpenFound(0)(_keys, mask)) //TODO
+          check(arrayForallSeekEntryOrOpenFound(0)(_keys, mask)) //TODO
           check(valid)
 
           true
@@ -301,15 +310,15 @@ object MutableLongMap {
       if (key == 0) {
 
           check(valid) //OK
-          check(LongMapLongV.arrayForallSeekEntryOrOpenFound(0)(_keys, mask)) //Timeouts
+          check(arrayForallSeekEntryOrOpenFound(0)(_keys, mask)) //Timeouts
 
           zeroValue = v
 
-          check(LongMapLongV.arrayForallSeekEntryOrOpenFound(0)(_keys, mask)) //Timeouts
+          check(arrayForallSeekEntryOrOpenFound(0)(_keys, mask)) //Timeouts
 
           extraKeys |= 1
 
-          check(LongMapLongV.arrayForallSeekEntryOrOpenFound(0)(_keys, mask)) //Timeouts
+          check(arrayForallSeekEntryOrOpenFound(0)(_keys, mask)) //Timeouts
           check(valid) //OK
           true
         } else {
@@ -371,7 +380,7 @@ object MutableLongMap {
       require(valid)
       require(validKeyInArray(k))
 
-      seekEmptyZeroTailRec(0, LongMapLongV.toIndex(k, mask))
+      seekEmptyZeroTailRec(0, toIndex(k, mask))
     }.ensuring(res => valid && (res == EntryNotFound || _keys(res) == 0))
 
     @pure
@@ -399,7 +408,7 @@ object MutableLongMap {
       decreases(1)
 
       // seekEntryTailRecLemma(k, 0, toIndex(k))
-      seekEntryTailRecDecoupled(k, 0, LongMapLongV.toIndex(k, mask))(_keys, mask)
+      seekEntryTailRecDecoupled(k, 0, toIndex(k, mask))(_keys, mask)
 
     }.ensuring(res => simpleValid && 
                       (res._2 == 0 || res._2 == MissingBit || res._2 == EntryNotFound) && 
@@ -498,7 +507,7 @@ object MutableLongMap {
       //   val res = seekKeyOrZeroReturnVacantTailRec(x, e)(k, e)
       //   res
       // }
-      LongMapLongV.seekEntryOrOpenDecoupled(k)(_keys, mask)
+      seekEntryOrOpenDecoupled(k)(_keys, mask)
     }.ensuring(res =>
       valid &&
         (
@@ -647,9 +656,9 @@ object MutableLongMap {
       require(i <= a.length)
       require(simpleValid)
 
-      require(LongMapLongV.arrayForallSeekEntryOrOpenFound(0)(a, mask))
+      require(arrayForallSeekEntryOrOpenFound(0)(a, mask))
 
-    }.ensuring(_ => LongMapLongV.arrayForallSeekEntryOrOpenFound(0)(a.updated(i, Long.MinValue), mask))
+    }.ensuring(_ => arrayForallSeekEntryOrOpenFound(0)(a.updated(i, Long.MinValue), mask))
 
      //TODO
     @opaque
@@ -663,9 +672,9 @@ object MutableLongMap {
       require(!arrayContainsKeyTailRec(a, k, 0))
       require(simpleValid)
 
-      require(LongMapLongV.arrayForallSeekEntryOrOpenFound(0)(a, mask))
+      require(arrayForallSeekEntryOrOpenFound(0)(a, mask))
 
-    }.ensuring(_ => LongMapLongV.arrayForallSeekEntryOrOpenFound(0)(a.updated(i, k), mask))
+    }.ensuring(_ => arrayForallSeekEntryOrOpenFound(0)(a.updated(i, k), mask))
 
     //TODO
     @opaque
@@ -694,7 +703,7 @@ object MutableLongMap {
 
       lemmaKeyInListMapIsInArray(k)
       assert(arrayContainsKeyTailRec(_keys, k, 0))
-      assert(LongMapLongV.arrayForallSeekEntryOrOpenFound(0)(_keys, mask))
+      assert(arrayForallSeekEntryOrOpenFound(0)(_keys, mask))
       val i = arrayScanForKey(_keys, k, 0)
       lemmaArrayForallSeekEntryOrOpenFoundFromSmallerThenFromBigger(0, i)
       lemmaSeekEntryOrOpenFindsThenSeekEntryFinds(k, i)
@@ -736,7 +745,7 @@ object MutableLongMap {
       lemmaKeyInListMapIsInArray(k)
       val i = arrayScanForKey(_keys, k, 0)
       lemmaArrayForallSeekEntryOrOpenFoundFromSmallerThenFromBigger(0, i)
-      assert(LongMapLongV.arrayForallSeekEntryOrOpenFound(i)(_keys, mask))
+      assert(arrayForallSeekEntryOrOpenFound(i)(_keys, mask))
 
 
     }.ensuring(_ => valid && seekEntryOrOpen(k)._2 == 0 && inRange(seekEntryOrOpen(k)._1) && _keys(seekEntryOrOpen(k)._1) == k)
@@ -750,7 +759,7 @@ object MutableLongMap {
 
       val tu = seekEntryOrOpen(k)
       if(tu._2 != 0){
-        assert(LongMapLongV.arrayForallSeekEntryOrOpenFound(0)(_keys, mask))
+        assert(arrayForallSeekEntryOrOpenFound(0)(_keys, mask))
         if(tu._2 == MissVacant || tu._2 == MissingBit){
           if(arrayContainsKeyTailRec(_keys, k, 0)){
             val i = arrayScanForKey(_keys, k, 0)
@@ -764,7 +773,7 @@ object MutableLongMap {
       }else{
         assert(_keys(tu._1) == k)
         assert(arrayContainsKeyTailRec(_keys, k, tu._1))
-        LongMapLongV.lemmaArrayContainsFromImpliesContainsFromZero(_keys, k, tu._1)
+        lemmaArrayContainsFromImpliesContainsFromZero(_keys, k, tu._1)
         lemmaValidKeyInArrayIsInListMap(tu._1)
         check(false)
       }
@@ -1695,6 +1704,103 @@ object MutableLongMap {
         )
     )
 
+      // ARRAY UTILITY FUNCTIONS ----------------------------------------------------------------------------------------
+
+  @inline
+  @pure
+  def validKeyInArray(l: Long): Boolean = {
+    l != 0 && l != Long.MinValue
+  }
+
+  @tailrec
+  @pure
+  def arrayCountValidKeysTailRec(
+      a: Array[Long],
+      from: Int,
+      to: Int
+  ): Int = {
+    require(from <= to && from >= 0 && to <= a.length)
+    require(a.length < Integer.MAX_VALUE)
+
+    decreases(a.length - from)
+    if (from >= to) {
+      0
+    } else {
+      if (validKeyInArray(a(from))) {
+        1 + arrayCountValidKeysTailRec(a, from + 1, to)
+      } else {
+        arrayCountValidKeysTailRec(a, from + 1, to)
+      }
+    }
+  }.ensuring(res => res >= 0 && res <= a.length - from)
+
+  @tailrec
+  @pure
+  def arrayContainsKeyTailRec(a: Array[Long], k: Long, from: Int): Boolean = {
+    require(from >= 0)
+    require(from < a.length)
+    require(a.length < Integer.MAX_VALUE)
+
+    decreases(a.length - from)
+    if (a(from) == k) {
+      true
+    } else if (from + 1 < a.length) {
+      arrayContainsKeyTailRec(a, k, from + 1)
+    } else {
+      false
+    }
+  }
+
+  @tailrec
+  @pure
+  def arrayScanForKey(a: Array[Long], k: Long, from: Int): Int = {
+    require(from >= 0 && from < a.length && a.length < Integer.MAX_VALUE)
+    require(arrayContainsKeyTailRec(a, k, from))
+    decreases(a.length - from)
+
+    if (a(from) == k) from
+    else arrayScanForKey(a, k, from + 1)
+  }.ensuring(res => res >= 0 && res < a.length && a(res) == k)
+
+  @tailrec
+  @pure
+  def arrayNoDuplicates(a: Array[Long], from: Int, acc: List[Long] = Nil[Long]()): Boolean = {
+    require(from >= 0 && from <= a.length)
+    require(a.length < Integer.MAX_VALUE)
+    require(ListOps.noDuplicate(acc))
+    require(!acc.contains(0) && !acc.contains(Long.MinValue))
+    decreases(a.length - from)
+
+    if (from >= a.length) true
+    else if (validKeyInArray(a(from)) && acc.contains(a(from))) false
+    else if (validKeyInArray(a(from))) arrayNoDuplicates(a, from + 1, Cons(a(from), acc))
+    else arrayNoDuplicates(a, from + 1, acc)
+  }
+
+  /** Return true iff the two arrays contain the same elements from the index "from" included to the index
+    * "to" not included
+    *
+    * @param a1
+    * @param a2
+    * @param from
+    * @param to
+    * @return
+    */
+  @tailrec
+  @pure
+  def arraysEqualsFromTo(a1: Array[Long], a2: Array[Long], from: Int, to: Int): Boolean = {
+    require(a1.length == a2.length && from >= 0 && from <= to && to <= a1.length && a1.length < Integer.MAX_VALUE)
+
+    decreases(to + 1 - from)
+    if (from >= to) {
+      true
+    } else if (a1(from) != a2(from)) {
+      false
+    } else {
+      arraysEqualsFromTo(a1, a2, from + 1, to)
+    }
+  }
+
     // --------------------- ARRAY RELATED LEMMAS ------------------------------------------
      @pure
     @opaque
@@ -1807,100 +1913,5 @@ object MutableLongMap {
     printf("ok")
   }
 
-  // ARRAY UTILITY FUNCTIONS ----------------------------------------------------------------------------------------
 
-  @inline
-  @pure
-  def validKeyInArray(l: Long): Boolean = {
-    l != 0 && l != Long.MinValue
-  }
-
-  @tailrec
-  @pure
-  def arrayCountValidKeysTailRec(
-      a: Array[Long],
-      from: Int,
-      to: Int
-  ): Int = {
-    require(from <= to && from >= 0 && to <= a.length)
-    require(a.length < Integer.MAX_VALUE)
-
-    decreases(a.length - from)
-    if (from >= to) {
-      0
-    } else {
-      if (validKeyInArray(a(from))) {
-        1 + arrayCountValidKeysTailRec(a, from + 1, to)
-      } else {
-        arrayCountValidKeysTailRec(a, from + 1, to)
-      }
-    }
-  }.ensuring(res => res >= 0 && res <= a.length - from)
-
-  @tailrec
-  @pure
-  def arrayContainsKeyTailRec(a: Array[Long], k: Long, from: Int): Boolean = {
-    require(from >= 0)
-    require(from < a.length)
-    require(a.length < Integer.MAX_VALUE)
-
-    decreases(a.length - from)
-    if (a(from) == k) {
-      true
-    } else if (from + 1 < a.length) {
-      arrayContainsKeyTailRec(a, k, from + 1)
-    } else {
-      false
-    }
-  }
-
-  @tailrec
-  @pure
-  def arrayScanForKey(a: Array[Long], k: Long, from: Int): Int = {
-    require(from >= 0 && from < a.length && a.length < Integer.MAX_VALUE)
-    require(arrayContainsKeyTailRec(a, k, from))
-    decreases(a.length - from)
-
-    if (a(from) == k) from
-    else arrayScanForKey(a, k, from + 1)
-  }.ensuring(res => res >= 0 && res < a.length && a(res) == k)
-
-  @tailrec
-  @pure
-  def arrayNoDuplicates(a: Array[Long], from: Int, acc: List[Long] = Nil[Long]()): Boolean = {
-    require(from >= 0 && from <= a.length)
-    require(a.length < Integer.MAX_VALUE)
-    require(ListOps.noDuplicate(acc))
-    require(!acc.contains(0) && !acc.contains(Long.MinValue))
-    decreases(a.length - from)
-
-    if (from >= a.length) true
-    else if (validKeyInArray(a(from)) && acc.contains(a(from))) false
-    else if (validKeyInArray(a(from))) arrayNoDuplicates(a, from + 1, Cons(a(from), acc))
-    else arrayNoDuplicates(a, from + 1, acc)
-  }
-
-  /** Return true iff the two arrays contain the same elements from the index "from" included to the index
-    * "to" not included
-    *
-    * @param a1
-    * @param a2
-    * @param from
-    * @param to
-    * @return
-    */
-  @tailrec
-  @pure
-  def arraysEqualsFromTo(a1: Array[Long], a2: Array[Long], from: Int, to: Int): Boolean = {
-    require(a1.length == a2.length && from >= 0 && from <= to && to <= a1.length && a1.length < Integer.MAX_VALUE)
-
-    decreases(to + 1 - from)
-    if (from >= to) {
-      true
-    } else if (a1(from) != a2(from)) {
-      false
-    } else {
-      arraysEqualsFromTo(a1, a2, from + 1, to)
-    }
-  }
 }
