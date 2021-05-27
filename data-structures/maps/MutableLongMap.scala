@@ -354,32 +354,6 @@ object MutableLongMap {
       * @return
       */
     @pure
-    private def seekEntryTailRec(k: Long, x: Int, ee: Int): (Int, Int) = {
-      require(simpleValid)
-      require(inRange(ee))
-      require(validKeyInArray(k))
-      require(x >= 0)
-      require(x <= MAX_ITER)
-
-      decreases(MAX_ITER + 1 - x)
-      val q = _keys(ee)
-
-      if (x >= MAX_ITER) (ee, EntryNotFound)
-      else if (q == k) {
-        (ee, 0)
-      } else if (q == 0) (ee, MissingBit)
-      else {
-        val newEe = (ee + 2 * (x + 1) * x - 3) & mask
-        seekEntryTailRec(k, x + 1, newEe)
-      }
-
-    }.ensuring(res =>
-      simpleValid &&
-        (res._2 == 0 || res._2 == MissingBit || res._2 == EntryNotFound) &&
-        (res._2 != 0 || (inRange(res._1) && _keys(res._1) == k))
-    )
-
-    @pure
     private def seekEntryTailRecDecoupled(k: Long, x: Int, ee: Int)(implicit _keys: Array[Long], mask: Int): (Int, Int) = {
       require(simpleValid)
       require(mask == IndexMask)
