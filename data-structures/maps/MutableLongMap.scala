@@ -272,6 +272,7 @@ object MutableLongMap {
           check(!arrayContainsKeyTailRec(_keys, key, 0))
           assert(valid)
 
+          lemmaPutNewValidKeyPreservesNoDuplicate(_keys, key, i, 0, List())
           lemmaAddValidKeyIncreasesNumberOfValidKeysInArray(_keys, i, key)
 
           _keys(i) = key
@@ -281,8 +282,8 @@ object MutableLongMap {
           lemmaValidKeyAtIImpliesCountKeysIsOne(_keys, i)
           _values(i) = v
 
-          check(simpleValid)
           check(arrayForallSeekEntryOrOpenFound(0)(_keys, mask)) //TODO
+          check(arrayNoDuplicates(_keys, 0)) //TODO
           check(valid)
           true
 
@@ -310,6 +311,26 @@ object MutableLongMap {
     }.ensuring(res => valid
     // && (if (res) getCurrentListMap(0).contains(key) else true)
     )
+
+    def updateTemp(v: Long): Boolean = {
+      require(valid)
+
+      check(valid) //OK
+      check(arrayForallSeekEntryOrOpenFound(0)(_keys, mask)) //OK
+
+      zeroValue = v
+
+      check(arrayForallSeekEntryOrOpenFound(0)(_keys, mask)) //Timeouts
+
+      extraKeys |= 1
+
+      check(arrayForallSeekEntryOrOpenFound(0)(_keys, mask)) //Timeouts
+      check(valid) //OK
+      true
+      
+
+    }.ensuring(valid)
+
 
     def updateHelperZeroMinValue(key: Long, v: Long): Boolean = {
       require(valid)
@@ -348,6 +369,7 @@ object MutableLongMap {
       require(valid)
       if (key == -key) {
         if (key == 0L) {
+          check(arrayForallSeekEntryOrOpenFound(0)(_keys, mask))
           extraKeys &= 0x2
           zeroValue = 0
 
@@ -1233,6 +1255,33 @@ object MutableLongMap {
     //------------------ARRAY RELATED------------------------------------------------------------------------------------------------------------------------
     //------------------BEGIN--------------------------------------------------------------------------------------------------------------------------------
 
+    //TODO
+    @opaque
+    @pure
+    def lemmaPutNewValidKeyPreservesNoDuplicate(a:Array[Long], k: Long, i: Int, from: Int, acc: List[Long]): Unit = {
+      require(a.length < Integer.MAX_VALUE)
+      require(from >= 0)
+      require(from < a.length)
+      require(ListOps.noDuplicate(acc))
+      require(!acc.contains(0) && !acc.contains(Long.MinValue))
+      require(!acc.contains(k))
+      require(arrayNoDuplicates(a, 0))
+      require(arrayNoDuplicates(a, from, acc))
+      require(i >= 0 && i < a.length)
+      require(validKeyInArray(k))
+      require(!arrayContainsKeyTailRec(a, k, 0))
+      decreases(a.length - from)
+
+      if(from + 1 < a.length){
+        if(from == i){
+          check( arrayNoDuplicates(a.updated(i, k), from, acc))
+        } else {
+          check( arrayNoDuplicates(a.updated(i, k), from, acc))
+        }
+
+        check( arrayNoDuplicates(a.updated(i, k), from, acc))
+      }
+    }.ensuring(_ => arrayNoDuplicates(a.updated(i, k), from, acc))
 
     @opaque
     @pure
