@@ -85,31 +85,11 @@ object MutableLongMap {
       * @return
       */
     @inline
-    def inRange(i: Int): Boolean = {
+    private def inRange(i: Int): Boolean = {
       // mask + 1 is the size of the Array
       i >= 0 && i < mask + 1
     }
 
-    /** Check if i is a valid index in the Array AND that the key stored
-      * at that index is indeed k
-      *
-      * @param k
-      * @param i
-      * @return
-      */
-    @inline
-    @pure
-    def validKeyIndex(k: Long, i: Int): Boolean = {
-      require(valid)
-      if (inRange(i)) _keys(i) == k else false
-    }
-
-    @inline
-    @pure
-    def validZeroKeyIndex(i: Int): Boolean = {
-      require(valid && inRange(i))
-      inRange(i) && _keys(i) == 0
-    }
     @pure
     def size: Int = {
       _size + (extraKeys + 1) / 2
@@ -211,23 +191,27 @@ object MutableLongMap {
       require(valid)
 
       if (key == -key) {
-        updateHelperZeroMinValue(key, v)
+        if (key == 0) {
+          zeroValue = v
+          extraKeys |= 1
+          true
+        } else {
+          minValue = v
+          extraKeys |= 2
+          true
+        }
 
       } else {
-        check(valid)
         val tupl = seekEntryOrOpen(key)
         val i = tupl._1
         if (tupl._2 == EntryNotFound) {
           //the key is not in the array, it was not able to find an empty space, the map is maybe full
-          check(valid)
           if (getCurrentListMap(0).contains(key)) {
             lemmaInListMapThenSeekEntryOrOpenFindsIt(key)
             check(false)
           } else {
             lemmaNotInListMapThenSeekEntryOrOpenFindsFreeOrNothing(key)
           }
-          check(!getCurrentListMap(0).contains(key))
-          check(valid)
           false
 
         } else if (tupl._2 == MissingBit || tupl._2 == MissVacant) {
@@ -239,17 +223,13 @@ object MutableLongMap {
             lemmaNotInListMapThenSeekEntryOrOpenFindsFreeOrNothing(key)
             check(_keys(i) == 0 || _keys(i) == Long.MinValue)
           }
-          check(valid)
           val _oldSize = _size
           val _oldNKeys = arrayCountValidKeysTailRec(_keys, 0, _keys.length)
-          check(_keys(i) == 0 || _keys(i) == Long.MinValue)
           assert(inRange(i))
           if (arrayContainsKeyTailRec(_keys, key, 0)) {
             lemmaArrayContainsKeyThenInListMap(key, 0)
             check(false)
           }
-          check(!arrayContainsKeyTailRec(_keys, key, 0))
-          assert(valid)
 
           lemmaPutNewValidKeyPreservesNoDuplicate(_keys, key, i, 0, List())
           lemmaAddValidKeyIncreasesNumberOfValidKeysInArray(_keys, i, key)
@@ -262,27 +242,17 @@ object MutableLongMap {
           lemmaValidKeyAtIImpliesCountKeysIsOne(_keys, i)
           _values(i) = v
 
-          check(arrayForallSeekEntryOrOpenFound(0)(_keys, mask)) //TODO
-          check(arrayNoDuplicates(_keys, 0)) //TODO
-          check(valid)
           true
 
         } else {
           if (getCurrentListMap(0).contains(key)) {
             lemmaInListMapThenSeekEntryOrOpenFindsIt(key)
-            assert(_keys(i) == key)
           } else {
             lemmaNotInListMapThenSeekEntryOrOpenFindsFreeOrNothing(key)
-            check(_keys(i) == 0 || _keys(i) == Long.MinValue)
             check(false)
           }
-          check(valid)
-          assert(_keys(i) == key)
 
           _values(i) = v
-
-          check(arrayForallSeekEntryOrOpenFound(0)(_keys, mask)) //TODO
-          check(valid)
 
           true
         }
@@ -291,34 +261,6 @@ object MutableLongMap {
     }.ensuring(res => valid
     // && (if (res) getCurrentListMap(0).contains(key) else true)
     )
-
-    def updateHelperZeroMinValue(key: Long, v: Long): Boolean = {
-      require(valid)
-      require(key == 0 || key == Long.MinValue)
-
-      if (key == 0) {
-
-        check(valid) //OK
-        check(arrayForallSeekEntryOrOpenFound(0)(_keys, mask)) //Timeouts
-
-        zeroValue = v
-
-        check(arrayForallSeekEntryOrOpenFound(0)(_keys, mask)) //Timeouts
-
-        extraKeys |= 1
-
-        check(arrayForallSeekEntryOrOpenFound(0)(_keys, mask)) //Timeouts
-        check(valid) //OK
-        true
-      } else {
-        minValue = v
-        extraKeys |= 2
-
-        check(valid) //TODO
-        true
-      }
-
-    }.ensuring(valid)
 
     /** Removes the given key from the array
       *
@@ -353,7 +295,6 @@ object MutableLongMap {
 
           true
         } else {
-          check(valid)
           false
         }
       }
@@ -404,9 +345,6 @@ object MutableLongMap {
         (res._2 == 0 || res._2 == MissingBit || res._2 == EntryNotFound) &&
         (res._2 != 0 || (inRange(res._1) && _keys(res._1) == k))
     )
-
-    //using _size to be sure that i is valid in the range
-    // NOTE: ((x | MissingBit) ^ MissingBit) == x is proven true by stainless for x in range 0 to MAX_ARRAY_SIZE with this value of MissingBit
 
     /** Returns
       *
