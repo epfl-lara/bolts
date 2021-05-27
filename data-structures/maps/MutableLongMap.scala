@@ -55,6 +55,8 @@ object MutableLongMap {
     import LongMapLongV.lemmaNoDuplicateFromThenFromBigger
     import LongMapLongV.lemmaPutNonValidKeyPreservesNoDuplicate
     import LongMapLongV.lemmaPutNewValidKeyPreservesNoDuplicate
+    import LongMapLongV.seekEntryDecoupled
+    import LongMapLongV.inRange
 
     @inlineOnce
     def valid: Boolean = {
@@ -77,17 +79,6 @@ object MutableLongMap {
       size >= _size &&
       extraKeys >= 0 &&
       extraKeys <= 3
-    }
-
-    /** Checks if i is a valid index in the Array of values
-      *
-      * @param i
-      * @return
-      */
-    @inline
-    private def inRange(i: Int): Boolean = {
-      // mask + 1 is the size of the Array
-      i >= 0 && i < mask + 1
     }
 
     @pure
@@ -170,7 +161,7 @@ object MutableLongMap {
     private def addNewKeyToArrayAtAndUpdateSize(key: Long, i: Int): Unit = {
       require(valid)
       require(!arrayContainsKeyTailRec(_keys, key, 0))
-      require(inRange(i))
+      require(inRange(i, mask))
       require(!validKeyInArray(_keys(i)))
       require(validKeyInArray(key))
 
@@ -225,7 +216,7 @@ object MutableLongMap {
           }
           val _oldSize = _size
           val _oldNKeys = arrayCountValidKeysTailRec(_keys, 0, _keys.length)
-          assert(inRange(i))
+          assert(inRange(i, mask))
           if (arrayContainsKeyTailRec(_keys, key, 0)) {
             lemmaArrayContainsKeyThenInListMap(key, 0)
             check(false)
@@ -315,7 +306,7 @@ object MutableLongMap {
 
     @pure
     def seekEmptyZeroTailRec(x: Int, ee: Int): Int = {
-      require(valid && inRange(ee) && x >= 0 && x <= MAX_ITER)
+      require(valid && inRange(ee, mask) && x >= 0 && x <= MAX_ITER)
 
       decreases(MAX_ITER - x)
       if (x >= MAX_ITER) EntryNotFound
@@ -337,49 +328,12 @@ object MutableLongMap {
       require(validKeyInArray(k))
       decreases(1)
 
-      // seekEntryTailRecLemma(k, 0, toIndex(k))
-      seekEntryTailRecDecoupled(k, 0, toIndex(k, mask))(_keys, mask)
+      seekEntryDecoupled(k)(_keys, mask)
 
     }.ensuring(res =>
       simpleValid &&
         (res._2 == 0 || res._2 == MissingBit || res._2 == EntryNotFound) &&
-        (res._2 != 0 || (inRange(res._1) && _keys(res._1) == k))
-    )
-
-    /** Returns
-      *
-      * @param k
-      * @param x
-      * @param ee
-      * @return
-      */
-    @pure
-    private def seekEntryTailRecDecoupled(k: Long, x: Int, ee: Int)(implicit _keys: Array[Long], mask: Int): (Int, Int) = {
-      require(simpleValid)
-      require(mask == IndexMask)
-      require(mask >= 0)
-      require(_keys.length == mask + 1)
-      require(ee >= 0 && ee < mask + 1)
-      require(x >= 0)
-      require(x <= MAX_ITER)
-      require(validKeyInArray(k))
-
-      decreases(MAX_ITER + 1 - x)
-      val q = _keys(ee)
-
-      if (x >= MAX_ITER) (ee, EntryNotFound)
-      else if (q == k) {
-        (ee, 0)
-      } else if (q == 0) (ee, MissingBit)
-      else {
-        val newEe = (ee + 2 * (x + 1) * x - 3) & mask
-        seekEntryTailRecDecoupled(k, x + 1, newEe)
-      }
-
-    }.ensuring(res =>
-      simpleValid &&
-        (res._2 == 0 || res._2 == MissingBit || res._2 == EntryNotFound) &&
-        (res._2 != 0 || (inRange(res._1) && _keys(res._1) == k))
+        (res._2 != 0 || (inRange(res._1, mask) && _keys(res._1) == k))
     )
 
     /** Search the index of the given key. If the key is in the array, it finds its index (0 is returned as second element).
@@ -396,21 +350,6 @@ object MutableLongMap {
       require(valid)
       require(validKeyInArray(k))
 
-      // val (x, q, e) = seekKeyOrZeroOrLongMinValueTailRec(0, toIndex(k))(k)
-      // if (e == EntryNotFound) (e, EntryNotFound)
-      // else if (q == k) (e, 0)
-      // else if (q == 0) (e, MissingBit)
-      // else {
-      //   // e is the index of Long.MinValue i.e. the spot of a key that was removed
-      //   // we need to search from there until we see a zero. Maybe the key we're
-      //   // searching was added after the removed one and is therefore after in the array.
-      //   // If we find a zero before finding the key, we return the index of the Long.MinValue to
-      //   // reuse the spot
-      //   assert(_keys(e) == Long.MinValue)
-      //   assert(inRange(e))
-      //   val res = seekKeyOrZeroReturnVacantTailRec(x, e)(k, e)
-      //   res
-      // }
       seekEntryOrOpenDecoupled(k)(_keys, mask)
     }.ensuring(res =>
       valid &&
@@ -427,7 +366,7 @@ object MutableLongMap {
     private def seekKeyOrZeroOrLongMinValueTailRec(x: Int, ee: Int)(implicit
         k: Long
     ): (Int, Long, Int) = {
-      require(valid && inRange(ee))
+      require(valid && inRange(ee, mask))
       require(x <= MAX_ITER && x >= 0)
       require(validKeyInArray(k))
 
@@ -451,9 +390,9 @@ object MutableLongMap {
         vacantSpotIndex: Int
     ): (Int, Int) = {
       require(valid)
-      require(inRange(ee))
+      require(inRange(ee, mask))
       require(x <= MAX_ITER && x >= 0)
-      require(inRange(vacantSpotIndex))
+      require(inRange(vacantSpotIndex, mask))
       require(_keys(vacantSpotIndex) == Long.MinValue)
       require(validKeyInArray(k))
 
@@ -611,7 +550,7 @@ object MutableLongMap {
       lemmaArrayForallSeekEntryOrOpenFoundFromSmallerThenFromBigger(_keys, mask, 0, i)
       lemmaSeekEntryOrOpenFindsThenSeekEntryFinds(k, i)
 
-    }.ensuring(_ => valid && seekEntry(k)._2 == 0 && inRange(seekEntry(k)._1) && _keys(seekEntry(k)._1) == k)
+    }.ensuring(_ => valid && seekEntry(k)._2 == 0 && inRange(seekEntry(k)._1, mask) && _keys(seekEntry(k)._1) == k)
 
     @opaque
     @pure
@@ -650,7 +589,7 @@ object MutableLongMap {
       lemmaArrayForallSeekEntryOrOpenFoundFromSmallerThenFromBigger(_keys, mask, 0, i)
       assert(arrayForallSeekEntryOrOpenFound(i)(_keys, mask))
 
-    }.ensuring(_ => valid && seekEntryOrOpen(k)._2 == 0 && inRange(seekEntryOrOpen(k)._1) && _keys(seekEntryOrOpen(k)._1) == k)
+    }.ensuring(_ => valid && seekEntryOrOpen(k)._2 == 0 && inRange(seekEntryOrOpen(k)._1, mask) && _keys(seekEntryOrOpen(k)._1) == k)
 
     @opaque
     @pure
@@ -684,8 +623,8 @@ object MutableLongMap {
       val tu = seekEntryOrOpen(k)
       valid &&
       (
-        (tu._2 == MissingBit && inRange(tu._1) && _keys(tu._1) == 0 && !arrayContainsKeyTailRec(_keys, k, 0)) ||
-          (tu._2 == MissVacant && inRange(tu._1) && _keys(tu._1) == Long.MinValue && !arrayContainsKeyTailRec(_keys, k, 0)) ||
+        (tu._2 == MissingBit && inRange(tu._1, mask) && _keys(tu._1) == 0 && !arrayContainsKeyTailRec(_keys, k, 0)) ||
+          (tu._2 == MissVacant && inRange(tu._1, mask) && _keys(tu._1) == Long.MinValue && !arrayContainsKeyTailRec(_keys, k, 0)) ||
           tu._2 == EntryNotFound
       )
     })
@@ -696,14 +635,14 @@ object MutableLongMap {
       require(valid)
       require(validKeyInArray(k))
 
-    }.ensuring(_ => seekEntryOrOpen(k)._2 == EntryNotFound || inRange(seekEntryOrOpen(k)._1))
+    }.ensuring(_ => seekEntryOrOpen(k)._2 == EntryNotFound || inRange(seekEntryOrOpen(k)._1, mask))
 
     @opaque
     @pure
     def lemmaSeekEntryGivesInRangeIndex(k: Long): Unit = {
       require(valid)
       require(validKeyInArray(k))
-    }.ensuring(_ => seekEntry(k)._2 != 0 || inRange(seekEntry(k)._1))
+    }.ensuring(_ => seekEntry(k)._2 != 0 || inRange(seekEntry(k)._1, mask))
 
     //------------------END----------------------------------------------------------------------------------------------------------------------------------
     //------------------SEEKENTRY RELATED--------------------------------------------------------------------------------------------------------------------
@@ -714,7 +653,7 @@ object MutableLongMap {
     def lemmaKeyInListMapThenSameValueInArray(k: Long, i: Int): Unit = {
       require(valid)
       require(getCurrentListMap(0).contains(k))
-      require(inRange(i))
+      require(inRange(i, mask))
       require(_keys(i) == k)
 
       if (k != 0 && k != Long.MinValue) {
@@ -1023,6 +962,18 @@ object MutableLongMap {
   }
 
   object LongMapLongV {
+
+  /** Checks if i is a valid index in the Array of values
+      *
+      * @param i
+      * @return
+      */
+    @inline
+    private def inRange(i: Int, mask: Int): Boolean = {
+      // mask + 1 is the size of the Array
+      i >= 0 && i < mask + 1
+    }
+
     @pure
     def arrayForallSeekEntryOrOpenFound(i: Int)(implicit _keys: Array[Long], mask: Int): Boolean = {
       require(mask == IndexMask)
@@ -1057,6 +1008,54 @@ object MutableLongMap {
       val x = (h ^ (h >>> 16)) * 0x85ebca6b
       (x ^ (x >>> 13)) & mask
     }.ensuring(res => res < mask + 1 && res >= 0)
+
+    @pure
+    def seekEntryDecoupled(k: Long)(implicit _keys: Array[Long], mask: Int): (Int, Int) = {
+      require(mask == IndexMask)
+      require(_keys.length == mask + 1)
+      require(validKeyInArray(k))
+      decreases(1)
+
+      seekEntryTailRecDecoupled(k, 0, toIndex(k, mask))(_keys, mask)
+
+    }.ensuring(res =>
+        (res._2 == 0 || res._2 == MissingBit || res._2 == EntryNotFound) &&
+        (res._2 != 0 || (inRange(res._1, mask) && _keys(res._1) == k))
+    )
+
+    /** Returns
+      *
+      * @param k
+      * @param x
+      * @param ee
+      * @return
+      */
+    @pure
+    private def seekEntryTailRecDecoupled(k: Long, x: Int, ee: Int)(implicit _keys: Array[Long], mask: Int): (Int, Int) = {
+      require(mask == IndexMask)
+      require(mask >= 0)
+      require(_keys.length == mask + 1)
+      require(ee >= 0 && ee < mask + 1)
+      require(x >= 0)
+      require(x <= MAX_ITER)
+      require(validKeyInArray(k))
+
+      decreases(MAX_ITER + 1 - x)
+      val q = _keys(ee)
+
+      if (x >= MAX_ITER) (ee, EntryNotFound)
+      else if (q == k) {
+        (ee, 0)
+      } else if (q == 0) (ee, MissingBit)
+      else {
+        val newEe = (ee + 2 * (x + 1) * x - 3) & mask
+        seekEntryTailRecDecoupled(k, x + 1, newEe)
+      }
+
+    }.ensuring(res =>
+        (res._2 == 0 || res._2 == MissingBit || res._2 == EntryNotFound) &&
+        (res._2 != 0 || (inRange(res._1, mask) && _keys(res._1) == k))
+    )
 
     @pure
     def seekEntryOrOpenDecoupled(k: Long)(implicit _keys: Array[Long], mask: Int): (Int, Int) = {
