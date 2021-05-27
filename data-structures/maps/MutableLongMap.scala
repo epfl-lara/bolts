@@ -48,6 +48,9 @@ object MutableLongMap {
     import LongMapLongV.lemmaArrayContainsFromImpliesContainsFromZero
     import LongMapLongV.arrayForallSeekEntryOrOpenFound
     import LongMapLongV.lemmaValidKeyAtIImpliesCountKeysIsOne
+    import LongMapLongV.lemmaAddValidKeyIncreasesNumberOfValidKeysInArray
+    import LongMapLongV.lemmaRemoveValidKeyDecreasesNumberOfValidKeysInArray
+
 
     @inlineOnce
     def valid: Boolean = {
@@ -1333,222 +1336,7 @@ object MutableLongMap {
       }
     }.ensuring(_ => arrayForallSeekEntryFound(newFrom)(_keys, mask))
 
-    @inline
-    @pure
-    def isPivot(a: Array[Long], from: Int, to: Int, pivot: Int): Boolean = {
-      require(a.length < Integer.MAX_VALUE && from >= 0 && to > from && to <= a.length && pivot >= from && pivot < to)
-      arrayCountValidKeysTailRec(a, from, pivot) + arrayCountValidKeysTailRec(a, pivot, to) == arrayCountValidKeysTailRec(a, from, to)
-    }
-
-    @pure
-    @opaque
-    def lemmaCountingValidKeysAtTheEnd(a: Array[Long], from: Int, to: Int): Unit = {
-      require(a.length < Integer.MAX_VALUE && from >= 0 && to > from && to <= a.length)
-
-      decreases(to - from)
-      if (from + 1 < to) {
-        lemmaCountingValidKeysAtTheEnd(a, from + 1, to)
-      } else {
-        // checks are needed
-        check(from + 1 == to)
-        check(
-          if (validKeyInArray(a(to - 1)))
-            arrayCountValidKeysTailRec(a, from, to - 1) + 1 == arrayCountValidKeysTailRec(a, from, to)
-          else
-            arrayCountValidKeysTailRec(a, from, to - 1) == arrayCountValidKeysTailRec(a, from, to)
-        )
-      }
-    }.ensuring(_ =>
-      if (validKeyInArray(a(to - 1)))
-        arrayCountValidKeysTailRec(a, from, to - 1) + 1 == arrayCountValidKeysTailRec(a, from, to)
-      else
-        arrayCountValidKeysTailRec(a, from, to - 1) == arrayCountValidKeysTailRec(a, from, to)
-    )
-
-    @pure
-    @opaque
-    def lemmaKnownPivotPlusOneIsPivot(a: Array[Long], from: Int, to: Int, pivot: Int): Unit = {
-      require(
-        a.length < Integer.MAX_VALUE && from >= 0 && to > from && to <= a.length && pivot >= from && pivot < to - 1 &&
-          isPivot(a, from, to, pivot)
-      )
-
-      lemmaCountingValidKeysAtTheEnd(a, from, pivot + 1)
-
-    }.ensuring(_ => isPivot(a, from, to, pivot + 1))
-
-    @pure
-    @opaque
-    def lemmaSumOfNumOfKeysOfSubArraysIsEqualToWholeFromTo(a: Array[Long], from: Int, to: Int, pivot: Int, knownPivot: Int): Unit = {
-      require(
-        a.length < Integer.MAX_VALUE && from >= 0 && to >= from && to <= a.length &&
-          pivot >= from && pivot < to &&
-          knownPivot <= pivot && knownPivot >= from &&
-          isPivot(a, from, to, knownPivot)
-      )
-
-      decreases(pivot - knownPivot)
-      if (knownPivot != pivot) {
-        lemmaKnownPivotPlusOneIsPivot(a, from, to, knownPivot)
-        check(isPivot(a, from, to, knownPivot + 1))
-        lemmaSumOfNumOfKeysOfSubArraysIsEqualToWholeFromTo(a, from, to, pivot, knownPivot + 1)
-        check(isPivot(a, from, to, pivot))
-      }
-      check(isPivot(a, from, to, pivot))
-    }.ensuring(_ => isPivot(a, from, to, pivot))
-
-    @pure
-    @opaque
-    def lemmaSumOfNumOfKeysOfSubArraysIsEqualToWhole(a: Array[Long], from: Int, to: Int, pivot: Int): Unit = {
-      require(a.length < Integer.MAX_VALUE && from >= 0 && to >= from && to <= a.length && pivot >= from && pivot <= to)
-
-      if (pivot < to) {
-        lemmaSumOfNumOfKeysOfSubArraysIsEqualToWholeFromTo(a, from, to, pivot, from)
-      } else {
-        check(to == pivot) //it is needed
-      }
-
-    }.ensuring(_ => arrayCountValidKeysTailRec(a, from, pivot) + arrayCountValidKeysTailRec(a, pivot, to) == arrayCountValidKeysTailRec(a, from, to))
-
-    @pure
-    @opaque
-    def lemmaRemoveValidKeyAndNumKeysToImpliesToALength(a: Array[Long], i: Int, k: Long, to: Int): Unit = {
-      require(i >= 0 && i < a.length)
-      require(validKeyInArray(a(i)))
-      require(!validKeyInArray(k))
-      require(a.length < Integer.MAX_VALUE)
-      require(to >= 0 && to <= a.length && to > i)
-      require((arrayCountValidKeysTailRec(a.updated(i, k), i + 1, to) == arrayCountValidKeysTailRec(a, i + 1, to)))
-      decreases(a.length + 1 - to)
-
-      if (to != a.length) {
-        if (validKeyInArray(a(to))) {
-          lemmaValidKeyIncreasesNumOfKeys(a, i + 1, to)
-          lemmaValidKeyIncreasesNumOfKeys(a.updated(i, k), i + 1, to)
-        } else {
-          lemmaNotValidKeyDoesNotIncreaseNumOfKeys(a, i + 1, to)
-          lemmaNotValidKeyDoesNotIncreaseNumOfKeys(a.updated(i, k), i + 1, to)
-        }
-        lemmaRemoveValidKeyAndNumKeysToImpliesToALength(a, i, k, to + 1)
-      }
-    }.ensuring(_ => arrayCountValidKeysTailRec(a.updated(i, k), i + 1, a.length) == arrayCountValidKeysTailRec(a, i + 1, a.length))
-
-    @pure
-    @opaque
-    def lemmaRemoveValidKeyAndNumKeysFromImpliesFromZero(a: Array[Long], i: Int, k: Long, from: Int): Unit = {
-      require(i >= 0 && i < a.length)
-      require(validKeyInArray(a(i)))
-      require(!validKeyInArray(k))
-      require(a.length < Integer.MAX_VALUE)
-      require(from >= 0 && from <= a.length && i >= from)
-      require((arrayCountValidKeysTailRec(a.updated(i, k), from, i + 1) == arrayCountValidKeysTailRec(a, from, i + 1) - 1))
-
-      decreases(from)
-
-      if (from > 0) {
-        lemmaSumOfNumOfKeysOfSubArraysIsEqualToWhole(a, from - 1, i + 1, from)
-        lemmaSumOfNumOfKeysOfSubArraysIsEqualToWhole(a.updated(i, k), from - 1, i + 1, from)
-
-        check(arrayCountValidKeysTailRec(a, from - 1, from) + arrayCountValidKeysTailRec(a, from, i + 1) == arrayCountValidKeysTailRec(a, from - 1, i + 1)) //needed
-        check(arrayCountValidKeysTailRec(a.updated(i, k), from - 1, from) + arrayCountValidKeysTailRec(a.updated(i, k), from, i + 1) == arrayCountValidKeysTailRec(a.updated(i, k), from - 1, i + 1)) //needed
-
-        lemmaRemoveValidKeyAndNumKeysFromImpliesFromZero(a, i, k, from - 1)
-      }
-
-    }.ensuring(_ => {
-      arrayCountValidKeysTailRec(a.updated(i, k), 0, i + 1) == arrayCountValidKeysTailRec(a, 0, i + 1) - 1
-    })
-
-     @pure
-    @opaque
-    def lemmaRemoveValidKeyDecreasesNumberOfValidKeysInArray(a: Array[Long], i: Int, k: Long): Unit = {
-      require(i >= 0 && i < a.length && validKeyInArray(a(i)) && !validKeyInArray(k) && a.length < Integer.MAX_VALUE)
-
-      lemmaRemoveValidKeyAndNumKeysFromImpliesFromZero(a, i, k, i)
-      lemmaRemoveValidKeyAndNumKeysToImpliesToALength(a, i, k, i + 1)
-      lemmaSumOfNumOfKeysOfSubArraysIsEqualToWhole(a, 0, a.length, i + 1)
-      lemmaSumOfNumOfKeysOfSubArraysIsEqualToWhole(a.updated(i, k), 0, a.length, i + 1)
-
-    }.ensuring(_ => arrayCountValidKeysTailRec(a.updated(i, k), 0, a.length) == arrayCountValidKeysTailRec(a, 0, a.length) - 1)
-
-    @pure
-    @opaque
-    def lemmaValidKeyIncreasesNumOfKeys(a: Array[Long], from: Int, to: Int): Unit = {
-      require(a.length < Integer.MAX_VALUE && from >= 0 && to >= from && to < a.length && validKeyInArray(a(to)))
-
-      lemmaSumOfNumOfKeysOfSubArraysIsEqualToWhole(a, from, to + 1, to)
-
-    }.ensuring(_ => arrayCountValidKeysTailRec(a, from, to + 1) == arrayCountValidKeysTailRec(a, from, to) + 1)
-
-    @pure
-    @opaque
-    def lemmaNotValidKeyDoesNotIncreaseNumOfKeys(a: Array[Long], from: Int, to: Int): Unit = {
-      require(a.length < Integer.MAX_VALUE && from >= 0 && to >= from && to < a.length && !validKeyInArray(a(to)))
-
-      lemmaSumOfNumOfKeysOfSubArraysIsEqualToWhole(a, from, to + 1, to)
-
-    }.ensuring(_ => arrayCountValidKeysTailRec(a, from, to + 1) == arrayCountValidKeysTailRec(a, from, to))
-
-    @pure
-    @opaque
-    def lemmaAddValidKeyAndNumKeysToImpliesToALength(a: Array[Long], i: Int, k: Long, to: Int): Unit = {
-      require(i >= 0 && i < a.length)
-      require(!validKeyInArray(a(i)) && validKeyInArray(k))
-      require(a.length < Integer.MAX_VALUE)
-      require(to >= 0 && to <= a.length && to > i)
-      require((arrayCountValidKeysTailRec(a.updated(i, k), i + 1, to) == arrayCountValidKeysTailRec(a, i + 1, to)))
-      decreases(a.length + 1 - to)
-
-      if (to != a.length) {
-        if (validKeyInArray(a(to))) {
-          lemmaValidKeyIncreasesNumOfKeys(a, i + 1, to)
-          lemmaValidKeyIncreasesNumOfKeys(a.updated(i, k), i + 1, to)
-        } else {
-          lemmaNotValidKeyDoesNotIncreaseNumOfKeys(a, i + 1, to)
-          lemmaNotValidKeyDoesNotIncreaseNumOfKeys(a.updated(i, k), i + 1, to)
-        }
-        lemmaAddValidKeyAndNumKeysToImpliesToALength(a, i, k, to + 1)
-      }
-    }.ensuring(_ => arrayCountValidKeysTailRec(a.updated(i, k), i + 1, a.length) == arrayCountValidKeysTailRec(a, i + 1, a.length))
-
-    @pure
-    @opaque
-    def lemmaAddValidKeyAndNumKeysFromImpliesFromZero(a: Array[Long], i: Int, k: Long, from: Int): Unit = {
-      require(i >= 0 && i < a.length)
-      require(!validKeyInArray(a(i)))
-      require(validKeyInArray(k))
-      require(a.length < Integer.MAX_VALUE)
-      require(from >= 0 && from <= a.length && i >= from)
-      require((arrayCountValidKeysTailRec(a.updated(i, k), from, i + 1) == arrayCountValidKeysTailRec(a, from, i + 1) + 1))
-
-      decreases(from)
-
-      if (from > 0) {
-        lemmaSumOfNumOfKeysOfSubArraysIsEqualToWhole(a, from - 1, i + 1, from)
-        lemmaSumOfNumOfKeysOfSubArraysIsEqualToWhole(a.updated(i, k), from - 1, i + 1, from)
-
-        check(arrayCountValidKeysTailRec(a, from - 1, from) + arrayCountValidKeysTailRec(a, from, i + 1) == arrayCountValidKeysTailRec(a, from - 1, i + 1)) //needed
-        check(arrayCountValidKeysTailRec(a.updated(i, k), from - 1, from) + arrayCountValidKeysTailRec(a.updated(i, k), from, i + 1) == arrayCountValidKeysTailRec(a.updated(i, k), from - 1, i + 1)) //needed
-
-        lemmaAddValidKeyAndNumKeysFromImpliesFromZero(a, i, k, from - 1)
-      }
-
-    }.ensuring(_ => {
-      arrayCountValidKeysTailRec(a.updated(i, k), 0, i + 1) == arrayCountValidKeysTailRec(a, 0, i + 1) + 1
-    })
-
-    @pure
-    @opaque
-    def lemmaAddValidKeyIncreasesNumberOfValidKeysInArray(a: Array[Long], i: Int, k: Long): Unit = {
-      require(i >= 0 && i < a.length && !validKeyInArray(a(i)) && validKeyInArray(k) && a.length < Integer.MAX_VALUE)
-
-      lemmaAddValidKeyAndNumKeysFromImpliesFromZero(a, i, k, i)
-      lemmaAddValidKeyAndNumKeysToImpliesToALength(a, i, k, i + 1)
-      lemmaSumOfNumOfKeysOfSubArraysIsEqualToWhole(a, 0, a.length, i + 1)
-      lemmaSumOfNumOfKeysOfSubArraysIsEqualToWhole(a.updated(i, k), 0, a.length, i + 1)
-
-    }.ensuring(_ => arrayCountValidKeysTailRec(a.updated(i, k), 0, a.length) == arrayCountValidKeysTailRec(a, 0, a.length) + 1)
-
+   
 
    
 
@@ -1800,6 +1588,230 @@ object MutableLongMap {
   
 
 
+
+
+
+
+    @pure
+    @opaque
+    def lemmaCountingValidKeysAtTheEnd(a: Array[Long], from: Int, to: Int): Unit = {
+      require(a.length < Integer.MAX_VALUE && from >= 0 && to > from && to <= a.length)
+
+      decreases(to - from)
+      if (from + 1 < to) {
+        lemmaCountingValidKeysAtTheEnd(a, from + 1, to)
+      } else {
+        // checks are needed
+        check(from + 1 == to)
+        check(
+          if (validKeyInArray(a(to - 1)))
+            arrayCountValidKeysTailRec(a, from, to - 1) + 1 == arrayCountValidKeysTailRec(a, from, to)
+          else
+            arrayCountValidKeysTailRec(a, from, to - 1) == arrayCountValidKeysTailRec(a, from, to)
+        )
+      }
+    }.ensuring(_ =>
+      if (validKeyInArray(a(to - 1)))
+        arrayCountValidKeysTailRec(a, from, to - 1) + 1 == arrayCountValidKeysTailRec(a, from, to)
+      else
+        arrayCountValidKeysTailRec(a, from, to - 1) == arrayCountValidKeysTailRec(a, from, to)
+    )
+
+    
+    @pure
+    @opaque
+    def lemmaKnownPivotPlusOneIsPivot(a: Array[Long], from: Int, to: Int, pivot: Int): Unit = {
+      require(
+        a.length < Integer.MAX_VALUE && from >= 0 && to > from && to <= a.length && pivot >= from && pivot < to - 1 &&
+          LongMapLongV.isPivot(a, from, to, pivot)
+      )
+
+      lemmaCountingValidKeysAtTheEnd(a, from, pivot + 1)
+
+    }.ensuring(_ => LongMapLongV.isPivot(a, from, to, pivot + 1))
+
+
+        @inline
+    @pure
+    def isPivot(a: Array[Long], from: Int, to: Int, pivot: Int): Boolean = {
+      require(a.length < Integer.MAX_VALUE && from >= 0 && to > from && to <= a.length && pivot >= from && pivot < to)
+      arrayCountValidKeysTailRec(a, from, pivot) + arrayCountValidKeysTailRec(a, pivot, to) == arrayCountValidKeysTailRec(a, from, to)
+    }
+
+     @pure
+    @opaque
+    def lemmaSumOfNumOfKeysOfSubArraysIsEqualToWholeFromTo(a: Array[Long], from: Int, to: Int, pivot: Int, knownPivot: Int): Unit = {
+      require(
+        a.length < Integer.MAX_VALUE && from >= 0 && to >= from && to <= a.length &&
+          pivot >= from && pivot < to &&
+          knownPivot <= pivot && knownPivot >= from &&
+          isPivot(a, from, to, knownPivot)
+      )
+
+      decreases(pivot - knownPivot)
+      if (knownPivot != pivot) {
+        lemmaKnownPivotPlusOneIsPivot(a, from, to, knownPivot)
+        check(isPivot(a, from, to, knownPivot + 1))
+        lemmaSumOfNumOfKeysOfSubArraysIsEqualToWholeFromTo(a, from, to, pivot, knownPivot + 1)
+        check(isPivot(a, from, to, pivot))
+      }
+      check(isPivot(a, from, to, pivot))
+    }.ensuring(_ => isPivot(a, from, to, pivot))
+
+    @pure
+    @opaque
+    def lemmaSumOfNumOfKeysOfSubArraysIsEqualToWhole(a: Array[Long], from: Int, to: Int, pivot: Int): Unit = {
+      require(a.length < Integer.MAX_VALUE && from >= 0 && to >= from && to <= a.length && pivot >= from && pivot <= to)
+
+      if (pivot < to) {
+        lemmaSumOfNumOfKeysOfSubArraysIsEqualToWholeFromTo(a, from, to, pivot, from)
+      } else {
+        check(to == pivot) //it is needed
+      }
+
+    }.ensuring(_ => arrayCountValidKeysTailRec(a, from, pivot) + arrayCountValidKeysTailRec(a, pivot, to) == arrayCountValidKeysTailRec(a, from, to))
+
+    @pure
+    @opaque
+    def lemmaRemoveValidKeyAndNumKeysToImpliesToALength(a: Array[Long], i: Int, k: Long, to: Int): Unit = {
+      require(i >= 0 && i < a.length)
+      require(validKeyInArray(a(i)))
+      require(!validKeyInArray(k))
+      require(a.length < Integer.MAX_VALUE)
+      require(to >= 0 && to <= a.length && to > i)
+      require((arrayCountValidKeysTailRec(a.updated(i, k), i + 1, to) == arrayCountValidKeysTailRec(a, i + 1, to)))
+      decreases(a.length + 1 - to)
+
+      if (to != a.length) {
+        if (validKeyInArray(a(to))) {
+          lemmaValidKeyIncreasesNumOfKeys(a, i + 1, to)
+          lemmaValidKeyIncreasesNumOfKeys(a.updated(i, k), i + 1, to)
+        } else {
+          lemmaNotValidKeyDoesNotIncreaseNumOfKeys(a, i + 1, to)
+          lemmaNotValidKeyDoesNotIncreaseNumOfKeys(a.updated(i, k), i + 1, to)
+        }
+        lemmaRemoveValidKeyAndNumKeysToImpliesToALength(a, i, k, to + 1)
+      }
+    }.ensuring(_ => arrayCountValidKeysTailRec(a.updated(i, k), i + 1, a.length) == arrayCountValidKeysTailRec(a, i + 1, a.length))
+
+    @pure
+    @opaque
+    def lemmaRemoveValidKeyAndNumKeysFromImpliesFromZero(a: Array[Long], i: Int, k: Long, from: Int): Unit = {
+      require(i >= 0 && i < a.length)
+      require(validKeyInArray(a(i)))
+      require(!validKeyInArray(k))
+      require(a.length < Integer.MAX_VALUE)
+      require(from >= 0 && from <= a.length && i >= from)
+      require((arrayCountValidKeysTailRec(a.updated(i, k), from, i + 1) == arrayCountValidKeysTailRec(a, from, i + 1) - 1))
+
+      decreases(from)
+
+      if (from > 0) {
+        lemmaSumOfNumOfKeysOfSubArraysIsEqualToWhole(a, from - 1, i + 1, from)
+        lemmaSumOfNumOfKeysOfSubArraysIsEqualToWhole(a.updated(i, k), from - 1, i + 1, from)
+
+        check(arrayCountValidKeysTailRec(a, from - 1, from) + arrayCountValidKeysTailRec(a, from, i + 1) == arrayCountValidKeysTailRec(a, from - 1, i + 1)) //needed
+        check(arrayCountValidKeysTailRec(a.updated(i, k), from - 1, from) + arrayCountValidKeysTailRec(a.updated(i, k), from, i + 1) == arrayCountValidKeysTailRec(a.updated(i, k), from - 1, i + 1)) //needed
+
+        lemmaRemoveValidKeyAndNumKeysFromImpliesFromZero(a, i, k, from - 1)
+      }
+
+    }.ensuring(_ => {
+      arrayCountValidKeysTailRec(a.updated(i, k), 0, i + 1) == arrayCountValidKeysTailRec(a, 0, i + 1) - 1
+    })
+
+     @pure
+    @opaque
+    def lemmaRemoveValidKeyDecreasesNumberOfValidKeysInArray(a: Array[Long], i: Int, k: Long): Unit = {
+      require(i >= 0 && i < a.length && validKeyInArray(a(i)) && !validKeyInArray(k) && a.length < Integer.MAX_VALUE)
+
+      lemmaRemoveValidKeyAndNumKeysFromImpliesFromZero(a, i, k, i)
+      lemmaRemoveValidKeyAndNumKeysToImpliesToALength(a, i, k, i + 1)
+      lemmaSumOfNumOfKeysOfSubArraysIsEqualToWhole(a, 0, a.length, i + 1)
+      lemmaSumOfNumOfKeysOfSubArraysIsEqualToWhole(a.updated(i, k), 0, a.length, i + 1)
+
+    }.ensuring(_ => arrayCountValidKeysTailRec(a.updated(i, k), 0, a.length) == arrayCountValidKeysTailRec(a, 0, a.length) - 1)
+
+    @pure
+    @opaque
+    def lemmaValidKeyIncreasesNumOfKeys(a: Array[Long], from: Int, to: Int): Unit = {
+      require(a.length < Integer.MAX_VALUE && from >= 0 && to >= from && to < a.length && validKeyInArray(a(to)))
+
+      lemmaSumOfNumOfKeysOfSubArraysIsEqualToWhole(a, from, to + 1, to)
+
+    }.ensuring(_ => arrayCountValidKeysTailRec(a, from, to + 1) == arrayCountValidKeysTailRec(a, from, to) + 1)
+
+    @pure
+    @opaque
+    def lemmaNotValidKeyDoesNotIncreaseNumOfKeys(a: Array[Long], from: Int, to: Int): Unit = {
+      require(a.length < Integer.MAX_VALUE && from >= 0 && to >= from && to < a.length && !validKeyInArray(a(to)))
+
+      lemmaSumOfNumOfKeysOfSubArraysIsEqualToWhole(a, from, to + 1, to)
+
+    }.ensuring(_ => arrayCountValidKeysTailRec(a, from, to + 1) == arrayCountValidKeysTailRec(a, from, to))
+
+
+
+
+        @pure
+    @opaque
+    def lemmaAddValidKeyAndNumKeysToImpliesToALength(a: Array[Long], i: Int, k: Long, to: Int): Unit = {
+      require(i >= 0 && i < a.length)
+      require(!validKeyInArray(a(i)) && validKeyInArray(k))
+      require(a.length < Integer.MAX_VALUE)
+      require(to >= 0 && to <= a.length && to > i)
+      require((arrayCountValidKeysTailRec(a.updated(i, k), i + 1, to) == arrayCountValidKeysTailRec(a, i + 1, to)))
+      decreases(a.length + 1 - to)
+
+      if (to != a.length) {
+        if (validKeyInArray(a(to))) {
+          lemmaValidKeyIncreasesNumOfKeys(a, i + 1, to)
+          lemmaValidKeyIncreasesNumOfKeys(a.updated(i, k), i + 1, to)
+        } else {
+          lemmaNotValidKeyDoesNotIncreaseNumOfKeys(a, i + 1, to)
+          lemmaNotValidKeyDoesNotIncreaseNumOfKeys(a.updated(i, k), i + 1, to)
+        }
+        lemmaAddValidKeyAndNumKeysToImpliesToALength(a, i, k, to + 1)
+      }
+    }.ensuring(_ => arrayCountValidKeysTailRec(a.updated(i, k), i + 1, a.length) == arrayCountValidKeysTailRec(a, i + 1, a.length))
+
+    @pure
+    @opaque
+    def lemmaAddValidKeyAndNumKeysFromImpliesFromZero(a: Array[Long], i: Int, k: Long, from: Int): Unit = {
+      require(i >= 0 && i < a.length)
+      require(!validKeyInArray(a(i)))
+      require(validKeyInArray(k))
+      require(a.length < Integer.MAX_VALUE)
+      require(from >= 0 && from <= a.length && i >= from)
+      require((arrayCountValidKeysTailRec(a.updated(i, k), from, i + 1) == arrayCountValidKeysTailRec(a, from, i + 1) + 1))
+
+      decreases(from)
+
+      if (from > 0) {
+        lemmaSumOfNumOfKeysOfSubArraysIsEqualToWhole(a, from - 1, i + 1, from)
+        lemmaSumOfNumOfKeysOfSubArraysIsEqualToWhole(a.updated(i, k), from - 1, i + 1, from)
+
+        check(arrayCountValidKeysTailRec(a, from - 1, from) + arrayCountValidKeysTailRec(a, from, i + 1) == arrayCountValidKeysTailRec(a, from - 1, i + 1)) //needed
+        check(arrayCountValidKeysTailRec(a.updated(i, k), from - 1, from) + arrayCountValidKeysTailRec(a.updated(i, k), from, i + 1) == arrayCountValidKeysTailRec(a.updated(i, k), from - 1, i + 1)) //needed
+
+        lemmaAddValidKeyAndNumKeysFromImpliesFromZero(a, i, k, from - 1)
+      }
+
+    }.ensuring(_ => {
+      arrayCountValidKeysTailRec(a.updated(i, k), 0, i + 1) == arrayCountValidKeysTailRec(a, 0, i + 1) + 1
+    })
+
+    @pure
+    @opaque
+    def lemmaAddValidKeyIncreasesNumberOfValidKeysInArray(a: Array[Long], i: Int, k: Long): Unit = {
+      require(i >= 0 && i < a.length && !validKeyInArray(a(i)) && validKeyInArray(k) && a.length < Integer.MAX_VALUE)
+
+      lemmaAddValidKeyAndNumKeysFromImpliesFromZero(a, i, k, i)
+      lemmaAddValidKeyAndNumKeysToImpliesToALength(a, i, k, i + 1)
+      lemmaSumOfNumOfKeysOfSubArraysIsEqualToWhole(a, 0, a.length, i + 1)
+      lemmaSumOfNumOfKeysOfSubArraysIsEqualToWhole(a.updated(i, k), 0, a.length, i + 1)
+
+    }.ensuring(_ => arrayCountValidKeysTailRec(a.updated(i, k), 0, a.length) == arrayCountValidKeysTailRec(a, 0, a.length) + 1)
 
 
 
