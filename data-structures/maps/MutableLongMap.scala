@@ -216,8 +216,10 @@ object MutableLongMap {
 
           lemmaArrayContainsFromImpliesContainsFromZero(_keys, key, i)
           lemmaValidKeyAtIImpliesCountKeysIsOne(_keys, i)
+          
           _values(i) = v
-
+          
+          lemmaValidKeyInArrayIsInListMap(i)
           true
 
         } else {
@@ -227,15 +229,16 @@ object MutableLongMap {
             lemmaNotInListMapThenSeekEntryOrOpenFindsFreeOrNothing(key)
             check(false)
           }
-
+          
           _values(i) = v
-
+          
+          lemmaValidKeyInArrayIsInListMap(i)
           true
         }
       }
 
     }.ensuring(res => valid
-    // && (if (res) getCurrentListMap(0).contains(key) else true)
+    && (if (res) getCurrentListMap(0).contains(key) else true)
     )
 
     /** Removes the given key from the array
