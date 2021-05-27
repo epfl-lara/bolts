@@ -50,6 +50,11 @@ object MutableLongMap {
     import LongMapLongV.lemmaValidKeyAtIImpliesCountKeysIsOne
     import LongMapLongV.lemmaAddValidKeyIncreasesNumberOfValidKeysInArray
     import LongMapLongV.lemmaRemoveValidKeyDecreasesNumberOfValidKeysInArray
+    import LongMapLongV.lemmaArrayForallSeekEntryOrOpenFoundFromSmallerThenFromBigger
+    import LongMapLongV.lemmaArrayNoDuplicateThenKeysContainedNotEqual
+    import LongMapLongV.lemmaNoDuplicateFromThenFromBigger
+    import LongMapLongV.lemmaPutNonValidKeyPreservesNoDuplicate
+    import LongMapLongV.lemmaPutNewValidKeyPreservesNoDuplicate
 
 
     @inlineOnce
@@ -153,7 +158,7 @@ object MutableLongMap {
           if (getCurrentListMap(0).contains(key)) {
             lemmaKeyInListMapIsInArray(key)
             val i = arrayScanForKey(_keys, key, 0)
-            lemmaArrayForallSeekEntryOrOpenFoundFromSmallerThenFromBigger(0, i)
+            lemmaArrayForallSeekEntryOrOpenFoundFromSmallerThenFromBigger(_keys, mask, 0, i)
             lemmaSeekEntryOrOpenFindsThenSeekEntryFinds(key, i)
             check(false)
           }
@@ -709,7 +714,7 @@ object MutableLongMap {
       assert(arrayContainsKeyTailRec(_keys, k, 0))
       assert(arrayForallSeekEntryOrOpenFound(0)(_keys, mask))
       val i = arrayScanForKey(_keys, k, 0)
-      lemmaArrayForallSeekEntryOrOpenFoundFromSmallerThenFromBigger(0, i)
+      lemmaArrayForallSeekEntryOrOpenFoundFromSmallerThenFromBigger(_keys, mask, 0, i)
       lemmaSeekEntryOrOpenFindsThenSeekEntryFinds(k, i)
 
     }.ensuring(_ => valid && seekEntry(k)._2 == 0 && inRange(seekEntry(k)._1) && _keys(seekEntry(k)._1) == k)
@@ -725,7 +730,7 @@ object MutableLongMap {
           val i = arrayScanForKey(_keys, k, 0)
           lemmaValidKeyInArrayIsInListMap(i)
           lemmaSeekEntryOrOpenFindsThenSeekEntryFinds(k, i)
-          lemmaArrayForallSeekEntryOrOpenFoundFromSmallerThenFromBigger(0, i)
+          lemmaArrayForallSeekEntryOrOpenFoundFromSmallerThenFromBigger(_keys, mask, 0, i)
           check(false)
         } else {
           if(seekEntry(k)._2 == 0){
@@ -748,7 +753,7 @@ object MutableLongMap {
 
       lemmaKeyInListMapIsInArray(k)
       val i = arrayScanForKey(_keys, k, 0)
-      lemmaArrayForallSeekEntryOrOpenFoundFromSmallerThenFromBigger(0, i)
+      lemmaArrayForallSeekEntryOrOpenFoundFromSmallerThenFromBigger(_keys, mask, 0, i)
       assert(arrayForallSeekEntryOrOpenFound(i)(_keys, mask))
 
 
@@ -1125,201 +1130,9 @@ object MutableLongMap {
     //------------------ARRAY RELATED------------------------------------------------------------------------------------------------------------------------
     //------------------BEGIN--------------------------------------------------------------------------------------------------------------------------------
 
-    //TODO
-    @opaque
-    @pure
-    def lemmaPutNewValidKeyPreservesNoDuplicate(a:Array[Long], k: Long, i: Int, from: Int, acc: List[Long]): Unit = {
-      require(a.length < Integer.MAX_VALUE)
-      require(from >= 0)
-      require(from < a.length)
-      require(ListOps.noDuplicate(acc))
-      require(!acc.contains(0) && !acc.contains(Long.MinValue))
-      require(!acc.contains(k))
-      require(arrayNoDuplicates(a, 0))
-      require(arrayNoDuplicates(a, from, acc))
-      require(i >= 0 && i < a.length)
-      require(validKeyInArray(k))
-      require(!arrayContainsKeyTailRec(a, k, 0))
-      decreases(a.length - from)
 
-      if(from + 1 < a.length){
-        if(from == i){
-          check( arrayNoDuplicates(a.updated(i, k), from, acc))
-        } else {
-          check( arrayNoDuplicates(a.updated(i, k), from, acc))
-        }
 
-        check( arrayNoDuplicates(a.updated(i, k), from, acc))
-      }
-    }.ensuring(_ => arrayNoDuplicates(a.updated(i, k), from, acc))
 
-    @opaque
-    @pure
-    def lemmaPutNonValidKeyPreservesNoDuplicate(a:Array[Long], l: Long, i: Int, from: Int, acc: List[Long]): Unit = {
-      require(a.length < Integer.MAX_VALUE)
-      require(from >= 0)
-      require(from < a.length)
-      require(ListOps.noDuplicate(acc))
-      require(!acc.contains(0) && !acc.contains(Long.MinValue))
-      require(arrayNoDuplicates(a, 0))
-      require(arrayNoDuplicates(a, from, acc))
-      require(i >= 0 && i < a.length)
-      require(!validKeyInArray(l))
-      decreases(a.length - from)
-
-      if(from + 1 < a.length){
-        if(validKeyInArray(a(from))){
-          lemmaListSubSeqRefl(acc)
-          lemmaArrayNoDuplicateWithAnAccThenWithSubSeqAcc(a, a(from) :: acc, acc, from + 1)
-        }
-        if(from == i ){
-          lemmaPutNonValidKeyPreservesNoDuplicate(a, l, i, from + 1, acc)
-        } else {
-          if(validKeyInArray(a(from))){
-            lemmaPutNonValidKeyPreservesNoDuplicate(a, l, i, from + 1, a(from)::acc)
-          } else {
-            lemmaPutNonValidKeyPreservesNoDuplicate(a, l, i, from + 1, acc)
-          }
-        }
-      }
-    }.ensuring(_ => arrayNoDuplicates(a.updated(i, l), from, acc))
-
-    @opaque
-    @pure
-    def lemmaArrayNoDuplicateThenKeysContainedNotEqual(a: Array[Long], k: Long, from: Int, acc: List[Long]): Unit = {
-      require(a.length < Integer.MAX_VALUE)
-      require(validKeyInArray(k))
-      require(from >= 0)
-      require(from + 1 < a.length)
-      require(from < a.length)
-      require(ListOps.noDuplicate(acc))
-      require(!acc.contains(0) && !acc.contains(Long.MinValue))
-      require(arrayContainsKeyTailRec(a, k, from+1))
-      require(arrayNoDuplicates(a, from, acc))
-
-      
-      
-      if(validKeyInArray(a(from))){
-        check(arrayNoDuplicates(a, from + 1, Cons(a(from), acc)))
-        lemmaArrayNoDuplicateWithAnAccThenWithSubSeqAcc(a, acc, Nil(), from)
-        // lemmaArrayNoDuplicateFromThenHeadNotInTail(a, from)
-        check(arrayNoDuplicates(a, from + 1, Cons(a(from), Nil())))
-        lemmaArrayNoDuplicateFromNotContainsKeysInAcc(a, from + 1, a(from), Cons(a(from), Nil()))
-        check(!arrayContainsKeyTailRec(a, a(from), from + 1))
-        check(a(from) != k)
-      } else {
-        check(a(from) != k)
-      }
-
-    }.ensuring(_ => a(from) != k)
-
-    @opaque
-    @pure
-    def lemmaArrayNoDuplicateFromNotContainsKeysInAcc(a: Array[Long], from: Int, k: Long, acc: List[Long]): Unit = {
-      require(a.length < Integer.MAX_VALUE)
-      require(from >= 0)
-      require(from < a.length)
-      require(ListOps.noDuplicate(acc))
-      require(!acc.contains(0) && !acc.contains(Long.MinValue))
-      require(arrayNoDuplicates(a, from, acc))
-      require(acc.contains(k))
-
-      decreases(a.length - from)
-
-      
-      if(from != a.length - 1){
-        if(validKeyInArray(a(from))){
-          lemmaListSubSeqRefl(Cons(a(from), acc))
-          ListSpecs.subseqTail(Cons(a(from), acc), Cons(a(from), acc))
-          check(ListSpecs.subseq(acc, Cons(a(from), acc)))
-          lemmaArrayNoDuplicateWithAnAccThenWithSubSeqAcc(a, Cons(a(from), acc), acc, from + 1)
-        }
-        lemmaArrayNoDuplicateFromNotContainsKeysInAcc(a, from + 1, k, acc)
-      }
-
-    }.ensuring(_ => !arrayContainsKeyTailRec(a, k, from))
-
-    @opaque
-    @pure
-    def lemmaListSubSeqRefl(l: List[Long]): Unit = {
-      decreases(l)
-      l match {
-        case head :: tl => {
-          assert(head == head)
-          lemmaListSubSeqRefl(tl)
-        }
-        case Nil() =>
-      }
-      
-    }.ensuring(_ => ListSpecs.subseq(l,l))
-
-    @opaque
-    @pure
-    def lemmaArrayNoDuplicateWithAnAccThenWithSubSeqAcc(a: Array[Long], acc: List[Long], newAcc: List[Long], from: Int): Unit = {
-      require(a.length < Integer.MAX_VALUE)
-      require(from >= 0)
-      require(from <= a.length)
-      require(ListOps.noDuplicate(acc))
-      require(!acc.contains(0) && !acc.contains(Long.MinValue))
-      require(!newAcc.contains(0) && !newAcc.contains(Long.MinValue))
-      require(ListSpecs.subseq(newAcc, acc))
-      require({
-        ListSpecs.noDuplicateSubseq(newAcc, acc)
-        arrayNoDuplicates(a, from, acc)
-      })
-      decreases(a.length - from)
-
-      if (from < a.length) {
-        val k = a(from)
-        if (validKeyInArray(k)) {
-          if (!acc.contains(k)) {
-            lemmaArrayNoDuplicateWithAnAccThenWithSubSeqAcc(a, Cons(k, acc), Cons(k, newAcc), from + 1)
-            ListSpecs.noDuplicateSubseq(Cons(k, newAcc), Cons(k, acc))
-          }
-        } else {
-          lemmaArrayNoDuplicateWithAnAccThenWithSubSeqAcc(a, acc, newAcc, from + 1)
-        }
-      }
-
-    }.ensuring(_ => arrayNoDuplicates(a, from, newAcc))
-
-    @opaque
-    @pure
-    def lemmaNoDuplicateFromThenFromBigger(a: Array[Long], from: Int, newFrom: Int): Unit = {
-      require(a.length < Integer.MAX_VALUE)
-      require(from >= 0)
-      require(from <= a.length)
-      require(newFrom >= from && newFrom <= a.length)
-      require(arrayNoDuplicates(a, from))
-
-      decreases(newFrom - from)
-
-      if (from != newFrom) {
-        assert(from < a.length)
-        if (newFrom != a.length) {
-          if (validKeyInArray(a(from))) {
-            lemmaArrayNoDuplicateWithAnAccThenWithSubSeqAcc(a, Cons(a(from), Nil()), Nil(), from + 1)
-          }
-          lemmaNoDuplicateFromThenFromBigger(a, from + 1, newFrom)
-        }
-      }
-
-    }.ensuring(_ => arrayNoDuplicates(a, newFrom))
-
-    @opaque
-    @pure
-    def lemmaArrayForallSeekEntryOrOpenFoundFromSmallerThenFromBigger(from: Int, newFrom: Int): Unit = {
-      require(from >= 0 && from <= _keys.length)
-      require(newFrom >= from && newFrom <= _keys.length)
-      require(simpleValid)
-      require(LongMapLongV.arrayForallSeekEntryOrOpenFound(from)(_keys, mask))
-
-      decreases(newFrom - from)
-
-      if (from < newFrom) {
-        lemmaArrayForallSeekEntryOrOpenFoundFromSmallerThenFromBigger(from + 1, newFrom)
-      }
-    }.ensuring(_ => LongMapLongV.arrayForallSeekEntryOrOpenFound(newFrom)(_keys, mask))
 
     @opaque
     @pure
@@ -1335,13 +1148,6 @@ object MutableLongMap {
         lemmaArrayForallSeekEntryFoundFromSmallerThenFromBigger(from + 1, newFrom)
       }
     }.ensuring(_ => arrayForallSeekEntryFound(newFrom)(_keys, mask))
-
-   
-
-   
-
-    //------------------END----------------------------------------------------------------------------------------------------------------------------------
-    //------------------ARRAY RELATED------------------------------------------------------------------------------------------------------------------------
 
   }
 
@@ -1373,6 +1179,8 @@ object MutableLongMap {
       */
     @pure
     private def toIndex(k: Long, mask: Int): Int = {
+      require(mask >= 0) 
+      require(mask <= IndexMask)
       // Part of the MurmurHash3 32 bit finalizer
       val h = ((k ^ (k >>> 32)) & 0xffffffffL).toInt
       val x = (h ^ (h >>> 16)) * 0x85ebca6b
@@ -1585,13 +1393,210 @@ object MutableLongMap {
         lemmaArrayContainsFromImpliesContainsFromZero(a, k, from - 1)
       }
     }.ensuring(_ => arrayContainsKeyTailRec(a, k, 0))
+
+
+
+
+
+
+        //TODO
+    @opaque
+    @pure
+    def lemmaPutNewValidKeyPreservesNoDuplicate(a:Array[Long], k: Long, i: Int, from: Int, acc: List[Long]): Unit = {
+      require(a.length < Integer.MAX_VALUE)
+      require(from >= 0)
+      require(from < a.length)
+      require(ListOps.noDuplicate(acc))
+      require(!acc.contains(0) && !acc.contains(Long.MinValue))
+      require(!acc.contains(k))
+      require(arrayNoDuplicates(a, 0))
+      require(arrayNoDuplicates(a, from, acc))
+      require(i >= 0 && i < a.length)
+      require(validKeyInArray(k))
+      require(!arrayContainsKeyTailRec(a, k, 0))
+      decreases(a.length - from)
+
+      if(from + 1 < a.length){
+        if(from == i){
+          check( arrayNoDuplicates(a.updated(i, k), from, acc))
+        } else {
+          check( arrayNoDuplicates(a.updated(i, k), from, acc))
+        }
+
+        check( arrayNoDuplicates(a.updated(i, k), from, acc))
+      }
+    }.ensuring(_ => arrayNoDuplicates(a.updated(i, k), from, acc))
+
+    @opaque
+    @pure
+    def lemmaPutNonValidKeyPreservesNoDuplicate(a:Array[Long], l: Long, i: Int, from: Int, acc: List[Long]): Unit = {
+      require(a.length < Integer.MAX_VALUE)
+      require(from >= 0)
+      require(from < a.length)
+      require(ListOps.noDuplicate(acc))
+      require(!acc.contains(0) && !acc.contains(Long.MinValue))
+      require(arrayNoDuplicates(a, 0))
+      require(arrayNoDuplicates(a, from, acc))
+      require(i >= 0 && i < a.length)
+      require(!validKeyInArray(l))
+      decreases(a.length - from)
+
+      if(from + 1 < a.length){
+        if(validKeyInArray(a(from))){
+          lemmaListSubSeqRefl(acc)
+          lemmaArrayNoDuplicateWithAnAccThenWithSubSeqAcc(a, a(from) :: acc, acc, from + 1)
+        }
+        if(from == i ){
+          lemmaPutNonValidKeyPreservesNoDuplicate(a, l, i, from + 1, acc)
+        } else {
+          if(validKeyInArray(a(from))){
+            lemmaPutNonValidKeyPreservesNoDuplicate(a, l, i, from + 1, a(from)::acc)
+          } else {
+            lemmaPutNonValidKeyPreservesNoDuplicate(a, l, i, from + 1, acc)
+          }
+        }
+      }
+    }.ensuring(_ => arrayNoDuplicates(a.updated(i, l), from, acc))
+
+        @opaque
+    @pure
+    def lemmaArrayNoDuplicateThenKeysContainedNotEqual(a: Array[Long], k: Long, from: Int, acc: List[Long]): Unit = {
+      require(a.length < Integer.MAX_VALUE)
+      require(validKeyInArray(k))
+      require(from >= 0)
+      require(from + 1 < a.length)
+      require(from < a.length)
+      require(ListOps.noDuplicate(acc))
+      require(!acc.contains(0) && !acc.contains(Long.MinValue))
+      require(arrayContainsKeyTailRec(a, k, from+1))
+      require(arrayNoDuplicates(a, from, acc))
+
+      
+      
+      if(validKeyInArray(a(from))){
+        check(arrayNoDuplicates(a, from + 1, Cons(a(from), acc)))
+        lemmaArrayNoDuplicateWithAnAccThenWithSubSeqAcc(a, acc, Nil(), from)
+        // lemmaArrayNoDuplicateFromThenHeadNotInTail(a, from)
+        check(arrayNoDuplicates(a, from + 1, Cons(a(from), Nil())))
+        lemmaArrayNoDuplicateFromNotContainsKeysInAcc(a, from + 1, a(from), Cons(a(from), Nil()))
+        check(!arrayContainsKeyTailRec(a, a(from), from + 1))
+        check(a(from) != k)
+      } else {
+        check(a(from) != k)
+      }
+
+    }.ensuring(_ => a(from) != k)
+
+    @opaque
+    @pure
+    def lemmaArrayNoDuplicateFromNotContainsKeysInAcc(a: Array[Long], from: Int, k: Long, acc: List[Long]): Unit = {
+      require(a.length < Integer.MAX_VALUE)
+      require(from >= 0)
+      require(from < a.length)
+      require(ListOps.noDuplicate(acc))
+      require(!acc.contains(0) && !acc.contains(Long.MinValue))
+      require(arrayNoDuplicates(a, from, acc))
+      require(acc.contains(k))
+
+      decreases(a.length - from)
+
+      
+      if(from != a.length - 1){
+        if(validKeyInArray(a(from))){
+          lemmaListSubSeqRefl(Cons(a(from), acc))
+          ListSpecs.subseqTail(Cons(a(from), acc), Cons(a(from), acc))
+          check(ListSpecs.subseq(acc, Cons(a(from), acc)))
+          lemmaArrayNoDuplicateWithAnAccThenWithSubSeqAcc(a, Cons(a(from), acc), acc, from + 1)
+        }
+        lemmaArrayNoDuplicateFromNotContainsKeysInAcc(a, from + 1, k, acc)
+      }
+
+    }.ensuring(_ => !arrayContainsKeyTailRec(a, k, from))
+
+    @opaque
+    @pure
+    def lemmaListSubSeqRefl(l: List[Long]): Unit = {
+      decreases(l)
+      l match {
+        case head :: tl => {
+          assert(head == head)
+          lemmaListSubSeqRefl(tl)
+        }
+        case Nil() =>
+      }
+      
+    }.ensuring(_ => ListSpecs.subseq(l,l))
+
+    @opaque
+    @pure
+    def lemmaArrayNoDuplicateWithAnAccThenWithSubSeqAcc(a: Array[Long], acc: List[Long], newAcc: List[Long], from: Int): Unit = {
+      require(a.length < Integer.MAX_VALUE)
+      require(from >= 0)
+      require(from <= a.length)
+      require(ListOps.noDuplicate(acc))
+      require(!acc.contains(0) && !acc.contains(Long.MinValue))
+      require(!newAcc.contains(0) && !newAcc.contains(Long.MinValue))
+      require(ListSpecs.subseq(newAcc, acc))
+      require({
+        ListSpecs.noDuplicateSubseq(newAcc, acc)
+        arrayNoDuplicates(a, from, acc)
+      })
+      decreases(a.length - from)
+
+      if (from < a.length) {
+        val k = a(from)
+        if (validKeyInArray(k)) {
+          if (!acc.contains(k)) {
+            lemmaArrayNoDuplicateWithAnAccThenWithSubSeqAcc(a, Cons(k, acc), Cons(k, newAcc), from + 1)
+            ListSpecs.noDuplicateSubseq(Cons(k, newAcc), Cons(k, acc))
+          }
+        } else {
+          lemmaArrayNoDuplicateWithAnAccThenWithSubSeqAcc(a, acc, newAcc, from + 1)
+        }
+      }
+
+    }.ensuring(_ => arrayNoDuplicates(a, from, newAcc))
+
+    @opaque
+    @pure
+    def lemmaNoDuplicateFromThenFromBigger(a: Array[Long], from: Int, newFrom: Int): Unit = {
+      require(a.length < Integer.MAX_VALUE)
+      require(from >= 0)
+      require(from <= a.length)
+      require(newFrom >= from && newFrom <= a.length)
+      require(arrayNoDuplicates(a, from))
+
+      decreases(newFrom - from)
+
+      if (from != newFrom) {
+        assert(from < a.length)
+        if (newFrom != a.length) {
+          if (validKeyInArray(a(from))) {
+            lemmaArrayNoDuplicateWithAnAccThenWithSubSeqAcc(a, Cons(a(from), Nil()), Nil(), from + 1)
+          }
+          lemmaNoDuplicateFromThenFromBigger(a, from + 1, newFrom)
+        }
+      }
+
+    }.ensuring(_ => arrayNoDuplicates(a, newFrom))
+
+
+    @opaque
+    @pure
+    def lemmaArrayForallSeekEntryOrOpenFoundFromSmallerThenFromBigger(a: Array[Long], mask: Int, from: Int, newFrom: Int): Unit = {
+      require(mask == IndexMask)
+      require(a.length == mask + 1)
+      require(from >= 0 && from <= a.length)
+      require(newFrom >= from && newFrom <= a.length)
+      require(arrayForallSeekEntryOrOpenFound(from)(a, mask))
+
+      decreases(newFrom - from)
+
+      if (from < newFrom) {
+        lemmaArrayForallSeekEntryOrOpenFoundFromSmallerThenFromBigger(a, mask, from + 1, newFrom)
+      }
+    }.ensuring(_ => arrayForallSeekEntryOrOpenFound(newFrom)(a, mask))
   
-
-
-
-
-
-
     @pure
     @opaque
     def lemmaCountingValidKeysAtTheEnd(a: Array[Long], from: Int, to: Int): Unit = {
@@ -1617,7 +1622,7 @@ object MutableLongMap {
         arrayCountValidKeysTailRec(a, from, to - 1) == arrayCountValidKeysTailRec(a, from, to)
     )
 
-    
+
     @pure
     @opaque
     def lemmaKnownPivotPlusOneIsPivot(a: Array[Long], from: Int, to: Int, pivot: Int): Unit = {
