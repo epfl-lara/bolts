@@ -193,7 +193,7 @@ object MutableLongMap {
         }
 
       } else {
-        val tupl = seekEntryOrOpen(key)
+        val tupl = seekEntryOrOpenDecoupled(key)(_keys, mask)
         val i = tupl._1
         if (tupl._2 == EntryNotFound) {
           //the key is not in the array, it was not able to find an empty space, the map is maybe full
@@ -314,38 +314,6 @@ object MutableLongMap {
       else seekEmptyZeroTailRec(x + 1, (ee + 2 * (x + 1) * x - 3) & mask)
     }.ensuring(res => valid && (res == EntryNotFound || _keys(res) == 0))
 
-    /** Given a key, seek for its index into the array
-      * returns a tuple with (index, error_code)
-      * the index is the index of the key if error_code == 0
-      *
-      * @param k the key
-      * @return the index of the given key into the array
-      */
-
-    /** Search the index of the given key. If the key is in the array, it finds its index (0 is returned as second element).
-      * If the key is not in the array, it finds either:
-      *   - A free space with a 0 value (MissingBit is returned as second element)
-      *   - A freed space with a Long.MinValue value (MissingVacant is returned as a second element)
-      *   - Nothing (EntryNotFound is returned as a second value)
-      *
-      * @param k
-      * @return
-      */
-    @pure
-    def seekEntryOrOpen(k: Long): (Int, Int) = {
-      require(valid)
-      require(validKeyInArray(k))
-
-      seekEntryOrOpenDecoupled(k)(_keys, mask)
-    }.ensuring(res =>
-      valid &&
-        (
-          res._2 == EntryNotFound ||
-            (res._2 == 0 && _keys(res._1) == k) ||
-            (res._2 == MissingBit && _keys(res._1) == 0) ||
-            (res._2 == MissVacant && _keys(res._1) == Long.MinValue)
-        )
-    )
 
     @tailrec
     @pure
@@ -509,7 +477,7 @@ object MutableLongMap {
     @pure
     def lemmaSeekEntryOrOpenFindsThenSeekEntryFinds(k: Long, i: Int): Unit = {
       require(valid && validKeyInArray(k))
-      require(seekEntryOrOpen(k) == (i, 0))
+      require(seekEntryOrOpenDecoupled(k)(_keys, mask) == (i, 0))
 
     }.ensuring(_ => seekEntryDecoupled(k)(_keys, mask) == (i, 0))
 
@@ -518,7 +486,7 @@ object MutableLongMap {
     @pure
     def lemmaSeekEntryOrOpenMissThenSeekEntryMiss(k: Long, i: Int): Unit = {
       require(valid && validKeyInArray(k))
-      require(seekEntryOrOpen(k)._2 != 0)
+      require(seekEntryOrOpenDecoupled(k)(_keys, mask)._2 != 0)
 
     }.ensuring(_ => seekEntryDecoupled(k)(_keys, mask)._2 != 0)
 
@@ -575,7 +543,7 @@ object MutableLongMap {
       lemmaArrayForallSeekEntryOrOpenFoundFromSmallerThenFromBigger(_keys, mask, 0, i)
       assert(arrayForallSeekEntryOrOpenFound(i)(_keys, mask))
 
-    }.ensuring(_ => valid && seekEntryOrOpen(k)._2 == 0 && inRange(seekEntryOrOpen(k)._1, mask) && _keys(seekEntryOrOpen(k)._1) == k)
+    }.ensuring(_ => valid && seekEntryOrOpenDecoupled(k)(_keys, mask)._2 == 0 && inRange(seekEntryOrOpenDecoupled(k)(_keys, mask)._1, mask) && _keys(seekEntryOrOpenDecoupled(k)(_keys, mask)._1) == k)
 
     @opaque
     @pure
@@ -584,7 +552,7 @@ object MutableLongMap {
       require(validKeyInArray(k))
       require(!getCurrentListMap(0).contains(k))
 
-      val tu = seekEntryOrOpen(k)
+      val tu = seekEntryOrOpenDecoupled(k)(_keys, mask)
       if (tu._2 != 0) {
         assert(arrayForallSeekEntryOrOpenFound(0)(_keys, mask))
         if (tu._2 == MissVacant || tu._2 == MissingBit) {
@@ -606,7 +574,7 @@ object MutableLongMap {
       }
 
     }.ensuring(_ => {
-      val tu = seekEntryOrOpen(k)
+      val tu = seekEntryOrOpenDecoupled(k)(_keys, mask)
       valid &&
       (
         (tu._2 == MissingBit && inRange(tu._1, mask) && _keys(tu._1) == 0 && !arrayContainsKeyTailRec(_keys, k, 0)) ||
@@ -621,7 +589,7 @@ object MutableLongMap {
       require(valid)
       require(validKeyInArray(k))
 
-    }.ensuring(_ => seekEntryOrOpen(k)._2 == EntryNotFound || inRange(seekEntryOrOpen(k)._1, mask))
+    }.ensuring(_ => seekEntryOrOpenDecoupled(k)(_keys, mask)._2 == EntryNotFound || inRange(seekEntryOrOpenDecoupled(k)(_keys, mask)._1, mask))
 
     @opaque
     @pure
@@ -1051,6 +1019,16 @@ object MutableLongMap {
         (res._2 != 0 || (inRange(res._1, mask) && _keys(res._1) == k))
     )
 
+
+     /** Search the index of the given key. If the key is in the array, it finds its index (0 is returned as second element).
+      * If the key is not in the array, it finds either:
+      *   - A free space with a 0 value (MissingBit is returned as second element)
+      *   - A freed space with a Long.MinValue value (MissingVacant is returned as a second element)
+      *   - Nothing (EntryNotFound is returned as a second value)
+      *
+      * @param k
+      * @return
+      */
     @pure
     def seekEntryOrOpenDecoupled(k: Long)(implicit _keys: Array[Long], mask: Int): (Int, Int) = {
       require(mask == IndexMask)
