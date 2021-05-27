@@ -158,22 +158,6 @@ object MutableLongMap {
             else res == defaultEntry(key))
     )
 
-    private def addNewKeyToArrayAtAndUpdateSize(key: Long, i: Int): Unit = {
-      require(valid)
-      require(!arrayContainsKeyTailRec(_keys, key, 0))
-      require(inRange(i, mask))
-      require(!validKeyInArray(_keys(i)))
-      require(validKeyInArray(key))
-
-      lemmaAddValidKeyIncreasesNumberOfValidKeysInArray(_keys, i, key)
-
-      _keys(i) = key
-      _size += 1
-
-      lemmaArrayContainsFromImpliesContainsFromZero(_keys, key, i)
-      lemmaValidKeyAtIImpliesCountKeysIsOne(_keys, i)
-    }.ensuring(_ => valid && arrayContainsKeyTailRec(_keys, key, 0))
-
     /** Updates the map to include a new key-value pair. Return a boolean indicating if the update was successful.
       *
       *  This is the fastest way to add an entry to a `LongMap`.
