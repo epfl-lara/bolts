@@ -79,26 +79,6 @@ object MutableLongMap {
       extraKeys <= 3
     }
 
-    @pure
-    def arrayForallSeekEntryFound(i: Int)(implicit _keys: Array[Long], mask: Int): Boolean = {
-      require(mask == IndexMask)
-      require(_keys.length == mask + 1)
-      require(i >= 0)
-      require(i <= _keys.length)
-      require(simpleValid)
-
-      decreases(_keys.length - i)
-
-      if (i >= _keys.length) true
-      else if (validKeyInArray(_keys(i))) {
-        assert(arrayContainsKeyTailRec(_keys, _keys(i), i))
-        lemmaArrayContainsFromImpliesContainsFromZero(_keys, _keys(i), i)
-        seekEntryTailRecDecoupled(_keys(i), 0, toIndex(_keys(i), mask))(_keys, mask) == (i, 0) &&
-        arrayScanForKey(_keys, _keys(i), 0) == i &&
-        arrayForallSeekEntryFound(i + 1)
-      } else arrayForallSeekEntryFound(i + 1)
-    }
-
     /** Checks if i is a valid index in the Array of values
       *
       * @param i
@@ -1127,24 +1107,6 @@ object MutableLongMap {
 
     //------------------END----------------------------------------------------------------------------------------------------------------------------------
     //------------------EQUIVALENCE BETWEEN LISTMAP AND ARRAY------------------------------------------------------------------------------------------------
-
-    //------------------ARRAY RELATED------------------------------------------------------------------------------------------------------------------------
-    //------------------BEGIN--------------------------------------------------------------------------------------------------------------------------------
-
-    @opaque
-    @pure
-    def lemmaArrayForallSeekEntryFoundFromSmallerThenFromBigger(from: Int, newFrom: Int): Unit = {
-      require(from >= 0 && from <= _keys.length)
-      require(newFrom >= from && newFrom <= _keys.length)
-      require(simpleValid)
-      require(arrayForallSeekEntryFound(from)(_keys, mask))
-
-      decreases(newFrom - from)
-
-      if (from < newFrom) {
-        lemmaArrayForallSeekEntryFoundFromSmallerThenFromBigger(from + 1, newFrom)
-      }
-    }.ensuring(_ => arrayForallSeekEntryFound(newFrom)(_keys, mask))
 
   }
 
