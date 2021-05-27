@@ -103,7 +103,7 @@ object MutableLongMap {
       if (key == 0) (extraKeys & 1) != 0
       else if (key == Long.MinValue) (extraKeys & 2) != 0
       else {
-        val tupl = seekEntry(key)
+        val tupl = seekEntryDecoupled(key)(_keys, mask)
         if (tupl._2 != 0) {
           if (getCurrentListMap(0).contains(key)) {
             lemmaKeyInListMapIsInArray(key)
@@ -141,7 +141,7 @@ object MutableLongMap {
         else if (key == Long.MinValue && (extraKeys & 2) != 0) minValue
         else defaultEntry(key)
       } else {
-        val tupl = seekEntry(key)
+        val tupl = seekEntryDecoupled(key)(_keys, mask)
         lemmaSeekEntryGivesInRangeIndex(key)
         if (tupl._2 != 0) defaultEntry(key)
         else {
@@ -273,7 +273,7 @@ object MutableLongMap {
           true
         }
       } else {
-        val (i, state) = seekEntry(key)
+        val (i, state) = seekEntryDecoupled(key)(_keys, mask)
         // if (i >= 0) {
         if (state == 0) {
           // _vacant += 1
@@ -321,20 +321,6 @@ object MutableLongMap {
       * @param k the key
       * @return the index of the given key into the array
       */
-
-    @pure
-    def seekEntry(k: Long): (Int, Int) = {
-      require(simpleValid)
-      require(validKeyInArray(k))
-      decreases(1)
-
-      seekEntryDecoupled(k)(_keys, mask)
-
-    }.ensuring(res =>
-      simpleValid &&
-        (res._2 == 0 || res._2 == MissingBit || res._2 == EntryNotFound) &&
-        (res._2 != 0 || (inRange(res._1, mask) && _keys(res._1) == k))
-    )
 
     /** Search the index of the given key. If the key is in the array, it finds its index (0 is returned as second element).
       * If the key is not in the array, it finds either:
@@ -525,7 +511,7 @@ object MutableLongMap {
       require(valid && validKeyInArray(k))
       require(seekEntryOrOpen(k) == (i, 0))
 
-    }.ensuring(_ => seekEntry(k) == (i, 0))
+    }.ensuring(_ => seekEntryDecoupled(k)(_keys, mask) == (i, 0))
 
     //TODO
     @opaque
@@ -534,7 +520,7 @@ object MutableLongMap {
       require(valid && validKeyInArray(k))
       require(seekEntryOrOpen(k)._2 != 0)
 
-    }.ensuring(_ => seekEntry(k)._2 != 0)
+    }.ensuring(_ => seekEntryDecoupled(k)(_keys, mask)._2 != 0)
 
     @opaque
     @pure
@@ -550,7 +536,7 @@ object MutableLongMap {
       lemmaArrayForallSeekEntryOrOpenFoundFromSmallerThenFromBigger(_keys, mask, 0, i)
       lemmaSeekEntryOrOpenFindsThenSeekEntryFinds(k, i)
 
-    }.ensuring(_ => valid && seekEntry(k)._2 == 0 && inRange(seekEntry(k)._1, mask) && _keys(seekEntry(k)._1) == k)
+    }.ensuring(_ => valid && seekEntryDecoupled(k)(_keys, mask)._2 == 0 && inRange(seekEntryDecoupled(k)(_keys, mask)._1, mask) && _keys(seekEntryDecoupled(k)(_keys, mask)._1) == k)
 
     @opaque
     @pure
@@ -566,16 +552,16 @@ object MutableLongMap {
           lemmaArrayForallSeekEntryOrOpenFoundFromSmallerThenFromBigger(_keys, mask, 0, i)
           check(false)
         } else {
-          if (seekEntry(k)._2 == 0) {
+          if (seekEntryDecoupled(k)(_keys, mask)._2 == 0) {
             //found but not in array --> Contradiction
-            val i = seekEntry(k)._1
+            val i = seekEntryDecoupled(k)(_keys, mask)._1
             lemmaValidKeyInArrayIsInListMap(i)
             check(false)
           }
         }
       }
 
-    }.ensuring(_ => valid && (seekEntry(k)._2 == MissingBit || seekEntry(k)._2 == EntryNotFound))
+    }.ensuring(_ => valid && (seekEntryDecoupled(k)(_keys, mask)._2 == MissingBit || seekEntryDecoupled(k)(_keys, mask)._2 == EntryNotFound))
 
     @opaque
     @pure
@@ -642,7 +628,7 @@ object MutableLongMap {
     def lemmaSeekEntryGivesInRangeIndex(k: Long): Unit = {
       require(valid)
       require(validKeyInArray(k))
-    }.ensuring(_ => seekEntry(k)._2 != 0 || inRange(seekEntry(k)._1, mask))
+    }.ensuring(_ => seekEntryDecoupled(k)(_keys, mask)._2 != 0 || inRange(seekEntryDecoupled(k)(_keys, mask)._1, mask))
 
     //------------------END----------------------------------------------------------------------------------------------------------------------------------
     //------------------SEEKENTRY RELATED--------------------------------------------------------------------------------------------------------------------
@@ -1009,6 +995,14 @@ object MutableLongMap {
       (x ^ (x >>> 13)) & mask
     }.ensuring(res => res < mask + 1 && res >= 0)
 
+
+        /** Given a key, seek for its index into the array
+      * returns a tuple with (index, error_code)
+      * the index is the index of the key if error_code == 0
+      *
+      * @param k the key
+      * @return the index of the given key into the array
+      */
     @pure
     def seekEntryDecoupled(k: Long)(implicit _keys: Array[Long], mask: Int): (Int, Int) = {
       require(mask == IndexMask)
@@ -1707,6 +1701,14 @@ object MutableLongMap {
 
   }
 
+
+
+
+
+
+
+
+
   @extern
   def assume(b: Boolean): Unit = {}.ensuring(_ => b)
 
@@ -1719,86 +1721,86 @@ object MutableLongMap {
     */
   @extern
   def main(args: Array[String]): Unit = {
-    val l = LongMapLongV()
-    l.update(1, 42)
-    assert(l(1) == 42)
-    l.update(1, 43)
-    assert(l(1) == 43)
+    // val l = LongMapLongV()
+    // l.update(1, 42)
+    // assert(l(1) == 42)
+    // l.update(1, 43)
+    // assert(l(1) == 43)
 
-    printf("working 1...\n")
+    // printf("working 1...\n")
 
-    l.update(0, 43)
-    // assert(l.zeroValue == 43)
-    assert(l(0) == 43)
+    // l.update(0, 43)
+    // // assert(l.zeroValue == 43)
+    // assert(l(0) == 43)
 
-    printf("working 2...\n")
-    val n = IndexMask + 10
-    printf("n = " + n.toString() + "\n")
+    // printf("working 2...\n")
+    // val n = IndexMask + 10
+    // printf("n = " + n.toString() + "\n")
 
-    val insertedCorrectly = Array.fill(n + 1)(false)
-    for (i <- 1 to n) {
-      val b = l.update(i, i + 1)
-      insertedCorrectly(i) = b
-      if (b) {
-        printf("inserted number = " + i.toString() + "\n")
-      }
-    }
-    printf("working 3...\n")
-
-    for (i <- 1 to n) {
-      if (insertedCorrectly(i)) {
-        printf(
-          "checking for i = " + i.toString() + " and that gives + " + l(
-            i
-          ) + "\n"
-        )
-        assert(l(i) == i + 1)
-      }
-      // if(i%100 == 0) printf(s"go $i\n");
-    }
-
-    // l.repack()
+    // val insertedCorrectly = Array.fill(n + 1)(false)
+    // for (i <- 1 to n) {
+    //   val b = l.update(i, i + 1)
+    //   insertedCorrectly(i) = b
+    //   if (b) {
+    //     printf("inserted number = " + i.toString() + "\n")
+    //   }
+    // }
+    // printf("working 3...\n")
 
     // for (i <- 1 to n) {
-    //     // printf("cheking for i = " + i.toString() + "\n")
-    //   assert(l(i) == i + 1)
+    //   if (insertedCorrectly(i)) {
+    //     printf(
+    //       "checking for i = " + i.toString() + " and that gives + " + l(
+    //         i
+    //       ) + "\n"
+    //     )
+    //     assert(l(i) == i + 1)
+    //   }
     //   // if(i%100 == 0) printf(s"go $i\n");
     // }
-    l.update(Long.MinValue, 1234)
-    // assert(l.minValue == 1234)
-    assert(l(Long.MinValue) == 1234)
-    l.update(3, 128549)
-    assert(l(3) == 128549)
 
-    printf(
-      "seekEntry with k = -42 : (" + l.seekEntry(-42)._1.toString() + " ," + l
-        .seekEntry(-42)
-        ._2
-        .toString() + ")\n"
-    )
-    printf(
-      "seekEntryOrOpen with k = -42 : (" + l
-        .seekEntryOrOpen(-42)
-        ._1
-        .toString() + " ," + l.seekEntryOrOpen(-42)._2.toString() + ")\n"
-    )
-    printf(
-      "seekEntryOrOpen with k = 12 : (" + l
-        .seekEntryOrOpen(12)
-        ._1
-        .toString() + " ," + l.seekEntryOrOpen(12)._2.toString() + ")\n"
-    )
-    printf(
-      "seekEntryOrOpen with k = 4002 : (" + l
-        .seekEntryOrOpen(4002)
-        ._1
-        .toString() + " ," + l.seekEntryOrOpen(4002)._2.toString() + ")\n"
-    )
-    printf("seekEmptyZero with k = 4002 : " + l.seekEmptyZero(4002).toString() + "\n")
+    // // l.repack()
 
-    // printf("_size = " + l._size + "\n")
-    printf("VacantBit = " + VacantBit + "\n")
-    printf("ok")
+    // // for (i <- 1 to n) {
+    // //     // printf("cheking for i = " + i.toString() + "\n")
+    // //   assert(l(i) == i + 1)
+    // //   // if(i%100 == 0) printf(s"go $i\n");
+    // // }
+    // l.update(Long.MinValue, 1234)
+    // // assert(l.minValue == 1234)
+    // assert(l(Long.MinValue) == 1234)
+    // l.update(3, 128549)
+    // assert(l(3) == 128549)
+
+    // printf(
+    //   "seekEntry with k = -42 : (" + l.seekEntry(-42)._1.toString() + " ," + l
+    //     .seekEntry(-42)
+    //     ._2
+    //     .toString() + ")\n"
+    // )
+    // printf(
+    //   "seekEntryOrOpen with k = -42 : (" + l
+    //     .seekEntryOrOpen(-42)
+    //     ._1
+    //     .toString() + " ," + l.seekEntryOrOpen(-42)._2.toString() + ")\n"
+    // )
+    // printf(
+    //   "seekEntryOrOpen with k = 12 : (" + l
+    //     .seekEntryOrOpen(12)
+    //     ._1
+    //     .toString() + " ," + l.seekEntryOrOpen(12)._2.toString() + ")\n"
+    // )
+    // printf(
+    //   "seekEntryOrOpen with k = 4002 : (" + l
+    //     .seekEntryOrOpen(4002)
+    //     ._1
+    //     .toString() + " ," + l.seekEntryOrOpen(4002)._2.toString() + ")\n"
+    // )
+    // printf("seekEmptyZero with k = 4002 : " + l.seekEmptyZero(4002).toString() + "\n")
+
+    // // printf("_size = " + l._size + "\n")
+    // printf("VacantBit = " + VacantBit + "\n")
+    // printf("ok")
   }
 
 }
