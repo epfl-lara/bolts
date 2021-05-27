@@ -47,6 +47,7 @@ object MutableLongMap {
     import LongMapLongV.toIndex    
     import LongMapLongV.lemmaArrayContainsFromImpliesContainsFromZero
     import LongMapLongV.arrayForallSeekEntryOrOpenFound
+    import LongMapLongV.lemmaValidKeyAtIImpliesCountKeysIsOne
 
     @inlineOnce
     def valid: Boolean = {
@@ -1548,29 +1549,6 @@ object MutableLongMap {
 
     }.ensuring(_ => arrayCountValidKeysTailRec(a.updated(i, k), 0, a.length) == arrayCountValidKeysTailRec(a, 0, a.length) + 1)
 
-    @pure
-    @opaque
-    def lemmaValidKeyAtIImpliesCountKeysIsOne(a: Array[Long], i: Int): Unit = {
-      require(i >= 0 && i < a.length && validKeyInArray(a(i)) && a.length < Integer.MAX_VALUE)
-
-    }.ensuring(_ => arrayCountValidKeysTailRec(a, i, i + 1) == 1)
-
-    @pure
-    @opaque
-    def lemmaArrayEqualsFromToReflexivity(a: Array[Long], from: Int, to: Int): Unit = {
-      require(from >= 0 && from < to && to <= a.length && a.length < Integer.MAX_VALUE)
-      decreases(to - from)
-      if (from + 1 < to) {
-        lemmaArrayEqualsFromToReflexivity(a, from + 1, to)
-      }
-    }.ensuring(_ => arraysEqualsFromTo(a, a, from, to))
-
-    @pure
-    @opaque
-    def lemmaValidKeyIndexImpliesArrayContainsKey(k: Long, i: Int): Unit = {
-      require(valid && validKeyIndex(k, i))
-      LongMapLongV.lemmaArrayContainsFromImpliesContainsFromZero(_keys, k, i)
-    }.ensuring(_ => arrayContainsKeyTailRec(_keys, k, 0))
 
    
 
@@ -1809,15 +1787,83 @@ object MutableLongMap {
         k: Long,
         from: Int
     ): Unit = {
-      require(
-        from >= 0 && from < a.length && a.length < Integer.MAX_VALUE && arrayContainsKeyTailRec(a, k, from)
-      )
+      require(from >= 0)
+      require(from < a.length)
+      require(a.length < Integer.MAX_VALUE)
+      require(arrayContainsKeyTailRec(a, k, from))
+
       decreases(from)
       if (from > 0) {
         lemmaArrayContainsFromImpliesContainsFromZero(a, k, from - 1)
       }
     }.ensuring(_ => arrayContainsKeyTailRec(a, k, 0))
-  }
+  
+
+
+
+
+
+        @pure
+    @opaque
+    def lemmaValidKeyAtIImpliesCountKeysIsOne(a: Array[Long], i: Int): Unit = {
+      require(i >= 0 && i < a.length && validKeyInArray(a(i)) && a.length < Integer.MAX_VALUE)
+
+    }.ensuring(_ => arrayCountValidKeysTailRec(a, i, i + 1) == 1)
+
+    @pure
+    @opaque
+    def lemmaArrayEqualsFromToReflexivity(a: Array[Long], from: Int, to: Int): Unit = {
+      require(from >= 0 && from < to && to <= a.length && a.length < Integer.MAX_VALUE)
+      decreases(to - from)
+      if (from + 1 < to) {
+        lemmaArrayEqualsFromToReflexivity(a, from + 1, to)
+      }
+    }.ensuring(_ => arraysEqualsFromTo(a, a, from, to))
+
+    @pure
+    @opaque
+    def lemmaValidKeyIndexImpliesArrayContainsKey(a: Array[Long], k: Long, i: Int): Unit = {
+      require(a.length < Integer.MAX_VALUE)
+      require(i >= 0 && i < a.length)
+      require(a(i) == k)
+
+      LongMapLongV.lemmaArrayContainsFromImpliesContainsFromZero(a, k, i)
+    }.ensuring(_ => arrayContainsKeyTailRec(a, k, 0))
+  
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
   @extern
   def assume(b: Boolean): Unit = {}.ensuring(_ => b)
