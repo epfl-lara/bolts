@@ -1341,6 +1341,22 @@ object MutableLongMap {
       }
     }.ensuring(_ => arrayContainsKeyTailRec(a, k, 0))
 
+
+    //TODO
+    def lemmaAddKeyNoContainsInAccStillNoDuplicate(a: Array[Long], k: Long, from: Int, acc: List[Long]): Unit = {
+      require(a.length < Integer.MAX_VALUE)
+      require(from >= 0)
+      require(from < a.length)
+      require(ListOps.noDuplicate(acc))
+      require(!acc.contains(0) && !acc.contains(Long.MinValue))
+      require(!arrayContainsKeyTailRec(a, k, from))
+      require(!acc.contains(k))
+      require(validKeyInArray(k))
+      require(arrayNoDuplicates(a, from, acc))
+
+
+    }.ensuring(_ => arrayNoDuplicates(a, from, k :: acc))
+
     //TODO
     @opaque
     @pure
@@ -1350,7 +1366,7 @@ object MutableLongMap {
       require(from < a.length)
       require(ListOps.noDuplicate(acc))
       require(!acc.contains(0) && !acc.contains(Long.MinValue))
-      require(!acc.contains(k))
+      require((from > i && acc.contains(k)) || (from <= i && !acc.contains(k)))
       require(arrayNoDuplicates(a, 0))
       require(arrayNoDuplicates(a, from, acc))
       require(i >= 0 && i < a.length)
@@ -1360,8 +1376,36 @@ object MutableLongMap {
 
       if (from + 1 < a.length) {
         if (from == i) {
+          val newArray = a.updated(i, k)
+          check(arrayContainsKeyTailRec(newArray, k, from))
+          check(arrayNoDuplicates(newArray, from, acc) == arrayNoDuplicates(newArray, from + 1, k :: acc))
+
+          if(arrayContainsKeyTailRec(a, k, from + 1)){
+            lemmaArrayContainsFromImpliesContainsFromZero(a, k, from)
+            check(false)
+          }
+          if(validKeyInArray(a(from))){
+            lemmaListSubSeqRefl(acc)
+            lemmaArrayNoDuplicateWithAnAccThenWithSubSeqAcc(a, a(from) :: acc, acc, from + 1)
+          } else {
+
+          }
+          check(arrayNoDuplicates(a, from + 1, acc))
+          lemmaAddKeyNoContainsInAccStillNoDuplicate(a, k, from + 1, acc)
+          lemmaPutNewValidKeyPreservesNoDuplicate(a, k, i, from + 1, k :: acc)
           check(arrayNoDuplicates(a.updated(i, k), from, acc))
-        } else {
+          } else {
+            if(validKeyInArray(a(from))){
+              if(a(from) == k){
+                check(arrayContainsKeyTailRec(a, k, from))
+                lemmaArrayContainsFromImpliesContainsFromZero(a, k, from)
+                check(false)
+              }
+              assert(a(from) != k)
+              lemmaPutNewValidKeyPreservesNoDuplicate(a, k, i, from + 1, a(from) :: acc)
+            } else {
+              lemmaPutNewValidKeyPreservesNoDuplicate(a, k, i, from + 1, acc)
+            }
           check(arrayNoDuplicates(a.updated(i, k), from, acc))
         }
 
