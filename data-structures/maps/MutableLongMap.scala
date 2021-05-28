@@ -1000,8 +1000,29 @@ object MutableLongMap {
       require(_keys.length == mask + 1)
       require(validKeyInArray(k))
       decreases(1)
+      // ORIGINAL IMPLEMENTATION ------- BEGINNING ------------------------------------
+      // seekEntryTailRecDecoupled(k, 0, toIndex(k, mask))(_keys, mask)
+      // ORIGINAL IMPLEMENTATION ------- END ------------------------------------------
 
-      seekEntryTailRecDecoupled(k, 0, toIndex(k, mask))(_keys, mask)
+      val (x, q, e) = seekKeyOrZeroOrLongMinValueTailRecDecoupled(0, toIndex(k, mask))(k, _keys, mask)
+      if (e == EntryNotFound) (e, EntryNotFound)
+      else if (q == k) (e, 0)
+      else if (q == 0) (e, MissingBit)
+      else {
+        // e is the index of Long.MinValue i.e. the spot of a key that was removed
+        // we need to search from there until we see a zero. Maybe the key we're
+        // searching was added after the removed one and is therefore after in the array.
+        // If we find a zero before finding the key, we return the index of the Long.MinValue to
+        // reuse the spot
+        assert(_keys(e) == Long.MinValue)
+        assert(e >= 0 && e < mask + 1)
+        val res = seekKeyOrZeroReturnVacantTailRecDecoupled(x, e, e)(k, _keys, mask)
+        if(res._2 == MissVacant){
+          (res._1, MissingBit)
+        } else {
+          res
+        }
+      }
 
     }.ensuring(res =>
         (res._2 == 0 || res._2 == MissingBit || res._2 == EntryNotFound) &&
