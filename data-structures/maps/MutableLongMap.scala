@@ -1147,6 +1147,63 @@ object MutableLongMap {
       )
     )
 
+
+    // LEMMAS -----------------–-----------------–-----------------–-----------------–-----------------–---------------
+
+        //TODO
+    @opaque
+    @pure
+    def lemmaPutLongMinValuePreservesForallSeekEntryOrOpen(a: Array[Long], i: Int)(implicit mask: Int): Unit = {
+      require(validMask(mask))
+      require(a.length == mask + 1)
+      require(i >= 0)
+      require(i < a.length)
+
+
+      require(arrayForallSeekEntryOrOpenFound(0)(a, mask))
+
+    }.ensuring(_ => arrayForallSeekEntryOrOpenFound(0)(a.updated(i, Long.MinValue), mask))
+
+    //TODO
+    @opaque
+    @pure
+    def lemmaPutValidKeyPreservesForallSeekEntryOrOpen(k: Long, a: Array[Long], i: Int)(implicit mask: Int): Unit = {
+      require(validMask(mask))
+      require(a.length == mask + 1)
+      require(i >= 0)
+      require(i < a.length)
+      require(validKeyInArray(k))
+      require(!arrayContainsKeyTailRec(a, k, 0))
+      require(seekEntryOrOpenDecoupled(k)(a, mask) == (i, MissingBit) || seekEntryOrOpenDecoupled(k)(a, mask) == (i, MissVacant))
+      require(arrayForallSeekEntryOrOpenFound(0)(a, mask))
+
+    }.ensuring(_ => arrayForallSeekEntryOrOpenFound(0)(a.updated(i, k), mask))
+
+    //TODO
+    @opaque
+    @pure
+    def lemmaSeekEntryOrOpenFindsThenSeekEntryFinds(k: Long, i: Int, a: Array[Long], mask: Int): Unit = {
+      require(validMask(mask))  
+      require(a.length == mask + 1)
+      require(arrayForallSeekEntryOrOpenFound(0)(a, mask))
+      require(validKeyInArray(k))
+      require(seekEntryOrOpenDecoupled(k)(a, mask) == (i, 0))
+
+    }.ensuring(_ => seekEntryDecoupled(k)(a, mask) == (i, 0))
+
+    //TODO
+    @opaque
+    @pure
+    def lemmaSeekEntryOrOpenMissThenSeekEntryMiss(k: Long, i: Int, a: Array[Long], mask: Int): Unit = {
+      require(validMask(mask))  
+      require(a.length == mask + 1)
+      require(arrayForallSeekEntryOrOpenFound(0)(a, mask))
+      require(validKeyInArray(k))
+      require(seekEntryOrOpenDecoupled(k)(a, mask)._2 != 0)
+
+    }.ensuring(_ => seekEntryDecoupled(k)(a, mask)._2 != 0)
+
+
     // ARRAY UTILITY FUNCTIONS ----------------------------------------------------------------------------------------
 
     @inline
