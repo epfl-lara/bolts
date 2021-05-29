@@ -4,6 +4,7 @@ import stainless.equations._
 import stainless.lang._
 import stainless.proof.check
 import scala.annotation.tailrec
+import scala.collection.immutable
 
 object MutableLongMap {
 
@@ -1341,23 +1342,61 @@ object MutableLongMap {
       }
     }.ensuring(_ => arrayContainsKeyTailRec(a, k, 0))
 
-
-    //TODO
-    def lemmaAddKeyNoContainsInAccStillNoDuplicate(a: Array[Long], k: Long, from: Int, acc: List[Long]): Unit = {
+    @opaque
+    @pure
+    def lemmaAddKeyNoContainsInAccStillNoDuplicate(a: Array[Long], k: Long, from: Int, acc: List[Long], newAcc: List[Long]): Unit = {
       require(a.length < Integer.MAX_VALUE)
       require(from >= 0)
       require(from < a.length)
       require(ListOps.noDuplicate(acc))
+      require(ListOps.noDuplicate(newAcc))
       require(!acc.contains(0) && !acc.contains(Long.MinValue))
       require(!arrayContainsKeyTailRec(a, k, from))
       require(!acc.contains(k))
       require(validKeyInArray(k))
-      require(arrayNoDuplicates(a, from, acc))
+      require(arrayNoDuplicates(a, from, acc))  
+      require(ListSpecs.subseq(acc, newAcc))
+      require(newAcc.contains(k))
+      require(newAcc - k == acc)
+      require(!newAcc.contains(0) && !newAcc.contains(Long.MinValue))
+      decreases(a.length - from)
+
+      if(from + 1 < a.length){
+        if(validKeyInArray(a(from))){
+          lemmaAddKeyNoContainsInAccStillNoDuplicate(a, k, from + 1, a(from) :: acc, a(from) :: newAcc)
+          } else {
+            lemmaAddKeyNoContainsInAccStillNoDuplicate(a, k, from + 1, acc, newAcc)  
+        }
+      }
+    }.ensuring(_ => arrayNoDuplicates(a, from, newAcc))
+
+    @opaque
+    @pure
+    def lemmaListMinusENotContainedEqualsList(e: Long, l: List[Long]): Unit = {
+      require(!l.contains(e))
+      decreases(l)
+
+      l match {
+        case head :: tl => lemmaListMinusENotContainedEqualsList(e, tl)
+          case Nil() => 
+      } 
+    }.ensuring( l - e == l)
+
+    @opaque
+    @pure
+    def lemmaLMinusHeadEqualsTail(head: Long, tail: List[Long]): Unit = {
+      require(!tail.contains(head))
+      assert(!tail.content.contains(head))
+
+      val l = head :: tail
+      l match {
+        case hd :: tl => lemmaListMinusENotContainedEqualsList(head, tl)
+        case Nil() => ()
+      }
+      
+    }.ensuring( (head :: tail) - head == tail)
 
 
-    }.ensuring(_ => arrayNoDuplicates(a, from, k :: acc))
-
-    //TODO
     @opaque
     @pure
     def lemmaPutNewValidKeyPreservesNoDuplicate(a: Array[Long], k: Long, i: Int, from: Int, acc: List[Long]): Unit = {
@@ -1391,7 +1430,9 @@ object MutableLongMap {
 
           }
           check(arrayNoDuplicates(a, from + 1, acc))
-          lemmaAddKeyNoContainsInAccStillNoDuplicate(a, k, from + 1, acc)
+          lemmaListSubSeqRefl(acc)
+          lemmaLMinusHeadEqualsTail(k, acc)
+          lemmaAddKeyNoContainsInAccStillNoDuplicate(a, k, from + 1, acc, k :: acc)
           lemmaPutNewValidKeyPreservesNoDuplicate(a, k, i, from + 1, k :: acc)
           check(arrayNoDuplicates(a.updated(i, k), from, acc))
           } else {
