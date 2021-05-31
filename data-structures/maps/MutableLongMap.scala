@@ -1191,9 +1191,11 @@ object MutableLongMap {
       
       require(arrayForallSeekEntryOrOpenFound(0)(a, mask))
       
-      if(a(i) == Long.MinValue){
+      assert(a(i) != 0 && a(i) != Long.MinValue)
+      val startIndex = toIndex(a(i),mask)
+      if(i == startIndex){
         check(arrayForallSeekEntryOrOpenFound(0)(a.updated(i, Long.MinValue), mask))
-      } else {
+      }else {
         check(arrayForallSeekEntryOrOpenFound(0)(a.updated(i, Long.MinValue), mask))
       }
 
