@@ -462,7 +462,6 @@ object MutableLongMap {
 
     }.ensuring(_ => arrayForallSeekEntryOrOpenFound(0)(a.updated(i, k), mask))
 
-    //TODO
     @opaque
     @pure
     def lemmaSeekEntryOrOpenFindsThenSeekEntryFinds(k: Long, i: Int): Unit = {
@@ -471,7 +470,6 @@ object MutableLongMap {
 
     }.ensuring(_ => seekEntryDecoupled(k)(_keys, mask) == (i, 0))
 
-    //TODO
     @opaque
     @pure
     def lemmaSeekEntryOrOpenMissThenSeekEntryMiss(k: Long, i: Int): Unit = {
