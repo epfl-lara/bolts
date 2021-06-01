@@ -5,6 +5,7 @@ import stainless.lang._
 import stainless.proof.check
 import scala.annotation.tailrec
 import scala.collection.immutable
+import scala.collection.concurrent.RestartException
 
 object MutableLongMap {
 
@@ -108,9 +109,15 @@ object MutableLongMap {
       if (key == 0) (extraKeys & 1) != 0
       else if (key == Long.MinValue) (extraKeys & 2) != 0
       else {
-        val tupl = seekEntryDecoupled(key)(_keys, mask)
-        if (tupl._2 != 0) {
-          if (getCurrentListMap(0).contains(key)) {
+        val seekEntryRes = seekEntryDecoupled(key)(_keys, mask)
+        seekEntryRes match {
+          case ResOk(index) => {
+          lemmaArrayContainsFromImpliesContainsFromZero(_keys, key, index)
+          lemmaValidKeyInArrayIsInListMap(index)
+          true
+          }
+          case _ => {
+            if (getCurrentListMap(0).contains(key)) {
             lemmaKeyInListMapIsInArray(key)
             val i = arrayScanForKey(_keys, key, 0)
             lemmaArrayForallSeekEntryOrOpenFoundFromSmallerThenFromBigger(_keys, mask, 0, i)
@@ -118,11 +125,7 @@ object MutableLongMap {
             check(false)
           }
           false
-        } else {
-          val i = tupl._1
-          lemmaArrayContainsFromImpliesContainsFromZero(_keys, key, i)
-          lemmaValidKeyInArrayIsInListMap(i)
-          true
+          }
         }
       }
     }.ensuring(res =>
@@ -146,15 +149,16 @@ object MutableLongMap {
         else if (key == Long.MinValue && (extraKeys & 2) != 0) minValue
         else defaultEntry(key)
       } else {
-        val tupl = seekEntryDecoupled(key)(_keys, mask)
+        val seekEntryRes = seekEntryDecoupled(key)(_keys, mask)
         lemmaSeekEntryGivesInRangeIndex(key)
-        if (tupl._2 != 0) defaultEntry(key)
-        else {
-          val i = tupl._1
-          lemmaArrayContainsFromImpliesContainsFromZero(_keys, key, i)
-          lemmaValidKeyInArrayIsInListMap(i)
-          lemmaKeyInListMapThenSameValueInArray(key, i)
-          _values(i)
+        seekEntryRes match {
+          case ResOk(index) => {
+            lemmaArrayContainsFromImpliesContainsFromZero(_keys, key, index)
+            lemmaValidKeyInArrayIsInListMap(index)
+            lemmaKeyInListMapThenSameValueInArray(key, index)
+            _values(index)
+          }
+          case _ => defaultEntry(key)
         }
       }
     }.ensuring(res =>
@@ -265,20 +269,20 @@ object MutableLongMap {
           true
         }
       } else {
-        val (i, state) = seekEntryDecoupled(key)(_keys, mask)
-        // if (i >= 0) {
-        if (state == 0) {
-          // _vacant += 1
-          lemmaRemoveValidKeyDecreasesNumberOfValidKeysInArray(_keys, i, Long.MinValue)
-          lemmaPutNonValidKeyPreservesNoDuplicate(_keys, Long.MinValue, i, 0, List())
-          lemmaPutLongMinValuePreservesForallSeekEntryOrOpen(_keys, i)(mask)
-          _size -= 1
-          _keys(i) = Long.MinValue
-          _values(i) = 0
+        val seekEntryRes = seekEntryDecoupled(key)(_keys, mask)
+        seekEntryRes match {
+          case ResOk(index) => {
+            // _vacant += 1
+            lemmaRemoveValidKeyDecreasesNumberOfValidKeysInArray(_keys, index, Long.MinValue)
+            lemmaPutNonValidKeyPreservesNoDuplicate(_keys, Long.MinValue, index, 0, List())
+            lemmaPutLongMinValuePreservesForallSeekEntryOrOpen(_keys, index)(mask)
+            _size -= 1
+            _keys(index) = Long.MinValue
+            _values(index) = 0
 
-          true
-        } else {
-          false
+            true
+          }
+          case _ => false
         }
       }
     }.ensuring(_ => valid)
@@ -501,7 +505,11 @@ object MutableLongMap {
       lemmaArrayForallSeekEntryOrOpenFoundFromSmallerThenFromBigger(_keys, mask, 0, i)
       lemmaSeekEntryOrOpenFindsThenSeekEntryFinds(k, i, _keys, mask)
 
-    }.ensuring(_ => valid && seekEntryDecoupled(k)(_keys, mask)._2 == 0 && inRange(seekEntryDecoupled(k)(_keys, mask)._1, mask) && _keys(seekEntryDecoupled(k)(_keys, mask)._1) == k)
+    }.ensuring(_ => valid && 
+    (seekEntryDecoupled(k)(_keys, mask) match {
+      case ResOk(index) => inRange(index, mask) && _keys(index) == k
+      case _ => false
+    }))
 
     @opaque
     @pure
@@ -517,16 +525,23 @@ object MutableLongMap {
           lemmaArrayForallSeekEntryOrOpenFoundFromSmallerThenFromBigger(_keys, mask, 0, i)
           check(false)
         } else {
-          if (seekEntryDecoupled(k)(_keys, mask)._2 == 0) {
-            //found but not in array --> Contradiction
-            val i = seekEntryDecoupled(k)(_keys, mask)._1
-            lemmaValidKeyInArrayIsInListMap(i)
-            check(false)
+          seekEntryDecoupled(k)(_keys, mask) match {
+            case ResOk(index) => {
+              //found but not in array --> Contradiction
+              lemmaValidKeyInArrayIsInListMap(index)
+              check(false)
+            }
+            case _ => ()
           }
         }
       }
 
-    }.ensuring(_ => valid && (seekEntryDecoupled(k)(_keys, mask)._2 == MissingBit || seekEntryDecoupled(k)(_keys, mask)._2 == EntryNotFound))
+    }.ensuring(_ => valid && 
+    (seekEntryDecoupled(k)(_keys, mask) match {
+      case ResMissingBit(_) => true
+      case ResUndefined() => true
+      case _ => false
+    }))
 
     @opaque
     @pure
@@ -593,7 +608,11 @@ object MutableLongMap {
     def lemmaSeekEntryGivesInRangeIndex(k: Long): Unit = {
       require(valid)
       require(validKeyInArray(k))
-    }.ensuring(_ => seekEntryDecoupled(k)(_keys, mask)._2 != 0 || inRange(seekEntryDecoupled(k)(_keys, mask)._1, mask))
+
+    }.ensuring(_ => (seekEntryDecoupled(k)(_keys, mask) match {
+      case ResOk(index) => inRange(index, mask)
+      case _ => true
+    }))
 
     //------------------END----------------------------------------------------------------------------------------------------------------------------------
     //------------------SEEKENTRY RELATED--------------------------------------------------------------------------------------------------------------------
@@ -912,6 +931,12 @@ object MutableLongMap {
 
   }
 
+  abstract class SeekEntryResult
+  case class ResOk(index: Int) extends SeekEntryResult
+  case class ResMissingBit(index: Int) extends SeekEntryResult
+  case class ResMissVacant(index: Int) extends SeekEntryResult
+  case class ResUndefined() extends SeekEntryResult
+
   object LongMapLongV {
 
   @pure
@@ -1004,7 +1029,7 @@ object MutableLongMap {
       * @return the index of the given key into the array
       */
     @pure
-    def seekEntryDecoupled(k: Long)(implicit _keys: Array[Long], mask: Int): (Int, Int) = {
+    def seekEntryDecoupled(k: Long)(implicit _keys: Array[Long], mask: Int): SeekEntryResult = {
       require(validMask(mask))
       require(_keys.length == mask + 1)
       require(validKeyInArray(k))
@@ -1014,9 +1039,9 @@ object MutableLongMap {
       // ORIGINAL IMPLEMENTATION ------- END ------------------------------------------
 
       val (x, q, e) = seekKeyOrZeroOrLongMinValueTailRecDecoupled(0, toIndex(k, mask))(k, _keys, mask)
-      if (e == EntryNotFound) (e, EntryNotFound)
-      else if (q == k) (e, 0)
-      else if (q == 0) (e, MissingBit)
+      if (e == EntryNotFound) ResUndefined()
+      else if (q == k) ResOk(e)
+      else if (q == 0) ResMissingBit(e)
       else {
         // e is the index of Long.MinValue i.e. the spot of a key that was removed
         // we need to search from there until we see a zero. Maybe the key we're
@@ -1027,15 +1052,25 @@ object MutableLongMap {
         assert(e >= 0 && e < mask + 1)
         val res = seekKeyOrZeroReturnVacantTailRecDecoupled(x, e, e)(k, _keys, mask)
         if(res._2 == MissVacant){
-          (res._1, MissingBit)
+          ResMissingBit(res._1)
         } else {
-          res
+          //TEMP
+          res._2 match {
+            case MissingBit => ResMissingBit(res._1)
+            case 0 => ResOk(res._1)
+            case EntryNotFound => ResUndefined()
+          }
         }
       }
 
-    }.ensuring(res =>
-        (res._2 == 0 || res._2 == MissingBit || res._2 == EntryNotFound) &&
-        (res._2 != 0 || (inRange(res._1, mask) && _keys(res._1) == k))
+    }.ensuring(res => res match {
+      case ResMissVacant(index) => false //should never happen
+      case ResOk(index) => _keys(index) == k
+      case ResMissingBit(_) => true
+      case ResUndefined() => true
+    }
+        // (res._2 == 0 || res._2 == MissingBit || res._2 == EntryNotFound) &&
+        // (res._2 != 0 || (inRange(res._1, mask) && _keys(res._1) == k))
     )
 
     /** Returns
@@ -1410,7 +1445,10 @@ object MutableLongMap {
       require(validKeyInArray(k))
       require(seekEntryOrOpenDecoupled(k)(a, mask) == (i, 0))
 
-    }.ensuring(_ => seekEntryDecoupled(k)(a, mask) == (i, 0))
+    }.ensuring(_ => (seekEntryDecoupled(k)(a, mask) match {
+      case ResOk(index) => index == i 
+      case _ => false
+    }))
 
     @opaque
     @pure
@@ -1421,7 +1459,10 @@ object MutableLongMap {
       require(validKeyInArray(k))
       require(seekEntryOrOpenDecoupled(k)(a, mask)._2 != 0)
 
-    }.ensuring(_ => seekEntryDecoupled(k)(a, mask)._2 != 0)
+    }.ensuring(_ => seekEntryDecoupled(k)(a, mask) match {
+      case ResOk(_) => false
+      case _ => true
+    })
 
 
     // ARRAY UTILITY FUNCTIONS ----------------------------------------------------------------------------------------
