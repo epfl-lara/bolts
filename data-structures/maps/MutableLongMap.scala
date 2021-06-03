@@ -976,7 +976,7 @@ object MutableLongMap {
   @pure
   @inline
   def validMask(mask: Int): Boolean = {
-      mask == 0x00000000 ||
+      (mask == 0x00000000 ||
       mask == 0x00000001 ||
       mask == 0x00000003 ||
       mask == 0x00000007 ||
@@ -1003,7 +1003,7 @@ object MutableLongMap {
       mask == 0x00ffffff ||
       mask == 0x01ffffff ||
       mask == 0x03ffffff ||
-      mask == 0x07ffffff  && mask <= IndexMask //MAX is IndexMask
+      mask == 0x07ffffff) && mask <= IndexMask //MAX is IndexMask
       
   }
 
