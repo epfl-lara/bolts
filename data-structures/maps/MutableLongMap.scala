@@ -1003,7 +1003,7 @@ object MutableLongMap {
       mask == 0x00ffffff ||
       mask == 0x01ffffff ||
       mask == 0x03ffffff ||
-      mask == 0x07ffffff //MAX is IndexMask
+      mask == 0x07ffffff  && mask <= IndexMask //MAX is IndexMask
       
   }
 
