@@ -186,51 +186,21 @@ object MutableLongMap {
         }
 
       } else {
-        val tupl = seekEntryOrOpenDecoupled(key)(_keys, mask)
-        val i = tupl._1
-        if (tupl._2 == EntryNotFound) {
-          //the key is not in the array, it was not able to find an empty space, the map is maybe full
-          if (getCurrentListMap(0).contains(key)) {
-            lemmaInListMapThenSeekEntryOrOpenFindsIt(key)
-            check(false)
-          } else {
-            lemmaNotInListMapThenSeekEntryOrOpenFindsFreeOrNothing(key)
+        val seekEntryRes = seekEntryOrOpenDecoupled(key)(_keys, mask)
+        seekEntryRes match {
+          case ResUndefined() => {
+            //the key is not in the array, it was not able to find an empty space, the map is maybe full
+            if (getCurrentListMap(0).contains(key)) {
+              lemmaInListMapThenSeekEntryOrOpenFindsIt(key)
+              check(false)
+            } else {
+              lemmaNotInListMapThenSeekEntryOrOpenFindsFreeOrNothing(key)
+            }
+            false
           }
-          false
-
-        } else if (tupl._2 == MissingBit || tupl._2 == MissVacant) {
-          check(valid)
-          if (getCurrentListMap(0).contains(key)) {
-            lemmaInListMapThenSeekEntryOrOpenFindsIt(key)
-            check(false)
-          } else {
-            lemmaNotInListMapThenSeekEntryOrOpenFindsFreeOrNothing(key)
-            check(_keys(i) == 0 || _keys(i) == Long.MinValue)
-          }
-          val _oldSize = _size
-          val _oldNKeys = arrayCountValidKeysTailRec(_keys, 0, _keys.length)
-          assert(inRange(i, mask))
-          if (arrayContainsKeyTailRec(_keys, key, 0)) {
-            lemmaArrayContainsKeyThenInListMap(key, 0)
-            check(false)
-          }
-
-          lemmaPutNewValidKeyPreservesNoDuplicate(_keys, key, i, 0, List())
-          lemmaAddValidKeyIncreasesNumberOfValidKeysInArray(_keys, i, key)
-          lemmaPutValidKeyPreservesForallSeekEntryOrOpen(key, _keys, i)(mask)
-
-          _keys(i) = key
-          _size += 1
-
-          lemmaArrayContainsFromImpliesContainsFromZero(_keys, key, i)
-          lemmaValidKeyAtIImpliesCountKeysIsOne(_keys, i)
-          
-          _values(i) = v
-          
-          lemmaValidKeyInArrayIsInListMap(i)
-          true
-
-        } else {
+          case ResMissVacant(index) => updateHelperNewKey(key, v, index)
+          case ResMissingBit(index) => updateHelperNewKey(key, v, index)
+          case ResOk(index) => {
           if (getCurrentListMap(0).contains(key)) {
             lemmaInListMapThenSeekEntryOrOpenFindsIt(key)
           } else {
@@ -238,16 +208,62 @@ object MutableLongMap {
             check(false)
           }
           
-          _values(i) = v
+          _values(index) = v
           
-          lemmaValidKeyInArrayIsInListMap(i)
+          lemmaValidKeyInArrayIsInListMap(index)
           true
         }
+
+        }
+      
       }
 
     }.ensuring(res => valid
     && (if (res) getCurrentListMap(0).contains(key) else true)
     )
+
+    /**
+      * Go through an helper function because this piece of code has to be called in 2 cases
+      * of the pattern matching
+      *
+      * @return
+      */
+    def updateHelperNewKey(key: Long, v: Long, index: Int): Boolean = {
+      require(valid)
+      require(key != 0)
+      require(key != Long.MinValue)
+      require(seekEntryOrOpenDecoupled(key)(_keys, mask) == ResMissingBit(index) || seekEntryOrOpenDecoupled(key)(_keys, mask) == ResMissVacant(index))
+          if (getCurrentListMap(0).contains(key)) {
+            lemmaInListMapThenSeekEntryOrOpenFindsIt(key)
+            check(false)
+          } else {
+            lemmaNotInListMapThenSeekEntryOrOpenFindsFreeOrNothing(key)
+            check(_keys(index) == 0 || _keys(index) == Long.MinValue)
+          }
+          val _oldSize = _size
+          val _oldNKeys = arrayCountValidKeysTailRec(_keys, 0, _keys.length)
+          assert(inRange(index, mask))
+          if (arrayContainsKeyTailRec(_keys, key, 0)) {
+            lemmaArrayContainsKeyThenInListMap(key, 0)
+            check(false)
+          }
+
+          lemmaPutNewValidKeyPreservesNoDuplicate(_keys, key, index, 0, List())
+          lemmaAddValidKeyIncreasesNumberOfValidKeysInArray(_keys, index, key)
+          lemmaPutValidKeyPreservesForallSeekEntryOrOpen(key, _keys, index)(mask)
+
+          _keys(index) = key
+          _size += 1
+
+          lemmaArrayContainsFromImpliesContainsFromZero(_keys, key, index)
+          lemmaValidKeyAtIImpliesCountKeysIsOne(_keys, index)
+          
+          _values(index) = v
+          
+          lemmaValidKeyInArrayIsInListMap(index)
+          true
+
+        }.ensuring(res => res && valid && getCurrentListMap(0).contains(key))
 
     /** Removes the given key from the array
       *
@@ -555,7 +571,11 @@ object MutableLongMap {
       lemmaArrayForallSeekEntryOrOpenFoundFromSmallerThenFromBigger(_keys, mask, 0, i)
       assert(arrayForallSeekEntryOrOpenFound(i)(_keys, mask))
 
-    }.ensuring(_ => valid && seekEntryOrOpenDecoupled(k)(_keys, mask)._2 == 0 && inRange(seekEntryOrOpenDecoupled(k)(_keys, mask)._1, mask) && _keys(seekEntryOrOpenDecoupled(k)(_keys, mask)._1) == k)
+    }.ensuring(_ => valid && 
+        (seekEntryOrOpenDecoupled(k)(_keys, mask) match {
+            case ResOk(index) => inRange(index, mask) && _keys(index) == k
+            case _ => false
+          }))
 
     @opaque
     @pure
@@ -564,35 +584,42 @@ object MutableLongMap {
       require(validKeyInArray(k))
       require(!getCurrentListMap(0).contains(k))
 
-      val tu = seekEntryOrOpenDecoupled(k)(_keys, mask)
-      if (tu._2 != 0) {
-        assert(arrayForallSeekEntryOrOpenFound(0)(_keys, mask))
-        if (tu._2 == MissVacant || tu._2 == MissingBit) {
+      val seekEntryRes = seekEntryOrOpenDecoupled(k)(_keys, mask)
+      seekEntryRes match {
+        case ResOk(index) => {
+          assert(_keys(index) == k)
+          assert(arrayContainsKeyTailRec(_keys, k, index))
+          lemmaArrayContainsFromImpliesContainsFromZero(_keys, k, index)
+          lemmaValidKeyInArrayIsInListMap(index)
+          check(false)
+        }
+        case ResMissingBit(_) => {
           if (arrayContainsKeyTailRec(_keys, k, 0)) {
             val i = arrayScanForKey(_keys, k, 0)
             lemmaArrayContainsKeyThenInListMap(k, i)
             check(false)
           }
           check(!arrayContainsKeyTailRec(_keys, k, 0))
-        } else {
-          check(tu._2 == EntryNotFound)
         }
-      } else {
-        assert(_keys(tu._1) == k)
-        assert(arrayContainsKeyTailRec(_keys, k, tu._1))
-        lemmaArrayContainsFromImpliesContainsFromZero(_keys, k, tu._1)
-        lemmaValidKeyInArrayIsInListMap(tu._1)
-        check(false)
+        case ResMissVacant(_) => {
+          if (arrayContainsKeyTailRec(_keys, k, 0)) {
+            val i = arrayScanForKey(_keys, k, 0)
+            lemmaArrayContainsKeyThenInListMap(k, i)
+            check(false)
+          }
+          check(!arrayContainsKeyTailRec(_keys, k, 0))
+        }
+        case ResUndefined() => ()
       }
 
     }.ensuring(_ => {
-      val tu = seekEntryOrOpenDecoupled(k)(_keys, mask)
-      valid &&
-      (
-        (tu._2 == MissingBit && inRange(tu._1, mask) && _keys(tu._1) == 0 && !arrayContainsKeyTailRec(_keys, k, 0)) ||
-          (tu._2 == MissVacant && inRange(tu._1, mask) && _keys(tu._1) == Long.MinValue && !arrayContainsKeyTailRec(_keys, k, 0)) ||
-          tu._2 == EntryNotFound
-      )
+      val seekEntryRes = seekEntryOrOpenDecoupled(k)(_keys, mask)
+      seekEntryRes match {
+        case ResMissingBit(index) => inRange(index, mask) && _keys(index) == 0 && !arrayContainsKeyTailRec(_keys, k, 0)
+        case ResMissVacant(index) => inRange(index, mask) && _keys(index) == Long.MinValue && !arrayContainsKeyTailRec(_keys, k, 0)
+        case ResUndefined() => true
+        case _ => false
+      }
     })
 
     @opaque
@@ -601,7 +628,13 @@ object MutableLongMap {
       require(valid)
       require(validKeyInArray(k))
 
-    }.ensuring(_ => seekEntryOrOpenDecoupled(k)(_keys, mask)._2 == EntryNotFound || inRange(seekEntryOrOpenDecoupled(k)(_keys, mask)._1, mask))
+    }.ensuring(_ => seekEntryOrOpenDecoupled(k)(_keys, mask) match {
+      case ResUndefined() => true
+      case ResOk(index) => inRange(index, mask)
+      case ResMissVacant(index) => inRange(index, mask)
+      case ResMissingBit(index) => inRange(index, mask)
+      case _ => false
+    })
 
     @opaque
     @pure
@@ -931,7 +964,7 @@ object MutableLongMap {
 
   }
 
-  abstract class SeekEntryResult
+  abstract sealed class SeekEntryResult
   case class ResOk(index: Int) extends SeekEntryResult
   case class ResMissingBit(index: Int) extends SeekEntryResult
   case class ResMissVacant(index: Int) extends SeekEntryResult
@@ -998,7 +1031,7 @@ object MutableLongMap {
       else if (validKeyInArray(_keys(i))) {
         assert(arrayContainsKeyTailRec(_keys, _keys(i), i))
         lemmaArrayContainsFromImpliesContainsFromZero(_keys, _keys(i), i)
-        LongMapLongV.seekEntryOrOpenDecoupled(_keys(i))(_keys, mask) == (i, 0) &&
+        LongMapLongV.seekEntryOrOpenDecoupled(_keys(i))(_keys, mask) == ResOk(i) &&
         // arrayScanForKey(_keys, _keys(i), 0) == i &&
         arrayForallSeekEntryOrOpenFound(i + 1)
       } else arrayForallSeekEntryOrOpenFound(i + 1)
@@ -1121,7 +1154,7 @@ object MutableLongMap {
       * @return
       */
     @pure
-    def seekEntryOrOpenDecoupled(k: Long)(implicit _keys: Array[Long], mask: Int): (Int, Int) = {
+    def seekEntryOrOpenDecoupled(k: Long)(implicit _keys: Array[Long], mask: Int): SeekEntryResult = {
       require(validMask(mask))
       require(mask >= 0)
       require(_keys.length == mask + 1)
@@ -1129,11 +1162,11 @@ object MutableLongMap {
       require(validKeyInArray(k))
 
       val (x, e) = seekKeyOrZeroOrLongMinValueTailRecDecoupled(0, toIndex(k, mask))(k, _keys, mask)
-      if (e == EntryNotFound) (e, EntryNotFound)
+      if (e == EntryNotFound) ResUndefined()
       else {
         val q = _keys(e)
-        if (q == k) (e, 0)
-        else if (q == 0) (e, MissingBit)
+        if (q == k) ResOk(e)
+        else if (q == 0) ResMissingBit(e)
         else {
           // e is the index of Long.MinValue i.e. the spot of a key that was removed
           // we need to search from there until we see a zero. Maybe the key we're
@@ -1143,16 +1176,23 @@ object MutableLongMap {
           assert(_keys(e) == Long.MinValue)
           assert(e >= 0 && e < mask + 1)
           val res = seekKeyOrZeroReturnVacantTailRecDecoupled(x, e, e)(k, _keys, mask)
-          res
+          if(res._2 == EntryNotFound) ResUndefined()
+          else if(res._2 == 0) ResOk(res._1)
+          else if(res._2 == MissingBit) ResMissingBit(res._1)
+          else ResMissVacant(res._1)
         }
       }
     }.ensuring(res =>
       (
-        res._2 == EntryNotFound ||
-          (res._2 == 0 && _keys(res._1) == k) ||
-          (res._2 == MissingBit && _keys(res._1) == 0) ||
-          (res._2 == MissVacant && _keys(res._1) == Long.MinValue)
+        res match {
+          case ResUndefined() => true
+          case ResOk(index) => _keys(index) == k
+          case ResMissingBit(index) => _keys(index) == 0
+          case ResMissVacant(index) => _keys(index) == Long.MinValue
+          case _ => false
+        }
       )
+      
     )
 
     @tailrec
@@ -1338,7 +1378,7 @@ object MutableLongMap {
       require(validKeyInArray(a(j)))
       require(validKeyInArray(k))
       require(!arrayContainsKeyTailRec(a, k, 0))
-      require(seekEntryOrOpenDecoupled(k)(a, mask) == (i, MissingBit) || seekEntryOrOpenDecoupled(k)(a, mask) == (i, MissVacant))
+      require(seekEntryOrOpenDecoupled(k)(a, mask) == ResMissingBit(i) || seekEntryOrOpenDecoupled(k)(a, mask) == ResMissVacant(i))
       require(arrayForallSeekEntryOrOpenFound(0)(a, mask))
       require(arrayNoDuplicates(a, 0))
       require(seekKeyOrZeroOrLongMinValueTailRecDecoupled(0, toIndex(a(j), mask))(a(j), a, mask) ==
@@ -1360,7 +1400,7 @@ object MutableLongMap {
       require(validKeyInArray(a(j)))
       require(validKeyInArray(k))
       require(!arrayContainsKeyTailRec(a, k, 0))
-      require(seekEntryOrOpenDecoupled(k)(a, mask) == (i, MissingBit) || seekEntryOrOpenDecoupled(k)(a, mask) == (i, MissVacant))
+      require(seekEntryOrOpenDecoupled(k)(a, mask) == ResMissingBit(i) || seekEntryOrOpenDecoupled(k)(a, mask) == ResMissVacant(i))
       require(arrayForallSeekEntryOrOpenFound(0)(a, mask))
       require(arrayNoDuplicates(a, 0))
 
@@ -1435,7 +1475,7 @@ object MutableLongMap {
       require(i < a.length)
       require(validKeyInArray(k))
       require(!arrayContainsKeyTailRec(a, k, 0))
-      require(seekEntryOrOpenDecoupled(k)(a, mask) == (i, MissingBit) || seekEntryOrOpenDecoupled(k)(a, mask) == (i, MissVacant))
+      require(seekEntryOrOpenDecoupled(k)(a, mask) == ResMissingBit(i) || seekEntryOrOpenDecoupled(k)(a, mask) == ResMissVacant(i))
       require(arrayForallSeekEntryOrOpenFound(0)(a, mask))
 
       // lemmaPutValidKeyPreservesForallSeekEntryOrOpenStartIndex(a, i, k, 0)(mask)
@@ -1449,7 +1489,7 @@ object MutableLongMap {
       require(a.length == mask + 1)
       require(arrayForallSeekEntryOrOpenFound(0)(a, mask))
       require(validKeyInArray(k))
-      require(seekEntryOrOpenDecoupled(k)(a, mask) == (i, 0))
+      require(seekEntryOrOpenDecoupled(k)(a, mask) == ResOk(i))
 
     }.ensuring(_ => (seekEntryDecoupled(k)(a, mask) match {
       case ResOk(index) => index == i 
@@ -1463,7 +1503,10 @@ object MutableLongMap {
       require(a.length == mask + 1)
       require(arrayForallSeekEntryOrOpenFound(0)(a, mask))
       require(validKeyInArray(k))
-      require(seekEntryOrOpenDecoupled(k)(a, mask)._2 != 0)
+      require(seekEntryOrOpenDecoupled(k)(a, mask) match {
+        case ResOk(_) => false
+        case _ => true
+      })
 
     }.ensuring(_ => seekEntryDecoupled(k)(a, mask) match {
       case ResOk(_) => false
