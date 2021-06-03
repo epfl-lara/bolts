@@ -968,6 +968,7 @@ object MutableLongMap {
   case class ResOk(index: Int) extends SeekEntryResult
   case class ResMissingBit(index: Int) extends SeekEntryResult
   case class ResMissVacant(index: Int) extends SeekEntryResult
+  case class ResIntermediate(undefined: Boolean, index: Int, x: Int) extends SeekEntryResult
   case class ResUndefined() extends SeekEntryResult
 
   object LongMapLongV {
@@ -1071,32 +1072,28 @@ object MutableLongMap {
       // seekEntryTailRecDecoupled(k, 0, toIndex(k, mask))(_keys, mask)
       // ORIGINAL IMPLEMENTATION ------- END ------------------------------------------
 
-      val (x, e) = seekKeyOrZeroOrLongMinValueTailRecDecoupled(0, toIndex(k, mask))(k, _keys, mask)
-      if (e == EntryNotFound) ResUndefined()
-      else {
-        val q = _keys(e)
-        if (q == k) ResOk(e)
-        else if (q == 0) ResMissingBit(e)
-        else {
-          // e is the index of Long.MinValue i.e. the spot of a key that was removed
-          // we need to search from there until we see a zero. Maybe the key we're
-          // searching was added after the removed one and is therefore after in the array.
-          // If we find a zero before finding the key, we return the index of the Long.MinValue to
-          // reuse the spot
-          assert(_keys(e) == Long.MinValue)
-          assert(e >= 0 && e < mask + 1)
-          val res = seekKeyOrZeroReturnVacantTailRecDecoupled(x, e, e)(k, _keys, mask)
-          if(res._2 == MissVacant){
-            ResMissingBit(res._1)
-          } else {
-            //TEMP
-            res._2 match {
-              case MissingBit => ResMissingBit(res._1)
-              case 0 => ResOk(res._1)
-              case EntryNotFound => ResUndefined()
+      val intermediate = seekKeyOrZeroOrLongMinValueTailRecDecoupled(0, toIndex(k, mask))(k, _keys, mask)
+      intermediate match {
+        case ResIntermediate(undefined, index, x) if(undefined) => ResUndefined()
+        case ResIntermediate(undefined, index, x) if(!undefined) => {
+          val q = _keys(index)
+          if (q == k) ResOk(index)
+          else if (q == 0) ResMissingBit(index)
+          else {
+            // e is the index of Long.MinValue i.e. the spot of a key that was removed
+            // we need to search from there until we see a zero. Maybe the key we're
+            // searching was added after the removed one and is therefore after in the array.
+            // If we find a zero before finding the key, we return the index of the Long.MinValue to
+            // reuse the spot
+            assert(_keys(index) == Long.MinValue)
+            assert(index >= 0 && index < mask + 1)
+            val res = seekKeyOrZeroReturnVacantTailRecDecoupled(x, index, index)(k, _keys, mask)
+            res match {
+              case ResMissVacant(index) => ResMissingBit(index)
+              case _ => res
             }
           }
-        }
+        } 
       }
 
     }.ensuring(res => res match {
@@ -1161,26 +1158,25 @@ object MutableLongMap {
 
       require(validKeyInArray(k))
 
-      val (x, e) = seekKeyOrZeroOrLongMinValueTailRecDecoupled(0, toIndex(k, mask))(k, _keys, mask)
-      if (e == EntryNotFound) ResUndefined()
-      else {
-        val q = _keys(e)
-        if (q == k) ResOk(e)
-        else if (q == 0) ResMissingBit(e)
-        else {
-          // e is the index of Long.MinValue i.e. the spot of a key that was removed
-          // we need to search from there until we see a zero. Maybe the key we're
-          // searching was added after the removed one and is therefore after in the array.
-          // If we find a zero before finding the key, we return the index of the Long.MinValue to
-          // reuse the spot
-          assert(_keys(e) == Long.MinValue)
-          assert(e >= 0 && e < mask + 1)
-          val res = seekKeyOrZeroReturnVacantTailRecDecoupled(x, e, e)(k, _keys, mask)
-          if(res._2 == EntryNotFound) ResUndefined()
-          else if(res._2 == 0) ResOk(res._1)
-          else if(res._2 == MissingBit) ResMissingBit(res._1)
-          else ResMissVacant(res._1)
-        }
+      val intermediate = seekKeyOrZeroOrLongMinValueTailRecDecoupled(0, toIndex(k, mask))(k, _keys, mask)
+      intermediate match {
+        case ResIntermediate(undefined, index, x) if(undefined) => ResUndefined()
+        case ResIntermediate(undefined, index, x) if(!undefined) => {
+          val q = _keys(index)
+          if (q == k) ResOk(index)
+          else if (q == 0) ResMissingBit(index)
+          else {
+            // e is the index of Long.MinValue i.e. the spot of a key that was removed
+            // we need to search from there until we see a zero. Maybe the key we're
+            // searching was added after the removed one and is therefore after in the array.
+            // If we find a zero before finding the key, we return the index of the Long.MinValue to
+            // reuse the spot
+            assert(_keys(index) == Long.MinValue)
+            assert(index >= 0 && index < mask + 1)
+            val res = seekKeyOrZeroReturnVacantTailRecDecoupled(x, index, index)(k, _keys, mask)
+            res
+          }
+        } 
       }
     }.ensuring(res =>
       (
@@ -1201,7 +1197,7 @@ object MutableLongMap {
         k: Long,
         _keys: Array[Long],
         mask: Int
-    ): (Int, Int) = {
+    ): SeekEntryResult = {
       require(validMask(mask))
       require(mask >= 0)
       require(_keys.length == mask + 1)
@@ -1212,15 +1208,16 @@ object MutableLongMap {
 
       decreases(MAX_ITER - x)
       val q = _keys(ee)
-      if (x >= MAX_ITER) (x, EntryNotFound)
-      else if (q == k || q + q == 0) (x, ee)
+      if (x >= MAX_ITER) ResIntermediate(true, ee, x)
+      else if (q == k || q + q == 0) ResIntermediate(false, ee, x)
       else
         seekKeyOrZeroOrLongMinValueTailRecDecoupled(x + 1, (ee + 2 * (x + 1) * x - 3) & mask)
     }.ensuring(res =>
-      ((res._2 == EntryNotFound && res._1 >= MAX_ITER) ||
-        (res._2 != EntryNotFound && res._1 >= 0 && res._1 < MAX_ITER &&
-          (_keys(res._2) == k || _keys(res._2) == 0 || _keys(res._2) == Long.MinValue)))
-    )
+      (res match {
+          case ResIntermediate(undefined, index, x) if(undefined) => x >= MAX_ITER
+          case ResIntermediate(undefined, index, x) if(!undefined) => x < MAX_ITER && x >= 0 && (_keys(index) == k || _keys(index) == 0 || _keys(index) == Long.MinValue)
+          case _ => false
+        }))
 
     @tailrec
     @pure
@@ -1228,7 +1225,7 @@ object MutableLongMap {
         k: Long,
         _keys: Array[Long],
         mask: Int
-    ): (Int, Int) = {
+    ): SeekEntryResult = {
       require(validMask(mask))
       require(mask >= 0)
       require(_keys.length == mask + 1)
@@ -1241,21 +1238,18 @@ object MutableLongMap {
 
       decreases(MAX_ITER + 1 - x)
       val q = _keys(ee)
-      if (x >= MAX_ITER) (ee, EntryNotFound)
-      else if (q == k) {
-        (ee, 0)
-      } else if (q == 0) {
-        (vacantSpotIndex, MissVacant)
-      } else {
-        seekKeyOrZeroReturnVacantTailRecDecoupled(x + 1, (ee + 2 * (x + 1) * x - 3) & mask, vacantSpotIndex)
-      }
+      if (x >= MAX_ITER) ResUndefined()
+      else if (q == k) ResOk(ee) 
+      else if (q == 0) ResMissVacant(vacantSpotIndex) 
+      else seekKeyOrZeroReturnVacantTailRecDecoupled(x + 1, (ee + 2 * (x + 1) * x - 3) & mask, vacantSpotIndex)
 
     }.ensuring(res =>
-      (
-        res._2 == EntryNotFound ||
-          (res._2 == MissVacant && res._1 == vacantSpotIndex && _keys(res._1) == Long.MinValue) ||
-          (res._2 == 0 && _keys(res._1) == k)
-      )
+      res match {
+        case ResUndefined() => true
+        case ResOk(index) => _keys(index) == k
+        case ResMissVacant(index) => index == vacantSpotIndex && _keys(index) == Long.MinValue
+        case  _ => false
+      }
     )
 
 
