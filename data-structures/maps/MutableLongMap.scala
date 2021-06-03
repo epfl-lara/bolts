@@ -326,62 +326,6 @@ object MutableLongMap {
     //   else seekEmptyZeroTailRec(x + 1, (ee + 2 * (x + 1) * x - 3) & mask)
     // }.ensuring(res => valid && (res == EntryNotFound || _keys(res) == 0))
 
-
-    // @tailrec
-    // @pure
-    // private def seekKeyOrZeroOrLongMinValueTailRec(x: Int, ee: Int)(implicit
-    //     k: Long
-    // ): (Int, Long, Int) = {
-    //   require(valid && inRange(ee, mask))
-    //   require(x <= MAX_ITER && x >= 0)
-    //   require(validKeyInArray(k))
-
-    //   decreases(MAX_ITER - x)
-    //   val q = _keys(ee)
-    //   if (x >= MAX_ITER) (x, q, EntryNotFound)
-    //   else if (q == k || q + q == 0) (x, q, ee)
-    //   else
-    //     seekKeyOrZeroOrLongMinValueTailRec(x + 1, (ee + 2 * (x + 1) * x - 3) & mask)
-    // }.ensuring(res =>
-    //   valid &&
-    //     ((res._3 == EntryNotFound && res._1 >= MAX_ITER) ||
-    //       (res._3 != EntryNotFound && res._1 >= 0 && res._1 < MAX_ITER && _keys(res._3) == res._2 &&
-    //         (res._2 == k || res._2 == 0 || res._2 == Long.MinValue)))
-    // )
-
-    // @tailrec
-    // @pure
-    // private def seekKeyOrZeroReturnVacantTailRec(x: Int, ee: Int)(implicit
-    //     k: Long,
-    //     vacantSpotIndex: Int
-    // ): (Int, Int) = {
-    //   require(valid)
-    //   require(inRange(ee, mask))
-    //   require(x <= MAX_ITER && x >= 0)
-    //   require(inRange(vacantSpotIndex, mask))
-    //   require(_keys(vacantSpotIndex) == Long.MinValue)
-    //   require(validKeyInArray(k))
-
-    //   decreases(MAX_ITER + 1 - x)
-    //   val q = _keys(ee)
-    //   if (x >= MAX_ITER) (ee, EntryNotFound)
-    //   else if (q == k) {
-    //     (ee, 0)
-    //   } else if (q == 0) {
-    //     (vacantSpotIndex, MissVacant)
-    //   } else {
-    //     seekKeyOrZeroReturnVacantTailRec(x + 1, (ee + 2 * (x + 1) * x - 3) & mask)
-    //   }
-
-    // }.ensuring(res =>
-    //   valid &&
-    //     (
-    //       res._2 == EntryNotFound ||
-    //         (res._2 == MissVacant && res._1 == vacantSpotIndex && _keys(res._1) == Long.MinValue) ||
-    //         (res._2 == 0 && _keys(res._1) == k)
-    //     )
-    // )
-
     @pure
     def getCurrentListMap(from: Int): ListMapLongKey[Long] = {
       require(valid)
@@ -453,59 +397,6 @@ object MutableLongMap {
 
     //------------------SEEKENTRY RELATED--------------------------------------------------------------------------------------------------------------------
     //------------------BEGIN--------------------------------------------------------------------------------------------------------------------------------
-
-    // //TODO
-    // @opaque
-    // @pure
-    // def lemmaPutLongMinValuePreservesForallSeekEntryOrOpen(a: Array[Long], i: Int)(implicit mask: Int): Unit = {
-    //   require(validMask(mask))
-    //   require(a.length == mask + 1)
-    //   require(i >= 0)
-    //   require(i < a.length)
-    //   require(simpleValid)
-
-    //   require(arrayForallSeekEntryOrOpenFound(0)(a, mask))
-
-    //   if(a(i) == Long.MinValue){
-    //     check(arrayForallSeekEntryOrOpenFound(0)(a.updated(i, Long.MinValue), mask))
-    //   } else {
-    //     check(arrayForallSeekEntryOrOpenFound(0)(a.updated(i, Long.MinValue), mask))
-    //   }
-
-    // }.ensuring(_ => arrayForallSeekEntryOrOpenFound(0)(a.updated(i, Long.MinValue), mask))
-
-    // //TODO
-    // @opaque
-    // @pure
-    // def lemmaPutValidKeyPreservesForallSeekEntryOrOpen(k: Long, a: Array[Long], i: Int)(implicit mask: Int): Unit = {
-    //   require(validMask(mask))
-    //   require(a.length == mask + 1)
-    //   require(i >= 0)
-    //   require(i < a.length)
-    //   require(validKeyInArray(k))
-    //   require(!arrayContainsKeyTailRec(a, k, 0))
-    //   require(seekEntryOrOpenDecoupled(k)(a, mask) == (i, MissingBit) || seekEntryOrOpenDecoupled(k)(a, mask) == (i, MissVacant))
-    //   require(simpleValid)
-
-    //   require(arrayForallSeekEntryOrOpenFound(0)(a, mask))
-
-    // }.ensuring(_ => arrayForallSeekEntryOrOpenFound(0)(a.updated(i, k), mask))
-
-    // @opaque
-    // @pure
-    // def lemmaSeekEntryOrOpenFindsThenSeekEntryFinds(k: Long, i: Int): Unit = {
-    //   require(valid && validKeyInArray(k))
-    //   require(seekEntryOrOpenDecoupled(k)(_keys, mask) == (i, 0))
-
-    // }.ensuring(_ => seekEntryDecoupled(k)(_keys, mask) == (i, 0))
-
-    // @opaque
-    // @pure
-    // def lemmaSeekEntryOrOpenMissThenSeekEntryMiss(k: Long, i: Int): Unit = {
-    //   require(valid && validKeyInArray(k))
-    //   require(seekEntryOrOpenDecoupled(k)(_keys, mask)._2 != 0)
-
-    // }.ensuring(_ => seekEntryDecoupled(k)(_keys, mask)._2 != 0)
 
     @opaque
     @pure
@@ -1101,44 +992,7 @@ object MutableLongMap {
       case Found(index) => _keys(index) == k
       case MissingZero(_) => true
       case Undefined() => true
-    }
-        // (res._2 == 0 || res._2 == MissingBit || res._2 == EntryNotFound) &&
-        // (res._2 != 0 || (inRange(res._1, mask) && _keys(res._1) == k))
-    )
-
-    // /** Returns
-    //   *
-    //   * @param k
-    //   * @param x
-    //   * @param ee
-    //   * @return
-    //   */
-    // @pure
-    // private def seekEntryTailRecDecoupled(k: Long, x: Int, ee: Int)(implicit _keys: Array[Long], mask: Int): (Int, Int) = {
-    //   require(validMask(mask))
-    //   require(mask >= 0)
-    //   require(_keys.length == mask + 1)
-    //   require(ee >= 0 && ee < mask + 1)
-    //   require(x >= 0)
-    //   require(x <= MAX_ITER)
-    //   require(validKeyInArray(k))
-
-    //   decreases(MAX_ITER + 1 - x)
-    //   val q = _keys(ee)
-
-    //   if (x >= MAX_ITER) (ee, EntryNotFound)
-    //   else if (q == k) {
-    //     (ee, 0)
-    //   } else if (q == 0) (ee, MissingBit)
-    //   else {
-    //     val newEe = (ee + 2 * (x + 1) * x - 3) & mask
-    //     seekEntryTailRecDecoupled(k, x + 1, newEe)
-    //   }
-
-    // }.ensuring(res =>
-    //     (res._2 == 0 || res._2 == MissingBit || res._2 == EntryNotFound) &&
-    //     (res._2 != 0 || (inRange(res._1, mask) && _keys(res._1) == k))
-    // )
+    })
 
 
      /** Search the index of the given key. If the key is in the array, it finds its index (OK is returned).
