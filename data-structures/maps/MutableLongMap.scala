@@ -1036,7 +1036,7 @@ object MutableLongMap {
       (
         res match {
           case Undefined() => true
-          case Found(index) => _keys(index) == k
+          case Found(index) => _keys(index) == k && seekEntryOrOpenDecoupled(k)(_keys, mask) == Found(index)
           case MissingZero(index) => _keys(index) == 0
           case MissingVacant(index) => _keys(index) == Long.MinValue
           case _ => false
@@ -1109,7 +1109,7 @@ object MutableLongMap {
 
     // LEMMAS -----------------–-----------------–-----------------–-----------------–-----------------–---------------
 
-
+    //TODO
     @opaque
     @pure
     def lemmaPutLongMinValuePreservesForallSeekEntryOrOpenKey1(a: Array[Long], i: Int, j: Int)(implicit mask: Int): Unit = {
@@ -1131,13 +1131,14 @@ object MutableLongMap {
       val newArray = a.updated(i, Long.MinValue)
       assert(a(j) == newArray(j))
       if(j == toIndex(a(j), mask)){
-
+        check(seekEntryOrOpenDecoupled(a(j))(a, mask) == seekEntryOrOpenDecoupled(a.updated(i, Long.MinValue).apply(j))(a.updated(i, Long.MinValue), mask))
       } else {
-
+        check(seekEntryOrOpenDecoupled(a(j))(a, mask) == seekEntryOrOpenDecoupled(a.updated(i, Long.MinValue).apply(j))(a.updated(i, Long.MinValue), mask))
       }
 
     }.ensuring(_ => seekEntryOrOpenDecoupled(a(j))(a, mask) == seekEntryOrOpenDecoupled(a.updated(i, Long.MinValue).apply(j))(a.updated(i, Long.MinValue), mask))
 
+    //TODO
     @opaque
     @pure
     def lemmaPutLongMinValuePreservesForallSeekEntryOrOpenKey2(a: Array[Long], i: Int, j: Int)(implicit mask: Int): Unit = {
@@ -1155,9 +1156,9 @@ object MutableLongMap {
 
       if(seekKeyOrZeroOrLongMinValueTailRecDecoupled(0, toIndex(a(j), mask))(a(j), a, mask) ==
                seekKeyOrZeroOrLongMinValueTailRecDecoupled(0, toIndex(a.updated(i, Long.MinValue).apply(j), mask))(a.updated(i, Long.MinValue).apply(j), a, mask)){
-        check(seekEntryOrOpenDecoupled(a(j))(a, mask) == seekEntryOrOpenDecoupled(a.updated(i, Long.MinValue).apply(j))(a, mask))
+        check(seekEntryOrOpenDecoupled(a(j))(a, mask) == seekEntryOrOpenDecoupled(a.updated(i, Long.MinValue).apply(j))(a.updated(i, Long.MinValue), mask))
       } else {
-        check(seekEntryOrOpenDecoupled(a(j))(a, mask) == seekEntryOrOpenDecoupled(a.updated(i, Long.MinValue).apply(j))(a, mask))
+        check(seekEntryOrOpenDecoupled(a(j))(a, mask) == seekEntryOrOpenDecoupled(a.updated(i, Long.MinValue).apply(j))(a.updated(i, Long.MinValue), mask))
       }
 
     }.ensuring(_ => seekEntryOrOpenDecoupled(a(j))(a, mask) == seekEntryOrOpenDecoupled(a.updated(i, Long.MinValue).apply(j))(a.updated(i, Long.MinValue), mask))
@@ -1172,7 +1173,7 @@ object MutableLongMap {
       require(startIndex >= 0)
       require(startIndex < a.length)
       require(validKeyInArray(a(i)))
-      
+      require(arrayNoDuplicates(a, 0))
       require(arrayForallSeekEntryOrOpenFound(0)(a, mask))
 
       decreases(a.length - startIndex)
@@ -1193,6 +1194,7 @@ object MutableLongMap {
 
     }.ensuring(_ => arrayForallSeekEntryOrOpenFound(startIndex)(a.updated(i, Long.MinValue), mask))
 
+    //TODO
     @opaque
     @pure
     def lemmaPutLongMinValuePreservesForallSeekEntryOrOpen(a: Array[Long], i: Int)(implicit mask: Int): Unit = {
@@ -1211,8 +1213,7 @@ object MutableLongMap {
     }.ensuring(_ => arrayForallSeekEntryOrOpenFound(0)(a.updated(i, Long.MinValue), mask))
 
 
-
-
+    //TODO
     @opaque
     @pure
     def lemmaPutValidKeyPreservesForallSeekEntryOrOpenKey1(a: Array[Long], i: Int, k: Long, j: Int)(implicit mask: Int): Unit = {
@@ -1235,6 +1236,7 @@ object MutableLongMap {
 
     }.ensuring(_ => seekEntryOrOpenDecoupled(a(j))(a, mask) == seekEntryOrOpenDecoupled(a.updated(i, k).apply(j))(a.updated(i, k), mask))
 
+    //TODO
     @opaque
     @pure
     def lemmaPutValidKeyPreservesForallSeekEntryOrOpenKey2(a: Array[Long], i: Int, k: Long, j: Int)(implicit mask: Int): Unit = {
@@ -1264,56 +1266,57 @@ object MutableLongMap {
     }.ensuring(_ => seekEntryOrOpenDecoupled(a(j))(a, mask) == seekEntryOrOpenDecoupled(a.updated(i, k).apply(j))(a.updated(i, k), mask))
 
 
-    // //TODO
-    // @opaque
-    // @pure
-    // def lemmaPutValidKeyPreservesForallSeekEntryOrOpenStartIndex(a: Array[Long], i: Int, k: Long, startIndex: Int)(implicit mask: Int): Unit = {
-    //   require(validMask(mask))
-    //   require(a.length == mask + 1)
-    //   require(i >= 0)
-    //   require(i < a.length)
-    //   require(startIndex >= 0)
-    //   require(startIndex < a.length)
-    //   require(validKeyInArray(k))
-    //   require(!arrayContainsKeyTailRec(a, k, 0))
-    //   require(seekEntryOrOpenDecoupled(k)(a, mask) == (i, MissingBit) || seekEntryOrOpenDecoupled(k)(a, mask) == (i, MissVacant))
-    //   require(arrayForallSeekEntryOrOpenFound(0)(a, mask))
+    //TODO
+    @opaque
+    @pure
+    def lemmaPutValidKeyPreservesForallSeekEntryOrOpenStartIndex(a: Array[Long], i: Int, k: Long, startIndex: Int)(implicit mask: Int): Unit = {
+      require(validMask(mask))
+      require(a.length == mask + 1)
+      require(i >= 0)
+      require(i < a.length)
+      require(startIndex >= 0)
+      require(startIndex < a.length)
+      require(validKeyInArray(k))
+      require(!arrayContainsKeyTailRec(a, k, 0))
+      require(seekEntryOrOpenDecoupled(k)(a, mask) == MissingZero(i) || seekEntryOrOpenDecoupled(k)(a, mask) == MissingVacant(i))
+      require(arrayForallSeekEntryOrOpenFound(0)(a, mask))
 
       
-    //   require(arrayForallSeekEntryOrOpenFound(0)(a, mask))
+      require(arrayForallSeekEntryOrOpenFound(0)(a, mask))
 
-    //   decreases(a.length - startIndex)
+      decreases(a.length - startIndex)
 
-      // val newArray = a.updated(i, k)
+      val newArray = a.updated(i, k)
 
-      //   if(startIndex != i){
-      //     if(startIndex < a.length - 1){
-      //         lemmaPutValidKeyPreservesForallSeekEntryOrOpenStartIndex(a, i, k, startIndex + 1)
-      //     }
-      //     check(seekEntryOrOpenDecoupled(k)(newArray, mask) == (i, 0))
-      //     check(arrayForallSeekEntryOrOpenFound(startIndex)(a.updated(i, k), mask)) //TODO
-      //   } else {
-      //     if(validKeyInArray(a(startIndex))){
-      //       lemmaPutValidKeyPreservesForallSeekEntryOrOpenKey2(a, i, k, startIndex)(mask)
-      //       lemmaArrayForallSeekEntryOrOpenFoundFromSmallerThenFromBigger(a, mask, 0, startIndex)
-      //       if(startIndex < a.length - 1){
-      //         lemmaPutValidKeyPreservesForallSeekEntryOrOpenStartIndex(a, i, k, startIndex + 1)
-      //       }
-      //       check(arrayForallSeekEntryOrOpenFound(startIndex)(a.updated(i, k), mask))
+        if(startIndex != i){
+          if(startIndex < a.length - 1){
+              lemmaPutValidKeyPreservesForallSeekEntryOrOpenStartIndex(a, i, k, startIndex + 1)
+          }
+          check(seekEntryOrOpenDecoupled(k)(newArray, mask) == Found(i)) //TODO
+          check(arrayForallSeekEntryOrOpenFound(startIndex)(newArray, mask)) //TODO
+        } else {
+          if(validKeyInArray(a(startIndex))){
+            lemmaPutValidKeyPreservesForallSeekEntryOrOpenKey2(a, i, k, startIndex)(mask)
+            lemmaArrayForallSeekEntryOrOpenFoundFromSmallerThenFromBigger(a, mask, 0, startIndex)
+            if(startIndex < a.length - 1){
+              lemmaPutValidKeyPreservesForallSeekEntryOrOpenStartIndex(a, i, k, startIndex + 1)
+            }
+            check(arrayForallSeekEntryOrOpenFound(startIndex)(newArray, mask))
             
-      //       } else {
-      //         if(startIndex < a.length - 1){
-      //           lemmaPutValidKeyPreservesForallSeekEntryOrOpenStartIndex(a, i, k, startIndex + 1)
-      //         }
-      //         check(arrayForallSeekEntryOrOpenFound(startIndex)(a.updated(i, k), mask) == arrayForallSeekEntryOrOpenFound(startIndex + 1)(a.updated(i, k), mask))
-      //         check(arrayForallSeekEntryOrOpenFound(startIndex)(a.updated(i, k), mask))
+            } else {
+              if(startIndex < a.length - 1){
+                lemmaPutValidKeyPreservesForallSeekEntryOrOpenStartIndex(a, i, k, startIndex + 1)
+              }
+              check(arrayForallSeekEntryOrOpenFound(startIndex)(newArray, mask) == arrayForallSeekEntryOrOpenFound(startIndex + 1)(a.updated(i, k), mask))
+              check(arrayForallSeekEntryOrOpenFound(startIndex)(newArray, mask))
 
-      //     }
-      //   }
+          }
+        }
          
 
-    // }.ensuring(_ => arrayForallSeekEntryOrOpenFound(startIndex)(a.updated(i, k), mask))
+    }.ensuring(_ => arrayForallSeekEntryOrOpenFound(startIndex)(a.updated(i, k), mask))
 
+    //TODO
     @opaque
     @pure
     def lemmaPutValidKeyPreservesForallSeekEntryOrOpen(k: Long, a: Array[Long], i: Int)(implicit mask: Int): Unit = {
