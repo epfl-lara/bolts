@@ -1244,8 +1244,7 @@ object MutableLongMap {
           check(false)
       } else if(a(index) == a(j)){
         assert(index == j)
-        check(seekKeyOrZeroReturnVacantTailRecDecoupled(x, index, vacantSpotIndex)(a(j), a, mask) == 
-                    seekKeyOrZeroReturnVacantTailRecDecoupled(x, index, vacantSpotIndex)(a.updated(i, k).apply(j), a.updated(i, k), mask))
+
       } else if(a(index) == 0) {
           check(false)
       } else {
@@ -1298,11 +1297,6 @@ object MutableLongMap {
           check(false)
         }
 
-        check(seekKeyOrZeroReturnVacantTailRecDecoupled(x, index, vacantSpotIndex)(a.updated(i, k).apply(j), a.updated(i, k), mask) == 
-                    seekKeyOrZeroReturnVacantTailRecDecoupled(x + 1, (index + 2 * (x + 1) * x - 3) & mask, vacantSpotIndex)(a.updated(i, k).apply(j), a.updated(i, k), mask))
-
-        check(seekKeyOrZeroReturnVacantTailRecDecoupled(x, index, vacantSpotIndex)(a(j), a, mask) == 
-                    seekKeyOrZeroReturnVacantTailRecDecoupled(x, index, vacantSpotIndex)(a.updated(i, k).apply(j), a.updated(i, k), mask))
       }
 
 
@@ -1338,11 +1332,9 @@ object MutableLongMap {
       assert(intermediateBefore == intermediateAfter)
       intermediateBefore match {
         case Intermediate(undefined, index, x) if(undefined) => {
-          check(seekEntryOrOpenDecoupled(a(j))(a, mask) == seekEntryOrOpenDecoupled(a.updated(i, k).apply(j))(a.updated(i, k), mask))
         }
         case Intermediate(undefined, index, x) if(!undefined) => {
           if(a(index) == a(j)){
-            check(seekEntryOrOpenDecoupled(a(j))(a, mask) == seekEntryOrOpenDecoupled(a.updated(i, k).apply(j))(a.updated(i, k), mask))
           } else if(a(index) == 0) {
             check(seekEntryOrOpenDecoupled(a(j))(a, mask) == MissingZero(index))
             check(arrayForallSeekEntryOrOpenFound(0)(a, mask))
@@ -1357,7 +1349,6 @@ object MutableLongMap {
             
             lemmaPutValidKeyPreservesSeekKeyOrZeroReturnVacantTailRecDecoupled(a,i, k, j, x, index, index)(mask)
 
-            check(seekEntryOrOpenDecoupled(a(j))(a, mask) == seekEntryOrOpenDecoupled(a.updated(i, k).apply(j))(a.updated(i, k), mask))
 
           }
         }
@@ -1366,8 +1357,8 @@ object MutableLongMap {
 
 
     }.ensuring(_ => seekEntryOrOpenDecoupled(a(j))(a, mask) == seekEntryOrOpenDecoupled(a.updated(i, k).apply(j))(a.updated(i, k), mask))
+  
 
-    //TODO
     @opaque
     @pure
     def lemmaPutValidKeyPreservesForallSeekEntryOrOpenKey2(a: Array[Long], i: Int, k: Long, j: Int)(implicit mask: Int): Unit = {
@@ -1387,9 +1378,29 @@ object MutableLongMap {
 
       if(seekKeyOrZeroOrLongMinValueTailRecDecoupled(0, toIndex(a(j), mask))(a(j), a, mask) ==
                seekKeyOrZeroOrLongMinValueTailRecDecoupled(0, toIndex(a.updated(i, k).apply(j), mask))(a.updated(i, k).apply(j), a.updated(i, k), mask)){
+        lemmaPutValidKeyPreservesForallSeekEntryOrOpenKey1(a, i, k, j)(mask)
         check(seekEntryOrOpenDecoupled(a(j))(a, mask) == seekEntryOrOpenDecoupled(a.updated(i, k).apply(j))(a.updated(i, k), mask))
       } else {
-        check(seekEntryOrOpenDecoupled(a(j))(a, mask) == seekEntryOrOpenDecoupled(a.updated(i, k).apply(j))(a.updated(i, k), mask))
+        val intermediateBefore = seekKeyOrZeroOrLongMinValueTailRecDecoupled(0, toIndex(a(j), mask))(a(j), a, mask)
+        intermediateBefore match {
+          case Intermediate(undefined, index, x) => if(undefined){
+            check(seekEntryOrOpenDecoupled(a(j))(a, mask) == Undefined())
+            lemmaArrayForallSeekEntryOrOpenFoundFromSmallerThenFromBigger(a, mask, 0, j)
+            check(seekEntryOrOpenDecoupled(a(j))(a, mask) == Found(j))
+            check(false)
+            check(seekEntryOrOpenDecoupled(a(j))(a, mask) == seekEntryOrOpenDecoupled(a.updated(i, k).apply(j))(a.updated(i, k), mask)) //OK
+          }
+          case Intermediate(undefined, index, x) => {
+            assert(!undefined)
+            check(seekEntryOrOpenDecoupled(a(j))(a, mask) == seekEntryOrOpenDecoupled(a.updated(i, k).apply(j))(a.updated(i, k), mask)) //OK
+          }
+          case _ => {
+            check(false)
+            check(seekEntryOrOpenDecoupled(a(j))(a, mask) == seekEntryOrOpenDecoupled(a.updated(i, k).apply(j))(a.updated(i, k), mask)) //OK
+          }
+        }
+        check(seekEntryOrOpenDecoupled(a(j))(a, mask) == seekEntryOrOpenDecoupled(a.updated(i, k).apply(j))(a.updated(i, k), mask)) //NOT OK WHY?
+        
       }
 
 
@@ -1398,6 +1409,18 @@ object MutableLongMap {
 
 
     //TODO
+    def lemmaPutValidKeyAtRightPlaceThenFinds(a: Array[Long], i: Int, k: Long)(implicit mask: Int): Unit = {
+      require(validMask(mask))
+      require(a.length == mask + 1)
+      require(i >= 0)
+      require(i < a.length)
+      require(validKeyInArray(k))
+      require(!arrayContainsKeyTailRec(a, k, 0))
+      require(seekEntryOrOpenDecoupled(k)(a, mask) == MissingZero(i) || seekEntryOrOpenDecoupled(k)(a, mask) == MissingVacant(i))
+      require(arrayForallSeekEntryOrOpenFound(0)(a, mask))
+
+    }.ensuring(_ => seekEntryOrOpenDecoupled(k)(a.updated(i, k), mask) == Found(i))
+
     @opaque
     @pure
     def lemmaPutValidKeyPreservesForallSeekEntryOrOpenStartIndex(a: Array[Long], i: Int, k: Long, startIndex: Int)(implicit mask: Int): Unit = {
@@ -1408,6 +1431,7 @@ object MutableLongMap {
       require(startIndex >= 0)
       require(startIndex < a.length)
       require(validKeyInArray(k))
+      require(arrayNoDuplicates(a, 0))
       require(!arrayContainsKeyTailRec(a, k, 0))
       require(seekEntryOrOpenDecoupled(k)(a, mask) == MissingZero(i) || seekEntryOrOpenDecoupled(k)(a, mask) == MissingVacant(i))
       require(arrayForallSeekEntryOrOpenFound(0)(a, mask))
@@ -1418,15 +1442,16 @@ object MutableLongMap {
       decreases(a.length - startIndex)
 
       val newArray = a.updated(i, k)
-
-        if(startIndex != i){
+        if(startIndex == i){
           if(startIndex < a.length - 1){
               lemmaPutValidKeyPreservesForallSeekEntryOrOpenStartIndex(a, i, k, startIndex + 1)
           }
-          check(seekEntryOrOpenDecoupled(k)(newArray, mask) == Found(i)) //TODO
-          check(arrayForallSeekEntryOrOpenFound(startIndex)(newArray, mask)) //TODO
+          lemmaPutValidKeyAtRightPlaceThenFinds(a, i, k)(mask)
+          check(seekEntryOrOpenDecoupled(k)(newArray, mask) == Found(i))
+          check(arrayForallSeekEntryOrOpenFound(startIndex)(newArray, mask)) 
         } else {
           if(validKeyInArray(a(startIndex))){
+            lemmaPutNewValidKeyPreservesNoDuplicate(a, k, i, 0, Nil())
             lemmaPutValidKeyPreservesForallSeekEntryOrOpenKey2(a, i, k, startIndex)(mask)
             lemmaArrayForallSeekEntryOrOpenFoundFromSmallerThenFromBigger(a, mask, 0, startIndex)
             if(startIndex < a.length - 1){
@@ -1438,11 +1463,37 @@ object MutableLongMap {
               if(startIndex < a.length - 1){
                 lemmaPutValidKeyPreservesForallSeekEntryOrOpenStartIndex(a, i, k, startIndex + 1)
               }
-              check(arrayForallSeekEntryOrOpenFound(startIndex)(newArray, mask) == arrayForallSeekEntryOrOpenFound(startIndex + 1)(a.updated(i, k), mask))
+              check(arrayForallSeekEntryOrOpenFound(startIndex)(newArray, mask) == arrayForallSeekEntryOrOpenFound(startIndex + 1)(newArray, mask))
               check(arrayForallSeekEntryOrOpenFound(startIndex)(newArray, mask))
 
           }
+          check(arrayForallSeekEntryOrOpenFound(startIndex)(newArray, mask)) 
         }
+
+        // if(startIndex != i){
+        //   if(startIndex < a.length - 1){
+        //       lemmaPutValidKeyPreservesForallSeekEntryOrOpenStartIndex(a, i, k, startIndex + 1)
+        //   }
+        //   check(seekEntryOrOpenDecoupled(k)(newArray, mask) == Found(i)) //TODO
+        //   check(arrayForallSeekEntryOrOpenFound(startIndex)(newArray, mask)) //TODO
+        // } else {
+        //   if(validKeyInArray(a(startIndex))){
+        //     lemmaPutValidKeyPreservesForallSeekEntryOrOpenKey2(a, i, k, startIndex)(mask)
+        //     lemmaArrayForallSeekEntryOrOpenFoundFromSmallerThenFromBigger(a, mask, 0, startIndex)
+        //     if(startIndex < a.length - 1){
+        //       lemmaPutValidKeyPreservesForallSeekEntryOrOpenStartIndex(a, i, k, startIndex + 1)
+        //     }
+        //     check(arrayForallSeekEntryOrOpenFound(startIndex)(newArray, mask))
+            
+        //     } else {
+        //       if(startIndex < a.length - 1){
+        //         lemmaPutValidKeyPreservesForallSeekEntryOrOpenStartIndex(a, i, k, startIndex + 1)
+        //       }
+        //       check(arrayForallSeekEntryOrOpenFound(startIndex)(newArray, mask) == arrayForallSeekEntryOrOpenFound(startIndex + 1)(newArray, mask))
+        //       check(arrayForallSeekEntryOrOpenFound(startIndex)(newArray, mask))
+
+        //   }
+        // }
          
 
     }.ensuring(_ => arrayForallSeekEntryOrOpenFound(startIndex)(a.updated(i, k), mask))
