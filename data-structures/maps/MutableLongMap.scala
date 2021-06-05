@@ -1481,6 +1481,27 @@ object MutableLongMap {
       }
     }.ensuring(_ => arrayContainsKeyTailRec(a, k, 0))
 
+    @pure
+    @opaque
+    def lemmaArrayContainsFromImpliesContainsFromSmaller(
+        a: Array[Long],
+        k: Long,
+        from: Int,
+        newFrom: Int
+    ): Unit = {
+      require(from >= 0)
+      require(from < a.length)
+      require(newFrom >= 0)
+      require(newFrom <= from)
+      require(a.length < Integer.MAX_VALUE)
+      require(arrayContainsKeyTailRec(a, k, from))
+
+      decreases(from)
+      if (from > newFrom) {
+        lemmaArrayContainsFromImpliesContainsFromSmaller(a, k, from - 1, newFrom)
+      }
+    }.ensuring(_ => arrayContainsKeyTailRec(a, k, newFrom))
+
     @opaque
     @pure
     def lemmaAddKeyNoContainsInAccStillNoDuplicate(a: Array[Long], k: Long, from: Int, acc: List[Long], newAcc: List[Long]): Unit = {
