@@ -1359,7 +1359,211 @@ object MutableLongMap {
     }.ensuring(_ => seekEntryOrOpenDecoupled(a(j))(a, mask) == seekEntryOrOpenDecoupled(a.updated(i, k).apply(j))(a.updated(i, k), mask))
   
 
-    //TODO
+    @opaque
+    @pure
+    def lemmaSeekKeyOrZeroOrLongMinValueTailRecDecoupledFoundKeyThenSameAfterChangingI(a: Array[Long], i: Int, k: Long, j: Int, index: Int, x: Int, resIndex: Int, resX: Int)(implicit mask: Int): Unit = {
+      require(validMask(mask))
+      require(a.length == mask + 1)
+      require(i >= 0)
+      require(i < a.length)
+      require(j >= 0)
+      require(j < a.length)
+      require(i != j)
+      require(validKeyInArray(a(j)))
+      require(validKeyInArray(k))
+      require(!arrayContainsKeyTailRec(a, k, 0))
+      require(seekEntryOrOpenDecoupled(k)(a, mask) == MissingZero(i) || seekEntryOrOpenDecoupled(k)(a, mask) == MissingVacant(i))
+      require(arrayForallSeekEntryOrOpenFound(0)(a, mask))
+      require(arrayNoDuplicates(a, 0))
+      require(resX <= MAX_ITER)
+      require(x <= resX)
+      require(x >= 0)
+      require(index >= 0 && index < a.length)
+      require(resIndex >= 0 && resIndex < a.length)
+      require(a(resIndex) == a(j))
+      require(seekKeyOrZeroOrLongMinValueTailRecDecoupled(x, index)(a(j), a, mask) == Intermediate(false, resIndex, resX))
+      require(seekKeyOrZeroOrLongMinValueTailRecDecoupled(0, toIndex(a(j), mask))(a(j), a, mask) == seekKeyOrZeroOrLongMinValueTailRecDecoupled(x, index)(a(j), a, mask))
+
+      decreases(MAX_ITER - x)
+      if(a(index) == 0){
+        check(false)
+      } else if(a(index) == Long.MinValue){
+        check(false)
+      } else if(a(index) == a(j)){
+        check(index == resIndex)
+      } else {
+        lemmaSeekKeyOrZeroOrLongMinValueTailRecDecoupledFoundKeyThenSameAfterChangingI(a, i, k, j, (index + 2 * (x + 1) * x - 3) & mask, x + 1, resIndex, resX)
+      }
+
+    }.ensuring(_ => seekKeyOrZeroOrLongMinValueTailRecDecoupled(x, index)(a.updated(i,k).apply(j), a.updated(i,k), mask) == Intermediate(false, resIndex, resX))
+
+    @opaque
+    @pure
+    def lemmaPutValidKeyPreservesForallSeekEntryOrOpenKey2AfterFindingLongMinValueLater(a: Array[Long], i: Int, k: Long, j: Int, index: Int, x: Int, vacantBefore: Int, vacantAfter: Int)(implicit mask: Int): Unit = {
+      require(validMask(mask))
+      require(a.length == mask + 1)
+      require(i >= 0)
+      require(i < a.length)
+      require(j >= 0)
+      require(j < a.length)
+      require(i != j)
+      require(validKeyInArray(a(j)))
+      require(validKeyInArray(k))
+      require(!arrayContainsKeyTailRec(a, k, 0))
+      require(seekEntryOrOpenDecoupled(k)(a, mask) == MissingZero(i) || seekEntryOrOpenDecoupled(k)(a, mask) == MissingVacant(i))
+      require(arrayForallSeekEntryOrOpenFound(0)(a, mask))
+      require(arrayNoDuplicates(a, 0))
+      require(x <= MAX_ITER)
+      require(x >= 0)
+      require(index >= 0 && index < a.length)
+      require(vacantBefore == i)
+      require(a(vacantBefore) == Long.MinValue)
+      require(vacantAfter >= 0 && vacantAfter < a.length)
+      require(a(vacantAfter) == Long.MinValue)
+      require(vacantAfter != vacantBefore)
+      require(seekEntryOrOpenDecoupled(a.updated(i, k).apply(j))(a.updated(i, k), mask) == seekKeyOrZeroReturnVacantTailRecDecoupled(x, index, vacantAfter)(a.updated(i, k).apply(j), a.updated(i, k), mask))
+      require(seekEntryOrOpenDecoupled(a(j))(a, mask) == seekKeyOrZeroReturnVacantTailRecDecoupled(x, index, vacantBefore)(a(j), a, mask))
+      require(seekKeyOrZeroReturnVacantTailRecDecoupled(x, index, vacantBefore)(a(j), a, mask) == Found(j))
+
+      decreases(MAX_ITER - x)
+
+      if(a(index) == a(j)){
+        check(seekKeyOrZeroReturnVacantTailRecDecoupled(x, index, vacantAfter)(a.updated(i, k).apply(j), a.updated(i, k), mask) == Found(index))
+        check(seekKeyOrZeroReturnVacantTailRecDecoupled(x, index, vacantAfter)(a.updated(i, k).apply(j), a.updated(i, k), mask) == Found(j))
+      } else {
+        lemmaPutValidKeyPreservesForallSeekEntryOrOpenKey2AfterFindingLongMinValueLater(a, i, k, j, (index + 2 * (x + 1) * x - 3) & mask, x + 1, vacantBefore, vacantAfter)
+        check(seekKeyOrZeroReturnVacantTailRecDecoupled(x, index, vacantAfter)(a.updated(i, k).apply(j), a.updated(i, k), mask) == Found(j))
+      }
+
+
+    }.ensuring(_ => seekKeyOrZeroReturnVacantTailRecDecoupled(x, index, vacantAfter)(a.updated(i, k).apply(j), a.updated(i, k), mask) == seekKeyOrZeroReturnVacantTailRecDecoupled(x, index, vacantBefore)(a(j), a, mask))
+
+
+    @opaque
+    @pure
+    def lemmaPutValidKeyPreservesForallSeekEntryOrOpenKey2WhenMissingVacantAtI(a: Array[Long], i: Int, k: Long, j: Int, index: Int, x: Int, resIntermediateIndex: Int, resIntermediateX: Int)(implicit mask: Int): Unit = {
+      require(validMask(mask))
+      require(a.length == mask + 1)
+      require(i >= 0)
+      require(i < a.length)
+      require(j >= 0)
+      require(j < a.length)
+      require(i != j)
+      require(validKeyInArray(a(j)))
+      require(validKeyInArray(k))
+      require(!arrayContainsKeyTailRec(a, k, 0))
+      require(seekEntryOrOpenDecoupled(k)(a, mask) == MissingZero(i) || seekEntryOrOpenDecoupled(k)(a, mask) == MissingVacant(i))
+      require(arrayForallSeekEntryOrOpenFound(0)(a, mask))
+      require(arrayNoDuplicates(a, 0))
+      require(x <= MAX_ITER)
+      require(x >= 0)
+      require(resIntermediateX <= MAX_ITER)
+      require(index >= 0 && index < a.length)
+      require(resIntermediateIndex >= 0 && resIntermediateIndex < a.length)
+      require(seekKeyOrZeroOrLongMinValueTailRecDecoupled(0, toIndex(a(j), mask))(a(j), a, mask) == Intermediate(false, resIntermediateIndex, resIntermediateX))
+      require(resIntermediateIndex == i)
+      require(a(resIntermediateIndex) == Long.MinValue)
+      require(if(x <= resIntermediateX) 
+                  seekKeyOrZeroOrLongMinValueTailRecDecoupled(x, index)(a(j), a, mask) == Intermediate(false, resIntermediateIndex, resIntermediateX)
+              else seekKeyOrZeroReturnVacantTailRecDecoupled(x, index, resIntermediateIndex)(a(j), a, mask) == Found(j))
+      require(seekKeyOrZeroOrLongMinValueTailRecDecoupled(0, toIndex(a.updated(i, k).apply(j), mask))(a.updated(i,k).apply(j), a.updated(i,k), mask) == 
+              seekKeyOrZeroOrLongMinValueTailRecDecoupled(x, index)(a.updated(i,k).apply(j), a.updated(i,k), mask))
+
+      decreases(MAX_ITER - x)
+      
+      lemmaArrayForallSeekEntryOrOpenFoundFromSmallerThenFromBigger(a, mask, 0, j)
+      check(seekEntryOrOpenDecoupled(a(j))(a, mask) == Found(j))
+      check(seekKeyOrZeroReturnVacantTailRecDecoupled(resIntermediateX, resIntermediateIndex, resIntermediateIndex)(a(j), a, mask) == Found(j))
+
+      val intermediateAfter = seekKeyOrZeroOrLongMinValueTailRecDecoupled(x, index)(a.updated(i,k).apply(j), a.updated(i,k), mask)
+      intermediateAfter match {
+          case Intermediate(undefined, indexIntermediateAfter, xIntermediateAfter) => {
+            if(x < resIntermediateX){
+              check(a(index) != a(j) && a(index) != Long.MinValue && a(index) != 0)
+              lemmaPutValidKeyPreservesForallSeekEntryOrOpenKey2WhenMissingVacantAtI(a, i, k, j, (index + 2 * (x + 1) * x - 3) & mask, x + 1, resIntermediateIndex, resIntermediateX)
+              check(seekEntryOrOpenDecoupled(a.updated(i, k).apply(j))(a.updated(i, k), mask) == Found(j))
+            } else if(x == resIntermediateX) {
+              assert(index == resIntermediateIndex)
+              assert(a(index) == Long.MinValue)
+              assert(seekEntryOrOpenDecoupled(a(j))(a, mask) == seekKeyOrZeroReturnVacantTailRecDecoupled(x, index, index)(a(j), a, mask))
+              assert(a.updated(i,k).apply(index) == k)
+              assert(xIntermediateAfter > x)
+              
+              lemmaPutValidKeyPreservesForallSeekEntryOrOpenKey2WhenMissingVacantAtI(a, i, k, j, (index + 2 * (x + 1) * x - 3) & mask, x + 1, resIntermediateIndex, resIntermediateX)
+              check(seekEntryOrOpenDecoupled(a.updated(i, k).apply(j))(a.updated(i, k), mask) == Found(j))
+            } else if(x < xIntermediateAfter) {
+              lemmaPutValidKeyPreservesForallSeekEntryOrOpenKey2WhenMissingVacantAtI(a, i, k, j, (index + 2 * (x + 1) * x - 3) & mask, x + 1, resIntermediateIndex, resIntermediateX)
+              check(seekEntryOrOpenDecoupled(a.updated(i, k).apply(j))(a.updated(i, k), mask) == Found(j))
+            } else {
+              assert(x == xIntermediateAfter)
+              assert(index == indexIntermediateAfter)
+              assert(seekKeyOrZeroReturnVacantTailRecDecoupled(x, index, resIntermediateIndex)(a(j), a, mask) == Found(j))
+              if(a.updated(i, k).apply(index) == a.updated(i, k).apply(j)){
+                assert(!undefined)
+                check(seekEntryOrOpenDecoupled(a.updated(i, k).apply(j))(a.updated(i, k), mask) == Found(index))
+                check(seekEntryOrOpenDecoupled(a.updated(i, k).apply(j))(a.updated(i, k), mask) == Found(j))
+                } else {
+                  if(a.updated(i, k).apply(index) == 0){
+                    check(seekEntryOrOpenDecoupled(a(j))(a, mask) == seekKeyOrZeroReturnVacantTailRecDecoupled(x, index, resIntermediateIndex)(a(j), a, mask))
+                    check(seekKeyOrZeroReturnVacantTailRecDecoupled(x, index, resIntermediateIndex)(a(j), a, mask) == MissingVacant(resIntermediateIndex))
+                    check(false)
+                  }
+                  check(a.updated(i, k).apply(index) == Long.MinValue)
+                  check(seekEntryOrOpenDecoupled(a.updated(i, k).apply(j))(a.updated(i, k), mask) == seekKeyOrZeroReturnVacantTailRecDecoupled(x, index, index)(a.updated(i, k).apply(j), a.updated(i, k), mask))
+                  check(seekEntryOrOpenDecoupled(a(j))(a, mask) == seekKeyOrZeroReturnVacantTailRecDecoupled(x, index, resIntermediateIndex)(a(j), a, mask))
+                  check(seekKeyOrZeroReturnVacantTailRecDecoupled(x, index, resIntermediateIndex)(a(j), a, mask) == Found(j))
+
+                  lemmaPutValidKeyPreservesForallSeekEntryOrOpenKey2AfterFindingLongMinValueLater(a, i, k, j, index, x, resIntermediateIndex, index)
+                  check(seekEntryOrOpenDecoupled(a.updated(i, k).apply(j))(a.updated(i, k), mask) == Found(j))
+                  }
+            } 
+          }
+          case _ => check(false)
+        }
+
+     
+
+    }.ensuring(_ => seekEntryOrOpenDecoupled(a.updated(i, k).apply(j))(a.updated(i, k), mask) == Found(j))
+
+    @pure
+    @opaque
+    def lemmaSeekKeyOrZeroOrLongMinValueTailRecDecoupledThenChangedAtReturnedIndex(a: Array[Long], i: Int, k: Long, j: Int, index: Int, x: Int, resIndex: Int, resX: Int)(implicit mask: Int): Unit = {
+      require(validMask(mask))
+      require(a.length == mask + 1)
+      require(i >= 0)
+      require(i < a.length)
+      require(j >= 0)
+      require(j < a.length)
+      require(i != j)
+      require(validKeyInArray(a(j)))
+      require(validKeyInArray(k))
+      require(!arrayContainsKeyTailRec(a, k, 0))
+      require(seekEntryOrOpenDecoupled(k)(a, mask) == MissingVacant(i) || seekEntryOrOpenDecoupled(k)(a, mask) == MissingZero(i))
+      require(arrayForallSeekEntryOrOpenFound(0)(a, mask))
+      require(arrayNoDuplicates(a, 0))
+      require(x <= resX)
+      require(x >= 0)
+      require(resX <= MAX_ITER)
+      require(index >= 0 && index < a.length)
+      require(resIndex >= 0 && resIndex < a.length)
+      require(seekKeyOrZeroOrLongMinValueTailRecDecoupled(0, toIndex(a(j), mask))(a(j), a, mask) == Intermediate(false, resIndex, resX))
+      require(seekKeyOrZeroOrLongMinValueTailRecDecoupled(x, index)(a(j), a, mask) == Intermediate(false, resIndex, resX))
+      require(seekKeyOrZeroOrLongMinValueTailRecDecoupled(0, toIndex(a(j), mask))(a(j), a, mask) != seekKeyOrZeroOrLongMinValueTailRecDecoupled(0, toIndex(a.updated(i, k).apply(j), mask))(a.updated(i, k).apply(j), a.updated(i, k), mask))
+      require(seekKeyOrZeroOrLongMinValueTailRecDecoupled(x, index)(a(j), a, mask) != seekKeyOrZeroOrLongMinValueTailRecDecoupled(x, index)(a.updated(i, k).apply(j), a.updated(i, k), mask))
+
+      decreases(MAX_ITER - x)
+
+      if(index == resIndex){
+        assert(x == resX)
+        check(resIndex == i)
+        } else {
+          assert(index != i)
+          lemmaSeekKeyOrZeroOrLongMinValueTailRecDecoupledThenChangedAtReturnedIndex(a, i, k, j, (index + 2 * (x + 1) * x - 3) & mask, x + 1, resIndex, resX)
+          check(resIndex == i)
+
+      }
+    }.ensuring(_ => resIndex == i)
+
     @opaque
     @pure
     def lemmaPutValidKeyPreservesForallSeekEntryOrOpenKey2(a: Array[Long], i: Int, k: Long, j: Int)(implicit mask: Int): Unit = {
@@ -1377,30 +1581,93 @@ object MutableLongMap {
       require(arrayForallSeekEntryOrOpenFound(0)(a, mask))
       require(arrayNoDuplicates(a, 0))
 
+      lemmaArrayForallSeekEntryOrOpenFoundFromSmallerThenFromBigger(a, mask, 0, j)
+      check(seekEntryOrOpenDecoupled(a(j))(a, mask) == Found(j))
+      val newArray = a.updated(i, k)
+
       if(seekKeyOrZeroOrLongMinValueTailRecDecoupled(0, toIndex(a(j), mask))(a(j), a, mask) ==
-               seekKeyOrZeroOrLongMinValueTailRecDecoupled(0, toIndex(a.updated(i, k).apply(j), mask))(a.updated(i, k).apply(j), a.updated(i, k), mask)){
+               seekKeyOrZeroOrLongMinValueTailRecDecoupled(0, toIndex(newArray.apply(j), mask))(newArray.apply(j), newArray, mask)){
         lemmaPutValidKeyPreservesForallSeekEntryOrOpenKey1(a, i, k, j)(mask)
-        check(seekEntryOrOpenDecoupled(a(j))(a, mask) == seekEntryOrOpenDecoupled(a.updated(i, k).apply(j))(a.updated(i, k), mask))
+        check(seekEntryOrOpenDecoupled(a(j))(a, mask) == seekEntryOrOpenDecoupled(newArray.apply(j))(newArray, mask))
       } else {
         val intermediateBefore = seekKeyOrZeroOrLongMinValueTailRecDecoupled(0, toIndex(a(j), mask))(a(j), a, mask)
         intermediateBefore match {
-          case Intermediate(undefined, index, x) => if(undefined){
+          case Intermediate(undefined, index, x) if(undefined) => {
             check(seekEntryOrOpenDecoupled(a(j))(a, mask) == Undefined())
             lemmaArrayForallSeekEntryOrOpenFoundFromSmallerThenFromBigger(a, mask, 0, j)
             check(seekEntryOrOpenDecoupled(a(j))(a, mask) == Found(j))
             check(false)
-            check(seekEntryOrOpenDecoupled(a(j))(a, mask) == seekEntryOrOpenDecoupled(a.updated(i, k).apply(j))(a.updated(i, k), mask)) //OK
+            check(seekEntryOrOpenDecoupled(a(j))(a, mask) == seekEntryOrOpenDecoupled(newArray.apply(j))(newArray, mask))
           }
-          case Intermediate(undefined, index, x) => {
-            assert(!undefined)
-            check(seekEntryOrOpenDecoupled(a(j))(a, mask) == seekEntryOrOpenDecoupled(a.updated(i, k).apply(j))(a.updated(i, k), mask)) //OK
+          case Intermediate(undefinedBefore, indexBefore, xBefore) if(!undefinedBefore) => {
+            check(!undefinedBefore)
+            check(xBefore < MAX_ITER)
+            check(a(indexBefore) == a(j) || a(indexBefore) == 0 || a(indexBefore) == Long.MinValue)
+            if(a(indexBefore) == a(j)){
+              lemmaSeekKeyOrZeroOrLongMinValueTailRecDecoupledFoundKeyThenSameAfterChangingI(a, i, k, j, toIndex(a(j), mask), 0, indexBefore, xBefore)(mask)
+              check(false) //OK
+            } 
+            check(a(indexBefore) == 0 || a(indexBefore) == Long.MinValue)
+            if(a(indexBefore) == 0) {
+              check(false) //OK
+            }
+            check(a(indexBefore) == Long.MinValue) 
+
+            lemmaSeekKeyOrZeroOrLongMinValueTailRecDecoupledThenChangedAtReturnedIndex(a, i, k, j, toIndex(a(j), mask), 0, indexBefore, xBefore)(mask)
+            lemmaPutValidKeyPreservesForallSeekEntryOrOpenKey2WhenMissingVacantAtI(a, i, k, j, toIndex(a(j), mask), 0, indexBefore, xBefore)(mask)
+
+
+            val intermediateAfter = seekKeyOrZeroOrLongMinValueTailRecDecoupled(0, toIndex(newArray.apply(j), mask))(newArray.apply(j), newArray, mask)
+            // intermediateAfter match {
+            //   case Intermediate(undefinedAfter, indexAfter, xAfter) if(undefinedAfter) => check(false) //TODO
+            //   case Intermediate(undefinedAfter, indexAfter, xAfter) if(a.updated(i,k).apply(indexAfter) == a(j)) => {
+                
+            //     if(a.updated(i,k).apply(indexAfter) == a(j)){
+            //       check(seekEntryOrOpenDecoupled(newArray.apply(j))(newArray, mask) == Found(indexAfter))
+            //       val q = a(j)
+                  
+            //       if(indexAfter < j){
+            //         check(newArray.apply(indexAfter) == q)
+            //         check(arrayContainsKeyTailRec(newArray, q, j))
+            //         check(arrayContainsKeyTailRec(newArray, q, indexAfter))
+            //         lemmaPutNewValidKeyPreservesNoDuplicate(a, k, i, 0, Nil())
+            //         check(arrayNoDuplicates(newArray, 0))
+            //         lemmaNoDuplicateFromThenFromBigger(newArray, 0, indexAfter)      
+            //         lemmaArrayContainsFromImpliesContainsFromSmaller(newArray, q, j, indexAfter + 1)            
+            //         lemmaArrayNoDuplicateThenKeysContainedNotEqual(newArray, q, indexAfter, Nil())
+
+            //         check(false)
+            //       } else if(j < indexAfter){                  
+            //         check(newArray.apply(indexAfter) == q)
+            //         check(arrayContainsKeyTailRec(newArray, q, j))
+            //         check(arrayContainsKeyTailRec(newArray, q, indexAfter))
+            //         lemmaPutNewValidKeyPreservesNoDuplicate(a, k, i, 0, Nil())
+            //         check(arrayNoDuplicates(newArray, 0))
+            //         lemmaNoDuplicateFromThenFromBigger(newArray, 0, j)      
+            //         lemmaArrayContainsFromImpliesContainsFromSmaller(newArray, q, indexAfter, j+ 1)            
+            //         lemmaArrayNoDuplicateThenKeysContainedNotEqual(newArray, q, j, Nil())
+
+            //         check(false)
+            //       }
+            //       check(indexAfter == j)
+            //       check(seekEntryOrOpenDecoupled(newArray.apply(j))(newArray, mask) == Found(j))
+            //       check(seekEntryOrOpenDecoupled(a(j))(a, mask) == seekEntryOrOpenDecoupled(newArray.apply(j))(newArray, mask))
+            //     } else if(a.updated(i,k).apply(indexAfter) == Long.MinValue) {
+            //         check(seekEntryOrOpenDecoupled(a(j))(a, mask) == seekEntryOrOpenDecoupled(newArray.apply(j))(newArray, mask)) //TODO
+            //     } else {
+            //       check(a.updated(i,k).apply(indexAfter) == 0)
+            //       check(seekEntryOrOpenDecoupled(a(j))(a, mask) == seekEntryOrOpenDecoupled(newArray.apply(j))(newArray, mask)) //TODO
+            //     }
+            //   }
+            //   case _ => check(false)
+            // }
           }
           case _ => {
             check(false)
-            check(seekEntryOrOpenDecoupled(a(j))(a, mask) == seekEntryOrOpenDecoupled(a.updated(i, k).apply(j))(a.updated(i, k), mask)) //OK
+            check(seekEntryOrOpenDecoupled(a(j))(a, mask) == seekEntryOrOpenDecoupled(newArray.apply(j))(newArray, mask)) //OK
           }
         }
-        check(seekEntryOrOpenDecoupled(a(j))(a, mask) == seekEntryOrOpenDecoupled(a.updated(i, k).apply(j))(a.updated(i, k), mask)) //NOT OK WHY?
+        check(seekEntryOrOpenDecoupled(a(j))(a, mask) == seekEntryOrOpenDecoupled(newArray.apply(j))(newArray, mask)) 
         
       }
 
@@ -1426,6 +1693,7 @@ object MutableLongMap {
       require(x >= 0)
       require(index >= 0 && index < a.length)
       require(seekKeyOrZeroOrLongMinValueTailRecDecoupled(x, index)(k, a, mask) == Intermediate(false, resIndex, resX))
+
       decreases(MAX_ITER - x)
       assert(resX < MAX_ITER)
       assert(a(index) != k)
