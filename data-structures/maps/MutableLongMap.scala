@@ -1359,6 +1359,7 @@ object MutableLongMap {
     }.ensuring(_ => seekEntryOrOpenDecoupled(a(j))(a, mask) == seekEntryOrOpenDecoupled(a.updated(i, k).apply(j))(a.updated(i, k), mask))
   
 
+    //TODO
     @opaque
     @pure
     def lemmaPutValidKeyPreservesForallSeekEntryOrOpenKey2(a: Array[Long], i: Int, k: Long, j: Int)(implicit mask: Int): Unit = {
@@ -1407,7 +1408,8 @@ object MutableLongMap {
 
     }.ensuring(_ => seekEntryOrOpenDecoupled(a(j))(a, mask) == seekEntryOrOpenDecoupled(a.updated(i, k).apply(j))(a.updated(i, k), mask))
 
-
+    @pure
+    @opaque
     def lemmaPutValidKeyAtRightPlaceThenFindsHelper1(a: Array[Long], i: Int, k: Long, x: Int, index: Int, resIndex: Int, resX: Int)(implicit mask: Int): Unit = {
       require(validMask(mask))
       require(a.length == mask + 1)
@@ -1456,7 +1458,57 @@ object MutableLongMap {
 
     }.ensuring(_ => seekKeyOrZeroOrLongMinValueTailRecDecoupled(x, index)(k, a.updated(i, k), mask) == seekKeyOrZeroOrLongMinValueTailRecDecoupled(x, index)(k, a, mask))
 
-    //TODO
+
+    def lemmaPutValidKeyAtRightPlaceThenFindsHelper2(a: Array[Long], i: Int, k: Long, x: Int, index: Int, resIndex: Int, resX: Int)(implicit mask: Int): Unit = {
+      require(validMask(mask))
+      require(a.length == mask + 1)
+      require(i >= 0)
+      require(i < a.length)
+      require(validKeyInArray(k))
+      require(!arrayContainsKeyTailRec(a, k, 0))
+      require(seekEntryOrOpenDecoupled(k)(a, mask) == MissingVacant(i))
+      require(arrayForallSeekEntryOrOpenFound(0)(a, mask))
+      require(seekKeyOrZeroOrLongMinValueTailRecDecoupled(0, toIndex(k, mask))(k, a, mask) == Intermediate(false, resIndex, resX))
+      require(a(resIndex) == Long.MinValue)
+      require(resIndex == i)
+      require(x <= resX)
+      require(x >= 0)
+      require(index >= 0 && index < a.length)
+      require(seekKeyOrZeroOrLongMinValueTailRecDecoupled(x, index)(k, a, mask) == Intermediate(false, resIndex, resX))
+      decreases(MAX_ITER - x)
+      assert(resX < MAX_ITER)
+      assert(a(index) != k)
+      if(x == resX){
+        if(resIndex != index) {
+          if(a(index) == 0 || a(index) == Long.MinValue){
+            check(seekKeyOrZeroOrLongMinValueTailRecDecoupled(x, index)(k, a, mask) == Intermediate(false, index, resX))
+            check(false)
+          } else {
+            check(seekKeyOrZeroOrLongMinValueTailRecDecoupled(x, index)(k, a, mask) == 
+                  seekKeyOrZeroOrLongMinValueTailRecDecoupled(x + 1, (index + 2 * (x + 1) * x - 3) & mask)(k, a, mask))
+            seekKeyOrZeroOrLongMinValueTailRecDecoupled(x + 1, (index + 2 * (x + 1) * x - 3) & mask)(k, a, mask) match {
+              case Intermediate(undefined, tempIndex, tempX) => assert(tempX >= x+1)
+              case _ => check(false)
+            }
+            check(false)
+          }
+        }
+        check(index == resIndex)
+        check(a(index) == Long.MinValue)
+        check(seekKeyOrZeroOrLongMinValueTailRecDecoupled(x, index)(k, a.updated(i, k), mask) == seekKeyOrZeroOrLongMinValueTailRecDecoupled(x, index)(k, a, mask))
+      } else {
+        check(seekKeyOrZeroOrLongMinValueTailRecDecoupled(x, index)(k, a, mask) == seekKeyOrZeroOrLongMinValueTailRecDecoupled(x + 1, (index + 2 * (x + 1) * x - 3) & mask)(k, a, mask))
+        check(seekKeyOrZeroOrLongMinValueTailRecDecoupled(x, index)(k, a.updated(i, k), mask) == seekKeyOrZeroOrLongMinValueTailRecDecoupled(x + 1, (index + 2 * (x + 1) * x - 3) & mask)(k, a.updated(i,k), mask))
+        lemmaPutValidKeyAtRightPlaceThenFindsHelper2(a, i, k, x+1, (index + 2 * (x + 1) * x - 3) & mask, resIndex, resX)
+        check(seekKeyOrZeroOrLongMinValueTailRecDecoupled(x, index)(k, a.updated(i, k), mask) == seekKeyOrZeroOrLongMinValueTailRecDecoupled(x, index)(k, a, mask))
+      }
+
+
+
+    }.ensuring(_ => seekKeyOrZeroOrLongMinValueTailRecDecoupled(x, index)(k, a.updated(i, k), mask) == seekKeyOrZeroOrLongMinValueTailRecDecoupled(x, index)(k, a, mask))
+
+    @pure
+    @opaque
     def lemmaPutValidKeyAtRightPlaceThenFinds(a: Array[Long], i: Int, k: Long)(implicit mask: Int): Unit = {
       require(validMask(mask))
       require(a.length == mask + 1)
@@ -1490,6 +1542,19 @@ object MutableLongMap {
         check(seekEntryOrOpenDecoupled(k)(a.updated(i, k), mask) == Found(i))
       } else {
         assert(seekEntryOrOpenDecoupled(k)(a, mask) == MissingVacant(i))
+        intermediateBefore match {
+          case Intermediate(undefined, index, x) if(undefined) => check(false)
+          case Intermediate(undefined, index, x) if(a(index) == Long.MinValue) => {
+            check(index == i)
+            lemmaPutValidKeyAtRightPlaceThenFindsHelper2(a, i, k, 0, toIndex(k, mask), index, x)(mask)
+            check(seekEntryOrOpenDecoupled(k)(a.updated(i, k), mask) == Found(i))
+            
+          }
+          case Intermediate(undefined, index, x) if(a(index) == k) => check(false)
+          case Intermediate(undefined, index, x) => check(false)
+          case _ => check(false)
+        }
+
         check(seekEntryOrOpenDecoupled(k)(a.updated(i, k), mask) == Found(i))
       }
 
@@ -1546,7 +1611,6 @@ object MutableLongMap {
         }
     }.ensuring(_ => arrayForallSeekEntryOrOpenFound(startIndex)(a.updated(i, k), mask))
 
-    //TODO
     @opaque
     @pure
     def lemmaPutValidKeyPreservesForallSeekEntryOrOpen(k: Long, a: Array[Long], i: Int)(implicit mask: Int): Unit = {
@@ -1558,8 +1622,9 @@ object MutableLongMap {
       require(!arrayContainsKeyTailRec(a, k, 0))
       require(seekEntryOrOpenDecoupled(k)(a, mask) == MissingZero(i) || seekEntryOrOpenDecoupled(k)(a, mask) == MissingVacant(i))
       require(arrayForallSeekEntryOrOpenFound(0)(a, mask))
+      require(arrayNoDuplicates(a, 0))
 
-      // lemmaPutValidKeyPreservesForallSeekEntryOrOpenStartIndex(a, i, k, 0)(mask)
+      lemmaPutValidKeyPreservesForallSeekEntryOrOpenStartIndex(a, i, k, 0)(mask)
 
     }.ensuring(_ => arrayForallSeekEntryOrOpenFound(0)(a.updated(i, k), mask))
 
