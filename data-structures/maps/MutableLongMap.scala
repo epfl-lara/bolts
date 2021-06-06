@@ -1481,22 +1481,22 @@ object MutableLongMap {
             if(x < xIntermediateAfter){
               lemmaPutValidKeyPreservesVacantIsAtI(a, i, k, j, (index + 2 * (x + 1) * x - 3) & mask, x + 1, resIntermediateIndex, resIntermediateX)
             } else {
-              // assert(x == xIntermediateAfter)
-              // assert(index == indexIntermediateAfter)
-              // assert(seekKeyOrZeroReturnVacantTailRecDecoupled(x, index, resIntermediateIndex)(a(j), a, mask) == Found(j))
+              assert(x == xIntermediateAfter)
+              assert(index == indexIntermediateAfter)
+              assert(seekKeyOrZeroReturnVacantTailRecDecoupled(x, index, resIntermediateIndex)(a(j), a, mask) == Found(j))
               if(a.updated(i, k).apply(index) == a.updated(i, k).apply(j)){
-                // assert(!undefined)
-                // check(seekEntryOrOpenDecoupled(a.updated(i, k).apply(j))(a.updated(i, k), mask) == Found(index))
+                assert(!undefined)
+                check(seekEntryOrOpenDecoupled(a.updated(i, k).apply(j))(a.updated(i, k), mask) == Found(index))
                 } else {
                   if(a.updated(i, k).apply(index) == 0){
-                    // check(seekEntryOrOpenDecoupled(a(j))(a, mask) == seekKeyOrZeroReturnVacantTailRecDecoupled(x, index, resIntermediateIndex)(a(j), a, mask))
-                    // check(seekKeyOrZeroReturnVacantTailRecDecoupled(x, index, resIntermediateIndex)(a(j), a, mask) == MissingVacant(resIntermediateIndex))
+                    check(seekEntryOrOpenDecoupled(a(j))(a, mask) == seekKeyOrZeroReturnVacantTailRecDecoupled(x, index, resIntermediateIndex)(a(j), a, mask))
+                    check(seekKeyOrZeroReturnVacantTailRecDecoupled(x, index, resIntermediateIndex)(a(j), a, mask) == MissingVacant(resIntermediateIndex))
                     check(false)
                   }
-                  // check(a.updated(i, k).apply(index) == Long.MinValue)
-                  // check(seekEntryOrOpenDecoupled(a.updated(i, k).apply(j))(a.updated(i, k), mask) == seekKeyOrZeroReturnVacantTailRecDecoupled(x, index, index)(a.updated(i, k).apply(j), a.updated(i, k), mask))
-                  // check(seekEntryOrOpenDecoupled(a(j))(a, mask) == seekKeyOrZeroReturnVacantTailRecDecoupled(x, index, resIntermediateIndex)(a(j), a, mask))
-                  // check(seekKeyOrZeroReturnVacantTailRecDecoupled(x, index, resIntermediateIndex)(a(j), a, mask) == Found(j))
+                  check(a.updated(i, k).apply(index) == Long.MinValue)
+                  check(seekEntryOrOpenDecoupled(a.updated(i, k).apply(j))(a.updated(i, k), mask) == seekKeyOrZeroReturnVacantTailRecDecoupled(x, index, index)(a.updated(i, k).apply(j), a.updated(i, k), mask))
+                  check(seekEntryOrOpenDecoupled(a(j))(a, mask) == seekKeyOrZeroReturnVacantTailRecDecoupled(x, index, resIntermediateIndex)(a(j), a, mask))
+                  check(seekKeyOrZeroReturnVacantTailRecDecoupled(x, index, resIntermediateIndex)(a(j), a, mask) == Found(j))
 
                   lemmaPutValidKeyPreservesForallSeekEntryOrOpenKey2AfterFindingLongMinValueLater(a, i, k, j, index, x, resIntermediateIndex, index)
                   }
