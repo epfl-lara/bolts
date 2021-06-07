@@ -310,8 +310,8 @@ object RedBlackTree {
       isValidPreRotateNode(Node(c, l, v, r)) && c != BB &&
       ((c == R) ==> (l.color != R && r.color != R))
     )
+    decreases(Node(c, l, v, r).size)
     val in = Node(c, l, v, r)
-    decreases(in.size)
     check(blackHeight(l) == blackHeight(r))
     check(isValidTempSubtree(l) && isValidTempSubtree(r))
     check(isValidRBSubtree(l) || isValidRBSubtree(r))
@@ -583,13 +583,14 @@ object RedBlackTree {
 
   private def del(t: Tree, x: BigInt): Tree = {
     require(isValidRBSubtree(t))
+    decreases(t.size)
     val preBal = t match {
       case Empty(B) => t
       case in @ Node(c, a, v, b) => {
         if (x < v) {
           val out = Node(c, del(a, x), v, b)
           assert(deleteSmallerLemma(a.toList, v, b.toList, x))
-          check(isValidPreRotateNode(out)) // Help
+          check(isValidPreRotateNode(out))
           check(out.toList == deleteFirst(in.toList, x))
           out
         } else if (x == v) {
@@ -598,7 +599,7 @@ object RedBlackTree {
             val out = Node(c, newA, newV, b)
             assert(deleteEqualLemma(a.toList, v, b.toList, x))
             ListSpecs.appendAssoc(newA.toList, List(newV), b.toList)
-            check(isValidPreRotateNode(out)) // Help
+            check(isValidPreRotateNode(out))
             check(out.toList == deleteFirst(in.toList, x))
             out
           } else if(b.isInstanceOf[Node]) {
@@ -621,7 +622,7 @@ object RedBlackTree {
         } else {
           val out = Node(c, a, v, del(b, x))
           assert(deleteBiggerLemma(a.toList, v, b.toList, x))
-          check(isValidPreRotateNode(out)) // Help
+          check(isValidPreRotateNode(out))
           check(out.toList == deleteFirst(in.toList, x))
           out
         }
