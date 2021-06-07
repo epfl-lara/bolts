@@ -112,19 +112,19 @@ object MutableLongMap {
         val seekEntryRes = seekEntryDecoupled(key)(_keys, mask)
         seekEntryRes match {
           case Found(index) => {
-          lemmaArrayContainsFromImpliesContainsFromZero(_keys, key, index)
-          lemmaValidKeyInArrayIsInListMap(index)
-          true
+            lemmaArrayContainsFromImpliesContainsFromZero(_keys, key, index)
+            lemmaValidKeyInArrayIsInListMap(index)
+            true
           }
           case _ => {
             if (getCurrentListMap(0).contains(key)) {
-            lemmaKeyInListMapIsInArray(key)
-            val i = arrayScanForKey(_keys, key, 0)
-            lemmaArrayForallSeekEntryOrOpenFoundFromSmallerThenFromBigger(_keys, mask, 0, i)
-            lemmaSeekEntryOrOpenFindsThenSeekEntryFinds(key, i, _keys, mask)
-            check(false)
-          }
-          false
+              lemmaKeyInListMapIsInArray(key)
+              val i = arrayScanForKey(_keys, key, 0)
+              lemmaArrayForallSeekEntryOrOpenFoundFromSmallerThenFromBigger(_keys, mask, 0, i)
+              lemmaSeekEntryOrOpenFindsThenSeekEntryFinds(key, i, _keys, mask)
+              check(false)
+            }
+            false
           }
         }
       }
@@ -199,31 +199,31 @@ object MutableLongMap {
             false
           }
           case MissingVacant(index) => updateHelperNewKey(key, v, index)
-          case MissingZero(index) => updateHelperNewKey(key, v, index)
+          case MissingZero(index)   => updateHelperNewKey(key, v, index)
           case Found(index) => {
-          if (getCurrentListMap(0).contains(key)) {
-            lemmaInListMapThenSeekEntryOrOpenFindsIt(key)
-          } else {
-            lemmaNotInListMapThenSeekEntryOrOpenFindsFreeOrNothing(key)
-            check(false)
+            if (getCurrentListMap(0).contains(key)) {
+              lemmaInListMapThenSeekEntryOrOpenFindsIt(key)
+            } else {
+              lemmaNotInListMapThenSeekEntryOrOpenFindsFreeOrNothing(key)
+              check(false)
+            }
+
+            _values(index) = v
+
+            lemmaValidKeyInArrayIsInListMap(index)
+            true
           }
-          
-          _values(index) = v
-          
-          lemmaValidKeyInArrayIsInListMap(index)
-          true
-        }
 
         }
-      
+
       }
 
-    }.ensuring(res => valid
-    && (if (res) getCurrentListMap(0).contains(key) else true)
+    }.ensuring(res =>
+      valid
+        && (if (res) getCurrentListMap(0).contains(key) else true)
     )
 
-    /**
-      * Go through an helper function because this piece of code has to be called in 2 cases
+    /** Go through an helper function because this piece of code has to be called in 2 cases
       * of the pattern matching
       *
       * @return
@@ -233,37 +233,37 @@ object MutableLongMap {
       require(key != 0)
       require(key != Long.MinValue)
       require(seekEntryOrOpenDecoupled(key)(_keys, mask) == MissingZero(index) || seekEntryOrOpenDecoupled(key)(_keys, mask) == MissingVacant(index))
-          if (getCurrentListMap(0).contains(key)) {
-            lemmaInListMapThenSeekEntryOrOpenFindsIt(key)
-            check(false)
-          } else {
-            lemmaNotInListMapThenSeekEntryOrOpenFindsFreeOrNothing(key)
-            check(_keys(index) == 0 || _keys(index) == Long.MinValue)
-          }
-          val _oldSize = _size
-          val _oldNKeys = arrayCountValidKeysTailRec(_keys, 0, _keys.length)
-          assert(inRange(index, mask))
-          if (arrayContainsKeyTailRec(_keys, key, 0)) {
-            lemmaArrayContainsKeyThenInListMap(key, 0)
-            check(false)
-          }
+      if (getCurrentListMap(0).contains(key)) {
+        lemmaInListMapThenSeekEntryOrOpenFindsIt(key)
+        check(false)
+      } else {
+        lemmaNotInListMapThenSeekEntryOrOpenFindsFreeOrNothing(key)
+        check(_keys(index) == 0 || _keys(index) == Long.MinValue)
+      }
+      val _oldSize = _size
+      val _oldNKeys = arrayCountValidKeysTailRec(_keys, 0, _keys.length)
+      assert(inRange(index, mask))
+      if (arrayContainsKeyTailRec(_keys, key, 0)) {
+        lemmaArrayContainsKeyThenInListMap(key, 0)
+        check(false)
+      }
 
-          lemmaPutNewValidKeyPreservesNoDuplicate(_keys, key, index, 0, List())
-          lemmaAddValidKeyIncreasesNumberOfValidKeysInArray(_keys, index, key)
-          lemmaPutValidKeyPreservesForallSeekEntryOrOpen(key, _keys, index)(mask)
+      lemmaPutNewValidKeyPreservesNoDuplicate(_keys, key, index, 0, List())
+      lemmaAddValidKeyIncreasesNumberOfValidKeysInArray(_keys, index, key)
+      lemmaPutValidKeyPreservesForallSeekEntryOrOpen(key, _keys, index)(mask)
 
-          _keys(index) = key
-          _size += 1
+      _keys(index) = key
+      _size += 1
 
-          lemmaArrayContainsFromImpliesContainsFromZero(_keys, key, index)
-          lemmaValidKeyAtIImpliesCountKeysIsOne(_keys, index)
-          
-          _values(index) = v
-          
-          lemmaValidKeyInArrayIsInListMap(index)
-          true
+      lemmaArrayContainsFromImpliesContainsFromZero(_keys, key, index)
+      lemmaValidKeyAtIImpliesCountKeysIsOne(_keys, index)
 
-        }.ensuring(res => res && valid && getCurrentListMap(0).contains(key))
+      _values(index) = v
+
+      lemmaValidKeyInArrayIsInListMap(index)
+      true
+
+    }.ensuring(res => res && valid && getCurrentListMap(0).contains(key))
 
     /** Removes the given key from the array
       *
@@ -292,6 +292,7 @@ object MutableLongMap {
             lemmaRemoveValidKeyDecreasesNumberOfValidKeysInArray(_keys, index, Long.MinValue)
             lemmaPutNonValidKeyPreservesNoDuplicate(_keys, Long.MinValue, index, 0, List())
             lemmaPutLongMinValuePreservesForallSeekEntryOrOpen(_keys, index)(mask)
+            // check(!arrayContainsKeyTailRec(_keys.updated(index, Long.MinValue), key, 0)
             _size -= 1
             _keys(index) = Long.MinValue
             _values(index) = 0
@@ -301,30 +302,7 @@ object MutableLongMap {
           case _ => false
         }
       }
-    }.ensuring(_ => valid)
-
-    // /** Seek for the first empty entry in the Array for a given key
-    //   *
-    //   * @param k the key
-    //   * @return the index in the array corresponding
-    //   */
-    // @pure
-    // def seekEmptyZero(k: Long): Int = {
-    //   require(valid)
-    //   require(validKeyInArray(k))
-
-    //   seekEmptyZeroTailRec(0, toIndex(k, mask))
-    // }.ensuring(res => valid && (res == EntryNotFound || _keys(res) == 0))
-
-    // @pure
-    // def seekEmptyZeroTailRec(x: Int, ee: Int): Int = {
-    //   require(valid && inRange(ee, mask) && x >= 0 && x <= MAX_ITER)
-
-    //   decreases(MAX_ITER - x)
-    //   if (x >= MAX_ITER) EntryNotFound
-    //   else if (_keys(ee) == 0) ee
-    //   else seekEmptyZeroTailRec(x + 1, (ee + 2 * (x + 1) * x - 3) & mask)
-    // }.ensuring(res => valid && (res == EntryNotFound || _keys(res) == 0))
+    }.ensuring(res => valid)//&& (if(res) !getCurrentListMap(0).contains(key) else true))
 
     @pure
     def getCurrentListMap(from: Int): ListMapLongKey[Long] = {
@@ -386,15 +364,6 @@ object MutableLongMap {
 
     //-------------------LEMMAS------------------------------------------------------------------------------------------------------------------------------
 
-    //Big so too slow
-
-    // @pure
-    // def lemmaZeroIsInCurrentListMapIFFDefined(): Unit = {
-    //   require(valid)
-    //   val from = 0
-    //   val res = getCurrentListMap(from)
-    // }.ensuring(_ => valid && (if ((extraKeys & 1) != 0) getCurrentListMap(0).contains(0) else !getCurrentListMap(0).contains(0)))
-
     //------------------SEEKENTRY RELATED--------------------------------------------------------------------------------------------------------------------
     //------------------BEGIN--------------------------------------------------------------------------------------------------------------------------------
 
@@ -412,11 +381,13 @@ object MutableLongMap {
       lemmaArrayForallSeekEntryOrOpenFoundFromSmallerThenFromBigger(_keys, mask, 0, i)
       lemmaSeekEntryOrOpenFindsThenSeekEntryFinds(k, i, _keys, mask)
 
-    }.ensuring(_ => valid && 
-    (seekEntryDecoupled(k)(_keys, mask) match {
-      case Found(index) => inRange(index, mask) && _keys(index) == k
-      case _ => false
-    }))
+    }.ensuring(_ =>
+      valid &&
+        (seekEntryDecoupled(k)(_keys, mask) match {
+          case Found(index) => inRange(index, mask) && _keys(index) == k
+          case _            => false
+        })
+    )
 
     @opaque
     @pure
@@ -443,12 +414,14 @@ object MutableLongMap {
         }
       }
 
-    }.ensuring(_ => valid && 
-    (seekEntryDecoupled(k)(_keys, mask) match {
-      case MissingZero(_) => true
-      case Undefined() => true
-      case _ => false
-    }))
+    }.ensuring(_ =>
+      valid &&
+        (seekEntryDecoupled(k)(_keys, mask) match {
+          case MissingZero(_) => true
+          case Undefined()    => true
+          case _              => false
+        })
+    )
 
     @opaque
     @pure
@@ -462,11 +435,13 @@ object MutableLongMap {
       lemmaArrayForallSeekEntryOrOpenFoundFromSmallerThenFromBigger(_keys, mask, 0, i)
       assert(arrayForallSeekEntryOrOpenFound(i)(_keys, mask))
 
-    }.ensuring(_ => valid && 
+    }.ensuring(_ =>
+      valid &&
         (seekEntryOrOpenDecoupled(k)(_keys, mask) match {
-            case Found(index) => inRange(index, mask) && _keys(index) == k
-            case _ => false
-          }))
+          case Found(index) => inRange(index, mask) && _keys(index) == k
+          case _            => false
+        })
+    )
 
     @opaque
     @pure
@@ -506,10 +481,10 @@ object MutableLongMap {
     }.ensuring(_ => {
       val seekEntryRes = seekEntryOrOpenDecoupled(k)(_keys, mask)
       seekEntryRes match {
-        case MissingZero(index) => inRange(index, mask) && _keys(index) == 0 && !arrayContainsKeyTailRec(_keys, k, 0)
+        case MissingZero(index)   => inRange(index, mask) && _keys(index) == 0 && !arrayContainsKeyTailRec(_keys, k, 0)
         case MissingVacant(index) => inRange(index, mask) && _keys(index) == Long.MinValue && !arrayContainsKeyTailRec(_keys, k, 0)
-        case Undefined() => true
-        case _ => false
+        case Undefined()          => true
+        case _                    => false
       }
     })
 
@@ -519,13 +494,15 @@ object MutableLongMap {
       require(valid)
       require(validKeyInArray(k))
 
-    }.ensuring(_ => seekEntryOrOpenDecoupled(k)(_keys, mask) match {
-      case Undefined() => true
-      case Found(index) => inRange(index, mask)
-      case MissingVacant(index) => inRange(index, mask)
-      case MissingZero(index) => inRange(index, mask)
-      case _ => false
-    })
+    }.ensuring(_ =>
+      seekEntryOrOpenDecoupled(k)(_keys, mask) match {
+        case Undefined()          => true
+        case Found(index)         => inRange(index, mask)
+        case MissingVacant(index) => inRange(index, mask)
+        case MissingZero(index)   => inRange(index, mask)
+        case _                    => false
+      }
+    )
 
     @opaque
     @pure
@@ -533,10 +510,12 @@ object MutableLongMap {
       require(valid)
       require(validKeyInArray(k))
 
-    }.ensuring(_ => (seekEntryDecoupled(k)(_keys, mask) match {
-      case Found(index) => inRange(index, mask)
-      case _ => true
-    }))
+    }.ensuring(_ =>
+      (seekEntryDecoupled(k)(_keys, mask) match {
+        case Found(index) => inRange(index, mask)
+        case _            => true
+      })
+    )
 
     //------------------END----------------------------------------------------------------------------------------------------------------------------------
     //------------------SEEKENTRY RELATED--------------------------------------------------------------------------------------------------------------------
@@ -864,41 +843,41 @@ object MutableLongMap {
 
   object LongMapLongV {
 
-  @pure
-  @inline
-  def validMask(mask: Int): Boolean = {
+    @pure
+    @inline
+    def validMask(mask: Int): Boolean = {
       (mask == 0x00000000 ||
-      mask == 0x00000001 ||
-      mask == 0x00000003 ||
-      mask == 0x00000007 ||
-      mask == 0x0000000f ||
-      mask == 0x0000001f ||
-      mask == 0x0000003f ||
-      mask == 0x0000007f ||
-      mask == 0x000000ff ||
-      mask == 0x000001ff ||
-      mask == 0x000003ff ||
-      mask == 0x000007ff ||
-      mask == 0x00000fff ||
-      mask == 0x00001fff ||
-      mask == 0x00003fff ||
-      mask == 0x00007fff ||
-      mask == 0x0000ffff ||
-      mask == 0x0001ffff ||
-      mask == 0x0003ffff ||
-      mask == 0x0007ffff ||
-      mask == 0x000fffff ||
-      mask == 0x001fffff ||
-      mask == 0x003fffff ||
-      mask == 0x007fffff ||
-      mask == 0x00ffffff ||
-      mask == 0x01ffffff ||
-      mask == 0x03ffffff ||
-      mask == 0x07ffffff) && mask <= IndexMask //MAX is IndexMask
-      
-  }
+        mask == 0x00000001 ||
+        mask == 0x00000003 ||
+        mask == 0x00000007 ||
+        mask == 0x0000000f ||
+        mask == 0x0000001f ||
+        mask == 0x0000003f ||
+        mask == 0x0000007f ||
+        mask == 0x000000ff ||
+        mask == 0x000001ff ||
+        mask == 0x000003ff ||
+        mask == 0x000007ff ||
+        mask == 0x00000fff ||
+        mask == 0x00001fff ||
+        mask == 0x00003fff ||
+        mask == 0x00007fff ||
+        mask == 0x0000ffff ||
+        mask == 0x0001ffff ||
+        mask == 0x0003ffff ||
+        mask == 0x0007ffff ||
+        mask == 0x000fffff ||
+        mask == 0x001fffff ||
+        mask == 0x003fffff ||
+        mask == 0x007fffff ||
+        mask == 0x00ffffff ||
+        mask == 0x01ffffff ||
+        mask == 0x03ffffff ||
+        mask == 0x07ffffff) && mask <= IndexMask //MAX is IndexMask
 
-  /** Checks if i is a valid index in the Array of values
+    }
+
+    /** Checks if i is a valid index in the Array of values
       *
       * @param i
       * @return
@@ -908,7 +887,6 @@ object MutableLongMap {
       // mask + 1 is the size of the Array
       i >= 0 && i < mask + 1
     }
-
 
     @pure
     def arrayForallSeekEntryOrOpenFound(i: Int)(implicit _keys: Array[Long], mask: Int): Boolean = {
@@ -945,8 +923,7 @@ object MutableLongMap {
       (x ^ (x >>> 13)) & mask
     }.ensuring(res => res < mask + 1 && res >= 0)
 
-
-        /** Given a key, seek for its index into the array
+    /** Given a key, seek for its index into the array
       * returns a tuple with (index, error_code)
       * the index is the index of the key if error_code == 0
       *
@@ -965,8 +942,8 @@ object MutableLongMap {
 
       val intermediate = seekKeyOrZeroOrLongMinValueTailRecDecoupled(0, toIndex(k, mask))(k, _keys, mask)
       intermediate match {
-        case Intermediate(undefined, index, x) if(undefined) => Undefined()
-        case Intermediate(undefined, index, x) if(!undefined) => {
+        case Intermediate(undefined, index, x) if (undefined) => Undefined()
+        case Intermediate(undefined, index, x) if (!undefined) => {
           val q = _keys(index)
           if (q == k) Found(index)
           else if (q == 0) MissingZero(index)
@@ -981,21 +958,22 @@ object MutableLongMap {
             val res = seekKeyOrZeroReturnVacantTailRecDecoupled(x, index, index)(k, _keys, mask)
             res match {
               case MissingVacant(index) => MissingZero(index)
-              case _ => res
+              case _                    => res
             }
           }
-        } 
+        }
       }
 
-    }.ensuring(res => res match {
-      case MissingVacant(index) => false //should never happen
-      case Found(index) => _keys(index) == k
-      case MissingZero(_) => true
-      case Undefined() => true
-    })
+    }.ensuring(res =>
+      res match {
+        case MissingVacant(index) => false //should never happen
+        case Found(index)         => _keys(index) == k
+        case MissingZero(_)       => true
+        case Undefined()          => true
+      }
+    )
 
-
-     /** Search the index of the given key. If the key is in the array, it finds its index (OK is returned).
+    /** Search the index of the given key. If the key is in the array, it finds its index (OK is returned).
       * If the key is not in the array, it finds either:
       *   - A free space with a 0 value (MissingBit is returned)
       *   - A freed space with a Long.MinValue value (MissingVacant is returned)
@@ -1014,8 +992,8 @@ object MutableLongMap {
 
       val intermediate = seekKeyOrZeroOrLongMinValueTailRecDecoupled(0, toIndex(k, mask))(k, _keys, mask)
       intermediate match {
-        case Intermediate(undefined, index, x) if(undefined) => Undefined()
-        case Intermediate(undefined, index, x) if(!undefined) => {
+        case Intermediate(undefined, index, x) if (undefined) => Undefined()
+        case Intermediate(undefined, index, x) if (!undefined) => {
           val q = _keys(index)
           if (q == k) Found(index)
           else if (q == 0) MissingZero(index)
@@ -1030,19 +1008,18 @@ object MutableLongMap {
             val res = seekKeyOrZeroReturnVacantTailRecDecoupled(x, index, index)(k, _keys, mask)
             res
           }
-        } 
+        }
       }
     }.ensuring(res =>
       (
         res match {
-          case Undefined() => true
-          case Found(index) => _keys(index) == k
-          case MissingZero(index) => _keys(index) == 0
+          case Undefined()          => true
+          case Found(index)         => _keys(index) == k
+          case MissingZero(index)   => _keys(index) == 0
           case MissingVacant(index) => _keys(index) == Long.MinValue
-          case _ => false
+          case _                    => false
         }
       )
-      
     )
 
     @tailrec
@@ -1068,10 +1045,11 @@ object MutableLongMap {
         seekKeyOrZeroOrLongMinValueTailRecDecoupled(x + 1, (ee + 2 * (x + 1) * x - 3) & mask)
     }.ensuring(res =>
       (res match {
-          case Intermediate(undefined, index, resx) if(undefined) => resx >= MAX_ITER
-          case Intermediate(undefined, index, resx) if(!undefined) => resx < MAX_ITER && resx >= 0 && resx >= x && (_keys(index) == k || _keys(index) == 0 || _keys(index) == Long.MinValue)
-          case _ => false
-        }))
+        case Intermediate(undefined, index, resx) if (undefined)  => resx >= MAX_ITER
+        case Intermediate(undefined, index, resx) if (!undefined) => resx < MAX_ITER && resx >= 0 && resx >= x && (_keys(index) == k || _keys(index) == 0 || _keys(index) == Long.MinValue)
+        case _                                                    => false
+      })
+    )
 
     @tailrec
     @pure
@@ -1093,19 +1071,18 @@ object MutableLongMap {
       decreases(MAX_ITER + 1 - x)
       val q = _keys(ee)
       if (x >= MAX_ITER) Undefined()
-      else if (q == k) Found(ee) 
-      else if (q == 0) MissingVacant(vacantSpotIndex) 
+      else if (q == k) Found(ee)
+      else if (q == 0) MissingVacant(vacantSpotIndex)
       else seekKeyOrZeroReturnVacantTailRecDecoupled(x + 1, (ee + 2 * (x + 1) * x - 3) & mask, vacantSpotIndex)
 
     }.ensuring(res =>
       res match {
-        case Undefined() => true
-        case Found(index) => _keys(index) == k
+        case Undefined()          => true
+        case Found(index)         => _keys(index) == k
         case MissingVacant(index) => index == vacantSpotIndex && _keys(index) == Long.MinValue
-        case  _ => false
+        case _                    => false
       }
     )
-
 
     // LEMMAS -----------------–-----------------–-----------------–-----------------–-----------------–---------------
 
@@ -1130,13 +1107,25 @@ object MutableLongMap {
       require(seekKeyOrZeroReturnVacantTailRecDecoupled(x, index, vacantIndex)(a(j), a, mask) == Found(j))
 
       decreases(MAX_ITER - x)
-      if(a(index) == a(j)){
-        check(seekKeyOrZeroReturnVacantTailRecDecoupled(x, index, vacantIndex)(a.updated(i, Long.MinValue).apply(j), a.updated(i, Long.MinValue), mask) == seekKeyOrZeroReturnVacantTailRecDecoupled(x, index, vacantIndex)(a(j), a, mask))
-      }else {
+      if (a(index) == a(j)) {
+        check(
+          seekKeyOrZeroReturnVacantTailRecDecoupled(x, index, vacantIndex)(a.updated(i, Long.MinValue).apply(j), a.updated(i, Long.MinValue), mask) == seekKeyOrZeroReturnVacantTailRecDecoupled(x, index, vacantIndex)(
+            a(j),
+            a,
+            mask
+          )
+        )
+      } else {
         lemmaPutLongMinValuePreservesForallSeekEntryOrOpenKey1Helper(a, i, j, x + 1, (index + 2 * (x + 1) * x - 3) & mask, vacantIndex)
       }
 
-    }.ensuring(_ => seekKeyOrZeroReturnVacantTailRecDecoupled(x, index, vacantIndex)(a.updated(i, Long.MinValue).apply(j), a.updated(i, Long.MinValue), mask) == seekKeyOrZeroReturnVacantTailRecDecoupled(x, index, vacantIndex)(a(j), a, mask))
+    }.ensuring(_ =>
+      seekKeyOrZeroReturnVacantTailRecDecoupled(x, index, vacantIndex)(a.updated(i, Long.MinValue).apply(j), a.updated(i, Long.MinValue), mask) == seekKeyOrZeroReturnVacantTailRecDecoupled(x, index, vacantIndex)(
+        a(j),
+        a,
+        mask
+      )
+    )
 
     @opaque
     @pure
@@ -1160,9 +1149,10 @@ object MutableLongMap {
       require(seekKeyOrZeroOrLongMinValueTailRecDecoupled(0, toIndex(a(j), mask))(a(j), a, mask) == Intermediate(false, resIndex, resX))
       require(seekKeyOrZeroOrLongMinValueTailRecDecoupled(x, index)(a(j), a, mask) == Intermediate(false, resIndex, resX))
 
-      require(seekKeyOrZeroOrLongMinValueTailRecDecoupled(0, toIndex(a(j), mask))(a(j), a, mask) ==
-               seekKeyOrZeroOrLongMinValueTailRecDecoupled(0, toIndex(a.updated(i, Long.MinValue).apply(j), mask))(a.updated(i, Long.MinValue).apply(j), a.updated(i, Long.MinValue), mask))
-
+      require(
+        seekKeyOrZeroOrLongMinValueTailRecDecoupled(0, toIndex(a(j), mask))(a(j), a, mask) ==
+          seekKeyOrZeroOrLongMinValueTailRecDecoupled(0, toIndex(a.updated(i, Long.MinValue).apply(j), mask))(a.updated(i, Long.MinValue).apply(j), a.updated(i, Long.MinValue), mask)
+      )
 
       decreases(MAX_ITER - x)
       lemmaArrayForallSeekEntryOrOpenFoundFromSmallerThenFromBigger(a, mask, 0, j)
@@ -1170,13 +1160,13 @@ object MutableLongMap {
       check(seekEntryDecoupled(a(j))(a, mask) == Found(j))
       val newArray = a.updated(i, Long.MinValue)
       assert(a(j) == newArray(j))
-      
-      if(x == resX){
+
+      if (x == resX) {
         assert(index == resIndex)
-        if(a(index) == a(j)){
+        if (a(index) == a(j)) {
           assert(j == index)
           check(seekEntryOrOpenDecoupled(a(j))(a, mask) == seekEntryOrOpenDecoupled(a.updated(i, Long.MinValue).apply(j))(a.updated(i, Long.MinValue), mask))
-        }else {
+        } else {
           assert(a(index) == Long.MinValue)
           check(seekEntryOrOpenDecoupled(a(j))(a, mask) == seekKeyOrZeroReturnVacantTailRecDecoupled(x, index, index)(a(j), a, mask))
           check(seekEntryOrOpenDecoupled(newArray(j))(newArray, mask) == seekKeyOrZeroReturnVacantTailRecDecoupled(x, index, index)(newArray(j), newArray, mask))
@@ -1186,15 +1176,23 @@ object MutableLongMap {
       } else {
         lemmaPutLongMinValuePreservesForallSeekEntryOrOpenKey1(a, i, j, x + 1, (index + 2 * (x + 1) * x - 3) & mask, resX, resIndex)
       }
-      
 
     }.ensuring(_ => seekEntryOrOpenDecoupled(a(j))(a, mask) == seekEntryOrOpenDecoupled(a.updated(i, Long.MinValue).apply(j))(a.updated(i, Long.MinValue), mask))
 
-
     @opaque
     @pure
-    def lemmaPutLongMinValueIntermediateNotSameThenNewIsSmallerXAndAtI(a: Array[Long], i: Int, j: Int, x: Int, index: Int, 
-                  intermediateBeforeX: Int, intermediateBeforeIndex: Int, intermediateAfterX: Int, intermediateAfterIndex: Int, undefinedAfter: Boolean)(implicit mask: Int): Unit = {
+    def lemmaPutLongMinValueIntermediateNotSameThenNewIsSmallerXAndAtI(
+        a: Array[Long],
+        i: Int,
+        j: Int,
+        x: Int,
+        index: Int,
+        intermediateBeforeX: Int,
+        intermediateBeforeIndex: Int,
+        intermediateAfterX: Int,
+        intermediateAfterIndex: Int,
+        undefinedAfter: Boolean
+    )(implicit mask: Int): Unit = {
       require(validMask(mask))
       require(a.length == mask + 1)
       require(i >= 0)
@@ -1212,12 +1210,16 @@ object MutableLongMap {
       require(intermediateBeforeIndex >= 0 && intermediateBeforeIndex < a.length)
 
       require(seekKeyOrZeroOrLongMinValueTailRecDecoupled(0, toIndex(a(j), mask))(a(j), a, mask) == Intermediate(false, intermediateBeforeIndex, intermediateBeforeX))
-      require(seekKeyOrZeroOrLongMinValueTailRecDecoupled(0, toIndex(a.updated(i, Long.MinValue).apply(j), mask))(a.updated(i, Long.MinValue).apply(j), a.updated(i, Long.MinValue), mask) == 
-                  Intermediate(undefinedAfter, intermediateAfterIndex, intermediateAfterX))
-      
+      require(
+        seekKeyOrZeroOrLongMinValueTailRecDecoupled(0, toIndex(a.updated(i, Long.MinValue).apply(j), mask))(a.updated(i, Long.MinValue).apply(j), a.updated(i, Long.MinValue), mask) ==
+          Intermediate(undefinedAfter, intermediateAfterIndex, intermediateAfterX)
+      )
+
       require(seekKeyOrZeroOrLongMinValueTailRecDecoupled(x, index)(a(j), a, mask) == Intermediate(false, intermediateBeforeIndex, intermediateBeforeX))
-      require(seekKeyOrZeroOrLongMinValueTailRecDecoupled(x, index)(a.updated(i, Long.MinValue).apply(j), a.updated(i, Long.MinValue), mask) == 
-                  Intermediate(undefinedAfter, intermediateAfterIndex, intermediateAfterX))
+      require(
+        seekKeyOrZeroOrLongMinValueTailRecDecoupled(x, index)(a.updated(i, Long.MinValue).apply(j), a.updated(i, Long.MinValue), mask) ==
+          Intermediate(undefinedAfter, intermediateAfterIndex, intermediateAfterX)
+      )
 
       require(Intermediate(false, intermediateBeforeIndex, intermediateBeforeX) != Intermediate(undefinedAfter, intermediateAfterIndex, intermediateAfterX))
 
@@ -1226,13 +1228,13 @@ object MutableLongMap {
       lemmaArrayForallSeekEntryOrOpenFoundFromSmallerThenFromBigger(a, mask, 0, j)
       check(seekEntryOrOpenDecoupled(a(j))(a, mask) == Found(j))
 
-      if(a(index) == Long.MinValue){
+      if (a(index) == Long.MinValue) {
         check(false)
-      } else if(a(index) == 0) {
+      } else if (a(index) == 0) {
         check(false)
-      } else if(a(index) == a(j)){
+      } else if (a(index) == a(j)) {
         check(false)
-      } else if(a.updated(i, Long.MinValue).apply(index) == Long.MinValue){
+      } else if (a.updated(i, Long.MinValue).apply(index) == Long.MinValue) {
         check(a(index) != Long.MinValue)
         check(a(index) != 0)
         check(a(index) != a(j))
@@ -1240,12 +1242,21 @@ object MutableLongMap {
         check(intermediateAfterIndex == i)
         check(intermediateAfterX < intermediateBeforeX)
       } else {
-        lemmaPutLongMinValueIntermediateNotSameThenNewIsSmallerXAndAtI(a, i, j, x + 1, (index + 2 * (x + 1) * x - 3) & mask, intermediateBeforeX, intermediateBeforeIndex, intermediateAfterX, intermediateAfterIndex, undefinedAfter)
+        lemmaPutLongMinValueIntermediateNotSameThenNewIsSmallerXAndAtI(
+          a,
+          i,
+          j,
+          x + 1,
+          (index + 2 * (x + 1) * x - 3) & mask,
+          intermediateBeforeX,
+          intermediateBeforeIndex,
+          intermediateAfterX,
+          intermediateAfterIndex,
+          undefinedAfter
+        )
       }
 
-    
     }.ensuring(_ => !undefinedAfter && intermediateAfterIndex == i && intermediateAfterX < intermediateBeforeX)
-
 
     @opaque
     @pure
@@ -1265,14 +1276,14 @@ object MutableLongMap {
       require(vacantBefore >= 0 && vacantBefore < a.length)
       require(vacantAfter >= 0 && vacantAfter < a.length)
       require(a(vacantBefore) == Long.MinValue)
-      require(a.updated(i,Long.MinValue).apply(vacantAfter) == Long.MinValue)
+      require(a.updated(i, Long.MinValue).apply(vacantAfter) == Long.MinValue)
       require(vacantAfter == i)
       require(index >= 0 && index < a.length)
       require(seekKeyOrZeroReturnVacantTailRecDecoupled(x, index, vacantBefore)(a(j), a, mask) == Found(j))
 
       decreases(MAX_ITER - x)
 
-      if(a(index) == a(j)){
+      if (a(index) == a(j)) {
         check(j == index)
         check(seekKeyOrZeroReturnVacantTailRecDecoupled(x, index, vacantAfter)(a.updated(i, Long.MinValue).apply(j), a.updated(i, Long.MinValue), mask) == Found(j))
       } else {
@@ -1283,8 +1294,17 @@ object MutableLongMap {
 
     @opaque
     @pure
-    def lemmaPutLongMinValuePreservesForallSeekEntryOrOpenKey2Helper(a: Array[Long], i: Int, j: Int, x: Int, index: Int, 
-                  intermediateBeforeX: Int, intermediateBeforeIndex: Int, intermediateAfterX: Int, intermediateAfterIndex: Int)(implicit mask: Int): Unit = {
+    def lemmaPutLongMinValuePreservesForallSeekEntryOrOpenKey2Helper(
+        a: Array[Long],
+        i: Int,
+        j: Int,
+        x: Int,
+        index: Int,
+        intermediateBeforeX: Int,
+        intermediateBeforeIndex: Int,
+        intermediateAfterX: Int,
+        intermediateAfterIndex: Int
+    )(implicit mask: Int): Unit = {
 
       require(validMask(mask))
       require(a.length == mask + 1)
@@ -1305,18 +1325,24 @@ object MutableLongMap {
       require(intermediateAfterIndex >= 0 && intermediateAfterIndex < a.length)
 
       require(intermediateAfterX < intermediateBeforeX)
-      require(a.updated(i,Long.MinValue).apply(intermediateAfterIndex) == Long.MinValue)
+      require(a.updated(i, Long.MinValue).apply(intermediateAfterIndex) == Long.MinValue)
 
       require(seekKeyOrZeroOrLongMinValueTailRecDecoupled(0, toIndex(a(j), mask))(a(j), a, mask) == Intermediate(false, intermediateBeforeIndex, intermediateBeforeX)) //20
       require(seekKeyOrZeroOrLongMinValueTailRecDecoupled(x, index)(a(j), a, mask) == Intermediate(false, intermediateBeforeIndex, intermediateBeforeX))
-      require(seekKeyOrZeroOrLongMinValueTailRecDecoupled(0, toIndex(a.updated(i, Long.MinValue).apply(j), mask))(a.updated(i, Long.MinValue).apply(j), a.updated(i, Long.MinValue), mask) == 
-                  Intermediate(false, intermediateAfterIndex, intermediateAfterX))
+      require(
+        seekKeyOrZeroOrLongMinValueTailRecDecoupled(0, toIndex(a.updated(i, Long.MinValue).apply(j), mask))(a.updated(i, Long.MinValue).apply(j), a.updated(i, Long.MinValue), mask) ==
+          Intermediate(false, intermediateAfterIndex, intermediateAfterX)
+      )
 
-      require(if(x <= intermediateAfterX ) 
-                  seekKeyOrZeroOrLongMinValueTailRecDecoupled(0, toIndex(a.updated(i, Long.MinValue).apply(j), mask))(a.updated(i, Long.MinValue).apply(j), a.updated(i, Long.MinValue), mask) ==
-                     seekKeyOrZeroOrLongMinValueTailRecDecoupled(x, index)(a.updated(i, Long.MinValue).apply(j), a.updated(i, Long.MinValue), mask)
-              else
-                  seekKeyOrZeroReturnVacantTailRecDecoupled(x, index, intermediateAfterIndex)(a.updated(i, Long.MinValue).apply(j), a.updated(i, Long.MinValue), mask) == seekEntryOrOpenDecoupled(a.updated(i, Long.MinValue).apply(j))(a.updated(i, Long.MinValue), mask)) 
+      require(
+        if (x <= intermediateAfterX)
+          seekKeyOrZeroOrLongMinValueTailRecDecoupled(0, toIndex(a.updated(i, Long.MinValue).apply(j), mask))(a.updated(i, Long.MinValue).apply(j), a.updated(i, Long.MinValue), mask) ==
+            seekKeyOrZeroOrLongMinValueTailRecDecoupled(x, index)(a.updated(i, Long.MinValue).apply(j), a.updated(i, Long.MinValue), mask)
+        else
+          seekKeyOrZeroReturnVacantTailRecDecoupled(x, index, intermediateAfterIndex)(a.updated(i, Long.MinValue).apply(j), a.updated(i, Long.MinValue), mask) == seekEntryOrOpenDecoupled(
+            a.updated(i, Long.MinValue).apply(j)
+          )(a.updated(i, Long.MinValue), mask)
+      )
       require(x <= intermediateBeforeX)
       require(intermediateAfterIndex == i)
       decreases(MAX_ITER - x)
@@ -1325,25 +1351,29 @@ object MutableLongMap {
       check(seekEntryOrOpenDecoupled(a(j))(a, mask) == Found(j))
       check(a(intermediateBeforeIndex) == Long.MinValue || a(intermediateBeforeIndex) == a(j))
 
-      if(a(index) == a.updated(i, Long.MinValue).apply(index) && a(index) == a(j)){
+      if (a(index) == a.updated(i, Long.MinValue).apply(index) && a(index) == a(j)) {
         check(seekEntryOrOpenDecoupled(a(j))(a, mask) == seekEntryOrOpenDecoupled(a.updated(i, Long.MinValue).apply(j))(a.updated(i, Long.MinValue), mask))
-      } else if(a(index) == Long.MinValue){
+      } else if (a(index) == Long.MinValue) {
         check(seekEntryOrOpenDecoupled(a(j))(a, mask) == seekKeyOrZeroReturnVacantTailRecDecoupled(x, index, index)(a(j), a, mask))
         check(index == intermediateBeforeIndex)
         check(x == intermediateBeforeX)
         lemmaPutLongMinValuePreservesSeekKeyOrZeroReturnVacant(a, i, j, x, index, intermediateBeforeIndex, intermediateAfterIndex)(mask)
-      } else if(x == intermediateAfterX){
+      } else if (x == intermediateAfterX) {
         check(index == intermediateAfterIndex)
         check(a.updated(i, Long.MinValue).apply(index) == Long.MinValue)
-        check(seekEntryOrOpenDecoupled(a.updated(i, Long.MinValue).apply(j))(a.updated(i, Long.MinValue), mask) == seekKeyOrZeroReturnVacantTailRecDecoupled(x, index, intermediateAfterIndex)(a.updated(i, Long.MinValue).apply(j), a.updated(i, Long.MinValue), mask))
+        check(
+          seekEntryOrOpenDecoupled(a.updated(i, Long.MinValue).apply(j))(a.updated(i, Long.MinValue), mask) == seekKeyOrZeroReturnVacantTailRecDecoupled(x, index, intermediateAfterIndex)(
+            a.updated(i, Long.MinValue).apply(j),
+            a.updated(i, Long.MinValue),
+            mask
+          )
+        )
         lemmaPutLongMinValuePreservesForallSeekEntryOrOpenKey2Helper(a, i, j, x + 1, (index + 2 * (x + 1) * x - 3) & mask, intermediateBeforeX, intermediateBeforeIndex, intermediateAfterX, intermediateAfterIndex)
       } else {
         lemmaPutLongMinValuePreservesForallSeekEntryOrOpenKey2Helper(a, i, j, x + 1, (index + 2 * (x + 1) * x - 3) & mask, intermediateBeforeX, intermediateBeforeIndex, intermediateAfterX, intermediateAfterIndex)
 
       }
 
-      
-      
     }.ensuring(seekEntryOrOpenDecoupled(a(j))(a, mask) == seekEntryOrOpenDecoupled(a.updated(i, Long.MinValue).apply(j))(a.updated(i, Long.MinValue), mask))
 
     @opaque
@@ -1365,35 +1395,39 @@ object MutableLongMap {
       lemmaArrayForallSeekEntryOrOpenFoundFromSmallerThenFromBigger(a, mask, 0, j)
       check(seekEntryOrOpenDecoupled(a(j))(a, mask) == Found(j))
       intermediateBefore match {
-          case Intermediate(undefined, intermediateBeforeIndex, intermediateBeforeX) => {
-            if(undefined){
-              check(false)
+        case Intermediate(undefined, intermediateBeforeIndex, intermediateBeforeX) => {
+          if (undefined) {
+            check(false)
+          } else {
+            if (
+              seekKeyOrZeroOrLongMinValueTailRecDecoupled(0, toIndex(a(j), mask))(a(j), a, mask) ==
+                seekKeyOrZeroOrLongMinValueTailRecDecoupled(0, toIndex(a.updated(i, Long.MinValue).apply(j), mask))(a.updated(i, Long.MinValue).apply(j), a.updated(i, Long.MinValue), mask)
+            ) {
+              lemmaPutLongMinValuePreservesForallSeekEntryOrOpenKey1(a, i, j, 0, toIndex(a(j), mask), intermediateBeforeX, intermediateBeforeIndex)(mask)
+              check(seekEntryOrOpenDecoupled(a(j))(a, mask) == seekEntryOrOpenDecoupled(a.updated(i, Long.MinValue).apply(j))(a.updated(i, Long.MinValue), mask))
             } else {
-              if(seekKeyOrZeroOrLongMinValueTailRecDecoupled(0, toIndex(a(j), mask))(a(j), a, mask) ==
-                      seekKeyOrZeroOrLongMinValueTailRecDecoupled(0, toIndex(a.updated(i, Long.MinValue).apply(j), mask))(a.updated(i, Long.MinValue).apply(j), a.updated(i, Long.MinValue), mask)){
-                lemmaPutLongMinValuePreservesForallSeekEntryOrOpenKey1(a, i, j, 0, toIndex(a(j), mask), intermediateBeforeX, intermediateBeforeIndex)(mask)
-                check(seekEntryOrOpenDecoupled(a(j))(a, mask) == seekEntryOrOpenDecoupled(a.updated(i, Long.MinValue).apply(j))(a.updated(i, Long.MinValue), mask))
-              } else {
-                val intermediateAfter = seekKeyOrZeroOrLongMinValueTailRecDecoupled(0, toIndex(a.updated(i, Long.MinValue).apply(j), mask))(a.updated(i, Long.MinValue).apply(j), a.updated(i, Long.MinValue), mask)
-                
-                intermediateAfter match {
-                  case Intermediate(undefined, intermediateAfterIndex, intermediateAfterX) => {
-                    lemmaPutLongMinValueIntermediateNotSameThenNewIsSmallerXAndAtI(a, i, j, 0, toIndex(a(j), mask), intermediateBeforeX, intermediateBeforeIndex, intermediateAfterX, intermediateAfterIndex, undefined)
-                      check(!undefined)
-                      check(intermediateAfterIndex == i)
-                      check(a.updated(i, Long.MinValue).apply(intermediateAfterIndex) == Long.MinValue)
-                      check(seekEntryOrOpenDecoupled(a.updated(i, Long.MinValue).apply(j))(a.updated(i, Long.MinValue), mask) == 
-                        seekKeyOrZeroReturnVacantTailRecDecoupled(intermediateAfterX, intermediateAfterIndex, intermediateAfterIndex)(a(j), a.updated(i, Long.MinValue), mask))
-                      lemmaPutLongMinValuePreservesForallSeekEntryOrOpenKey2Helper(a, i, j, 0, toIndex(a(j), mask), intermediateBeforeX, intermediateBeforeIndex, intermediateAfterX, intermediateAfterIndex)(mask)
-                      
-                  }
-                  case _ => check(false)
+              val intermediateAfter = seekKeyOrZeroOrLongMinValueTailRecDecoupled(0, toIndex(a.updated(i, Long.MinValue).apply(j), mask))(a.updated(i, Long.MinValue).apply(j), a.updated(i, Long.MinValue), mask)
+
+              intermediateAfter match {
+                case Intermediate(undefined, intermediateAfterIndex, intermediateAfterX) => {
+                  lemmaPutLongMinValueIntermediateNotSameThenNewIsSmallerXAndAtI(a, i, j, 0, toIndex(a(j), mask), intermediateBeforeX, intermediateBeforeIndex, intermediateAfterX, intermediateAfterIndex, undefined)
+                  check(!undefined)
+                  check(intermediateAfterIndex == i)
+                  check(a.updated(i, Long.MinValue).apply(intermediateAfterIndex) == Long.MinValue)
+                  check(
+                    seekEntryOrOpenDecoupled(a.updated(i, Long.MinValue).apply(j))(a.updated(i, Long.MinValue), mask) ==
+                      seekKeyOrZeroReturnVacantTailRecDecoupled(intermediateAfterX, intermediateAfterIndex, intermediateAfterIndex)(a(j), a.updated(i, Long.MinValue), mask)
+                  )
+                  lemmaPutLongMinValuePreservesForallSeekEntryOrOpenKey2Helper(a, i, j, 0, toIndex(a(j), mask), intermediateBeforeX, intermediateBeforeIndex, intermediateAfterX, intermediateAfterIndex)(mask)
+
                 }
+                case _ => check(false)
               }
-        check(seekEntryOrOpenDecoupled(a(j))(a, mask) == seekEntryOrOpenDecoupled(a.updated(i, Long.MinValue).apply(j))(a.updated(i, Long.MinValue), mask))
-      }
-      }
-          case _ => check(false)
+            }
+            check(seekEntryOrOpenDecoupled(a(j))(a, mask) == seekEntryOrOpenDecoupled(a.updated(i, Long.MinValue).apply(j))(a.updated(i, Long.MinValue), mask))
+          }
+        }
+        case _ => check(false)
       }
 
     }.ensuring(_ => seekEntryOrOpenDecoupled(a(j))(a, mask) == seekEntryOrOpenDecoupled(a.updated(i, Long.MinValue).apply(j))(a.updated(i, Long.MinValue), mask))
@@ -1412,23 +1446,19 @@ object MutableLongMap {
       require(arrayForallSeekEntryOrOpenFound(0)(a, mask))
 
       decreases(a.length - startIndex)
-      
+
       assert(a(i) != 0 && a(i) != Long.MinValue)
       val newArray = a.updated(i, Long.MinValue)
 
-
-      
-        if(startIndex != i && validKeyInArray(a(startIndex))){
-          lemmaPutLongMinValuePreservesForallSeekEntryOrOpenKey2(a, i, startIndex)(mask)
-          lemmaArrayForallSeekEntryOrOpenFoundFromSmallerThenFromBigger(a, mask, 0, startIndex)
-        }
-      if(startIndex < a.length - 1){
-          lemmaPutLongMinValuePreservesForallSeekEntryOrOpenStartIndex(a, i, startIndex + 1)
-          }
-         
+      if (startIndex != i && validKeyInArray(a(startIndex))) {
+        lemmaPutLongMinValuePreservesForallSeekEntryOrOpenKey2(a, i, startIndex)(mask)
+        lemmaArrayForallSeekEntryOrOpenFoundFromSmallerThenFromBigger(a, mask, 0, startIndex)
+      }
+      if (startIndex < a.length - 1) {
+        lemmaPutLongMinValuePreservesForallSeekEntryOrOpenStartIndex(a, i, startIndex + 1)
+      }
 
     }.ensuring(_ => arrayForallSeekEntryOrOpenFound(startIndex)(a.updated(i, Long.MinValue), mask))
-
 
     @opaque
     @pure
@@ -1440,13 +1470,11 @@ object MutableLongMap {
       require(validKeyInArray(a(i)))
       require(arrayNoDuplicates(a, 0))
       require(arrayForallSeekEntryOrOpenFound(0)(a, mask))
-      
+
       assert(a(i) != 0 && a(i) != Long.MinValue)
       lemmaPutLongMinValuePreservesForallSeekEntryOrOpenStartIndex(a, i, 0)(mask)
 
-
     }.ensuring(_ => arrayForallSeekEntryOrOpenFound(0)(a.updated(i, Long.MinValue), mask))
-
 
     @opaque
     @pure
@@ -1470,39 +1498,41 @@ object MutableLongMap {
       require(a(vacantSpotIndex) == Long.MinValue)
       require(a.updated(i, k).apply(vacantSpotIndex) == Long.MinValue)
       require(seekKeyOrZeroReturnVacantTailRecDecoupled(x, index, vacantSpotIndex)(a(j), a, mask) == Found(j))
-      
+
       decreases(MAX_ITER - x)
 
       val resBefore = seekKeyOrZeroReturnVacantTailRecDecoupled(x, index, vacantSpotIndex)(a(j), a, mask)
 
-      if(x >= MAX_ITER){
-          check(false)
-      } else if(a(index) == a(j)){
+      if (x >= MAX_ITER) {
+        check(false)
+      } else if (a(index) == a(j)) {
         assert(index == j)
 
-      } else if(a(index) == 0) {
-          check(false)
+      } else if (a(index) == 0) {
+        check(false)
       } else {
-         assert(index != j)
+        assert(index != j)
         lemmaPutValidKeyPreservesSeekKeyOrZeroReturnVacantTailRecDecoupled(a, i, k, j, x + 1, (index + 2 * (x + 1) * x - 3) & mask, vacantSpotIndex)
-        check(seekKeyOrZeroReturnVacantTailRecDecoupled(x, index, vacantSpotIndex)(a(j), a, mask) == 
-                    seekKeyOrZeroReturnVacantTailRecDecoupled(x + 1, (index + 2 * (x + 1) * x - 3) & mask, vacantSpotIndex)(a(j), a, mask))
+        check(
+          seekKeyOrZeroReturnVacantTailRecDecoupled(x, index, vacantSpotIndex)(a(j), a, mask) ==
+            seekKeyOrZeroReturnVacantTailRecDecoupled(x + 1, (index + 2 * (x + 1) * x - 3) & mask, vacantSpotIndex)(a(j), a, mask)
+        )
 
-        if(seekKeyOrZeroReturnVacantTailRecDecoupled(x, index, vacantSpotIndex)(a.updated(i, k).apply(j), a.updated(i, k), mask) == Undefined()){
+        if (seekKeyOrZeroReturnVacantTailRecDecoupled(x, index, vacantSpotIndex)(a.updated(i, k).apply(j), a.updated(i, k), mask) == Undefined()) {
           check(false)
         }
-        if(seekKeyOrZeroReturnVacantTailRecDecoupled(x, index, vacantSpotIndex)(a.updated(i, k).apply(j), a.updated(i, k), mask) == Found(index)){
+        if (seekKeyOrZeroReturnVacantTailRecDecoupled(x, index, vacantSpotIndex)(a.updated(i, k).apply(j), a.updated(i, k), mask) == Found(index)) {
           check(a.updated(i, k).apply(index) == a(j))
           //TODO Use noDuplicate property
           val q = a(j)
           val newArray = a.updated(i, k)
           assert(q == a.updated(i, k).apply(j))
           assert(q == a.updated(i, k).apply(index))
-          if(j < index){
+          if (j < index) {
             check(arrayContainsKeyTailRec(newArray, q, j))
             check(arrayContainsKeyTailRec(newArray, q, index))
-            lemmaArrayContainsFromImpliesContainsFromSmaller(newArray, q, index, j+1)
-            check(arrayContainsKeyTailRec(newArray, q, j+1))
+            lemmaArrayContainsFromImpliesContainsFromSmaller(newArray, q, index, j + 1)
+            check(arrayContainsKeyTailRec(newArray, q, j + 1))
             check(arrayNoDuplicates(a, 0))
             lemmaPutNewValidKeyPreservesNoDuplicate(a, k, i, 0, List())
             check(arrayNoDuplicates(newArray, 0))
@@ -1511,11 +1541,11 @@ object MutableLongMap {
 
             check(false)
           }
-          if(index < j){
+          if (index < j) {
             check(arrayContainsKeyTailRec(newArray, q, j))
             check(arrayContainsKeyTailRec(newArray, q, index))
-            lemmaArrayContainsFromImpliesContainsFromSmaller(newArray, q, j, index+1)
-            check(arrayContainsKeyTailRec(newArray, q, index+1))
+            lemmaArrayContainsFromImpliesContainsFromSmaller(newArray, q, j, index + 1)
+            check(arrayContainsKeyTailRec(newArray, q, index + 1))
             check(arrayNoDuplicates(a, 0))
             lemmaPutNewValidKeyPreservesNoDuplicate(a, k, i, 0, List())
             check(arrayNoDuplicates(newArray, 0))
@@ -1527,17 +1557,17 @@ object MutableLongMap {
           check(index == j)
           check(false)
         }
-        if(seekKeyOrZeroReturnVacantTailRecDecoupled(x, index, vacantSpotIndex)(a.updated(i, k).apply(j), a.updated(i, k), mask) == MissingVacant(vacantSpotIndex)){
-          check(a.updated(i, k).apply(index) == 0)  
+        if (seekKeyOrZeroReturnVacantTailRecDecoupled(x, index, vacantSpotIndex)(a.updated(i, k).apply(j), a.updated(i, k), mask) == MissingVacant(vacantSpotIndex)) {
+          check(a.updated(i, k).apply(index) == 0)
           check(false)
         }
 
       }
 
-
-
-    }.ensuring(_ => seekKeyOrZeroReturnVacantTailRecDecoupled(x, index, vacantSpotIndex)(a(j), a, mask) == 
-                    seekKeyOrZeroReturnVacantTailRecDecoupled(x, index, vacantSpotIndex)(a.updated(i, k).apply(j), a.updated(i, k), mask))
+    }.ensuring(_ =>
+      seekKeyOrZeroReturnVacantTailRecDecoupled(x, index, vacantSpotIndex)(a(j), a, mask) ==
+        seekKeyOrZeroReturnVacantTailRecDecoupled(x, index, vacantSpotIndex)(a.updated(i, k).apply(j), a.updated(i, k), mask)
+    )
 
     @opaque
     @pure
@@ -1555,9 +1585,10 @@ object MutableLongMap {
       require(seekEntryOrOpenDecoupled(k)(a, mask) == MissingZero(i) || seekEntryOrOpenDecoupled(k)(a, mask) == MissingVacant(i))
       require(arrayForallSeekEntryOrOpenFound(0)(a, mask))
       require(arrayNoDuplicates(a, 0))
-      require(seekKeyOrZeroOrLongMinValueTailRecDecoupled(0, toIndex(a(j), mask))(a(j), a, mask) ==
-               seekKeyOrZeroOrLongMinValueTailRecDecoupled(0, toIndex(a.updated(i, k).apply(j), mask))(a.updated(i, k).apply(j), a.updated(i, k), mask))
-      
+      require(
+        seekKeyOrZeroOrLongMinValueTailRecDecoupled(0, toIndex(a(j), mask))(a(j), a, mask) ==
+          seekKeyOrZeroOrLongMinValueTailRecDecoupled(0, toIndex(a.updated(i, k).apply(j), mask))(a.updated(i, k).apply(j), a.updated(i, k), mask)
+      )
 
       lemmaArrayForallSeekEntryOrOpenFoundFromSmallerThenFromBigger(a, mask, 0, j)
       check(seekEntryOrOpenDecoupled(a(j))(a, mask) == Found(j))
@@ -1566,33 +1597,28 @@ object MutableLongMap {
       val intermediateAfter = seekKeyOrZeroOrLongMinValueTailRecDecoupled(0, toIndex(a.updated(i, k).apply(j), mask))(a.updated(i, k).apply(j), a.updated(i, k), mask)
       assert(intermediateBefore == intermediateAfter)
       intermediateBefore match {
-        case Intermediate(undefined, index, x) if(undefined) => {
-        }
-        case Intermediate(undefined, index, x) if(!undefined) => {
-          if(a(index) == a(j)){
-          } else if(a(index) == 0) {
+        case Intermediate(undefined, index, x) if (undefined) => {}
+        case Intermediate(undefined, index, x) if (!undefined) => {
+          if (a(index) == a(j)) {} else if (a(index) == 0) {
             check(seekEntryOrOpenDecoupled(a(j))(a, mask) == MissingZero(index))
             check(arrayForallSeekEntryOrOpenFound(0)(a, mask))
             lemmaArrayForallSeekEntryOrOpenFoundFromSmallerThenFromBigger(a, mask, 0, j)
             check(false)
           } else {
             check(seekEntryOrOpenDecoupled(a(j))(a, mask) == seekKeyOrZeroReturnVacantTailRecDecoupled(x, index, index)(a(j), a, mask))
-            
-            check(seekEntryOrOpenDecoupled(a.updated(i, k).apply(j))(a.updated(i, k), mask) == 
-                  seekKeyOrZeroReturnVacantTailRecDecoupled(x, index, index)(a.updated(i, k).apply(j), a.updated(i, k), mask))
 
-            
-            lemmaPutValidKeyPreservesSeekKeyOrZeroReturnVacantTailRecDecoupled(a,i, k, j, x, index, index)(mask)
+            check(
+              seekEntryOrOpenDecoupled(a.updated(i, k).apply(j))(a.updated(i, k), mask) ==
+                seekKeyOrZeroReturnVacantTailRecDecoupled(x, index, index)(a.updated(i, k).apply(j), a.updated(i, k), mask)
+            )
 
+            lemmaPutValidKeyPreservesSeekKeyOrZeroReturnVacantTailRecDecoupled(a, i, k, j, x, index, index)(mask)
 
           }
         }
       }
 
-
-
     }.ensuring(_ => seekEntryOrOpenDecoupled(a(j))(a, mask) == seekEntryOrOpenDecoupled(a.updated(i, k).apply(j))(a.updated(i, k), mask))
-  
 
     @opaque
     @pure
@@ -1620,17 +1646,17 @@ object MutableLongMap {
       require(seekKeyOrZeroOrLongMinValueTailRecDecoupled(0, toIndex(a(j), mask))(a(j), a, mask) == seekKeyOrZeroOrLongMinValueTailRecDecoupled(x, index)(a(j), a, mask))
 
       decreases(MAX_ITER - x)
-      if(a(index) == 0){
+      if (a(index) == 0) {
         check(false)
-      } else if(a(index) == Long.MinValue){
+      } else if (a(index) == Long.MinValue) {
         check(false)
-      } else if(a(index) == a(j)){
+      } else if (a(index) == a(j)) {
         check(index == resIndex)
       } else {
         lemmaSeekKeyOrZeroOrLongMinValueTailRecDecoupledFoundKeyThenSameAfterChangingI(a, i, k, j, (index + 2 * (x + 1) * x - 3) & mask, x + 1, resIndex, resX)
       }
 
-    }.ensuring(_ => seekKeyOrZeroOrLongMinValueTailRecDecoupled(x, index)(a.updated(i,k).apply(j), a.updated(i,k), mask) == Intermediate(false, resIndex, resX))
+    }.ensuring(_ => seekKeyOrZeroOrLongMinValueTailRecDecoupled(x, index)(a.updated(i, k).apply(j), a.updated(i, k), mask) == Intermediate(false, resIndex, resX))
 
     @opaque
     @pure
@@ -1662,7 +1688,7 @@ object MutableLongMap {
 
       decreases(MAX_ITER - x)
 
-      if(a(index) == a(j)){
+      if (a(index) == a(j)) {
         check(seekKeyOrZeroReturnVacantTailRecDecoupled(x, index, vacantAfter)(a.updated(i, k).apply(j), a.updated(i, k), mask) == Found(index))
         check(seekKeyOrZeroReturnVacantTailRecDecoupled(x, index, vacantAfter)(a.updated(i, k).apply(j), a.updated(i, k), mask) == Found(j))
       } else {
@@ -1670,9 +1696,7 @@ object MutableLongMap {
         check(seekKeyOrZeroReturnVacantTailRecDecoupled(x, index, vacantAfter)(a.updated(i, k).apply(j), a.updated(i, k), mask) == Found(j))
       }
 
-
     }.ensuring(_ => seekKeyOrZeroReturnVacantTailRecDecoupled(x, index, vacantAfter)(a.updated(i, k).apply(j), a.updated(i, k), mask) == seekKeyOrZeroReturnVacantTailRecDecoupled(x, index, vacantBefore)(a(j), a, mask))
-
 
     @opaque
     @pure
@@ -1698,47 +1722,51 @@ object MutableLongMap {
       require(seekKeyOrZeroOrLongMinValueTailRecDecoupled(0, toIndex(a(j), mask))(a(j), a, mask) == Intermediate(false, resIntermediateIndex, resIntermediateX))
       require(resIntermediateIndex == i)
       require(a(resIntermediateIndex) == Long.MinValue)
-      require(if(x <= resIntermediateX) 
-                  seekKeyOrZeroOrLongMinValueTailRecDecoupled(x, index)(a(j), a, mask) == Intermediate(false, resIntermediateIndex, resIntermediateX)
-              else seekKeyOrZeroReturnVacantTailRecDecoupled(x, index, resIntermediateIndex)(a(j), a, mask) == Found(j))
-      require(seekKeyOrZeroOrLongMinValueTailRecDecoupled(0, toIndex(a.updated(i, k).apply(j), mask))(a.updated(i,k).apply(j), a.updated(i,k), mask) == 
-              seekKeyOrZeroOrLongMinValueTailRecDecoupled(x, index)(a.updated(i,k).apply(j), a.updated(i,k), mask))
+      require(
+        if (x <= resIntermediateX)
+          seekKeyOrZeroOrLongMinValueTailRecDecoupled(x, index)(a(j), a, mask) == Intermediate(false, resIntermediateIndex, resIntermediateX)
+        else seekKeyOrZeroReturnVacantTailRecDecoupled(x, index, resIntermediateIndex)(a(j), a, mask) == Found(j)
+      )
+      require(
+        seekKeyOrZeroOrLongMinValueTailRecDecoupled(0, toIndex(a.updated(i, k).apply(j), mask))(a.updated(i, k).apply(j), a.updated(i, k), mask) ==
+          seekKeyOrZeroOrLongMinValueTailRecDecoupled(x, index)(a.updated(i, k).apply(j), a.updated(i, k), mask)
+      )
 
       decreases(MAX_ITER - x)
-      
+
       lemmaArrayForallSeekEntryOrOpenFoundFromSmallerThenFromBigger(a, mask, 0, j)
       check(seekEntryOrOpenDecoupled(a(j))(a, mask) == Found(j))
       check(seekKeyOrZeroReturnVacantTailRecDecoupled(resIntermediateX, resIntermediateIndex, resIntermediateIndex)(a(j), a, mask) == Found(j))
 
-      val intermediateAfter = seekKeyOrZeroOrLongMinValueTailRecDecoupled(x, index)(a.updated(i,k).apply(j), a.updated(i,k), mask)
+      val intermediateAfter = seekKeyOrZeroOrLongMinValueTailRecDecoupled(x, index)(a.updated(i, k).apply(j), a.updated(i, k), mask)
       intermediateAfter match {
-          case Intermediate(undefined, indexIntermediateAfter, xIntermediateAfter) => {
-            if(x < xIntermediateAfter){
-              lemmaPutValidKeyPreservesVacantIsAtI(a, i, k, j, (index + 2 * (x + 1) * x - 3) & mask, x + 1, resIntermediateIndex, resIntermediateX)
+        case Intermediate(undefined, indexIntermediateAfter, xIntermediateAfter) => {
+          if (x < xIntermediateAfter) {
+            lemmaPutValidKeyPreservesVacantIsAtI(a, i, k, j, (index + 2 * (x + 1) * x - 3) & mask, x + 1, resIntermediateIndex, resIntermediateX)
+          } else {
+            assert(x == xIntermediateAfter)
+            assert(index == indexIntermediateAfter)
+            assert(seekKeyOrZeroReturnVacantTailRecDecoupled(x, index, resIntermediateIndex)(a(j), a, mask) == Found(j))
+            if (a.updated(i, k).apply(index) == a.updated(i, k).apply(j)) {
+              assert(!undefined)
+              check(seekEntryOrOpenDecoupled(a.updated(i, k).apply(j))(a.updated(i, k), mask) == Found(index))
             } else {
-              assert(x == xIntermediateAfter)
-              assert(index == indexIntermediateAfter)
-              assert(seekKeyOrZeroReturnVacantTailRecDecoupled(x, index, resIntermediateIndex)(a(j), a, mask) == Found(j))
-              if(a.updated(i, k).apply(index) == a.updated(i, k).apply(j)){
-                assert(!undefined)
-                check(seekEntryOrOpenDecoupled(a.updated(i, k).apply(j))(a.updated(i, k), mask) == Found(index))
-                } else {
-                  if(a.updated(i, k).apply(index) == 0){
-                    check(seekEntryOrOpenDecoupled(a(j))(a, mask) == seekKeyOrZeroReturnVacantTailRecDecoupled(x, index, resIntermediateIndex)(a(j), a, mask))
-                    check(seekKeyOrZeroReturnVacantTailRecDecoupled(x, index, resIntermediateIndex)(a(j), a, mask) == MissingVacant(resIntermediateIndex))
-                    check(false)
-                  }
-                  check(a.updated(i, k).apply(index) == Long.MinValue)
-                  check(seekEntryOrOpenDecoupled(a.updated(i, k).apply(j))(a.updated(i, k), mask) == seekKeyOrZeroReturnVacantTailRecDecoupled(x, index, index)(a.updated(i, k).apply(j), a.updated(i, k), mask))
-                  check(seekEntryOrOpenDecoupled(a(j))(a, mask) == seekKeyOrZeroReturnVacantTailRecDecoupled(x, index, resIntermediateIndex)(a(j), a, mask))
-                  check(seekKeyOrZeroReturnVacantTailRecDecoupled(x, index, resIntermediateIndex)(a(j), a, mask) == Found(j))
+              if (a.updated(i, k).apply(index) == 0) {
+                check(seekEntryOrOpenDecoupled(a(j))(a, mask) == seekKeyOrZeroReturnVacantTailRecDecoupled(x, index, resIntermediateIndex)(a(j), a, mask))
+                check(seekKeyOrZeroReturnVacantTailRecDecoupled(x, index, resIntermediateIndex)(a(j), a, mask) == MissingVacant(resIntermediateIndex))
+                check(false)
+              }
+              check(a.updated(i, k).apply(index) == Long.MinValue)
+              check(seekEntryOrOpenDecoupled(a.updated(i, k).apply(j))(a.updated(i, k), mask) == seekKeyOrZeroReturnVacantTailRecDecoupled(x, index, index)(a.updated(i, k).apply(j), a.updated(i, k), mask))
+              check(seekEntryOrOpenDecoupled(a(j))(a, mask) == seekKeyOrZeroReturnVacantTailRecDecoupled(x, index, resIntermediateIndex)(a(j), a, mask))
+              check(seekKeyOrZeroReturnVacantTailRecDecoupled(x, index, resIntermediateIndex)(a(j), a, mask) == Found(j))
 
-                  lemmaPutValidKeyPreservesForallSeekEntryOrOpenKey2AfterFindingLongMinValueLater(a, i, k, j, index, x, resIntermediateIndex, index)
-                  }
-            } 
+              lemmaPutValidKeyPreservesForallSeekEntryOrOpenKey2AfterFindingLongMinValueLater(a, i, k, j, index, x, resIntermediateIndex, index)
+            }
           }
-          case _ => check(false)
         }
+        case _ => check(false)
+      }
 
     }.ensuring(_ => seekEntryOrOpenDecoupled(a.updated(i, k).apply(j))(a.updated(i, k), mask) == Found(j))
 
@@ -1765,18 +1793,24 @@ object MutableLongMap {
       require(resIndex >= 0 && resIndex < a.length)
       require(seekKeyOrZeroOrLongMinValueTailRecDecoupled(0, toIndex(a(j), mask))(a(j), a, mask) == Intermediate(false, resIndex, resX))
       require(seekKeyOrZeroOrLongMinValueTailRecDecoupled(x, index)(a(j), a, mask) == Intermediate(false, resIndex, resX))
-      require(seekKeyOrZeroOrLongMinValueTailRecDecoupled(0, toIndex(a(j), mask))(a(j), a, mask) != seekKeyOrZeroOrLongMinValueTailRecDecoupled(0, toIndex(a.updated(i, k).apply(j), mask))(a.updated(i, k).apply(j), a.updated(i, k), mask))
+      require(
+        seekKeyOrZeroOrLongMinValueTailRecDecoupled(0, toIndex(a(j), mask))(a(j), a, mask) != seekKeyOrZeroOrLongMinValueTailRecDecoupled(0, toIndex(a.updated(i, k).apply(j), mask))(
+          a.updated(i, k).apply(j),
+          a.updated(i, k),
+          mask
+        )
+      )
       require(seekKeyOrZeroOrLongMinValueTailRecDecoupled(x, index)(a(j), a, mask) != seekKeyOrZeroOrLongMinValueTailRecDecoupled(x, index)(a.updated(i, k).apply(j), a.updated(i, k), mask))
 
       decreases(MAX_ITER - x)
 
-      if(index == resIndex){
+      if (index == resIndex) {
         assert(x == resX)
         check(resIndex == i)
-        } else {
-          assert(index != i)
-          lemmaSeekKeyOrZeroOrLongMinValueTailRecDecoupledThenChangedAtReturnedIndex(a, i, k, j, (index + 2 * (x + 1) * x - 3) & mask, x + 1, resIndex, resX)
-          check(resIndex == i)
+      } else {
+        assert(index != i)
+        lemmaSeekKeyOrZeroOrLongMinValueTailRecDecoupledThenChangedAtReturnedIndex(a, i, k, j, (index + 2 * (x + 1) * x - 3) & mask, x + 1, resIndex, resX)
+        check(resIndex == i)
 
       }
     }.ensuring(_ => resIndex == i)
@@ -1802,33 +1836,35 @@ object MutableLongMap {
       check(seekEntryOrOpenDecoupled(a(j))(a, mask) == Found(j))
       val newArray = a.updated(i, k)
 
-      if(seekKeyOrZeroOrLongMinValueTailRecDecoupled(0, toIndex(a(j), mask))(a(j), a, mask) ==
-               seekKeyOrZeroOrLongMinValueTailRecDecoupled(0, toIndex(newArray.apply(j), mask))(newArray.apply(j), newArray, mask)){
+      if (
+        seekKeyOrZeroOrLongMinValueTailRecDecoupled(0, toIndex(a(j), mask))(a(j), a, mask) ==
+          seekKeyOrZeroOrLongMinValueTailRecDecoupled(0, toIndex(newArray.apply(j), mask))(newArray.apply(j), newArray, mask)
+      ) {
         lemmaPutValidKeyPreservesForallSeekEntryOrOpenKey1(a, i, k, j)(mask)
         check(seekEntryOrOpenDecoupled(a(j))(a, mask) == seekEntryOrOpenDecoupled(newArray.apply(j))(newArray, mask))
       } else {
         val intermediateBefore = seekKeyOrZeroOrLongMinValueTailRecDecoupled(0, toIndex(a(j), mask))(a(j), a, mask)
         intermediateBefore match {
-          case Intermediate(undefined, index, x) if(undefined) => {
+          case Intermediate(undefined, index, x) if (undefined) => {
             check(seekEntryOrOpenDecoupled(a(j))(a, mask) == Undefined())
             lemmaArrayForallSeekEntryOrOpenFoundFromSmallerThenFromBigger(a, mask, 0, j)
             check(seekEntryOrOpenDecoupled(a(j))(a, mask) == Found(j))
             check(false)
             check(seekEntryOrOpenDecoupled(a(j))(a, mask) == seekEntryOrOpenDecoupled(newArray.apply(j))(newArray, mask))
           }
-          case Intermediate(undefinedBefore, indexBefore, xBefore) if(!undefinedBefore) => {
+          case Intermediate(undefinedBefore, indexBefore, xBefore) if (!undefinedBefore) => {
             check(!undefinedBefore)
             check(xBefore < MAX_ITER)
             check(a(indexBefore) == a(j) || a(indexBefore) == 0 || a(indexBefore) == Long.MinValue)
-            if(a(indexBefore) == a(j)){
+            if (a(indexBefore) == a(j)) {
               lemmaSeekKeyOrZeroOrLongMinValueTailRecDecoupledFoundKeyThenSameAfterChangingI(a, i, k, j, toIndex(a(j), mask), 0, indexBefore, xBefore)(mask)
               check(false)
-            } 
+            }
             check(a(indexBefore) == 0 || a(indexBefore) == Long.MinValue)
-            if(a(indexBefore) == 0) {
+            if (a(indexBefore) == 0) {
               check(false)
             }
-            check(a(indexBefore) == Long.MinValue) 
+            check(a(indexBefore) == Long.MinValue)
 
             lemmaSeekKeyOrZeroOrLongMinValueTailRecDecoupledThenChangedAtReturnedIndex(a, i, k, j, toIndex(a(j), mask), 0, indexBefore, xBefore)(mask)
             lemmaPutValidKeyPreservesVacantIsAtI(a, i, k, j, toIndex(a(j), mask), 0, indexBefore, xBefore)(mask)
@@ -1838,11 +1874,9 @@ object MutableLongMap {
             check(seekEntryOrOpenDecoupled(a(j))(a, mask) == seekEntryOrOpenDecoupled(newArray.apply(j))(newArray, mask)) //OK
           }
         }
-        check(seekEntryOrOpenDecoupled(a(j))(a, mask) == seekEntryOrOpenDecoupled(newArray.apply(j))(newArray, mask)) 
-        
+        check(seekEntryOrOpenDecoupled(a(j))(a, mask) == seekEntryOrOpenDecoupled(newArray.apply(j))(newArray, mask))
+
       }
-
-
 
     }.ensuring(_ => seekEntryOrOpenDecoupled(a(j))(a, mask) == seekEntryOrOpenDecoupled(a.updated(i, k).apply(j))(a.updated(i, k), mask))
 
@@ -1868,17 +1902,19 @@ object MutableLongMap {
       decreases(MAX_ITER - x)
       assert(resX < MAX_ITER)
       assert(a(index) != k)
-      if(x == resX){
-        if(resIndex != index) {
-          if(a(index) == 0 || a(index) == Long.MinValue){
+      if (x == resX) {
+        if (resIndex != index) {
+          if (a(index) == 0 || a(index) == Long.MinValue) {
             check(seekKeyOrZeroOrLongMinValueTailRecDecoupled(x, index)(k, a, mask) == Intermediate(false, index, resX))
             check(false)
           } else {
-            check(seekKeyOrZeroOrLongMinValueTailRecDecoupled(x, index)(k, a, mask) == 
-                  seekKeyOrZeroOrLongMinValueTailRecDecoupled(x + 1, (index + 2 * (x + 1) * x - 3) & mask)(k, a, mask))
+            check(
+              seekKeyOrZeroOrLongMinValueTailRecDecoupled(x, index)(k, a, mask) ==
+                seekKeyOrZeroOrLongMinValueTailRecDecoupled(x + 1, (index + 2 * (x + 1) * x - 3) & mask)(k, a, mask)
+            )
             seekKeyOrZeroOrLongMinValueTailRecDecoupled(x + 1, (index + 2 * (x + 1) * x - 3) & mask)(k, a, mask) match {
-              case Intermediate(undefined, tempIndex, tempX) => assert(tempX >= x+1)
-              case _ => check(false)
+              case Intermediate(undefined, tempIndex, tempX) => assert(tempX >= x + 1)
+              case _                                         => check(false)
             }
             check(false)
           }
@@ -1888,15 +1924,12 @@ object MutableLongMap {
         check(seekKeyOrZeroOrLongMinValueTailRecDecoupled(x, index)(k, a.updated(i, k), mask) == seekKeyOrZeroOrLongMinValueTailRecDecoupled(x, index)(k, a, mask))
       } else {
         check(seekKeyOrZeroOrLongMinValueTailRecDecoupled(x, index)(k, a, mask) == seekKeyOrZeroOrLongMinValueTailRecDecoupled(x + 1, (index + 2 * (x + 1) * x - 3) & mask)(k, a, mask))
-        check(seekKeyOrZeroOrLongMinValueTailRecDecoupled(x, index)(k, a.updated(i, k), mask) == seekKeyOrZeroOrLongMinValueTailRecDecoupled(x + 1, (index + 2 * (x + 1) * x - 3) & mask)(k, a.updated(i,k), mask))
-        lemmaPutValidKeyAtRightPlaceThenFindsHelper1(a, i, k, x+1, (index + 2 * (x + 1) * x - 3) & mask, resIndex, resX)
+        check(seekKeyOrZeroOrLongMinValueTailRecDecoupled(x, index)(k, a.updated(i, k), mask) == seekKeyOrZeroOrLongMinValueTailRecDecoupled(x + 1, (index + 2 * (x + 1) * x - 3) & mask)(k, a.updated(i, k), mask))
+        lemmaPutValidKeyAtRightPlaceThenFindsHelper1(a, i, k, x + 1, (index + 2 * (x + 1) * x - 3) & mask, resIndex, resX)
         check(seekKeyOrZeroOrLongMinValueTailRecDecoupled(x, index)(k, a.updated(i, k), mask) == seekKeyOrZeroOrLongMinValueTailRecDecoupled(x, index)(k, a, mask))
       }
 
-
-
     }.ensuring(_ => seekKeyOrZeroOrLongMinValueTailRecDecoupled(x, index)(k, a.updated(i, k), mask) == seekKeyOrZeroOrLongMinValueTailRecDecoupled(x, index)(k, a, mask))
-
 
     def lemmaPutValidKeyAtRightPlaceThenFindsHelper2(a: Array[Long], i: Int, k: Long, x: Int, index: Int, resIndex: Int, resX: Int)(implicit mask: Int): Unit = {
       require(validMask(mask))
@@ -1917,17 +1950,19 @@ object MutableLongMap {
       decreases(MAX_ITER - x)
       assert(resX < MAX_ITER)
       assert(a(index) != k)
-      if(x == resX){
-        if(resIndex != index) {
-          if(a(index) == 0 || a(index) == Long.MinValue){
+      if (x == resX) {
+        if (resIndex != index) {
+          if (a(index) == 0 || a(index) == Long.MinValue) {
             check(seekKeyOrZeroOrLongMinValueTailRecDecoupled(x, index)(k, a, mask) == Intermediate(false, index, resX))
             check(false)
           } else {
-            check(seekKeyOrZeroOrLongMinValueTailRecDecoupled(x, index)(k, a, mask) == 
-                  seekKeyOrZeroOrLongMinValueTailRecDecoupled(x + 1, (index + 2 * (x + 1) * x - 3) & mask)(k, a, mask))
+            check(
+              seekKeyOrZeroOrLongMinValueTailRecDecoupled(x, index)(k, a, mask) ==
+                seekKeyOrZeroOrLongMinValueTailRecDecoupled(x + 1, (index + 2 * (x + 1) * x - 3) & mask)(k, a, mask)
+            )
             seekKeyOrZeroOrLongMinValueTailRecDecoupled(x + 1, (index + 2 * (x + 1) * x - 3) & mask)(k, a, mask) match {
-              case Intermediate(undefined, tempIndex, tempX) => assert(tempX >= x+1)
-              case _ => check(false)
+              case Intermediate(undefined, tempIndex, tempX) => assert(tempX >= x + 1)
+              case _                                         => check(false)
             }
             check(false)
           }
@@ -1937,12 +1972,10 @@ object MutableLongMap {
         check(seekKeyOrZeroOrLongMinValueTailRecDecoupled(x, index)(k, a.updated(i, k), mask) == seekKeyOrZeroOrLongMinValueTailRecDecoupled(x, index)(k, a, mask))
       } else {
         check(seekKeyOrZeroOrLongMinValueTailRecDecoupled(x, index)(k, a, mask) == seekKeyOrZeroOrLongMinValueTailRecDecoupled(x + 1, (index + 2 * (x + 1) * x - 3) & mask)(k, a, mask))
-        check(seekKeyOrZeroOrLongMinValueTailRecDecoupled(x, index)(k, a.updated(i, k), mask) == seekKeyOrZeroOrLongMinValueTailRecDecoupled(x + 1, (index + 2 * (x + 1) * x - 3) & mask)(k, a.updated(i,k), mask))
-        lemmaPutValidKeyAtRightPlaceThenFindsHelper2(a, i, k, x+1, (index + 2 * (x + 1) * x - 3) & mask, resIndex, resX)
+        check(seekKeyOrZeroOrLongMinValueTailRecDecoupled(x, index)(k, a.updated(i, k), mask) == seekKeyOrZeroOrLongMinValueTailRecDecoupled(x + 1, (index + 2 * (x + 1) * x - 3) & mask)(k, a.updated(i, k), mask))
+        lemmaPutValidKeyAtRightPlaceThenFindsHelper2(a, i, k, x + 1, (index + 2 * (x + 1) * x - 3) & mask, resIndex, resX)
         check(seekKeyOrZeroOrLongMinValueTailRecDecoupled(x, index)(k, a.updated(i, k), mask) == seekKeyOrZeroOrLongMinValueTailRecDecoupled(x, index)(k, a, mask))
       }
-
-
 
     }.ensuring(_ => seekKeyOrZeroOrLongMinValueTailRecDecoupled(x, index)(k, a.updated(i, k), mask) == seekKeyOrZeroOrLongMinValueTailRecDecoupled(x, index)(k, a, mask))
 
@@ -1959,13 +1992,13 @@ object MutableLongMap {
       require(arrayForallSeekEntryOrOpenFound(0)(a, mask))
 
       val intermediateBefore = seekKeyOrZeroOrLongMinValueTailRecDecoupled(0, toIndex(k, mask))(k, a, mask)
-      val intermediateAfter = seekKeyOrZeroOrLongMinValueTailRecDecoupled(0, toIndex(k, mask))(k, a.updated(i,k), mask)
+      val intermediateAfter = seekKeyOrZeroOrLongMinValueTailRecDecoupled(0, toIndex(k, mask))(k, a.updated(i, k), mask)
 
-      if(seekEntryOrOpenDecoupled(k)(a, mask) == MissingZero(i)) {
+      if (seekEntryOrOpenDecoupled(k)(a, mask) == MissingZero(i)) {
         intermediateBefore match {
-          case Intermediate(undefined, index, x) if(undefined) => check(false)
-          case Intermediate(undefined, index, x) if(a(index) == Long.MinValue) => check(false)
-          case Intermediate(undefined, index, x) if(a(index) == k) => check(false)
+          case Intermediate(undefined, index, x) if (undefined)                 => check(false)
+          case Intermediate(undefined, index, x) if (a(index) == Long.MinValue) => check(false)
+          case Intermediate(undefined, index, x) if (a(index) == k)             => check(false)
           case Intermediate(undefined, index, x) => {
             check(a(index) == 0)
             check(index == i)
@@ -1982,22 +2015,20 @@ object MutableLongMap {
       } else {
         assert(seekEntryOrOpenDecoupled(k)(a, mask) == MissingVacant(i))
         intermediateBefore match {
-          case Intermediate(undefined, index, x) if(undefined) => check(false)
-          case Intermediate(undefined, index, x) if(a(index) == Long.MinValue) => {
+          case Intermediate(undefined, index, x) if (undefined) => check(false)
+          case Intermediate(undefined, index, x) if (a(index) == Long.MinValue) => {
             check(index == i)
             lemmaPutValidKeyAtRightPlaceThenFindsHelper2(a, i, k, 0, toIndex(k, mask), index, x)(mask)
             check(seekEntryOrOpenDecoupled(k)(a.updated(i, k), mask) == Found(i))
-            
+
           }
-          case Intermediate(undefined, index, x) if(a(index) == k) => check(false)
-          case Intermediate(undefined, index, x) => check(false)
-          case _ => check(false)
+          case Intermediate(undefined, index, x) if (a(index) == k) => check(false)
+          case Intermediate(undefined, index, x)                    => check(false)
+          case _                                                    => check(false)
         }
 
         check(seekEntryOrOpenDecoupled(k)(a.updated(i, k), mask) == Found(i))
       }
-
-      
 
     }.ensuring(_ => seekEntryOrOpenDecoupled(k)(a.updated(i, k), mask) == Found(i))
 
@@ -2016,38 +2047,37 @@ object MutableLongMap {
       require(seekEntryOrOpenDecoupled(k)(a, mask) == MissingZero(i) || seekEntryOrOpenDecoupled(k)(a, mask) == MissingVacant(i))
       require(arrayForallSeekEntryOrOpenFound(0)(a, mask))
 
-      
       require(arrayForallSeekEntryOrOpenFound(0)(a, mask))
 
       decreases(a.length - startIndex)
 
       val newArray = a.updated(i, k)
-        if(startIndex == i){
-          if(startIndex < a.length - 1){
-              lemmaPutValidKeyPreservesForallSeekEntryOrOpenStartIndex(a, i, k, startIndex + 1)
-          }
-          lemmaPutValidKeyAtRightPlaceThenFinds(a, i, k)(mask)
-          check(seekEntryOrOpenDecoupled(k)(newArray, mask) == Found(i))
-          check(arrayForallSeekEntryOrOpenFound(startIndex)(newArray, mask)) 
-        } else {
-          if(validKeyInArray(a(startIndex))){
-            lemmaPutNewValidKeyPreservesNoDuplicate(a, k, i, 0, Nil())
-            lemmaPutValidKeyPreservesForallSeekEntryOrOpenKey2(a, i, k, startIndex)(mask)
-            lemmaArrayForallSeekEntryOrOpenFoundFromSmallerThenFromBigger(a, mask, 0, startIndex)
-            if(startIndex < a.length - 1){
-              lemmaPutValidKeyPreservesForallSeekEntryOrOpenStartIndex(a, i, k, startIndex + 1)
-            }
-            check(arrayForallSeekEntryOrOpenFound(startIndex)(newArray, mask))
-            
-            } else {
-              if(startIndex < a.length - 1){
-                lemmaPutValidKeyPreservesForallSeekEntryOrOpenStartIndex(a, i, k, startIndex + 1)
-              }
-              check(arrayForallSeekEntryOrOpenFound(startIndex)(newArray, mask) == arrayForallSeekEntryOrOpenFound(startIndex + 1)(newArray, mask))
-              check(arrayForallSeekEntryOrOpenFound(startIndex)(newArray, mask))
-          }
-          check(arrayForallSeekEntryOrOpenFound(startIndex)(newArray, mask)) 
+      if (startIndex == i) {
+        if (startIndex < a.length - 1) {
+          lemmaPutValidKeyPreservesForallSeekEntryOrOpenStartIndex(a, i, k, startIndex + 1)
         }
+        lemmaPutValidKeyAtRightPlaceThenFinds(a, i, k)(mask)
+        check(seekEntryOrOpenDecoupled(k)(newArray, mask) == Found(i))
+        check(arrayForallSeekEntryOrOpenFound(startIndex)(newArray, mask))
+      } else {
+        if (validKeyInArray(a(startIndex))) {
+          lemmaPutNewValidKeyPreservesNoDuplicate(a, k, i, 0, Nil())
+          lemmaPutValidKeyPreservesForallSeekEntryOrOpenKey2(a, i, k, startIndex)(mask)
+          lemmaArrayForallSeekEntryOrOpenFoundFromSmallerThenFromBigger(a, mask, 0, startIndex)
+          if (startIndex < a.length - 1) {
+            lemmaPutValidKeyPreservesForallSeekEntryOrOpenStartIndex(a, i, k, startIndex + 1)
+          }
+          check(arrayForallSeekEntryOrOpenFound(startIndex)(newArray, mask))
+
+        } else {
+          if (startIndex < a.length - 1) {
+            lemmaPutValidKeyPreservesForallSeekEntryOrOpenStartIndex(a, i, k, startIndex + 1)
+          }
+          check(arrayForallSeekEntryOrOpenFound(startIndex)(newArray, mask) == arrayForallSeekEntryOrOpenFound(startIndex + 1)(newArray, mask))
+          check(arrayForallSeekEntryOrOpenFound(startIndex)(newArray, mask))
+        }
+        check(arrayForallSeekEntryOrOpenFound(startIndex)(newArray, mask))
+      }
     }.ensuring(_ => arrayForallSeekEntryOrOpenFound(startIndex)(a.updated(i, k), mask))
 
     @opaque
@@ -2070,34 +2100,37 @@ object MutableLongMap {
     @opaque
     @pure
     def lemmaSeekEntryOrOpenFindsThenSeekEntryFinds(k: Long, i: Int, a: Array[Long], mask: Int): Unit = {
-      require(validMask(mask))  
+      require(validMask(mask))
       require(a.length == mask + 1)
       require(arrayForallSeekEntryOrOpenFound(0)(a, mask))
       require(validKeyInArray(k))
       require(seekEntryOrOpenDecoupled(k)(a, mask) == Found(i))
 
-    }.ensuring(_ => (seekEntryDecoupled(k)(a, mask) match {
-      case Found(index) => index == i 
-      case _ => false
-    }))
+    }.ensuring(_ =>
+      (seekEntryDecoupled(k)(a, mask) match {
+        case Found(index) => index == i
+        case _            => false
+      })
+    )
 
     @opaque
     @pure
     def lemmaSeekEntryOrOpenMissThenSeekEntryMiss(k: Long, i: Int, a: Array[Long], mask: Int): Unit = {
-      require(validMask(mask))  
+      require(validMask(mask))
       require(a.length == mask + 1)
       require(arrayForallSeekEntryOrOpenFound(0)(a, mask))
       require(validKeyInArray(k))
       require(seekEntryOrOpenDecoupled(k)(a, mask) match {
         case Found(_) => false
-        case _ => true
+        case _        => true
       })
 
-    }.ensuring(_ => seekEntryDecoupled(k)(a, mask) match {
-      case Found(_) => false
-      case _ => true
-    })
-
+    }.ensuring(_ =>
+      seekEntryDecoupled(k)(a, mask) match {
+        case Found(_) => false
+        case _        => true
+      }
+    )
 
     // ARRAY UTILITY FUNCTIONS ----------------------------------------------------------------------------------------
 
@@ -2248,18 +2281,18 @@ object MutableLongMap {
       require(!arrayContainsKeyTailRec(a, k, from))
       require(!acc.contains(k))
       require(validKeyInArray(k))
-      require(arrayNoDuplicates(a, from, acc))  
+      require(arrayNoDuplicates(a, from, acc))
       require(ListSpecs.subseq(acc, newAcc))
       require(newAcc.contains(k))
       require(newAcc - k == acc)
       require(!newAcc.contains(0) && !newAcc.contains(Long.MinValue))
       decreases(a.length - from)
 
-      if(from + 1 < a.length){
-        if(validKeyInArray(a(from))){
+      if (from + 1 < a.length) {
+        if (validKeyInArray(a(from))) {
           lemmaAddKeyNoContainsInAccStillNoDuplicate(a, k, from + 1, a(from) :: acc, a(from) :: newAcc)
-          } else {
-            lemmaAddKeyNoContainsInAccStillNoDuplicate(a, k, from + 1, acc, newAcc)  
+        } else {
+          lemmaAddKeyNoContainsInAccStillNoDuplicate(a, k, from + 1, acc, newAcc)
         }
       }
     }.ensuring(_ => arrayNoDuplicates(a, from, newAcc))
@@ -2272,9 +2305,9 @@ object MutableLongMap {
 
       l match {
         case head :: tl => lemmaListMinusENotContainedEqualsList(e, tl)
-          case Nil() => 
-      } 
-    }.ensuring( l - e == l)
+        case Nil()      =>
+      }
+    }.ensuring(l - e == l)
 
     @opaque
     @pure
@@ -2285,11 +2318,10 @@ object MutableLongMap {
       val l = head :: tail
       l match {
         case hd :: tl => lemmaListMinusENotContainedEqualsList(head, tl)
-        case Nil() => ()
+        case Nil()    => ()
       }
-      
-    }.ensuring( (head :: tail) - head == tail)
 
+    }.ensuring((head :: tail) - head == tail)
 
     @opaque
     @pure
@@ -2313,34 +2345,32 @@ object MutableLongMap {
           check(arrayContainsKeyTailRec(newArray, k, from))
           check(arrayNoDuplicates(newArray, from, acc) == arrayNoDuplicates(newArray, from + 1, k :: acc))
 
-          if(arrayContainsKeyTailRec(a, k, from + 1)){
+          if (arrayContainsKeyTailRec(a, k, from + 1)) {
             lemmaArrayContainsFromImpliesContainsFromZero(a, k, from)
             check(false)
           }
-          if(validKeyInArray(a(from))){
+          if (validKeyInArray(a(from))) {
             lemmaListSubSeqRefl(acc)
             lemmaArrayNoDuplicateWithAnAccThenWithSubSeqAcc(a, a(from) :: acc, acc, from + 1)
-          } else {
-
-          }
+          } else {}
           check(arrayNoDuplicates(a, from + 1, acc))
           lemmaListSubSeqRefl(acc)
           lemmaLMinusHeadEqualsTail(k, acc)
           lemmaAddKeyNoContainsInAccStillNoDuplicate(a, k, from + 1, acc, k :: acc)
           lemmaPutNewValidKeyPreservesNoDuplicate(a, k, i, from + 1, k :: acc)
           check(arrayNoDuplicates(a.updated(i, k), from, acc))
-          } else {
-            if(validKeyInArray(a(from))){
-              if(a(from) == k){
-                check(arrayContainsKeyTailRec(a, k, from))
-                lemmaArrayContainsFromImpliesContainsFromZero(a, k, from)
-                check(false)
-              }
-              assert(a(from) != k)
-              lemmaPutNewValidKeyPreservesNoDuplicate(a, k, i, from + 1, a(from) :: acc)
-            } else {
-              lemmaPutNewValidKeyPreservesNoDuplicate(a, k, i, from + 1, acc)
+        } else {
+          if (validKeyInArray(a(from))) {
+            if (a(from) == k) {
+              check(arrayContainsKeyTailRec(a, k, from))
+              lemmaArrayContainsFromImpliesContainsFromZero(a, k, from)
+              check(false)
             }
+            assert(a(from) != k)
+            lemmaPutNewValidKeyPreservesNoDuplicate(a, k, i, from + 1, a(from) :: acc)
+          } else {
+            lemmaPutNewValidKeyPreservesNoDuplicate(a, k, i, from + 1, acc)
+          }
           check(arrayNoDuplicates(a.updated(i, k), from, acc))
         }
 
@@ -2757,108 +2787,6 @@ object MutableLongMap {
       LongMapLongV.lemmaArrayContainsFromImpliesContainsFromZero(a, k, i)
     }.ensuring(_ => arrayContainsKeyTailRec(a, k, 0))
 
-  }
-
-
-
-
-
-
-
-
-
-  @extern
-  def assume(b: Boolean): Unit = {}.ensuring(_ => b)
-
-  @extern
-  def myPrintf(s: String): Unit = printf(s)
-
-  /** Something like a test bench
-    *
-    * @param args
-    */
-  @extern
-  def main(args: Array[String]): Unit = {
-    // val l = LongMapLongV()
-    // l.update(1, 42)
-    // assert(l(1) == 42)
-    // l.update(1, 43)
-    // assert(l(1) == 43)
-
-    // printf("working 1...\n")
-
-    // l.update(0, 43)
-    // // assert(l.zeroValue == 43)
-    // assert(l(0) == 43)
-
-    // printf("working 2...\n")
-    // val n = IndexMask + 10
-    // printf("n = " + n.toString() + "\n")
-
-    // val insertedCorrectly = Array.fill(n + 1)(false)
-    // for (i <- 1 to n) {
-    //   val b = l.update(i, i + 1)
-    //   insertedCorrectly(i) = b
-    //   if (b) {
-    //     printf("inserted number = " + i.toString() + "\n")
-    //   }
-    // }
-    // printf("working 3...\n")
-
-    // for (i <- 1 to n) {
-    //   if (insertedCorrectly(i)) {
-    //     printf(
-    //       "checking for i = " + i.toString() + " and that gives + " + l(
-    //         i
-    //       ) + "\n"
-    //     )
-    //     assert(l(i) == i + 1)
-    //   }
-    //   // if(i%100 == 0) printf(s"go $i\n");
-    // }
-
-    // // l.repack()
-
-    // // for (i <- 1 to n) {
-    // //     // printf("cheking for i = " + i.toString() + "\n")
-    // //   assert(l(i) == i + 1)
-    // //   // if(i%100 == 0) printf(s"go $i\n");
-    // // }
-    // l.update(Long.MinValue, 1234)
-    // // assert(l.minValue == 1234)
-    // assert(l(Long.MinValue) == 1234)
-    // l.update(3, 128549)
-    // assert(l(3) == 128549)
-
-    // printf(
-    //   "seekEntry with k = -42 : (" + l.seekEntry(-42)._1.toString() + " ," + l
-    //     .seekEntry(-42)
-    //     ._2
-    //     .toString() + ")\n"
-    // )
-    // printf(
-    //   "seekEntryOrOpen with k = -42 : (" + l
-    //     .seekEntryOrOpen(-42)
-    //     ._1
-    //     .toString() + " ," + l.seekEntryOrOpen(-42)._2.toString() + ")\n"
-    // )
-    // printf(
-    //   "seekEntryOrOpen with k = 12 : (" + l
-    //     .seekEntryOrOpen(12)
-    //     ._1
-    //     .toString() + " ," + l.seekEntryOrOpen(12)._2.toString() + ")\n"
-    // )
-    // printf(
-    //   "seekEntryOrOpen with k = 4002 : (" + l
-    //     .seekEntryOrOpen(4002)
-    //     ._1
-    //     .toString() + " ," + l.seekEntryOrOpen(4002)._2.toString() + ")\n"
-    // )
-    // printf("seekEmptyZero with k = 4002 : " + l.seekEmptyZero(4002).toString() + "\n")
-
-    // // printf("_size = " + l._size + "\n")
-    // printf("VacantBit = " + VacantBit + "\n")
-    // printf("ok")
   }
 
 }
