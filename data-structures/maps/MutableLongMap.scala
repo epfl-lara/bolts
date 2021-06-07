@@ -62,6 +62,11 @@ object MutableLongMap {
     import LongMapLongV.lemmaSeekEntryOrOpenFindsThenSeekEntryFinds
     import LongMapLongV.lemmaPutValidKeyPreservesForallSeekEntryOrOpen
     import LongMapLongV.lemmaArrayNoDuplicateRemoveOneThenNotContain
+    import LongMapLongV.getCurrentListMap
+    import LongMapLongV.lemmaKeyInListMapIsInArray
+    import LongMapLongV.lemmaValidKeyInArrayIsInListMap
+    import LongMapLongV.lemmaKeyInListMapThenSameValueInArray
+    import LongMapLongV.lemmaArrayContainsKeyThenInListMap
 
     @inlineOnce
     def valid: Boolean = {
@@ -732,9 +737,6 @@ object MutableLongMap {
       require(_values.length == mask + 1 )
       require(_keys.length == _values.length )
       require(mask >= 0 )
-      require(_size >= 0 )
-      require(_size <= mask + 1 )
-      require(size >= _size )
       require(extraKeys >= 0 )
       require(extraKeys <= 3)
       require(arrayForallSeekEntryOrOpenFound(0)(_keys, mask))
@@ -764,7 +766,6 @@ object MutableLongMap {
       res
 
     }.ensuring(res =>
-      valid &&
         (if (from < _keys.length && validKeyInArray(_keys(from))) res.contains(_keys(from)) && res(_keys(from)) == _values(from)
          else
            // else if (from < _keys.length) res == getCurrentListMap(from + 1) else
@@ -779,9 +780,7 @@ object MutableLongMap {
       require(_values.length == mask + 1 )
       require(_keys.length == _values.length )
       require(mask >= 0 )
-      require(_size >= 0 )
-      require(_size <= mask + 1 )
-      require(size >= _size )
+
       require(extraKeys >= 0 )
       require(extraKeys <= 3)
       require(arrayForallSeekEntryOrOpenFound(0)(_keys, mask))
@@ -799,7 +798,6 @@ object MutableLongMap {
         getCurrentListMapNoExtraKeys(_keys, _values, mask, extraKeys, zeroValue, minValue, from + 1)
       }
     }.ensuring(res =>
-      valid &&
         !res.contains(0) && !res.contains(Long.MinValue) &&
         (if (from < _keys.length && validKeyInArray(_keys(from)))
            res.contains(_keys(from)) && res(_keys(from)) == _values(from)
@@ -818,9 +816,7 @@ object MutableLongMap {
       require(_values.length == mask + 1 )
       require(_keys.length == _values.length )
       require(mask >= 0 )
-      require(_size >= 0 )
-      require(_size <= mask + 1 )
-      require(size >= _size )
+
       require(extraKeys >= 0 )
       require(extraKeys <= 3)
       require(arrayForallSeekEntryOrOpenFound(0)(_keys, mask))
@@ -848,9 +844,7 @@ object MutableLongMap {
       require(_values.length == mask + 1 )
       require(_keys.length == _values.length )
       require(mask >= 0 )
-      require(_size >= 0 )
-      require(_size <= mask + 1 )
-      require(size >= _size )
+
       require(extraKeys >= 0 )
       require(extraKeys <= 3)
       require(arrayForallSeekEntryOrOpenFound(0)(_keys, mask))
@@ -868,9 +862,7 @@ object MutableLongMap {
       require(_values.length == mask + 1 )
       require(_keys.length == _values.length )
       require(mask >= 0 )
-      require(_size >= 0 )
-      require(_size <= mask + 1 )
-      require(size >= _size )
+
       require(extraKeys >= 0 )
       require(extraKeys <= 3)
       require(arrayForallSeekEntryOrOpenFound(0)(_keys, mask))
@@ -881,7 +873,7 @@ object MutableLongMap {
 
       lemmaInListMapFromThenFromZero(_keys, _values, mask, extraKeys, zeroValue, minValue, i, i)
 
-    }.ensuring(_ => valid && getCurrentListMap(_keys, _values, mask, extraKeys, zeroValue, minValue, 0).contains(_keys(i)))
+    }.ensuring(_ => getCurrentListMap(_keys, _values, mask, extraKeys, zeroValue, minValue, 0).contains(_keys(i)))
 
     @opaque
     @pure
@@ -890,9 +882,7 @@ object MutableLongMap {
       require(_values.length == mask + 1 )
       require(_keys.length == _values.length )
       require(mask >= 0 )
-      require(_size >= 0 )
-      require(_size <= mask + 1 )
-      require(size >= _size )
+
       require(extraKeys >= 0 )
       require(extraKeys <= 3)
       require(arrayForallSeekEntryOrOpenFound(0)(_keys, mask))
@@ -910,7 +900,7 @@ object MutableLongMap {
         lemmaArrayContainsKeyThenInListMap(_keys, _values, mask, extraKeys, zeroValue, minValue, k, from + 1)
       }
 
-    }.ensuring(_ => valid && getCurrentListMap(_keys, _values, mask, extraKeys, zeroValue, minValue, 0).contains(k))
+    }.ensuring(_ => getCurrentListMap(_keys, _values, mask, extraKeys, zeroValue, minValue, 0).contains(k))
 
     @opaque
     @pure
@@ -919,9 +909,7 @@ object MutableLongMap {
       require(_values.length == mask + 1 )
       require(_keys.length == _values.length )
       require(mask >= 0 )
-      require(_size >= 0 )
-      require(_size <= mask + 1 )
-      require(size >= _size )
+
       require(extraKeys >= 0 )
       require(extraKeys <= 3)
       require(arrayForallSeekEntryOrOpenFound(0)(_keys, mask))
@@ -956,9 +944,7 @@ object MutableLongMap {
       require(_values.length == mask + 1 )
       require(_keys.length == _values.length )
       require(mask >= 0 )
-      require(_size >= 0 )
-      require(_size <= mask + 1 )
-      require(size >= _size )
+
       require(extraKeys >= 0 )
       require(extraKeys <= 3)
       require(arrayForallSeekEntryOrOpenFound(0)(_keys, mask))
@@ -977,9 +963,7 @@ object MutableLongMap {
       require(_values.length == mask + 1 )
       require(_keys.length == _values.length )
       require(mask >= 0 )
-      require(_size >= 0 )
-      require(_size <= mask + 1 )
-      require(size >= _size )
+
       require(extraKeys >= 0 )
       require(extraKeys <= 3)
       require(arrayForallSeekEntryOrOpenFound(0)(_keys, mask))
@@ -1018,9 +1002,7 @@ object MutableLongMap {
       require(_values.length == mask + 1 )
       require(_keys.length == _values.length )
       require(mask >= 0 )
-      require(_size >= 0 )
-      require(_size <= mask + 1 )
-      require(size >= _size )
+
       require(extraKeys >= 0 )
       require(extraKeys <= 3)
       require(arrayForallSeekEntryOrOpenFound(0)(_keys, mask))
@@ -1044,7 +1026,7 @@ object MutableLongMap {
 
       }
 
-    }.ensuring(_ => valid && getCurrentListMap(_keys, _values, mask, extraKeys, zeroValue, minValue, from + 1).contains(k))
+    }.ensuring(_ => getCurrentListMap(_keys, _values, mask, extraKeys, zeroValue, minValue, from + 1).contains(k))
 
     @opaque
     @pure
@@ -1053,9 +1035,7 @@ object MutableLongMap {
       require(_values.length == mask + 1 )
       require(_keys.length == _values.length )
       require(mask >= 0 )
-      require(_size >= 0 )
-      require(_size <= mask + 1 )
-      require(size >= _size )
+
       require(extraKeys >= 0 )
       require(extraKeys <= 3)
       require(arrayForallSeekEntryOrOpenFound(0)(_keys, mask))
@@ -1079,7 +1059,7 @@ object MutableLongMap {
         }
       }
 
-    }.ensuring(_ => valid && getCurrentListMap(_keys, _values, mask, extraKeys, zeroValue, minValue, from + 1).contains(k))
+    }.ensuring(_ => getCurrentListMap(_keys, _values, mask, extraKeys, zeroValue, minValue, from + 1).contains(k))
 
     @opaque
     @pure
@@ -1088,9 +1068,7 @@ object MutableLongMap {
       require(_values.length == mask + 1 )
       require(_keys.length == _values.length )
       require(mask >= 0 )
-      require(_size >= 0 )
-      require(_size <= mask + 1 )
-      require(size >= _size )
+
       require(extraKeys >= 0 )
       require(extraKeys <= 3)
       require(arrayForallSeekEntryOrOpenFound(0)(_keys, mask))
@@ -1109,7 +1087,7 @@ object MutableLongMap {
         ListMapLongKeyLemmas.addStillContains(getCurrentListMapNoExtraKeys(_keys, _values, mask, extraKeys, zeroValue, minValue, from + 1), 0L, zeroValue, k)
         ListMapLongKeyLemmas.addStillContains(getCurrentListMapNoExtraKeys(_keys, _values, mask, extraKeys, zeroValue, minValue, from + 1) + (0L, zeroValue), Long.MinValue, minValue, k)
       }
-    }.ensuring(_ => valid && getCurrentListMap(_keys, _values, mask, extraKeys, zeroValue, minValue, from + 1).contains(k))
+    }.ensuring(_ => getCurrentListMap(_keys, _values, mask, extraKeys, zeroValue, minValue, from + 1).contains(k))
 
     @opaque
     @pure
@@ -1118,9 +1096,7 @@ object MutableLongMap {
       require(_values.length == mask + 1 )
       require(_keys.length == _values.length )
       require(mask >= 0 )
-      require(_size >= 0 )
-      require(_size <= mask + 1 )
-      require(size >= _size )
+
       require(extraKeys >= 0 )
       require(extraKeys <= 3)
       require(arrayForallSeekEntryOrOpenFound(0)(_keys, mask))
@@ -1140,7 +1116,7 @@ object MutableLongMap {
         }
       }
 
-    }.ensuring(_ => valid && getCurrentListMap(_keys, _values, mask, extraKeys, zeroValue, minValue, from + 1).contains(k))
+    }.ensuring(_ => getCurrentListMap(_keys, _values, mask, extraKeys, zeroValue, minValue, from + 1).contains(k))
 
     @opaque
     @pure
@@ -1149,9 +1125,7 @@ object MutableLongMap {
       require(_values.length == mask + 1 )
       require(_keys.length == _values.length )
       require(mask >= 0 )
-      require(_size >= 0 )
-      require(_size <= mask + 1 )
-      require(size >= _size )
+
       require(extraKeys >= 0 )
       require(extraKeys <= 3)
       require(arrayForallSeekEntryOrOpenFound(0)(_keys, mask))
@@ -1174,9 +1148,7 @@ object MutableLongMap {
       require(_values.length == mask + 1 )
       require(_keys.length == _values.length )
       require(mask >= 0 )
-      require(_size >= 0 )
-      require(_size <= mask + 1 )
-      require(size >= _size )
+
       require(extraKeys >= 0 )
       require(extraKeys <= 3)
       require(arrayForallSeekEntryOrOpenFound(0)(_keys, mask))
@@ -1201,9 +1173,7 @@ object MutableLongMap {
       require(_values.length == mask + 1 )
       require(_keys.length == _values.length )
       require(mask >= 0 )
-      require(_size >= 0 )
-      require(_size <= mask + 1 )
-      require(size >= _size )
+
       require(extraKeys >= 0 )
       require(extraKeys <= 3)
       require(arrayForallSeekEntryOrOpenFound(0)(_keys, mask))
@@ -1228,9 +1198,7 @@ object MutableLongMap {
       require(_values.length == mask + 1 )
       require(_keys.length == _values.length )
       require(mask >= 0 )
-      require(_size >= 0 )
-      require(_size <= mask + 1 )
-      require(size >= _size )
+
       require(extraKeys >= 0 )
       require(extraKeys <= 3)
       require(arrayForallSeekEntryOrOpenFound(0)(_keys, mask))
@@ -1281,7 +1249,6 @@ object MutableLongMap {
         }
       }
     }.ensuring(_ =>
-      valid &&
         (if (k != 0 && k != Long.MinValue) arrayContainsKeyTailRec(_keys, k, from) else if (k == 0) (extraKeys & 1) != 0 else (extraKeys & 2) != 0)
     )
 
