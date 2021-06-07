@@ -9,11 +9,9 @@ import scala.collection.concurrent.RestartException
 
 object MutableLongMap {
 
-  private final val IndexMask: Int = 0x07ffffff // = Integer.MAX_VALUE/8
-  // private final val MissingBit = 0x80000000
-  // private final val VacantBit = 0x40000000
-  // private final val MissVacant = 0xc0000000
-  // private final val EntryNotFound = 0x20000000
+  private final val IndexMask: Int = 0x3fffffff // = Integer.MAX_VALUE/8
+  //Try next with 0x3FFFFFFF
+
   private final val MAX_ITER = 2048 // arbitrary
 
   /** A Map with keys of type Long and values of type Long
@@ -36,8 +34,7 @@ object MutableLongMap {
       private var _size: Int = 0,
       private var _keys: Array[Long] = Array.fill(IndexMask + 1)(0),
       private var _values: Array[Long] = Array.fill(IndexMask + 1)(0),
-      val defaultEntry: Long => Long = (x => 0),
-      var repackingKeyCount: Int = 0
+      val defaultEntry: Long => Long = (x => 0)
   ) {
     import LongMapLongV.validKeyInArray
     import LongMapLongV.arrayCountValidKeysTailRec
@@ -264,7 +261,7 @@ object MutableLongMap {
       lemmaValidKeyInArrayIsInListMap(index)
       true
 
-    }.ensuring(res => res && valid && getCurrentListMap(0).contains(key))
+    }.ensuring(res => res && valid && getCurrentListMap(0).contains(key)) //&& getCurrentListMap(0) == getCurrentListMap(0) + (key, v))
 
     /** Removes the given key from the array
       *
@@ -879,7 +876,10 @@ object MutableLongMap {
         mask == 0x00ffffff ||
         mask == 0x01ffffff ||
         mask == 0x03ffffff ||
-        mask == 0x07ffffff) && mask <= IndexMask //MAX is IndexMask
+        mask == 0x07ffffff ||
+        mask == 0x0fffffff ||
+        mask == 0x1fffffff ||
+        mask == 0x3fffffff ) && mask <= IndexMask //MAX is IndexMask
 
     }
 
