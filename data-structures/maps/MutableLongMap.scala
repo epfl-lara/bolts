@@ -63,6 +63,7 @@ object MutableLongMap {
     import LongMapLongV.lemmaPutLongMinValuePreservesForallSeekEntryOrOpen
     import LongMapLongV.lemmaSeekEntryOrOpenFindsThenSeekEntryFinds
     import LongMapLongV.lemmaPutValidKeyPreservesForallSeekEntryOrOpen
+    import LongMapLongV.lemmaArrayNoDuplicateRemoveOneThenNotContain
 
     @inlineOnce
     def valid: Boolean = {
@@ -292,17 +293,22 @@ object MutableLongMap {
             lemmaRemoveValidKeyDecreasesNumberOfValidKeysInArray(_keys, index, Long.MinValue)
             lemmaPutNonValidKeyPreservesNoDuplicate(_keys, Long.MinValue, index, 0, List())
             lemmaPutLongMinValuePreservesForallSeekEntryOrOpen(_keys, index)(mask)
-            // check(!arrayContainsKeyTailRec(_keys.updated(index, Long.MinValue), key, 0)
+            lemmaArrayNoDuplicateRemoveOneThenNotContain(_keys, index, key)
             _size -= 1
             _keys(index) = Long.MinValue
             _values(index) = 0
+
+            if(getCurrentListMap(0).contains(key)){
+              lemmaKeyInListMapIsInArray(key)
+              check(false)
+            }
 
             true
           }
           case _ => false
         }
       }
-    }.ensuring(res => valid)//&& (if(res) !getCurrentListMap(0).contains(key) else true))
+    }.ensuring(res => valid && (if(res) !getCurrentListMap(0).contains(key) else true))
 
     @pure
     def getCurrentListMap(from: Int): ListMapLongKey[Long] = {
@@ -2230,6 +2236,39 @@ object MutableLongMap {
     }
 
     // --------------------- ARRAY RELATED LEMMAS ------------------------------------------
+
+    @pure
+    @opaque
+    def lemmaArrayNoDuplicateRemoveOneThenNotContain(a: Array[Long], i: Int, k: Long): Unit = {
+      require(i >= 0)
+      require(i < a.length)
+      require(a.length < Integer.MAX_VALUE)
+      require(arrayNoDuplicates(a, 0))
+      require(validKeyInArray(k))
+      require(a(i) == k)
+
+      if(arrayContainsKeyTailRec(a.updated(i, Long.MinValue), k, 0)){
+        val j = arrayScanForKey(a.updated(i, Long.MinValue), k, 0)
+        assert(j != i)
+        check(a.updated(i, Long.MinValue).apply(j) == k)
+        if(j > i){
+          check(arrayContainsKeyTailRec(a, k, j))
+          lemmaNoDuplicateFromThenFromBigger(a, 0, i)
+          lemmaArrayContainsFromImpliesContainsFromSmaller(a, k, j, i+1)
+          lemmaArrayNoDuplicateThenKeysContainedNotEqual(a, k, i, Nil())
+          check(false)
+        } else if(i > j) {
+          check(arrayContainsKeyTailRec(a, k, i))
+          lemmaNoDuplicateFromThenFromBigger(a, 0, j)
+          lemmaArrayContainsFromImpliesContainsFromSmaller(a, k, i, j+1)
+          lemmaArrayNoDuplicateThenKeysContainedNotEqual(a, k, j, Nil())
+          check(false)
+        }
+
+      }
+
+    }.ensuring(_ => !arrayContainsKeyTailRec(a.updated(i, Long.MinValue), k, 0))
+
     @pure
     @opaque
     def lemmaArrayContainsFromImpliesContainsFromZero(
