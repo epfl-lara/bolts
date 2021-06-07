@@ -312,63 +312,6 @@ object MutableLongMap {
       }
     }.ensuring(res => valid && (if(res) !map.contains(key) else true))
 
-    @pure
-    def getCurrentListMap(from: Int): ListMapLongKey[Long] = {
-      require(valid)
-      require(from >= 0 && from <= _keys.length)
-
-      val res = if ((extraKeys & 1) != 0 && (extraKeys & 2) != 0) {
-        // it means there is a mapping for the key 0 and the Long.MIN_VALUE
-        (getCurrentListMapNoExtraKeys(from) + (0L, zeroValue)) + (Long.MinValue, minValue)
-      } else if ((extraKeys & 1) != 0 && (extraKeys & 2) == 0) {
-        // it means there is a mapping for the key 0
-        getCurrentListMapNoExtraKeys(from) + (0L, zeroValue)
-      } else if ((extraKeys & 2) != 0 && (extraKeys & 1) == 0) {
-        // it means there is a mapping for the key Long.MIN_VALUE
-        getCurrentListMapNoExtraKeys(from) + (Long.MinValue, minValue)
-      } else {
-        getCurrentListMapNoExtraKeys(from)
-      }
-      if (from < _keys.length && validKeyInArray(_keys(from))) {
-        ListMapLongKeyLemmas.addStillContains(getCurrentListMapNoExtraKeys(from), 0, zeroValue, _keys(from))
-        ListMapLongKeyLemmas.addStillContains(getCurrentListMapNoExtraKeys(from), Long.MinValue, minValue, _keys(from))
-        ListMapLongKeyLemmas.addApplyDifferent(getCurrentListMapNoExtraKeys(from), 0, zeroValue, _keys(from))
-        ListMapLongKeyLemmas.addApplyDifferent(getCurrentListMapNoExtraKeys(from), Long.MinValue, minValue, _keys(from))
-      }
-
-      res
-
-    }.ensuring(res =>
-      valid &&
-        (if (from < _keys.length && validKeyInArray(_keys(from))) res.contains(_keys(from)) && res(_keys(from)) == _values(from)
-         else
-           // else if (from < _keys.length) res == getCurrentListMap(from + 1) else
-           true) &&
-        (if ((extraKeys & 1) != 0) res.contains(0) && res(0) == zeroValue else !res.contains(0)) &&
-        (if ((extraKeys & 2) != 0) res.contains(Long.MinValue) && res(Long.MinValue) == minValue else !res.contains(Long.MinValue))
-    )
-
-    @pure
-    def getCurrentListMapNoExtraKeys(from: Int): ListMapLongKey[Long] = {
-      require(valid && from >= 0 && from <= _keys.length)
-      decreases(_keys.length + 1 - from)
-      if (from >= _keys.length) {
-        ListMapLongKey.empty[Long]
-      } else if (validKeyInArray(_keys(from))) {
-        ListMapLongKeyLemmas.addStillNotContains(getCurrentListMapNoExtraKeys(from + 1), _keys(from), _values(from), 0)
-
-        getCurrentListMapNoExtraKeys(from + 1) + (_keys(from), _values(from))
-      } else {
-        getCurrentListMapNoExtraKeys(from + 1)
-      }
-    }.ensuring(res =>
-      valid &&
-        !res.contains(0) && !res.contains(Long.MinValue) &&
-        (if (from < _keys.length && validKeyInArray(_keys(from)))
-           res.contains(_keys(from)) && res(_keys(from)) == _values(from)
-         else if (from < _keys.length) res == getCurrentListMapNoExtraKeys(from + 1)
-         else res.isEmpty)
-    )
 
     //-------------------LEMMAS------------------------------------------------------------------------------------------------------------------------------
 
@@ -528,7 +471,323 @@ object MutableLongMap {
     //------------------END----------------------------------------------------------------------------------------------------------------------------------
     //------------------SEEKENTRY RELATED--------------------------------------------------------------------------------------------------------------------
 
-    //------------------EQUIVALENCE BETWEEN LISTMAP AND ARRAY------------------------------------------------------------------------------------------------
+  }
+
+  abstract sealed class SeekEntryResult
+  case class Found(index: Int) extends SeekEntryResult
+  case class MissingZero(index: Int) extends SeekEntryResult
+  case class MissingVacant(index: Int) extends SeekEntryResult
+  case class Intermediate(undefined: Boolean, index: Int, x: Int) extends SeekEntryResult
+  case class Undefined() extends SeekEntryResult
+
+  object LongMapLongV {
+
+    @pure
+    @inline
+    def validMask(mask: Int): Boolean = {
+      (mask == 0x00000000 ||
+        mask == 0x00000001 ||
+        mask == 0x00000003 ||
+        mask == 0x00000007 ||
+        mask == 0x0000000f ||
+        mask == 0x0000001f ||
+        mask == 0x0000003f ||
+        mask == 0x0000007f ||
+        mask == 0x000000ff ||
+        mask == 0x000001ff ||
+        mask == 0x000003ff ||
+        mask == 0x000007ff ||
+        mask == 0x00000fff ||
+        mask == 0x00001fff ||
+        mask == 0x00003fff ||
+        mask == 0x00007fff ||
+        mask == 0x0000ffff ||
+        mask == 0x0001ffff ||
+        mask == 0x0003ffff ||
+        mask == 0x0007ffff ||
+        mask == 0x000fffff ||
+        mask == 0x001fffff ||
+        mask == 0x003fffff ||
+        mask == 0x007fffff ||
+        mask == 0x00ffffff ||
+        mask == 0x01ffffff ||
+        mask == 0x03ffffff ||
+        mask == 0x07ffffff ||
+        mask == 0x0fffffff ||
+        mask == 0x1fffffff ||
+        mask == 0x3fffffff ) && mask <= IndexMask //MAX is IndexMask
+
+    }
+
+    /** Checks if i is a valid index in the Array of values
+      *
+      * @param i
+      * @return
+      */
+    @inline
+    private def inRange(i: Int, mask: Int): Boolean = {
+      // mask + 1 is the size of the Array
+      i >= 0 && i < mask + 1
+    }
+
+    @pure
+    def arrayForallSeekEntryOrOpenFound(i: Int)(implicit _keys: Array[Long], mask: Int): Boolean = {
+      require(validMask(mask))
+      require(_keys.length == mask + 1)
+      require(i >= 0)
+      require(i <= _keys.length)
+
+      decreases(_keys.length - i)
+
+      if (i >= _keys.length) true
+      else if (validKeyInArray(_keys(i))) {
+        assert(arrayContainsKeyTailRec(_keys, _keys(i), i))
+        lemmaArrayContainsFromImpliesContainsFromZero(_keys, _keys(i), i)
+        LongMapLongV.seekEntryOrOpenDecoupled(_keys(i))(_keys, mask) == Found(i) &&
+        // arrayScanForKey(_keys, _keys(i), 0) == i &&
+        arrayForallSeekEntryOrOpenFound(i + 1)
+      } else arrayForallSeekEntryOrOpenFound(i + 1)
+    }
+
+    /** Compute the index in the array for a given key
+      * with hashing and magic stuff
+      *
+      * @param k the key
+      * @return
+      */
+    @pure
+    private def toIndex(k: Long, mask: Int): Int = {
+      require(mask >= 0)
+      require(mask <= IndexMask)
+      // Part of the MurmurHash3 32 bit finalizer
+      val h = ((k ^ (k >>> 32)) & 0xffffffffL).toInt
+      val x = (h ^ (h >>> 16)) * 0x85ebca6b
+      (x ^ (x >>> 13)) & mask
+    }.ensuring(res => res < mask + 1 && res >= 0)
+
+    /** Given a key, seek for its index into the array
+      * returns a tuple with (index, error_code)
+      * the index is the index of the key if error_code == 0
+      *
+      * @param k the key
+      * @return the index of the given key into the array
+      */
+    @pure
+    def seekEntryDecoupled(k: Long)(implicit _keys: Array[Long], mask: Int): SeekEntryResult = {
+      require(validMask(mask))
+      require(_keys.length == mask + 1)
+      require(validKeyInArray(k))
+      decreases(1)
+      // ORIGINAL IMPLEMENTATION ------- BEGINNING ------------------------------------
+      // seekEntryTailRecDecoupled(k, 0, toIndex(k, mask))(_keys, mask)
+      // ORIGINAL IMPLEMENTATION ------- END ------------------------------------------
+
+      val intermediate = seekKeyOrZeroOrLongMinValueTailRecDecoupled(0, toIndex(k, mask))(k, _keys, mask)
+      intermediate match {
+        case Intermediate(undefined, index, x) if (undefined) => Undefined()
+        case Intermediate(undefined, index, x) if (!undefined) => {
+          val q = _keys(index)
+          if (q == k) Found(index)
+          else if (q == 0) MissingZero(index)
+          else {
+            // e is the index of Long.MinValue i.e. the spot of a key that was removed
+            // we need to search from there until we see a zero. Maybe the key we're
+            // searching was added after the removed one and is therefore after in the array.
+            // If we find a zero before finding the key, we return the index of the Long.MinValue to
+            // reuse the spot
+            assert(_keys(index) == Long.MinValue)
+            assert(index >= 0 && index < mask + 1)
+            val res = seekKeyOrZeroReturnVacantTailRecDecoupled(x, index, index)(k, _keys, mask)
+            res match {
+              case MissingVacant(index) => MissingZero(index)
+              case _                    => res
+            }
+          }
+        }
+      }
+
+    }.ensuring(res =>
+      res match {
+        case MissingVacant(index) => false //should never happen
+        case Found(index)         => _keys(index) == k
+        case MissingZero(_)       => true
+        case Undefined()          => true
+      }
+    )
+
+    /** Search the index of the given key. If the key is in the array, it finds its index (OK is returned).
+      * If the key is not in the array, it finds either:
+      *   - A free space with a 0 value (MissingBit is returned)
+      *   - A freed space with a Long.MinValue value (MissingVacant is returned)
+      *   - Nothing (EntryNotFound is returned as a second value)
+      *
+      * @param k
+      * @return
+      */
+    @pure
+    def seekEntryOrOpenDecoupled(k: Long)(implicit _keys: Array[Long], mask: Int): SeekEntryResult = {
+      require(validMask(mask))
+      require(mask >= 0)
+      require(_keys.length == mask + 1)
+
+      require(validKeyInArray(k))
+
+      val intermediate = seekKeyOrZeroOrLongMinValueTailRecDecoupled(0, toIndex(k, mask))(k, _keys, mask)
+      intermediate match {
+        case Intermediate(undefined, index, x) if (undefined) => Undefined()
+        case Intermediate(undefined, index, x) if (!undefined) => {
+          val q = _keys(index)
+          if (q == k) Found(index)
+          else if (q == 0) MissingZero(index)
+          else {
+            // e is the index of Long.MinValue i.e. the spot of a key that was removed
+            // we need to search from there until we see a zero. Maybe the key we're
+            // searching was added after the removed one and is therefore after in the array.
+            // If we find a zero before finding the key, we return the index of the Long.MinValue to
+            // reuse the spot
+            assert(_keys(index) == Long.MinValue)
+            assert(index >= 0 && index < mask + 1)
+            val res = seekKeyOrZeroReturnVacantTailRecDecoupled(x, index, index)(k, _keys, mask)
+            res
+          }
+        }
+      }
+    }.ensuring(res =>
+      (
+        res match {
+          case Undefined()          => true
+          case Found(index)         => _keys(index) == k
+          case MissingZero(index)   => _keys(index) == 0
+          case MissingVacant(index) => _keys(index) == Long.MinValue
+          case _                    => false
+        }
+      )
+    )
+
+    @tailrec
+    @pure
+    private def seekKeyOrZeroOrLongMinValueTailRecDecoupled(x: Int, ee: Int)(implicit
+        k: Long,
+        _keys: Array[Long],
+        mask: Int
+    ): SeekEntryResult = {
+      require(validMask(mask))
+      require(mask >= 0)
+      require(_keys.length == mask + 1)
+
+      require(ee >= 0 && ee < mask + 1)
+      require(x <= MAX_ITER && x >= 0)
+      require(validKeyInArray(k))
+
+      decreases(MAX_ITER - x)
+      val q = _keys(ee)
+      if (x >= MAX_ITER) Intermediate(true, ee, x)
+      else if (q == k || q + q == 0) Intermediate(false, ee, x)
+      else
+        seekKeyOrZeroOrLongMinValueTailRecDecoupled(x + 1, (ee + 2 * (x + 1) * x - 3) & mask)
+    }.ensuring(res =>
+      (res match {
+        case Intermediate(undefined, index, resx) if (undefined)  => resx >= MAX_ITER
+        case Intermediate(undefined, index, resx) if (!undefined) => resx < MAX_ITER && resx >= 0 && resx >= x && (_keys(index) == k || _keys(index) == 0 || _keys(index) == Long.MinValue)
+        case _                                                    => false
+      })
+    )
+
+    @tailrec
+    @pure
+    private def seekKeyOrZeroReturnVacantTailRecDecoupled(x: Int, ee: Int, vacantSpotIndex: Int)(implicit
+        k: Long,
+        _keys: Array[Long],
+        mask: Int
+    ): SeekEntryResult = {
+      require(validMask(mask))
+      require(mask >= 0)
+      require(_keys.length == mask + 1)
+
+      require(ee >= 0 && ee < mask + 1)
+      require(x <= MAX_ITER && x >= 0)
+      require(vacantSpotIndex >= 0 && vacantSpotIndex < mask + 1)
+      require(_keys(vacantSpotIndex) == Long.MinValue)
+      require(validKeyInArray(k))
+
+      decreases(MAX_ITER + 1 - x)
+      val q = _keys(ee)
+      if (x >= MAX_ITER) Undefined()
+      else if (q == k) Found(ee)
+      else if (q == 0) MissingVacant(vacantSpotIndex)
+      else seekKeyOrZeroReturnVacantTailRecDecoupled(x + 1, (ee + 2 * (x + 1) * x - 3) & mask, vacantSpotIndex)
+
+    }.ensuring(res =>
+      res match {
+        case Undefined()          => true
+        case Found(index)         => _keys(index) == k
+        case MissingVacant(index) => index == vacantSpotIndex && _keys(index) == Long.MinValue
+        case _                    => false
+      }
+    )
+
+    @pure
+    def getCurrentListMap(from: Int): ListMapLongKey[Long] = {
+      require(valid)
+      require(from >= 0 && from <= _keys.length)
+
+      val res = if ((extraKeys & 1) != 0 && (extraKeys & 2) != 0) {
+        // it means there is a mapping for the key 0 and the Long.MIN_VALUE
+        (getCurrentListMapNoExtraKeys(from) + (0L, zeroValue)) + (Long.MinValue, minValue)
+      } else if ((extraKeys & 1) != 0 && (extraKeys & 2) == 0) {
+        // it means there is a mapping for the key 0
+        getCurrentListMapNoExtraKeys(from) + (0L, zeroValue)
+      } else if ((extraKeys & 2) != 0 && (extraKeys & 1) == 0) {
+        // it means there is a mapping for the key Long.MIN_VALUE
+        getCurrentListMapNoExtraKeys(from) + (Long.MinValue, minValue)
+      } else {
+        getCurrentListMapNoExtraKeys(from)
+      }
+      if (from < _keys.length && validKeyInArray(_keys(from))) {
+        ListMapLongKeyLemmas.addStillContains(getCurrentListMapNoExtraKeys(from), 0, zeroValue, _keys(from))
+        ListMapLongKeyLemmas.addStillContains(getCurrentListMapNoExtraKeys(from), Long.MinValue, minValue, _keys(from))
+        ListMapLongKeyLemmas.addApplyDifferent(getCurrentListMapNoExtraKeys(from), 0, zeroValue, _keys(from))
+        ListMapLongKeyLemmas.addApplyDifferent(getCurrentListMapNoExtraKeys(from), Long.MinValue, minValue, _keys(from))
+      }
+
+      res
+
+    }.ensuring(res =>
+      valid &&
+        (if (from < _keys.length && validKeyInArray(_keys(from))) res.contains(_keys(from)) && res(_keys(from)) == _values(from)
+         else
+           // else if (from < _keys.length) res == getCurrentListMap(from + 1) else
+           true) &&
+        (if ((extraKeys & 1) != 0) res.contains(0) && res(0) == zeroValue else !res.contains(0)) &&
+        (if ((extraKeys & 2) != 0) res.contains(Long.MinValue) && res(Long.MinValue) == minValue else !res.contains(Long.MinValue))
+    )
+
+    @pure
+    def getCurrentListMapNoExtraKeys(from: Int): ListMapLongKey[Long] = {
+      require(valid && from >= 0 && from <= _keys.length)
+      decreases(_keys.length + 1 - from)
+      if (from >= _keys.length) {
+        ListMapLongKey.empty[Long]
+      } else if (validKeyInArray(_keys(from))) {
+        ListMapLongKeyLemmas.addStillNotContains(getCurrentListMapNoExtraKeys(from + 1), _keys(from), _values(from), 0)
+
+        getCurrentListMapNoExtraKeys(from + 1) + (_keys(from), _values(from))
+      } else {
+        getCurrentListMapNoExtraKeys(from + 1)
+      }
+    }.ensuring(res =>
+      valid &&
+        !res.contains(0) && !res.contains(Long.MinValue) &&
+        (if (from < _keys.length && validKeyInArray(_keys(from)))
+           res.contains(_keys(from)) && res(_keys(from)) == _values(from)
+         else if (from < _keys.length) res == getCurrentListMapNoExtraKeys(from + 1)
+         else res.isEmpty)
+    )
+
+
+    // LEMMAS -----------------–-----------------–-----------------–-----------------–-----------------–---------------
+
+     //------------------EQUIVALENCE BETWEEN LISTMAP AND ARRAY------------------------------------------------------------------------------------------------
     //------------------BEGIN--------------------------------------------------------------------------------------------------------------------------------
 
     def lemmaKeyInListMapThenSameValueInArray(k: Long, i: Int): Unit = {
@@ -840,262 +1099,7 @@ object MutableLongMap {
     //------------------END----------------------------------------------------------------------------------------------------------------------------------
     //------------------EQUIVALENCE BETWEEN LISTMAP AND ARRAY------------------------------------------------------------------------------------------------
 
-  }
 
-  abstract sealed class SeekEntryResult
-  case class Found(index: Int) extends SeekEntryResult
-  case class MissingZero(index: Int) extends SeekEntryResult
-  case class MissingVacant(index: Int) extends SeekEntryResult
-  case class Intermediate(undefined: Boolean, index: Int, x: Int) extends SeekEntryResult
-  case class Undefined() extends SeekEntryResult
-
-  object LongMapLongV {
-
-    @pure
-    @inline
-    def validMask(mask: Int): Boolean = {
-      (mask == 0x00000000 ||
-        mask == 0x00000001 ||
-        mask == 0x00000003 ||
-        mask == 0x00000007 ||
-        mask == 0x0000000f ||
-        mask == 0x0000001f ||
-        mask == 0x0000003f ||
-        mask == 0x0000007f ||
-        mask == 0x000000ff ||
-        mask == 0x000001ff ||
-        mask == 0x000003ff ||
-        mask == 0x000007ff ||
-        mask == 0x00000fff ||
-        mask == 0x00001fff ||
-        mask == 0x00003fff ||
-        mask == 0x00007fff ||
-        mask == 0x0000ffff ||
-        mask == 0x0001ffff ||
-        mask == 0x0003ffff ||
-        mask == 0x0007ffff ||
-        mask == 0x000fffff ||
-        mask == 0x001fffff ||
-        mask == 0x003fffff ||
-        mask == 0x007fffff ||
-        mask == 0x00ffffff ||
-        mask == 0x01ffffff ||
-        mask == 0x03ffffff ||
-        mask == 0x07ffffff ||
-        mask == 0x0fffffff ||
-        mask == 0x1fffffff ||
-        mask == 0x3fffffff ) && mask <= IndexMask //MAX is IndexMask
-
-    }
-
-    /** Checks if i is a valid index in the Array of values
-      *
-      * @param i
-      * @return
-      */
-    @inline
-    private def inRange(i: Int, mask: Int): Boolean = {
-      // mask + 1 is the size of the Array
-      i >= 0 && i < mask + 1
-    }
-
-    @pure
-    def arrayForallSeekEntryOrOpenFound(i: Int)(implicit _keys: Array[Long], mask: Int): Boolean = {
-      require(validMask(mask))
-      require(_keys.length == mask + 1)
-      require(i >= 0)
-      require(i <= _keys.length)
-
-      decreases(_keys.length - i)
-
-      if (i >= _keys.length) true
-      else if (validKeyInArray(_keys(i))) {
-        assert(arrayContainsKeyTailRec(_keys, _keys(i), i))
-        lemmaArrayContainsFromImpliesContainsFromZero(_keys, _keys(i), i)
-        LongMapLongV.seekEntryOrOpenDecoupled(_keys(i))(_keys, mask) == Found(i) &&
-        // arrayScanForKey(_keys, _keys(i), 0) == i &&
-        arrayForallSeekEntryOrOpenFound(i + 1)
-      } else arrayForallSeekEntryOrOpenFound(i + 1)
-    }
-
-    /** Compute the index in the array for a given key
-      * with hashing and magic stuff
-      *
-      * @param k the key
-      * @return
-      */
-    @pure
-    private def toIndex(k: Long, mask: Int): Int = {
-      require(mask >= 0)
-      require(mask <= IndexMask)
-      // Part of the MurmurHash3 32 bit finalizer
-      val h = ((k ^ (k >>> 32)) & 0xffffffffL).toInt
-      val x = (h ^ (h >>> 16)) * 0x85ebca6b
-      (x ^ (x >>> 13)) & mask
-    }.ensuring(res => res < mask + 1 && res >= 0)
-
-    /** Given a key, seek for its index into the array
-      * returns a tuple with (index, error_code)
-      * the index is the index of the key if error_code == 0
-      *
-      * @param k the key
-      * @return the index of the given key into the array
-      */
-    @pure
-    def seekEntryDecoupled(k: Long)(implicit _keys: Array[Long], mask: Int): SeekEntryResult = {
-      require(validMask(mask))
-      require(_keys.length == mask + 1)
-      require(validKeyInArray(k))
-      decreases(1)
-      // ORIGINAL IMPLEMENTATION ------- BEGINNING ------------------------------------
-      // seekEntryTailRecDecoupled(k, 0, toIndex(k, mask))(_keys, mask)
-      // ORIGINAL IMPLEMENTATION ------- END ------------------------------------------
-
-      val intermediate = seekKeyOrZeroOrLongMinValueTailRecDecoupled(0, toIndex(k, mask))(k, _keys, mask)
-      intermediate match {
-        case Intermediate(undefined, index, x) if (undefined) => Undefined()
-        case Intermediate(undefined, index, x) if (!undefined) => {
-          val q = _keys(index)
-          if (q == k) Found(index)
-          else if (q == 0) MissingZero(index)
-          else {
-            // e is the index of Long.MinValue i.e. the spot of a key that was removed
-            // we need to search from there until we see a zero. Maybe the key we're
-            // searching was added after the removed one and is therefore after in the array.
-            // If we find a zero before finding the key, we return the index of the Long.MinValue to
-            // reuse the spot
-            assert(_keys(index) == Long.MinValue)
-            assert(index >= 0 && index < mask + 1)
-            val res = seekKeyOrZeroReturnVacantTailRecDecoupled(x, index, index)(k, _keys, mask)
-            res match {
-              case MissingVacant(index) => MissingZero(index)
-              case _                    => res
-            }
-          }
-        }
-      }
-
-    }.ensuring(res =>
-      res match {
-        case MissingVacant(index) => false //should never happen
-        case Found(index)         => _keys(index) == k
-        case MissingZero(_)       => true
-        case Undefined()          => true
-      }
-    )
-
-    /** Search the index of the given key. If the key is in the array, it finds its index (OK is returned).
-      * If the key is not in the array, it finds either:
-      *   - A free space with a 0 value (MissingBit is returned)
-      *   - A freed space with a Long.MinValue value (MissingVacant is returned)
-      *   - Nothing (EntryNotFound is returned as a second value)
-      *
-      * @param k
-      * @return
-      */
-    @pure
-    def seekEntryOrOpenDecoupled(k: Long)(implicit _keys: Array[Long], mask: Int): SeekEntryResult = {
-      require(validMask(mask))
-      require(mask >= 0)
-      require(_keys.length == mask + 1)
-
-      require(validKeyInArray(k))
-
-      val intermediate = seekKeyOrZeroOrLongMinValueTailRecDecoupled(0, toIndex(k, mask))(k, _keys, mask)
-      intermediate match {
-        case Intermediate(undefined, index, x) if (undefined) => Undefined()
-        case Intermediate(undefined, index, x) if (!undefined) => {
-          val q = _keys(index)
-          if (q == k) Found(index)
-          else if (q == 0) MissingZero(index)
-          else {
-            // e is the index of Long.MinValue i.e. the spot of a key that was removed
-            // we need to search from there until we see a zero. Maybe the key we're
-            // searching was added after the removed one and is therefore after in the array.
-            // If we find a zero before finding the key, we return the index of the Long.MinValue to
-            // reuse the spot
-            assert(_keys(index) == Long.MinValue)
-            assert(index >= 0 && index < mask + 1)
-            val res = seekKeyOrZeroReturnVacantTailRecDecoupled(x, index, index)(k, _keys, mask)
-            res
-          }
-        }
-      }
-    }.ensuring(res =>
-      (
-        res match {
-          case Undefined()          => true
-          case Found(index)         => _keys(index) == k
-          case MissingZero(index)   => _keys(index) == 0
-          case MissingVacant(index) => _keys(index) == Long.MinValue
-          case _                    => false
-        }
-      )
-    )
-
-    @tailrec
-    @pure
-    private def seekKeyOrZeroOrLongMinValueTailRecDecoupled(x: Int, ee: Int)(implicit
-        k: Long,
-        _keys: Array[Long],
-        mask: Int
-    ): SeekEntryResult = {
-      require(validMask(mask))
-      require(mask >= 0)
-      require(_keys.length == mask + 1)
-
-      require(ee >= 0 && ee < mask + 1)
-      require(x <= MAX_ITER && x >= 0)
-      require(validKeyInArray(k))
-
-      decreases(MAX_ITER - x)
-      val q = _keys(ee)
-      if (x >= MAX_ITER) Intermediate(true, ee, x)
-      else if (q == k || q + q == 0) Intermediate(false, ee, x)
-      else
-        seekKeyOrZeroOrLongMinValueTailRecDecoupled(x + 1, (ee + 2 * (x + 1) * x - 3) & mask)
-    }.ensuring(res =>
-      (res match {
-        case Intermediate(undefined, index, resx) if (undefined)  => resx >= MAX_ITER
-        case Intermediate(undefined, index, resx) if (!undefined) => resx < MAX_ITER && resx >= 0 && resx >= x && (_keys(index) == k || _keys(index) == 0 || _keys(index) == Long.MinValue)
-        case _                                                    => false
-      })
-    )
-
-    @tailrec
-    @pure
-    private def seekKeyOrZeroReturnVacantTailRecDecoupled(x: Int, ee: Int, vacantSpotIndex: Int)(implicit
-        k: Long,
-        _keys: Array[Long],
-        mask: Int
-    ): SeekEntryResult = {
-      require(validMask(mask))
-      require(mask >= 0)
-      require(_keys.length == mask + 1)
-
-      require(ee >= 0 && ee < mask + 1)
-      require(x <= MAX_ITER && x >= 0)
-      require(vacantSpotIndex >= 0 && vacantSpotIndex < mask + 1)
-      require(_keys(vacantSpotIndex) == Long.MinValue)
-      require(validKeyInArray(k))
-
-      decreases(MAX_ITER + 1 - x)
-      val q = _keys(ee)
-      if (x >= MAX_ITER) Undefined()
-      else if (q == k) Found(ee)
-      else if (q == 0) MissingVacant(vacantSpotIndex)
-      else seekKeyOrZeroReturnVacantTailRecDecoupled(x + 1, (ee + 2 * (x + 1) * x - 3) & mask, vacantSpotIndex)
-
-    }.ensuring(res =>
-      res match {
-        case Undefined()          => true
-        case Found(index)         => _keys(index) == k
-        case MissingVacant(index) => index == vacantSpotIndex && _keys(index) == Long.MinValue
-        case _                    => false
-      }
-    )
-
-    // LEMMAS -----------------–-----------------–-----------------–-----------------–-----------------–---------------
 
     @opaque
     @pure
