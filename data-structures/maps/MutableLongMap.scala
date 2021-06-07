@@ -776,8 +776,6 @@ object MutableLongMap {
         } else {
           assert(from < i)
           lemmaAddValidKeyToArrayThenMapNoExtrasAddPair(_keys, _values, mask, extraKeys, zeroValue, minValue, i, k, v, from + 1)
-
-          
           if(validKeyInArray(_keys(from))){
             check(getCurrentListMapNoExtraKeys(_keys.updated(i, k), _values.updated(i, v), mask, extraKeys, zeroValue, minValue, from ) == 
               ((getCurrentListMapNoExtraKeys(_keys, _values, mask, extraKeys, zeroValue, minValue, from + 1) + (k, v) + (_keys(from), _values(from)))))
@@ -790,18 +788,8 @@ object MutableLongMap {
             check(_keys(from) != k)
 
             ListMapLongKeyLemmas.addCommutativeForDiffKeys(getCurrentListMapNoExtraKeys(_keys, _values, mask, extraKeys, zeroValue, minValue, from + 1), k, v, _keys(from), _values(from))
-            check(getCurrentListMapNoExtraKeys(_keys.updated(i, k), _values.updated(i, v), mask, extraKeys, zeroValue, minValue, from) == 
-                    (getCurrentListMapNoExtraKeys(_keys, _values, mask, extraKeys, zeroValue, minValue, from) + (k, v)))
-          } else {
-            check(getCurrentListMapNoExtraKeys(_keys.updated(i, k), _values.updated(i, v), mask, extraKeys, zeroValue, minValue, from) == 
-                    (getCurrentListMapNoExtraKeys(_keys, _values, mask, extraKeys, zeroValue, minValue, from) + (k, v)))
-          }
-
-          check(getCurrentListMapNoExtraKeys(_keys.updated(i, k), _values.updated(i, v), mask, extraKeys, zeroValue, minValue, from) == 
-                    (getCurrentListMapNoExtraKeys(_keys, _values, mask, extraKeys, zeroValue, minValue, from) + (k, v)))
+          } 
         }
-        check(getCurrentListMapNoExtraKeys(_keys.updated(i, k), _values.updated(i, v), mask, extraKeys, zeroValue, minValue, from) == 
-                    (getCurrentListMapNoExtraKeys(_keys, _values, mask, extraKeys, zeroValue, minValue, from) + (k, v)))
       }
     
     }.ensuring(_ =>
@@ -921,18 +909,8 @@ object MutableLongMap {
             check(_keys(from) != k)
 
             ListMapLongKeyLemmas.addCommutativeForDiffKeys(getCurrentListMapNoExtraKeys(_keys, _values, mask, extraKeys, zeroValue, minValue, from + 1), k, v, _keys(from), _values(from))
-            check(getCurrentListMapNoExtraKeys(_keys, _values.updated(i, v), mask, extraKeys, zeroValue, minValue, from) == 
-                    (getCurrentListMapNoExtraKeys(_keys, _values, mask, extraKeys, zeroValue, minValue, from) + (k, v)))
-          } else {
-            check(getCurrentListMapNoExtraKeys(_keys, _values.updated(i, v), mask, extraKeys, zeroValue, minValue, from) == 
-                    (getCurrentListMapNoExtraKeys(_keys, _values, mask, extraKeys, zeroValue, minValue, from) + (k, v)))
           }
-
-          check(getCurrentListMapNoExtraKeys(_keys, _values.updated(i, v), mask, extraKeys, zeroValue, minValue, from) == 
-                    (getCurrentListMapNoExtraKeys(_keys, _values, mask, extraKeys, zeroValue, minValue, from) + (k, v)))
         }
-        check(getCurrentListMapNoExtraKeys(_keys, _values.updated(i, v), mask, extraKeys, zeroValue, minValue, from) == 
-                    (getCurrentListMapNoExtraKeys(_keys, _values, mask, extraKeys, zeroValue, minValue, from) + (k, v)))
       }
 
     }.ensuring(_ => 
