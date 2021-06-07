@@ -263,6 +263,20 @@ object TupleListOps {
 
   }.ensuring(_ => insertStrictlySorted(insertStrictlySorted(l, key1, v1), key2, v2) == insertStrictlySorted(insertStrictlySorted(l, key2, v2), key1, v1))
 
+   @opaque
+  def lemmaInsertStrictlySortedErasesIfSameKey[B](l: List[(Long, B)], key1: Long, v1: B, v2: B): Unit = {
+    require(invariantList(l))
+    decreases(l)
+
+    l match {
+      case Cons(head, tl) if(head._1 < key1) => {
+        lemmaInsertStrictlySortedErasesIfSameKey(tl, key1, v1, v2)
+      }
+      case _ => ()
+    }
+
+  }.ensuring(_ => insertStrictlySorted(insertStrictlySorted(l, key1, v1), key1, v2) == insertStrictlySorted(l, key1, v2))
+
   @opaque
   def lemmaAddNewKeyIncrementSize[B](l: List[(Long, B)], key: Long, value: B): Unit = {
     require(invariantList(l))
@@ -409,6 +423,11 @@ object ListMapLongKey {
 
 object ListMapLongKeyLemmas {
   import ListSpecs._
+
+  @opaque 
+  def addSameAsAddTwiceSameKeyDiffValues[B](lm: ListMapLongKey[B], a: Long, b1: B, b2: B): Unit = {
+    TupleListOps.lemmaInsertStrictlySortedErasesIfSameKey(lm.toList, a, b1, b2)
+  }.ensuring(_ => lm + (a, b2) == (lm + (a, b1) + (a, b2)))
 
   @opaque
   def addCommutativeForDiffKeys[B](lm: ListMapLongKey[B], a1: Long, b1: B, a2: Long, b2: B): Unit = {

@@ -711,7 +711,7 @@ object MutableLongMap {
 
     }.ensuring(_ => getCurrentListMap(_keys, _values, mask, extraKeys, zeroValue, minValue, 0) + (k, v) == getCurrentListMap(_keys, _values.updated(i, v), mask, extraKeys, zeroValue, minValue, 0))
 
-    //TODO
+
     @opaque
     @pure
     def lemmaChangeZeroKeyThenAddPairToListMap(_keys: Array[Long], _values: Array[Long], mask: Int, extraKeysBefore: Int, extraKeysAfter: Int, zeroValueBefore: Long, zeroValueAfter: Long, minValue: Long): Unit = {
@@ -724,13 +724,68 @@ object MutableLongMap {
       require(extraKeysAfter >= 0 )
       require(extraKeysAfter <= 3)
       require((extraKeysBefore & 2) == (extraKeysAfter & 2)) //Long.MinValue key does not change
+      require((extraKeysAfter & 1) != 0) //0 key must be defined after
       require(arrayForallSeekEntryOrOpenFound(0)(_keys, mask))
       require(arrayNoDuplicates(_keys, 0))
+
+      val mapNoExtraKeysBefore = getCurrentListMapNoExtraKeys(_keys, _values, mask, extraKeysBefore, zeroValueBefore, minValue, 0)
+      val mapNoExtraKeysAfter = getCurrentListMapNoExtraKeys(_keys, _values, mask, extraKeysAfter, zeroValueAfter, minValue, 0)
+
+      lemmaNoChangeToArrayThenSameMapNoExtras(_keys, _values, mask, extraKeysBefore, extraKeysAfter, zeroValueBefore, zeroValueAfter, minValue, minValue, 0)
+      assert(mapNoExtraKeysBefore == mapNoExtraKeysAfter)
+
+       if((extraKeysBefore & 2) == 0) {
+        //key Long.MinValue not defined
+        if((extraKeysBefore & 1) == 0){
+          check(getCurrentListMap(_keys, _values, mask, extraKeysBefore, zeroValueBefore, minValue, 0) + (0, zeroValueAfter) == getCurrentListMap(_keys, _values, mask, extraKeysAfter, zeroValueAfter, minValue, 0))
+        } else {
+          val mapBefore = getCurrentListMap(_keys, _values, mask, extraKeysBefore, zeroValueBefore, minValue, 0)
+          val mapAfter = getCurrentListMap(_keys, _values, mask, extraKeysAfter, zeroValueAfter, minValue, 0)
+
+          check(mapBefore == (mapNoExtraKeysBefore + (0L, zeroValueBefore)) )
+          check(mapAfter == (mapNoExtraKeysAfter + (0L, zeroValueAfter)))
+
+          ListMapLongKeyLemmas.addSameAsAddTwiceSameKeyDiffValues(mapNoExtraKeysBefore, 0L, zeroValueBefore, zeroValueAfter)
+          check(mapAfter == (mapNoExtraKeysAfter + (0L, zeroValueBefore)) + (0L, zeroValueAfter) )
+
+
+          check(getCurrentListMap(_keys, _values, mask, extraKeysBefore, zeroValueBefore, minValue, 0) + (0, zeroValueAfter) == getCurrentListMap(_keys, _values, mask, extraKeysAfter, zeroValueAfter, minValue, 0))
+          
+        }
+          
+      } else {
+        //key Long.MinValue defined
+        if((extraKeysBefore & 1) == 0){
+          val mapBefore = getCurrentListMap(_keys, _values, mask, extraKeysBefore, zeroValueBefore, minValue, 0)
+          val mapAfter = getCurrentListMap(_keys, _values, mask, extraKeysAfter, zeroValueAfter, minValue, 0)
+
+          check(mapBefore == (mapNoExtraKeysBefore + (Long.MinValue, minValue)) )
+          check(mapAfter == ((mapNoExtraKeysBefore + (0L, zeroValueAfter)) + (Long.MinValue, minValue)))
+          ListMapLongKeyLemmas.addCommutativeForDiffKeys(mapNoExtraKeysBefore, 0L, zeroValueAfter, Long.MinValue, minValue)
+
+          check(getCurrentListMap(_keys, _values, mask, extraKeysBefore, zeroValueBefore, minValue, 0) + (0, zeroValueAfter) == getCurrentListMap(_keys, _values, mask, extraKeysAfter, zeroValueAfter, minValue, 0))
+
+        } else {
+          val mapBefore = getCurrentListMap(_keys, _values, mask, extraKeysBefore, zeroValueBefore, minValue, 0)
+          val mapAfter = getCurrentListMap(_keys, _values, mask, extraKeysAfter, zeroValueAfter, minValue, 0)
+
+          check(mapBefore == (mapNoExtraKeysBefore + (0L, zeroValueBefore)) + (Long.MinValue, minValue))
+          check(mapAfter == (mapNoExtraKeysAfter + (0L, zeroValueAfter)) + (Long.MinValue, minValue))
+
+          check(mapBefore == (mapNoExtraKeysBefore + (Long.MinValue, minValue)) + (0L, zeroValueBefore))
+          check(mapAfter == (mapNoExtraKeysAfter + (Long.MinValue, minValue)) + (0L, zeroValueAfter))
+          ListMapLongKeyLemmas.addSameAsAddTwiceSameKeyDiffValues((mapNoExtraKeysBefore + (Long.MinValue, minValue)), 0L, zeroValueBefore, zeroValueAfter)
+          check(mapAfter == ((mapNoExtraKeysBefore + (Long.MinValue, minValue)) + (0L, zeroValueBefore)) + (0L, zeroValueAfter))
+          check(mapAfter == (mapNoExtraKeysBefore + (Long.MinValue, minValue)) + (0L, zeroValueAfter))
+          check(mapAfter == (mapNoExtraKeysBefore + (0L, zeroValueAfter)) + (Long.MinValue, minValue))
+
+          check(getCurrentListMap(_keys, _values, mask, extraKeysBefore, zeroValueBefore, minValue, 0) + (0, zeroValueAfter) == getCurrentListMap(_keys, _values, mask, extraKeysAfter, zeroValueAfter, minValue, 0))
+        }
+      }
 
     }.ensuring(_ => getCurrentListMap(_keys, _values, mask, extraKeysBefore, zeroValueBefore, minValue, 0) + (0, zeroValueAfter) == getCurrentListMap(_keys, _values, mask, extraKeysAfter, zeroValueAfter, minValue, 0))
 
 
-    //TODO
     @opaque
     @pure
     def lemmaChangeLongMinValueKeyThenAddPairToListMap(_keys: Array[Long], _values: Array[Long], mask: Int, extraKeysBefore: Int, extraKeysAfter: Int, zeroValue: Long, minValueBefore: Long, minValueAfter: Long): Unit = {
@@ -743,10 +798,72 @@ object MutableLongMap {
       require(extraKeysAfter >= 0 )
       require(extraKeysAfter <= 3)
       require((extraKeysBefore & 1) == (extraKeysAfter & 1)) //zero key does not change
+      require((extraKeysAfter & 2) != 0) //MinValue key must be defined after
       require(arrayForallSeekEntryOrOpenFound(0)(_keys, mask))
       require(arrayNoDuplicates(_keys, 0))
 
+      val mapNoExtraKeysBefore = getCurrentListMapNoExtraKeys(_keys, _values, mask, extraKeysBefore, zeroValue, minValueBefore, 0)
+      val mapNoExtraKeysAfter = getCurrentListMapNoExtraKeys(_keys, _values, mask, extraKeysAfter, zeroValue, minValueAfter, 0)
+
+      lemmaNoChangeToArrayThenSameMapNoExtras(_keys, _values, mask, extraKeysBefore, extraKeysAfter, zeroValue, zeroValue, minValueBefore, minValueAfter, 0)
+
+      assert(mapNoExtraKeysBefore == mapNoExtraKeysAfter)
+
+      if((extraKeysBefore & 1) == 0) {
+        //key 0 not defined
+        if((extraKeysBefore & 2) == 0){
+          check(getCurrentListMap(_keys, _values, mask, extraKeysBefore, zeroValue, minValueBefore, 0) + (Long.MinValue, minValueAfter) == getCurrentListMap(_keys, _values, mask, extraKeysAfter, zeroValue, minValueAfter, 0))
+        } else {
+          val mapBefore = getCurrentListMap(_keys, _values, mask, extraKeysBefore, zeroValue, minValueBefore, 0)
+          val mapAfter = getCurrentListMap(_keys, _values, mask, extraKeysAfter, zeroValue, minValueAfter, 0)
+
+          ListMapLongKeyLemmas.addSameAsAddTwiceSameKeyDiffValues(mapNoExtraKeysBefore, Long.MinValue, minValueBefore, minValueAfter)
+
+          check(getCurrentListMap(_keys, _values, mask, extraKeysBefore, zeroValue, minValueBefore, 0) + (Long.MinValue, minValueAfter) == getCurrentListMap(_keys, _values, mask, extraKeysAfter, zeroValue, minValueAfter, 0))
+          
+        }
+          
+      } else {
+        //key 0 defined
+        if((extraKeysBefore & 2) == 0){
+          check(getCurrentListMap(_keys, _values, mask, extraKeysBefore, zeroValue, minValueBefore, 0) + (Long.MinValue, minValueAfter) == getCurrentListMap(_keys, _values, mask, extraKeysAfter, zeroValue, minValueAfter, 0))
+
+        } else {
+          val mapBefore = getCurrentListMap(_keys, _values, mask, extraKeysBefore, zeroValue, minValueBefore, 0)
+          val mapAfter = getCurrentListMap(_keys, _values, mask, extraKeysAfter, zeroValue, minValueAfter, 0)
+
+          ListMapLongKeyLemmas.addSameAsAddTwiceSameKeyDiffValues(mapNoExtraKeysBefore + (0L, zeroValue), Long.MinValue, minValueBefore, minValueAfter)
+
+          check(getCurrentListMap(_keys, _values, mask, extraKeysBefore, zeroValue, minValueBefore, 0) + (Long.MinValue, minValueAfter) == getCurrentListMap(_keys, _values, mask, extraKeysAfter, zeroValue, minValueAfter, 0))
+        }
+      }
+
     }.ensuring(_ => getCurrentListMap(_keys, _values, mask, extraKeysBefore, zeroValue, minValueBefore, 0) + (Long.MinValue, minValueAfter) == getCurrentListMap(_keys, _values, mask, extraKeysAfter, zeroValue, minValueAfter, 0))
+
+
+    @opaque
+    @pure
+    def lemmaNoChangeToArrayThenSameMapNoExtras(_keys: Array[Long], _values: Array[Long], mask: Int, extraKeysBefore: Int, extraKeysAfter: Int, zeroValueBefore: Long, zeroValueAfter: Long, minValueBefore: Long, minValueAfter: Long, from: Int): Unit = {
+      require(validMask(mask) )
+      require(_values.length == mask + 1 )
+      require(_keys.length == _values.length )
+      require(mask >= 0 )
+      require(extraKeysBefore >= 0 )
+      require(extraKeysBefore <= 3)
+      require(extraKeysAfter >= 0 )
+      require(extraKeysAfter <= 3)
+      require(arrayForallSeekEntryOrOpenFound(0)(_keys, mask))
+      require(arrayNoDuplicates(_keys, 0))
+      require(from >= 0 && from <= _keys.length)
+
+      decreases(_keys.length - from)
+
+      if(from < _keys.length){
+        lemmaNoChangeToArrayThenSameMapNoExtras(_keys, _values, mask, extraKeysBefore, extraKeysAfter, zeroValueBefore, zeroValueAfter, minValueBefore, minValueAfter, from + 1)
+      }
+
+    }.ensuring(_ => getCurrentListMapNoExtraKeys(_keys, _values, mask, extraKeysBefore, zeroValueBefore, minValueBefore, from) == 
+                    getCurrentListMapNoExtraKeys(_keys, _values, mask, extraKeysAfter, zeroValueAfter, minValueAfter, from))
 
 
      //------------------EQUIVALENCE BETWEEN LISTMAP AND ARRAY------------------------------------------------------------------------------------------------
