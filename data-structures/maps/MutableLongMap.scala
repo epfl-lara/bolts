@@ -6,6 +6,7 @@ import stainless.proof.check
 import scala.annotation.tailrec
 import scala.collection.immutable
 import scala.collection.concurrent.RestartException
+import stainless.lang.StaticChecks._
 
 object MutableLongMap {
 
@@ -85,6 +86,13 @@ object MutableLongMap {
       extraKeys <= 3
     }
 
+    @inline
+    @pure
+    def map: ListMapLongKey[Long] = {
+      require(valid)
+      getCurrentListMap(0)
+    }
+
     @pure
     def size: Int = {
       _size + (extraKeys + 1) / 2
@@ -128,7 +136,7 @@ object MutableLongMap {
       }
     }.ensuring(res =>
       valid
-        && (res == getCurrentListMap(0).contains(key))
+        && (res == map.contains(key))
     )
 
     /** Retrieves the value associated with a key.
@@ -161,7 +169,7 @@ object MutableLongMap {
       }
     }.ensuring(res =>
       valid
-        && (if (contains(key)) Some(res) == getCurrentListMap(0).get(key)
+        && (if (contains(key)) Some(res) == map.get(key)
             else res == defaultEntry(key))
     )
 
@@ -211,14 +219,11 @@ object MutableLongMap {
             lemmaValidKeyInArrayIsInListMap(index)
             true
           }
-
         }
-
       }
-
     }.ensuring(res =>
       valid
-        && (if (res) getCurrentListMap(0).contains(key) else true)
+        && (if (res) map.contains(key) else true)
     )
 
     /** Go through an helper function because this piece of code has to be called in 2 cases
@@ -261,7 +266,7 @@ object MutableLongMap {
       lemmaValidKeyInArrayIsInListMap(index)
       true
 
-    }.ensuring(res => res && valid && getCurrentListMap(0).contains(key)) //&& getCurrentListMap(0) == getCurrentListMap(0) + (key, v))
+    }.ensuring(res => res && valid && map.contains(key)) 
 
     /** Removes the given key from the array
       *
@@ -305,7 +310,7 @@ object MutableLongMap {
           case _ => false
         }
       }
-    }.ensuring(res => valid && (if(res) !getCurrentListMap(0).contains(key) else true))
+    }.ensuring(res => valid && (if(res) !map.contains(key) else true))
 
     @pure
     def getCurrentListMap(from: Int): ListMapLongKey[Long] = {
@@ -1380,7 +1385,7 @@ object MutableLongMap {
 
       }
 
-    }.ensuring(seekEntryOrOpenDecoupled(a(j))(a, mask) == seekEntryOrOpenDecoupled(a.updated(i, Long.MinValue).apply(j))(a.updated(i, Long.MinValue), mask))
+    }.ensuring(_ => seekEntryOrOpenDecoupled(a(j))(a, mask) == seekEntryOrOpenDecoupled(a.updated(i, Long.MinValue).apply(j))(a.updated(i, Long.MinValue), mask))
 
     @opaque
     @pure
@@ -2346,7 +2351,7 @@ object MutableLongMap {
         case head :: tl => lemmaListMinusENotContainedEqualsList(e, tl)
         case Nil()      =>
       }
-    }.ensuring(l - e == l)
+    }.ensuring(_ => l - e == l)
 
     @opaque
     @pure
@@ -2360,7 +2365,7 @@ object MutableLongMap {
         case Nil()    => ()
       }
 
-    }.ensuring((head :: tail) - head == tail)
+    }.ensuring(_ => (head :: tail) - head == tail)
 
     @opaque
     @pure
