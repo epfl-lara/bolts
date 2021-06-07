@@ -123,7 +123,6 @@ object MutableLongMap {
     @pure
     def contains(key: Long): Boolean = {
       require(valid)
-      // if (key == -key) (((key >>> 63).toInt + 1) & extraKeys) != 0
       if (key == 0) (extraKeys & 1) != 0
       else if (key == Long.MinValue) (extraKeys & 2) != 0
       else {
@@ -162,7 +161,6 @@ object MutableLongMap {
     def apply(key: Long): Long = {
       require(valid)
       if (key == -key) {
-        // if ((((key >>> 63).toInt + 1) & extraKeys) == 0) defaultEntry(key)
         if (key == 0 && (extraKeys & 1) != 0) zeroValue
         else if (key == Long.MinValue && (extraKeys & 2) != 0) minValue
         else defaultEntry(key)
@@ -894,7 +892,6 @@ object MutableLongMap {
         } else {
           assert(from < i)
           lemmaChangeValueExistingKeyToArrayThenMapNoExtrasAddPair(_keys, _values, mask, extraKeys, zeroValue, minValue, i, k, v, from + 1)
-
           
           if(validKeyInArray(_keys(from))){
             check(getCurrentListMapNoExtraKeys(_keys, _values.updated(i, v), mask, extraKeys, zeroValue, minValue, from ) == 
@@ -1906,7 +1903,7 @@ object MutableLongMap {
       require(i != j)
       require(validKeyInArray(a(i)))
       require(validKeyInArray(a(j)))
-      require(arrayForallSeekEntryOrOpenFound(0)(a, mask)) //10
+      require(arrayForallSeekEntryOrOpenFound(0)(a, mask)) 
       require(arrayNoDuplicates(a, 0))
       require(x >= 0 && x <= MAX_ITER)
       require(vacantBefore >= 0 && vacantBefore < a.length)
@@ -1946,17 +1943,17 @@ object MutableLongMap {
       require(a.length == mask + 1)
       require(i >= 0)
       require(i < a.length)
-      require(j >= 0) //5
+      require(j >= 0)
       require(j < a.length)
       require(i != j)
       require(validKeyInArray(a(i)))
       require(validKeyInArray(a(j)))
-      require(arrayForallSeekEntryOrOpenFound(0)(a, mask)) //10
+      require(arrayForallSeekEntryOrOpenFound(0)(a, mask)) 
       require(arrayNoDuplicates(a, 0))
       require(x >= 0 && x <= MAX_ITER)
       require(intermediateBeforeX >= 0 && intermediateBeforeX <= MAX_ITER)
       require(intermediateAfterX >= 0 && intermediateAfterX <= MAX_ITER)
-      require(index >= 0 && index < a.length) //15
+      require(index >= 0 && index < a.length) 
       require(intermediateBeforeIndex >= 0 && intermediateBeforeIndex < a.length)
       require(intermediateAfterIndex >= 0 && intermediateAfterIndex < a.length)
 
@@ -2055,7 +2052,6 @@ object MutableLongMap {
                       seekKeyOrZeroReturnVacantTailRecDecoupled(intermediateAfterX, intermediateAfterIndex, intermediateAfterIndex)(a(j), a.updated(i, Long.MinValue), mask)
                   )
                   lemmaPutLongMinValuePreservesForallSeekEntryOrOpenKey2Helper(a, i, j, 0, toIndex(a(j), mask), intermediateBeforeX, intermediateBeforeIndex, intermediateAfterX, intermediateAfterIndex)(mask)
-
                 }
                 case _ => check(false)
               }
@@ -2159,7 +2155,6 @@ object MutableLongMap {
         }
         if (seekKeyOrZeroReturnVacantTailRecDecoupled(x, index, vacantSpotIndex)(a.updated(i, k).apply(j), a.updated(i, k), mask) == Found(index)) {
           check(a.updated(i, k).apply(index) == a(j))
-          //TODO Use noDuplicate property
           val q = a(j)
           val newArray = a.updated(i, k)
           assert(q == a.updated(i, k).apply(j))
@@ -2242,12 +2237,10 @@ object MutableLongMap {
             check(false)
           } else {
             check(seekEntryOrOpenDecoupled(a(j))(a, mask) == seekKeyOrZeroReturnVacantTailRecDecoupled(x, index, index)(a(j), a, mask))
-
             check(
               seekEntryOrOpenDecoupled(a.updated(i, k).apply(j))(a.updated(i, k), mask) ==
                 seekKeyOrZeroReturnVacantTailRecDecoupled(x, index, index)(a.updated(i, k).apply(j), a.updated(i, k), mask)
             )
-
             lemmaPutValidKeyPreservesSeekKeyOrZeroReturnVacantTailRecDecoupled(a, i, k, j, x, index, index)(mask)
 
           }
@@ -3094,7 +3087,6 @@ object MutableLongMap {
       if (validKeyInArray(a(from))) {
         check(arrayNoDuplicates(a, from + 1, Cons(a(from), acc)))
         lemmaArrayNoDuplicateWithAnAccThenWithSubSeqAcc(a, acc, Nil(), from)
-        // lemmaArrayNoDuplicateFromThenHeadNotInTail(a, from)
         check(arrayNoDuplicates(a, from + 1, Cons(a(from), Nil())))
         lemmaArrayNoDuplicateFromNotContainsKeysInAcc(a, from + 1, a(from), Cons(a(from), Nil()))
         check(!arrayContainsKeyTailRec(a, a(from), from + 1))
