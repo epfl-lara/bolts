@@ -295,7 +295,6 @@ object TupleListOps {
 
   @opaque
   def lemmaRemoveStrictlySortedCommutative[B](l: List[(Long, B)], key1: Long, key2: Long): Unit = {
-    // require(key1 != key2)
     require(invariantList(l))
     decreases(l)
 
@@ -307,6 +306,21 @@ object TupleListOps {
     }
 
   }.ensuring(_ => removeStrictlySorted(removeStrictlySorted(l, key1), key2) == removeStrictlySorted(removeStrictlySorted(l, key2), key1))
+
+  @opaque
+  def lemmaRemoveStrictlySortedNotPresentPreserves[B](l: List[(Long, B)], key: Long): Unit = {
+    require(invariantList(l))
+    require(!containsKey(l, key))
+    decreases(l)
+
+    l match {
+      case Cons(head, tl) => {
+        lemmaRemoveStrictlySortedNotPresentPreserves(tl, key)
+      }
+      case _ => ()
+    }
+
+  }.ensuring(_ => removeStrictlySorted(l, key) == l)
 
    @opaque
   def lemmaInsertStrictlySortedErasesIfSameKey[B](l: List[(Long, B)], key1: Long, v1: B, v2: B): Unit = {
@@ -468,6 +482,12 @@ object ListMapLongKey {
 
 object ListMapLongKeyLemmas {
   import ListSpecs._
+
+  @opaque
+  def removeNotPresentStillSame[B](lm: ListMapLongKey[B], a: Long): Unit = {
+    require(!lm.contains(a))
+    TupleListOps.lemmaRemoveStrictlySortedNotPresentPreserves(lm.toList, a)
+  }.ensuring(_ => lm - a == lm)
 
   @opaque 
   def addSameAsAddTwiceSameKeyDiffValues[B](lm: ListMapLongKey[B], a: Long, b1: B, b2: B): Unit = {
