@@ -10,8 +10,7 @@ import stainless.lang.StaticChecks._
 
 object MutableLongMap {
 
-  private final val IndexMask: Int = 0x3fffffff // = Integer.MAX_VALUE/8
-  //Try next with 0x3FFFFFFF
+  private final val IndexMask: Int = 0x3fffffff
 
   private final val MAX_ITER = 2048 // arbitrary
 
@@ -81,7 +80,6 @@ object MutableLongMap {
       simpleValid &&
       arrayCountValidKeysTailRec(_keys, 0, _keys.length) == _size &&
       arrayForallSeekEntryOrOpenFound(0)(_keys, mask) &&
-      // I have to ensure that the _keys array has no duplicate
       arrayNoDuplicates(_keys, 0)
     }
 
@@ -500,9 +498,6 @@ object MutableLongMap {
       require(_keys.length == mask + 1)
       require(validKeyInArray(k))
       decreases(1)
-      // ORIGINAL IMPLEMENTATION ------- BEGINNING ------------------------------------
-      // seekEntryTailRecDecoupled(k, 0, toIndex(k, mask))(_keys, mask)
-      // ORIGINAL IMPLEMENTATION ------- END ------------------------------------------
 
       val intermediate = seekKeyOrZeroOrLongMinValueTailRecDecoupled(0, toIndex(k, mask))(k, _keys, mask)
       intermediate match {
