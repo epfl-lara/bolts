@@ -249,6 +249,36 @@ object TupleListOps {
   // ----------- LEMMAS -----------------------------------------------------
 
   @opaque
+  def lemmaInsertAndRemoveStrictlySortedCommutative[B](l: List[(Long, B)], key1: Long, v1: B, key2: Long): Unit = {
+    require(key1 != key2)
+    require(invariantList(l))
+    decreases(l)
+
+    l match {
+      case Cons(head, tl)  => {
+        lemmaInsertAndRemoveStrictlySortedCommutative(tl, key1, v1, key2)
+      }
+      case _ => ()
+    }
+
+  }.ensuring(_ => insertStrictlySorted(removeStrictlySorted(l, key2), key1, v1) == removeStrictlySorted(insertStrictlySorted(l, key1, v1), key2))
+
+  @opaque
+  def lemmaInsertStrictlySortedThenRemoveIsSame[B](l: List[(Long, B)], key1: Long, v1: B): Unit = {
+    require(invariantList(l))
+    require(!containsKey(l, key1))
+    decreases(l)
+
+    l match {
+      case Cons(head, tl)  => {
+        lemmaInsertStrictlySortedThenRemoveIsSame(tl, key1, v1)
+      }
+      case _ => ()
+    }
+
+  }.ensuring(_ => removeStrictlySorted(insertStrictlySorted(l, key1, v1), key1) == l)
+
+  @opaque
   def lemmaInsertStrictlySortedCommutative[B](l: List[(Long, B)], key1: Long, v1: B, key2: Long, v2: B): Unit = {
     require(key1 != key2)
     require(invariantList(l))
@@ -443,6 +473,18 @@ object ListMapLongKeyLemmas {
   def addSameAsAddTwiceSameKeyDiffValues[B](lm: ListMapLongKey[B], a: Long, b1: B, b2: B): Unit = {
     TupleListOps.lemmaInsertStrictlySortedErasesIfSameKey(lm.toList, a, b1, b2)
   }.ensuring(_ => lm + (a, b2) == (lm + (a, b1) + (a, b2)))
+
+  @opaque
+  def addRemoveCommutativeForDiffKeys[B](lm: ListMapLongKey[B], a1: Long, b1: B, a2: Long): Unit = {
+    require(a1 != a2)
+    TupleListOps.lemmaInsertAndRemoveStrictlySortedCommutative(lm.toList, a1, b1, a2)
+  }.ensuring(_ => lm + (a1, b1) - a2 == lm - a2 + (a1, b1))
+
+  @opaque
+  def addThenRemoveForNewKeyIsSame[B](lm: ListMapLongKey[B], a1: Long, b1: B): Unit = {
+    require(!lm.contains(a1))
+    TupleListOps.lemmaInsertStrictlySortedThenRemoveIsSame(lm.toList, a1, b1)
+  }.ensuring(_ => lm + (a1, b1) - a1 == lm)
 
   @opaque
   def removeCommutative[B](lm: ListMapLongKey[B], a1: Long, a2: Long) : Unit = {
