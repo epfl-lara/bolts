@@ -15,7 +15,6 @@ object MutableLongMap {
   private final val MAX_ITER = 2048 // arbitrary
 
   /** A Map with keys of type Long and values of type Long
-    * For now, key = Long.MaxValue s.t. k == -k is
     *
     * @param mask
     * @param extraKeys
@@ -110,15 +109,11 @@ object MutableLongMap {
     def size: Int = {
       _size + (extraKeys + 1) / 2
     }
+
     @pure
     def isEmpty: Boolean = {
       require(valid)
-      _size == 0
-    }.ensuring(_ => valid)
-    @pure
-    def isFull: Boolean = {
-      require(valid)
-      _size >= IndexMask
+      size == 0
     }.ensuring(_ => valid)
 
     @pure
@@ -159,13 +154,12 @@ object MutableLongMap {
         }
       }
     }.ensuring(res =>
-      valid
-        && (res == map.contains(key))
+      valid && (res == map.contains(key))
     )
 
     /** Retrieves the value associated with a key.
       *  If the key does not exist in the map, the `defaultEntry` for that key
-      *  will be returned instead.
+      *  is returned instead.
       *
       * @param key
       * @return
@@ -213,7 +207,7 @@ object MutableLongMap {
             else res == defaultEntry(key))
     )
 
-    /** Updates the map to include a new key-value pair. Return a boolean indicating if the update was successful.
+    /** Updates the map to include a new key-value pair. Return a boolean indicating if the update was successful. It is not successful if no free space is found (i.e., the map is full)
       *
       *  This is the fastest way to add an entry to a `LongMap`.
       */
@@ -348,7 +342,7 @@ object MutableLongMap {
           }
         }
       }.ensuring(res =>
-        valid && (if (res) map.contains(key) && (map == oldMap + (key, v)) else true)
+        valid && (if (res) map.contains(key) && (map == oldMap + (key, v)) else map == oldMap)
       )
     }
 
@@ -444,7 +438,7 @@ object MutableLongMap {
       }.ensuring(res => res && valid && map.contains(key) && (map == oldMap + (key, v)))
     }
 
-    /** Removes the given key from the array
+    /** Removes the given key from the map
       *
       * @param key
       * @return
