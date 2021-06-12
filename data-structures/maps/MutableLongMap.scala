@@ -131,11 +131,23 @@ object MutableLongMap {
         seekEntryRes match {
           case Found(index) => {
             lemmaArrayContainsFromImpliesContainsFromZero(_keys, key, index)
-            lemmaValidKeyInArrayIsInListMap(_keys, _values, mask, extraKeys, zeroValue, minValue, index)
+            lemmaValidKeyInArrayIsInListMap(
+              _keys,
+              _values,
+              mask,
+              extraKeys,
+              zeroValue,
+              minValue,
+              index
+            )
             true
           }
           case _ => {
-            if (getCurrentListMap(_keys, _values, mask, extraKeys, zeroValue, minValue, 0).contains(key)) {
+            if (
+              getCurrentListMap(_keys, _values, mask, extraKeys, zeroValue, minValue, 0).contains(
+                key
+              )
+            ) {
               lemmaKeyInListMapIsInArray(_keys, _values, mask, extraKeys, zeroValue, minValue, key)
               val i = arrayScanForKey(_keys, key, 0)
               lemmaArrayForallSeekEntryOrOpenFoundFromSmallerThenFromBigger(_keys, mask, 0, i)
@@ -171,8 +183,25 @@ object MutableLongMap {
         seekEntryRes match {
           case Found(index) => {
             lemmaArrayContainsFromImpliesContainsFromZero(_keys, key, index)
-            lemmaValidKeyInArrayIsInListMap(_keys, _values, mask, extraKeys, zeroValue, minValue, index)
-            lemmaKeyInListMapThenSameValueInArray(_keys, _values, mask, extraKeys, zeroValue, minValue, key, index)
+            lemmaValidKeyInArrayIsInListMap(
+              _keys,
+              _values,
+              mask,
+              extraKeys,
+              zeroValue,
+              minValue,
+              index
+            )
+            lemmaKeyInListMapThenSameValueInArray(
+              _keys,
+              _values,
+              mask,
+              extraKeys,
+              zeroValue,
+              minValue,
+              key,
+              index
+            )
             _values(index)
           }
           case _ => defaultEntry(key)
@@ -232,8 +261,20 @@ object MutableLongMap {
           seekEntryRes match {
             case Undefined() => {
               //the key is not in the array, it was not able to find an empty space, the map is maybe full
-              if (getCurrentListMap(_keys, _values, mask, extraKeys, zeroValue, minValue, 0).contains(key)) {
-                lemmaInListMapThenSeekEntryOrOpenFindsIt(_keys, _values, mask, extraKeys, zeroValue, minValue, key)
+              if (
+                getCurrentListMap(_keys, _values, mask, extraKeys, zeroValue, minValue, 0).contains(
+                  key
+                )
+              ) {
+                lemmaInListMapThenSeekEntryOrOpenFindsIt(
+                  _keys,
+                  _values,
+                  mask,
+                  extraKeys,
+                  zeroValue,
+                  minValue,
+                  key
+                )
                 check(false)
               } else {
                 lemmaNotInListMapThenSeekEntryOrOpenFindsFreeOrNothing(
@@ -251,8 +292,20 @@ object MutableLongMap {
             case MissingVacant(index) => updateHelperNewKey(key, v, index)
             case MissingZero(index)   => updateHelperNewKey(key, v, index)
             case Found(index) => {
-              if (getCurrentListMap(_keys, _values, mask, extraKeys, zeroValue, minValue, 0).contains(key)) {
-                lemmaInListMapThenSeekEntryOrOpenFindsIt(_keys, _values, mask, extraKeys, zeroValue, minValue, key)
+              if (
+                getCurrentListMap(_keys, _values, mask, extraKeys, zeroValue, minValue, 0).contains(
+                  key
+                )
+              ) {
+                lemmaInListMapThenSeekEntryOrOpenFindsIt(
+                  _keys,
+                  _values,
+                  mask,
+                  extraKeys,
+                  zeroValue,
+                  minValue,
+                  key
+                )
               } else {
                 lemmaNotInListMapThenSeekEntryOrOpenFindsFreeOrNothing(
                   _keys,
@@ -281,12 +334,22 @@ object MutableLongMap {
               _values(index) = v
 
               check((map == oldMap + (key, v)))
-              lemmaValidKeyInArrayIsInListMap(_keys, _values, mask, extraKeys, zeroValue, minValue, index)
+              lemmaValidKeyInArrayIsInListMap(
+                _keys,
+                _values,
+                mask,
+                extraKeys,
+                zeroValue,
+                minValue,
+                index
+              )
               true
             }
           }
         }
-      }.ensuring(res => valid && (if (res) map.contains(key) && (map == oldMap + (key, v)) else true))
+      }.ensuring(res =>
+        valid && (if (res) map.contains(key) && (map == oldMap + (key, v)) else true)
+      )
     }
 
     /** Go through an helper function because this piece of code has to be called in 2 cases
@@ -299,7 +362,9 @@ object MutableLongMap {
       require(key != 0)
       require(key != Long.MinValue)
       require(
-        seekEntryOrOpenDecoupled(key)(_keys, mask) == MissingZero(index) || seekEntryOrOpenDecoupled(key)(
+        seekEntryOrOpenDecoupled(key)(_keys, mask) == MissingZero(
+          index
+        ) || seekEntryOrOpenDecoupled(key)(
           _keys,
           mask
         ) == MissingVacant(index)
@@ -307,8 +372,18 @@ object MutableLongMap {
       val oldMap = getCurrentListMap(_keys, _values, mask, extraKeys, zeroValue, minValue, 0)
 
       {
-        if (getCurrentListMap(_keys, _values, mask, extraKeys, zeroValue, minValue, 0).contains(key)) {
-          lemmaInListMapThenSeekEntryOrOpenFindsIt(_keys, _values, mask, extraKeys, zeroValue, minValue, key)
+        if (
+          getCurrentListMap(_keys, _values, mask, extraKeys, zeroValue, minValue, 0).contains(key)
+        ) {
+          lemmaInListMapThenSeekEntryOrOpenFindsIt(
+            _keys,
+            _values,
+            mask,
+            extraKeys,
+            zeroValue,
+            minValue,
+            key
+          )
           check(false)
         } else {
           lemmaNotInListMapThenSeekEntryOrOpenFindsFreeOrNothing(
@@ -326,7 +401,16 @@ object MutableLongMap {
         val _oldNKeys = arrayCountValidKeysTailRec(_keys, 0, _keys.length)
         assert(inRange(index, mask))
         if (arrayContainsKeyTailRec(_keys, key, 0)) {
-          lemmaArrayContainsKeyThenInListMap(_keys, _values, mask, extraKeys, zeroValue, minValue, key, 0)
+          lemmaArrayContainsKeyThenInListMap(
+            _keys,
+            _values,
+            mask,
+            extraKeys,
+            zeroValue,
+            minValue,
+            key,
+            0
+          )
           check(false)
         }
 
@@ -334,7 +418,17 @@ object MutableLongMap {
         lemmaAddValidKeyIncreasesNumberOfValidKeysInArray(_keys, index, key)
         lemmaPutValidKeyPreservesForallSeekEntryOrOpen(key, _keys, index)(mask)
 
-        lemmaAddValidKeyToArrayThenAddPairToListMap(_keys, _values, mask, extraKeys, zeroValue, minValue, index, key, v)
+        lemmaAddValidKeyToArrayThenAddPairToListMap(
+          _keys,
+          _values,
+          mask,
+          extraKeys,
+          zeroValue,
+          minValue,
+          index,
+          key,
+          v
+        )
 
         _keys(index) = key
         _size += 1
@@ -362,13 +456,31 @@ object MutableLongMap {
       {
         if (key == -key) {
           if (key == 0L) {
-            lemmaRemoveZeroKeyThenRemoveKeyFromListMap(_keys, _values, mask, extraKeys, extraKeys & 0x2, zeroValue, 0, minValue )
+            lemmaRemoveZeroKeyThenRemoveKeyFromListMap(
+              _keys,
+              _values,
+              mask,
+              extraKeys,
+              extraKeys & 0x2,
+              zeroValue,
+              0,
+              minValue
+            )
             extraKeys &= 0x2
             zeroValue = 0
 
             true
           } else {
-            lemmaRemoveLongMinValueKeyThenRemoveKeyFromListMap(_keys, _values, mask, extraKeys, extraKeys & 0x1, zeroValue, minValue, 0)
+            lemmaRemoveLongMinValueKeyThenRemoveKeyFromListMap(
+              _keys,
+              _values,
+              mask,
+              extraKeys,
+              extraKeys & 0x1,
+              zeroValue,
+              minValue,
+              0
+            )
             extraKeys &= 0x1
             minValue = 0
 
@@ -383,13 +495,34 @@ object MutableLongMap {
               lemmaPutNonValidKeyPreservesNoDuplicate(_keys, Long.MinValue, index, 0, List())
               lemmaPutLongMinValuePreservesForallSeekEntryOrOpen(_keys, index)(mask)
               lemmaArrayNoDuplicateRemoveOneThenNotContain(_keys, index, key)
-              lemmaRemoveValidKeyToArrayThenRemoveKeyFromListMap(_keys, _values, mask, extraKeys, zeroValue, minValue, index, key)
+              lemmaRemoveValidKeyToArrayThenRemoveKeyFromListMap(
+                _keys,
+                _values,
+                mask,
+                extraKeys,
+                zeroValue,
+                minValue,
+                index,
+                key
+              )
               _size -= 1
               _keys(index) = Long.MinValue
               _values(index) = 0
 
-              if (getCurrentListMap(_keys, _values, mask, extraKeys, zeroValue, minValue, 0).contains(key)) {
-                lemmaKeyInListMapIsInArray(_keys, _values, mask, extraKeys, zeroValue, minValue, key)
+              if (
+                getCurrentListMap(_keys, _values, mask, extraKeys, zeroValue, minValue, 0).contains(
+                  key
+                )
+              ) {
+                lemmaKeyInListMapIsInArray(
+                  _keys,
+                  _values,
+                  mask,
+                  extraKeys,
+                  zeroValue,
+                  minValue,
+                  key
+                )
                 check(false)
               }
 
@@ -398,7 +531,7 @@ object MutableLongMap {
             case _ => {
               check(oldMap == map)
               false
-              }
+            }
           }
         }
       }.ensuring(res => valid && (if (res) map == oldMap - key else map == oldMap))
@@ -512,7 +645,8 @@ object MutableLongMap {
       require(validKeyInArray(k))
       decreases(1)
 
-      val intermediate = seekKeyOrZeroOrLongMinValueTailRecDecoupled(0, toIndex(k, mask))(k, _keys, mask)
+      val intermediate =
+        seekKeyOrZeroOrLongMinValueTailRecDecoupled(0, toIndex(k, mask))(k, _keys, mask)
       intermediate match {
         case Intermediate(undefined, index, x) if (undefined) => Undefined()
         case Intermediate(undefined, index, x) if (!undefined) => {
@@ -555,14 +689,17 @@ object MutableLongMap {
       * @return
       */
     @pure
-    def seekEntryOrOpenDecoupled(k: Long)(implicit _keys: Array[Long], mask: Int): SeekEntryResult = {
+    def seekEntryOrOpenDecoupled(
+        k: Long
+    )(implicit _keys: Array[Long], mask: Int): SeekEntryResult = {
       require(validMask(mask))
       require(mask >= 0)
       require(_keys.length == mask + 1)
 
       require(validKeyInArray(k))
 
-      val intermediate = seekKeyOrZeroOrLongMinValueTailRecDecoupled(0, toIndex(k, mask))(k, _keys, mask)
+      val intermediate =
+        seekKeyOrZeroOrLongMinValueTailRecDecoupled(0, toIndex(k, mask))(k, _keys, mask)
       intermediate match {
         case Intermediate(undefined, index, x) if (undefined) => Undefined()
         case Intermediate(undefined, index, x) if (!undefined) => {
@@ -619,7 +756,9 @@ object MutableLongMap {
       (res match {
         case Intermediate(undefined, index, resx) if (undefined) => resx >= MAX_ITER
         case Intermediate(undefined, index, resx) if (!undefined) =>
-          resx < MAX_ITER && resx >= 0 && resx >= x && (_keys(index) == k || _keys(index) == 0 || _keys(
+          resx < MAX_ITER && resx >= 0 && resx >= x && (_keys(index) == k || _keys(
+            index
+          ) == 0 || _keys(
             index
           ) == Long.MinValue)
         case _ => false
@@ -628,7 +767,8 @@ object MutableLongMap {
 
     @tailrec
     @pure
-    private def seekKeyOrZeroReturnVacantTailRecDecoupled(x: Int, ee: Int, vacantSpotIndex: Int)(implicit
+    private def seekKeyOrZeroReturnVacantTailRecDecoupled(x: Int, ee: Int, vacantSpotIndex: Int)(
+        implicit
         k: Long,
         _keys: Array[Long],
         mask: Int
@@ -648,7 +788,12 @@ object MutableLongMap {
       if (x >= MAX_ITER) Undefined()
       else if (q == k) Found(ee)
       else if (q == 0) MissingVacant(vacantSpotIndex)
-      else seekKeyOrZeroReturnVacantTailRecDecoupled(x + 1, (ee + 2 * (x + 1) * x - 3) & mask, vacantSpotIndex)
+      else
+        seekKeyOrZeroReturnVacantTailRecDecoupled(
+          x + 1,
+          (ee + 2 * (x + 1) * x - 3) & mask,
+          vacantSpotIndex
+        )
 
     }.ensuring(res =>
       res match {
@@ -693,7 +838,15 @@ object MutableLongMap {
         ) + (0L, zeroValue)) + (Long.MinValue, minValue)
       } else if ((extraKeys & 1) != 0 && (extraKeys & 2) == 0) {
         // it means there is a mapping for the key 0
-        getCurrentListMapNoExtraKeys(_keys, _values, mask, extraKeys, zeroValue, minValue, from) + (0L, zeroValue)
+        getCurrentListMapNoExtraKeys(
+          _keys,
+          _values,
+          mask,
+          extraKeys,
+          zeroValue,
+          minValue,
+          from
+        ) + (0L, zeroValue)
       } else if ((extraKeys & 2) != 0 && (extraKeys & 1) == 0) {
         // it means there is a mapping for the key Long.MIN_VALUE
         getCurrentListMapNoExtraKeys(
@@ -774,13 +927,29 @@ object MutableLongMap {
         ListMapLongKey.empty[Long]
       } else if (validKeyInArray(_keys(from))) {
         ListMapLongKeyLemmas.addStillNotContains(
-          getCurrentListMapNoExtraKeys(_keys, _values, mask, extraKeys, zeroValue, minValue, from + 1),
+          getCurrentListMapNoExtraKeys(
+            _keys,
+            _values,
+            mask,
+            extraKeys,
+            zeroValue,
+            minValue,
+            from + 1
+          ),
           _keys(from),
           _values(from),
           0
         )
 
-        getCurrentListMapNoExtraKeys(_keys, _values, mask, extraKeys, zeroValue, minValue, from + 1) + (_keys(
+        getCurrentListMapNoExtraKeys(
+          _keys,
+          _values,
+          mask,
+          extraKeys,
+          zeroValue,
+          minValue,
+          from + 1
+        ) + (_keys(
           from
         ), _values(from))
       } else {
@@ -791,7 +960,15 @@ object MutableLongMap {
         (if (from < _keys.length && validKeyInArray(_keys(from)))
            res.contains(_keys(from)) && res(_keys(from)) == _values(from)
          else if (from < _keys.length)
-           res == getCurrentListMapNoExtraKeys(_keys, _values, mask, extraKeys, zeroValue, minValue, from + 1)
+           res == getCurrentListMapNoExtraKeys(
+             _keys,
+             _values,
+             mask,
+             extraKeys,
+             zeroValue,
+             minValue,
+             from + 1
+           )
          else res.isEmpty)
     )
 
@@ -826,7 +1003,8 @@ object MutableLongMap {
       require(arrayForallSeekEntryOrOpenFound(0)(_keys.updated(i, k), mask))
       require(arrayNoDuplicates(_keys.updated(i, k), 0))
 
-      val mapNoExtraKeysBefore = getCurrentListMapNoExtraKeys(_keys, _values, mask, extraKeys, zeroValue, minValue, 0)
+      val mapNoExtraKeysBefore =
+        getCurrentListMapNoExtraKeys(_keys, _values, mask, extraKeys, zeroValue, minValue, 0)
       val mapNoExtraKeysAfter = getCurrentListMapNoExtraKeys(
         _keys.updated(i, k),
         _values.updated(i, v),
@@ -837,18 +1015,39 @@ object MutableLongMap {
         0
       )
 
-      lemmaAddValidKeyToArrayThenMapNoExtrasAddPair(_keys, _values, mask, extraKeys, zeroValue, minValue, i, k, v, 0)
+      lemmaAddValidKeyToArrayThenMapNoExtrasAddPair(
+        _keys,
+        _values,
+        mask,
+        extraKeys,
+        zeroValue,
+        minValue,
+        i,
+        k,
+        v,
+        0
+      )
 
       check(mapNoExtraKeysBefore + (k, v) == mapNoExtraKeysAfter)
 
       val mapAfter =
-        getCurrentListMap(_keys.updated(i, k), _values.updated(i, v), mask, extraKeys, zeroValue, minValue, 0)
+        getCurrentListMap(
+          _keys.updated(i, k),
+          _values.updated(i, v),
+          mask,
+          extraKeys,
+          zeroValue,
+          minValue,
+          0
+        )
       val mapBefore = getCurrentListMap(_keys, _values, mask, extraKeys, zeroValue, minValue, 0)
       if ((extraKeys & 1) != 0 && (extraKeys & 2) != 0) {
         // it means there is a mapping for the key 0 and the Long.MIN_VALUE
         check(mapAfter == (mapNoExtraKeysAfter + (0L, zeroValue)) + (Long.MinValue, minValue))
         check(mapBefore == (mapNoExtraKeysBefore + (0L, zeroValue)) + (Long.MinValue, minValue))
-        check(mapAfter == ((mapNoExtraKeysBefore + (k, v)) + (0L, zeroValue)) + (Long.MinValue, minValue))
+        check(
+          mapAfter == ((mapNoExtraKeysBefore + (k, v)) + (0L, zeroValue)) + (Long.MinValue, minValue)
+        )
         ListMapLongKeyLemmas.addCommutativeForDiffKeys(mapNoExtraKeysBefore, k, v, 0L, zeroValue)
         ListMapLongKeyLemmas.addCommutativeForDiffKeys(
           mapNoExtraKeysBefore + (0L, zeroValue),
@@ -859,7 +1058,15 @@ object MutableLongMap {
         )
 
         check(
-          getCurrentListMap(_keys, _values, mask, extraKeys, zeroValue, minValue, 0) + (k, v) == getCurrentListMap(
+          getCurrentListMap(
+            _keys,
+            _values,
+            mask,
+            extraKeys,
+            zeroValue,
+            minValue,
+            0
+          ) + (k, v) == getCurrentListMap(
             _keys.updated(i, k),
             _values.updated(i, v),
             mask,
@@ -876,7 +1083,15 @@ object MutableLongMap {
         check(mapAfter == (mapNoExtraKeysBefore + (k, v)) + (0L, zeroValue))
         ListMapLongKeyLemmas.addCommutativeForDiffKeys(mapNoExtraKeysBefore, k, v, 0L, zeroValue)
         check(
-          getCurrentListMap(_keys, _values, mask, extraKeys, zeroValue, minValue, 0) + (k, v) == getCurrentListMap(
+          getCurrentListMap(
+            _keys,
+            _values,
+            mask,
+            extraKeys,
+            zeroValue,
+            minValue,
+            0
+          ) + (k, v) == getCurrentListMap(
             _keys.updated(i, k),
             _values.updated(i, v),
             mask,
@@ -891,9 +1106,23 @@ object MutableLongMap {
         check(mapAfter == mapNoExtraKeysAfter + (Long.MinValue, minValue))
         check(mapAfter == (mapNoExtraKeysBefore + (k, v)) + (Long.MinValue, minValue))
         check(mapBefore == (mapNoExtraKeysBefore + (Long.MinValue, minValue)))
-        ListMapLongKeyLemmas.addCommutativeForDiffKeys(mapNoExtraKeysBefore, k, v, Long.MinValue, minValue)
+        ListMapLongKeyLemmas.addCommutativeForDiffKeys(
+          mapNoExtraKeysBefore,
+          k,
+          v,
+          Long.MinValue,
+          minValue
+        )
         check(
-          getCurrentListMap(_keys, _values, mask, extraKeys, zeroValue, minValue, 0) + (k, v) == getCurrentListMap(
+          getCurrentListMap(
+            _keys,
+            _values,
+            mask,
+            extraKeys,
+            zeroValue,
+            minValue,
+            0
+          ) + (k, v) == getCurrentListMap(
             _keys.updated(i, k),
             _values.updated(i, v),
             mask,
@@ -906,7 +1135,15 @@ object MutableLongMap {
       } else {
         check(mapAfter == mapNoExtraKeysAfter)
         check(
-          getCurrentListMap(_keys, _values, mask, extraKeys, zeroValue, minValue, 0) + (k, v) == getCurrentListMap(
+          getCurrentListMap(
+            _keys,
+            _values,
+            mask,
+            extraKeys,
+            zeroValue,
+            minValue,
+            0
+          ) + (k, v) == getCurrentListMap(
             _keys.updated(i, k),
             _values.updated(i, v),
             mask,
@@ -919,7 +1156,15 @@ object MutableLongMap {
       }
 
     }.ensuring(_ =>
-      getCurrentListMap(_keys, _values, mask, extraKeys, zeroValue, minValue, 0) + (k, v) == getCurrentListMap(
+      getCurrentListMap(
+        _keys,
+        _values,
+        mask,
+        extraKeys,
+        zeroValue,
+        minValue,
+        0
+      ) + (k, v) == getCurrentListMap(
         _keys.updated(i, k),
         _values.updated(i, v),
         mask,
@@ -1082,7 +1327,15 @@ object MutableLongMap {
             check(_keys(from) != k)
 
             ListMapLongKeyLemmas.addCommutativeForDiffKeys(
-              getCurrentListMapNoExtraKeys(_keys, _values, mask, extraKeys, zeroValue, minValue, from + 1),
+              getCurrentListMapNoExtraKeys(
+                _keys,
+                _values,
+                mask,
+                extraKeys,
+                zeroValue,
+                minValue,
+                from + 1
+              ),
               k,
               v,
               _keys(from),
@@ -1103,7 +1356,15 @@ object MutableLongMap {
           minValue,
           from
         ) ==
-          (getCurrentListMapNoExtraKeys(_keys, _values, mask, extraKeys, zeroValue, minValue, from) + (k, v))
+          (getCurrentListMapNoExtraKeys(
+            _keys,
+            _values,
+            mask,
+            extraKeys,
+            zeroValue,
+            minValue,
+            from
+          ) + (k, v))
       else
         getCurrentListMapNoExtraKeys(
           _keys.updated(i, k),
@@ -1143,9 +1404,18 @@ object MutableLongMap {
       require(validKeyInArray(k))
       require(_keys(i) == k)
 
-      val mapNoExtraKeysBefore = getCurrentListMapNoExtraKeys(_keys, _values, mask, extraKeys, zeroValue, minValue, 0)
+      val mapNoExtraKeysBefore =
+        getCurrentListMapNoExtraKeys(_keys, _values, mask, extraKeys, zeroValue, minValue, 0)
       val mapNoExtraKeysAfter =
-        getCurrentListMapNoExtraKeys(_keys, _values.updated(i, v), mask, extraKeys, zeroValue, minValue, 0)
+        getCurrentListMapNoExtraKeys(
+          _keys,
+          _values.updated(i, v),
+          mask,
+          extraKeys,
+          zeroValue,
+          minValue,
+          0
+        )
 
       lemmaChangeValueExistingKeyToArrayThenMapNoExtrasAddPair(
         _keys,
@@ -1162,13 +1432,16 @@ object MutableLongMap {
 
       check(mapNoExtraKeysBefore + (k, v) == mapNoExtraKeysAfter)
 
-      val mapAfter = getCurrentListMap(_keys, _values.updated(i, v), mask, extraKeys, zeroValue, minValue, 0)
+      val mapAfter =
+        getCurrentListMap(_keys, _values.updated(i, v), mask, extraKeys, zeroValue, minValue, 0)
       val mapBefore = getCurrentListMap(_keys, _values, mask, extraKeys, zeroValue, minValue, 0)
       if ((extraKeys & 1) != 0 && (extraKeys & 2) != 0) {
         // it means there is a mapping for the key 0 and the Long.MIN_VALUE
         check(mapAfter == (mapNoExtraKeysAfter + (0L, zeroValue)) + (Long.MinValue, minValue))
         check(mapBefore == (mapNoExtraKeysBefore + (0L, zeroValue)) + (Long.MinValue, minValue))
-        check(mapAfter == ((mapNoExtraKeysBefore + (k, v)) + (0L, zeroValue)) + (Long.MinValue, minValue))
+        check(
+          mapAfter == ((mapNoExtraKeysBefore + (k, v)) + (0L, zeroValue)) + (Long.MinValue, minValue)
+        )
         ListMapLongKeyLemmas.addCommutativeForDiffKeys(mapNoExtraKeysBefore, k, v, 0L, zeroValue)
         ListMapLongKeyLemmas.addCommutativeForDiffKeys(
           mapNoExtraKeysBefore + (0L, zeroValue),
@@ -1179,7 +1452,15 @@ object MutableLongMap {
         )
 
         check(
-          getCurrentListMap(_keys, _values, mask, extraKeys, zeroValue, minValue, 0) + (k, v) == getCurrentListMap(
+          getCurrentListMap(
+            _keys,
+            _values,
+            mask,
+            extraKeys,
+            zeroValue,
+            minValue,
+            0
+          ) + (k, v) == getCurrentListMap(
             _keys,
             _values.updated(i, v),
             mask,
@@ -1196,7 +1477,15 @@ object MutableLongMap {
         check(mapAfter == (mapNoExtraKeysBefore + (k, v)) + (0L, zeroValue))
         ListMapLongKeyLemmas.addCommutativeForDiffKeys(mapNoExtraKeysBefore, k, v, 0L, zeroValue)
         check(
-          getCurrentListMap(_keys, _values, mask, extraKeys, zeroValue, minValue, 0) + (k, v) == getCurrentListMap(
+          getCurrentListMap(
+            _keys,
+            _values,
+            mask,
+            extraKeys,
+            zeroValue,
+            minValue,
+            0
+          ) + (k, v) == getCurrentListMap(
             _keys,
             _values.updated(i, v),
             mask,
@@ -1211,9 +1500,23 @@ object MutableLongMap {
         check(mapAfter == mapNoExtraKeysAfter + (Long.MinValue, minValue))
         check(mapAfter == (mapNoExtraKeysBefore + (k, v)) + (Long.MinValue, minValue))
         check(mapBefore == (mapNoExtraKeysBefore + (Long.MinValue, minValue)))
-        ListMapLongKeyLemmas.addCommutativeForDiffKeys(mapNoExtraKeysBefore, k, v, Long.MinValue, minValue)
+        ListMapLongKeyLemmas.addCommutativeForDiffKeys(
+          mapNoExtraKeysBefore,
+          k,
+          v,
+          Long.MinValue,
+          minValue
+        )
         check(
-          getCurrentListMap(_keys, _values, mask, extraKeys, zeroValue, minValue, 0) + (k, v) == getCurrentListMap(
+          getCurrentListMap(
+            _keys,
+            _values,
+            mask,
+            extraKeys,
+            zeroValue,
+            minValue,
+            0
+          ) + (k, v) == getCurrentListMap(
             _keys,
             _values.updated(i, v),
             mask,
@@ -1226,7 +1529,15 @@ object MutableLongMap {
       } else {
         check(mapAfter == mapNoExtraKeysAfter)
         check(
-          getCurrentListMap(_keys, _values, mask, extraKeys, zeroValue, minValue, 0) + (k, v) == getCurrentListMap(
+          getCurrentListMap(
+            _keys,
+            _values,
+            mask,
+            extraKeys,
+            zeroValue,
+            minValue,
+            0
+          ) + (k, v) == getCurrentListMap(
             _keys,
             _values.updated(i, v),
             mask,
@@ -1239,7 +1550,15 @@ object MutableLongMap {
       }
 
     }.ensuring(_ =>
-      getCurrentListMap(_keys, _values, mask, extraKeys, zeroValue, minValue, 0) + (k, v) == getCurrentListMap(
+      getCurrentListMap(
+        _keys,
+        _values,
+        mask,
+        extraKeys,
+        zeroValue,
+        minValue,
+        0
+      ) + (k, v) == getCurrentListMap(
         _keys,
         _values.updated(i, v),
         mask,
@@ -1296,7 +1615,15 @@ object MutableLongMap {
           )
         }
         check(
-          getCurrentListMapNoExtraKeys(_keys, _values.updated(i, v), mask, extraKeys, zeroValue, minValue, from) ==
+          getCurrentListMapNoExtraKeys(
+            _keys,
+            _values.updated(i, v),
+            mask,
+            extraKeys,
+            zeroValue,
+            minValue,
+            from
+          ) ==
             getCurrentListMapNoExtraKeys(_keys, _values, mask, extraKeys, zeroValue, minValue, from)
         )
       } else {
@@ -1304,7 +1631,15 @@ object MutableLongMap {
         val listmapNoExtrasBefore =
           getCurrentListMapNoExtraKeys(_keys, _values, mask, extraKeys, zeroValue, minValue, from)
         val listmapNoExtrasAfter =
-          getCurrentListMapNoExtraKeys(_keys, _values.updated(i, v), mask, extraKeys, zeroValue, minValue, from)
+          getCurrentListMapNoExtraKeys(
+            _keys,
+            _values.updated(i, v),
+            mask,
+            extraKeys,
+            zeroValue,
+            minValue,
+            from
+          )
         if (from == i) {
           lemmaChangeValueExistingKeyToArrayThenMapNoExtrasAddPair(
             _keys,
@@ -1333,7 +1668,15 @@ object MutableLongMap {
           )
 
           ListMapLongKeyLemmas.addSameAsAddTwiceSameKeyDiffValues(
-            getCurrentListMapNoExtraKeys(_keys, _values.updated(i, v), mask, extraKeys, zeroValue, minValue, from + 1),
+            getCurrentListMapNoExtraKeys(
+              _keys,
+              _values.updated(i, v),
+              mask,
+              extraKeys,
+              zeroValue,
+              minValue,
+              from + 1
+            ),
             k,
             _values(from),
             _values.updated(i, v).apply(from)
@@ -1356,7 +1699,15 @@ object MutableLongMap {
 
           if (validKeyInArray(_keys(from))) {
             check(
-              getCurrentListMapNoExtraKeys(_keys, _values.updated(i, v), mask, extraKeys, zeroValue, minValue, from) ==
+              getCurrentListMapNoExtraKeys(
+                _keys,
+                _values.updated(i, v),
+                mask,
+                extraKeys,
+                zeroValue,
+                minValue,
+                from
+              ) ==
                 ((getCurrentListMapNoExtraKeys(
                   _keys,
                   _values,
@@ -1377,7 +1728,15 @@ object MutableLongMap {
             check(_keys(from) != k)
 
             ListMapLongKeyLemmas.addCommutativeForDiffKeys(
-              getCurrentListMapNoExtraKeys(_keys, _values, mask, extraKeys, zeroValue, minValue, from + 1),
+              getCurrentListMapNoExtraKeys(
+                _keys,
+                _values,
+                mask,
+                extraKeys,
+                zeroValue,
+                minValue,
+                from + 1
+              ),
               k,
               v,
               _keys(from),
@@ -1389,10 +1748,34 @@ object MutableLongMap {
 
     }.ensuring(_ =>
       if (from <= i)
-        getCurrentListMapNoExtraKeys(_keys, _values.updated(i, v), mask, extraKeys, zeroValue, minValue, from) ==
-          (getCurrentListMapNoExtraKeys(_keys, _values, mask, extraKeys, zeroValue, minValue, from) + (k, v))
+        getCurrentListMapNoExtraKeys(
+          _keys,
+          _values.updated(i, v),
+          mask,
+          extraKeys,
+          zeroValue,
+          minValue,
+          from
+        ) ==
+          (getCurrentListMapNoExtraKeys(
+            _keys,
+            _values,
+            mask,
+            extraKeys,
+            zeroValue,
+            minValue,
+            from
+          ) + (k, v))
       else
-        getCurrentListMapNoExtraKeys(_keys, _values.updated(i, v), mask, extraKeys, zeroValue, minValue, from) ==
+        getCurrentListMapNoExtraKeys(
+          _keys,
+          _values.updated(i, v),
+          mask,
+          extraKeys,
+          zeroValue,
+          minValue,
+          from
+        ) ==
           getCurrentListMapNoExtraKeys(_keys, _values, mask, extraKeys, zeroValue, minValue, from)
     )
 
@@ -1422,9 +1805,25 @@ object MutableLongMap {
       require(arrayNoDuplicates(_keys, 0))
 
       val mapNoExtraKeysBefore =
-        getCurrentListMapNoExtraKeys(_keys, _values, mask, extraKeysBefore, zeroValueBefore, minValue, 0)
+        getCurrentListMapNoExtraKeys(
+          _keys,
+          _values,
+          mask,
+          extraKeysBefore,
+          zeroValueBefore,
+          minValue,
+          0
+        )
       val mapNoExtraKeysAfter =
-        getCurrentListMapNoExtraKeys(_keys, _values, mask, extraKeysAfter, zeroValueAfter, minValue, 0)
+        getCurrentListMapNoExtraKeys(
+          _keys,
+          _values,
+          mask,
+          extraKeysAfter,
+          zeroValueAfter,
+          minValue,
+          0
+        )
 
       lemmaNoChangeToArrayThenSameMapNoExtras(
         _keys,
@@ -1463,8 +1862,10 @@ object MutableLongMap {
             )
           )
         } else {
-          val mapBefore = getCurrentListMap(_keys, _values, mask, extraKeysBefore, zeroValueBefore, minValue, 0)
-          val mapAfter = getCurrentListMap(_keys, _values, mask, extraKeysAfter, zeroValueAfter, minValue, 0)
+          val mapBefore =
+            getCurrentListMap(_keys, _values, mask, extraKeysBefore, zeroValueBefore, minValue, 0)
+          val mapAfter =
+            getCurrentListMap(_keys, _values, mask, extraKeysAfter, zeroValueAfter, minValue, 0)
 
           check(mapBefore == (mapNoExtraKeysBefore + (0L, zeroValueBefore)))
           check(mapAfter == (mapNoExtraKeysAfter + (0L, zeroValueAfter)))
@@ -1502,11 +1903,15 @@ object MutableLongMap {
       } else {
         //key Long.MinValue defined
         if ((extraKeysBefore & 1) == 0) {
-          val mapBefore = getCurrentListMap(_keys, _values, mask, extraKeysBefore, zeroValueBefore, minValue, 0)
-          val mapAfter = getCurrentListMap(_keys, _values, mask, extraKeysAfter, zeroValueAfter, minValue, 0)
+          val mapBefore =
+            getCurrentListMap(_keys, _values, mask, extraKeysBefore, zeroValueBefore, minValue, 0)
+          val mapAfter =
+            getCurrentListMap(_keys, _values, mask, extraKeysAfter, zeroValueAfter, minValue, 0)
 
           check(mapBefore == (mapNoExtraKeysBefore + (Long.MinValue, minValue)))
-          check(mapAfter == ((mapNoExtraKeysBefore + (0L, zeroValueAfter)) + (Long.MinValue, minValue)))
+          check(
+            mapAfter == ((mapNoExtraKeysBefore + (0L, zeroValueAfter)) + (Long.MinValue, minValue))
+          )
           ListMapLongKeyLemmas.addCommutativeForDiffKeys(
             mapNoExtraKeysBefore,
             0L,
@@ -1536,14 +1941,24 @@ object MutableLongMap {
           )
 
         } else {
-          val mapBefore = getCurrentListMap(_keys, _values, mask, extraKeysBefore, zeroValueBefore, minValue, 0)
-          val mapAfter = getCurrentListMap(_keys, _values, mask, extraKeysAfter, zeroValueAfter, minValue, 0)
+          val mapBefore =
+            getCurrentListMap(_keys, _values, mask, extraKeysBefore, zeroValueBefore, minValue, 0)
+          val mapAfter =
+            getCurrentListMap(_keys, _values, mask, extraKeysAfter, zeroValueAfter, minValue, 0)
 
-          check(mapBefore == (mapNoExtraKeysBefore + (0L, zeroValueBefore)) + (Long.MinValue, minValue))
-          check(mapAfter == (mapNoExtraKeysAfter + (0L, zeroValueAfter)) + (Long.MinValue, minValue))
+          check(
+            mapBefore == (mapNoExtraKeysBefore + (0L, zeroValueBefore)) + (Long.MinValue, minValue)
+          )
+          check(
+            mapAfter == (mapNoExtraKeysAfter + (0L, zeroValueAfter)) + (Long.MinValue, minValue)
+          )
 
-          check(mapBefore == (mapNoExtraKeysBefore + (Long.MinValue, minValue)) + (0L, zeroValueBefore))
-          check(mapAfter == (mapNoExtraKeysAfter + (Long.MinValue, minValue)) + (0L, zeroValueAfter))
+          check(
+            mapBefore == (mapNoExtraKeysBefore + (Long.MinValue, minValue)) + (0L, zeroValueBefore)
+          )
+          check(
+            mapAfter == (mapNoExtraKeysAfter + (Long.MinValue, minValue)) + (0L, zeroValueAfter)
+          )
           ListMapLongKeyLemmas.addSameAsAddTwiceSameKeyDiffValues(
             (mapNoExtraKeysBefore + (Long.MinValue, minValue)),
             0L,
@@ -1553,8 +1968,12 @@ object MutableLongMap {
           check(
             mapAfter == ((mapNoExtraKeysBefore + (Long.MinValue, minValue)) + (0L, zeroValueBefore)) + (0L, zeroValueAfter)
           )
-          check(mapAfter == (mapNoExtraKeysBefore + (Long.MinValue, minValue)) + (0L, zeroValueAfter))
-          check(mapAfter == (mapNoExtraKeysBefore + (0L, zeroValueAfter)) + (Long.MinValue, minValue))
+          check(
+            mapAfter == (mapNoExtraKeysBefore + (Long.MinValue, minValue)) + (0L, zeroValueAfter)
+          )
+          check(
+            mapAfter == (mapNoExtraKeysBefore + (0L, zeroValueAfter)) + (Long.MinValue, minValue)
+          )
 
           check(
             getCurrentListMap(
@@ -1587,7 +2006,15 @@ object MutableLongMap {
         zeroValueBefore,
         minValue,
         0
-      ) + (0, zeroValueAfter) == getCurrentListMap(_keys, _values, mask, extraKeysAfter, zeroValueAfter, minValue, 0)
+      ) + (0, zeroValueAfter) == getCurrentListMap(
+        _keys,
+        _values,
+        mask,
+        extraKeysAfter,
+        zeroValueAfter,
+        minValue,
+        0
+      )
     )
 
     @opaque
@@ -1616,9 +2043,25 @@ object MutableLongMap {
       require(arrayNoDuplicates(_keys, 0))
 
       val mapNoExtraKeysBefore =
-        getCurrentListMapNoExtraKeys(_keys, _values, mask, extraKeysBefore, zeroValue, minValueBefore, 0)
+        getCurrentListMapNoExtraKeys(
+          _keys,
+          _values,
+          mask,
+          extraKeysBefore,
+          zeroValue,
+          minValueBefore,
+          0
+        )
       val mapNoExtraKeysAfter =
-        getCurrentListMapNoExtraKeys(_keys, _values, mask, extraKeysAfter, zeroValue, minValueAfter, 0)
+        getCurrentListMapNoExtraKeys(
+          _keys,
+          _values,
+          mask,
+          extraKeysAfter,
+          zeroValue,
+          minValueAfter,
+          0
+        )
 
       lemmaNoChangeToArrayThenSameMapNoExtras(
         _keys,
@@ -1658,8 +2101,10 @@ object MutableLongMap {
             )
           )
         } else {
-          val mapBefore = getCurrentListMap(_keys, _values, mask, extraKeysBefore, zeroValue, minValueBefore, 0)
-          val mapAfter = getCurrentListMap(_keys, _values, mask, extraKeysAfter, zeroValue, minValueAfter, 0)
+          val mapBefore =
+            getCurrentListMap(_keys, _values, mask, extraKeysBefore, zeroValue, minValueBefore, 0)
+          val mapAfter =
+            getCurrentListMap(_keys, _values, mask, extraKeysAfter, zeroValue, minValueAfter, 0)
 
           ListMapLongKeyLemmas.addSameAsAddTwiceSameKeyDiffValues(
             mapNoExtraKeysBefore,
@@ -1714,8 +2159,10 @@ object MutableLongMap {
           )
 
         } else {
-          val mapBefore = getCurrentListMap(_keys, _values, mask, extraKeysBefore, zeroValue, minValueBefore, 0)
-          val mapAfter = getCurrentListMap(_keys, _values, mask, extraKeysAfter, zeroValue, minValueAfter, 0)
+          val mapBefore =
+            getCurrentListMap(_keys, _values, mask, extraKeysBefore, zeroValue, minValueBefore, 0)
+          val mapAfter =
+            getCurrentListMap(_keys, _values, mask, extraKeysAfter, zeroValue, minValueAfter, 0)
 
           ListMapLongKeyLemmas.addSameAsAddTwiceSameKeyDiffValues(
             mapNoExtraKeysBefore + (0L, zeroValue),
@@ -1776,7 +2223,7 @@ object MutableLongMap {
         zeroValue: Long,
         minValue: Long,
         i: Int,
-        k: Long,
+        k: Long
     ): Unit = {
       require(validMask(mask))
       require(_values.length == mask + 1)
@@ -1796,7 +2243,8 @@ object MutableLongMap {
       lemmaArrayContainsFromImpliesContainsFromZero(_keys, k, i)
       assert(arrayContainsKeyTailRec(_keys, k, 0))
 
-      val mapNoExtraKeysBefore = getCurrentListMapNoExtraKeys(_keys, _values, mask, extraKeys, zeroValue, minValue, 0)
+      val mapNoExtraKeysBefore =
+        getCurrentListMapNoExtraKeys(_keys, _values, mask, extraKeys, zeroValue, minValue, 0)
       val mapNoExtraKeysAfter = getCurrentListMapNoExtraKeys(
         _keys.updated(i, Long.MinValue),
         _values.updated(i, 0L),
@@ -1807,23 +2255,57 @@ object MutableLongMap {
         0
       )
 
-      lemmaRemoveValidKeyFromArrayThenMapNoExtrasRemoveKey(_keys, _values, mask, extraKeys, zeroValue, minValue, i, k, 0)
+      lemmaRemoveValidKeyFromArrayThenMapNoExtrasRemoveKey(
+        _keys,
+        _values,
+        mask,
+        extraKeys,
+        zeroValue,
+        minValue,
+        i,
+        k,
+        0
+      )
 
       check(mapNoExtraKeysBefore - k == mapNoExtraKeysAfter)
 
       val mapAfter =
-        getCurrentListMap(_keys.updated(i, Long.MinValue), _values.updated(i, 0L), mask, extraKeys, zeroValue, minValue, 0)
+        getCurrentListMap(
+          _keys.updated(i, Long.MinValue),
+          _values.updated(i, 0L),
+          mask,
+          extraKeys,
+          zeroValue,
+          minValue,
+          0
+        )
       val mapBefore = getCurrentListMap(_keys, _values, mask, extraKeys, zeroValue, minValue, 0)
       if ((extraKeys & 1) != 0 && (extraKeys & 2) != 0) {
         // it means there is a mapping for the key 0 and the Long.MIN_VALUE
         check(mapAfter == (mapNoExtraKeysAfter + (0L, zeroValue)) + (Long.MinValue, minValue))
         check(mapBefore == (mapNoExtraKeysBefore + (0L, zeroValue)) + (Long.MinValue, minValue))
-        check(mapAfter == ((mapNoExtraKeysBefore - k) + (0L, zeroValue)) + (Long.MinValue, minValue))
+        check(
+          mapAfter == ((mapNoExtraKeysBefore - k) + (0L, zeroValue)) + (Long.MinValue, minValue)
+        )
 
         ListMapLongKeyLemmas.addRemoveCommutativeForDiffKeys(mapNoExtraKeysBefore, 0L, zeroValue, k)
-        ListMapLongKeyLemmas.addRemoveCommutativeForDiffKeys(mapNoExtraKeysBefore + (0L, zeroValue),  Long.MinValue, minValue, k)
+        ListMapLongKeyLemmas.addRemoveCommutativeForDiffKeys(
+          mapNoExtraKeysBefore + (0L, zeroValue),
+          Long.MinValue,
+          minValue,
+          k
+        )
 
-        check(getCurrentListMap(_keys, _values, mask, extraKeys, zeroValue, minValue, 0) -k == getCurrentListMap(
+        check(
+          getCurrentListMap(
+            _keys,
+            _values,
+            mask,
+            extraKeys,
+            zeroValue,
+            minValue,
+            0
+          ) - k == getCurrentListMap(
             _keys.updated(i, Long.MinValue),
             _values.updated(i, 0L),
             mask,
@@ -1841,7 +2323,16 @@ object MutableLongMap {
 
         ListMapLongKeyLemmas.addRemoveCommutativeForDiffKeys(mapNoExtraKeysBefore, 0L, zeroValue, k)
 
-        check(getCurrentListMap(_keys, _values, mask, extraKeys, zeroValue, minValue, 0) - k == getCurrentListMap(
+        check(
+          getCurrentListMap(
+            _keys,
+            _values,
+            mask,
+            extraKeys,
+            zeroValue,
+            minValue,
+            0
+          ) - k == getCurrentListMap(
             _keys.updated(i, Long.MinValue),
             _values.updated(i, 0L),
             mask,
@@ -1851,16 +2342,30 @@ object MutableLongMap {
             0
           )
         )
-        
+
       } else if ((extraKeys & 2) != 0 && (extraKeys & 1) == 0) {
         // it means there is a mapping for the key Long.MIN_VALUE
         check(mapAfter == mapNoExtraKeysAfter + (Long.MinValue, minValue))
         check(mapAfter == (mapNoExtraKeysBefore - k) + (Long.MinValue, minValue))
         check(mapBefore == (mapNoExtraKeysBefore + (Long.MinValue, minValue)))
 
-        ListMapLongKeyLemmas.addRemoveCommutativeForDiffKeys(mapNoExtraKeysBefore, Long.MinValue, minValue, k)
+        ListMapLongKeyLemmas.addRemoveCommutativeForDiffKeys(
+          mapNoExtraKeysBefore,
+          Long.MinValue,
+          minValue,
+          k
+        )
 
-        check(getCurrentListMap(_keys, _values, mask, extraKeys, zeroValue, minValue, 0) -k == getCurrentListMap(
+        check(
+          getCurrentListMap(
+            _keys,
+            _values,
+            mask,
+            extraKeys,
+            zeroValue,
+            minValue,
+            0
+          ) - k == getCurrentListMap(
             _keys.updated(i, Long.MinValue),
             _values.updated(i, 0L),
             mask,
@@ -1870,11 +2375,20 @@ object MutableLongMap {
             0
           )
         )
-        
+
       } else {
         check(mapAfter == mapNoExtraKeysAfter)
 
-        check(getCurrentListMap(_keys, _values, mask, extraKeys, zeroValue, minValue, 0) -k == getCurrentListMap(
+        check(
+          getCurrentListMap(
+            _keys,
+            _values,
+            mask,
+            extraKeys,
+            zeroValue,
+            minValue,
+            0
+          ) - k == getCurrentListMap(
             _keys.updated(i, Long.MinValue),
             _values.updated(i, 0L),
             mask,
@@ -1884,11 +2398,19 @@ object MutableLongMap {
             0
           )
         )
-        
+
       }
 
     }.ensuring(_ =>
-      getCurrentListMap(_keys, _values, mask, extraKeys, zeroValue, minValue, 0) -k == getCurrentListMap(
+      getCurrentListMap(
+        _keys,
+        _values,
+        mask,
+        extraKeys,
+        zeroValue,
+        minValue,
+        0
+      ) - k == getCurrentListMap(
         _keys.updated(i, Long.MinValue),
         _values.updated(i, 0L),
         mask,
@@ -1925,9 +2447,25 @@ object MutableLongMap {
       require(arrayNoDuplicates(_keys, 0))
 
       val mapNoExtraKeysBefore =
-        getCurrentListMapNoExtraKeys(_keys, _values, mask, extraKeysBefore, zeroValue, minValueBefore, 0)
+        getCurrentListMapNoExtraKeys(
+          _keys,
+          _values,
+          mask,
+          extraKeysBefore,
+          zeroValue,
+          minValueBefore,
+          0
+        )
       val mapNoExtraKeysAfter =
-        getCurrentListMapNoExtraKeys(_keys, _values, mask, extraKeysAfter, zeroValue, minValueAfter, 0)
+        getCurrentListMapNoExtraKeys(
+          _keys,
+          _values,
+          mask,
+          extraKeysAfter,
+          zeroValue,
+          minValueAfter,
+          0
+        )
 
       lemmaNoChangeToArrayThenSameMapNoExtras(
         _keys,
@@ -1947,40 +2485,129 @@ object MutableLongMap {
       if ((extraKeysBefore & 1) == 0) {
         //key 0 not defined
         if ((extraKeysBefore & 2) == 0) {
-          ListMapLongKeyLemmas.removeNotPresentStillSame(getCurrentListMap( _keys, _values, mask, extraKeysBefore, zeroValue, minValueBefore, 0), Long.MinValue )
-          check(getCurrentListMap( _keys, _values, mask, extraKeysBefore, zeroValue, minValueBefore, 0 ) - Long.MinValue == getCurrentListMap( _keys, _values, mask, extraKeysAfter, zeroValue, minValueAfter, 0 ))
+          ListMapLongKeyLemmas.removeNotPresentStillSame(
+            getCurrentListMap(_keys, _values, mask, extraKeysBefore, zeroValue, minValueBefore, 0),
+            Long.MinValue
+          )
+          check(
+            getCurrentListMap(
+              _keys,
+              _values,
+              mask,
+              extraKeysBefore,
+              zeroValue,
+              minValueBefore,
+              0
+            ) - Long.MinValue == getCurrentListMap(
+              _keys,
+              _values,
+              mask,
+              extraKeysAfter,
+              zeroValue,
+              minValueAfter,
+              0
+            )
+          )
         } else {
-          val mapBefore = getCurrentListMap(_keys, _values, mask, extraKeysBefore, zeroValue, minValueBefore, 0)
-          val mapAfter = getCurrentListMap(_keys, _values, mask, extraKeysAfter, zeroValue, minValueAfter, 0)
+          val mapBefore =
+            getCurrentListMap(_keys, _values, mask, extraKeysBefore, zeroValue, minValueBefore, 0)
+          val mapAfter =
+            getCurrentListMap(_keys, _values, mask, extraKeysAfter, zeroValue, minValueAfter, 0)
 
           check(mapBefore == mapNoExtraKeysBefore + (Long.MinValue, minValueBefore))
           check(mapAfter == mapNoExtraKeysAfter)
-          ListMapLongKeyLemmas.addThenRemoveForNewKeyIsSame(mapNoExtraKeysBefore, Long.MinValue, minValueBefore)
+          ListMapLongKeyLemmas.addThenRemoveForNewKeyIsSame(
+            mapNoExtraKeysBefore,
+            Long.MinValue,
+            minValueBefore
+          )
           check(mapBefore - Long.MinValue == mapAfter)
 
-          check(getCurrentListMap( _keys, _values, mask, extraKeysBefore, zeroValue, minValueBefore, 0 ) - Long.MinValue == getCurrentListMap( _keys, _values, mask, extraKeysAfter, zeroValue, minValueAfter, 0 ))
+          check(
+            getCurrentListMap(
+              _keys,
+              _values,
+              mask,
+              extraKeysBefore,
+              zeroValue,
+              minValueBefore,
+              0
+            ) - Long.MinValue == getCurrentListMap(
+              _keys,
+              _values,
+              mask,
+              extraKeysAfter,
+              zeroValue,
+              minValueAfter,
+              0
+            )
+          )
         }
 
       } else {
         //key 0 defined
         if ((extraKeysBefore & 2) == 0) {
-          ListMapLongKeyLemmas.removeNotPresentStillSame(getCurrentListMap( _keys, _values, mask, extraKeysBefore, zeroValue, minValueBefore, 0), Long.MinValue )
-          check(getCurrentListMap( _keys, _values, mask, extraKeysBefore, zeroValue, minValueBefore, 0 ) - Long.MinValue == getCurrentListMap( _keys, _values, mask, extraKeysAfter, zeroValue, minValueAfter, 0 ))
+          ListMapLongKeyLemmas.removeNotPresentStillSame(
+            getCurrentListMap(_keys, _values, mask, extraKeysBefore, zeroValue, minValueBefore, 0),
+            Long.MinValue
+          )
+          check(
+            getCurrentListMap(
+              _keys,
+              _values,
+              mask,
+              extraKeysBefore,
+              zeroValue,
+              minValueBefore,
+              0
+            ) - Long.MinValue == getCurrentListMap(
+              _keys,
+              _values,
+              mask,
+              extraKeysAfter,
+              zeroValue,
+              minValueAfter,
+              0
+            )
+          )
 
         } else {
-          val mapBefore = getCurrentListMap(_keys, _values, mask, extraKeysBefore, zeroValue, minValueBefore, 0)
-          val mapAfter = getCurrentListMap(_keys, _values, mask, extraKeysAfter, zeroValue, minValueAfter, 0)
+          val mapBefore =
+            getCurrentListMap(_keys, _values, mask, extraKeysBefore, zeroValue, minValueBefore, 0)
+          val mapAfter =
+            getCurrentListMap(_keys, _values, mask, extraKeysAfter, zeroValue, minValueAfter, 0)
 
-
-          check(mapBefore == (mapNoExtraKeysBefore + (0L, zeroValue)) + (Long.MinValue, minValueBefore))
+          check(
+            mapBefore == (mapNoExtraKeysBefore + (0L, zeroValue)) + (Long.MinValue, minValueBefore)
+          )
           check(mapAfter == (mapNoExtraKeysAfter + (0L, zeroValue)))
-          ListMapLongKeyLemmas.addThenRemoveForNewKeyIsSame(mapNoExtraKeysBefore + (0L, zeroValue), Long.MinValue, minValueBefore)
+          ListMapLongKeyLemmas.addThenRemoveForNewKeyIsSame(
+            mapNoExtraKeysBefore + (0L, zeroValue),
+            Long.MinValue,
+            minValueBefore
+          )
           check(mapBefore - Long.MinValue == mapAfter)
         }
       }
 
     }.ensuring(_ =>
-      getCurrentListMap( _keys, _values, mask, extraKeysBefore, zeroValue, minValueBefore, 0 ) - Long.MinValue == getCurrentListMap( _keys, _values, mask, extraKeysAfter, zeroValue, minValueAfter, 0)
+      getCurrentListMap(
+        _keys,
+        _values,
+        mask,
+        extraKeysBefore,
+        zeroValue,
+        minValueBefore,
+        0
+      ) - Long.MinValue == getCurrentListMap(
+        _keys,
+        _values,
+        mask,
+        extraKeysAfter,
+        zeroValue,
+        minValueAfter,
+        0
+      )
     )
 
     @opaque
@@ -2009,9 +2636,25 @@ object MutableLongMap {
       require(arrayNoDuplicates(_keys, 0))
 
       val mapNoExtraKeysBefore =
-        getCurrentListMapNoExtraKeys(_keys, _values, mask, extraKeysBefore, zeroValueBefore, minValue, 0)
+        getCurrentListMapNoExtraKeys(
+          _keys,
+          _values,
+          mask,
+          extraKeysBefore,
+          zeroValueBefore,
+          minValue,
+          0
+        )
       val mapNoExtraKeysAfter =
-        getCurrentListMapNoExtraKeys(_keys, _values, mask, extraKeysAfter, zeroValueAfter, minValue, 0)
+        getCurrentListMapNoExtraKeys(
+          _keys,
+          _values,
+          mask,
+          extraKeysAfter,
+          zeroValueAfter,
+          minValue,
+          0
+        )
 
       lemmaNoChangeToArrayThenSameMapNoExtras(
         _keys,
@@ -2031,43 +2674,148 @@ object MutableLongMap {
       if ((extraKeysBefore & 2) == 0) {
         //MinValue not defined
         if ((extraKeysBefore & 1) == 0) {
-          ListMapLongKeyLemmas.removeNotPresentStillSame(getCurrentListMap( _keys, _values, mask, extraKeysBefore, zeroValueBefore, minValue, 0), 0L )
-          check(getCurrentListMap( _keys, _values, mask, extraKeysBefore, zeroValueBefore, minValue, 0 ) - 0L == getCurrentListMap( _keys, _values, mask, extraKeysAfter, zeroValueAfter, minValue, 0))
+          ListMapLongKeyLemmas.removeNotPresentStillSame(
+            getCurrentListMap(_keys, _values, mask, extraKeysBefore, zeroValueBefore, minValue, 0),
+            0L
+          )
+          check(
+            getCurrentListMap(
+              _keys,
+              _values,
+              mask,
+              extraKeysBefore,
+              zeroValueBefore,
+              minValue,
+              0
+            ) - 0L == getCurrentListMap(
+              _keys,
+              _values,
+              mask,
+              extraKeysAfter,
+              zeroValueAfter,
+              minValue,
+              0
+            )
+          )
         } else {
-          val mapBefore = getCurrentListMap(_keys, _values, mask, extraKeysBefore, zeroValueBefore, minValue, 0)
-          val mapAfter = getCurrentListMap(_keys, _values, mask, extraKeysAfter, zeroValueAfter, minValue, 0)
+          val mapBefore =
+            getCurrentListMap(_keys, _values, mask, extraKeysBefore, zeroValueBefore, minValue, 0)
+          val mapAfter =
+            getCurrentListMap(_keys, _values, mask, extraKeysAfter, zeroValueAfter, minValue, 0)
 
           check(mapBefore == mapNoExtraKeysBefore + (0L, zeroValueBefore))
           check(mapAfter == mapNoExtraKeysAfter)
-          ListMapLongKeyLemmas.addThenRemoveForNewKeyIsSame(mapNoExtraKeysBefore, 0L, zeroValueBefore)
+          ListMapLongKeyLemmas.addThenRemoveForNewKeyIsSame(
+            mapNoExtraKeysBefore,
+            0L,
+            zeroValueBefore
+          )
           check(mapBefore - 0L == mapAfter)
-          check(getCurrentListMap( _keys, _values, mask, extraKeysBefore, zeroValueBefore, minValue, 0 ) - 0L == getCurrentListMap( _keys, _values, mask, extraKeysAfter, zeroValueAfter, minValue, 0))
-            
+          check(
+            getCurrentListMap(
+              _keys,
+              _values,
+              mask,
+              extraKeysBefore,
+              zeroValueBefore,
+              minValue,
+              0
+            ) - 0L == getCurrentListMap(
+              _keys,
+              _values,
+              mask,
+              extraKeysAfter,
+              zeroValueAfter,
+              minValue,
+              0
+            )
+          )
 
         }
 
       } else {
         //MinValue defined
         if ((extraKeysBefore & 1) == 0) {
-          ListMapLongKeyLemmas.removeNotPresentStillSame(getCurrentListMap( _keys, _values, mask, extraKeysBefore, zeroValueBefore, minValue, 0), 0L )
-          check(getCurrentListMap( _keys, _values, mask, extraKeysBefore, zeroValueBefore, minValue, 0 ) - 0L == getCurrentListMap( _keys, _values, mask, extraKeysAfter, zeroValueAfter, minValue, 0))
+          ListMapLongKeyLemmas.removeNotPresentStillSame(
+            getCurrentListMap(_keys, _values, mask, extraKeysBefore, zeroValueBefore, minValue, 0),
+            0L
+          )
+          check(
+            getCurrentListMap(
+              _keys,
+              _values,
+              mask,
+              extraKeysBefore,
+              zeroValueBefore,
+              minValue,
+              0
+            ) - 0L == getCurrentListMap(
+              _keys,
+              _values,
+              mask,
+              extraKeysAfter,
+              zeroValueAfter,
+              minValue,
+              0
+            )
+          )
 
         } else {
-          val mapBefore = getCurrentListMap(_keys, _values, mask, extraKeysBefore, zeroValueBefore, minValue, 0)
-          val mapAfter = getCurrentListMap(_keys, _values, mask, extraKeysAfter, zeroValueAfter, minValue, 0)
+          val mapBefore =
+            getCurrentListMap(_keys, _values, mask, extraKeysBefore, zeroValueBefore, minValue, 0)
+          val mapAfter =
+            getCurrentListMap(_keys, _values, mask, extraKeysAfter, zeroValueAfter, minValue, 0)
 
-          check(mapBefore == (mapNoExtraKeysBefore + (0L, zeroValueBefore)) + (Long.MinValue, minValue))
+          check(
+            mapBefore == (mapNoExtraKeysBefore + (0L, zeroValueBefore)) + (Long.MinValue, minValue)
+          )
           check(mapAfter == (mapNoExtraKeysAfter + (Long.MinValue, minValue)))
-          ListMapLongKeyLemmas.addThenRemoveForNewKeyIsSame(mapNoExtraKeysBefore + (Long.MinValue, minValue), 0L, zeroValueBefore)
-          ListMapLongKeyLemmas.addCommutativeForDiffKeys(mapNoExtraKeysBefore, 0L, zeroValueBefore, Long.MinValue, minValue)
+          ListMapLongKeyLemmas.addThenRemoveForNewKeyIsSame(
+            mapNoExtraKeysBefore + (Long.MinValue, minValue),
+            0L,
+            zeroValueBefore
+          )
+          ListMapLongKeyLemmas.addCommutativeForDiffKeys(
+            mapNoExtraKeysBefore,
+            0L,
+            zeroValueBefore,
+            Long.MinValue,
+            minValue
+          )
           check(mapBefore - 0L == mapAfter)
 
-          check(getCurrentListMap( _keys, _values, mask, extraKeysBefore, zeroValueBefore, minValue, 0 ) - 0L == getCurrentListMap( _keys, _values, mask, extraKeysAfter, zeroValueAfter, minValue, 0))
+          check(
+            getCurrentListMap(
+              _keys,
+              _values,
+              mask,
+              extraKeysBefore,
+              zeroValueBefore,
+              minValue,
+              0
+            ) - 0L == getCurrentListMap(
+              _keys,
+              _values,
+              mask,
+              extraKeysAfter,
+              zeroValueAfter,
+              minValue,
+              0
+            )
+          )
         }
       }
 
     }.ensuring(_ =>
-      getCurrentListMap( _keys, _values, mask, extraKeysBefore, zeroValueBefore, minValue, 0 ) - 0L == getCurrentListMap( _keys, _values, mask, extraKeysAfter, zeroValueAfter, minValue, 0)
+      getCurrentListMap(
+        _keys,
+        _values,
+        mask,
+        extraKeysBefore,
+        zeroValueBefore,
+        minValue,
+        0
+      ) - 0L == getCurrentListMap(_keys, _values, mask, extraKeysAfter, zeroValueAfter, minValue, 0)
     )
 
     @opaque
@@ -2109,70 +2857,239 @@ object MutableLongMap {
 
       if (from > i) {
         if (from + 1 <= _keys.length) {
-          lemmaRemoveValidKeyFromArrayThenMapNoExtrasRemoveKey( _keys, _values, mask, extraKeys, zeroValue, minValue, i, k, from + 1)
+          lemmaRemoveValidKeyFromArrayThenMapNoExtrasRemoveKey(
+            _keys,
+            _values,
+            mask,
+            extraKeys,
+            zeroValue,
+            minValue,
+            i,
+            k,
+            from + 1
+          )
         }
 
       } else {
         assert(from <= i)
         val listmapNoExtrasBefore =
           getCurrentListMapNoExtraKeys(_keys, _values, mask, extraKeys, zeroValue, minValue, from)
-        val listmapNoExtrasAfter = getCurrentListMapNoExtraKeys( _keys.updated(i, Long.MinValue), _values.updated(i, 0L), mask, extraKeys, zeroValue, minValue, from)
+        val listmapNoExtrasAfter = getCurrentListMapNoExtraKeys(
+          _keys.updated(i, Long.MinValue),
+          _values.updated(i, 0L),
+          mask,
+          extraKeys,
+          zeroValue,
+          minValue,
+          from
+        )
         if (from == i) {
-          lemmaRemoveValidKeyFromArrayThenMapNoExtrasRemoveKey( _keys, _values, mask, extraKeys, zeroValue, minValue, i, k, from + 1)
+          lemmaRemoveValidKeyFromArrayThenMapNoExtrasRemoveKey(
+            _keys,
+            _values,
+            mask,
+            extraKeys,
+            zeroValue,
+            minValue,
+            i,
+            k,
+            from + 1
+          )
           assert(_keys(from) == k)
 
-          if(getCurrentListMapNoExtraKeys(_keys, _values, mask, extraKeys, zeroValue, minValue, from + 1).contains(k)){
+          if (
+            getCurrentListMapNoExtraKeys(
+              _keys,
+              _values,
+              mask,
+              extraKeys,
+              zeroValue,
+              minValue,
+              from + 1
+            ).contains(k)
+          ) {
             if ((extraKeys & 1) != 0 && (extraKeys & 2) != 0) {
               ListMapLongKeyLemmas.addStillContains(
-                getCurrentListMapNoExtraKeys(_keys, _values, mask, extraKeys, zeroValue, minValue, from + 1),
+                getCurrentListMapNoExtraKeys(
+                  _keys,
+                  _values,
+                  mask,
+                  extraKeys,
+                  zeroValue,
+                  minValue,
+                  from + 1
+                ),
                 0L,
                 zeroValue,
                 k
               )
               ListMapLongKeyLemmas.addStillContains(
-                getCurrentListMapNoExtraKeys(_keys, _values, mask, extraKeys, zeroValue, minValue, from + 1) + (0L, zeroValue),
+                getCurrentListMapNoExtraKeys(
+                  _keys,
+                  _values,
+                  mask,
+                  extraKeys,
+                  zeroValue,
+                  minValue,
+                  from + 1
+                ) + (0L, zeroValue),
                 Long.MinValue,
                 minValue,
                 k
               )
             } else if ((extraKeys & 1) != 0 && (extraKeys & 2) == 0) {
               ListMapLongKeyLemmas.addStillContains(
-                getCurrentListMapNoExtraKeys(_keys, _values, mask, extraKeys, zeroValue, minValue, from + 1),
+                getCurrentListMapNoExtraKeys(
+                  _keys,
+                  _values,
+                  mask,
+                  extraKeys,
+                  zeroValue,
+                  minValue,
+                  from + 1
+                ),
                 0L,
                 zeroValue,
                 k
               )
             } else if ((extraKeys & 2) != 0 && (extraKeys & 1) == 0) {
               ListMapLongKeyLemmas.addStillContains(
-                getCurrentListMapNoExtraKeys(_keys, _values, mask, extraKeys, zeroValue, minValue, from + 1),
+                getCurrentListMapNoExtraKeys(
+                  _keys,
+                  _values,
+                  mask,
+                  extraKeys,
+                  zeroValue,
+                  minValue,
+                  from + 1
+                ),
                 Long.MinValue,
                 minValue,
                 k
               )
-            } 
-            lemmaListMapContainsThenArrayContainsFrom(_keys, _values, mask, extraKeys, zeroValue, minValue, k, from + 1)
+            }
+            lemmaListMapContainsThenArrayContainsFrom(
+              _keys,
+              _values,
+              mask,
+              extraKeys,
+              zeroValue,
+              minValue,
+              k,
+              from + 1
+            )
             check(arrayContainsKeyTailRec(_keys, k, from + 1))
             lemmaNoDuplicateFromThenFromBigger(_keys, 0, from)
             lemmaArrayNoDuplicateThenKeysContainedNotEqual(_keys, k, from, Nil())
             check(false)
           }
-          ListMapLongKeyLemmas.addThenRemoveForNewKeyIsSame(getCurrentListMapNoExtraKeys(_keys, _values, mask, extraKeys, zeroValue, minValue, from + 1), _keys(from), _values(from))
-          check(getCurrentListMapNoExtraKeys(_keys, _values, mask, extraKeys, zeroValue, minValue, from) - k == 
-                getCurrentListMapNoExtraKeys(_keys, _values, mask, extraKeys, zeroValue, minValue, from + 1))
-          check(getCurrentListMapNoExtraKeys(_keys, _values, mask, extraKeys, zeroValue, minValue, from) - k == 
-                getCurrentListMapNoExtraKeys(_keys.updated(i, Long.MinValue), _values.updated(i, 0L), mask, extraKeys, zeroValue, minValue, from + 1))
-          check(getCurrentListMapNoExtraKeys(_keys, _values, mask, extraKeys, zeroValue, minValue, from) - k == 
-                getCurrentListMapNoExtraKeys(_keys.updated(i, Long.MinValue), _values.updated(i, 0L), mask, extraKeys, zeroValue, minValue, from ))
-          
-         
+          ListMapLongKeyLemmas.addThenRemoveForNewKeyIsSame(
+            getCurrentListMapNoExtraKeys(
+              _keys,
+              _values,
+              mask,
+              extraKeys,
+              zeroValue,
+              minValue,
+              from + 1
+            ),
+            _keys(from),
+            _values(from)
+          )
+          check(
+            getCurrentListMapNoExtraKeys(
+              _keys,
+              _values,
+              mask,
+              extraKeys,
+              zeroValue,
+              minValue,
+              from
+            ) - k ==
+              getCurrentListMapNoExtraKeys(
+                _keys,
+                _values,
+                mask,
+                extraKeys,
+                zeroValue,
+                minValue,
+                from + 1
+              )
+          )
+          check(
+            getCurrentListMapNoExtraKeys(
+              _keys,
+              _values,
+              mask,
+              extraKeys,
+              zeroValue,
+              minValue,
+              from
+            ) - k ==
+              getCurrentListMapNoExtraKeys(
+                _keys.updated(i, Long.MinValue),
+                _values.updated(i, 0L),
+                mask,
+                extraKeys,
+                zeroValue,
+                minValue,
+                from + 1
+              )
+          )
+          check(
+            getCurrentListMapNoExtraKeys(
+              _keys,
+              _values,
+              mask,
+              extraKeys,
+              zeroValue,
+              minValue,
+              from
+            ) - k ==
+              getCurrentListMapNoExtraKeys(
+                _keys.updated(i, Long.MinValue),
+                _values.updated(i, 0L),
+                mask,
+                extraKeys,
+                zeroValue,
+                minValue,
+                from
+              )
+          )
 
         } else {
           assert(from < i)
-          lemmaRemoveValidKeyFromArrayThenMapNoExtrasRemoveKey( _keys, _values, mask, extraKeys, zeroValue, minValue, i, k, from + 1)
+          lemmaRemoveValidKeyFromArrayThenMapNoExtrasRemoveKey(
+            _keys,
+            _values,
+            mask,
+            extraKeys,
+            zeroValue,
+            minValue,
+            i,
+            k,
+            from + 1
+          )
           if (validKeyInArray(_keys(from))) {
             check(
-              getCurrentListMapNoExtraKeys( _keys.updated(i, Long.MinValue), _values.updated(i, 0L), mask, extraKeys, zeroValue, minValue, from ) ==
-                ((getCurrentListMapNoExtraKeys( _keys, _values, mask, extraKeys, zeroValue, minValue, from + 1 ) - k + (_keys(from), _values(from))))
+              getCurrentListMapNoExtraKeys(
+                _keys.updated(i, Long.MinValue),
+                _values.updated(i, 0L),
+                mask,
+                extraKeys,
+                zeroValue,
+                minValue,
+                from
+              ) ==
+                ((getCurrentListMapNoExtraKeys(
+                  _keys,
+                  _values,
+                  mask,
+                  extraKeys,
+                  zeroValue,
+                  minValue,
+                  from + 1
+                ) - k + (_keys(from), _values(from))))
             )
 
             if (_keys(from) == k) {
@@ -2185,16 +3102,82 @@ object MutableLongMap {
 
             check(_keys(from) != k)
 
+            check(
+              getCurrentListMapNoExtraKeys(
+                _keys,
+                _values,
+                mask,
+                extraKeys,
+                zeroValue,
+                minValue,
+                from
+              ) ==
+                getCurrentListMapNoExtraKeys(
+                  _keys,
+                  _values,
+                  mask,
+                  extraKeys,
+                  zeroValue,
+                  minValue,
+                  from + 1
+                ) + (_keys(from), _values(from))
+            )
+            check(
+              getCurrentListMapNoExtraKeys(
+                _keys,
+                _values,
+                mask,
+                extraKeys,
+                zeroValue,
+                minValue,
+                from + 1
+              ) - k ==
+                getCurrentListMapNoExtraKeys(
+                  _keys.updated(i, Long.MinValue),
+                  _values.updated(i, 0L),
+                  mask,
+                  extraKeys,
+                  zeroValue,
+                  minValue,
+                  from + 1
+                )
+            )
 
-            check(getCurrentListMapNoExtraKeys(_keys, _values, mask, extraKeys, zeroValue, minValue, from) == 
-              getCurrentListMapNoExtraKeys(_keys, _values, mask, extraKeys, zeroValue, minValue, from + 1) + (_keys(from), _values(from))) 
-            check(getCurrentListMapNoExtraKeys(_keys, _values, mask, extraKeys, zeroValue, minValue, from + 1) - k == 
-                   getCurrentListMapNoExtraKeys( _keys.updated(i, Long.MinValue), _values.updated(i, 0L), mask, extraKeys, zeroValue, minValue, from + 1))
+            ListMapLongKeyLemmas.addRemoveCommutativeForDiffKeys(
+              getCurrentListMapNoExtraKeys(
+                _keys,
+                _values,
+                mask,
+                extraKeys,
+                zeroValue,
+                minValue,
+                from + 1
+              ),
+              _keys(from),
+              _values(from),
+              k
+            )
 
-            ListMapLongKeyLemmas.addRemoveCommutativeForDiffKeys(getCurrentListMapNoExtraKeys(_keys, _values, mask, extraKeys, zeroValue, minValue, from + 1), _keys(from), _values(from), k)
-
-            check(getCurrentListMapNoExtraKeys( _keys.updated(i, Long.MinValue), _values.updated(i, 0L), mask, extraKeys, zeroValue, minValue, from ) ==
-              (getCurrentListMapNoExtraKeys(_keys, _values, mask, extraKeys, zeroValue, minValue, from) - k))
+            check(
+              getCurrentListMapNoExtraKeys(
+                _keys.updated(i, Long.MinValue),
+                _values.updated(i, 0L),
+                mask,
+                extraKeys,
+                zeroValue,
+                minValue,
+                from
+              ) ==
+                (getCurrentListMapNoExtraKeys(
+                  _keys,
+                  _values,
+                  mask,
+                  extraKeys,
+                  zeroValue,
+                  minValue,
+                  from
+                ) - k)
+            )
 
           }
         }
@@ -2202,13 +3185,36 @@ object MutableLongMap {
 
     }.ensuring(_ =>
       if (from <= i)
-        getCurrentListMapNoExtraKeys( _keys.updated(i, Long.MinValue), _values.updated(i, 0L), mask, extraKeys, zeroValue, minValue, from ) ==
-          (getCurrentListMapNoExtraKeys(_keys, _values, mask, extraKeys, zeroValue, minValue, from) - k)
+        getCurrentListMapNoExtraKeys(
+          _keys.updated(i, Long.MinValue),
+          _values.updated(i, 0L),
+          mask,
+          extraKeys,
+          zeroValue,
+          minValue,
+          from
+        ) ==
+          (getCurrentListMapNoExtraKeys(
+            _keys,
+            _values,
+            mask,
+            extraKeys,
+            zeroValue,
+            minValue,
+            from
+          ) - k)
       else
-        getCurrentListMapNoExtraKeys( _keys.updated(i, Long.MinValue), _values.updated(i, 0L), mask, extraKeys, zeroValue, minValue, from) ==
+        getCurrentListMapNoExtraKeys(
+          _keys.updated(i, Long.MinValue),
+          _values.updated(i, 0L),
+          mask,
+          extraKeys,
+          zeroValue,
+          minValue,
+          from
+        ) ==
           getCurrentListMapNoExtraKeys(_keys, _values, mask, extraKeys, zeroValue, minValue, from)
     )
-
 
     @opaque
     @pure
@@ -2254,8 +3260,24 @@ object MutableLongMap {
       }
 
     }.ensuring(_ =>
-      getCurrentListMapNoExtraKeys(_keys, _values, mask, extraKeysBefore, zeroValueBefore, minValueBefore, from) ==
-        getCurrentListMapNoExtraKeys(_keys, _values, mask, extraKeysAfter, zeroValueAfter, minValueAfter, from)
+      getCurrentListMapNoExtraKeys(
+        _keys,
+        _values,
+        mask,
+        extraKeysBefore,
+        zeroValueBefore,
+        minValueBefore,
+        from
+      ) ==
+        getCurrentListMapNoExtraKeys(
+          _keys,
+          _values,
+          mask,
+          extraKeysAfter,
+          zeroValueAfter,
+          minValueAfter,
+          from
+        )
     )
 
     //------------------EQUIVALENCE BETWEEN LISTMAP AND ARRAY------------------------------------------------------------------------------------------------
@@ -2283,21 +3305,49 @@ object MutableLongMap {
       require(arrayForallSeekEntryOrOpenFound(0)(_keys, mask))
       require(arrayNoDuplicates(_keys, 0))
 
-      require(getCurrentListMap(_keys, _values, mask, extraKeys, zeroValue, minValue, 0).contains(k))
+      require(
+        getCurrentListMap(_keys, _values, mask, extraKeys, zeroValue, minValue, 0).contains(k)
+      )
       require(inRange(i, mask))
       require(_keys(i) == k)
 
       if (k != 0 && k != Long.MinValue) {
         lemmaKeyInListMapIsInArray(_keys, _values, mask, extraKeys, zeroValue, minValue, k)
-        lemmaListMapApplyFromThenApplyFromZero(_keys, _values, mask, extraKeys, zeroValue, minValue, k, _values(i), i)
+        lemmaListMapApplyFromThenApplyFromZero(
+          _keys,
+          _values,
+          mask,
+          extraKeys,
+          zeroValue,
+          minValue,
+          k,
+          _values(i),
+          i
+        )
       }
     }.ensuring(_ =>
       if (k == 0)
-        (extraKeys & 1) != 0 && getCurrentListMap(_keys, _values, mask, extraKeys, zeroValue, minValue, 0).apply(
+        (extraKeys & 1) != 0 && getCurrentListMap(
+          _keys,
+          _values,
+          mask,
+          extraKeys,
+          zeroValue,
+          minValue,
+          0
+        ).apply(
           k
         ) == zeroValue
       else if (k == Long.MinValue)
-        (extraKeys & 2) != 0 && getCurrentListMap(_keys, _values, mask, extraKeys, zeroValue, minValue, 0).apply(
+        (extraKeys & 2) != 0 && getCurrentListMap(
+          _keys,
+          _values,
+          mask,
+          extraKeys,
+          zeroValue,
+          minValue,
+          0
+        ).apply(
           k
         ) == minValue
       else
@@ -2333,8 +3383,19 @@ object MutableLongMap {
       require(arrayForallSeekEntryOrOpenFound(0)(_keys, mask))
       require(arrayNoDuplicates(_keys, 0))
 
-      require(getCurrentListMap(_keys, _values, mask, extraKeys, zeroValue, minValue, 0).contains(k))
-      lemmaListMapContainsThenArrayContainsFrom(_keys, _values, mask, extraKeys, zeroValue, minValue, k, 0)
+      require(
+        getCurrentListMap(_keys, _values, mask, extraKeys, zeroValue, minValue, 0).contains(k)
+      )
+      lemmaListMapContainsThenArrayContainsFrom(
+        _keys,
+        _values,
+        mask,
+        extraKeys,
+        zeroValue,
+        minValue,
+        k,
+        0
+      )
 
     }.ensuring(_ =>
       if (k != 0 && k != Long.MinValue) arrayContainsKeyTailRec(_keys, k, 0)
@@ -2368,7 +3429,9 @@ object MutableLongMap {
 
       lemmaInListMapFromThenFromZero(_keys, _values, mask, extraKeys, zeroValue, minValue, i, i)
 
-    }.ensuring(_ => getCurrentListMap(_keys, _values, mask, extraKeys, zeroValue, minValue, 0).contains(_keys(i)))
+    }.ensuring(_ =>
+      getCurrentListMap(_keys, _values, mask, extraKeys, zeroValue, minValue, 0).contains(_keys(i))
+    )
 
     @opaque
     @pure
@@ -2410,10 +3473,21 @@ object MutableLongMap {
           k,
           from
         )
-        lemmaArrayContainsKeyThenInListMap(_keys, _values, mask, extraKeys, zeroValue, minValue, k, from + 1)
+        lemmaArrayContainsKeyThenInListMap(
+          _keys,
+          _values,
+          mask,
+          extraKeys,
+          zeroValue,
+          minValue,
+          k,
+          from + 1
+        )
       }
 
-    }.ensuring(_ => getCurrentListMap(_keys, _values, mask, extraKeys, zeroValue, minValue, 0).contains(k))
+    }.ensuring(_ =>
+      getCurrentListMap(_keys, _values, mask, extraKeys, zeroValue, minValue, 0).contains(k)
+    )
 
     @opaque
     @pure
@@ -2439,15 +3513,27 @@ object MutableLongMap {
       require(arrayNoDuplicates(_keys, 0))
 
       require(from >= 0 && from < _keys.length)
-      require(getCurrentListMap(_keys, _values, mask, extraKeys, zeroValue, minValue, from).contains(k))
-      require(getCurrentListMap(_keys, _values, mask, extraKeys, zeroValue, minValue, from).apply(k) == v)
+      require(
+        getCurrentListMap(_keys, _values, mask, extraKeys, zeroValue, minValue, from).contains(k)
+      )
+      require(
+        getCurrentListMap(_keys, _values, mask, extraKeys, zeroValue, minValue, from).apply(k) == v
+      )
 
       decreases(from)
 
       if (from > 0) {
         if (validKeyInArray(k)) {
           if (validKeyInArray(_keys(from - 1))) {
-            lemmaListMapRecursiveValidKeyArray(_keys, _values, mask, extraKeys, zeroValue, minValue, from - 1)
+            lemmaListMapRecursiveValidKeyArray(
+              _keys,
+              _values,
+              mask,
+              extraKeys,
+              zeroValue,
+              minValue,
+              from - 1
+            )
             ListMapLongKeyLemmas.addStillContains(
               getCurrentListMap(_keys, _values, mask, extraKeys, zeroValue, minValue, from),
               _keys(from - 1),
@@ -2455,7 +3541,16 @@ object MutableLongMap {
               k
             )
             lemmaNoDuplicateFromThenFromBigger(_keys, 0, from - 1)
-            lemmaListMapContainsThenArrayContainsFrom(_keys, _values, mask, extraKeys, zeroValue, minValue, k, from)
+            lemmaListMapContainsThenArrayContainsFrom(
+              _keys,
+              _values,
+              mask,
+              extraKeys,
+              zeroValue,
+              minValue,
+              k,
+              from
+            )
             lemmaArrayNoDuplicateThenKeysContainedNotEqual(_keys, k, from - 1, Nil())
             ListMapLongKeyLemmas.addApplyDifferent(
               getCurrentListMap(_keys, _values, mask, extraKeys, zeroValue, minValue, from),
@@ -2465,12 +3560,23 @@ object MutableLongMap {
             )
           }
         }
-        lemmaListMapApplyFromThenApplyFromZero(_keys, _values, mask, extraKeys, zeroValue, minValue, k, v, from - 1)
+        lemmaListMapApplyFromThenApplyFromZero(
+          _keys,
+          _values,
+          mask,
+          extraKeys,
+          zeroValue,
+          minValue,
+          k,
+          v,
+          from - 1
+        )
       }
 
     }.ensuring(_ =>
       getCurrentListMap(_keys, _values, mask, extraKeys, zeroValue, minValue, 0)
-        .contains(k) && getCurrentListMap(_keys, _values, mask, extraKeys, zeroValue, minValue, 0).apply(k) == v
+        .contains(k) && getCurrentListMap(_keys, _values, mask, extraKeys, zeroValue, minValue, 0)
+        .apply(k) == v
     )
 
     @opaque
@@ -2542,7 +3648,15 @@ object MutableLongMap {
           _values(from)
         )
         ListMapLongKeyLemmas.addCommutativeForDiffKeys(
-          getCurrentListMapNoExtraKeys(_keys, _values, mask, extraKeys, zeroValue, minValue, from + 1),
+          getCurrentListMapNoExtraKeys(
+            _keys,
+            _values,
+            mask,
+            extraKeys,
+            zeroValue,
+            minValue,
+            from + 1
+          ),
           0L,
           zeroValue,
           _keys(from),
@@ -2550,7 +3664,15 @@ object MutableLongMap {
         )
       } else if ((extraKeys & 1) != 0 && (extraKeys & 2) == 0) {
         ListMapLongKeyLemmas.addCommutativeForDiffKeys(
-          getCurrentListMapNoExtraKeys(_keys, _values, mask, extraKeys, zeroValue, minValue, from + 1),
+          getCurrentListMapNoExtraKeys(
+            _keys,
+            _values,
+            mask,
+            extraKeys,
+            zeroValue,
+            minValue,
+            from + 1
+          ),
           0L,
           zeroValue,
           _keys(from),
@@ -2558,7 +3680,15 @@ object MutableLongMap {
         )
       } else if ((extraKeys & 2) != 0 && (extraKeys & 1) == 0) {
         ListMapLongKeyLemmas.addCommutativeForDiffKeys(
-          getCurrentListMapNoExtraKeys(_keys, _values, mask, extraKeys, zeroValue, minValue, from + 1),
+          getCurrentListMapNoExtraKeys(
+            _keys,
+            _values,
+            mask,
+            extraKeys,
+            zeroValue,
+            minValue,
+            from + 1
+          ),
           Long.MinValue,
           minValue,
           _keys(from),
@@ -2567,7 +3697,15 @@ object MutableLongMap {
       }
 
     }.ensuring(_ =>
-      getCurrentListMap(_keys, _values, mask, extraKeys, zeroValue, minValue, from) == getCurrentListMap(
+      getCurrentListMap(
+        _keys,
+        _values,
+        mask,
+        extraKeys,
+        zeroValue,
+        minValue,
+        from
+      ) == getCurrentListMap(
         _keys,
         _values,
         mask,
@@ -2621,7 +3759,9 @@ object MutableLongMap {
       require(from >= 0 && from < _keys.length)
       require(k != 0 && k != Long.MinValue)
       require(
-        getCurrentListMap(_keys, _values, mask, extraKeys, zeroValue, minValue, from).contains(k) && _keys(from) != k
+        getCurrentListMap(_keys, _values, mask, extraKeys, zeroValue, minValue, from).contains(
+          k
+        ) && _keys(from) != k
       )
 
       if (validKeyInArray(_keys(from))) {
@@ -2630,7 +3770,15 @@ object MutableLongMap {
             k,
             0L,
             zeroValue,
-            getCurrentListMapNoExtraKeys(_keys, _values, mask, extraKeys, zeroValue, minValue, from + 1) + (_keys(
+            getCurrentListMapNoExtraKeys(
+              _keys,
+              _values,
+              mask,
+              extraKeys,
+              zeroValue,
+              minValue,
+              from + 1
+            ) + (_keys(
               from
             ), _values(from))
           )
@@ -2638,11 +3786,27 @@ object MutableLongMap {
             k,
             _keys(from),
             _values(from),
-            getCurrentListMapNoExtraKeys(_keys, _values, mask, extraKeys, zeroValue, minValue, from + 1)
+            getCurrentListMapNoExtraKeys(
+              _keys,
+              _values,
+              mask,
+              extraKeys,
+              zeroValue,
+              minValue,
+              from + 1
+            )
           )
 
           ListMapLongKeyLemmas.addStillContains(
-            getCurrentListMapNoExtraKeys(_keys, _values, mask, extraKeys, zeroValue, minValue, from + 1),
+            getCurrentListMapNoExtraKeys(
+              _keys,
+              _values,
+              mask,
+              extraKeys,
+              zeroValue,
+              minValue,
+              from + 1
+            ),
             0L,
             zeroValue,
             k
@@ -2653,13 +3817,23 @@ object MutableLongMap {
             k,
             _keys(from),
             _values(from),
-            getCurrentListMapNoExtraKeys(_keys, _values, mask, extraKeys, zeroValue, minValue, from + 1)
+            getCurrentListMapNoExtraKeys(
+              _keys,
+              _values,
+              mask,
+              extraKeys,
+              zeroValue,
+              minValue,
+              from + 1
+            )
           )
         }
 
       }
 
-    }.ensuring(_ => getCurrentListMap(_keys, _values, mask, extraKeys, zeroValue, minValue, from + 1).contains(k))
+    }.ensuring(_ =>
+      getCurrentListMap(_keys, _values, mask, extraKeys, zeroValue, minValue, from + 1).contains(k)
+    )
 
     @opaque
     @pure
@@ -2687,7 +3861,9 @@ object MutableLongMap {
       require(from >= 0 && from < _keys.length)
       require(k != 0 && k != Long.MinValue)
       require(
-        getCurrentListMap(_keys, _values, mask, extraKeys, zeroValue, minValue, from).contains(k) && _keys(from) != k
+        getCurrentListMap(_keys, _values, mask, extraKeys, zeroValue, minValue, from).contains(
+          k
+        ) && _keys(from) != k
       )
 
       if (validKeyInArray(_keys(from))) {
@@ -2697,7 +3873,15 @@ object MutableLongMap {
             k,
             Long.MinValue,
             minValue,
-            getCurrentListMapNoExtraKeys(_keys, _values, mask, extraKeys, zeroValue, minValue, from + 1) + (_keys(
+            getCurrentListMapNoExtraKeys(
+              _keys,
+              _values,
+              mask,
+              extraKeys,
+              zeroValue,
+              minValue,
+              from + 1
+            ) + (_keys(
               from
             ), _values(from))
           )
@@ -2705,11 +3889,27 @@ object MutableLongMap {
             k,
             _keys(from),
             _values(from),
-            getCurrentListMapNoExtraKeys(_keys, _values, mask, extraKeys, zeroValue, minValue, from + 1)
+            getCurrentListMapNoExtraKeys(
+              _keys,
+              _values,
+              mask,
+              extraKeys,
+              zeroValue,
+              minValue,
+              from + 1
+            )
           )
 
           ListMapLongKeyLemmas.addStillContains(
-            getCurrentListMapNoExtraKeys(_keys, _values, mask, extraKeys, zeroValue, minValue, from + 1),
+            getCurrentListMapNoExtraKeys(
+              _keys,
+              _values,
+              mask,
+              extraKeys,
+              zeroValue,
+              minValue,
+              from + 1
+            ),
             Long.MinValue,
             minValue,
             k
@@ -2720,12 +3920,22 @@ object MutableLongMap {
             k,
             _keys(from),
             _values(from),
-            getCurrentListMapNoExtraKeys(_keys, _values, mask, extraKeys, zeroValue, minValue, from + 1)
+            getCurrentListMapNoExtraKeys(
+              _keys,
+              _values,
+              mask,
+              extraKeys,
+              zeroValue,
+              minValue,
+              from + 1
+            )
           )
         }
       }
 
-    }.ensuring(_ => getCurrentListMap(_keys, _values, mask, extraKeys, zeroValue, minValue, from + 1).contains(k))
+    }.ensuring(_ =>
+      getCurrentListMap(_keys, _values, mask, extraKeys, zeroValue, minValue, from + 1).contains(k)
+    )
 
     @opaque
     @pure
@@ -2753,7 +3963,9 @@ object MutableLongMap {
       require(from >= 0 && from < _keys.length)
       require(k != 0 && k != Long.MinValue)
       require(
-        getCurrentListMap(_keys, _values, mask, extraKeys, zeroValue, minValue, from).contains(k) && _keys(from) != k
+        getCurrentListMap(_keys, _values, mask, extraKeys, zeroValue, minValue, from).contains(
+          k
+        ) && _keys(from) != k
       )
 
       if (validKeyInArray(_keys(from))) {
@@ -2761,7 +3973,15 @@ object MutableLongMap {
           k,
           Long.MinValue,
           minValue,
-          getCurrentListMapNoExtraKeys(_keys, _values, mask, extraKeys, zeroValue, minValue, from + 1) + (_keys(
+          getCurrentListMapNoExtraKeys(
+            _keys,
+            _values,
+            mask,
+            extraKeys,
+            zeroValue,
+            minValue,
+            from + 1
+          ) + (_keys(
             from
           ), _values(from)) + (0L, zeroValue)
         )
@@ -2769,7 +3989,15 @@ object MutableLongMap {
           k,
           0L,
           zeroValue,
-          getCurrentListMapNoExtraKeys(_keys, _values, mask, extraKeys, zeroValue, minValue, from + 1) + (_keys(
+          getCurrentListMapNoExtraKeys(
+            _keys,
+            _values,
+            mask,
+            extraKeys,
+            zeroValue,
+            minValue,
+            from + 1
+          ) + (_keys(
             from
           ), _values(from))
         )
@@ -2777,11 +4005,27 @@ object MutableLongMap {
           k,
           _keys(from),
           _values(from),
-          getCurrentListMapNoExtraKeys(_keys, _values, mask, extraKeys, zeroValue, minValue, from + 1)
+          getCurrentListMapNoExtraKeys(
+            _keys,
+            _values,
+            mask,
+            extraKeys,
+            zeroValue,
+            minValue,
+            from + 1
+          )
         )
 
         ListMapLongKeyLemmas.addStillContains(
-          getCurrentListMapNoExtraKeys(_keys, _values, mask, extraKeys, zeroValue, minValue, from + 1),
+          getCurrentListMapNoExtraKeys(
+            _keys,
+            _values,
+            mask,
+            extraKeys,
+            zeroValue,
+            minValue,
+            from + 1
+          ),
           0L,
           zeroValue,
           k
@@ -2801,7 +4045,9 @@ object MutableLongMap {
           k
         )
       }
-    }.ensuring(_ => getCurrentListMap(_keys, _values, mask, extraKeys, zeroValue, minValue, from + 1).contains(k))
+    }.ensuring(_ =>
+      getCurrentListMap(_keys, _values, mask, extraKeys, zeroValue, minValue, from + 1).contains(k)
+    )
 
     @opaque
     @pure
@@ -2828,7 +4074,9 @@ object MutableLongMap {
       require(from >= 0 && from < _keys.length)
       require(k != 0 && k != Long.MinValue)
       require(
-        getCurrentListMap(_keys, _values, mask, extraKeys, zeroValue, minValue, from).contains(k) && _keys(from) != k
+        getCurrentListMap(_keys, _values, mask, extraKeys, zeroValue, minValue, from).contains(
+          k
+        ) && _keys(from) != k
       )
 
       if (validKeyInArray(_keys(from))) {
@@ -2868,7 +4116,9 @@ object MutableLongMap {
         }
       }
 
-    }.ensuring(_ => getCurrentListMap(_keys, _values, mask, extraKeys, zeroValue, minValue, from + 1).contains(k))
+    }.ensuring(_ =>
+      getCurrentListMap(_keys, _values, mask, extraKeys, zeroValue, minValue, from + 1).contains(k)
+    )
 
     @opaque
     @pure
@@ -2895,11 +4145,27 @@ object MutableLongMap {
       require(from >= 0 && from < _keys.length)
       require(i >= from && i < _keys.length)
       require(validKeyInArray(_keys(i)))
-      require(getCurrentListMap(_keys, _values, mask, extraKeys, zeroValue, minValue, from).contains(_keys(i)))
+      require(
+        getCurrentListMap(_keys, _values, mask, extraKeys, zeroValue, minValue, from).contains(
+          _keys(i)
+        )
+      )
 
-      lemmaInListMapFromThenInFromSmaller(_keys, _values, mask, extraKeys, zeroValue, minValue, from, 0, i)
+      lemmaInListMapFromThenInFromSmaller(
+        _keys,
+        _values,
+        mask,
+        extraKeys,
+        zeroValue,
+        minValue,
+        from,
+        0,
+        i
+      )
 
-    }.ensuring(_ => getCurrentListMap(_keys, _values, mask, extraKeys, zeroValue, minValue, 0).contains(_keys(i)))
+    }.ensuring(_ =>
+      getCurrentListMap(_keys, _values, mask, extraKeys, zeroValue, minValue, 0).contains(_keys(i))
+    )
 
     @opaque
     @inlineOnce
@@ -2929,16 +4195,47 @@ object MutableLongMap {
       require(newFrom >= 0 && newFrom <= from)
       require(i >= from && i < _keys.length)
       require(
-        validKeyInArray(_keys(i)) && getCurrentListMap(_keys, _values, mask, extraKeys, zeroValue, minValue, from)
+        validKeyInArray(_keys(i)) && getCurrentListMap(
+          _keys,
+          _values,
+          mask,
+          extraKeys,
+          zeroValue,
+          minValue,
+          from
+        )
           .contains(_keys(i))
       )
 
       decreases(from - newFrom)
       if (from > newFrom) {
-        lemmaInListMapFromThenInFromMinusOne(_keys, _values, mask, extraKeys, zeroValue, minValue, from, i)
-        lemmaInListMapFromThenInFromSmaller(_keys, _values, mask, extraKeys, zeroValue, minValue, from - 1, newFrom, i)
+        lemmaInListMapFromThenInFromMinusOne(
+          _keys,
+          _values,
+          mask,
+          extraKeys,
+          zeroValue,
+          minValue,
+          from,
+          i
+        )
+        lemmaInListMapFromThenInFromSmaller(
+          _keys,
+          _values,
+          mask,
+          extraKeys,
+          zeroValue,
+          minValue,
+          from - 1,
+          newFrom,
+          i
+        )
       }
-    }.ensuring(_ => getCurrentListMap(_keys, _values, mask, extraKeys, zeroValue, minValue, newFrom).contains(_keys(i)))
+    }.ensuring(_ =>
+      getCurrentListMap(_keys, _values, mask, extraKeys, zeroValue, minValue, newFrom).contains(
+        _keys(i)
+      )
+    )
 
     @opaque
     @pure
@@ -2965,7 +4262,15 @@ object MutableLongMap {
       require(from > 0 && from < _keys.length)
       require(i >= from && i < _keys.length)
       require(
-        validKeyInArray(_keys(i)) && getCurrentListMap(_keys, _values, mask, extraKeys, zeroValue, minValue, from)
+        validKeyInArray(_keys(i)) && getCurrentListMap(
+          _keys,
+          _values,
+          mask,
+          extraKeys,
+          zeroValue,
+          minValue,
+          from
+        )
           .contains(_keys(i))
       )
 
@@ -2974,7 +4279,15 @@ object MutableLongMap {
       val currentLMFromMinusOne: ListMapLongKey[Long] =
         getCurrentListMap(_keys, _values, mask, extraKeys, zeroValue, minValue, from - 1)
       if (validKeyInArray(_keys(from - 1))) {
-        lemmaListMapRecursiveValidKeyArray(_keys, _values, mask, extraKeys, zeroValue, minValue, from - 1)
+        lemmaListMapRecursiveValidKeyArray(
+          _keys,
+          _values,
+          mask,
+          extraKeys,
+          zeroValue,
+          minValue,
+          from - 1
+        )
         ListMapLongKeyLemmas.addStillContains(
           getCurrentListMap(_keys, _values, mask, extraKeys, zeroValue, minValue, from),
           _keys(from - 1),
@@ -2983,7 +4296,9 @@ object MutableLongMap {
         )
       }
     }.ensuring(_ =>
-      getCurrentListMap(_keys, _values, mask, extraKeys, zeroValue, minValue, from - 1).contains(_keys(i))
+      getCurrentListMap(_keys, _values, mask, extraKeys, zeroValue, minValue, from - 1).contains(
+        _keys(i)
+      )
     )
 
     @opaque
@@ -3009,7 +4324,9 @@ object MutableLongMap {
       require(arrayNoDuplicates(_keys, 0))
 
       require(from >= 0 && from < _keys.length)
-      require(getCurrentListMap(_keys, _values, mask, extraKeys, zeroValue, minValue, from).contains(k))
+      require(
+        getCurrentListMap(_keys, _values, mask, extraKeys, zeroValue, minValue, from).contains(k)
+      )
 
       decreases(_keys.length - from)
       val currentListMap: ListMapLongKey[Long] =
@@ -3017,8 +4334,26 @@ object MutableLongMap {
       if (k != 0 && k != Long.MinValue) {
         if (from + 1 < _keys.length) {
           if (_keys(from) != k) {
-            lemmaInListMapFromThenFromPlsOneIfNotEqToFst(_keys, _values, mask, extraKeys, zeroValue, minValue, k, from)
-            lemmaListMapContainsThenArrayContainsFrom(_keys, _values, mask, extraKeys, zeroValue, minValue, k, from + 1)
+            lemmaInListMapFromThenFromPlsOneIfNotEqToFst(
+              _keys,
+              _values,
+              mask,
+              extraKeys,
+              zeroValue,
+              minValue,
+              k,
+              from
+            )
+            lemmaListMapContainsThenArrayContainsFrom(
+              _keys,
+              _values,
+              mask,
+              extraKeys,
+              zeroValue,
+              minValue,
+              k,
+              from + 1
+            )
           }
         } else {
           if (validKeyInArray(_keys(from))) {
@@ -3041,39 +4376,84 @@ object MutableLongMap {
                 k,
                 0L,
                 zeroValue,
-                getCurrentListMapNoExtraKeys(_keys, _values, mask, extraKeys, zeroValue, minValue, from)
+                getCurrentListMapNoExtraKeys(
+                  _keys,
+                  _values,
+                  mask,
+                  extraKeys,
+                  zeroValue,
+                  minValue,
+                  from
+                )
               )
             } else if ((extraKeys & 1) != 0 && (extraKeys & 2) == 0) {
               lemmaInListMapAfterAddingDiffThenInBefore(
                 k,
                 0L,
                 zeroValue,
-                getCurrentListMapNoExtraKeys(_keys, _values, mask, extraKeys, zeroValue, minValue, from)
+                getCurrentListMapNoExtraKeys(
+                  _keys,
+                  _values,
+                  mask,
+                  extraKeys,
+                  zeroValue,
+                  minValue,
+                  from
+                )
               )
             } else if ((extraKeys & 2) != 0 && (extraKeys & 1) == 0) {
               lemmaInListMapAfterAddingDiffThenInBefore(
                 k,
                 Long.MinValue,
                 minValue,
-                getCurrentListMapNoExtraKeys(_keys, _values, mask, extraKeys, zeroValue, minValue, from)
+                getCurrentListMapNoExtraKeys(
+                  _keys,
+                  _values,
+                  mask,
+                  extraKeys,
+                  zeroValue,
+                  minValue,
+                  from
+                )
               )
             }
             ListMapLongKeyLemmas.emptyContainsNothing[Long](k)
             if (k != _keys(from)) {
-              ListMapLongKeyLemmas.addStillNotContains(ListMapLongKey.empty[Long], _keys(from), _values(from), k)
+              ListMapLongKeyLemmas.addStillNotContains(
+                ListMapLongKey.empty[Long],
+                _keys(from),
+                _values(from),
+                k
+              )
               check(false)
             }
           } else {
             ListMapLongKeyLemmas.emptyContainsNothing[Long](k)
             if ((extraKeys & 1) != 0 && (extraKeys & 2) != 0) {
               ListMapLongKeyLemmas.addStillNotContains(
-                getCurrentListMapNoExtraKeys(_keys, _values, mask, extraKeys, zeroValue, minValue, from),
+                getCurrentListMapNoExtraKeys(
+                  _keys,
+                  _values,
+                  mask,
+                  extraKeys,
+                  zeroValue,
+                  minValue,
+                  from
+                ),
                 0L,
                 zeroValue,
                 k
               )
               ListMapLongKeyLemmas.addStillNotContains(
-                getCurrentListMapNoExtraKeys(_keys, _values, mask, extraKeys, zeroValue, minValue, from),
+                getCurrentListMapNoExtraKeys(
+                  _keys,
+                  _values,
+                  mask,
+                  extraKeys,
+                  zeroValue,
+                  minValue,
+                  from
+                ),
                 Long.MinValue,
                 minValue,
                 k
@@ -3096,11 +4476,27 @@ object MutableLongMap {
                 k,
                 0L,
                 zeroValue,
-                getCurrentListMapNoExtraKeys(_keys, _values, mask, extraKeys, zeroValue, minValue, from)
+                getCurrentListMapNoExtraKeys(
+                  _keys,
+                  _values,
+                  mask,
+                  extraKeys,
+                  zeroValue,
+                  minValue,
+                  from
+                )
               )
             } else if ((extraKeys & 1) != 0 && (extraKeys & 2) == 0) {
               ListMapLongKeyLemmas.addStillNotContains(
-                getCurrentListMapNoExtraKeys(_keys, _values, mask, extraKeys, zeroValue, minValue, from),
+                getCurrentListMapNoExtraKeys(
+                  _keys,
+                  _values,
+                  mask,
+                  extraKeys,
+                  zeroValue,
+                  minValue,
+                  from
+                ),
                 0L,
                 zeroValue,
                 k
@@ -3109,11 +4505,27 @@ object MutableLongMap {
                 k,
                 0L,
                 zeroValue,
-                getCurrentListMapNoExtraKeys(_keys, _values, mask, extraKeys, zeroValue, minValue, from)
+                getCurrentListMapNoExtraKeys(
+                  _keys,
+                  _values,
+                  mask,
+                  extraKeys,
+                  zeroValue,
+                  minValue,
+                  from
+                )
               )
             } else if ((extraKeys & 2) != 0 && (extraKeys & 1) == 0) {
               ListMapLongKeyLemmas.addStillNotContains(
-                getCurrentListMapNoExtraKeys(_keys, _values, mask, extraKeys, zeroValue, minValue, from),
+                getCurrentListMapNoExtraKeys(
+                  _keys,
+                  _values,
+                  mask,
+                  extraKeys,
+                  zeroValue,
+                  minValue,
+                  from
+                ),
                 Long.MinValue,
                 minValue,
                 k
@@ -3122,7 +4534,15 @@ object MutableLongMap {
                 k,
                 Long.MinValue,
                 minValue,
-                getCurrentListMapNoExtraKeys(_keys, _values, mask, extraKeys, zeroValue, minValue, from)
+                getCurrentListMapNoExtraKeys(
+                  _keys,
+                  _values,
+                  mask,
+                  extraKeys,
+                  zeroValue,
+                  minValue,
+                  from
+                )
               )
             }
             check(false)
@@ -3160,7 +4580,9 @@ object MutableLongMap {
       require(extraKeys <= 3)
       require(arrayForallSeekEntryOrOpenFound(0)(_keys, mask))
       require(arrayNoDuplicates(_keys, 0))
-      require(getCurrentListMap(_keys, _values, mask, extraKeys, zeroValue, minValue, 0).contains(k))
+      require(
+        getCurrentListMap(_keys, _values, mask, extraKeys, zeroValue, minValue, 0).contains(k)
+      )
       require(validKeyInArray(k))
 
       lemmaKeyInListMapIsInArray(_keys, _values, mask, extraKeys, zeroValue, minValue, k)
@@ -3197,7 +4619,9 @@ object MutableLongMap {
       require(arrayForallSeekEntryOrOpenFound(0)(_keys, mask))
       require(arrayNoDuplicates(_keys, 0))
       require(validKeyInArray(k))
-      require(!getCurrentListMap(_keys, _values, mask, extraKeys, zeroValue, minValue, 0).contains(k))
+      require(
+        !getCurrentListMap(_keys, _values, mask, extraKeys, zeroValue, minValue, 0).contains(k)
+      )
       if (validKeyInArray(k)) {
         if (arrayContainsKeyTailRec(_keys, k, 0)) {
           val i = arrayScanForKey(_keys, k, 0)
@@ -3209,7 +4633,15 @@ object MutableLongMap {
           seekEntryDecoupled(k)(_keys, mask) match {
             case Found(index) => {
               //found but not in array --> Contradiction
-              lemmaValidKeyInArrayIsInListMap(_keys, _values, mask, extraKeys, zeroValue, minValue, index)
+              lemmaValidKeyInArrayIsInListMap(
+                _keys,
+                _values,
+                mask,
+                extraKeys,
+                zeroValue,
+                minValue,
+                index
+              )
               check(false)
             }
             case _ => ()
@@ -3244,7 +4676,9 @@ object MutableLongMap {
       require(extraKeys <= 3)
       require(arrayForallSeekEntryOrOpenFound(0)(_keys, mask))
       require(arrayNoDuplicates(_keys, 0))
-      require(getCurrentListMap(_keys, _values, mask, extraKeys, zeroValue, minValue, 0).contains(k))
+      require(
+        getCurrentListMap(_keys, _values, mask, extraKeys, zeroValue, minValue, 0).contains(k)
+      )
       require(validKeyInArray(k))
 
       lemmaKeyInListMapIsInArray(_keys, _values, mask, extraKeys, zeroValue, minValue, k)
@@ -3279,7 +4713,9 @@ object MutableLongMap {
       require(arrayForallSeekEntryOrOpenFound(0)(_keys, mask))
       require(arrayNoDuplicates(_keys, 0))
       require(validKeyInArray(k))
-      require(!getCurrentListMap(_keys, _values, mask, extraKeys, zeroValue, minValue, 0).contains(k))
+      require(
+        !getCurrentListMap(_keys, _values, mask, extraKeys, zeroValue, minValue, 0).contains(k)
+      )
 
       val seekEntryRes = seekEntryOrOpenDecoupled(k)(_keys, mask)
       seekEntryRes match {
@@ -3287,13 +4723,30 @@ object MutableLongMap {
           assert(_keys(index) == k)
           assert(arrayContainsKeyTailRec(_keys, k, index))
           lemmaArrayContainsFromImpliesContainsFromZero(_keys, k, index)
-          lemmaValidKeyInArrayIsInListMap(_keys, _values, mask, extraKeys, zeroValue, minValue, index)
+          lemmaValidKeyInArrayIsInListMap(
+            _keys,
+            _values,
+            mask,
+            extraKeys,
+            zeroValue,
+            minValue,
+            index
+          )
           check(false)
         }
         case MissingZero(_) => {
           if (arrayContainsKeyTailRec(_keys, k, 0)) {
             val i = arrayScanForKey(_keys, k, 0)
-            lemmaArrayContainsKeyThenInListMap(_keys, _values, mask, extraKeys, zeroValue, minValue, k, i)
+            lemmaArrayContainsKeyThenInListMap(
+              _keys,
+              _values,
+              mask,
+              extraKeys,
+              zeroValue,
+              minValue,
+              k,
+              i
+            )
             check(false)
           }
           check(!arrayContainsKeyTailRec(_keys, k, 0))
@@ -3301,7 +4754,16 @@ object MutableLongMap {
         case MissingVacant(_) => {
           if (arrayContainsKeyTailRec(_keys, k, 0)) {
             val i = arrayScanForKey(_keys, k, 0)
-            lemmaArrayContainsKeyThenInListMap(_keys, _values, mask, extraKeys, zeroValue, minValue, k, i)
+            lemmaArrayContainsKeyThenInListMap(
+              _keys,
+              _values,
+              mask,
+              extraKeys,
+              zeroValue,
+              minValue,
+              k,
+              i
+            )
             check(false)
           }
           check(!arrayContainsKeyTailRec(_keys, k, 0))
@@ -3312,9 +4774,14 @@ object MutableLongMap {
     }.ensuring(_ => {
       val seekEntryRes = seekEntryOrOpenDecoupled(k)(_keys, mask)
       seekEntryRes match {
-        case MissingZero(index) => inRange(index, mask) && _keys(index) == 0 && !arrayContainsKeyTailRec(_keys, k, 0)
+        case MissingZero(index) =>
+          inRange(index, mask) && _keys(index) == 0 && !arrayContainsKeyTailRec(_keys, k, 0)
         case MissingVacant(index) =>
-          inRange(index, mask) && _keys(index) == Long.MinValue && !arrayContainsKeyTailRec(_keys, k, 0)
+          inRange(index, mask) && _keys(index) == Long.MinValue && !arrayContainsKeyTailRec(
+            _keys,
+            k,
+            0
+          )
         case Undefined() => true
         case _           => false
       }
@@ -3408,7 +4875,9 @@ object MutableLongMap {
       require(index >= 0 && index < a.length)
       require(vacantIndex >= 0 && vacantIndex < a.length)
       require(a(vacantIndex) == Long.MinValue)
-      require(seekKeyOrZeroReturnVacantTailRecDecoupled(x, index, vacantIndex)(a(j), a, mask) == Found(j))
+      require(
+        seekKeyOrZeroReturnVacantTailRecDecoupled(x, index, vacantIndex)(a(j), a, mask) == Found(j)
+      )
 
       decreases(MAX_ITER - x)
       if (a(index) == a(j)) {
@@ -3474,19 +4943,30 @@ object MutableLongMap {
       require(resIndex >= 0 && resIndex < a.length)
 
       require(
-        seekKeyOrZeroOrLongMinValueTailRecDecoupled(0, toIndex(a(j), mask))(a(j), a, mask) == Intermediate(
+        seekKeyOrZeroOrLongMinValueTailRecDecoupled(0, toIndex(a(j), mask))(
+          a(j),
+          a,
+          mask
+        ) == Intermediate(
           false,
           resIndex,
           resX
         )
       )
       require(
-        seekKeyOrZeroOrLongMinValueTailRecDecoupled(x, index)(a(j), a, mask) == Intermediate(false, resIndex, resX)
+        seekKeyOrZeroOrLongMinValueTailRecDecoupled(x, index)(a(j), a, mask) == Intermediate(
+          false,
+          resIndex,
+          resX
+        )
       )
 
       require(
         seekKeyOrZeroOrLongMinValueTailRecDecoupled(0, toIndex(a(j), mask))(a(j), a, mask) ==
-          seekKeyOrZeroOrLongMinValueTailRecDecoupled(0, toIndex(a.updated(i, Long.MinValue).apply(j), mask))(
+          seekKeyOrZeroOrLongMinValueTailRecDecoupled(
+            0,
+            toIndex(a.updated(i, Long.MinValue).apply(j), mask)
+          )(
             a.updated(i, Long.MinValue).apply(j),
             a.updated(i, Long.MinValue),
             mask
@@ -3505,7 +4985,9 @@ object MutableLongMap {
         if (a(index) == a(j)) {
           assert(j == index)
           check(
-            seekEntryOrOpenDecoupled(a(j))(a, mask) == seekEntryOrOpenDecoupled(a.updated(i, Long.MinValue).apply(j))(
+            seekEntryOrOpenDecoupled(a(j))(a, mask) == seekEntryOrOpenDecoupled(
+              a.updated(i, Long.MinValue).apply(j)
+            )(
               a.updated(i, Long.MinValue),
               mask
             )
@@ -3513,14 +4995,21 @@ object MutableLongMap {
         } else {
           assert(a(index) == Long.MinValue)
           check(
-            seekEntryOrOpenDecoupled(a(j))(a, mask) == seekKeyOrZeroReturnVacantTailRecDecoupled(x, index, index)(
+            seekEntryOrOpenDecoupled(a(j))(a, mask) == seekKeyOrZeroReturnVacantTailRecDecoupled(
+              x,
+              index,
+              index
+            )(
               a(j),
               a,
               mask
             )
           )
           check(
-            seekEntryOrOpenDecoupled(newArray(j))(newArray, mask) == seekKeyOrZeroReturnVacantTailRecDecoupled(
+            seekEntryOrOpenDecoupled(newArray(j))(
+              newArray,
+              mask
+            ) == seekKeyOrZeroReturnVacantTailRecDecoupled(
               x,
               index,
               index
@@ -3528,7 +5017,9 @@ object MutableLongMap {
           )
           lemmaPutLongMinValuePreservesForallSeekEntryOrOpenKey1Helper(a, i, j, x, index, index)
           check(
-            seekEntryOrOpenDecoupled(a(j))(a, mask) == seekEntryOrOpenDecoupled(a.updated(i, Long.MinValue).apply(j))(
+            seekEntryOrOpenDecoupled(a(j))(a, mask) == seekEntryOrOpenDecoupled(
+              a.updated(i, Long.MinValue).apply(j)
+            )(
               a.updated(i, Long.MinValue),
               mask
             )
@@ -3547,7 +5038,9 @@ object MutableLongMap {
       }
 
     }.ensuring(_ =>
-      seekEntryOrOpenDecoupled(a(j))(a, mask) == seekEntryOrOpenDecoupled(a.updated(i, Long.MinValue).apply(j))(
+      seekEntryOrOpenDecoupled(a(j))(a, mask) == seekEntryOrOpenDecoupled(
+        a.updated(i, Long.MinValue).apply(j)
+      )(
         a.updated(i, Long.MinValue),
         mask
       )
@@ -3584,14 +5077,21 @@ object MutableLongMap {
       require(intermediateBeforeIndex >= 0 && intermediateBeforeIndex < a.length)
 
       require(
-        seekKeyOrZeroOrLongMinValueTailRecDecoupled(0, toIndex(a(j), mask))(a(j), a, mask) == Intermediate(
+        seekKeyOrZeroOrLongMinValueTailRecDecoupled(0, toIndex(a(j), mask))(
+          a(j),
+          a,
+          mask
+        ) == Intermediate(
           false,
           intermediateBeforeIndex,
           intermediateBeforeX
         )
       )
       require(
-        seekKeyOrZeroOrLongMinValueTailRecDecoupled(0, toIndex(a.updated(i, Long.MinValue).apply(j), mask))(
+        seekKeyOrZeroOrLongMinValueTailRecDecoupled(
+          0,
+          toIndex(a.updated(i, Long.MinValue).apply(j), mask)
+        )(
           a.updated(i, Long.MinValue).apply(j),
           a.updated(i, Long.MinValue),
           mask
@@ -3656,7 +5156,9 @@ object MutableLongMap {
         )
       }
 
-    }.ensuring(_ => !undefinedAfter && intermediateAfterIndex == i && intermediateAfterX < intermediateBeforeX)
+    }.ensuring(_ =>
+      !undefinedAfter && intermediateAfterIndex == i && intermediateAfterX < intermediateBeforeX
+    )
 
     @opaque
     @pure
@@ -3687,7 +5189,9 @@ object MutableLongMap {
       require(a.updated(i, Long.MinValue).apply(vacantAfter) == Long.MinValue)
       require(vacantAfter == i)
       require(index >= 0 && index < a.length)
-      require(seekKeyOrZeroReturnVacantTailRecDecoupled(x, index, vacantBefore)(a(j), a, mask) == Found(j))
+      require(
+        seekKeyOrZeroReturnVacantTailRecDecoupled(x, index, vacantBefore)(a(j), a, mask) == Found(j)
+      )
 
       decreases(MAX_ITER - x)
 
@@ -3756,7 +5260,11 @@ object MutableLongMap {
       require(a.updated(i, Long.MinValue).apply(intermediateAfterIndex) == Long.MinValue)
 
       require(
-        seekKeyOrZeroOrLongMinValueTailRecDecoupled(0, toIndex(a(j), mask))(a(j), a, mask) == Intermediate(
+        seekKeyOrZeroOrLongMinValueTailRecDecoupled(0, toIndex(a(j), mask))(
+          a(j),
+          a,
+          mask
+        ) == Intermediate(
           false,
           intermediateBeforeIndex,
           intermediateBeforeX
@@ -3770,7 +5278,10 @@ object MutableLongMap {
         )
       )
       require(
-        seekKeyOrZeroOrLongMinValueTailRecDecoupled(0, toIndex(a.updated(i, Long.MinValue).apply(j), mask))(
+        seekKeyOrZeroOrLongMinValueTailRecDecoupled(
+          0,
+          toIndex(a.updated(i, Long.MinValue).apply(j), mask)
+        )(
           a.updated(i, Long.MinValue).apply(j),
           a.updated(i, Long.MinValue),
           mask
@@ -3780,7 +5291,10 @@ object MutableLongMap {
 
       require(
         if (x <= intermediateAfterX)
-          seekKeyOrZeroOrLongMinValueTailRecDecoupled(0, toIndex(a.updated(i, Long.MinValue).apply(j), mask))(
+          seekKeyOrZeroOrLongMinValueTailRecDecoupled(
+            0,
+            toIndex(a.updated(i, Long.MinValue).apply(j), mask)
+          )(
             a.updated(i, Long.MinValue).apply(j),
             a.updated(i, Long.MinValue),
             mask
@@ -3809,14 +5323,20 @@ object MutableLongMap {
 
       if (a(index) == a.updated(i, Long.MinValue).apply(index) && a(index) == a(j)) {
         check(
-          seekEntryOrOpenDecoupled(a(j))(a, mask) == seekEntryOrOpenDecoupled(a.updated(i, Long.MinValue).apply(j))(
+          seekEntryOrOpenDecoupled(a(j))(a, mask) == seekEntryOrOpenDecoupled(
+            a.updated(i, Long.MinValue).apply(j)
+          )(
             a.updated(i, Long.MinValue),
             mask
           )
         )
       } else if (a(index) == Long.MinValue) {
         check(
-          seekEntryOrOpenDecoupled(a(j))(a, mask) == seekKeyOrZeroReturnVacantTailRecDecoupled(x, index, index)(
+          seekEntryOrOpenDecoupled(a(j))(a, mask) == seekKeyOrZeroReturnVacantTailRecDecoupled(
+            x,
+            index,
+            index
+          )(
             a(j),
             a,
             mask
@@ -3873,7 +5393,9 @@ object MutableLongMap {
       }
 
     }.ensuring(_ =>
-      seekEntryOrOpenDecoupled(a(j))(a, mask) == seekEntryOrOpenDecoupled(a.updated(i, Long.MinValue).apply(j))(
+      seekEntryOrOpenDecoupled(a(j))(a, mask) == seekEntryOrOpenDecoupled(
+        a.updated(i, Long.MinValue).apply(j)
+      )(
         a.updated(i, Long.MinValue),
         mask
       )
@@ -3881,8 +5403,8 @@ object MutableLongMap {
 
     @opaque
     @pure
-    def lemmaPutLongMinValuePreservesForallSeekEntryOrOpenKey2(a: Array[Long], i: Int, j: Int)(implicit
-        mask: Int
+    def lemmaPutLongMinValuePreservesForallSeekEntryOrOpenKey2(a: Array[Long], i: Int, j: Int)(
+        implicit mask: Int
     ): Unit = {
       require(validMask(mask))
       require(a.length == mask + 1)
@@ -3895,7 +5417,8 @@ object MutableLongMap {
       require(validKeyInArray(a(j)))
       require(arrayForallSeekEntryOrOpenFound(0)(a, mask))
       require(arrayNoDuplicates(a, 0))
-      val intermediateBefore = seekKeyOrZeroOrLongMinValueTailRecDecoupled(0, toIndex(a(j), mask))(a(j), a, mask)
+      val intermediateBefore =
+        seekKeyOrZeroOrLongMinValueTailRecDecoupled(0, toIndex(a(j), mask))(a(j), a, mask)
 
       lemmaArrayForallSeekEntryOrOpenFoundFromSmallerThenFromBigger(a, mask, 0, j)
       check(seekEntryOrOpenDecoupled(a(j))(a, mask) == Found(j))
@@ -3906,7 +5429,10 @@ object MutableLongMap {
           } else {
             if (
               seekKeyOrZeroOrLongMinValueTailRecDecoupled(0, toIndex(a(j), mask))(a(j), a, mask) ==
-                seekKeyOrZeroOrLongMinValueTailRecDecoupled(0, toIndex(a.updated(i, Long.MinValue).apply(j), mask))(
+                seekKeyOrZeroOrLongMinValueTailRecDecoupled(
+                  0,
+                  toIndex(a.updated(i, Long.MinValue).apply(j), mask)
+                )(
                   a.updated(i, Long.MinValue).apply(j),
                   a.updated(i, Long.MinValue),
                   mask
@@ -3950,7 +5476,10 @@ object MutableLongMap {
                   check(intermediateAfterIndex == i)
                   check(a.updated(i, Long.MinValue).apply(intermediateAfterIndex) == Long.MinValue)
                   check(
-                    seekEntryOrOpenDecoupled(a.updated(i, Long.MinValue).apply(j))(a.updated(i, Long.MinValue), mask) ==
+                    seekEntryOrOpenDecoupled(a.updated(i, Long.MinValue).apply(j))(
+                      a.updated(i, Long.MinValue),
+                      mask
+                    ) ==
                       seekKeyOrZeroReturnVacantTailRecDecoupled(
                         intermediateAfterX,
                         intermediateAfterIndex,
@@ -3973,7 +5502,9 @@ object MutableLongMap {
               }
             }
             check(
-              seekEntryOrOpenDecoupled(a(j))(a, mask) == seekEntryOrOpenDecoupled(a.updated(i, Long.MinValue).apply(j))(
+              seekEntryOrOpenDecoupled(a(j))(a, mask) == seekEntryOrOpenDecoupled(
+                a.updated(i, Long.MinValue).apply(j)
+              )(
                 a.updated(i, Long.MinValue),
                 mask
               )
@@ -3984,7 +5515,9 @@ object MutableLongMap {
       }
 
     }.ensuring(_ =>
-      seekEntryOrOpenDecoupled(a(j))(a, mask) == seekEntryOrOpenDecoupled(a.updated(i, Long.MinValue).apply(j))(
+      seekEntryOrOpenDecoupled(a(j))(a, mask) == seekEntryOrOpenDecoupled(
+        a.updated(i, Long.MinValue).apply(j)
+      )(
         a.updated(i, Long.MinValue),
         mask
       )
@@ -3992,7 +5525,11 @@ object MutableLongMap {
 
     @opaque
     @pure
-    def lemmaPutLongMinValuePreservesForallSeekEntryOrOpenStartIndex(a: Array[Long], i: Int, startIndex: Int)(implicit
+    def lemmaPutLongMinValuePreservesForallSeekEntryOrOpenStartIndex(
+        a: Array[Long],
+        i: Int,
+        startIndex: Int
+    )(implicit
         mask: Int
     ): Unit = {
       require(validMask(mask))
@@ -4022,7 +5559,9 @@ object MutableLongMap {
 
     @opaque
     @pure
-    def lemmaPutLongMinValuePreservesForallSeekEntryOrOpen(a: Array[Long], i: Int)(implicit mask: Int): Unit = {
+    def lemmaPutLongMinValuePreservesForallSeekEntryOrOpen(a: Array[Long], i: Int)(implicit
+        mask: Int
+    ): Unit = {
       require(validMask(mask))
       require(a.length == mask + 1)
       require(i >= 0)
@@ -4058,7 +5597,10 @@ object MutableLongMap {
       require(validKeyInArray(k))
       require(!arrayContainsKeyTailRec(a, k, 0))
       require(
-        seekEntryOrOpenDecoupled(k)(a, mask) == MissingZero(i) || seekEntryOrOpenDecoupled(k)(a, mask) == MissingVacant(
+        seekEntryOrOpenDecoupled(k)(a, mask) == MissingZero(i) || seekEntryOrOpenDecoupled(k)(
+          a,
+          mask
+        ) == MissingVacant(
           i
         )
       )
@@ -4069,11 +5611,18 @@ object MutableLongMap {
       require(vacantSpotIndex >= 0 && vacantSpotIndex < mask + 1)
       require(a(vacantSpotIndex) == Long.MinValue)
       require(a.updated(i, k).apply(vacantSpotIndex) == Long.MinValue)
-      require(seekKeyOrZeroReturnVacantTailRecDecoupled(x, index, vacantSpotIndex)(a(j), a, mask) == Found(j))
+      require(
+        seekKeyOrZeroReturnVacantTailRecDecoupled(x, index, vacantSpotIndex)(
+          a(j),
+          a,
+          mask
+        ) == Found(j)
+      )
 
       decreases(MAX_ITER - x)
 
-      val resBefore = seekKeyOrZeroReturnVacantTailRecDecoupled(x, index, vacantSpotIndex)(a(j), a, mask)
+      val resBefore =
+        seekKeyOrZeroReturnVacantTailRecDecoupled(x, index, vacantSpotIndex)(a(j), a, mask)
 
       if (x >= MAX_ITER) {
         check(false)
@@ -4095,7 +5644,11 @@ object MutableLongMap {
         )
         check(
           seekKeyOrZeroReturnVacantTailRecDecoupled(x, index, vacantSpotIndex)(a(j), a, mask) ==
-            seekKeyOrZeroReturnVacantTailRecDecoupled(x + 1, (index + 2 * (x + 1) * x - 3) & mask, vacantSpotIndex)(
+            seekKeyOrZeroReturnVacantTailRecDecoupled(
+              x + 1,
+              (index + 2 * (x + 1) * x - 3) & mask,
+              vacantSpotIndex
+            )(
               a(j),
               a,
               mask
@@ -4176,8 +5729,8 @@ object MutableLongMap {
 
     @opaque
     @pure
-    def lemmaPutValidKeyPreservesForallSeekEntryOrOpenKey1(a: Array[Long], i: Int, k: Long, j: Int)(implicit
-        mask: Int
+    def lemmaPutValidKeyPreservesForallSeekEntryOrOpenKey1(a: Array[Long], i: Int, k: Long, j: Int)(
+        implicit mask: Int
     ): Unit = {
       require(validMask(mask))
       require(a.length == mask + 1)
@@ -4190,7 +5743,10 @@ object MutableLongMap {
       require(validKeyInArray(k))
       require(!arrayContainsKeyTailRec(a, k, 0))
       require(
-        seekEntryOrOpenDecoupled(k)(a, mask) == MissingZero(i) || seekEntryOrOpenDecoupled(k)(a, mask) == MissingVacant(
+        seekEntryOrOpenDecoupled(k)(a, mask) == MissingZero(i) || seekEntryOrOpenDecoupled(k)(
+          a,
+          mask
+        ) == MissingVacant(
           i
         )
       )
@@ -4208,12 +5764,14 @@ object MutableLongMap {
       lemmaArrayForallSeekEntryOrOpenFoundFromSmallerThenFromBigger(a, mask, 0, j)
       check(seekEntryOrOpenDecoupled(a(j))(a, mask) == Found(j))
 
-      val intermediateBefore = seekKeyOrZeroOrLongMinValueTailRecDecoupled(0, toIndex(a(j), mask))(a(j), a, mask)
-      val intermediateAfter = seekKeyOrZeroOrLongMinValueTailRecDecoupled(0, toIndex(a.updated(i, k).apply(j), mask))(
-        a.updated(i, k).apply(j),
-        a.updated(i, k),
-        mask
-      )
+      val intermediateBefore =
+        seekKeyOrZeroOrLongMinValueTailRecDecoupled(0, toIndex(a(j), mask))(a(j), a, mask)
+      val intermediateAfter =
+        seekKeyOrZeroOrLongMinValueTailRecDecoupled(0, toIndex(a.updated(i, k).apply(j), mask))(
+          a.updated(i, k).apply(j),
+          a.updated(i, k),
+          mask
+        )
       assert(intermediateBefore == intermediateAfter)
       intermediateBefore match {
         case Intermediate(undefined, index, x) if (undefined) => {}
@@ -4225,7 +5783,11 @@ object MutableLongMap {
             check(false)
           } else {
             check(
-              seekEntryOrOpenDecoupled(a(j))(a, mask) == seekKeyOrZeroReturnVacantTailRecDecoupled(x, index, index)(
+              seekEntryOrOpenDecoupled(a(j))(a, mask) == seekKeyOrZeroReturnVacantTailRecDecoupled(
+                x,
+                index,
+                index
+              )(
                 a(j),
                 a,
                 mask
@@ -4239,7 +5801,15 @@ object MutableLongMap {
                   mask
                 )
             )
-            lemmaPutValidKeyPreservesSeekKeyOrZeroReturnVacantTailRecDecoupled(a, i, k, j, x, index, index)(mask)
+            lemmaPutValidKeyPreservesSeekKeyOrZeroReturnVacantTailRecDecoupled(
+              a,
+              i,
+              k,
+              j,
+              x,
+              index,
+              index
+            )(mask)
 
           }
         }
@@ -4275,7 +5845,10 @@ object MutableLongMap {
       require(validKeyInArray(k))
       require(!arrayContainsKeyTailRec(a, k, 0))
       require(
-        seekEntryOrOpenDecoupled(k)(a, mask) == MissingZero(i) || seekEntryOrOpenDecoupled(k)(a, mask) == MissingVacant(
+        seekEntryOrOpenDecoupled(k)(a, mask) == MissingZero(i) || seekEntryOrOpenDecoupled(k)(
+          a,
+          mask
+        ) == MissingVacant(
           i
         )
       )
@@ -4288,7 +5861,11 @@ object MutableLongMap {
       require(resIndex >= 0 && resIndex < a.length)
       require(a(resIndex) == a(j))
       require(
-        seekKeyOrZeroOrLongMinValueTailRecDecoupled(x, index)(a(j), a, mask) == Intermediate(false, resIndex, resX)
+        seekKeyOrZeroOrLongMinValueTailRecDecoupled(x, index)(a(j), a, mask) == Intermediate(
+          false,
+          resIndex,
+          resX
+        )
       )
       require(
         seekKeyOrZeroOrLongMinValueTailRecDecoupled(0, toIndex(a(j), mask))(
@@ -4349,7 +5926,10 @@ object MutableLongMap {
       require(validKeyInArray(k))
       require(!arrayContainsKeyTailRec(a, k, 0))
       require(
-        seekEntryOrOpenDecoupled(k)(a, mask) == MissingZero(i) || seekEntryOrOpenDecoupled(k)(a, mask) == MissingVacant(
+        seekEntryOrOpenDecoupled(k)(a, mask) == MissingZero(i) || seekEntryOrOpenDecoupled(k)(
+          a,
+          mask
+        ) == MissingVacant(
           i
         )
       )
@@ -4374,13 +5954,19 @@ object MutableLongMap {
         )
       )
       require(
-        seekEntryOrOpenDecoupled(a(j))(a, mask) == seekKeyOrZeroReturnVacantTailRecDecoupled(x, index, vacantBefore)(
+        seekEntryOrOpenDecoupled(a(j))(a, mask) == seekKeyOrZeroReturnVacantTailRecDecoupled(
+          x,
+          index,
+          vacantBefore
+        )(
           a(j),
           a,
           mask
         )
       )
-      require(seekKeyOrZeroReturnVacantTailRecDecoupled(x, index, vacantBefore)(a(j), a, mask) == Found(j))
+      require(
+        seekKeyOrZeroReturnVacantTailRecDecoupled(x, index, vacantBefore)(a(j), a, mask) == Found(j)
+      )
 
       decreases(MAX_ITER - x)
 
@@ -4450,7 +6036,10 @@ object MutableLongMap {
       require(validKeyInArray(k))
       require(!arrayContainsKeyTailRec(a, k, 0))
       require(
-        seekEntryOrOpenDecoupled(k)(a, mask) == MissingZero(i) || seekEntryOrOpenDecoupled(k)(a, mask) == MissingVacant(
+        seekEntryOrOpenDecoupled(k)(a, mask) == MissingZero(i) || seekEntryOrOpenDecoupled(k)(
+          a,
+          mask
+        ) == MissingVacant(
           i
         )
       )
@@ -4462,7 +6051,11 @@ object MutableLongMap {
       require(index >= 0 && index < a.length)
       require(resIntermediateIndex >= 0 && resIntermediateIndex < a.length)
       require(
-        seekKeyOrZeroOrLongMinValueTailRecDecoupled(0, toIndex(a(j), mask))(a(j), a, mask) == Intermediate(
+        seekKeyOrZeroOrLongMinValueTailRecDecoupled(0, toIndex(a(j), mask))(
+          a(j),
+          a,
+          mask
+        ) == Intermediate(
           false,
           resIntermediateIndex,
           resIntermediateX
@@ -4477,7 +6070,12 @@ object MutableLongMap {
             resIntermediateIndex,
             resIntermediateX
           )
-        else seekKeyOrZeroReturnVacantTailRecDecoupled(x, index, resIntermediateIndex)(a(j), a, mask) == Found(j)
+        else
+          seekKeyOrZeroReturnVacantTailRecDecoupled(x, index, resIntermediateIndex)(
+            a(j),
+            a,
+            mask
+          ) == Found(j)
       )
       require(
         seekKeyOrZeroOrLongMinValueTailRecDecoupled(0, toIndex(a.updated(i, k).apply(j), mask))(
@@ -4485,7 +6083,11 @@ object MutableLongMap {
           a.updated(i, k),
           mask
         ) ==
-          seekKeyOrZeroOrLongMinValueTailRecDecoupled(x, index)(a.updated(i, k).apply(j), a.updated(i, k), mask)
+          seekKeyOrZeroOrLongMinValueTailRecDecoupled(x, index)(
+            a.updated(i, k).apply(j),
+            a.updated(i, k),
+            mask
+          )
       )
 
       decreases(MAX_ITER - x)
@@ -4493,7 +6095,11 @@ object MutableLongMap {
       lemmaArrayForallSeekEntryOrOpenFoundFromSmallerThenFromBigger(a, mask, 0, j)
       check(seekEntryOrOpenDecoupled(a(j))(a, mask) == Found(j))
       check(
-        seekKeyOrZeroReturnVacantTailRecDecoupled(resIntermediateX, resIntermediateIndex, resIntermediateIndex)(
+        seekKeyOrZeroReturnVacantTailRecDecoupled(
+          resIntermediateX,
+          resIntermediateIndex,
+          resIntermediateIndex
+        )(
           a(j),
           a,
           mask
@@ -4501,7 +6107,11 @@ object MutableLongMap {
       )
 
       val intermediateAfter =
-        seekKeyOrZeroOrLongMinValueTailRecDecoupled(x, index)(a.updated(i, k).apply(j), a.updated(i, k), mask)
+        seekKeyOrZeroOrLongMinValueTailRecDecoupled(x, index)(
+          a.updated(i, k).apply(j),
+          a.updated(i, k),
+          mask
+        )
       intermediateAfter match {
         case Intermediate(undefined, indexIntermediateAfter, xIntermediateAfter) => {
           if (x < xIntermediateAfter) {
@@ -4518,14 +6128,27 @@ object MutableLongMap {
           } else {
             assert(x == xIntermediateAfter)
             assert(index == indexIntermediateAfter)
-            assert(seekKeyOrZeroReturnVacantTailRecDecoupled(x, index, resIntermediateIndex)(a(j), a, mask) == Found(j))
+            assert(
+              seekKeyOrZeroReturnVacantTailRecDecoupled(x, index, resIntermediateIndex)(
+                a(j),
+                a,
+                mask
+              ) == Found(j)
+            )
             if (a.updated(i, k).apply(index) == a.updated(i, k).apply(j)) {
               assert(!undefined)
-              check(seekEntryOrOpenDecoupled(a.updated(i, k).apply(j))(a.updated(i, k), mask) == Found(index))
+              check(
+                seekEntryOrOpenDecoupled(a.updated(i, k).apply(j))(a.updated(i, k), mask) == Found(
+                  index
+                )
+              )
             } else {
               if (a.updated(i, k).apply(index) == 0) {
                 check(
-                  seekEntryOrOpenDecoupled(a(j))(a, mask) == seekKeyOrZeroReturnVacantTailRecDecoupled(
+                  seekEntryOrOpenDecoupled(a(j))(
+                    a,
+                    mask
+                  ) == seekKeyOrZeroReturnVacantTailRecDecoupled(
                     x,
                     index,
                     resIntermediateIndex
@@ -4552,14 +6175,21 @@ object MutableLongMap {
                 )
               )
               check(
-                seekEntryOrOpenDecoupled(a(j))(a, mask) == seekKeyOrZeroReturnVacantTailRecDecoupled(
+                seekEntryOrOpenDecoupled(a(j))(
+                  a,
+                  mask
+                ) == seekKeyOrZeroReturnVacantTailRecDecoupled(
                   x,
                   index,
                   resIntermediateIndex
                 )(a(j), a, mask)
               )
               check(
-                seekKeyOrZeroReturnVacantTailRecDecoupled(x, index, resIntermediateIndex)(a(j), a, mask) == Found(j)
+                seekKeyOrZeroReturnVacantTailRecDecoupled(x, index, resIntermediateIndex)(
+                  a(j),
+                  a,
+                  mask
+                ) == Found(j)
               )
 
               lemmaPutValidKeyPreservesForallSeekEntryOrOpenKey2AfterFindingLongMinValueLater(
@@ -4578,7 +6208,9 @@ object MutableLongMap {
         case _ => check(false)
       }
 
-    }.ensuring(_ => seekEntryOrOpenDecoupled(a.updated(i, k).apply(j))(a.updated(i, k), mask) == Found(j))
+    }.ensuring(_ =>
+      seekEntryOrOpenDecoupled(a.updated(i, k).apply(j))(a.updated(i, k), mask) == Found(j)
+    )
 
     @pure
     @opaque
@@ -4603,7 +6235,10 @@ object MutableLongMap {
       require(validKeyInArray(k))
       require(!arrayContainsKeyTailRec(a, k, 0))
       require(
-        seekEntryOrOpenDecoupled(k)(a, mask) == MissingVacant(i) || seekEntryOrOpenDecoupled(k)(a, mask) == MissingZero(
+        seekEntryOrOpenDecoupled(k)(a, mask) == MissingVacant(i) || seekEntryOrOpenDecoupled(k)(
+          a,
+          mask
+        ) == MissingZero(
           i
         )
       )
@@ -4615,21 +6250,32 @@ object MutableLongMap {
       require(index >= 0 && index < a.length)
       require(resIndex >= 0 && resIndex < a.length)
       require(
-        seekKeyOrZeroOrLongMinValueTailRecDecoupled(0, toIndex(a(j), mask))(a(j), a, mask) == Intermediate(
+        seekKeyOrZeroOrLongMinValueTailRecDecoupled(0, toIndex(a(j), mask))(
+          a(j),
+          a,
+          mask
+        ) == Intermediate(
           false,
           resIndex,
           resX
         )
       )
       require(
-        seekKeyOrZeroOrLongMinValueTailRecDecoupled(x, index)(a(j), a, mask) == Intermediate(false, resIndex, resX)
+        seekKeyOrZeroOrLongMinValueTailRecDecoupled(x, index)(a(j), a, mask) == Intermediate(
+          false,
+          resIndex,
+          resX
+        )
       )
       require(
         seekKeyOrZeroOrLongMinValueTailRecDecoupled(0, toIndex(a(j), mask))(
           a(j),
           a,
           mask
-        ) != seekKeyOrZeroOrLongMinValueTailRecDecoupled(0, toIndex(a.updated(i, k).apply(j), mask))(
+        ) != seekKeyOrZeroOrLongMinValueTailRecDecoupled(
+          0,
+          toIndex(a.updated(i, k).apply(j), mask)
+        )(
           a.updated(i, k).apply(j),
           a.updated(i, k),
           mask
@@ -4640,7 +6286,11 @@ object MutableLongMap {
           a(j),
           a,
           mask
-        ) != seekKeyOrZeroOrLongMinValueTailRecDecoupled(x, index)(a.updated(i, k).apply(j), a.updated(i, k), mask)
+        ) != seekKeyOrZeroOrLongMinValueTailRecDecoupled(x, index)(
+          a.updated(i, k).apply(j),
+          a.updated(i, k),
+          mask
+        )
       )
 
       decreases(MAX_ITER - x)
@@ -4667,8 +6317,8 @@ object MutableLongMap {
 
     @opaque
     @pure
-    def lemmaPutValidKeyPreservesForallSeekEntryOrOpenKey2(a: Array[Long], i: Int, k: Long, j: Int)(implicit
-        mask: Int
+    def lemmaPutValidKeyPreservesForallSeekEntryOrOpenKey2(a: Array[Long], i: Int, k: Long, j: Int)(
+        implicit mask: Int
     ): Unit = {
       require(validMask(mask))
       require(a.length == mask + 1)
@@ -4681,7 +6331,10 @@ object MutableLongMap {
       require(validKeyInArray(k))
       require(!arrayContainsKeyTailRec(a, k, 0))
       require(
-        seekEntryOrOpenDecoupled(k)(a, mask) == MissingZero(i) || seekEntryOrOpenDecoupled(k)(a, mask) == MissingVacant(
+        seekEntryOrOpenDecoupled(k)(a, mask) == MissingZero(i) || seekEntryOrOpenDecoupled(k)(
+          a,
+          mask
+        ) == MissingVacant(
           i
         )
       )
@@ -4701,9 +6354,15 @@ object MutableLongMap {
           )
       ) {
         lemmaPutValidKeyPreservesForallSeekEntryOrOpenKey1(a, i, k, j)(mask)
-        check(seekEntryOrOpenDecoupled(a(j))(a, mask) == seekEntryOrOpenDecoupled(newArray.apply(j))(newArray, mask))
+        check(
+          seekEntryOrOpenDecoupled(a(j))(a, mask) == seekEntryOrOpenDecoupled(newArray.apply(j))(
+            newArray,
+            mask
+          )
+        )
       } else {
-        val intermediateBefore = seekKeyOrZeroOrLongMinValueTailRecDecoupled(0, toIndex(a(j), mask))(a(j), a, mask)
+        val intermediateBefore =
+          seekKeyOrZeroOrLongMinValueTailRecDecoupled(0, toIndex(a(j), mask))(a(j), a, mask)
         intermediateBefore match {
           case Intermediate(undefined, index, x) if (undefined) => {
             check(seekEntryOrOpenDecoupled(a(j))(a, mask) == Undefined())
@@ -4711,7 +6370,9 @@ object MutableLongMap {
             check(seekEntryOrOpenDecoupled(a(j))(a, mask) == Found(j))
             check(false)
             check(
-              seekEntryOrOpenDecoupled(a(j))(a, mask) == seekEntryOrOpenDecoupled(newArray.apply(j))(newArray, mask)
+              seekEntryOrOpenDecoupled(a(j))(a, mask) == seekEntryOrOpenDecoupled(
+                newArray.apply(j)
+              )(newArray, mask)
             )
           }
           case Intermediate(undefinedBefore, indexBefore, xBefore) if (!undefinedBefore) => {
@@ -4747,16 +6408,32 @@ object MutableLongMap {
               indexBefore,
               xBefore
             )(mask)
-            lemmaPutValidKeyPreservesVacantIsAtI(a, i, k, j, toIndex(a(j), mask), 0, indexBefore, xBefore)(mask)
+            lemmaPutValidKeyPreservesVacantIsAtI(
+              a,
+              i,
+              k,
+              j,
+              toIndex(a(j), mask),
+              0,
+              indexBefore,
+              xBefore
+            )(mask)
           }
           case _ => {
             check(false)
             check(
-              seekEntryOrOpenDecoupled(a(j))(a, mask) == seekEntryOrOpenDecoupled(newArray.apply(j))(newArray, mask)
+              seekEntryOrOpenDecoupled(a(j))(a, mask) == seekEntryOrOpenDecoupled(
+                newArray.apply(j)
+              )(newArray, mask)
             ) //OK
           }
         }
-        check(seekEntryOrOpenDecoupled(a(j))(a, mask) == seekEntryOrOpenDecoupled(newArray.apply(j))(newArray, mask))
+        check(
+          seekEntryOrOpenDecoupled(a(j))(a, mask) == seekEntryOrOpenDecoupled(newArray.apply(j))(
+            newArray,
+            mask
+          )
+        )
 
       }
 
@@ -4787,7 +6464,11 @@ object MutableLongMap {
       require(seekEntryOrOpenDecoupled(k)(a, mask) == MissingZero(i))
       require(arrayForallSeekEntryOrOpenFound(0)(a, mask))
       require(
-        seekKeyOrZeroOrLongMinValueTailRecDecoupled(0, toIndex(k, mask))(k, a, mask) == Intermediate(
+        seekKeyOrZeroOrLongMinValueTailRecDecoupled(0, toIndex(k, mask))(
+          k,
+          a,
+          mask
+        ) == Intermediate(
           false,
           resIndex,
           resX
@@ -4798,7 +6479,13 @@ object MutableLongMap {
       require(x <= resX)
       require(x >= 0)
       require(index >= 0 && index < a.length)
-      require(seekKeyOrZeroOrLongMinValueTailRecDecoupled(x, index)(k, a, mask) == Intermediate(false, resIndex, resX))
+      require(
+        seekKeyOrZeroOrLongMinValueTailRecDecoupled(x, index)(k, a, mask) == Intermediate(
+          false,
+          resIndex,
+          resX
+        )
+      )
 
       decreases(MAX_ITER - x)
       assert(resX < MAX_ITER)
@@ -4806,14 +6493,26 @@ object MutableLongMap {
       if (x == resX) {
         if (resIndex != index) {
           if (a(index) == 0 || a(index) == Long.MinValue) {
-            check(seekKeyOrZeroOrLongMinValueTailRecDecoupled(x, index)(k, a, mask) == Intermediate(false, index, resX))
+            check(
+              seekKeyOrZeroOrLongMinValueTailRecDecoupled(x, index)(k, a, mask) == Intermediate(
+                false,
+                index,
+                resX
+              )
+            )
             check(false)
           } else {
             check(
               seekKeyOrZeroOrLongMinValueTailRecDecoupled(x, index)(k, a, mask) ==
-                seekKeyOrZeroOrLongMinValueTailRecDecoupled(x + 1, (index + 2 * (x + 1) * x - 3) & mask)(k, a, mask)
+                seekKeyOrZeroOrLongMinValueTailRecDecoupled(
+                  x + 1,
+                  (index + 2 * (x + 1) * x - 3) & mask
+                )(k, a, mask)
             )
-            seekKeyOrZeroOrLongMinValueTailRecDecoupled(x + 1, (index + 2 * (x + 1) * x - 3) & mask)(k, a, mask) match {
+            seekKeyOrZeroOrLongMinValueTailRecDecoupled(
+              x + 1,
+              (index + 2 * (x + 1) * x - 3) & mask
+            )(k, a, mask) match {
               case Intermediate(undefined, tempIndex, tempX) => assert(tempX >= x + 1)
               case _                                         => check(false)
             }
@@ -4835,14 +6534,20 @@ object MutableLongMap {
             k,
             a,
             mask
-          ) == seekKeyOrZeroOrLongMinValueTailRecDecoupled(x + 1, (index + 2 * (x + 1) * x - 3) & mask)(k, a, mask)
+          ) == seekKeyOrZeroOrLongMinValueTailRecDecoupled(
+            x + 1,
+            (index + 2 * (x + 1) * x - 3) & mask
+          )(k, a, mask)
         )
         check(
           seekKeyOrZeroOrLongMinValueTailRecDecoupled(x, index)(
             k,
             a.updated(i, k),
             mask
-          ) == seekKeyOrZeroOrLongMinValueTailRecDecoupled(x + 1, (index + 2 * (x + 1) * x - 3) & mask)(
+          ) == seekKeyOrZeroOrLongMinValueTailRecDecoupled(
+            x + 1,
+            (index + 2 * (x + 1) * x - 3) & mask
+          )(
             k,
             a.updated(i, k),
             mask
@@ -4892,7 +6597,11 @@ object MutableLongMap {
       require(seekEntryOrOpenDecoupled(k)(a, mask) == MissingVacant(i))
       require(arrayForallSeekEntryOrOpenFound(0)(a, mask))
       require(
-        seekKeyOrZeroOrLongMinValueTailRecDecoupled(0, toIndex(k, mask))(k, a, mask) == Intermediate(
+        seekKeyOrZeroOrLongMinValueTailRecDecoupled(0, toIndex(k, mask))(
+          k,
+          a,
+          mask
+        ) == Intermediate(
           false,
           resIndex,
           resX
@@ -4903,21 +6612,39 @@ object MutableLongMap {
       require(x <= resX)
       require(x >= 0)
       require(index >= 0 && index < a.length)
-      require(seekKeyOrZeroOrLongMinValueTailRecDecoupled(x, index)(k, a, mask) == Intermediate(false, resIndex, resX))
+      require(
+        seekKeyOrZeroOrLongMinValueTailRecDecoupled(x, index)(k, a, mask) == Intermediate(
+          false,
+          resIndex,
+          resX
+        )
+      )
       decreases(MAX_ITER - x)
       assert(resX < MAX_ITER)
       assert(a(index) != k)
       if (x == resX) {
         if (resIndex != index) {
           if (a(index) == 0 || a(index) == Long.MinValue) {
-            check(seekKeyOrZeroOrLongMinValueTailRecDecoupled(x, index)(k, a, mask) == Intermediate(false, index, resX))
+            check(
+              seekKeyOrZeroOrLongMinValueTailRecDecoupled(x, index)(k, a, mask) == Intermediate(
+                false,
+                index,
+                resX
+              )
+            )
             check(false)
           } else {
             check(
               seekKeyOrZeroOrLongMinValueTailRecDecoupled(x, index)(k, a, mask) ==
-                seekKeyOrZeroOrLongMinValueTailRecDecoupled(x + 1, (index + 2 * (x + 1) * x - 3) & mask)(k, a, mask)
+                seekKeyOrZeroOrLongMinValueTailRecDecoupled(
+                  x + 1,
+                  (index + 2 * (x + 1) * x - 3) & mask
+                )(k, a, mask)
             )
-            seekKeyOrZeroOrLongMinValueTailRecDecoupled(x + 1, (index + 2 * (x + 1) * x - 3) & mask)(k, a, mask) match {
+            seekKeyOrZeroOrLongMinValueTailRecDecoupled(
+              x + 1,
+              (index + 2 * (x + 1) * x - 3) & mask
+            )(k, a, mask) match {
               case Intermediate(undefined, tempIndex, tempX) => assert(tempX >= x + 1)
               case _                                         => check(false)
             }
@@ -4939,14 +6666,20 @@ object MutableLongMap {
             k,
             a,
             mask
-          ) == seekKeyOrZeroOrLongMinValueTailRecDecoupled(x + 1, (index + 2 * (x + 1) * x - 3) & mask)(k, a, mask)
+          ) == seekKeyOrZeroOrLongMinValueTailRecDecoupled(
+            x + 1,
+            (index + 2 * (x + 1) * x - 3) & mask
+          )(k, a, mask)
         )
         check(
           seekKeyOrZeroOrLongMinValueTailRecDecoupled(x, index)(
             k,
             a.updated(i, k),
             mask
-          ) == seekKeyOrZeroOrLongMinValueTailRecDecoupled(x + 1, (index + 2 * (x + 1) * x - 3) & mask)(
+          ) == seekKeyOrZeroOrLongMinValueTailRecDecoupled(
+            x + 1,
+            (index + 2 * (x + 1) * x - 3) & mask
+          )(
             k,
             a.updated(i, k),
             mask
@@ -4980,7 +6713,9 @@ object MutableLongMap {
 
     @pure
     @opaque
-    def lemmaPutValidKeyAtRightPlaceThenFinds(a: Array[Long], i: Int, k: Long)(implicit mask: Int): Unit = {
+    def lemmaPutValidKeyAtRightPlaceThenFinds(a: Array[Long], i: Int, k: Long)(implicit
+        mask: Int
+    ): Unit = {
       require(validMask(mask))
       require(a.length == mask + 1)
       require(i >= 0)
@@ -4988,14 +6723,19 @@ object MutableLongMap {
       require(validKeyInArray(k))
       require(!arrayContainsKeyTailRec(a, k, 0))
       require(
-        seekEntryOrOpenDecoupled(k)(a, mask) == MissingZero(i) || seekEntryOrOpenDecoupled(k)(a, mask) == MissingVacant(
+        seekEntryOrOpenDecoupled(k)(a, mask) == MissingZero(i) || seekEntryOrOpenDecoupled(k)(
+          a,
+          mask
+        ) == MissingVacant(
           i
         )
       )
       require(arrayForallSeekEntryOrOpenFound(0)(a, mask))
 
-      val intermediateBefore = seekKeyOrZeroOrLongMinValueTailRecDecoupled(0, toIndex(k, mask))(k, a, mask)
-      val intermediateAfter = seekKeyOrZeroOrLongMinValueTailRecDecoupled(0, toIndex(k, mask))(k, a.updated(i, k), mask)
+      val intermediateBefore =
+        seekKeyOrZeroOrLongMinValueTailRecDecoupled(0, toIndex(k, mask))(k, a, mask)
+      val intermediateAfter =
+        seekKeyOrZeroOrLongMinValueTailRecDecoupled(0, toIndex(k, mask))(k, a.updated(i, k), mask)
 
       if (seekEntryOrOpenDecoupled(k)(a, mask) == MissingZero(i)) {
         intermediateBefore match {
@@ -5005,7 +6745,9 @@ object MutableLongMap {
           case Intermediate(undefined, index, x) => {
             check(a(index) == 0)
             check(index == i)
-            lemmaPutValidKeyAtRightPlaceThenFindsHelper1(a, i, k, 0, toIndex(k, mask), index, x)(mask)
+            lemmaPutValidKeyAtRightPlaceThenFindsHelper1(a, i, k, 0, toIndex(k, mask), index, x)(
+              mask
+            )
             check(intermediateAfter == Intermediate(false, index, x))
             check(intermediateAfter == intermediateBefore)
             check(a.updated(i, k).apply(index) == k)
@@ -5021,7 +6763,9 @@ object MutableLongMap {
           case Intermediate(undefined, index, x) if (undefined) => check(false)
           case Intermediate(undefined, index, x) if (a(index) == Long.MinValue) => {
             check(index == i)
-            lemmaPutValidKeyAtRightPlaceThenFindsHelper2(a, i, k, 0, toIndex(k, mask), index, x)(mask)
+            lemmaPutValidKeyAtRightPlaceThenFindsHelper2(a, i, k, 0, toIndex(k, mask), index, x)(
+              mask
+            )
             check(seekEntryOrOpenDecoupled(k)(a.updated(i, k), mask) == Found(i))
 
           }
@@ -5037,8 +6781,13 @@ object MutableLongMap {
 
     @opaque
     @pure
-    def lemmaPutValidKeyPreservesForallSeekEntryOrOpenStartIndex(a: Array[Long], i: Int, k: Long, startIndex: Int)(
-        implicit mask: Int
+    def lemmaPutValidKeyPreservesForallSeekEntryOrOpenStartIndex(
+        a: Array[Long],
+        i: Int,
+        k: Long,
+        startIndex: Int
+    )(implicit
+        mask: Int
     ): Unit = {
       require(validMask(mask))
       require(a.length == mask + 1)
@@ -5050,7 +6799,10 @@ object MutableLongMap {
       require(arrayNoDuplicates(a, 0))
       require(!arrayContainsKeyTailRec(a, k, 0))
       require(
-        seekEntryOrOpenDecoupled(k)(a, mask) == MissingZero(i) || seekEntryOrOpenDecoupled(k)(a, mask) == MissingVacant(
+        seekEntryOrOpenDecoupled(k)(a, mask) == MissingZero(i) || seekEntryOrOpenDecoupled(k)(
+          a,
+          mask
+        ) == MissingVacant(
           i
         )
       )
@@ -5083,7 +6835,10 @@ object MutableLongMap {
             lemmaPutValidKeyPreservesForallSeekEntryOrOpenStartIndex(a, i, k, startIndex + 1)
           }
           check(
-            arrayForallSeekEntryOrOpenFound(startIndex)(newArray, mask) == arrayForallSeekEntryOrOpenFound(
+            arrayForallSeekEntryOrOpenFound(startIndex)(
+              newArray,
+              mask
+            ) == arrayForallSeekEntryOrOpenFound(
               startIndex + 1
             )(newArray, mask)
           )
@@ -5095,7 +6850,9 @@ object MutableLongMap {
 
     @opaque
     @pure
-    def lemmaPutValidKeyPreservesForallSeekEntryOrOpen(k: Long, a: Array[Long], i: Int)(implicit mask: Int): Unit = {
+    def lemmaPutValidKeyPreservesForallSeekEntryOrOpen(k: Long, a: Array[Long], i: Int)(implicit
+        mask: Int
+    ): Unit = {
       require(validMask(mask))
       require(a.length == mask + 1)
       require(i >= 0)
@@ -5103,7 +6860,10 @@ object MutableLongMap {
       require(validKeyInArray(k))
       require(!arrayContainsKeyTailRec(a, k, 0))
       require(
-        seekEntryOrOpenDecoupled(k)(a, mask) == MissingZero(i) || seekEntryOrOpenDecoupled(k)(a, mask) == MissingVacant(
+        seekEntryOrOpenDecoupled(k)(a, mask) == MissingZero(i) || seekEntryOrOpenDecoupled(k)(
+          a,
+          mask
+        ) == MissingVacant(
           i
         )
       )
@@ -5116,7 +6876,12 @@ object MutableLongMap {
 
     @opaque
     @pure
-    def lemmaSeekEntryOrOpenFindsThenSeekEntryFinds(k: Long, i: Int, a: Array[Long], mask: Int): Unit = {
+    def lemmaSeekEntryOrOpenFindsThenSeekEntryFinds(
+        k: Long,
+        i: Int,
+        a: Array[Long],
+        mask: Int
+    ): Unit = {
       require(validMask(mask))
       require(a.length == mask + 1)
       require(arrayForallSeekEntryOrOpenFound(0)(a, mask))
@@ -5132,7 +6897,12 @@ object MutableLongMap {
 
     @opaque
     @pure
-    def lemmaSeekEntryOrOpenMissThenSeekEntryMiss(k: Long, i: Int, a: Array[Long], mask: Int): Unit = {
+    def lemmaSeekEntryOrOpenMissThenSeekEntryMiss(
+        k: Long,
+        i: Int,
+        a: Array[Long],
+        mask: Int
+    ): Unit = {
       require(validMask(mask))
       require(a.length == mask + 1)
       require(arrayForallSeekEntryOrOpenFound(0)(a, mask))
@@ -5234,7 +7004,9 @@ object MutableLongMap {
     @tailrec
     @pure
     def arraysEqualsFromTo(a1: Array[Long], a2: Array[Long], from: Int, to: Int): Boolean = {
-      require(a1.length == a2.length && from >= 0 && from <= to && to <= a1.length && a1.length < Integer.MAX_VALUE)
+      require(
+        a1.length == a2.length && from >= 0 && from <= to && to <= a1.length && a1.length < Integer.MAX_VALUE
+      )
 
       decreases(to + 1 - from)
       if (from >= to) {
@@ -5346,7 +7118,13 @@ object MutableLongMap {
 
       if (from + 1 < a.length) {
         if (validKeyInArray(a(from))) {
-          lemmaAddKeyNoContainsInAccStillNoDuplicate(a, k, from + 1, a(from) :: acc, a(from) :: newAcc)
+          lemmaAddKeyNoContainsInAccStillNoDuplicate(
+            a,
+            k,
+            from + 1,
+            a(from) :: acc,
+            a(from) :: newAcc
+          )
         } else {
           lemmaAddKeyNoContainsInAccStillNoDuplicate(a, k, from + 1, acc, newAcc)
         }
@@ -5381,7 +7159,13 @@ object MutableLongMap {
 
     @opaque
     @pure
-    def lemmaPutNewValidKeyPreservesNoDuplicate(a: Array[Long], k: Long, i: Int, from: Int, acc: List[Long]): Unit = {
+    def lemmaPutNewValidKeyPreservesNoDuplicate(
+        a: Array[Long],
+        k: Long,
+        i: Int,
+        from: Int,
+        acc: List[Long]
+    ): Unit = {
       require(a.length < Integer.MAX_VALUE)
       require(from >= 0)
       require(from < a.length)
@@ -5399,7 +7183,13 @@ object MutableLongMap {
         if (from == i) {
           val newArray = a.updated(i, k)
           check(arrayContainsKeyTailRec(newArray, k, from))
-          check(arrayNoDuplicates(newArray, from, acc) == arrayNoDuplicates(newArray, from + 1, k :: acc))
+          check(
+            arrayNoDuplicates(newArray, from, acc) == arrayNoDuplicates(
+              newArray,
+              from + 1,
+              k :: acc
+            )
+          )
 
           if (arrayContainsKeyTailRec(a, k, from + 1)) {
             lemmaArrayContainsFromImpliesContainsFromZero(a, k, from)
@@ -5436,7 +7226,13 @@ object MutableLongMap {
 
     @opaque
     @pure
-    def lemmaPutNonValidKeyPreservesNoDuplicate(a: Array[Long], l: Long, i: Int, from: Int, acc: List[Long]): Unit = {
+    def lemmaPutNonValidKeyPreservesNoDuplicate(
+        a: Array[Long],
+        l: Long,
+        i: Int,
+        from: Int,
+        acc: List[Long]
+    ): Unit = {
       require(a.length < Integer.MAX_VALUE)
       require(from >= 0)
       require(from < a.length)
@@ -5467,7 +7263,12 @@ object MutableLongMap {
 
     @opaque
     @pure
-    def lemmaArrayNoDuplicateThenKeysContainedNotEqual(a: Array[Long], k: Long, from: Int, acc: List[Long]): Unit = {
+    def lemmaArrayNoDuplicateThenKeysContainedNotEqual(
+        a: Array[Long],
+        k: Long,
+        from: Int,
+        acc: List[Long]
+    ): Unit = {
       require(a.length < Integer.MAX_VALUE)
       require(validKeyInArray(k))
       require(from >= 0)
@@ -5493,7 +7294,12 @@ object MutableLongMap {
 
     @opaque
     @pure
-    def lemmaArrayNoDuplicateFromNotContainsKeysInAcc(a: Array[Long], from: Int, k: Long, acc: List[Long]): Unit = {
+    def lemmaArrayNoDuplicateFromNotContainsKeysInAcc(
+        a: Array[Long],
+        from: Int,
+        k: Long,
+        acc: List[Long]
+    ): Unit = {
       require(a.length < Integer.MAX_VALUE)
       require(from >= 0)
       require(from < a.length)
@@ -5555,7 +7361,12 @@ object MutableLongMap {
         val k = a(from)
         if (validKeyInArray(k)) {
           if (!acc.contains(k)) {
-            lemmaArrayNoDuplicateWithAnAccThenWithSubSeqAcc(a, Cons(k, acc), Cons(k, newAcc), from + 1)
+            lemmaArrayNoDuplicateWithAnAccThenWithSubSeqAcc(
+              a,
+              Cons(k, acc),
+              Cons(k, newAcc),
+              from + 1
+            )
             ListSpecs.noDuplicateSubseq(Cons(k, newAcc), Cons(k, acc))
           }
         } else {
@@ -5580,7 +7391,12 @@ object MutableLongMap {
         assert(from < a.length)
         if (newFrom != a.length) {
           if (validKeyInArray(a(from))) {
-            lemmaArrayNoDuplicateWithAnAccThenWithSubSeqAcc(a, Cons(a(from), Nil()), Nil(), from + 1)
+            lemmaArrayNoDuplicateWithAnAccThenWithSubSeqAcc(
+              a,
+              Cons(a(from), Nil()),
+              Nil(),
+              from + 1
+            )
           }
           lemmaNoDuplicateFromThenFromBigger(a, from + 1, newFrom)
         }
@@ -5622,7 +7438,11 @@ object MutableLongMap {
         check(from + 1 == to)
         check(
           if (validKeyInArray(a(to - 1)))
-            arrayCountValidKeysTailRec(a, from, to - 1) + 1 == arrayCountValidKeysTailRec(a, from, to)
+            arrayCountValidKeysTailRec(a, from, to - 1) + 1 == arrayCountValidKeysTailRec(
+              a,
+              from,
+              to
+            )
           else
             arrayCountValidKeysTailRec(a, from, to - 1) == arrayCountValidKeysTailRec(a, from, to)
         )
@@ -5649,7 +7469,9 @@ object MutableLongMap {
     @inline
     @pure
     def isPivot(a: Array[Long], from: Int, to: Int, pivot: Int): Boolean = {
-      require(a.length < Integer.MAX_VALUE && from >= 0 && to > from && to <= a.length && pivot >= from && pivot < to)
+      require(
+        a.length < Integer.MAX_VALUE && from >= 0 && to > from && to <= a.length && pivot >= from && pivot < to
+      )
       arrayCountValidKeysTailRec(a, from, pivot) + arrayCountValidKeysTailRec(
         a,
         pivot,
@@ -5685,8 +7507,15 @@ object MutableLongMap {
 
     @pure
     @opaque
-    def lemmaSumOfNumOfKeysOfSubArraysIsEqualToWhole(a: Array[Long], from: Int, to: Int, pivot: Int): Unit = {
-      require(a.length < Integer.MAX_VALUE && from >= 0 && to >= from && to <= a.length && pivot >= from && pivot <= to)
+    def lemmaSumOfNumOfKeysOfSubArraysIsEqualToWhole(
+        a: Array[Long],
+        from: Int,
+        to: Int,
+        pivot: Int
+    ): Unit = {
+      require(
+        a.length < Integer.MAX_VALUE && from >= 0 && to >= from && to <= a.length && pivot >= from && pivot <= to
+      )
 
       if (pivot < to) {
         lemmaSumOfNumOfKeysOfSubArraysIsEqualToWholeFromTo(a, from, to, pivot, from)
@@ -5704,13 +7533,24 @@ object MutableLongMap {
 
     @pure
     @opaque
-    def lemmaRemoveValidKeyAndNumKeysToImpliesToALength(a: Array[Long], i: Int, k: Long, to: Int): Unit = {
+    def lemmaRemoveValidKeyAndNumKeysToImpliesToALength(
+        a: Array[Long],
+        i: Int,
+        k: Long,
+        to: Int
+    ): Unit = {
       require(i >= 0 && i < a.length)
       require(validKeyInArray(a(i)))
       require(!validKeyInArray(k))
       require(a.length < Integer.MAX_VALUE)
       require(to >= 0 && to <= a.length && to > i)
-      require((arrayCountValidKeysTailRec(a.updated(i, k), i + 1, to) == arrayCountValidKeysTailRec(a, i + 1, to)))
+      require(
+        (arrayCountValidKeysTailRec(a.updated(i, k), i + 1, to) == arrayCountValidKeysTailRec(
+          a,
+          i + 1,
+          to
+        ))
+      )
       decreases(a.length + 1 - to)
 
       if (to != a.length) {
@@ -5724,19 +7564,32 @@ object MutableLongMap {
         lemmaRemoveValidKeyAndNumKeysToImpliesToALength(a, i, k, to + 1)
       }
     }.ensuring(_ =>
-      arrayCountValidKeysTailRec(a.updated(i, k), i + 1, a.length) == arrayCountValidKeysTailRec(a, i + 1, a.length)
+      arrayCountValidKeysTailRec(a.updated(i, k), i + 1, a.length) == arrayCountValidKeysTailRec(
+        a,
+        i + 1,
+        a.length
+      )
     )
 
     @pure
     @opaque
-    def lemmaRemoveValidKeyAndNumKeysFromImpliesFromZero(a: Array[Long], i: Int, k: Long, from: Int): Unit = {
+    def lemmaRemoveValidKeyAndNumKeysFromImpliesFromZero(
+        a: Array[Long],
+        i: Int,
+        k: Long,
+        from: Int
+    ): Unit = {
       require(i >= 0 && i < a.length)
       require(validKeyInArray(a(i)))
       require(!validKeyInArray(k))
       require(a.length < Integer.MAX_VALUE)
       require(from >= 0 && from <= a.length && i >= from)
       require(
-        (arrayCountValidKeysTailRec(a.updated(i, k), from, i + 1) == arrayCountValidKeysTailRec(a, from, i + 1) - 1)
+        (arrayCountValidKeysTailRec(a.updated(i, k), from, i + 1) == arrayCountValidKeysTailRec(
+          a,
+          from,
+          i + 1
+        ) - 1)
       )
 
       decreases(from)
@@ -5764,13 +7617,25 @@ object MutableLongMap {
       }
 
     }.ensuring(_ => {
-      arrayCountValidKeysTailRec(a.updated(i, k), 0, i + 1) == arrayCountValidKeysTailRec(a, 0, i + 1) - 1
+      arrayCountValidKeysTailRec(a.updated(i, k), 0, i + 1) == arrayCountValidKeysTailRec(
+        a,
+        0,
+        i + 1
+      ) - 1
     })
 
     @pure
     @opaque
-    def lemmaRemoveValidKeyDecreasesNumberOfValidKeysInArray(a: Array[Long], i: Int, k: Long): Unit = {
-      require(i >= 0 && i < a.length && validKeyInArray(a(i)) && !validKeyInArray(k) && a.length < Integer.MAX_VALUE)
+    def lemmaRemoveValidKeyDecreasesNumberOfValidKeysInArray(
+        a: Array[Long],
+        i: Int,
+        k: Long
+    ): Unit = {
+      require(
+        i >= 0 && i < a.length && validKeyInArray(a(i)) && !validKeyInArray(
+          k
+        ) && a.length < Integer.MAX_VALUE
+      )
 
       lemmaRemoveValidKeyAndNumKeysFromImpliesFromZero(a, i, k, i)
       lemmaRemoveValidKeyAndNumKeysToImpliesToALength(a, i, k, i + 1)
@@ -5778,35 +7643,62 @@ object MutableLongMap {
       lemmaSumOfNumOfKeysOfSubArraysIsEqualToWhole(a.updated(i, k), 0, a.length, i + 1)
 
     }.ensuring(_ =>
-      arrayCountValidKeysTailRec(a.updated(i, k), 0, a.length) == arrayCountValidKeysTailRec(a, 0, a.length) - 1
+      arrayCountValidKeysTailRec(a.updated(i, k), 0, a.length) == arrayCountValidKeysTailRec(
+        a,
+        0,
+        a.length
+      ) - 1
     )
 
     @pure
     @opaque
     def lemmaValidKeyIncreasesNumOfKeys(a: Array[Long], from: Int, to: Int): Unit = {
-      require(a.length < Integer.MAX_VALUE && from >= 0 && to >= from && to < a.length && validKeyInArray(a(to)))
+      require(
+        a.length < Integer.MAX_VALUE && from >= 0 && to >= from && to < a.length && validKeyInArray(
+          a(to)
+        )
+      )
 
       lemmaSumOfNumOfKeysOfSubArraysIsEqualToWhole(a, from, to + 1, to)
 
-    }.ensuring(_ => arrayCountValidKeysTailRec(a, from, to + 1) == arrayCountValidKeysTailRec(a, from, to) + 1)
+    }.ensuring(_ =>
+      arrayCountValidKeysTailRec(a, from, to + 1) == arrayCountValidKeysTailRec(a, from, to) + 1
+    )
 
     @pure
     @opaque
     def lemmaNotValidKeyDoesNotIncreaseNumOfKeys(a: Array[Long], from: Int, to: Int): Unit = {
-      require(a.length < Integer.MAX_VALUE && from >= 0 && to >= from && to < a.length && !validKeyInArray(a(to)))
+      require(
+        a.length < Integer.MAX_VALUE && from >= 0 && to >= from && to < a.length && !validKeyInArray(
+          a(to)
+        )
+      )
 
       lemmaSumOfNumOfKeysOfSubArraysIsEqualToWhole(a, from, to + 1, to)
 
-    }.ensuring(_ => arrayCountValidKeysTailRec(a, from, to + 1) == arrayCountValidKeysTailRec(a, from, to))
+    }.ensuring(_ =>
+      arrayCountValidKeysTailRec(a, from, to + 1) == arrayCountValidKeysTailRec(a, from, to)
+    )
 
     @pure
     @opaque
-    def lemmaAddValidKeyAndNumKeysToImpliesToALength(a: Array[Long], i: Int, k: Long, to: Int): Unit = {
+    def lemmaAddValidKeyAndNumKeysToImpliesToALength(
+        a: Array[Long],
+        i: Int,
+        k: Long,
+        to: Int
+    ): Unit = {
       require(i >= 0 && i < a.length)
       require(!validKeyInArray(a(i)) && validKeyInArray(k))
       require(a.length < Integer.MAX_VALUE)
       require(to >= 0 && to <= a.length && to > i)
-      require((arrayCountValidKeysTailRec(a.updated(i, k), i + 1, to) == arrayCountValidKeysTailRec(a, i + 1, to)))
+      require(
+        (arrayCountValidKeysTailRec(a.updated(i, k), i + 1, to) == arrayCountValidKeysTailRec(
+          a,
+          i + 1,
+          to
+        ))
+      )
       decreases(a.length + 1 - to)
 
       if (to != a.length) {
@@ -5820,19 +7712,32 @@ object MutableLongMap {
         lemmaAddValidKeyAndNumKeysToImpliesToALength(a, i, k, to + 1)
       }
     }.ensuring(_ =>
-      arrayCountValidKeysTailRec(a.updated(i, k), i + 1, a.length) == arrayCountValidKeysTailRec(a, i + 1, a.length)
+      arrayCountValidKeysTailRec(a.updated(i, k), i + 1, a.length) == arrayCountValidKeysTailRec(
+        a,
+        i + 1,
+        a.length
+      )
     )
 
     @pure
     @opaque
-    def lemmaAddValidKeyAndNumKeysFromImpliesFromZero(a: Array[Long], i: Int, k: Long, from: Int): Unit = {
+    def lemmaAddValidKeyAndNumKeysFromImpliesFromZero(
+        a: Array[Long],
+        i: Int,
+        k: Long,
+        from: Int
+    ): Unit = {
       require(i >= 0 && i < a.length)
       require(!validKeyInArray(a(i)))
       require(validKeyInArray(k))
       require(a.length < Integer.MAX_VALUE)
       require(from >= 0 && from <= a.length && i >= from)
       require(
-        (arrayCountValidKeysTailRec(a.updated(i, k), from, i + 1) == arrayCountValidKeysTailRec(a, from, i + 1) + 1)
+        (arrayCountValidKeysTailRec(a.updated(i, k), from, i + 1) == arrayCountValidKeysTailRec(
+          a,
+          from,
+          i + 1
+        ) + 1)
       )
 
       decreases(from)
@@ -5860,13 +7765,21 @@ object MutableLongMap {
       }
 
     }.ensuring(_ => {
-      arrayCountValidKeysTailRec(a.updated(i, k), 0, i + 1) == arrayCountValidKeysTailRec(a, 0, i + 1) + 1
+      arrayCountValidKeysTailRec(a.updated(i, k), 0, i + 1) == arrayCountValidKeysTailRec(
+        a,
+        0,
+        i + 1
+      ) + 1
     })
 
     @pure
     @opaque
     def lemmaAddValidKeyIncreasesNumberOfValidKeysInArray(a: Array[Long], i: Int, k: Long): Unit = {
-      require(i >= 0 && i < a.length && !validKeyInArray(a(i)) && validKeyInArray(k) && a.length < Integer.MAX_VALUE)
+      require(
+        i >= 0 && i < a.length && !validKeyInArray(a(i)) && validKeyInArray(
+          k
+        ) && a.length < Integer.MAX_VALUE
+      )
 
       lemmaAddValidKeyAndNumKeysFromImpliesFromZero(a, i, k, i)
       lemmaAddValidKeyAndNumKeysToImpliesToALength(a, i, k, i + 1)
@@ -5874,7 +7787,11 @@ object MutableLongMap {
       lemmaSumOfNumOfKeysOfSubArraysIsEqualToWhole(a.updated(i, k), 0, a.length, i + 1)
 
     }.ensuring(_ =>
-      arrayCountValidKeysTailRec(a.updated(i, k), 0, a.length) == arrayCountValidKeysTailRec(a, 0, a.length) + 1
+      arrayCountValidKeysTailRec(a.updated(i, k), 0, a.length) == arrayCountValidKeysTailRec(
+        a,
+        0,
+        a.length
+      ) + 1
     )
 
     @pure
