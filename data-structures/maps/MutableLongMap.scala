@@ -76,35 +76,6 @@ object MutableLongMap {
     import LongMapLongV.lemmaRemoveLongMinValueKeyThenRemoveKeyFromListMap
     import LongMapLongV.lemmaRemoveValidKeyToArrayThenRemoveKeyFromListMap
 
-    @inlineOnce
-    def valid: Boolean = {
-      //class invariant
-      simpleValid &&
-      arrayCountValidKeysTailRec(_keys, 0, _keys.length) == _size &&
-      arrayForallSeekEntryOrOpenFound(0)(_keys, mask) &&
-      arrayNoDuplicates(_keys, 0)
-    }
-
-    @inline
-    def simpleValid: Boolean = {
-      validMask(mask) &&
-      _values.length == mask + 1 &&
-      _keys.length == _values.length &&
-      mask >= 0 &&
-      _size >= 0 &&
-      _size <= mask + 1 &&
-      size >= _size &&
-      extraKeys >= 0 &&
-      extraKeys <= 3
-    }
-
-    @inline
-    @pure
-    def map: ListMapLongKey[Long] = {
-      require(valid)
-      getCurrentListMap(_keys, _values, mask, extraKeys, zeroValue, minValue, 0)
-    }
-
     @pure
     def size: Int = {
       _size + (extraKeys + 1) / 2
@@ -207,7 +178,9 @@ object MutableLongMap {
             else res == defaultEntry(key))
     )
 
-    /** Updates the map to include a new key-value pair. Return a boolean indicating if the update was successful. It is not successful if no free space is found (i.e., the map is full)
+    /** Updates the map to include a new key-value pair. 
+      * Returns a boolean indicating if the update was successful. 
+      * It is not successful if no free space is found (i.e., the map is full)
       *
       *  This is the fastest way to add an entry to a `LongMap`.
       */
@@ -346,99 +319,8 @@ object MutableLongMap {
       )
     }
 
-    /** Go through an helper function because this piece of code has to be called in 2 cases
-      * of the pattern matching
-      *
-      * @return
-      */
-    def updateHelperNewKey(key: Long, v: Long, index: Int): Boolean = {
-      require(valid)
-      require(key != 0)
-      require(key != Long.MinValue)
-      require(
-        seekEntryOrOpenDecoupled(key)(_keys, mask) == MissingZero(
-          index
-        ) || seekEntryOrOpenDecoupled(key)(
-          _keys,
-          mask
-        ) == MissingVacant(index)
-      )
-      val oldMap = getCurrentListMap(_keys, _values, mask, extraKeys, zeroValue, minValue, 0)
-
-      {
-        if (
-          getCurrentListMap(_keys, _values, mask, extraKeys, zeroValue, minValue, 0).contains(key)
-        ) {
-          lemmaInListMapThenSeekEntryOrOpenFindsIt(
-            _keys,
-            _values,
-            mask,
-            extraKeys,
-            zeroValue,
-            minValue,
-            key
-          )
-          check(false)
-        } else {
-          lemmaNotInListMapThenSeekEntryOrOpenFindsFreeOrNothing(
-            _keys,
-            _values,
-            mask,
-            extraKeys,
-            zeroValue,
-            minValue,
-            key
-          )
-          check(_keys(index) == 0 || _keys(index) == Long.MinValue)
-        }
-        val _oldSize = _size
-        val _oldNKeys = arrayCountValidKeysTailRec(_keys, 0, _keys.length)
-        assert(inRange(index, mask))
-        if (arrayContainsKeyTailRec(_keys, key, 0)) {
-          lemmaArrayContainsKeyThenInListMap(
-            _keys,
-            _values,
-            mask,
-            extraKeys,
-            zeroValue,
-            minValue,
-            key,
-            0
-          )
-          check(false)
-        }
-
-        lemmaPutNewValidKeyPreservesNoDuplicate(_keys, key, index, 0, List())
-        lemmaAddValidKeyIncreasesNumberOfValidKeysInArray(_keys, index, key)
-        lemmaPutValidKeyPreservesForallSeekEntryOrOpen(key, _keys, index)(mask)
-
-        lemmaAddValidKeyToArrayThenAddPairToListMap(
-          _keys,
-          _values,
-          mask,
-          extraKeys,
-          zeroValue,
-          minValue,
-          index,
-          key,
-          v
-        )
-
-        _keys(index) = key
-        _size += 1
-
-        lemmaArrayContainsFromImpliesContainsFromZero(_keys, key, index)
-        lemmaValidKeyAtIImpliesCountKeysIsOne(_keys, index)
-
-        _values(index) = v
-
-        lemmaValidKeyInArrayIsInListMap(_keys, _values, mask, extraKeys, zeroValue, minValue, index)
-        true
-
-      }.ensuring(res => res && valid && map.contains(key) && (map == oldMap + (key, v)))
-    }
-
-    /** Removes the given key from the map
+    /** Removes the given key from the map. 
+      * Returns true if the key was present and is removed, false if the key was not present
       *
       * @param key
       * @return
@@ -531,6 +413,127 @@ object MutableLongMap {
       }.ensuring(res => valid && (if (res) map == oldMap - key else map == oldMap))
     }
 
+    /** Go through an helper function because this piece of code has to be called in 2 cases
+      * of the pattern matching
+      *
+      * @return
+      */
+    private def updateHelperNewKey(key: Long, v: Long, index: Int): Boolean = {
+      require(valid)
+      require(key != 0)
+      require(key != Long.MinValue)
+      require(
+        seekEntryOrOpenDecoupled(key)(_keys, mask) == MissingZero(
+          index
+        ) || seekEntryOrOpenDecoupled(key)(
+          _keys,
+          mask
+        ) == MissingVacant(index)
+      )
+      val oldMap = getCurrentListMap(_keys, _values, mask, extraKeys, zeroValue, minValue, 0)
+
+      {
+        if (
+          getCurrentListMap(_keys, _values, mask, extraKeys, zeroValue, minValue, 0).contains(key)
+        ) {
+          lemmaInListMapThenSeekEntryOrOpenFindsIt(
+            _keys,
+            _values,
+            mask,
+            extraKeys,
+            zeroValue,
+            minValue,
+            key
+          )
+          check(false)
+        } else {
+          lemmaNotInListMapThenSeekEntryOrOpenFindsFreeOrNothing(
+            _keys,
+            _values,
+            mask,
+            extraKeys,
+            zeroValue,
+            minValue,
+            key
+          )
+          check(_keys(index) == 0 || _keys(index) == Long.MinValue)
+        }
+        val _oldSize = _size
+        val _oldNKeys = arrayCountValidKeysTailRec(_keys, 0, _keys.length)
+        assert(inRange(index, mask))
+        if (arrayContainsKeyTailRec(_keys, key, 0)) {
+          lemmaArrayContainsKeyThenInListMap(
+            _keys,
+            _values,
+            mask,
+            extraKeys,
+            zeroValue,
+            minValue,
+            key,
+            0
+          )
+          check(false)
+        }
+
+        lemmaPutNewValidKeyPreservesNoDuplicate(_keys, key, index, 0, List())
+        lemmaAddValidKeyIncreasesNumberOfValidKeysInArray(_keys, index, key)
+        lemmaPutValidKeyPreservesForallSeekEntryOrOpen(key, _keys, index)(mask)
+
+        lemmaAddValidKeyToArrayThenAddPairToListMap(
+          _keys,
+          _values,
+          mask,
+          extraKeys,
+          zeroValue,
+          minValue,
+          index,
+          key,
+          v
+        )
+
+        _keys(index) = key
+        _size += 1
+
+        lemmaArrayContainsFromImpliesContainsFromZero(_keys, key, index)
+        lemmaValidKeyAtIImpliesCountKeysIsOne(_keys, index)
+
+        _values(index) = v
+
+        lemmaValidKeyInArrayIsInListMap(_keys, _values, mask, extraKeys, zeroValue, minValue, index)
+        true
+
+      }.ensuring(res => res && valid && map.contains(key) && (map == oldMap + (key, v)))
+    }
+
+     @inlineOnce
+    private def valid: Boolean = {
+      //class invariant
+      simpleValid &&
+      arrayCountValidKeysTailRec(_keys, 0, _keys.length) == _size &&
+      arrayForallSeekEntryOrOpenFound(0)(_keys, mask) &&
+      arrayNoDuplicates(_keys, 0)
+    }
+
+    @inline
+    private def simpleValid: Boolean = {
+      validMask(mask) &&
+      _values.length == mask + 1 &&
+      _keys.length == _values.length &&
+      mask >= 0 &&
+      _size >= 0 &&
+      _size <= mask + 1 &&
+      size >= _size &&
+      extraKeys >= 0 &&
+      extraKeys <= 3
+    }
+
+    @inline
+    @pure
+    private def map: ListMapLongKey[Long] = {
+      require(valid)
+      getCurrentListMap(_keys, _values, mask, extraKeys, zeroValue, minValue, 0)
+    }
+
   }
 
   abstract sealed class SeekEntryResult
@@ -604,7 +607,6 @@ object MutableLongMap {
         assert(arrayContainsKeyTailRec(_keys, _keys(i), i))
         lemmaArrayContainsFromImpliesContainsFromZero(_keys, _keys(i), i)
         LongMapLongV.seekEntryOrOpenDecoupled(_keys(i))(_keys, mask) == Found(i) &&
-        // arrayScanForKey(_keys, _keys(i), 0) == i &&
         arrayForallSeekEntryOrOpenFound(i + 1)
       } else arrayForallSeekEntryOrOpenFound(i + 1)
     }
@@ -626,8 +628,7 @@ object MutableLongMap {
     }.ensuring(res => res < mask + 1 && res >= 0)
 
     /** Given a key, seek for its index into the array
-      * returns a tuple with (index, error_code)
-      * the index is the index of the key if error_code == 0
+      * returns a corresponding instance of SeekEntryResult with the index if found
       *
       * @param k the key
       * @return the index of the given key into the array
@@ -701,7 +702,7 @@ object MutableLongMap {
           if (q == k) Found(index)
           else if (q == 0) MissingZero(index)
           else {
-            // e is the index of Long.MinValue i.e. the spot of a key that was removed
+            // index is the index of Long.MinValue i.e. the spot of a key that was removed
             // we need to search from there until we see a zero. Maybe the key we're
             // searching was added after the removed one and is therefore after in the array.
             // If we find a zero before finding the key, we return the index of the Long.MinValue to
@@ -5263,7 +5264,7 @@ object MutableLongMap {
           intermediateBeforeIndex,
           intermediateBeforeX
         )
-      ) //20
+      )
       require(
         seekKeyOrZeroOrLongMinValueTailRecDecoupled(x, index)(a(j), a, mask) == Intermediate(
           false,
@@ -6419,7 +6420,7 @@ object MutableLongMap {
               seekEntryOrOpenDecoupled(a(j))(a, mask) == seekEntryOrOpenDecoupled(
                 newArray.apply(j)
               )(newArray, mask)
-            ) //OK
+            ) 
           }
         }
         check(
