@@ -203,7 +203,6 @@ object MutableLongMap {
             )
             zeroValue = v
             extraKeys |= 1
-            check((map == oldMap + (key, v)))
             true
           } else {
             val extraKeysBefore = extraKeys
@@ -219,7 +218,6 @@ object MutableLongMap {
             )
             minValue = v
             extraKeys |= 2
-            check(map == oldMap + (key, v))
             true
           }
 
@@ -300,7 +298,6 @@ object MutableLongMap {
 
               _values(index) = v
 
-              check((map == oldMap + (key, v)))
               lemmaValidKeyInArrayIsInListMap(
                 _keys,
                 _values,
@@ -404,10 +401,7 @@ object MutableLongMap {
 
               true
             }
-            case _ => {
-              check(oldMap == map)
-              false
-            }
+            case _ => false
           }
         }
       }.ensuring(res => valid && (if (res) map == oldMap - key else map == oldMap))
@@ -456,7 +450,6 @@ object MutableLongMap {
             minValue,
             key
           )
-          check(_keys(index) == 0 || _keys(index) == Long.MinValue)
         }
         val _oldSize = _size
         val _oldNKeys = arrayCountValidKeysTailRec(_keys, 0, _keys.length)
@@ -1051,51 +1044,12 @@ object MutableLongMap {
           Long.MinValue,
           minValue
         )
-
-        check(
-          getCurrentListMap(
-            _keys,
-            _values,
-            mask,
-            extraKeys,
-            zeroValue,
-            minValue,
-            0
-          ) + (k, v) == getCurrentListMap(
-            _keys.updated(i, k),
-            _values.updated(i, v),
-            mask,
-            extraKeys,
-            zeroValue,
-            minValue,
-            0
-          )
-        )
       } else if ((extraKeys & 1) != 0 && (extraKeys & 2) == 0) {
         // it means there is a mapping for the key 0
         check(mapAfter == mapNoExtraKeysAfter + (0L, zeroValue))
         check(mapBefore == (mapNoExtraKeysBefore + (0L, zeroValue)))
         check(mapAfter == (mapNoExtraKeysBefore + (k, v)) + (0L, zeroValue))
         ListMapLongKeyLemmas.addCommutativeForDiffKeys(mapNoExtraKeysBefore, k, v, 0L, zeroValue)
-        check(
-          getCurrentListMap(
-            _keys,
-            _values,
-            mask,
-            extraKeys,
-            zeroValue,
-            minValue,
-            0
-          ) + (k, v) == getCurrentListMap(
-            _keys.updated(i, k),
-            _values.updated(i, v),
-            mask,
-            extraKeys,
-            zeroValue,
-            minValue,
-            0
-          )
-        )
       } else if ((extraKeys & 2) != 0 && (extraKeys & 1) == 0) {
         // it means there is a mapping for the key Long.MIN_VALUE
         check(mapAfter == mapNoExtraKeysAfter + (Long.MinValue, minValue))
@@ -1107,25 +1061,6 @@ object MutableLongMap {
           v,
           Long.MinValue,
           minValue
-        )
-        check(
-          getCurrentListMap(
-            _keys,
-            _values,
-            mask,
-            extraKeys,
-            zeroValue,
-            minValue,
-            0
-          ) + (k, v) == getCurrentListMap(
-            _keys.updated(i, k),
-            _values.updated(i, v),
-            mask,
-            extraKeys,
-            zeroValue,
-            minValue,
-            0
-          )
         )
       } else {
         check(mapAfter == mapNoExtraKeysAfter)
@@ -1445,51 +1380,12 @@ object MutableLongMap {
           Long.MinValue,
           minValue
         )
-
-        check(
-          getCurrentListMap(
-            _keys,
-            _values,
-            mask,
-            extraKeys,
-            zeroValue,
-            minValue,
-            0
-          ) + (k, v) == getCurrentListMap(
-            _keys,
-            _values.updated(i, v),
-            mask,
-            extraKeys,
-            zeroValue,
-            minValue,
-            0
-          )
-        )
       } else if ((extraKeys & 1) != 0 && (extraKeys & 2) == 0) {
         // it means there is a mapping for the key 0
         check(mapAfter == mapNoExtraKeysAfter + (0L, zeroValue))
         check(mapBefore == (mapNoExtraKeysBefore + (0L, zeroValue)))
         check(mapAfter == (mapNoExtraKeysBefore + (k, v)) + (0L, zeroValue))
         ListMapLongKeyLemmas.addCommutativeForDiffKeys(mapNoExtraKeysBefore, k, v, 0L, zeroValue)
-        check(
-          getCurrentListMap(
-            _keys,
-            _values,
-            mask,
-            extraKeys,
-            zeroValue,
-            minValue,
-            0
-          ) + (k, v) == getCurrentListMap(
-            _keys,
-            _values.updated(i, v),
-            mask,
-            extraKeys,
-            zeroValue,
-            minValue,
-            0
-          )
-        )
       } else if ((extraKeys & 2) != 0 && (extraKeys & 1) == 0) {
         // it means there is a mapping for the key Long.MIN_VALUE
         check(mapAfter == mapNoExtraKeysAfter + (Long.MinValue, minValue))
@@ -1502,46 +1398,8 @@ object MutableLongMap {
           Long.MinValue,
           minValue
         )
-        check(
-          getCurrentListMap(
-            _keys,
-            _values,
-            mask,
-            extraKeys,
-            zeroValue,
-            minValue,
-            0
-          ) + (k, v) == getCurrentListMap(
-            _keys,
-            _values.updated(i, v),
-            mask,
-            extraKeys,
-            zeroValue,
-            minValue,
-            0
-          )
-        )
       } else {
         check(mapAfter == mapNoExtraKeysAfter)
-        check(
-          getCurrentListMap(
-            _keys,
-            _values,
-            mask,
-            extraKeys,
-            zeroValue,
-            minValue,
-            0
-          ) + (k, v) == getCurrentListMap(
-            _keys,
-            _values.updated(i, v),
-            mask,
-            extraKeys,
-            zeroValue,
-            minValue,
-            0
-          )
-        )
       }
 
     }.ensuring(_ =>
@@ -1609,18 +1467,6 @@ object MutableLongMap {
             from + 1
           )
         }
-        check(
-          getCurrentListMapNoExtraKeys(
-            _keys,
-            _values.updated(i, v),
-            mask,
-            extraKeys,
-            zeroValue,
-            minValue,
-            from
-          ) ==
-            getCurrentListMapNoExtraKeys(_keys, _values, mask, extraKeys, zeroValue, minValue, from)
-        )
       } else {
         assert(from <= i)
         val listmapNoExtrasBefore =
@@ -1872,27 +1718,6 @@ object MutableLongMap {
             zeroValueAfter
           )
           check(mapAfter == (mapNoExtraKeysAfter + (0L, zeroValueBefore)) + (0L, zeroValueAfter))
-
-          check(
-            getCurrentListMap(
-              _keys,
-              _values,
-              mask,
-              extraKeysBefore,
-              zeroValueBefore,
-              minValue,
-              0
-            ) + (0, zeroValueAfter) == getCurrentListMap(
-              _keys,
-              _values,
-              mask,
-              extraKeysAfter,
-              zeroValueAfter,
-              minValue,
-              0
-            )
-          )
-
         }
 
       } else {
@@ -1914,27 +1739,6 @@ object MutableLongMap {
             Long.MinValue,
             minValue
           )
-
-          check(
-            getCurrentListMap(
-              _keys,
-              _values,
-              mask,
-              extraKeysBefore,
-              zeroValueBefore,
-              minValue,
-              0
-            ) + (0, zeroValueAfter) == getCurrentListMap(
-              _keys,
-              _values,
-              mask,
-              extraKeysAfter,
-              zeroValueAfter,
-              minValue,
-              0
-            )
-          )
-
         } else {
           val mapBefore =
             getCurrentListMap(_keys, _values, mask, extraKeysBefore, zeroValueBefore, minValue, 0)
@@ -1968,26 +1772,6 @@ object MutableLongMap {
           )
           check(
             mapAfter == (mapNoExtraKeysBefore + (0L, zeroValueAfter)) + (Long.MinValue, minValue)
-          )
-
-          check(
-            getCurrentListMap(
-              _keys,
-              _values,
-              mask,
-              extraKeysBefore,
-              zeroValueBefore,
-              minValue,
-              0
-            ) + (0, zeroValueAfter) == getCurrentListMap(
-              _keys,
-              _values,
-              mask,
-              extraKeysAfter,
-              zeroValueAfter,
-              minValue,
-              0
-            )
           )
         }
       }
@@ -2107,52 +1891,12 @@ object MutableLongMap {
             minValueBefore,
             minValueAfter
           )
-
-          check(
-            getCurrentListMap(
-              _keys,
-              _values,
-              mask,
-              extraKeysBefore,
-              zeroValue,
-              minValueBefore,
-              0
-            ) + (Long.MinValue, minValueAfter) == getCurrentListMap(
-              _keys,
-              _values,
-              mask,
-              extraKeysAfter,
-              zeroValue,
-              minValueAfter,
-              0
-            )
-          )
-
         }
 
       } else {
         //key 0 defined
         if ((extraKeysBefore & 2) == 0) {
-          check(
-            getCurrentListMap(
-              _keys,
-              _values,
-              mask,
-              extraKeysBefore,
-              zeroValue,
-              minValueBefore,
-              0
-            ) + (Long.MinValue, minValueAfter) == getCurrentListMap(
-              _keys,
-              _values,
-              mask,
-              extraKeysAfter,
-              zeroValue,
-              minValueAfter,
-              0
-            )
-          )
-
+            //trivial
         } else {
           val mapBefore =
             getCurrentListMap(_keys, _values, mask, extraKeysBefore, zeroValue, minValueBefore, 0)
@@ -2164,26 +1908,6 @@ object MutableLongMap {
             Long.MinValue,
             minValueBefore,
             minValueAfter
-          )
-
-          check(
-            getCurrentListMap(
-              _keys,
-              _values,
-              mask,
-              extraKeysBefore,
-              zeroValue,
-              minValueBefore,
-              0
-            ) + (Long.MinValue, minValueAfter) == getCurrentListMap(
-              _keys,
-              _values,
-              mask,
-              extraKeysAfter,
-              zeroValue,
-              minValueAfter,
-              0
-            )
           )
         }
       }
@@ -2290,26 +2014,6 @@ object MutableLongMap {
           minValue,
           k
         )
-
-        check(
-          getCurrentListMap(
-            _keys,
-            _values,
-            mask,
-            extraKeys,
-            zeroValue,
-            minValue,
-            0
-          ) - k == getCurrentListMap(
-            _keys.updated(i, Long.MinValue),
-            _values.updated(i, 0L),
-            mask,
-            extraKeys,
-            zeroValue,
-            minValue,
-            0
-          )
-        )
       } else if ((extraKeys & 1) != 0 && (extraKeys & 2) == 0) {
         // it means there is a mapping for the key 0
         check(mapAfter == mapNoExtraKeysAfter + (0L, zeroValue))
@@ -2317,26 +2021,6 @@ object MutableLongMap {
         check(mapAfter == (mapNoExtraKeysBefore - k) + (0L, zeroValue))
 
         ListMapLongKeyLemmas.addRemoveCommutativeForDiffKeys(mapNoExtraKeysBefore, 0L, zeroValue, k)
-
-        check(
-          getCurrentListMap(
-            _keys,
-            _values,
-            mask,
-            extraKeys,
-            zeroValue,
-            minValue,
-            0
-          ) - k == getCurrentListMap(
-            _keys.updated(i, Long.MinValue),
-            _values.updated(i, 0L),
-            mask,
-            extraKeys,
-            zeroValue,
-            minValue,
-            0
-          )
-        )
 
       } else if ((extraKeys & 2) != 0 && (extraKeys & 1) == 0) {
         // it means there is a mapping for the key Long.MIN_VALUE
@@ -2350,49 +2034,8 @@ object MutableLongMap {
           minValue,
           k
         )
-
-        check(
-          getCurrentListMap(
-            _keys,
-            _values,
-            mask,
-            extraKeys,
-            zeroValue,
-            minValue,
-            0
-          ) - k == getCurrentListMap(
-            _keys.updated(i, Long.MinValue),
-            _values.updated(i, 0L),
-            mask,
-            extraKeys,
-            zeroValue,
-            minValue,
-            0
-          )
-        )
-
       } else {
         check(mapAfter == mapNoExtraKeysAfter)
-
-        check(
-          getCurrentListMap(
-            _keys,
-            _values,
-            mask,
-            extraKeys,
-            zeroValue,
-            minValue,
-            0
-          ) - k == getCurrentListMap(
-            _keys.updated(i, Long.MinValue),
-            _values.updated(i, 0L),
-            mask,
-            extraKeys,
-            zeroValue,
-            minValue,
-            0
-          )
-        )
 
       }
 
@@ -2484,25 +2127,6 @@ object MutableLongMap {
             getCurrentListMap(_keys, _values, mask, extraKeysBefore, zeroValue, minValueBefore, 0),
             Long.MinValue
           )
-          check(
-            getCurrentListMap(
-              _keys,
-              _values,
-              mask,
-              extraKeysBefore,
-              zeroValue,
-              minValueBefore,
-              0
-            ) - Long.MinValue == getCurrentListMap(
-              _keys,
-              _values,
-              mask,
-              extraKeysAfter,
-              zeroValue,
-              minValueAfter,
-              0
-            )
-          )
         } else {
           val mapBefore =
             getCurrentListMap(_keys, _values, mask, extraKeysBefore, zeroValue, minValueBefore, 0)
@@ -2517,26 +2141,6 @@ object MutableLongMap {
             minValueBefore
           )
           check(mapBefore - Long.MinValue == mapAfter)
-
-          check(
-            getCurrentListMap(
-              _keys,
-              _values,
-              mask,
-              extraKeysBefore,
-              zeroValue,
-              minValueBefore,
-              0
-            ) - Long.MinValue == getCurrentListMap(
-              _keys,
-              _values,
-              mask,
-              extraKeysAfter,
-              zeroValue,
-              minValueAfter,
-              0
-            )
-          )
         }
 
       } else {
@@ -2546,26 +2150,6 @@ object MutableLongMap {
             getCurrentListMap(_keys, _values, mask, extraKeysBefore, zeroValue, minValueBefore, 0),
             Long.MinValue
           )
-          check(
-            getCurrentListMap(
-              _keys,
-              _values,
-              mask,
-              extraKeysBefore,
-              zeroValue,
-              minValueBefore,
-              0
-            ) - Long.MinValue == getCurrentListMap(
-              _keys,
-              _values,
-              mask,
-              extraKeysAfter,
-              zeroValue,
-              minValueAfter,
-              0
-            )
-          )
-
         } else {
           val mapBefore =
             getCurrentListMap(_keys, _values, mask, extraKeysBefore, zeroValue, minValueBefore, 0)
@@ -2673,25 +2257,6 @@ object MutableLongMap {
             getCurrentListMap(_keys, _values, mask, extraKeysBefore, zeroValueBefore, minValue, 0),
             0L
           )
-          check(
-            getCurrentListMap(
-              _keys,
-              _values,
-              mask,
-              extraKeysBefore,
-              zeroValueBefore,
-              minValue,
-              0
-            ) - 0L == getCurrentListMap(
-              _keys,
-              _values,
-              mask,
-              extraKeysAfter,
-              zeroValueAfter,
-              minValue,
-              0
-            )
-          )
         } else {
           val mapBefore =
             getCurrentListMap(_keys, _values, mask, extraKeysBefore, zeroValueBefore, minValue, 0)
@@ -2706,26 +2271,6 @@ object MutableLongMap {
             zeroValueBefore
           )
           check(mapBefore - 0L == mapAfter)
-          check(
-            getCurrentListMap(
-              _keys,
-              _values,
-              mask,
-              extraKeysBefore,
-              zeroValueBefore,
-              minValue,
-              0
-            ) - 0L == getCurrentListMap(
-              _keys,
-              _values,
-              mask,
-              extraKeysAfter,
-              zeroValueAfter,
-              minValue,
-              0
-            )
-          )
-
         }
 
       } else {
@@ -2735,26 +2280,6 @@ object MutableLongMap {
             getCurrentListMap(_keys, _values, mask, extraKeysBefore, zeroValueBefore, minValue, 0),
             0L
           )
-          check(
-            getCurrentListMap(
-              _keys,
-              _values,
-              mask,
-              extraKeysBefore,
-              zeroValueBefore,
-              minValue,
-              0
-            ) - 0L == getCurrentListMap(
-              _keys,
-              _values,
-              mask,
-              extraKeysAfter,
-              zeroValueAfter,
-              minValue,
-              0
-            )
-          )
-
         } else {
           val mapBefore =
             getCurrentListMap(_keys, _values, mask, extraKeysBefore, zeroValueBefore, minValue, 0)
@@ -2778,26 +2303,6 @@ object MutableLongMap {
             minValue
           )
           check(mapBefore - 0L == mapAfter)
-
-          check(
-            getCurrentListMap(
-              _keys,
-              _values,
-              mask,
-              extraKeysBefore,
-              zeroValueBefore,
-              minValue,
-              0
-            ) - 0L == getCurrentListMap(
-              _keys,
-              _values,
-              mask,
-              extraKeysAfter,
-              zeroValueAfter,
-              minValue,
-              0
-            )
-          )
         }
       }
 
@@ -3152,28 +2657,6 @@ object MutableLongMap {
               _values(from),
               k
             )
-
-            check(
-              getCurrentListMapNoExtraKeys(
-                _keys.updated(i, Long.MinValue),
-                _values.updated(i, 0L),
-                mask,
-                extraKeys,
-                zeroValue,
-                minValue,
-                from
-              ) ==
-                (getCurrentListMapNoExtraKeys(
-                  _keys,
-                  _values,
-                  mask,
-                  extraKeys,
-                  zeroValue,
-                  minValue,
-                  from
-                ) - k)
-            )
-
           }
         }
       }
@@ -4876,17 +4359,7 @@ object MutableLongMap {
 
       decreases(MAX_ITER - x)
       if (a(index) == a(j)) {
-        check(
-          seekKeyOrZeroReturnVacantTailRecDecoupled(x, index, vacantIndex)(
-            a.updated(i, Long.MinValue).apply(j),
-            a.updated(i, Long.MinValue),
-            mask
-          ) == seekKeyOrZeroReturnVacantTailRecDecoupled(x, index, vacantIndex)(
-            a(j),
-            a,
-            mask
-          )
-        )
+       //trivial
       } else {
         lemmaPutLongMinValuePreservesForallSeekEntryOrOpenKey1Helper(
           a,
@@ -4979,14 +4452,7 @@ object MutableLongMap {
         assert(index == resIndex)
         if (a(index) == a(j)) {
           assert(j == index)
-          check(
-            seekEntryOrOpenDecoupled(a(j))(a, mask) == seekEntryOrOpenDecoupled(
-              a.updated(i, Long.MinValue).apply(j)
-            )(
-              a.updated(i, Long.MinValue),
-              mask
-            )
-          )
+          //trivial
         } else {
           assert(a(index) == Long.MinValue)
           check(
@@ -5011,14 +4477,6 @@ object MutableLongMap {
             )(newArray(j), newArray, mask)
           )
           lemmaPutLongMinValuePreservesForallSeekEntryOrOpenKey1Helper(a, i, j, x, index, index)
-          check(
-            seekEntryOrOpenDecoupled(a(j))(a, mask) == seekEntryOrOpenDecoupled(
-              a.updated(i, Long.MinValue).apply(j)
-            )(
-              a.updated(i, Long.MinValue),
-              mask
-            )
-          )
         }
       } else {
         lemmaPutLongMinValuePreservesForallSeekEntryOrOpenKey1(
@@ -5192,13 +4650,7 @@ object MutableLongMap {
 
       if (a(index) == a(j)) {
         check(j == index)
-        check(
-          seekKeyOrZeroReturnVacantTailRecDecoupled(x, index, vacantAfter)(
-            a.updated(i, Long.MinValue).apply(j),
-            a.updated(i, Long.MinValue),
-            mask
-          ) == Found(j)
-        )
+        //trivial
       } else {
         lemmaPutLongMinValuePreservesSeekKeyOrZeroReturnVacant(
           a,
@@ -5442,11 +4894,6 @@ object MutableLongMap {
                 intermediateBeforeX,
                 intermediateBeforeIndex
               )(mask)
-              check(
-                seekEntryOrOpenDecoupled(a(j))(a, mask) == seekEntryOrOpenDecoupled(
-                  a.updated(i, Long.MinValue).apply(j)
-                )(a.updated(i, Long.MinValue), mask)
-              )
             } else {
               val intermediateAfter = seekKeyOrZeroOrLongMinValueTailRecDecoupled(
                 0,
@@ -5496,14 +4943,6 @@ object MutableLongMap {
                 case _ => check(false)
               }
             }
-            check(
-              seekEntryOrOpenDecoupled(a(j))(a, mask) == seekEntryOrOpenDecoupled(
-                a.updated(i, Long.MinValue).apply(j)
-              )(
-                a.updated(i, Long.MinValue),
-                mask
-              )
-            )
           }
         }
         case _ => check(false)
@@ -6292,7 +5731,7 @@ object MutableLongMap {
 
       if (index == resIndex) {
         assert(x == resX)
-        check(resIndex == i)
+        //trivial
       } else {
         assert(index != i)
         lemmaSeekKeyOrZeroOrLongMinValueTailRecDecoupledThenChangedAtReturnedIndex(
@@ -6305,7 +5744,6 @@ object MutableLongMap {
           resIndex,
           resX
         )
-        check(resIndex == i)
 
       }
     }.ensuring(_ => resIndex == i)
@@ -6364,11 +5802,6 @@ object MutableLongMap {
             lemmaArrayForallSeekEntryOrOpenFoundFromSmallerThenFromBigger(a, mask, 0, j)
             check(seekEntryOrOpenDecoupled(a(j))(a, mask) == Found(j))
             check(false)
-            check(
-              seekEntryOrOpenDecoupled(a(j))(a, mask) == seekEntryOrOpenDecoupled(
-                newArray.apply(j)
-              )(newArray, mask)
-            )
           }
           case Intermediate(undefinedBefore, indexBefore, xBefore) if (!undefinedBefore) => {
             check(!undefinedBefore)
@@ -6423,13 +5856,6 @@ object MutableLongMap {
             ) 
           }
         }
-        check(
-          seekEntryOrOpenDecoupled(a(j))(a, mask) == seekEntryOrOpenDecoupled(newArray.apply(j))(
-            newArray,
-            mask
-          )
-        )
-
       }
 
     }.ensuring(_ =>
@@ -6516,13 +5942,6 @@ object MutableLongMap {
         }
         check(index == resIndex)
         check(a(index) == 0)
-        check(
-          seekKeyOrZeroOrLongMinValueTailRecDecoupled(x, index)(
-            k,
-            a.updated(i, k),
-            mask
-          ) == seekKeyOrZeroOrLongMinValueTailRecDecoupled(x, index)(k, a, mask)
-        )
       } else {
         check(
           seekKeyOrZeroOrLongMinValueTailRecDecoupled(x, index)(
@@ -6556,13 +5975,6 @@ object MutableLongMap {
           (index + 2 * (x + 1) * x - 3) & mask,
           resIndex,
           resX
-        )
-        check(
-          seekKeyOrZeroOrLongMinValueTailRecDecoupled(x, index)(
-            k,
-            a.updated(i, k),
-            mask
-          ) == seekKeyOrZeroOrLongMinValueTailRecDecoupled(x, index)(k, a, mask)
         )
       }
 
@@ -6629,13 +6041,6 @@ object MutableLongMap {
             )
             check(false)
           } else {
-            check(
-              seekKeyOrZeroOrLongMinValueTailRecDecoupled(x, index)(k, a, mask) ==
-                seekKeyOrZeroOrLongMinValueTailRecDecoupled(
-                  x + 1,
-                  (index + 2 * (x + 1) * x - 3) & mask
-                )(k, a, mask)
-            )
             seekKeyOrZeroOrLongMinValueTailRecDecoupled(
               x + 1,
               (index + 2 * (x + 1) * x - 3) & mask
@@ -6648,38 +6053,7 @@ object MutableLongMap {
         }
         check(index == resIndex)
         check(a(index) == Long.MinValue)
-        check(
-          seekKeyOrZeroOrLongMinValueTailRecDecoupled(x, index)(
-            k,
-            a.updated(i, k),
-            mask
-          ) == seekKeyOrZeroOrLongMinValueTailRecDecoupled(x, index)(k, a, mask)
-        )
       } else {
-        check(
-          seekKeyOrZeroOrLongMinValueTailRecDecoupled(x, index)(
-            k,
-            a,
-            mask
-          ) == seekKeyOrZeroOrLongMinValueTailRecDecoupled(
-            x + 1,
-            (index + 2 * (x + 1) * x - 3) & mask
-          )(k, a, mask)
-        )
-        check(
-          seekKeyOrZeroOrLongMinValueTailRecDecoupled(x, index)(
-            k,
-            a.updated(i, k),
-            mask
-          ) == seekKeyOrZeroOrLongMinValueTailRecDecoupled(
-            x + 1,
-            (index + 2 * (x + 1) * x - 3) & mask
-          )(
-            k,
-            a.updated(i, k),
-            mask
-          )
-        )
         lemmaPutValidKeyAtRightPlaceThenFindsHelper2(
           a,
           i,
@@ -6688,13 +6062,6 @@ object MutableLongMap {
           (index + 2 * (x + 1) * x - 3) & mask,
           resIndex,
           resX
-        )
-        check(
-          seekKeyOrZeroOrLongMinValueTailRecDecoupled(x, index)(
-            k,
-            a.updated(i, k),
-            mask
-          ) == seekKeyOrZeroOrLongMinValueTailRecDecoupled(x, index)(k, a, mask)
         )
       }
 
@@ -6743,15 +6110,11 @@ object MutableLongMap {
             lemmaPutValidKeyAtRightPlaceThenFindsHelper1(a, i, k, 0, toIndex(k, mask), index, x)(
               mask
             )
-            check(intermediateAfter == Intermediate(false, index, x))
-            check(intermediateAfter == intermediateBefore)
             check(a.updated(i, k).apply(index) == k)
-            check(seekEntryOrOpenDecoupled(k)(a.updated(i, k), mask) == Found(i))
           }
           case _ => check(false)
         }
         check(intermediateAfter == intermediateBefore)
-        check(seekEntryOrOpenDecoupled(k)(a.updated(i, k), mask) == Found(i))
       } else {
         assert(seekEntryOrOpenDecoupled(k)(a, mask) == MissingVacant(i))
         intermediateBefore match {
@@ -6761,7 +6124,6 @@ object MutableLongMap {
             lemmaPutValidKeyAtRightPlaceThenFindsHelper2(a, i, k, 0, toIndex(k, mask), index, x)(
               mask
             )
-            check(seekEntryOrOpenDecoupled(k)(a.updated(i, k), mask) == Found(i))
 
           }
           case Intermediate(undefined, index, x) if (a(index) == k) => check(false)
@@ -6769,7 +6131,6 @@ object MutableLongMap {
           case _                                                    => check(false)
         }
 
-        check(seekEntryOrOpenDecoupled(k)(a.updated(i, k), mask) == Found(i))
       }
 
     }.ensuring(_ => seekEntryOrOpenDecoupled(k)(a.updated(i, k), mask) == Found(i))
@@ -6814,7 +6175,6 @@ object MutableLongMap {
         }
         lemmaPutValidKeyAtRightPlaceThenFinds(a, i, k)(mask)
         check(seekEntryOrOpenDecoupled(k)(newArray, mask) == Found(i))
-        check(arrayForallSeekEntryOrOpenFound(startIndex)(newArray, mask))
       } else {
         if (validKeyInArray(a(startIndex))) {
           lemmaPutNewValidKeyPreservesNoDuplicate(a, k, i, 0, Nil())
@@ -6823,23 +6183,12 @@ object MutableLongMap {
           if (startIndex < a.length - 1) {
             lemmaPutValidKeyPreservesForallSeekEntryOrOpenStartIndex(a, i, k, startIndex + 1)
           }
-          check(arrayForallSeekEntryOrOpenFound(startIndex)(newArray, mask))
 
         } else {
           if (startIndex < a.length - 1) {
             lemmaPutValidKeyPreservesForallSeekEntryOrOpenStartIndex(a, i, k, startIndex + 1)
           }
-          check(
-            arrayForallSeekEntryOrOpenFound(startIndex)(
-              newArray,
-              mask
-            ) == arrayForallSeekEntryOrOpenFound(
-              startIndex + 1
-            )(newArray, mask)
-          )
-          check(arrayForallSeekEntryOrOpenFound(startIndex)(newArray, mask))
         }
-        check(arrayForallSeekEntryOrOpenFound(startIndex)(newArray, mask))
       }
     }.ensuring(_ => arrayForallSeekEntryOrOpenFound(startIndex)(a.updated(i, k), mask))
 
@@ -7178,13 +6527,6 @@ object MutableLongMap {
         if (from == i) {
           val newArray = a.updated(i, k)
           check(arrayContainsKeyTailRec(newArray, k, from))
-          check(
-            arrayNoDuplicates(newArray, from, acc) == arrayNoDuplicates(
-              newArray,
-              from + 1,
-              k :: acc
-            )
-          )
 
           if (arrayContainsKeyTailRec(a, k, from + 1)) {
             lemmaArrayContainsFromImpliesContainsFromZero(a, k, from)
@@ -7199,7 +6541,6 @@ object MutableLongMap {
           lemmaLMinusHeadEqualsTail(k, acc)
           lemmaAddKeyNoContainsInAccStillNoDuplicate(a, k, from + 1, acc, k :: acc)
           lemmaPutNewValidKeyPreservesNoDuplicate(a, k, i, from + 1, k :: acc)
-          check(arrayNoDuplicates(a.updated(i, k), from, acc))
         } else {
           if (validKeyInArray(a(from))) {
             if (a(from) == k) {
@@ -7212,10 +6553,7 @@ object MutableLongMap {
           } else {
             lemmaPutNewValidKeyPreservesNoDuplicate(a, k, i, from + 1, acc)
           }
-          check(arrayNoDuplicates(a.updated(i, k), from, acc))
         }
-
-        check(arrayNoDuplicates(a.updated(i, k), from, acc))
       }
     }.ensuring(_ => arrayNoDuplicates(a.updated(i, k), from, acc))
 
@@ -7280,10 +6618,7 @@ object MutableLongMap {
         check(arrayNoDuplicates(a, from + 1, Cons(a(from), Nil())))
         lemmaArrayNoDuplicateFromNotContainsKeysInAcc(a, from + 1, a(from), Cons(a(from), Nil()))
         check(!arrayContainsKeyTailRec(a, a(from), from + 1))
-        check(a(from) != k)
-      } else {
-        check(a(from) != k)
-      }
+      } 
 
     }.ensuring(_ => a(from) != k)
 
@@ -7428,19 +6763,6 @@ object MutableLongMap {
       decreases(to - from)
       if (from + 1 < to) {
         lemmaCountingValidKeysAtTheEnd(a, from + 1, to)
-      } else {
-        // checks are needed
-        check(from + 1 == to)
-        check(
-          if (validKeyInArray(a(to - 1)))
-            arrayCountValidKeysTailRec(a, from, to - 1) + 1 == arrayCountValidKeysTailRec(
-              a,
-              from,
-              to
-            )
-          else
-            arrayCountValidKeysTailRec(a, from, to - 1) == arrayCountValidKeysTailRec(a, from, to)
-        )
       }
     }.ensuring(_ =>
       if (validKeyInArray(a(to - 1)))
@@ -7493,11 +6815,8 @@ object MutableLongMap {
       decreases(pivot - knownPivot)
       if (knownPivot != pivot) {
         lemmaKnownPivotPlusOneIsPivot(a, from, to, knownPivot)
-        check(isPivot(a, from, to, knownPivot + 1))
         lemmaSumOfNumOfKeysOfSubArraysIsEqualToWholeFromTo(a, from, to, pivot, knownPivot + 1)
-        check(isPivot(a, from, to, pivot))
       }
-      check(isPivot(a, from, to, pivot))
     }.ensuring(_ => isPivot(a, from, to, pivot))
 
     @pure
@@ -7514,9 +6833,7 @@ object MutableLongMap {
 
       if (pivot < to) {
         lemmaSumOfNumOfKeysOfSubArraysIsEqualToWholeFromTo(a, from, to, pivot, from)
-      } else {
-        check(to == pivot) //it is needed
-      }
+      } 
 
     }.ensuring(_ =>
       arrayCountValidKeysTailRec(a, from, pivot) + arrayCountValidKeysTailRec(
@@ -7592,22 +6909,6 @@ object MutableLongMap {
       if (from > 0) {
         lemmaSumOfNumOfKeysOfSubArraysIsEqualToWhole(a, from - 1, i + 1, from)
         lemmaSumOfNumOfKeysOfSubArraysIsEqualToWhole(a.updated(i, k), from - 1, i + 1, from)
-
-        check(
-          arrayCountValidKeysTailRec(a, from - 1, from) + arrayCountValidKeysTailRec(
-            a,
-            from,
-            i + 1
-          ) == arrayCountValidKeysTailRec(a, from - 1, i + 1)
-        ) //needed
-        check(
-          arrayCountValidKeysTailRec(a.updated(i, k), from - 1, from) + arrayCountValidKeysTailRec(
-            a.updated(i, k),
-            from,
-            i + 1
-          ) == arrayCountValidKeysTailRec(a.updated(i, k), from - 1, i + 1)
-        ) //needed
-
         lemmaRemoveValidKeyAndNumKeysFromImpliesFromZero(a, i, k, from - 1)
       }
 
@@ -7740,22 +7041,6 @@ object MutableLongMap {
       if (from > 0) {
         lemmaSumOfNumOfKeysOfSubArraysIsEqualToWhole(a, from - 1, i + 1, from)
         lemmaSumOfNumOfKeysOfSubArraysIsEqualToWhole(a.updated(i, k), from - 1, i + 1, from)
-
-        check(
-          arrayCountValidKeysTailRec(a, from - 1, from) + arrayCountValidKeysTailRec(
-            a,
-            from,
-            i + 1
-          ) == arrayCountValidKeysTailRec(a, from - 1, i + 1)
-        ) //needed
-        check(
-          arrayCountValidKeysTailRec(a.updated(i, k), from - 1, from) + arrayCountValidKeysTailRec(
-            a.updated(i, k),
-            from,
-            i + 1
-          ) == arrayCountValidKeysTailRec(a.updated(i, k), from - 1, i + 1)
-        ) //needed
-
         lemmaAddValidKeyAndNumKeysFromImpliesFromZero(a, i, k, from - 1)
       }
 
