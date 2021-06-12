@@ -201,9 +201,7 @@ object TupleListOps {
       case Cons(head, tl) if (head._1 > newKey)  => (newKey, newValue) :: Cons(head, tl)
       case Nil()                                 => (newKey, newValue) :: Nil()
     }
-  }.ensuring(res =>
-    invariantList(res) && containsKey(res, newKey) && res.contains((newKey, newValue))
-  )
+  }.ensuring(res => invariantList(res) && containsKey(res, newKey) && res.contains((newKey, newValue)))
 
   def removeStrictlySorted[B](l: List[(Long, B)], key: Long): List[(Long, B)] = {
     require(invariantList(l))
@@ -602,9 +600,7 @@ object ListMapLongKeyLemmas {
   }.ensuring(_ => lm + (a1, b1) + (a2, b2) == lm + (a2, b2) + (a1, b1))
 
   @opaque
-  def emptyContainsNothing[B](k: Long): Unit = {}.ensuring(_ =>
-    !ListMapLongKey.empty[B].contains(k)
-  )
+  def emptyContainsNothing[B](k: Long): Unit = {}.ensuring(_ => !ListMapLongKey.empty[B].contains(k))
 
   @opaque
   def addValidProp[B](lm: ListMapLongKey[B], p: ((Long, B)) => Boolean, a: Long, b: B): Unit = {
