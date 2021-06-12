@@ -124,9 +124,7 @@ object MutableLongMap {
           }
         }
       }
-    }.ensuring(res =>
-      valid && (res == map.contains(key))
-    )
+    }.ensuring(res => valid && (res == map.contains(key)))
 
     /** Retrieves the value associated with a key.
       *  If the key does not exist in the map, the `defaultEntry` for that key
@@ -178,8 +176,8 @@ object MutableLongMap {
             else res == defaultEntry(key))
     )
 
-    /** Updates the map to include a new key-value pair. 
-      * Returns a boolean indicating if the update was successful. 
+    /** Updates the map to include a new key-value pair.
+      * Returns a boolean indicating if the update was successful.
       * It is not successful if no free space is found (i.e., the map is full)
       *
       *  This is the fastest way to add an entry to a `LongMap`.
@@ -311,12 +309,10 @@ object MutableLongMap {
             }
           }
         }
-      }.ensuring(res =>
-        valid && (if (res) map.contains(key) && (map == oldMap + (key, v)) else map == oldMap)
-      )
+      }.ensuring(res => valid && (if (res) map.contains(key) && (map == oldMap + (key, v)) else map == oldMap))
     }
 
-    /** Removes the given key from the map. 
+    /** Removes the given key from the map.
       * Returns true if the key was present and is removed, false if the key was not present
       *
       * @param key
@@ -427,9 +423,7 @@ object MutableLongMap {
       val oldMap = getCurrentListMap(_keys, _values, mask, extraKeys, zeroValue, minValue, 0)
 
       {
-        if (
-          getCurrentListMap(_keys, _values, mask, extraKeys, zeroValue, minValue, 0).contains(key)
-        ) {
+        if (getCurrentListMap(_keys, _values, mask, extraKeys, zeroValue, minValue, 0).contains(key)) {
           lemmaInListMapThenSeekEntryOrOpenFindsIt(
             _keys,
             _values,
@@ -498,7 +492,7 @@ object MutableLongMap {
       }.ensuring(res => res && valid && map.contains(key) && (map == oldMap + (key, v)))
     }
 
-     @inlineOnce
+    @inlineOnce
     private def valid: Boolean = {
       //class invariant
       simpleValid &&
@@ -755,8 +749,7 @@ object MutableLongMap {
 
     @tailrec
     @pure
-    private def seekKeyOrZeroReturnVacantTailRecDecoupled(x: Int, ee: Int, vacantSpotIndex: Int)(
-        implicit
+    private def seekKeyOrZeroReturnVacantTailRecDecoupled(x: Int, ee: Int, vacantSpotIndex: Int)(implicit
         k: Long,
         _keys: Array[Long],
         mask: Int
@@ -1896,7 +1889,7 @@ object MutableLongMap {
       } else {
         //key 0 defined
         if ((extraKeysBefore & 2) == 0) {
-            //trivial
+          //trivial
         } else {
           val mapBefore =
             getCurrentListMap(_keys, _values, mask, extraKeysBefore, zeroValue, minValueBefore, 0)
@@ -2907,9 +2900,7 @@ object MutableLongMap {
 
       lemmaInListMapFromThenFromZero(_keys, _values, mask, extraKeys, zeroValue, minValue, i, i)
 
-    }.ensuring(_ =>
-      getCurrentListMap(_keys, _values, mask, extraKeys, zeroValue, minValue, 0).contains(_keys(i))
-    )
+    }.ensuring(_ => getCurrentListMap(_keys, _values, mask, extraKeys, zeroValue, minValue, 0).contains(_keys(i)))
 
     @opaque
     @pure
@@ -2963,9 +2954,7 @@ object MutableLongMap {
         )
       }
 
-    }.ensuring(_ =>
-      getCurrentListMap(_keys, _values, mask, extraKeys, zeroValue, minValue, 0).contains(k)
-    )
+    }.ensuring(_ => getCurrentListMap(_keys, _values, mask, extraKeys, zeroValue, minValue, 0).contains(k))
 
     @opaque
     @pure
@@ -3309,9 +3298,7 @@ object MutableLongMap {
 
       }
 
-    }.ensuring(_ =>
-      getCurrentListMap(_keys, _values, mask, extraKeys, zeroValue, minValue, from + 1).contains(k)
-    )
+    }.ensuring(_ => getCurrentListMap(_keys, _values, mask, extraKeys, zeroValue, minValue, from + 1).contains(k))
 
     @opaque
     @pure
@@ -3411,9 +3398,7 @@ object MutableLongMap {
         }
       }
 
-    }.ensuring(_ =>
-      getCurrentListMap(_keys, _values, mask, extraKeys, zeroValue, minValue, from + 1).contains(k)
-    )
+    }.ensuring(_ => getCurrentListMap(_keys, _values, mask, extraKeys, zeroValue, minValue, from + 1).contains(k))
 
     @opaque
     @pure
@@ -3523,9 +3508,7 @@ object MutableLongMap {
           k
         )
       }
-    }.ensuring(_ =>
-      getCurrentListMap(_keys, _values, mask, extraKeys, zeroValue, minValue, from + 1).contains(k)
-    )
+    }.ensuring(_ => getCurrentListMap(_keys, _values, mask, extraKeys, zeroValue, minValue, from + 1).contains(k))
 
     @opaque
     @pure
@@ -3594,9 +3577,7 @@ object MutableLongMap {
         }
       }
 
-    }.ensuring(_ =>
-      getCurrentListMap(_keys, _values, mask, extraKeys, zeroValue, minValue, from + 1).contains(k)
-    )
+    }.ensuring(_ => getCurrentListMap(_keys, _values, mask, extraKeys, zeroValue, minValue, from + 1).contains(k))
 
     @opaque
     @pure
@@ -3641,9 +3622,7 @@ object MutableLongMap {
         i
       )
 
-    }.ensuring(_ =>
-      getCurrentListMap(_keys, _values, mask, extraKeys, zeroValue, minValue, 0).contains(_keys(i))
-    )
+    }.ensuring(_ => getCurrentListMap(_keys, _values, mask, extraKeys, zeroValue, minValue, 0).contains(_keys(i)))
 
     @opaque
     @inlineOnce
@@ -4359,7 +4338,7 @@ object MutableLongMap {
 
       decreases(MAX_ITER - x)
       if (a(index) == a(j)) {
-       //trivial
+        //trivial
       } else {
         lemmaPutLongMinValuePreservesForallSeekEntryOrOpenKey1Helper(
           a,
@@ -4609,9 +4588,7 @@ object MutableLongMap {
         )
       }
 
-    }.ensuring(_ =>
-      !undefinedAfter && intermediateAfterIndex == i && intermediateAfterX < intermediateBeforeX
-    )
+    }.ensuring(_ => !undefinedAfter && intermediateAfterIndex == i && intermediateAfterX < intermediateBeforeX)
 
     @opaque
     @pure
@@ -4850,8 +4827,8 @@ object MutableLongMap {
 
     @opaque
     @pure
-    def lemmaPutLongMinValuePreservesForallSeekEntryOrOpenKey2(a: Array[Long], i: Int, j: Int)(
-        implicit mask: Int
+    def lemmaPutLongMinValuePreservesForallSeekEntryOrOpenKey2(a: Array[Long], i: Int, j: Int)(implicit
+        mask: Int
     ): Unit = {
       require(validMask(mask))
       require(a.length == mask + 1)
@@ -5163,8 +5140,8 @@ object MutableLongMap {
 
     @opaque
     @pure
-    def lemmaPutValidKeyPreservesForallSeekEntryOrOpenKey1(a: Array[Long], i: Int, k: Long, j: Int)(
-        implicit mask: Int
+    def lemmaPutValidKeyPreservesForallSeekEntryOrOpenKey1(a: Array[Long], i: Int, k: Long, j: Int)(implicit
+        mask: Int
     ): Unit = {
       require(validMask(mask))
       require(a.length == mask + 1)
@@ -5642,9 +5619,7 @@ object MutableLongMap {
         case _ => check(false)
       }
 
-    }.ensuring(_ =>
-      seekEntryOrOpenDecoupled(a.updated(i, k).apply(j))(a.updated(i, k), mask) == Found(j)
-    )
+    }.ensuring(_ => seekEntryOrOpenDecoupled(a.updated(i, k).apply(j))(a.updated(i, k), mask) == Found(j))
 
     @pure
     @opaque
@@ -5750,8 +5725,8 @@ object MutableLongMap {
 
     @opaque
     @pure
-    def lemmaPutValidKeyPreservesForallSeekEntryOrOpenKey2(a: Array[Long], i: Int, k: Long, j: Int)(
-        implicit mask: Int
+    def lemmaPutValidKeyPreservesForallSeekEntryOrOpenKey2(a: Array[Long], i: Int, k: Long, j: Int)(implicit
+        mask: Int
     ): Unit = {
       require(validMask(mask))
       require(a.length == mask + 1)
@@ -5853,7 +5828,7 @@ object MutableLongMap {
               seekEntryOrOpenDecoupled(a(j))(a, mask) == seekEntryOrOpenDecoupled(
                 newArray.apply(j)
               )(newArray, mask)
-            ) 
+            )
           }
         }
       }
@@ -6618,7 +6593,7 @@ object MutableLongMap {
         check(arrayNoDuplicates(a, from + 1, Cons(a(from), Nil())))
         lemmaArrayNoDuplicateFromNotContainsKeysInAcc(a, from + 1, a(from), Cons(a(from), Nil()))
         check(!arrayContainsKeyTailRec(a, a(from), from + 1))
-      } 
+      }
 
     }.ensuring(_ => a(from) != k)
 
@@ -6833,7 +6808,7 @@ object MutableLongMap {
 
       if (pivot < to) {
         lemmaSumOfNumOfKeysOfSubArraysIsEqualToWholeFromTo(a, from, to, pivot, from)
-      } 
+      }
 
     }.ensuring(_ =>
       arrayCountValidKeysTailRec(a, from, pivot) + arrayCountValidKeysTailRec(
@@ -6957,9 +6932,7 @@ object MutableLongMap {
 
       lemmaSumOfNumOfKeysOfSubArraysIsEqualToWhole(a, from, to + 1, to)
 
-    }.ensuring(_ =>
-      arrayCountValidKeysTailRec(a, from, to + 1) == arrayCountValidKeysTailRec(a, from, to) + 1
-    )
+    }.ensuring(_ => arrayCountValidKeysTailRec(a, from, to + 1) == arrayCountValidKeysTailRec(a, from, to) + 1)
 
     @pure
     @opaque
@@ -6972,9 +6945,7 @@ object MutableLongMap {
 
       lemmaSumOfNumOfKeysOfSubArraysIsEqualToWhole(a, from, to + 1, to)
 
-    }.ensuring(_ =>
-      arrayCountValidKeysTailRec(a, from, to + 1) == arrayCountValidKeysTailRec(a, from, to)
-    )
+    }.ensuring(_ => arrayCountValidKeysTailRec(a, from, to + 1) == arrayCountValidKeysTailRec(a, from, to))
 
     @pure
     @opaque
