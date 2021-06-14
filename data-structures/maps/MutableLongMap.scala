@@ -15,6 +15,10 @@ object MutableLongMap {
   private final val MAX_ITER = 2048 // arbitrary
 
   /** A Map with keys of type Long and values of type Long
+    * mask must be a valid mask, i.e., 2^n - 1. The smallest possible mask is 0 and the biggest is 0x3fffffff.
+    * _keys and _values must be initialized to an array of 0's of length mask + 1 (i.e., Array.fill(mask + 1)(0))
+    * extraKeys must be initialized to 0
+    * _size must be initialized to 0
     *
     * @param mask
     * @param extraKeys
