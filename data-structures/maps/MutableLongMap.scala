@@ -10,13 +10,13 @@ import stainless.lang.StaticChecks._
 
 object MutableLongMap {
 
-  private final val IndexMask: Int = 0x3fffffff
+  private final val MAX_MASK: Int = 0x3fffffff
 
   private final val MAX_ITER = 2048 // arbitrary
 
   /** A Map with keys of type Long and values of type Long
-    * mask must be a valid mask, i.e., 2^n - 1. The smallest possible mask is 0 and the biggest is 0x3fffffff.
-    * _keys and _values must be initialized to an array of 0's of length mask + 1 (i.e., Array.fill(mask + 1)(0))
+    * mask must be a valid mask, i.e., 2^n - 1. The smallest possible mask is 0 and the biggest is 0x3fffffff
+    * _keys and _values must be initialized to an array of length mask + 1, containing all 0 values, i.e., Array.fill(mask + 1)(0)
     * extraKeys must be initialized to 0
     * _size must be initialized to 0
     *
@@ -30,13 +30,13 @@ object MutableLongMap {
     */
   @mutable
   final case class LongMapLongV(
-      private var mask: Int = IndexMask,
+      private var mask: Int = MAX_MASK,
       private var extraKeys: Int = 0,
       private var zeroValue: Long = 0,
       private var minValue: Long = 0,
       private var _size: Int = 0,
-      private var _keys: Array[Long] = Array.fill(IndexMask + 1)(0),
-      private var _values: Array[Long] = Array.fill(IndexMask + 1)(0),
+      private var _keys: Array[Long] = Array.fill(MAX_MASK + 1)(0),
+      private var _values: Array[Long] = Array.fill(MAX_MASK + 1)(0),
       val defaultEntry: Long => Long = (x => 0)
   ) {
     import LongMapLongV.validKeyInArray
@@ -44,7 +44,6 @@ object MutableLongMap {
     import LongMapLongV.arrayContainsKeyTailRec
     import LongMapLongV.arrayScanForKey
     import LongMapLongV.arrayNoDuplicates
-    import LongMapLongV.arraysEqualsFromTo
     import LongMapLongV.seekEntryOrOpenDecoupled
     import LongMapLongV.toIndex
     import LongMapLongV.lemmaArrayContainsFromImpliesContainsFromZero
@@ -322,7 +321,7 @@ object MutableLongMap {
       * @param key
       * @return
       */
-    def substractOne(key: Long): Boolean = {
+    def remove(key: Long): Boolean = {
       require(valid)
       val oldMap = getCurrentListMap(_keys, _values, mask, extraKeys, zeroValue, minValue, 0)
 
@@ -510,7 +509,6 @@ object MutableLongMap {
       validMask(mask) &&
       _values.length == mask + 1 &&
       _keys.length == _values.length &&
-      mask >= 0 &&
       _size >= 0 &&
       _size <= mask + 1 &&
       size >= _size &&
@@ -569,7 +567,7 @@ object MutableLongMap {
         mask == 0x07ffffff ||
         mask == 0x0fffffff ||
         mask == 0x1fffffff ||
-        mask == 0x3fffffff) && mask <= IndexMask //MAX is IndexMask
+        mask == 0x3fffffff) && mask <= MAX_MASK //MAX is MAX_MASK
 
     }
 
@@ -611,7 +609,7 @@ object MutableLongMap {
     @pure
     private def toIndex(k: Long, mask: Int): Int = {
       require(mask >= 0)
-      require(mask <= IndexMask)
+      require(mask <= MAX_MASK)
       // Part of the MurmurHash3 32 bit finalizer
       val h = ((k ^ (k >>> 32)) & 0xffffffffL).toInt
       val x = (h ^ (h >>> 16)) * 0x85ebca6b
