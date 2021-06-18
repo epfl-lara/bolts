@@ -40,8 +40,8 @@ object MutableLongMap {
       val defaultEntry: Long => Long = (x => 0)
   ) {
     import LongMapLongV.validKeyInArray
-    import LongMapLongV.arrayCountValidKeysTailRec
-    import LongMapLongV.arrayContainsKeyTailRec
+    import LongMapLongV.arrayCountValidKeys
+    import LongMapLongV.arrayContainsKey
     import LongMapLongV.arrayScanForKey
     import LongMapLongV.arrayNoDuplicates
     import LongMapLongV.seekEntryOrOpen
@@ -449,9 +449,9 @@ object MutableLongMap {
           )
         }
         val _oldSize = _size
-        val _oldNKeys = arrayCountValidKeysTailRec(_keys, 0, _keys.length)
+        val _oldNKeys = arrayCountValidKeys(_keys, 0, _keys.length)
         assert(inRange(index, mask))
-        if (arrayContainsKeyTailRec(_keys, key, 0)) {
+        if (arrayContainsKey(_keys, key, 0)) {
           lemmaArrayContainsKeyThenInListMap(
             _keys,
             _values,
@@ -499,7 +499,7 @@ object MutableLongMap {
     private def valid: Boolean = {
       //class invariant
       simpleValid &&
-      arrayCountValidKeysTailRec(_keys, 0, _keys.length) == _size &&
+      arrayCountValidKeys(_keys, 0, _keys.length) == _size &&
       arrayForallSeekEntryOrOpenFound(0)(_keys, mask) &&
       arrayNoDuplicates(_keys, 0)
     }
@@ -593,7 +593,7 @@ object MutableLongMap {
 
       if (i >= _keys.length) true
       else if (validKeyInArray(_keys(i))) {
-        assert(arrayContainsKeyTailRec(_keys, _keys(i), i))
+        assert(arrayContainsKey(_keys, _keys(i), i))
         lemmaArrayContainsFromImpliesContainsFromZero(_keys, _keys(i), i)
         LongMapLongV.seekEntryOrOpen(_keys(i))(_keys, mask) == Found(i) &&
         arrayForallSeekEntryOrOpenFound(i + 1)
@@ -673,9 +673,7 @@ object MutableLongMap {
       * @return
       */
     @pure
-    def seekEntryOrOpen(
-        k: Long
-    )(implicit _keys: Array[Long], mask: Int): SeekEntryResult = {
+    def seekEntryOrOpen(k: Long)(implicit _keys: Array[Long], mask: Int): SeekEntryResult = {
       require(validMask(mask))
       require(mask >= 0)
       require(_keys.length == mask + 1)
@@ -982,7 +980,7 @@ object MutableLongMap {
       require(i >= 0 && i < _keys.length)
       require(validKeyInArray(k))
       require(_keys(i) == Long.MinValue || _keys(i) == 0)
-      require(!arrayContainsKeyTailRec(_keys, k, 0))
+      require(!arrayContainsKey(_keys, k, 0))
       require(arrayForallSeekEntryOrOpenFound(0)(_keys.updated(i, k), mask))
       require(arrayNoDuplicates(_keys.updated(i, k), 0))
 
@@ -1127,7 +1125,7 @@ object MutableLongMap {
       require(i >= 0 && i < _keys.length)
       require(validKeyInArray(k))
       require(_keys(i) == Long.MinValue || _keys(i) == 0)
-      require(!arrayContainsKeyTailRec(_keys, k, 0))
+      require(!arrayContainsKey(_keys, k, 0))
       require(arrayForallSeekEntryOrOpenFound(0)(_keys.updated(i, k), mask))
       require(arrayNoDuplicates(_keys.updated(i, k), 0))
 
@@ -1955,7 +1953,7 @@ object MutableLongMap {
       require(arrayNoDuplicates(_keys.updated(i, Long.MinValue), 0))
 
       lemmaArrayContainsFromImpliesContainsFromZero(_keys, k, i)
-      assert(arrayContainsKeyTailRec(_keys, k, 0))
+      assert(arrayContainsKey(_keys, k, 0))
 
       val mapNoExtraKeysBefore =
         getCurrentListMapNoExtraKeys(_keys, _values, mask, extraKeys, zeroValue, minValue, 0)
@@ -2348,7 +2346,7 @@ object MutableLongMap {
 
       lemmaArrayContainsFromImpliesContainsFromZero(_keys, k, i)
 
-      check(arrayContainsKeyTailRec(_keys, k, 0))
+      check(arrayContainsKey(_keys, k, 0))
 
       if (from > i) {
         if (from + 1 <= _keys.length) {
@@ -2473,7 +2471,7 @@ object MutableLongMap {
               k,
               from + 1
             )
-            check(arrayContainsKeyTailRec(_keys, k, from + 1))
+            check(arrayContainsKey(_keys, k, from + 1))
             lemmaNoDuplicateFromThenFromBigger(_keys, 0, from)
             lemmaArrayNoDuplicateThenKeysContainedNotEqual(_keys, k, from, Nil())
             check(false)
@@ -2588,7 +2586,7 @@ object MutableLongMap {
             )
 
             if (_keys(from) == k) {
-              check(arrayContainsKeyTailRec(_keys, k, i))
+              check(arrayContainsKey(_keys, k, i))
               lemmaArrayContainsFromImpliesContainsFromSmaller(_keys, k, i, from + 1)
               lemmaNoDuplicateFromThenFromBigger(_keys, 0, from)
               lemmaArrayNoDuplicateThenKeysContainedNotEqual(_keys, k, from, Nil())
@@ -2824,7 +2822,7 @@ object MutableLongMap {
           k
         ) == minValue
       else
-        arrayContainsKeyTailRec(_keys, k, 0) && getCurrentListMap(
+        arrayContainsKey(_keys, k, 0) && getCurrentListMap(
           _keys,
           _values,
           mask,
@@ -2871,7 +2869,7 @@ object MutableLongMap {
       )
 
     }.ensuring(_ =>
-      if (k != 0 && k != Long.MinValue) arrayContainsKeyTailRec(_keys, k, 0)
+      if (k != 0 && k != Long.MinValue) arrayContainsKey(_keys, k, 0)
       else if (k == 0) (extraKeys & 1) != 0
       else (extraKeys & 2) != 0
     )
@@ -2928,7 +2926,7 @@ object MutableLongMap {
 
       require(validKeyInArray(k))
       require(from >= 0 && from < _keys.length)
-      require(arrayContainsKeyTailRec(_keys, k, from))
+      require(arrayContainsKey(_keys, k, from))
       decreases(_keys.length - from)
 
       if (_keys(from) == k) {
@@ -3071,10 +3069,10 @@ object MutableLongMap {
       require(arrayNoDuplicates(_keys, 0))
 
       require(from >= 0 && from < _keys.length)
-      require(arrayContainsKeyTailRec(_keys, k, from))
+      require(arrayContainsKey(_keys, k, from))
       require(_keys(from) != k)
 
-    }.ensuring(_ => arrayContainsKeyTailRec(_keys, k, from + 1))
+    }.ensuring(_ => arrayContainsKey(_keys, k, from + 1))
 
     @opaque
     @pure
@@ -4009,7 +4007,7 @@ object MutableLongMap {
         }
       }
     }.ensuring(_ =>
-      (if (k != 0 && k != Long.MinValue) arrayContainsKeyTailRec(_keys, k, from)
+      (if (k != 0 && k != Long.MinValue) arrayContainsKey(_keys, k, from)
        else if (k == 0) (extraKeys & 1) != 0
        else (extraKeys & 2) != 0)
     )
@@ -4045,7 +4043,7 @@ object MutableLongMap {
       require(validKeyInArray(k))
 
       lemmaKeyInListMapIsInArray(_keys, _values, mask, extraKeys, zeroValue, minValue, k)
-      assert(arrayContainsKeyTailRec(_keys, k, 0))
+      assert(arrayContainsKey(_keys, k, 0))
       assert(arrayForallSeekEntryOrOpenFound(0)(_keys, mask))
       val i = arrayScanForKey(_keys, k, 0)
       lemmaArrayForallSeekEntryOrOpenFoundFromSmallerThenFromBigger(_keys, mask, 0, i)
@@ -4082,7 +4080,7 @@ object MutableLongMap {
         !getCurrentListMap(_keys, _values, mask, extraKeys, zeroValue, minValue, 0).contains(k)
       )
       if (validKeyInArray(k)) {
-        if (arrayContainsKeyTailRec(_keys, k, 0)) {
+        if (arrayContainsKey(_keys, k, 0)) {
           val i = arrayScanForKey(_keys, k, 0)
           lemmaValidKeyInArrayIsInListMap(_keys, _values, mask, extraKeys, zeroValue, minValue, i)
           lemmaSeekEntryOrOpenFindsThenSeekEntryFinds(k, i, _keys, mask)
@@ -4180,7 +4178,7 @@ object MutableLongMap {
       seekEntryRes match {
         case Found(index) => {
           assert(_keys(index) == k)
-          assert(arrayContainsKeyTailRec(_keys, k, index))
+          assert(arrayContainsKey(_keys, k, index))
           lemmaArrayContainsFromImpliesContainsFromZero(_keys, k, index)
           lemmaValidKeyInArrayIsInListMap(
             _keys,
@@ -4194,7 +4192,7 @@ object MutableLongMap {
           check(false)
         }
         case MissingZero(_) => {
-          if (arrayContainsKeyTailRec(_keys, k, 0)) {
+          if (arrayContainsKey(_keys, k, 0)) {
             val i = arrayScanForKey(_keys, k, 0)
             lemmaArrayContainsKeyThenInListMap(
               _keys,
@@ -4208,10 +4206,10 @@ object MutableLongMap {
             )
             check(false)
           }
-          check(!arrayContainsKeyTailRec(_keys, k, 0))
+          check(!arrayContainsKey(_keys, k, 0))
         }
         case MissingVacant(_) => {
-          if (arrayContainsKeyTailRec(_keys, k, 0)) {
+          if (arrayContainsKey(_keys, k, 0)) {
             val i = arrayScanForKey(_keys, k, 0)
             lemmaArrayContainsKeyThenInListMap(
               _keys,
@@ -4225,7 +4223,7 @@ object MutableLongMap {
             )
             check(false)
           }
-          check(!arrayContainsKeyTailRec(_keys, k, 0))
+          check(!arrayContainsKey(_keys, k, 0))
         }
         case Undefined() => ()
       }
@@ -4234,9 +4232,9 @@ object MutableLongMap {
       val seekEntryRes = seekEntryOrOpen(k)(_keys, mask)
       seekEntryRes match {
         case MissingZero(index) =>
-          inRange(index, mask) && _keys(index) == 0 && !arrayContainsKeyTailRec(_keys, k, 0)
+          inRange(index, mask) && _keys(index) == 0 && !arrayContainsKey(_keys, k, 0)
         case MissingVacant(index) =>
-          inRange(index, mask) && _keys(index) == Long.MinValue && !arrayContainsKeyTailRec(
+          inRange(index, mask) && _keys(index) == Long.MinValue && !arrayContainsKey(
             _keys,
             k,
             0
@@ -5008,7 +5006,7 @@ object MutableLongMap {
       require(i != j)
       require(validKeyInArray(a(j)))
       require(validKeyInArray(k))
-      require(!arrayContainsKeyTailRec(a, k, 0))
+      require(!arrayContainsKey(a, k, 0))
       require(
         seekEntryOrOpen(k)(a, mask) == MissingZero(i) || seekEntryOrOpen(k)(
           a,
@@ -5090,10 +5088,10 @@ object MutableLongMap {
           assert(q == a.updated(i, k).apply(j))
           assert(q == a.updated(i, k).apply(index))
           if (j < index) {
-            check(arrayContainsKeyTailRec(newArray, q, j))
-            check(arrayContainsKeyTailRec(newArray, q, index))
+            check(arrayContainsKey(newArray, q, j))
+            check(arrayContainsKey(newArray, q, index))
             lemmaArrayContainsFromImpliesContainsFromSmaller(newArray, q, index, j + 1)
-            check(arrayContainsKeyTailRec(newArray, q, j + 1))
+            check(arrayContainsKey(newArray, q, j + 1))
             check(arrayNoDuplicates(a, 0))
             lemmaPutNewValidKeyPreservesNoDuplicate(a, k, i, 0, List())
             check(arrayNoDuplicates(newArray, 0))
@@ -5103,10 +5101,10 @@ object MutableLongMap {
             check(false)
           }
           if (index < j) {
-            check(arrayContainsKeyTailRec(newArray, q, j))
-            check(arrayContainsKeyTailRec(newArray, q, index))
+            check(arrayContainsKey(newArray, q, j))
+            check(arrayContainsKey(newArray, q, index))
             lemmaArrayContainsFromImpliesContainsFromSmaller(newArray, q, j, index + 1)
-            check(arrayContainsKeyTailRec(newArray, q, index + 1))
+            check(arrayContainsKey(newArray, q, index + 1))
             check(arrayNoDuplicates(a, 0))
             lemmaPutNewValidKeyPreservesNoDuplicate(a, k, i, 0, List())
             check(arrayNoDuplicates(newArray, 0))
@@ -5154,7 +5152,7 @@ object MutableLongMap {
       require(i != j)
       require(validKeyInArray(a(j)))
       require(validKeyInArray(k))
-      require(!arrayContainsKeyTailRec(a, k, 0))
+      require(!arrayContainsKey(a, k, 0))
       require(
         seekEntryOrOpen(k)(a, mask) == MissingZero(i) || seekEntryOrOpen(k)(
           a,
@@ -5256,7 +5254,7 @@ object MutableLongMap {
       require(i != j)
       require(validKeyInArray(a(j)))
       require(validKeyInArray(k))
-      require(!arrayContainsKeyTailRec(a, k, 0))
+      require(!arrayContainsKey(a, k, 0))
       require(
         seekEntryOrOpen(k)(a, mask) == MissingZero(i) || seekEntryOrOpen(k)(
           a,
@@ -5337,7 +5335,7 @@ object MutableLongMap {
       require(i != j)
       require(validKeyInArray(a(j)))
       require(validKeyInArray(k))
-      require(!arrayContainsKeyTailRec(a, k, 0))
+      require(!arrayContainsKey(a, k, 0))
       require(
         seekEntryOrOpen(k)(a, mask) == MissingZero(i) || seekEntryOrOpen(k)(
           a,
@@ -5447,7 +5445,7 @@ object MutableLongMap {
       require(i != j)
       require(validKeyInArray(a(j)))
       require(validKeyInArray(k))
-      require(!arrayContainsKeyTailRec(a, k, 0))
+      require(!arrayContainsKey(a, k, 0))
       require(
         seekEntryOrOpen(k)(a, mask) == MissingZero(i) || seekEntryOrOpen(k)(
           a,
@@ -5644,7 +5642,7 @@ object MutableLongMap {
       require(i != j)
       require(validKeyInArray(a(j)))
       require(validKeyInArray(k))
-      require(!arrayContainsKeyTailRec(a, k, 0))
+      require(!arrayContainsKey(a, k, 0))
       require(
         seekEntryOrOpen(k)(a, mask) == MissingVacant(i) || seekEntryOrOpen(k)(
           a,
@@ -5739,7 +5737,7 @@ object MutableLongMap {
       require(i != j)
       require(validKeyInArray(a(j)))
       require(validKeyInArray(k))
-      require(!arrayContainsKeyTailRec(a, k, 0))
+      require(!arrayContainsKey(a, k, 0))
       require(
         seekEntryOrOpen(k)(a, mask) == MissingZero(i) || seekEntryOrOpen(k)(
           a,
@@ -5858,7 +5856,7 @@ object MutableLongMap {
       require(i >= 0)
       require(i < a.length)
       require(validKeyInArray(k))
-      require(!arrayContainsKeyTailRec(a, k, 0))
+      require(!arrayContainsKey(a, k, 0))
       require(seekEntryOrOpen(k)(a, mask) == MissingZero(i))
       require(arrayForallSeekEntryOrOpenFound(0)(a, mask))
       require(
@@ -5977,7 +5975,7 @@ object MutableLongMap {
       require(i >= 0)
       require(i < a.length)
       require(validKeyInArray(k))
-      require(!arrayContainsKeyTailRec(a, k, 0))
+      require(!arrayContainsKey(a, k, 0))
       require(seekEntryOrOpen(k)(a, mask) == MissingVacant(i))
       require(arrayForallSeekEntryOrOpenFound(0)(a, mask))
       require(
@@ -6060,7 +6058,7 @@ object MutableLongMap {
       require(i >= 0)
       require(i < a.length)
       require(validKeyInArray(k))
-      require(!arrayContainsKeyTailRec(a, k, 0))
+      require(!arrayContainsKey(a, k, 0))
       require(
         seekEntryOrOpen(k)(a, mask) == MissingZero(i) || seekEntryOrOpen(k)(
           a,
@@ -6130,7 +6128,7 @@ object MutableLongMap {
       require(startIndex < a.length)
       require(validKeyInArray(k))
       require(arrayNoDuplicates(a, 0))
-      require(!arrayContainsKeyTailRec(a, k, 0))
+      require(!arrayContainsKey(a, k, 0))
       require(
         seekEntryOrOpen(k)(a, mask) == MissingZero(i) || seekEntryOrOpen(k)(
           a,
@@ -6179,7 +6177,7 @@ object MutableLongMap {
       require(i >= 0)
       require(i < a.length)
       require(validKeyInArray(k))
-      require(!arrayContainsKeyTailRec(a, k, 0))
+      require(!arrayContainsKey(a, k, 0))
       require(
         seekEntryOrOpen(k)(a, mask) == MissingZero(i) || seekEntryOrOpen(k)(
           a,
@@ -6250,7 +6248,7 @@ object MutableLongMap {
 
     @tailrec
     @pure
-    def arrayCountValidKeysTailRec(
+    def arrayCountValidKeys(
         a: Array[Long],
         from: Int,
         to: Int
@@ -6263,16 +6261,16 @@ object MutableLongMap {
         0
       } else {
         if (validKeyInArray(a(from))) {
-          1 + arrayCountValidKeysTailRec(a, from + 1, to)
+          1 + arrayCountValidKeys(a, from + 1, to)
         } else {
-          arrayCountValidKeysTailRec(a, from + 1, to)
+          arrayCountValidKeys(a, from + 1, to)
         }
       }
     }.ensuring(res => res >= 0 && res <= a.length - from)
 
     @tailrec
     @pure
-    def arrayContainsKeyTailRec(a: Array[Long], k: Long, from: Int): Boolean = {
+    def arrayContainsKey(a: Array[Long], k: Long, from: Int): Boolean = {
       require(from >= 0)
       require(from < a.length)
       require(a.length < Integer.MAX_VALUE)
@@ -6281,7 +6279,7 @@ object MutableLongMap {
       if (a(from) == k) {
         true
       } else if (from + 1 < a.length) {
-        arrayContainsKeyTailRec(a, k, from + 1)
+        arrayContainsKey(a, k, from + 1)
       } else {
         false
       }
@@ -6291,7 +6289,7 @@ object MutableLongMap {
     @pure
     def arrayScanForKey(a: Array[Long], k: Long, from: Int): Int = {
       require(from >= 0 && from < a.length && a.length < Integer.MAX_VALUE)
-      require(arrayContainsKeyTailRec(a, k, from))
+      require(arrayContainsKey(a, k, from))
       decreases(a.length - from)
 
       if (a(from) == k) from
@@ -6351,18 +6349,18 @@ object MutableLongMap {
       require(validKeyInArray(k))
       require(a(i) == k)
 
-      if (arrayContainsKeyTailRec(a.updated(i, Long.MinValue), k, 0)) {
+      if (arrayContainsKey(a.updated(i, Long.MinValue), k, 0)) {
         val j = arrayScanForKey(a.updated(i, Long.MinValue), k, 0)
         assert(j != i)
         check(a.updated(i, Long.MinValue).apply(j) == k)
         if (j > i) {
-          check(arrayContainsKeyTailRec(a, k, j))
+          check(arrayContainsKey(a, k, j))
           lemmaNoDuplicateFromThenFromBigger(a, 0, i)
           lemmaArrayContainsFromImpliesContainsFromSmaller(a, k, j, i + 1)
           lemmaArrayNoDuplicateThenKeysContainedNotEqual(a, k, i, Nil())
           check(false)
         } else if (i > j) {
-          check(arrayContainsKeyTailRec(a, k, i))
+          check(arrayContainsKey(a, k, i))
           lemmaNoDuplicateFromThenFromBigger(a, 0, j)
           lemmaArrayContainsFromImpliesContainsFromSmaller(a, k, i, j + 1)
           lemmaArrayNoDuplicateThenKeysContainedNotEqual(a, k, j, Nil())
@@ -6371,7 +6369,7 @@ object MutableLongMap {
 
       }
 
-    }.ensuring(_ => !arrayContainsKeyTailRec(a.updated(i, Long.MinValue), k, 0))
+    }.ensuring(_ => !arrayContainsKey(a.updated(i, Long.MinValue), k, 0))
 
     @pure
     @opaque
@@ -6383,13 +6381,13 @@ object MutableLongMap {
       require(from >= 0)
       require(from < a.length)
       require(a.length < Integer.MAX_VALUE)
-      require(arrayContainsKeyTailRec(a, k, from))
+      require(arrayContainsKey(a, k, from))
 
       decreases(from)
       if (from > 0) {
         lemmaArrayContainsFromImpliesContainsFromZero(a, k, from - 1)
       }
-    }.ensuring(_ => arrayContainsKeyTailRec(a, k, 0))
+    }.ensuring(_ => arrayContainsKey(a, k, 0))
 
     @pure
     @opaque
@@ -6404,13 +6402,13 @@ object MutableLongMap {
       require(newFrom >= 0)
       require(newFrom <= from)
       require(a.length < Integer.MAX_VALUE)
-      require(arrayContainsKeyTailRec(a, k, from))
+      require(arrayContainsKey(a, k, from))
 
       decreases(from)
       if (from > newFrom) {
         lemmaArrayContainsFromImpliesContainsFromSmaller(a, k, from - 1, newFrom)
       }
-    }.ensuring(_ => arrayContainsKeyTailRec(a, k, newFrom))
+    }.ensuring(_ => arrayContainsKey(a, k, newFrom))
 
     @opaque
     @pure
@@ -6427,7 +6425,7 @@ object MutableLongMap {
       require(ListOps.noDuplicate(acc))
       require(ListOps.noDuplicate(newAcc))
       require(!acc.contains(0) && !acc.contains(Long.MinValue))
-      require(!arrayContainsKeyTailRec(a, k, from))
+      require(!arrayContainsKey(a, k, from))
       require(!acc.contains(k))
       require(validKeyInArray(k))
       require(arrayNoDuplicates(a, from, acc))
@@ -6497,15 +6495,15 @@ object MutableLongMap {
       require(arrayNoDuplicates(a, from, acc))
       require(i >= 0 && i < a.length)
       require(validKeyInArray(k))
-      require(!arrayContainsKeyTailRec(a, k, 0))
+      require(!arrayContainsKey(a, k, 0))
       decreases(a.length - from)
 
       if (from + 1 < a.length) {
         if (from == i) {
           val newArray = a.updated(i, k)
-          check(arrayContainsKeyTailRec(newArray, k, from))
+          check(arrayContainsKey(newArray, k, from))
 
-          if (arrayContainsKeyTailRec(a, k, from + 1)) {
+          if (arrayContainsKey(a, k, from + 1)) {
             lemmaArrayContainsFromImpliesContainsFromZero(a, k, from)
             check(false)
           }
@@ -6521,7 +6519,7 @@ object MutableLongMap {
         } else {
           if (validKeyInArray(a(from))) {
             if (a(from) == k) {
-              check(arrayContainsKeyTailRec(a, k, from))
+              check(arrayContainsKey(a, k, from))
               lemmaArrayContainsFromImpliesContainsFromZero(a, k, from)
               check(false)
             }
@@ -6586,7 +6584,7 @@ object MutableLongMap {
       require(from < a.length)
       require(ListOps.noDuplicate(acc))
       require(!acc.contains(0) && !acc.contains(Long.MinValue))
-      require(arrayContainsKeyTailRec(a, k, from + 1))
+      require(arrayContainsKey(a, k, from + 1))
       require(arrayNoDuplicates(a, from, acc))
 
       if (validKeyInArray(a(from))) {
@@ -6594,7 +6592,7 @@ object MutableLongMap {
         lemmaArrayNoDuplicateWithAnAccThenWithSubSeqAcc(a, acc, Nil(), from)
         check(arrayNoDuplicates(a, from + 1, Cons(a(from), Nil())))
         lemmaArrayNoDuplicateFromNotContainsKeysInAcc(a, from + 1, a(from), Cons(a(from), Nil()))
-        check(!arrayContainsKeyTailRec(a, a(from), from + 1))
+        check(!arrayContainsKey(a, a(from), from + 1))
       }
 
     }.ensuring(_ => a(from) != k)
@@ -6627,7 +6625,7 @@ object MutableLongMap {
         lemmaArrayNoDuplicateFromNotContainsKeysInAcc(a, from + 1, k, acc)
       }
 
-    }.ensuring(_ => !arrayContainsKeyTailRec(a, k, from))
+    }.ensuring(_ => !arrayContainsKey(a, k, from))
 
     @opaque
     @pure
@@ -6743,9 +6741,9 @@ object MutableLongMap {
       }
     }.ensuring(_ =>
       if (validKeyInArray(a(to - 1)))
-        arrayCountValidKeysTailRec(a, from, to - 1) + 1 == arrayCountValidKeysTailRec(a, from, to)
+        arrayCountValidKeys(a, from, to - 1) + 1 == arrayCountValidKeys(a, from, to)
       else
-        arrayCountValidKeysTailRec(a, from, to - 1) == arrayCountValidKeysTailRec(a, from, to)
+        arrayCountValidKeys(a, from, to - 1) == arrayCountValidKeys(a, from, to)
     )
 
     @pure
@@ -6766,11 +6764,11 @@ object MutableLongMap {
       require(
         a.length < Integer.MAX_VALUE && from >= 0 && to > from && to <= a.length && pivot >= from && pivot < to
       )
-      arrayCountValidKeysTailRec(a, from, pivot) + arrayCountValidKeysTailRec(
+      arrayCountValidKeys(a, from, pivot) + arrayCountValidKeys(
         a,
         pivot,
         to
-      ) == arrayCountValidKeysTailRec(a, from, to)
+      ) == arrayCountValidKeys(a, from, to)
     }
 
     @pure
@@ -6813,11 +6811,11 @@ object MutableLongMap {
       }
 
     }.ensuring(_ =>
-      arrayCountValidKeysTailRec(a, from, pivot) + arrayCountValidKeysTailRec(
+      arrayCountValidKeys(a, from, pivot) + arrayCountValidKeys(
         a,
         pivot,
         to
-      ) == arrayCountValidKeysTailRec(a, from, to)
+      ) == arrayCountValidKeys(a, from, to)
     )
 
     @pure
@@ -6834,7 +6832,7 @@ object MutableLongMap {
       require(a.length < Integer.MAX_VALUE)
       require(to >= 0 && to <= a.length && to > i)
       require(
-        (arrayCountValidKeysTailRec(a.updated(i, k), i + 1, to) == arrayCountValidKeysTailRec(
+        (arrayCountValidKeys(a.updated(i, k), i + 1, to) == arrayCountValidKeys(
           a,
           i + 1,
           to
@@ -6853,7 +6851,7 @@ object MutableLongMap {
         lemmaRemoveValidKeyAndNumKeysToImpliesToALength(a, i, k, to + 1)
       }
     }.ensuring(_ =>
-      arrayCountValidKeysTailRec(a.updated(i, k), i + 1, a.length) == arrayCountValidKeysTailRec(
+      arrayCountValidKeys(a.updated(i, k), i + 1, a.length) == arrayCountValidKeys(
         a,
         i + 1,
         a.length
@@ -6874,7 +6872,7 @@ object MutableLongMap {
       require(a.length < Integer.MAX_VALUE)
       require(from >= 0 && from <= a.length && i >= from)
       require(
-        (arrayCountValidKeysTailRec(a.updated(i, k), from, i + 1) == arrayCountValidKeysTailRec(
+        (arrayCountValidKeys(a.updated(i, k), from, i + 1) == arrayCountValidKeys(
           a,
           from,
           i + 1
@@ -6890,7 +6888,7 @@ object MutableLongMap {
       }
 
     }.ensuring(_ => {
-      arrayCountValidKeysTailRec(a.updated(i, k), 0, i + 1) == arrayCountValidKeysTailRec(
+      arrayCountValidKeys(a.updated(i, k), 0, i + 1) == arrayCountValidKeys(
         a,
         0,
         i + 1
@@ -6916,7 +6914,7 @@ object MutableLongMap {
       lemmaSumOfNumOfKeysOfSubArraysIsEqualToWhole(a.updated(i, k), 0, a.length, i + 1)
 
     }.ensuring(_ =>
-      arrayCountValidKeysTailRec(a.updated(i, k), 0, a.length) == arrayCountValidKeysTailRec(
+      arrayCountValidKeys(a.updated(i, k), 0, a.length) == arrayCountValidKeys(
         a,
         0,
         a.length
@@ -6934,7 +6932,7 @@ object MutableLongMap {
 
       lemmaSumOfNumOfKeysOfSubArraysIsEqualToWhole(a, from, to + 1, to)
 
-    }.ensuring(_ => arrayCountValidKeysTailRec(a, from, to + 1) == arrayCountValidKeysTailRec(a, from, to) + 1)
+    }.ensuring(_ => arrayCountValidKeys(a, from, to + 1) == arrayCountValidKeys(a, from, to) + 1)
 
     @pure
     @opaque
@@ -6947,7 +6945,7 @@ object MutableLongMap {
 
       lemmaSumOfNumOfKeysOfSubArraysIsEqualToWhole(a, from, to + 1, to)
 
-    }.ensuring(_ => arrayCountValidKeysTailRec(a, from, to + 1) == arrayCountValidKeysTailRec(a, from, to))
+    }.ensuring(_ => arrayCountValidKeys(a, from, to + 1) == arrayCountValidKeys(a, from, to))
 
     @pure
     @opaque
@@ -6962,7 +6960,7 @@ object MutableLongMap {
       require(a.length < Integer.MAX_VALUE)
       require(to >= 0 && to <= a.length && to > i)
       require(
-        (arrayCountValidKeysTailRec(a.updated(i, k), i + 1, to) == arrayCountValidKeysTailRec(
+        (arrayCountValidKeys(a.updated(i, k), i + 1, to) == arrayCountValidKeys(
           a,
           i + 1,
           to
@@ -6981,7 +6979,7 @@ object MutableLongMap {
         lemmaAddValidKeyAndNumKeysToImpliesToALength(a, i, k, to + 1)
       }
     }.ensuring(_ =>
-      arrayCountValidKeysTailRec(a.updated(i, k), i + 1, a.length) == arrayCountValidKeysTailRec(
+      arrayCountValidKeys(a.updated(i, k), i + 1, a.length) == arrayCountValidKeys(
         a,
         i + 1,
         a.length
@@ -7002,7 +7000,7 @@ object MutableLongMap {
       require(a.length < Integer.MAX_VALUE)
       require(from >= 0 && from <= a.length && i >= from)
       require(
-        (arrayCountValidKeysTailRec(a.updated(i, k), from, i + 1) == arrayCountValidKeysTailRec(
+        (arrayCountValidKeys(a.updated(i, k), from, i + 1) == arrayCountValidKeys(
           a,
           from,
           i + 1
@@ -7018,7 +7016,7 @@ object MutableLongMap {
       }
 
     }.ensuring(_ => {
-      arrayCountValidKeysTailRec(a.updated(i, k), 0, i + 1) == arrayCountValidKeysTailRec(
+      arrayCountValidKeys(a.updated(i, k), 0, i + 1) == arrayCountValidKeys(
         a,
         0,
         i + 1
@@ -7040,7 +7038,7 @@ object MutableLongMap {
       lemmaSumOfNumOfKeysOfSubArraysIsEqualToWhole(a.updated(i, k), 0, a.length, i + 1)
 
     }.ensuring(_ =>
-      arrayCountValidKeysTailRec(a.updated(i, k), 0, a.length) == arrayCountValidKeysTailRec(
+      arrayCountValidKeys(a.updated(i, k), 0, a.length) == arrayCountValidKeys(
         a,
         0,
         a.length
@@ -7052,7 +7050,7 @@ object MutableLongMap {
     def lemmaValidKeyAtIImpliesCountKeysIsOne(a: Array[Long], i: Int): Unit = {
       require(i >= 0 && i < a.length && validKeyInArray(a(i)) && a.length < Integer.MAX_VALUE)
 
-    }.ensuring(_ => arrayCountValidKeysTailRec(a, i, i + 1) == 1)
+    }.ensuring(_ => arrayCountValidKeys(a, i, i + 1) == 1)
 
     @pure
     @opaque
@@ -7072,7 +7070,7 @@ object MutableLongMap {
       require(a(i) == k)
 
       LongMapLongV.lemmaArrayContainsFromImpliesContainsFromZero(a, k, i)
-    }.ensuring(_ => arrayContainsKeyTailRec(a, k, 0))
+    }.ensuring(_ => arrayContainsKey(a, k, 0))
 
   }
 
