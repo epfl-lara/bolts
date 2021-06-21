@@ -48,7 +48,7 @@ object Dispenser {
 
   def isTraceLike(t: List[(State,Action)]): Boolean = {
     t match {
-      case (s1,a1)::(s2,a2)::rest => {
+      case Cons((s1,a1), Cons((s2,a2),rest)) => {
         if (r(s1,a1)==Some(s2)) isTraceLike((s2,a2)::rest)
         else false
       }
@@ -58,7 +58,7 @@ object Dispenser {
 
   def isTrace(t: List[(State, Action)]): Boolean = { // last action is ignored
     t match {
-      case (s,a)::_ => isInitial(s) && isTraceLike(t)
+      case Cons((s,a),_) => isInitial(s) && isTraceLike(t)
       case _ => false
     }
   }
@@ -87,13 +87,13 @@ object Dispenser {
   def propInductive(t: List[(State, Action)]): Unit = {
     require(isTraceLike(t) &&
       (t match {
-        case (s,a)::_ => prop(s)
+        case Cons((s,a),_) => prop(s)
         case _ => false
       })
     )
     t match {
-      case (s,a)::Nil() => ()
-      case (s,a)::rest => {
+      case Cons((s,a),Nil()) => ()
+      case Cons((s,a),rest) => {
         assert(rest.last == t.last)
         propInductive(rest)
       }
