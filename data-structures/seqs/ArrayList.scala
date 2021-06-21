@@ -1,3 +1,6 @@
+/* Copyright 2009-2021 EPFL, Lausanne */
+/* Created by Clément Burgelin */
+
 import stainless.annotation._
 import stainless.collection._
 import stainless.lang._
