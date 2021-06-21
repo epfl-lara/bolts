@@ -512,7 +512,7 @@ object MutableLongMap {
       _size >= 0 &&
       _size <= mask + 1 &&
       size >= _size &&
-      size ==  _size + (extraKeys + 1) / 2 &&
+      size == _size + (extraKeys + 1) / 2 &&
       extraKeys >= 0 &&
       extraKeys <= 3
     }
