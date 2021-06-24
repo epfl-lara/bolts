@@ -1,3 +1,6 @@
+/* Copyright 2009-2021 EPFL, Lausanne */
+/* Created by Clément Burgelin */
+
 import stainless.annotation._
 import stainless.collection._
 import stainless.lang._
@@ -6,12 +9,11 @@ import stainless.proof._
 object ArrayList {
     type T = BigInt
 
-    // @library
     @pure
     def listLength(l: List[T]): Int = {
         // require(l.nonEmpty ==> 0 < listLength(l.tail) && listLength(l.tail) < 2147483646)
         l match {
-            case head :: tl => {
+            case Cons(head, tl) => {
                 val tlLen = listLength(tl)
                 if(tlLen < Int.MaxValue) {
                     tlLen + 1
