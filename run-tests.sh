@@ -3,14 +3,14 @@
 STAINLESS_SCALAC="stainless-scalac --config-file=stainless.conf.nightly"
 
 function run_tests {
-  option=$1
-  project=$2
+  project=$1
+  shift
 
   echo ""
   echo "------------------------------------------------------------------------------------------"
   echo "Running '$STAINLESS_SCALAC $option' on bolts project: $project..."
   echo "$ find $project -name '*.scala' -exec $STAINLESS_SCALAC $option {} +"
-  find "$project" -name '*.scala' -exec $STAINLESS_SCALAC $option {} +
+  find "$project" -name '*.scala' -exec $STAINLESS_SCALAC "$@" {} +
 
   status=$?
 
@@ -43,13 +43,15 @@ TC_TESTS="algorithms \
           software-foundations"
 
 for project in $TC_TESTS; do
-  run_tests "--type-checker" "$project"
+  run_tests "$project"
 done
+
+run_tests "sorted-array" "--solvers=no-inc:smt-z3:z3 tactic.default_tactic=smt sat.euf=true"
 
 # The `--type-checker` option does not support `forall` so files containing `forall` are done in STD_TESTS:
 
 STD_TESTS="gcd extended-gcd"
 
 for project in $STD_TESTS; do
-  run_tests "--type-checker=false --infer-measures=false" "$project"
+  run_tests "$project" "--type-checker=false" "--infer-measures=false"
 done
