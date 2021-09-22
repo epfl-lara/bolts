@@ -46,17 +46,6 @@ object SortedArray {
     else order.leq(elem, array(h)._1) && allLarger(array, order, elem, h+1)
   }
 
-  @pure @opaque @ghost
-  def getLarger[K, @mutable T](array: Array[(K, T)], order: TotalOrder[K], elem: K, h: Int, i: Int): Unit = {
-    require(0 <= h && h <= array.length && allLarger(array, order, elem, h) && h <= i && i < array.length)
-    decreases(i - h)
-
-    if (h < i) getLarger(array, order, elem, h+1, i)
-
-  }.ensuring(_ =>
-    order.leq(elem, array(i)._1)
-  )
-
   @pure
   def isSorted[K, @mutable T](array: Array[(K, T)], order: TotalOrder[K]): Boolean = {
     array.length == 0 || isSortedRange(array, order, 0, array.length - 1)
@@ -130,24 +119,10 @@ object SortedArray {
   )
 
   @pure @opaque @ghost @inline
-  def arrayGetSameIndex[@mutable T](array: Array[T], i: Int, j: Int): Unit = {
-    require(0 <= i && i < array.length && i == j)
-
-  }.ensuring(_ => array(i) == array(j))
-
-  @pure @opaque @ghost @inline
   def arrayGetSameIndex2[@mutable T](array: Array[T], i: Int, j: Int): Unit = {
     require(0 <= i && i < array.length - 1 && i == j)
 
   }.ensuring(_ => array(i+1) == array(j+1))
-
-  @pure @opaque @ghost @inline
-  def arrayGetSameIndex3[@mutable T](array: Array[T], i: Int, j: Int): Unit = {
-    require(0 <= i && i < array.length - 2 && i + 1 == j)
-
-    arrayGetSameIndex(array, i+2, j+1)
-
-  }.ensuring(_ => array(i+2) == array(j+1))
 
   @pure @opaque @ghost
   def sortedRangePair[K, @mutable T](array: Array[(K, T)], order: TotalOrder[K], l: Int, i: Int, j: Int): Unit = {
