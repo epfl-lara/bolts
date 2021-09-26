@@ -4,6 +4,8 @@ import stainless.annotation._
 import stainless.proof._
 import Theorem._
 
+import scala.language.postfixOps
+
 object Leftpad {
   def max(b1: BigInt, b2: BigInt) = {
     if (b1 > b2) b1
@@ -14,7 +16,7 @@ object Leftpad {
     l1 ++ (x :: l2) == (l1 :+ x) ++ l2
   } holds because {
      ListSpecs.snocIsAppend[T](l1, x) &&
-     ListSpecs.appendAssoc[T](l1, Cons[T](x, Nil[T]), l2)
+     ListSpecs.appendAssoc[T](l1, Cons[T](x, Nil[T]()), l2)
   }
 
   def fillMore[T](n: BigInt, t: T): Boolean = {

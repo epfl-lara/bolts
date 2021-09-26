@@ -163,7 +163,7 @@ case class NonEmpty(elem: Tweet, left: TweetSet, right: TweetSet) extends TweetS
       require(isSearchTree)
       decreases((size, 0))
 
-      val elem = mostRetweeted
+      val elem = mostRetweeted()
       check(mostRetweetedAccContained(this, elem))
       check(this.slowContains(elem))
       check(slowContainedIsContained(this, elem))

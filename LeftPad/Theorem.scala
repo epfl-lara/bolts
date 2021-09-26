@@ -1,6 +1,8 @@
 import stainless.annotation._
 import stainless.lang._
 
+import scala.language.postfixOps
+
 object Theorem {
   implicit class BD(val underlying: Boolean) {
 
