@@ -3,8 +3,8 @@ import stainless.annotation._
 
 object MoreExtendedEuclidGCD {
   case class Result(gcd: BigInt, // GCD value
-		    ka: BigInt, kb: BigInt,  // witnesses for divisibility (quotients)
-		    x: BigInt, y: BigInt)    // witnesses that ka,kb are mutually prime
+        ka: BigInt, kb: BigInt,  // witnesses for divisibility (quotients)
+        x: BigInt, y: BigInt)    // witnesses that ka,kb are mutually prime
 
   def gcd(a: BigInt, b: BigInt, r: Result): Boolean = {
     a == r.ka * r.gcd &&

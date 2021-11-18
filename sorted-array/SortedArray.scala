@@ -3,7 +3,7 @@ import stainless.lang.StaticChecks.WhileDecorations
 import stainless.lang.StaticChecks.assert
 import stainless.math._
 import stainless.proof.check
-import stainless.annotation._
+import stainless.annotation.{ghost => ghostAnnot, _}
 import scala.Predef.{ genericArrayOps => _, genericWrapArray => _, assume => _, _ }
 import stainless.lang.ArrayUpdating
 
@@ -24,7 +24,7 @@ object SortedArray {
     else order.leq(array(l)._1, elem) && allSmaller(array, order, elem, l-1)
   }
 
-  @pure @opaque @ghost
+  @pure @opaque @ghostAnnot
   def getSmaller[K, @mutable T](array: Array[(K, T)], order: TotalOrder[K], elem: K, l: Int, i: Int): Unit = {
     require(0 <= i && i <= l && l < array.length && allSmaller(array, order, elem, l))
     decreases(l - i)
@@ -62,7 +62,7 @@ object SortedArray {
       true
   }
 
-  @pure @opaque @ghost
+  @pure @opaque @ghostAnnot
   def isSortedRangeSwap[K, @mutable T](array: Array[(K, T)], order: TotalOrder[K], i: Int, j: Int): Unit = {
     require(0 <= i && 0 < j && j < array.length && isSortedRange(array, order, i, j))
     decreases(max(0, j-i))
@@ -79,7 +79,7 @@ object SortedArray {
     isSortedRange(array.updated(j, array(j-1)).updated(j-1, array(j)), order, i, j-1)
   )
 
-  @pure @opaque @ghost @inlineOnce
+  @pure @opaque @ghostAnnot @inlineOnce
   def isSortedRangeSwap2[K, @mutable T](
     array: Array[(K, T)], order: TotalOrder[K],
     i: Int, j: Int,
@@ -104,7 +104,7 @@ object SortedArray {
     isSortedRange(array.updated(k, array(l)).updated(l, array(k)), order, i, j)
   )
 
-  @pure @opaque @ghost @inlineOnce
+  @pure @opaque @ghostAnnot @inlineOnce
   def isSortedRangeSame[K, @mutable T](
     array: Array[(K, T)], order: TotalOrder[K],
     i1: Int, j1: Int, i2: Int, j2: Int
@@ -118,13 +118,13 @@ object SortedArray {
     isSortedRange(array, order, i2, j2)
   )
 
-  @pure @opaque @ghost @inline
+  @pure @opaque @ghostAnnot @inline
   def arrayGetSameIndex2[@mutable T](array: Array[T], i: Int, j: Int): Unit = {
     require(0 <= i && i < array.length - 1 && i == j)
 
   }.ensuring(_ => array(i+1) == array(j+1))
 
-  @pure @opaque @ghost
+  @pure @opaque @ghostAnnot
   def sortedRangePair[K, @mutable T](array: Array[(K, T)], order: TotalOrder[K], l: Int, i: Int, j: Int): Unit = {
     require(0 <= i && 0 <= j)
     require(isSortedRange(array, order, i, j))
@@ -148,7 +148,7 @@ object SortedArray {
     order.leq(array(l)._1, array(l + 1)._1)
   )
 
-  @pure @opaque @ghost
+  @pure @opaque @ghostAnnot
   def sortedPair[K, @mutable T](array: Array[(K, T)], order: TotalOrder[K], l: Int): Unit = {
     require(
       isSorted(array, order) &&
@@ -161,7 +161,7 @@ object SortedArray {
     order.leq(array(l)._1, array(l + 1)._1)
   )
 
-  @pure @opaque @ghost
+  @pure @opaque @ghostAnnot
   def sortedAllSmaller[K, @mutable T](array: Array[(K, T)], order: TotalOrder[K], elem: K, l: Int): Unit = {
     require(
       isSorted(array, order) &&
@@ -181,7 +181,7 @@ object SortedArray {
     allSmaller(array, order, elem, l)
   )
 
-  @pure @opaque @ghost
+  @pure @opaque @ghostAnnot
   def sortedAllLarger[K, @mutable T](array: Array[(K, T)], order: TotalOrder[K], elem: K, l: Int): Unit = {
     require(
       isSorted(array, order) &&
@@ -203,7 +203,7 @@ object SortedArray {
     allLarger(array, order, elem, l)
   )
 
-  @opaque @ghost @pure
+  @opaque @ghostAnnot @pure
   def insertSortedRange[K, @mutable T](array: Array[(K, T)], order: TotalOrder[K], h: Int, elem: (K, T), i: Int): Unit = {
     require(0 <= h && h < array.length)
     require(isSortedRange(array, order, 0, h))
@@ -239,7 +239,7 @@ object SortedArray {
     isSortedRange(array.updated(h, elem), order, i, array.length - 1)
   }
 
-  @opaque @ghost @pure @inlineOnce
+  @opaque @ghostAnnot @pure @inlineOnce
   def insertSorted[K, @mutable T](array: Array[(K, T)], order: TotalOrder[K], h: Int, elem: (K, T)): Unit = {
     require(0 <= h && h < array.length)
     require(isSortedRange(array, order, 0, h))

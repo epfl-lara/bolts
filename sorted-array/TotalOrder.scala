@@ -1,31 +1,31 @@
-import stainless.annotation._
+import stainless.annotation.{ghost => ghostAnnot, _}
 import stainless.lang._
 
 // trait TotalOrder[A] {
 //   def leq(x: A, y: A): Boolean
 
-//   @ghost
+//   @ghostAnnot
 //   def reflexivityLaw(x: A): Unit = {
 //     (??? : Unit)
 //   }.ensuring { _ =>
 //     leq(x, x)
 //   }
 
-//   @ghost
+//   @ghostAnnot
 //   def antiSymmetryLaw(x: A, y: A): Unit = {
 //     (??? : Unit)
 //   }.ensuring { _ =>
 //     (leq(x, y) && leq(y, x)) ==> (x == y)
 //   }
 
-//   @ghost
+//   @ghostAnnot
 //   def transitivityLaw(x: A, y: A, z: A): Unit = {
 //     (??? : Unit)
 //   }.ensuring { _ =>
 //     (leq(x, y) && leq(y, z)) ==> leq(x, z)
 //   }
 
-//   @ghost
+//   @ghostAnnot
 //   def totalityLaw(x: A, y: A): Unit = {
 //     (??? : Unit)
 //   }.ensuring { _ =>
@@ -37,28 +37,28 @@ import stainless.lang._
 // FIXME: currently unsound because of the `???`
 // Make sure these propertes hold when instantiating a new `TotalOrder`
 case class TotalOrder[A](leq: (A, A) => Boolean) {
-  @ghost
+  @ghostAnnot
   def reflexivityLaw(x: A): Unit = {
     (??? : Unit)
   }.ensuring { _ =>
     leq(x, x)
   }
 
-  @ghost
+  @ghostAnnot
   def antiSymmetryLaw(x: A, y: A): Unit = {
     (??? : Unit)
   }.ensuring { _ =>
     (leq(x, y) && leq(y, x)) ==> (x == y)
   }
 
-  @ghost
+  @ghostAnnot
   def transitivityLaw(x: A, y: A, z: A): Unit = {
     (??? : Unit)
   }.ensuring { _ =>
     (leq(x, y) && leq(y, z)) ==> leq(x, z)
   }
 
-  @ghost
+  @ghostAnnot
   def totalityLaw(x: A, y: A): Unit = {
     (??? : Unit)
   }.ensuring { _ =>

@@ -123,10 +123,10 @@ object Huffman {
       }
     }
 
-    def isDistinctList(list: List[CodeTree]): Boolean = {
+    def isDistinctCodecList(list: List[CodeTree]): Boolean = {
       decreases(list)
       list match {
-        case x::xs => xs.forall(elem => (elem.chars & x.chars) == Set.empty[Char]) && isDistinctList(xs)
+        case x::xs => xs.forall(elem => (elem.chars & x.chars) == Set.empty[Char]) && isDistinctCodecList(xs)
         case _ => true
       }
     }
@@ -389,7 +389,7 @@ object Huffman {
     def consistent(tree: CodeTree): Boolean = {
       decreases(tree)
       tree match{
-        case Fork(left, right) => consistent(left) && consistent(right) && isDistinctList(List(left, right))
+        case Fork(left, right) => consistent(left) && consistent(right) && isDistinctCodecList(List(left, right))
         case Leaf(char, weight) => true
       }
     }
@@ -397,7 +397,7 @@ object Huffman {
     def consistent(trees: List[CodeTree]): Boolean = {
       decreases(trees)
       if (trees.size == 0) true
-      else consistent(trees.head) && consistent(trees.tail) && isDistinctList(trees)
+      else consistent(trees.head) && consistent(trees.tail) && isDistinctCodecList(trees)
     }
 
     def depth(tree: CodeTree, char: Char): BigInt = {

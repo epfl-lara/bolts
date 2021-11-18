@@ -10,11 +10,11 @@ object Fulcrum {
     l match {
       case Nil() => BigInt(0)
       case Cons(x, xs) => x + sum(xs)
-    } 
+    }
   }
 
   def abs(x: BigInt) = {
-    if(x > 0) x 
+    if(x > 0) x
     else -x
   }
 
@@ -26,7 +26,7 @@ object Fulcrum {
       case Cons(x, xs) =>
         if(i > 0) lemmaTailDrop(xs, i - 1)
     }
-    l.drop(i + 1) == l.drop(i).tail 
+    l.drop(i + 1) == l.drop(i).tail
   } holds
 
   def lemmaHeadDrop(l: List[BigInt], i: BigInt): Boolean = {
@@ -120,7 +120,7 @@ object Fulcrum {
 
   def fulcrum(l: List[BigInt]) = {
     val s = sum(l)
-    aux(l, 0, 0, abs(s), 0, s, l) 
+    aux(l, 0, 0, abs(s), 0, s, l)
   } ensuring(res => res._1 >= 0 && res._1 <= l.size && isFulcrum(l, res._1, res._2))
 
   @ignore def main(args: Array[String]): Unit = {
@@ -129,9 +129,9 @@ object Fulcrum {
     val l3: List[BigInt] = List(-3, 1, 0)
     val l4: List[BigInt] = List(7, 3, 4, 5, 2, 1, -3)
 
-    println(l1, Fulcrum.fulcrum(l1))
-    println(l2, Fulcrum.fulcrum(l2))
-    println(l3, Fulcrum.fulcrum(l3))
-    println(l4, Fulcrum.fulcrum(l4))
+    println((l1, Fulcrum.fulcrum(l1)))
+    println((l2, Fulcrum.fulcrum(l2)))
+    println((l3, Fulcrum.fulcrum(l3)))
+    println((l4, Fulcrum.fulcrum(l4)))
   }
 }
