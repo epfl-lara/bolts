@@ -1,0 +1,2 @@
+stainless ExpressionCompiler.scala --watch
+
