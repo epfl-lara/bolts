@@ -4,7 +4,7 @@ import stainless.equations._
 
 abstract class Queue[A] {
 
-  def enqueue(a: A) = (??? : Queue[A])
+  def enqueue(a: A): Queue[A] = (??? : Queue[A])
     .ensuring(res =>
     res.toList == this.toList ++ List(a))
 
@@ -18,9 +18,9 @@ abstract class Queue[A] {
 }
 
 case class SimpleQueue[A](l: List[A]) extends Queue[A] {
-  def enqueue(a: A) = SimpleQueue(l ++ List(a))
+  def enqueue(a: A): SimpleQueue[A] = SimpleQueue(l ++ List(a))
 
-  def dequeue = l match {
+  def dequeue: Option[(A, Queue[A])] = l match {
     case Nil() => None()
     case Cons(x, xs) => Some((x, SimpleQueue(xs)))
   }
@@ -30,7 +30,7 @@ case class SimpleQueue[A](l: List[A]) extends Queue[A] {
 
 
 case class AmortizedQueue[A](front: List[A], rear: List[A]) extends Queue[A] {
-  def enqueue(a: A) = {
+  def enqueue(a: A): AmortizedQueue[A] = {
     val res = AmortizedQueue(front, a :: rear)
     (
       res.toList                         ==:| trivial |:
@@ -43,7 +43,7 @@ case class AmortizedQueue[A](front: List[A], rear: List[A]) extends Queue[A] {
     res
   }
 
-  def dequeue = front match {
+  def dequeue: Option[(A, Queue[A])] = front match {
     case Nil() =>
       rear.reverse match {
         case Nil() => None()
@@ -56,7 +56,7 @@ case class AmortizedQueue[A](front: List[A], rear: List[A]) extends Queue[A] {
 }
 
 /*
-=== Functional Queues === 
+=== Functional Queues ===
 
 Recall that a queue allows taking elements from the **front** and adding elements to the **end**.  Queues are expected to implement these operations in //about constant// time. Here we are going to implement and prove correct a //purely functional// queue, which means that it does not use mutation. The benefit is that we can prove such implementations correct much more easily and, moreover, even after adding or removing an element we can continue to access the previous version of the queue. On the flip side, it means that a simple imperative implementation (such as a doubly linked list with a tail pointer) is out of question. Instead, we use functional lists. A simplest functional approach would be to implement dequeue as list head and implement enqueue as appending a single element to the end of the list. Unfortunately, this would make enqueue linear in the size of the queue. Conversely, if we decided to implement dequeue by removing from the end of a list, then the dequeue would take linear time, instead of constant. A solution is instead to use two lists: one for removing and one for adding. When the list from which remove gets empty, we need to add elements from the other list. We do this by reversing the list, which is good on average, because we do it only once for every element we put into the queue.
 

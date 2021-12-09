@@ -4,17 +4,17 @@ import stainless.annotation._
 
 object ExtendedEuclidGCD {
   @inline
-  def exists[T](p: T => Boolean) = !forall((x: T) => !p(x))
+  def exists[T](p: T => Boolean) = !forall[T](x => !p(x))
 
   def divides(x: BigInt, y: BigInt) = {
-    exists((k: BigInt) => y == k * x)
+    exists[BigInt](k => y == k * x)
   }
 
   def eliminationExists[T](p: T => Boolean): T = {
-    require(exists((e: T) => p(e)))
+    require(exists[T](p))
 
-    choose((e: T) => p(e))
-  } ensuring (p)
+    choose[T](e => p(e))
+  }.ensuring(p)
 
   def introductionExists[T](t: T, p: T => Boolean): Boolean = {
     require(p(t))
@@ -29,13 +29,13 @@ object ExtendedEuclidGCD {
   def euclidOneStep(a: BigInt, b: BigInt, r: BigInt) = {
     require(a > 0 && b > 0 && divides(r, b) && divides(r, a - (a / b) * b))
 
-    val i = eliminationExists((k: BigInt) => b == k * r)
-    val j = eliminationExists((k: BigInt) => ((a - (a / b) * b) == k * r))
+    val i = eliminationExists[BigInt](k => b == k * r)
+    val j = eliminationExists[BigInt](k => ((a - (a / b) * b) == k * r))
 
     val c: BigInt = a / b
 
     assert(a == (j + c * i) * r)
-    assert(introductionExists(j + c * i, (k: BigInt) => a == k * r))
+    assert(introductionExists[BigInt](j + c * i, k => a == k * r))
 
     divides(r, a)
   }.holds
@@ -62,11 +62,11 @@ object ExtendedEuclidGCD {
     val (r, x, y) = euclid(a, b)
 
     b match {
-      case BigInt(0) => 
-        assert(introductionExists(BigInt(1), (k: BigInt) => a == k * a))
-        assert(introductionExists(BigInt(0), (k: BigInt) => 0 == k * a))
+      case BigInt(0) =>
+        assert(introductionExists[BigInt](BigInt(1), k => a == k * a))
+        assert(introductionExists[BigInt](BigInt(0), k => 0 == k * a))
         gcd(a, b, r, x, y)
-      case _ => 
+      case _ =>
         assert(euclidCorrectness(b, a - (a / b) * b))
         assert(euclidOneStep(a, b, r))
         gcd(a, b, r, x, y)

@@ -1,6 +1,10 @@
 #!/usr/bin/env bash
 
-STAINLESS_SCALAC="stainless-scalac --config-file=stainless.conf.nightly"
+FRONTEND="stainless-scalac"
+if [[ "$#" = 1 ]]; then
+  FRONTEND="$1"
+fi
+STAINLESS="$FRONTEND --config-file=stainless.conf.nightly"
 
 function run_tests {
   project=$1
@@ -8,15 +12,15 @@ function run_tests {
 
   echo ""
   echo "------------------------------------------------------------------------------------------"
-  echo "Running '$STAINLESS_SCALAC $option' on bolts project: $project..."
-  echo "$ find $project -name '*.scala' -exec $STAINLESS_SCALAC $option {} +"
-  find "$project" -name '*.scala' -exec $STAINLESS_SCALAC "$@" {} +
+  echo "Running '$STAINLESS $option' on bolts project: $project..."
+  echo "$ find $project -name '*.scala' -exec $STAINLESS $option {} +"
+  find "$project" -name '*.scala' -exec $STAINLESS "$@" {} +
 
   status=$?
 
   if [ $status -ne 0 ]
   then
-    echo "'$STAINLESS_SCALAC $option' failed on bolts project: $project."
+    echo "'$STAINLESS $option' failed on bolts project: $project."
     echo "------------------------------------------------------------------------------------------"
     echo ""
     exit 1

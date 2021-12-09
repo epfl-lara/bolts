@@ -7,21 +7,21 @@ import stainless.annotation._
 object GCD {
 
   @inline
-  def exists[T](p: T => Boolean) = ! forall((x: T) => !p(x))
+  def exists[T](p: T => Boolean) = !forall[T](x => !p(x))
 
   def divides(x: BigInt, y: BigInt) = {
-    exists ((k: BigInt) => y == k*x)
+    exists[BigInt](k => y == k*x)
   }
 
   def elimination_exists[T](p: T => Boolean): T = {
-    require(exists ((e: T) => p(e)))
+    require(exists[T](p))
 
-    choose((e: T) => p(e))
-  } ensuring(p)
+    choose[T](e => p(e))
+  }.ensuring(p)
 
   @inline @opaque
   def elimination_forall[T](p: T => Boolean, t: T) = {
-    require(forall ((e: T) => p(e)))
+    require(forall[T](p))
 
   }.ensuring(_ => p(t))
 
@@ -49,10 +49,10 @@ object GCD {
   def divides_combination(x: BigInt, a: BigInt, b: BigInt, c: BigInt, d: BigInt) = {
     require(divides(x,a) && divides(x,b))
 
-    val i = elimination_exists((k: BigInt) => a == k*x)
-    val j = elimination_exists((k: BigInt) => b == k*x)
+    val i = elimination_exists[BigInt](k => a == k*x)
+    val j = elimination_exists[BigInt](k => b == k*x)
 
-    introduction_exists(c*i + d*j, (k: BigInt) => c*a + b*d == k*x)
+    introduction_exists[BigInt](c*i + d*j, k => c*a + b*d == k*x)
 
   }.ensuring(_ => divides(x,c*a + d*b))
 
@@ -64,8 +64,8 @@ object GCD {
     assert(divides(r2, (a/b)*b + 1*(a-(a/b)*b)))
     assert(divides(r2,a))
 
-    assert(forall ((r2: BigInt) => smallerDivider(r2,r,a,b)))
-    elimination_forall((r2: BigInt) => smallerDivider(r2,r,a,b), r2)
+    assert(forall[BigInt](r2 => smallerDivider(r2,r,a,b)))
+    elimination_forall[BigInt](r2 => smallerDivider(r2,r,a,b), r2)
     assert(smallerDivider(r2,r,a,b))
 
     assert( (divides(r2,a) && divides(r2,b)) ==> r2 <= r)
@@ -96,13 +96,13 @@ object GCD {
     require(b > 0 && gcd(a,b,r))
 
     assert(
-      forall((r2: BigInt) => {
+      forall[BigInt](r2 => {
         lemma2_onestep(a,b,r2,r)
         smallerDivider(r2,r,b,a-(a/b)*b)
       })
     )
 
-  }.ensuring(_ => forall((r2: BigInt) => smallerDivider(r2,r,b,a-(a/b)*b)))
+  }.ensuring(_ => forall[BigInt](r2 => smallerDivider(r2,r,b,a-(a/b)*b)))
 
   @opaque @inlineOnce
   def euclid_onestep(a: BigInt, b: BigInt, r: BigInt) = {
@@ -114,19 +114,19 @@ object GCD {
 
     lemma3_onestep(a,b,r)
 
-    assert(forall((r2: BigInt) => smallerDivider(r2,r,b,a-(a/b)*b)))
+    assert(forall[BigInt](r2 => smallerDivider(r2,r,b,a-(a/b)*b)))
 
   }.ensuring(_ => gcd(b, a - (a/b)*b, r))
 
   @opaque @inlineOnce
   def divides_zero(a: BigInt) = {
-    introduction_exists(BigInt(0), (k: BigInt) => 0 == k*a)
+    introduction_exists[BigInt](BigInt(0), k => 0 == k*a)
 
   }.ensuring(_ => divides(a,0))
 
   @opaque @inlineOnce
   def divides_reflexive(a: BigInt) = {
-    introduction_exists(BigInt(1), (k: BigInt) => a == k*a)
+    introduction_exists[BigInt](BigInt(1), k => a == k*a)
 
   }.ensuring(_ => divides(a, a))
 
@@ -139,8 +139,8 @@ object GCD {
   def gcd_unicity(a: BigInt, b: BigInt, r1: BigInt, r2: BigInt) = {
     require(gcd(a,b,r1) && gcd(a,b,r2))
 
-    elimination_forall((x: BigInt) => smallerDivider(x,r1,a,b), r2)
-    elimination_forall((x: BigInt) => smallerDivider(x,r2,a,b), r1)
+    elimination_forall[BigInt](x => smallerDivider(x,r1,a,b), r2)
+    elimination_forall[BigInt](x => smallerDivider(x,r2,a,b), r1)
     assert((divides(r2,a) && divides(r2,b)) ==> r2 <= r1)
     assert((divides(r1,a) && divides(r1,b)) ==> r1 <= r2)
 
@@ -151,7 +151,7 @@ object GCD {
     require(a > 0)
 
   }.ensuring(_ =>
-    forall((r2: BigInt) => smallerDivider(r2, a, a, 0))
+    forall[BigInt](r2 => smallerDivider(r2, a, a, 0))
   )
 
   def gcd_zero_reflexive(a: BigInt) = {
