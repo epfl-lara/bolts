@@ -32,27 +32,10 @@ function run_tests {
 
 # Tests that use the usual --type-checker=true verification condition generator:
 
-TC_TESTS="algorithms \
-          add-digits \
-          data-structures/amortized-queue1 \
-          data-structures/amortized-queue2 \
-          data-structures/trees/concrope \
-          data-structures/trees/redblack \
-          dispenser \
-          expression-compiler \
-          extended-gcd \
-          fp-principles/example \
-          fp-principles/functional-sets \
-          fp-principles/object-oriented-sets \
-          fp-principles/huffman-coding \
-          fp-principles/recursion \
-          Fulcrum \
-          LeftPad \
-          laws/simple-transform \
-          memory \
-          reachabilityChecker \
-          software-foundations"
-
+TC_TESTS=`cat tctests.txt`
+echo **************************
+echo Type Checking vcgen tests:
+echo $TC_TESTS
 for project in $TC_TESTS; do
   run_tests "$project"
 done
@@ -60,13 +43,12 @@ done
 # add here
 #    data-structures/maps/longmap
 # and others that have special conf; redo so we always use the conf file in the directory?
-run_tests "sorted-array" "--solvers=no-inc:smt-z3:z3 tactic.default_tactic=smt sat.euf=true"
+run_tests "data-structures/sorted-array" "--solvers=no-inc:smt-z3:z3 tactic.default_tactic=smt sat.euf=true"
 
 # The `--type-checker` option does not support `forall` so files containing `forall` are done in STD_TESTS:
 
 # for now empty as those needing quantifiers were slow anyway, see WIP-slow
-STD_TESTS=""
-
-for project in $STD_TESTS; do
-  run_tests "$project" "--type-checker=false" "--infer-measures=false"
-done
+#STD_TESTS=""
+#for project in $STD_TESTS; do
+#  run_tests "$project" "--type-checker=false" "--infer-measures=false"
+#done

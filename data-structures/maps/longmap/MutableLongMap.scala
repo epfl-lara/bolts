@@ -8,8 +8,8 @@ import stainless.equations._
 import stainless.lang._
 import stainless.proof.check
 import scala.annotation.tailrec
-import scala.collection.immutable
-import scala.collection.concurrent.RestartException
+//import scala.collection.immutable
+//import scala.collection.concurrent.RestartException
 import stainless.lang.StaticChecks._
 
 object MutableLongMap {

@@ -189,7 +189,7 @@ object TupleListOps {
     l match {
       case Cons(head, tl) if (head._1 == key) => Some(head._2)
       case Cons(head, tl) if (head._1 != key) => getValueByKey(tl, key)
-      case Nil()                              => None[B]
+      case Nil()                              => None[B]()
     }
 
   }
