@@ -19,3 +19,6 @@ tutorials/dispenser
 tutorials/krakow2020/working
 tutorials/memory
 tutorials/simple-transform
+tutorials/fmcad2021/alt-diffs
+tutorials/fmcad2021/binary-search
+tutorials/fmcad2021/find-index
