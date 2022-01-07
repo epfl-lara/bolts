@@ -1,6 +1,13 @@
+/* Copyright 2009-2022 EPFL, Lausanne */
+
+// This version gets rid of all quantifiers
+// and proves correctness of GCD by returning the relevant
+// parameters that witness properties of GCD.
+
 import stainless.lang._
 import stainless.annotation._
 
+ 
 object MoreExtendedEuclidGCD {
   case class Result(gcd: BigInt, // GCD value
         ka: BigInt, kb: BigInt,  // witnesses for divisibility (quotients)

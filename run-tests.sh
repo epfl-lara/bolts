@@ -33,13 +33,14 @@ function run_tests {
 # Tests that use the usual --type-checker=true verification condition generator:
 
 TC_TESTS="algorithms \
-          dispenser \
           add-digits \
-          expression-compiler \
           data-structures/amortized-queue1 \
           data-structures/amortized-queue2 \
-          data-structures/concrope \
-          data-structures/redblack \
+          data-structures/trees/concrope \
+          data-structures/trees/redblack \
+          dispenser \
+          expression-compiler \
+          extended-gcd \
           fp-principles/example \
           fp-principles/functional-sets \
           fp-principles/object-oriented-sets \
@@ -63,7 +64,8 @@ run_tests "sorted-array" "--solvers=no-inc:smt-z3:z3 tactic.default_tactic=smt s
 
 # The `--type-checker` option does not support `forall` so files containing `forall` are done in STD_TESTS:
 
-STD_TESTS="gcd extended-gcd"
+# for now empty as those needing quantifiers were slow anyway, see WIP-slow
+STD_TESTS=""
 
 for project in $STD_TESTS; do
   run_tests "$project" "--type-checker=false" "--infer-measures=false"

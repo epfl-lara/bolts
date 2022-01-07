@@ -12,7 +12,7 @@ object Transform {
     def apply(e: Expr): Option[Expr]
 
     @inline
-    final def done(e:Expr) = apply(e)==None[Expr]
+    final def done(e:Expr) = apply(e)==None[Expr]()
   
     final def transformed(expr: Expr): Boolean = {
       done(expr) && (expr match {
