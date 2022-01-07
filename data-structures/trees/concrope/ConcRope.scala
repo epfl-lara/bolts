@@ -12,7 +12,7 @@ object ConcRopeSeq {
   def max(x: BigInt, y: BigInt): BigInt = if (x >= y) x else y
   def abs(x: BigInt): BigInt = if (x < 0) -x else x
 
-  
+
   object Conc {
 
     def flatten[T](xs: Conc[Conc[T]]): Conc[T] = {
@@ -64,7 +64,7 @@ object ConcRopeSeq {
       (res.toList == xs.reverse))
   }
 
-  
+
   sealed abstract class Conc[T] {
 
     def isEmpty: Boolean = {
@@ -341,16 +341,16 @@ object ConcRopeSeq {
     }}
   }
 
-  
+
   case class Empty[T]() extends Conc[T]
 
-  
+
   case class Single[T](x: T) extends Conc[T]
 
-  
+
   case class CC[T](left: Conc[T], right: Conc[T]) extends Conc[T]
 
-  
+
   case class Append[T](left: Conc[T], right: Conc[T]) extends Conc[T]
 
   def lookup[T](xs: Conc[T], i: BigInt): T = {
@@ -360,7 +360,7 @@ object ConcRopeSeq {
       case Single(x) => x
       case CC(l, r) =>
         if (i < l.size) lookup(l, i)
-       else lookup(r, i - l.size)
+        else lookup(r, i - l.size)
       case Append(l, r) =>
         if (i < l.size) lookup(l, i)
         else lookup(r, i - l.size)
