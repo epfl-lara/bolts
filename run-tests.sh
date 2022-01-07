@@ -35,7 +35,11 @@ function run_tests {
 TC_TESTS="algorithms \
           dispenser \
           add-digits \
-          data-structures/amortized-queue \
+          expression-compiler \
+          data-structures/amortized-queue1 \
+          data-structures/amortized-queue2 \
+          data-structures/concrope \
+          data-structures/redblack \
           fp-principles/example \
           fp-principles/functional-sets \
           fp-principles/object-oriented-sets \
@@ -43,6 +47,8 @@ TC_TESTS="algorithms \
           fp-principles/recursion \
           Fulcrum \
           LeftPad \
+          laws/simple-transform \
+          memory \
           reachabilityChecker \
           software-foundations"
 
@@ -50,6 +56,9 @@ for project in $TC_TESTS; do
   run_tests "$project"
 done
 
+# add here
+#    data-structures/maps/longmap
+# and others that have special conf; redo so we always use the conf file in the directory?
 run_tests "sorted-array" "--solvers=no-inc:smt-z3:z3 tactic.default_tactic=smt sat.euf=true"
 
 # The `--type-checker` option does not support `forall` so files containing `forall` are done in STD_TESTS:
