@@ -9,7 +9,7 @@ object Diffs {
       case Cons(_,Nil()) => l
       case Cons(h, t) =>  
         diffs(t) match {
-          case h1 :: t1 => h :: (h1 - h) :: t1
+          case Cons(h1, t1) => h :: (h1 - h) :: t1
         }
     }
   } ensuring (undiff(_) == l)
