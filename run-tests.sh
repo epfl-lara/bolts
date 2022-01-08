@@ -42,6 +42,7 @@ done
 
 run_tests "data-structures/sorted-array" "--solvers=no-inc:smt-z3:z3 tactic.default_tactic=smt sat.euf=true"
 run_tests "data-structures/maps/longmap" "--solvers=smt-cvc4,smt-z3,no-inc:smt-z3:z3 tactic.default_tactic=smt sat.euf=true"
+run_tests "tutorials/krakow2020/working" "--solvers=no-inc:smt-z3:z3 tactic.default_tactic=smt sat.euf=true"
 
 # The `--type-checker` option does not support `forall` so files containing `forall` are done in STD_TESTS:
 

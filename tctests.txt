@@ -16,7 +16,6 @@ fp-principles/recursion
 software-foundations
 tutorials/add-digits
 tutorials/dispenser
-tutorials/krakow2020/working
 tutorials/memory
 tutorials/simple-transform
 tutorials/fmcad2021/alt-diffs

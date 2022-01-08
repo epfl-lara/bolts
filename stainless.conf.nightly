@@ -2,3 +2,4 @@ vc-cache = false
 timeout = 300
 fail-early = true
 strict-arithmetic = false
+solvers="smt-z3"
