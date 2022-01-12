@@ -1,7 +1,7 @@
 /**
   * Author: Samuel Chassot
   */
-  
+
 import stainless.annotation._
 import stainless.collection._
 import stainless.equations._
@@ -74,7 +74,7 @@ case class ListMapLongKey[B](toList: List[(Long, B)]) {
     TupleListOps.lemmaContainsTupThenGetReturnValue(newList, keyValue._1, keyValue._2)
     ListMapLongKey(newList)
 
-  }.ensuring(res => res.contains(keyValue._1) && res.get(keyValue._1) == Some(keyValue._2))
+  }.ensuring(res => res.contains(keyValue._1) && res.get(keyValue._1) == Some[B](keyValue._2))
 
   // @inlineOnce
   def ++(keyValues: List[(Long, B)]): ListMapLongKey[B] = {
@@ -166,7 +166,7 @@ object TupleListOps {
       case Nil() => Nil[Long]()
     }
 
-  }.ensuring(res => res.forall(getValueByKey(l, _) == Some(value)))
+  }.ensuring(res => res.forall(getValueByKey(l, _) == Some[B](value)))
 
   def filterByValue[B](l: List[(Long, B)], value: B): List[(Long, B)] = {
     require(invariantList(l))
@@ -187,7 +187,7 @@ object TupleListOps {
     decreases(l)
 
     l match {
-      case Cons(head, tl) if (head._1 == key) => Some(head._2)
+      case Cons(head, tl) if (head._1 == key) => Some[B](head._2)
       case Cons(head, tl) if (head._1 != key) => getValueByKey(tl, key)
       case Nil()                              => None[B]()
     }
@@ -445,7 +445,7 @@ object TupleListOps {
   ): Unit = {
     require(
       invariantList(l) && !l.isEmpty && keys.forall(
-        getValueByKey(l, _) == Some(value)
+        getValueByKey(l, _) == Some[B](value)
       ) && newHead._1 < l.head._1
     )
     decreases(keys)
@@ -459,7 +459,7 @@ object TupleListOps {
       case _ => ()
     }
 
-  }.ensuring(_ => keys.forall(k => getValueByKey(newHead :: l, k) == Some(value)))
+  }.ensuring(_ => keys.forall(k => getValueByKey(newHead :: l, k) == Some[B](value)))
 
   @opaque
   def lemmaInsertStrictlySortedDoesNotModifyOtherKeyValues[B](
@@ -553,7 +553,7 @@ object TupleListOps {
       case Cons(head, tl) => lemmaContainsTupThenGetReturnValue(tl, key, value)
       case Nil()          => ()
     }
-  }.ensuring(_ => getValueByKey(l, key) == Some(value))
+  }.ensuring(_ => getValueByKey(l, key) == Some[B](value))
 }
 
 object ListMapLongKey {
