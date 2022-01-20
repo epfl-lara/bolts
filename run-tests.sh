@@ -40,7 +40,10 @@ for project in $TC_TESTS; do
 done
 
 run_tests "data-structures/sorted-array" "--config-file=stainless.conf.nightly" "--solvers=no-inc:smt-z3:z3 tactic.default_tactic=smt sat.euf=true"
-run_tests "data-structures/maps/longmap" "--config-file=data-structures/maps/longmap/stainless.conf" "--vc-cache=false" "-J-Xms16G"
+
+# long map works but uses too many kilowatts:
+# run_tests "data-structures/maps/longmap" "--config-file=data-structures/maps/longmap/stainless.conf" "--vc-cache=false" "-J-Xms16G"
+
 run_tests "tutorials/krakow2020/working" "--config-file=stainless.conf.nightly" "--solvers=no-inc:smt-z3:z3 tactic.default_tactic=smt sat.euf=true"
 
 # The `--type-checker` option does not support `forall` so files containing `forall` are done in STD_TESTS:
