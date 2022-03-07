@@ -1,0 +1,124 @@
+genc/genc-qoiconv
+genc/genc-qoibench
+genc/stainless.c
+genc/stainless.h
+output/
+
+# Stainless
+/bin/stainless-*
+.stainless-cache/
+.stainless.conf
+.stainless-external-tests/
+.stainless-package-standalone/
+
+# Vim
+*.swp
+
+# emacs
+*~
+
+# Ripgrep
+.rgignore
+
+# ensime
+.ensime
+.ensime_cache
+
+# sbt
+target
+/project/build
+project/project
+/stainless
+/.test-history
+/out-classes
+
+# synthesis
+derivation*.dot
+
+# stainless
+last.log
+*.last
+*.table
+*.log
+smt-sessions/
+tip-sessions/
+pri-sessions/
+stainless.out/
+repairs.dat
+tmp
+stainless-stack-trace.txt
+
+#eclipse
+.cache
+.classpath
+.project
+.settings/
+.worksheet/
+
+#intellij
+.idea
+Leon.eml
+Leon.iml
+*.iml
+/.idea_modules
+
+#scripts
+out-classes
+
+#z3
+.z3-trace
+
+#travis
+/travis/builds
+
+# Windows
+/cvc4.exe
+/libz3.dll
+/libz3.lib
+/msvcp100.dll
+/msvcr100.dll
+/scalaz3.dll
+/scalaz3.lib
+/vcomp100.dll
+/z3.exe
+/libz3java.dll
+/libz3java.lib
+
+# Coq files
+*#
+.#*
+*.aux
+*.glob
+*.vo
+*.v.d
+verif*.v
+.lia.cache
+.nia.cache
+.coqdeps.d
+*.vok
+*.vos
+slc-lib/.Makefile.d
+slc-lib/Makefile
+slc-lib/Makefile.conf
+
+# metals and VSCode
+.vscode
+.metals
+.bsp
+project/metals.sbt
+null
+.bloop/
+project/.bloop/
+project/project/
+.bsp
+
+# ripgrep
+.rgignore
+
+# C files
+*.out
+
+# LZW GenC benchmarks files
+input.txt
+decoded.txt
+encoded.txt
