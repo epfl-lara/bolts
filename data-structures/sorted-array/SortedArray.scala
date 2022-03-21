@@ -4,7 +4,7 @@ import stainless.lang.StaticChecks.assert
 import stainless.math._
 import stainless.proof.check
 import stainless.annotation.{ghost => ghostAnnot, _}
-import scala.Predef.{ genericArrayOps => _, genericWrapArray => _, assume => _, _ }
+import scala.Predef.{ genericArrayOps => _, genericWrapArray => _, assume => _, copyArrayToImmutableIndexedSeq => _, _ }
 import stainless.lang.ArrayUpdating
 
 import SortedArray._
@@ -74,10 +74,12 @@ object SortedArray {
         assert(order.leq(array(i)._1, array(i+2)._1))
       }
     }
-
-  }.ensuring(_ =>
-    isSortedRange(array.updated(j, array(j-1)).updated(j-1, array(j)), order, i, j-1)
-  )
+  }.ensuring { _ =>
+    // For some reasons, Z3 returns an invalid model if we were to use `swapped`
+    val atJm1 = snapshot(array(j - 1))
+    val atJ = snapshot(array(j))
+    isSortedRange(snapshot(array.updated(j, snapshot(atJm1)).updated(j-1, snapshot(atJ))), order, i, j-1)
+  }
 
   @pure @opaque @ghostAnnot @inlineOnce
   def isSortedRangeSwap2[K, @mutable T](
@@ -93,16 +95,19 @@ object SortedArray {
 
     if (0 <= i && i < array.length - 1 && i < j) {
       isSortedRangeSwap2(array, order, i+1, j, k, l)
-      val ar: Array[(K, T)] = array.updated(k, array(l)).updated(l, array(k))
+      val snArr1 = snapshot(array)
+      val snArr2 = snapshot(array)
+      val snArr3 = snapshot(array)
+      val ar: Array[(K, T)] = snArr1.updated(k, snapshot(snArr2(l))).updated(l, snapshot(snArr3(k)))
       assert(isSortedRange(ar, order, i+1, j))
       assert(order.leq(ar(i)._1, ar(i+1)._1))
       check(isSortedRange(ar, order, i, j))
     }
 
 
-  }.ensuring(_ =>
-    isSortedRange(array.updated(k, array(l)).updated(l, array(k)), order, i, j)
-  )
+  }.ensuring { _ =>
+    isSortedRange(swapped(array, k, l), order, i, j)
+  }
 
   @pure @opaque @ghostAnnot @inlineOnce
   def isSortedRangeSame[K, @mutable T](
@@ -218,25 +223,25 @@ object SortedArray {
       if (i < h) {
         sortedRangePair(array, order, i, 0, h)
         assert(order.leq(array(i)._1, array(i + 1)._1))
-        assert(order.leq(array.updated(h, elem).apply(i)._1, array.updated(h, elem).apply(i + 1)._1))
-        assert(isSortedRange(array.updated(h, elem), order, i+1, array.length - 1))
-        check(isSortedRange(array.updated(h, elem), order, i, array.length - 1))
+        assert(order.leq(snapshot(array.updated(h, snapshot(elem))).apply(i)._1, snapshot(array.updated(h, snapshot(elem))).apply(i + 1)._1))
+        assert(isSortedRange(snapshot(array.updated(h, snapshot(elem))), order, i+1, array.length - 1))
+        check(isSortedRange(snapshot(array.updated(h, snapshot(elem))), order, i, array.length - 1))
       }
       else if (i >= h+1) {
         sortedRangePair(array, order, i, h+1, array.length-1)
-        assert(isSortedRange(array.updated(h, elem), order, i + 1, array.length - 1))
+        assert(isSortedRange(snapshot(array.updated(h, snapshot(elem))), order, i + 1, array.length - 1))
         assert(order.leq(
-          (array.updated(h, elem): Array[(K, T)])(i)._1,
-          (array.updated(h, elem): Array[(K, T)])(i+1)._1
+          (snapshot(array.updated(h, snapshot(elem))): Array[(K, T)])(i)._1,
+          (snapshot(array.updated(h, snapshot(elem))): Array[(K, T)])(i+1)._1
         ))
-        check(isSortedRange(array.updated(h, elem), order, i, array.length - 1))
+        check(isSortedRange(snapshot(array.updated(h, snapshot(elem))), order, i, array.length - 1))
       } else {
-        check(isSortedRange(array.updated(h, elem), order, i, array.length - 1))
+        check(isSortedRange(snapshot(array.updated(h, snapshot(elem))), order, i, array.length - 1))
       }
     }
 
   }.ensuring { _ =>
-    isSortedRange(array.updated(h, elem), order, i, array.length - 1)
+    isSortedRange(array.updated(h, snapshot(elem)), order, i, array.length - 1)
   }
 
   @opaque @ghostAnnot @pure @inlineOnce
@@ -250,7 +255,7 @@ object SortedArray {
     insertSortedRange(array, order, h, elem, 0)
 
   }.ensuring { _ =>
-    isSorted(array.updated(h, elem), order)
+    isSorted(array.updated(h, snapshot(elem)), order)
   }
 
   @opaque @pure
@@ -311,6 +316,28 @@ object SortedArray {
     true
 
   )
+
+  @inline @ghostAnnot @pure
+  def swapLemma[@mutable T](arr1: Array[T], i: Int, arr2: Array[T], j: Int): Unit = {
+    require(0 <= i && i < arr1.length)
+    require(0 <= j && j < arr2.length)
+    @ghostAnnot val arr1Cpy: Array[T] = snapshot(arr1)
+    @ghostAnnot val arr2Cpy: Array[T] = snapshot(arr2)
+    @ghostAnnot val atI: T = snapshot(arr1(i))
+    @ghostAnnot val atJ: T = snapshot(arr2(j))
+
+    swap(arr1Cpy, i, arr2Cpy, j)
+    check(arr1Cpy == arr1.updated(i, snapshot(atJ)))
+    check(arr2Cpy == arr2.updated(j, snapshot(atI)))
+  }
+
+  @pure @ghostAnnot
+  def swapped[K, @mutable T](array: Array[(K, T)], i: Int, j: Int): Array[(K, T)] = {
+    require(0 <= i && i < array.length && 0 <= j && j < array.length)
+    val atI = snapshot(array(i))
+    val atJ = snapshot(array(j))
+    snapshot(array.updated(i, snapshot(atJ)).updated(j, snapshot(atI)))
+  }
 
 }
 
@@ -383,7 +410,7 @@ case class SortedArray[K, @mutable T](array: Array[(K, T)], order: TotalOrder[K]
 
     (while (i > h) {
       decreases(i)
-
+      @ghostAnnot val swppd = swapped(array, i, i-1)
       ghost {
         isSortedRangeSwap(array, order, 0, i)
         if (1 < i) {
@@ -391,8 +418,8 @@ case class SortedArray[K, @mutable T](array: Array[(K, T)], order: TotalOrder[K]
           assert(order.leq(array(i-2)._1, array(i-1)._1))
         }
         isSortedRangeSwap2(array, order, i+1, array.length-1, i, i-1)
-        assert(isSortedRange(array.updated(i, array(i-1)).updated(i-1, array(i)), order, i+1, array.length-1))
-        check(isSortedRange(array.updated(i, array(i-1)).updated(i-1, array(i)), order, i+2, array.length-1))
+        assert(isSortedRange(swppd, order, i+1, array.length-1))
+        check(isSortedRange(swppd, order, i+2, array.length-1))
         assert((i > h && h < n) ==> order.leq(elem._1, array(h)._1))
       }
 
@@ -425,6 +452,7 @@ case class SortedArray[K, @mutable T](array: Array[(K, T)], order: TotalOrder[K]
 
     }).inline.opaque.invariant (
       elemRef.length == 1 &&
+      elem == elemRef(0) &&
       0 <= i && i <= n-1 && array.length == n &&
       i >= h &&
       isSortedRange(array, order, 0, i) &&
@@ -435,6 +463,7 @@ case class SortedArray[K, @mutable T](array: Array[(K, T)], order: TotalOrder[K]
       (i > h ==> order.leq(elem._1, array(h)._1)) &&
       true
     )
+    assert(elem == elemRef(0))
 
     assert(i >= h)
     assert(i <= h)
@@ -456,10 +485,19 @@ case class SortedArray[K, @mutable T](array: Array[(K, T)], order: TotalOrder[K]
         check(order.leq(elem._1, array(h+1)._1))
       }
       insertSorted(array, order, h, elem)
+      check(elem == elemRef(0))
+      check(isSorted(array.updated(h, snapshot(elem)), order))
     }
 
+    @ghostAnnot val oldArray = snapshot(array)
+    @ghostAnnot val oldElemRef = snapshot(elemRef)
+    assert(elem == oldElemRef(0))
+    ghost { swapLemma(array, h, elemRef, 0) }
     swap(array, h, elemRef, 0)
-    assert(isSorted(array, order))
+    assert(elem == oldElemRef(0))
+    assert(array == oldArray.updated(h, snapshot(oldElemRef(0))))
+    assert(isSorted(oldArray.updated(h, snapshot(oldElemRef(0))), order))
+    check(isSorted(array, order))
     true
   }.ensuring(_ => isSorted(array, order))
 }
