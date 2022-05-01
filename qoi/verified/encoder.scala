@@ -302,9 +302,10 @@ object encoder {
           assert(decodedPreRec.pixels.length == pixels.length)
           assert(decodedPreRec.pixels.length == w * h * chan)
           assert((w * h * chan) % chan == 0)
-          assert(decodedPreRec.pixels.length % chan == 0)
+          assert(0 <= decodedPreRec.pxPos)
           assert(decodedPreRec.pxPos <= w * h * chan)
-          assert(decoder.pxPosInv(decodedPreRec.pxPos))
+          assert(decodedPreRec.pixels.length % chan == 0)
+          assert(decoder.pxPosInv(decodedPreRec.pxPos)) // Very slow (~110s)
           val (ix2, pix2, decIter2) = decoder.decodeLoopPure(decodedPreRec.index, decodedPreRec.pixels, px, outPos2, outPosRes, decodedPreRec.pxPos)
           assert(decIter2.pxPos == decoded.pxPos)
           assert(decIter2.inPos == decoded.inPos)
@@ -318,8 +319,8 @@ object encoder {
           assert(oldDecoded.pixels.length == w * h * chan)
           assert((w * h * chan) % chan == 0)
           assert(oldDecoded.pixels.length % chan == 0)
-          assert(0 <= oldDecoded.pxPos && oldDecoded.pxPos <= oldDecoded.pixels.length)
-          val (ix3, pix3, decIter3) = decoder.decodeLoopPure(oldDecoded.index, oldDecoded.pixels, pxPrev, outPos0, outPosRes, oldDecoded.pxPos)
+          assert(0 <= oldDecoded.pxPos && oldDecoded.pxPos <= oldDecoded.pixels.length) // Very slow (~120s)
+          val (ix3, pix3, decIter3) = decoder.decodeLoopPure(oldDecoded.index, oldDecoded.pixels, pxPrev, outPos0, outPosRes, oldDecoded.pxPos) // Precond 4 slow (~85s)
 
           assert(outPosRes <= bytes.length - Padding)
           assert(outPos0 < outPos2)
@@ -343,7 +344,7 @@ object encoder {
           assert(ix3 == decoded.index)
           assert(pix3 == decoded.pixels)
 
-          check(decodeLoopEncodeProp(bytes, pxPrev, outPos0, outPosRes, oldDecoded, pxRes, decoded))
+          check(decodeLoopEncodeProp(bytes, pxPrev, outPos0, outPosRes, oldDecoded, pxRes, decoded)) // Slow (~70s)
         }
         check(oldBytes.length == bytes.length)
         check(decodeLoopEncodeProp(bytes, pxPrev, outPos0, outPosRes, oldDecoded, pxRes, decoded))
@@ -795,10 +796,12 @@ object encoder {
       decoded.pixels = freshCopy(newDecoded.pixels)
       decoded.inPos = newDecoded.inPos
       decoded.pxPos = newDecoded.pxPos
+
+      check(index == decoded.index)
     }
 
     EncodeSingleStepResult(px, outPos2, run1)
-  }.ensuring { case EncodeSingleStepResult(px, outPos2, run1) =>
+  }.ensuring { case EncodeSingleStepResult(px, outPos2, run1) => // Wins the "slowest to verify" award (~210s)
     // Bytes and index length are unchanged
     bytes.length == maxSize &&&
     index.length == 64 &&&

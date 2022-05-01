@@ -705,10 +705,19 @@ object decoder {
     require(pxPos0 + chan <= pixels.length)
     require(inPos0 < inPos1 && inPos1 <= chunksLen)
 
-    val (index1, pixels1, decIter1) = decodeLoopPure(index, pixels, pxPrev, inPos0, inPos1, pxPos0)
-    val (indexNext, pixelNext, _, decIterNext) = decodeNextPure(index, pixels, pxPrev, inPos0, pxPos0)
+    val res1 = decodeLoopPure(index, pixels, pxPrev, inPos0, inPos1, pxPos0)
+    val index1 = res1._1
+    val pixels1 = res1._2
+    val decIter1 = res1._3
+    val resNext = decodeNextPure(index, pixels, pxPrev, inPos0, pxPos0)
+    val indexNext = resNext._1
+    val pixelNext = resNext._2
+    val decIterNext = resNext._4
     require(decIterNext.inPos < inPos1 && decIterNext.pxPos < pixels.length && decIterNext.pxPos + chan <= pixels.length)
-    val (index2, pixels2, decIter2) = decodeLoopPure(indexNext, pixelNext, decIterNext.px, decIterNext.inPos, inPos1, decIterNext.pxPos)
+    val res2 = decodeLoopPure(indexNext, pixelNext, decIterNext.px, decIterNext.inPos, inPos1, decIterNext.pxPos)
+    val index2 = res2._1
+    val pixels2 = res2._2
+    val decIter2 = res2._3
 
     {
       ()
@@ -741,10 +750,16 @@ object decoder {
     require(arraysEq(bytes, bytes2, inPos0, untilInPos))
 
     val ctx2 = Ctx(freshCopy(bytes2), w, h, chan)
-    val (ix1, pix1, decIter1) = decodeLoopPure(index, pixels, pxPrev, inPos0, untilInPos, pxPos0)(using ctx1)
+    val res1 = decodeLoopPure(index, pixels, pxPrev, inPos0, untilInPos, pxPos0)(using ctx1)
+    val ix1 = res1._1
+    val pix1 = res1._2
+    val decIter1 = res1._3
     require(decIter1.pxPos <= pixels.length)
     require(decIter1.inPos == untilInPos)
-    val (ix2, pix2, decIter2) = decodeLoopPure(index, pixels, pxPrev, inPos0, untilInPos, pxPos0)(using ctx2)
+    val res2 = decodeLoopPure(index, pixels, pxPrev, inPos0, untilInPos, pxPos0)(using ctx2)
+    val ix2 = res2._1
+    val pix2 = res2._2
+    val decIter2 = res2._3
 
     {
       assert(ctx2.bytes == bytes2)
@@ -817,11 +832,20 @@ object decoder {
     require(pxPosInv(pxPos0))
     require(pxPos0 + chan <= pixels.length)
     require(inPos0 < inPos1 && inPos1 < inPos2 && inPos2 <= chunksLen)
-    val (index1, pixels1, decIter1) = decodeLoopPure(index, pixels, pxPrev, inPos0, inPos1, pxPos0)
+    val res1 = decodeLoopPure(index, pixels, pxPrev, inPos0, inPos1, pxPos0)
+    val index1 = res1._1
+    val pixels1 = res1._2
+    val decIter1 = res1._3
     require(decIter1.pxPos < pixels.length && decIter1.pxPos + chan <= pixels.length)
     require(decIter1.inPos == inPos1)
-    val (index2, pixels2, decIter2) = decodeLoopPure(index1, pixels1, decIter1.px, inPos1, inPos2, decIter1.pxPos)
-    val (index3, pixels3, decIter3) = decodeLoopPure(index, pixels, pxPrev, inPos0, inPos2, pxPos0)
+    val res2 = decodeLoopPure(index1, pixels1, decIter1.px, inPos1, inPos2, decIter1.pxPos)
+    val index2 = res2._1
+    val pixels2 = res2._2
+    val decIter2 = res2._3
+    val res3 = decodeLoopPure(index, pixels, pxPrev, inPos0, inPos2, pxPos0)
+    val index3 = res3._1
+    val pixels3 = res3._2
+    val decIter3 = res3._3
 
     {
       val (indexNext, pixelNext, _, decIterNext) = decodeNextPure(index, pixels, pxPrev, inPos0, pxPos0)
@@ -882,9 +906,18 @@ object decoder {
     require(inPos0 < chunksLen)
     require(bytes.length == bytes2.length)
     val ctx2 = Ctx(freshCopy(bytes2), w, h, chan)
-    val (ix1, pix1, res1, decIter1) = decodeNextPure(index, pixels, pxPrev, inPos0, pxPos0)(using ctx1)
+    val resNext1 = decodeNextPure(index, pixels, pxPrev, inPos0, pxPos0)(using ctx1)
+    val ix1 = resNext1._1
+    val pix1 = resNext1._2
+    val res1 = resNext1._3
+    val decIter1 = resNext1._4
+
     require(arraysEq(bytes, bytes2, inPos0, decIter1.inPos))
-    val (ix2, pix2, res2, decIter2) = decodeNextPure(index, pixels, pxPrev, inPos0, pxPos0)(using ctx2)
+    val resNext2 = decodeNextPure(index, pixels, pxPrev, inPos0, pxPos0)(using ctx2)
+    val ix2 = resNext2._1
+    val pix2 = resNext2._2
+    val res2 = resNext2._3
+    val decIter2 = resNext2._4
 
     {
       doDecodeNextBytesEqLemma(index, pxPrev, inPos0, bytes2)
