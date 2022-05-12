@@ -2,7 +2,7 @@ import common.*
 
 object encoder {
 
-  case class Ctx(pixels: Array[Byte], w: Long, h: Long, chan: Long) {
+  case class EncCtx(pixels: Array[Byte], w: Long, h: Long, chan: Long) {
     def maxSize: Long = w * h * (chan + 1) + HeaderSize + Padding
 
     def pxEnd: Long = pixels.length - chan
@@ -10,9 +10,7 @@ object encoder {
 
   case class EncodedResult(encoded: Array[Byte], length: Long)
 
-  case class EncodeSingleStepResult(px: Int, outPos: Long, run: Long)
-
-  case class EncodingIteration(px: Int, outPos: Long)
+  case class EncodingIteration(px: Int, outPos: Long, run: Long)
 
   case class RunUpdate(reset: Boolean, run: Long, outPos: Long)
 
@@ -27,31 +25,30 @@ object encoder {
       3 <= chan && chan <= 4 &&
       w * h * chan == pixels.length))
       None
-    else doEncode(using Ctx(pixels, w, h, chan))
+    else Some(encode()(using EncCtx(pixels, w, h, chan)))
   }
 
-  def doEncode(using Ctx): Option[EncodedResult] = {
+  def encode()(using EncCtx): EncodedResult = {
     val bytes = Array.fill(maxSize.toInt)(0: Byte)
     writeHeader(bytes)
     val index = Array.fill(64)(0)
     val pxPrev = Pixel.fromRgba(0, 0, 0, 255.toByte)
-    val EncodingIteration(pxRes, outPos) = encodeLoop(index, bytes, pxPrev, 0, HeaderSize, 0)
-    Some(EncodedResult(bytes, outPos + Padding))
+    val EncodingIteration(pxRes, outPos, _) = encodeLoop(index, bytes, pxPrev, 0, HeaderSize, 0)
+    EncodedResult(bytes, outPos + Padding)
   }
 
-  def encodeLoop(index: Array[Int], bytes: Array[Byte], pxPrev: Int, run0: Long, outPos0: Long, pxPos: Long)(using Ctx): EncodingIteration = {
-    val EncodeSingleStepResult(px, outPos2, run1) = encodeSingleStep(index, bytes, pxPrev, run0, outPos0, pxPos)
+  def encodeLoop(index: Array[Int], bytes: Array[Byte], pxPrev: Int, run0: Long, outPos0: Long, pxPos: Long)(using EncCtx): EncodingIteration = {
+    val EncodingIteration(px, outPos2, run1) = encodeSingleStep(index, bytes, pxPrev, run0, outPos0, pxPos)
 
     if (pxPos + chan < pixels.length) {
       encodeLoop(index, bytes, px, run1, outPos2, pxPos + chan)
     } else {
       bytes(outPos2.toInt + Padding - 1) = 1
-      EncodingIteration(px, outPos2)
+      EncodingIteration(px, outPos2, run1)
     }
   }
 
-
-  def writeHeader(bytes: Array[Byte])(using Ctx): Unit = {
+  def writeHeader(bytes: Array[Byte])(using EncCtx): Unit = {
     write32(bytes, 0, MagicNumber)
     assert(read32(bytes, 0) == MagicNumber)
 
@@ -67,7 +64,7 @@ object encoder {
     bytes(13) = 0 // Color-space (unused)
   }
 
-  def encodeSingleStep(index: Array[Int], bytes: Array[Byte], pxPrev: Int, run0: Long, outPos0: Long, pxPos: Long)(using Ctx): EncodeSingleStepResult = {
+  def encodeSingleStep(index: Array[Int], bytes: Array[Byte], pxPrev: Int, run0: Long, outPos0: Long, pxPos: Long)(using EncCtx): EncodingIteration = {
     val px =
       if (chan == 4) read32(pixels, pxPos.toInt)
       else Pixel.fromRgba(pixels(pxPos.toInt), pixels(pxPos.toInt + 1), pixels(pxPos.toInt + 2), Pixel.a(pxPrev))
@@ -82,10 +79,10 @@ object encoder {
     } else {
       outPos1
     }
-    EncodeSingleStepResult(px, outPos2, run1)
+    EncodingIteration(px, outPos2, run1)
   }
 
-  def updateRun(bytes: Array[Byte], run0: Long, outPos0: Long)(using Ctx, LoopIter): RunUpdate = {
+  def updateRun(bytes: Array[Byte], run0: Long, outPos0: Long)(using EncCtx, LoopIter): RunUpdate = {
     var run = run0
     var outPos = outPos0
 
@@ -103,7 +100,7 @@ object encoder {
     RunUpdate(runReset, run, outPos)
   }
 
-  def encodeNoRun(index: Array[Int], bytes: Array[Byte], outPos1: Long)(using Ctx, LoopIter): Long = {
+  def encodeNoRun(index: Array[Int], bytes: Array[Byte], outPos1: Long)(using EncCtx, LoopIter): Long = {
     val indexPos = colorPos(px)
     var newOutPos = outPos1
 
@@ -160,17 +157,17 @@ object encoder {
     newOutPos
   }
 
-  def maxSize(using ctx: Ctx): Long = ctx.maxSize
+  def maxSize(using ctx: EncCtx): Long = ctx.maxSize
 
-  def pxEnd(using ctx: Ctx): Long = ctx.pxEnd
+  def pxEnd(using ctx: EncCtx): Long = ctx.pxEnd
 
-  def w(using ctx: Ctx): Long = ctx.w
+  def w(using ctx: EncCtx): Long = ctx.w
 
-  def h(using ctx: Ctx): Long = ctx.h
+  def h(using ctx: EncCtx): Long = ctx.h
 
-  def chan(using ctx: Ctx): Long = ctx.chan
+  def chan(using ctx: EncCtx): Long = ctx.chan
 
-  def pixels(using ctx: Ctx): Array[Byte] = ctx.pixels
+  def pixels(using ctx: EncCtx): Array[Byte] = ctx.pixels
 
   def px(using li: LoopIter): Int = li.px
 

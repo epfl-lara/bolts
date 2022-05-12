@@ -2,7 +2,7 @@ import common.*
 
 object decoder {
 
-  case class Ctx(bytes: Array[Byte], w: Long, h: Long, chan: Long) {
+  case class DecCtx(bytes: Array[Byte], w: Long, h: Long, chan: Long) {
     def pixelsLen: Long = w * h * chan
 
     def chunksLen: Long = bytes.length - Padding
@@ -20,8 +20,8 @@ object decoder {
 
   /////////////////////////////////////////////////////////////////////////////////////////////////////
 
-  def decode(bytes: Array[Byte], to: Long): Option[DecodedResult] = {
-    if (!(bytes.length > HeaderSize + Padding && HeaderSize + Padding < to && to <= bytes.length)) {
+  def decode(bytes: Array[Byte], until: Long): Option[DecodedResult] = {
+    if (!(bytes.length > HeaderSize + Padding && HeaderSize + Padding < until && until <= bytes.length)) {
       None
     } else {
       decodeHeader(bytes).map {
@@ -29,16 +29,16 @@ object decoder {
           val index = Array.fill(64)(0)
           val pixels = Array.fill(w.toInt * h.toInt * chan.toInt)(0: Byte)
           val px = Pixel.fromRgba(0, 0, 0, 255.toByte)
-          val decIter = decodeLoop(index, pixels, px, HeaderSize, to - Padding, 0)(using Ctx(bytes, w, h, chan))
+          val decIter = decodeLoop(index, pixels, px, HeaderSize, until - Padding, 0)(using DecCtx(bytes, w, h, chan))
           if (decIter.pxPos != pixels.length) {
-            writeRemainingPixels(pixels, decIter.px, decIter.pxPos)(using Ctx(bytes, w, h, chan))
+            writeRemainingPixels(pixels, decIter.px, decIter.pxPos)(using DecCtx(bytes, w, h, chan))
           }
           DecodedResult(pixels, w, h, chan)
       }
     }
   }
 
-  def writeRemainingPixels(pixels: Array[Byte], pxPrev: Int, pxPos: Long)(using Ctx): Unit = {
+  def writeRemainingPixels(pixels: Array[Byte], pxPrev: Int, pxPos: Long)(using DecCtx): Unit = {
     writePixel(pixels, pxPrev, pxPos)
     if (pxPos + chan < pixels.length) {
       writeRemainingPixels(pixels, pxPrev, pxPos + chan)
@@ -46,7 +46,7 @@ object decoder {
   }
 
   def decodeLoop(index: Array[Int], pixels: Array[Byte], pxPrev: Int,
-                 inPos0: Long, untilInPos: Long, pxPos0: Long)(using Ctx): DecodingIteration = {
+                 inPos0: Long, untilInPos: Long, pxPos0: Long)(using DecCtx): DecodingIteration = {
     val (res, decIter) = decodeNext(index, pixels, pxPrev, inPos0, pxPos0)
 
     if (decIter.inPos < untilInPos && decIter.pxPos + chan <= pixels.length) {
@@ -56,7 +56,7 @@ object decoder {
     }
   }
 
-  def decodeNext(index: Array[Int], pixels: Array[Byte], pxPrev: Int, inPos0: Long, pxPos0: Long)(using Ctx): (DecodedNext, DecodingIteration) = {
+  def decodeNext(index: Array[Int], pixels: Array[Byte], pxPrev: Int, inPos0: Long, pxPos0: Long)(using DecCtx): (DecodedNext, DecodingIteration) = {
     val (decRes, inPos) = doDecodeNext(index, pxPrev, inPos0)
 
     decRes match {
@@ -71,7 +71,7 @@ object decoder {
     }
   }
 
-  def doDecodeNext(index: Array[Int], pxPrev: Int, inPos0: Long)(using Ctx): (DecodedNext, Long) = {
+  def doDecodeNext(index: Array[Int], pxPrev: Int, inPos0: Long)(using DecCtx): (DecodedNext, Long) = {
     var px = pxPrev
     var inPos = inPos0
     var run = 0L
@@ -118,7 +118,7 @@ object decoder {
       None
   }
 
-  def writeRunPixels(pixels: Array[Byte], px: Int, run0: Long, pxPos0: Long)(using Ctx): WriteRunPixelsResult = {
+  def writeRunPixels(pixels: Array[Byte], px: Int, run0: Long, pxPos0: Long)(using DecCtx): WriteRunPixelsResult = {
     writePixel(pixels, px, pxPos0)
     if (run0 > 0 && pxPos0 + chan < pixels.length) {
       writeRunPixels(pixels, px, run0 - 1, pxPos0 + chan)
@@ -127,7 +127,7 @@ object decoder {
     }
   }
 
-  def writePixel(pixels: Array[Byte], px: Int, pxPos: Long)(using Ctx): Unit = {
+  def writePixel(pixels: Array[Byte], px: Int, pxPos: Long)(using DecCtx): Unit = {
     pixels(pxPos.toInt) = Pixel.r(px)
     pixels(pxPos.toInt + 1) = Pixel.g(px)
     pixels(pxPos.toInt + 2) = Pixel.b(px)
@@ -155,15 +155,15 @@ object decoder {
 
   /////////////////////////////////////////////////////////////////////////////////////////////////////
 
-  def w(using ctx: Ctx): Long = ctx.w
+  def w(using ctx: DecCtx): Long = ctx.w
 
-  def h(using ctx: Ctx): Long = ctx.h
+  def h(using ctx: DecCtx): Long = ctx.h
 
-  def chan(using ctx: Ctx): Long = ctx.chan
+  def chan(using ctx: DecCtx): Long = ctx.chan
 
-  def pixelsLen(using ctx: Ctx): Long = ctx.pixelsLen
+  def pixelsLen(using ctx: DecCtx): Long = ctx.pixelsLen
 
-  def chunksLen(using ctx: Ctx): Long = ctx.chunksLen
+  def chunksLen(using ctx: DecCtx): Long = ctx.chunksLen
 
-  def bytes(using ctx: Ctx): Array[Byte] = ctx.bytes
+  def bytes(using ctx: DecCtx): Array[Byte] = ctx.bytes
 }
