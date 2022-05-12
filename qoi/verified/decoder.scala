@@ -8,7 +8,7 @@ import common.*
 
 object decoder {
 
-  case class Ctx(bytes: Array[Byte], w: Long, h: Long, chan: Long) {
+  case class DecCtx(bytes: Array[Byte], w: Long, h: Long, chan: Long) {
     require(0 < w && w <= MaxWidth &&
       0 < h && h <= MaxHeight &&
       3 <= chan && chan <= 4 &&
@@ -39,8 +39,8 @@ object decoder {
 
   @pure
   @cCode.`export`
-  def decode(bytes: Array[Byte], to: Long): OptionMut[DecodedResult] = {
-    if (!(bytes.length > HeaderSize + Padding && HeaderSize + Padding < to && to <= bytes.length))
+  def decode(bytes: Array[Byte], until: Long): OptionMut[DecodedResult] = {
+    if (!(bytes.length > HeaderSize + Padding && HeaderSize + Padding < until && until <= bytes.length))
       NoneMut()
     else {
       decodeHeader(bytes) match {
@@ -51,14 +51,14 @@ object decoder {
           val index = Array.fill(64)(0)
           val pixels = allocArray(w.toInt * h.toInt * chan.toInt)
           val px = Pixel.fromRgba(0, 0, 0, 255.toByte)
-          val decIter = decodeLoop(index, pixels, px, HeaderSize, to - Padding, 0)(using Ctx(bytes, w, h, chan))
+          val decIter = decodeLoop(index, pixels, px, HeaderSize, until - Padding, 0)(using DecCtx(bytes, w, h, chan))
           @ghost val pixelsPreWrite = freshCopy(pixels)
           ghostExpr {
             check(0 <= decIter.pxPos && decIter.pxPos <= pixels.length)
             check(decIter.pxPos % chan == 0)
           }
           if (decIter.pxPos != pixels.length) {
-            writeRemainingPixels(pixels, decIter.px, decIter.pxPos, decIter.pxPos)(using Ctx(bytes, w, h, chan))
+            writeRemainingPixels(pixels, decIter.px, decIter.pxPos, decIter.pxPos)(using DecCtx(bytes, w, h, chan))
           }
           ghostExpr {
             if (decIter.pxPos != pixels.length) {
@@ -78,7 +78,7 @@ object decoder {
 
   @opaque
   @inlineOnce
-  def writeRemainingPixels(pixels: Array[Byte], pxPrev: Int, pxPos: Long, @ghost pxPosOrig: Long)(using Ctx): Unit = {
+  def writeRemainingPixels(pixels: Array[Byte], pxPrev: Int, pxPos: Long, @ghost pxPosOrig: Long)(using DecCtx): Unit = {
     decreases(pixels.length - pxPos)
     require(pixels.length == pixelsLen)
     require(0 <= pxPos && pxPos < pixels.length)
@@ -162,7 +162,7 @@ object decoder {
   }
 
   def decodeLoop(index: Array[Int], pixels: Array[Byte], pxPrev: Int,
-                 inPos0: Long, untilInPos: Long, pxPos0: Long)(using Ctx): DecodingIteration = {
+                 inPos0: Long, untilInPos: Long, pxPos0: Long)(using DecCtx): DecodingIteration = {
     decreases(untilInPos - inPos0)
     require(index.length == 64)
     require(pixels.length == pixelsLen)
@@ -188,7 +188,7 @@ object decoder {
     HeaderSize <= decIter.inPos
   }
 
-  def decodeNext(index: Array[Int], pixels: Array[Byte], pxPrev: Int, inPos0: Long, pxPos0: Long)(using Ctx): (DecodedNext, DecodingIteration) = {
+  def decodeNext(index: Array[Int], pixels: Array[Byte], pxPrev: Int, inPos0: Long, pxPos0: Long)(using DecCtx): (DecodedNext, DecodingIteration) = {
     require(index.length == 64)
     require(pixels.length == pixelsLen)
     require(inPosInv(inPos0))
@@ -228,7 +228,7 @@ object decoder {
   }
 
   @pure
-  def doDecodeNext(index: Array[Int], pxPrev: Int, inPos0: Long)(using Ctx): (DecodedNext, Long) = {
+  def doDecodeNext(index: Array[Int], pxPrev: Int, inPos0: Long)(using DecCtx): (DecodedNext, Long) = {
     require(index.length == 64)
     require(HeaderSize <= inPos0 && inPos0 < chunksLen)
     var px = pxPrev
@@ -281,7 +281,7 @@ object decoder {
   }
 
   // Note: not opaque, as writeRunPixelsPureBytesEqLemma needs to see its definition.
-  def writeRunPixels(pixels: Array[Byte], px: Int, run0: Long, pxPos0: Long)(using Ctx): WriteRunPixelsResult = {
+  def writeRunPixels(pixels: Array[Byte], px: Int, run0: Long, pxPos0: Long)(using DecCtx): WriteRunPixelsResult = {
     decreases(pixelsLen - pxPos0)
     require(pixels.length == pixelsLen)
     require(runInv(run0))
@@ -389,7 +389,7 @@ object decoder {
   }
 
   // Note: not opaque, as writePixelPureBytesEqLemma needs to see its definition.
-  def writePixel(pixels: Array[Byte], px: Int, pxPos: Long)(using Ctx): Unit = {
+  def writePixel(pixels: Array[Byte], px: Int, pxPos: Long)(using DecCtx): Unit = {
     require(pixels.length == pixelsLen)
     require(pxPosInv(pxPos))
     require(pxPos + chan <= pixels.length)
@@ -452,26 +452,26 @@ object decoder {
     0 <= run && run <= 62
 
   @ghost
-  def pxPosInv(pxPos: Long)(using Ctx): Boolean =
+  def pxPosInv(pxPos: Long)(using DecCtx): Boolean =
     0 <= pxPos && pxPos <= pixelsLen && pxPos % chan == 0
 
   @ghost
-  def inPosInv(inPos: Long)(using Ctx): Boolean =
+  def inPosInv(inPos: Long)(using DecCtx): Boolean =
     HeaderSize <= inPos && inPos <= bytes.length - Padding
 
   @ghost
-  def rangesInv(run: Long, inPos: Long, pxPos: Long)(using Ctx): Boolean =
+  def rangesInv(run: Long, inPos: Long, pxPos: Long)(using DecCtx): Boolean =
     pxPosInv(pxPos) && runInv(run) && inPosInv(inPos)
 
   @ghost
-  def rangesInv(indexLen: Long, run: Long, inPos: Long, pxPos: Long)(using Ctx): Boolean =
+  def rangesInv(indexLen: Long, run: Long, inPos: Long, pxPos: Long)(using DecCtx): Boolean =
     pxPosInv(pxPos) && runInv(run) && inPosInv(inPos) && indexLen == 64
 
   /////////////////////////////////////////////////////////////////////////////////////////////////////
 
   @ghost
   @pure
-  def writePixelPure(pixels: Array[Byte], px: Int, pxPos: Long)(using Ctx): Array[Byte] = {
+  def writePixelPure(pixels: Array[Byte], px: Int, pxPos: Long)(using DecCtx): Array[Byte] = {
     require(pixels.length == pixelsLen)
     require(pxPosInv(pxPos))
     require(pxPos + chan <= pixels.length)
@@ -488,7 +488,7 @@ object decoder {
   @pure
   @opaque
   @inlineOnce
-  def writePixelPureBytesEqLemma(pixels: Array[Byte], px: Int, pxPos: Long, from: Long, until: Long, bytes2: Array[Byte])(using ctx1: Ctx): Unit = {
+  def writePixelPureBytesEqLemma(pixels: Array[Byte], px: Int, pxPos: Long, from: Long, until: Long, bytes2: Array[Byte])(using ctx1: DecCtx): Unit = {
     require(pixels.length == pixelsLen)
     require(pxPosInv(pxPos))
     require(pxPos + chan <= pixels.length)
@@ -496,7 +496,7 @@ object decoder {
     require(0 <= from && from <= until && until <= bytes.length)
     require(arraysEq(bytes, bytes2, from, until))
 
-    val ctx2 = Ctx(freshCopy(bytes2), w, h, chan)
+    val ctx2 = DecCtx(freshCopy(bytes2), w, h, chan)
     val pix1 = writePixelPure(pixels, px, pxPos)(using ctx1)
     val pix2 = writePixelPure(pixels, px, pxPos)(using ctx2)
 
@@ -506,7 +506,7 @@ object decoder {
   }
 
   @ghost
-  def writeRunPixelsInv(pxPos0: Long, run0: Long, pxPos2: Long, run2: Long)(using Ctx): Boolean = {
+  def writeRunPixelsInv(pxPos0: Long, run0: Long, pxPos2: Long, run2: Long)(using DecCtx): Boolean = {
     require(runInv(run0))
     require(pxPosInv(pxPos0))
     require(pxPos0 + chan <= pixelsLen)
@@ -515,7 +515,7 @@ object decoder {
 
   @ghost
   @pure
-  def writeRunPixelsPure(pixels: Array[Byte], px: Int, run0: Long, pxPos0: Long)(using Ctx): (Array[Byte], Long, Long) = {
+  def writeRunPixelsPure(pixels: Array[Byte], px: Int, run0: Long, pxPos0: Long)(using DecCtx): (Array[Byte], Long, Long) = {
     require(pixels.length == pixelsLen)
     require(runInv(run0))
     require(pxPosInv(pxPos0))
@@ -537,7 +537,7 @@ object decoder {
   @pure
   @opaque
   @inlineOnce
-  def writeRunPixelPureBytesEqLemma(pixels: Array[Byte], px: Int, run0: Long, pxPos0: Long, from: Long, until: Long, bytes2: Array[Byte])(using ctx1: Ctx): Unit = {
+  def writeRunPixelPureBytesEqLemma(pixels: Array[Byte], px: Int, run0: Long, pxPos0: Long, from: Long, until: Long, bytes2: Array[Byte])(using ctx1: DecCtx): Unit = {
     decreases(pixelsLen - pxPos0)
     require(pixels.length == pixelsLen)
     require(runInv(run0))
@@ -547,7 +547,7 @@ object decoder {
     require(0 <= from && from <= until && until <= bytes.length)
     require(arraysEq(bytes, bytes2, from, until))
 
-    val ctx2 = Ctx(freshCopy(bytes2), w, h, chan)
+    val ctx2 = DecCtx(freshCopy(bytes2), w, h, chan)
     val (pix1, run1, pxPos1) = writeRunPixelsPure(pixels, px, run0, pxPos0)(using ctx1)
     val (pix2, run2, pxPos2) = writeRunPixelsPure(pixels, px, run0, pxPos0)(using ctx2)
 
@@ -593,7 +593,7 @@ object decoder {
 
   @ghost
   @pure
-  def decodeNextPure(index: Array[Int], pixels: Array[Byte], pxPrev: Int, inPos0: Long, pxPos0: Long)(using Ctx): (Array[Int], Array[Byte], DecodedNext, DecodingIteration) = {
+  def decodeNextPure(index: Array[Int], pixels: Array[Byte], pxPrev: Int, inPos0: Long, pxPos0: Long)(using DecCtx): (Array[Int], Array[Byte], DecodedNext, DecodingIteration) = {
     require(index.length == 64)
     require(pixels.length == pixelsLen)
     require(inPosInv(inPos0))
@@ -636,7 +636,7 @@ object decoder {
   @pure
   @opaque
   @inlineOnce
-  def decodeLemma(until: Long)(using Ctx): Unit = {
+  def decodeLemma(until: Long)(using DecCtx): Unit = {
     require(HeaderSize + Padding < until && until <= bytes.length)
     val readMagic = read32(bytes, 0)
     val readW = read32(bytes, 4)
@@ -669,7 +669,7 @@ object decoder {
   @ghost
   @pure
   def decodeLoopPure(index: Array[Int], pixels: Array[Byte], pxPrev: Int,
-                      inPos0: Long, untilInPos: Long, pxPos0: Long)(using Ctx): (Array[Int], Array[Byte], DecodingIteration) = {
+                      inPos0: Long, untilInPos: Long, pxPos0: Long)(using DecCtx): (Array[Int], Array[Byte], DecodingIteration) = {
     require(index.length == 64)
     require(pixels.length == pixelsLen)
     require(inPosInv(inPos0))
@@ -697,7 +697,7 @@ object decoder {
                                pxPrev: Int,
                                inPos0: Long,
                                inPos1: Long,
-                               pxPos0: Long)(using Ctx): Unit = {
+                               pxPos0: Long)(using DecCtx): Unit = {
     require(index.length == 64)
     require(pixels.length == pixelsLen)
     require(inPosInv(inPos0))
@@ -738,7 +738,7 @@ object decoder {
                                  inPos0: Long,
                                  untilInPos: Long,
                                  pxPos0: Long,
-                                 bytes2: Array[Byte])(using ctx1: Ctx): Unit = {
+                                 bytes2: Array[Byte])(using ctx1: DecCtx): Unit = {
     decreases(untilInPos - inPos0)
     require(index.length == 64)
     require(pixels.length == pixelsLen)
@@ -749,7 +749,7 @@ object decoder {
     require(bytes.length == bytes2.length)
     require(arraysEq(bytes, bytes2, inPos0, untilInPos))
 
-    val ctx2 = Ctx(freshCopy(bytes2), w, h, chan)
+    val ctx2 = DecCtx(freshCopy(bytes2), w, h, chan)
     val res1 = decodeLoopPure(index, pixels, pxPrev, inPos0, untilInPos, pxPos0)(using ctx1)
     val ix1 = res1._1
     val pix1 = res1._2
@@ -824,7 +824,7 @@ object decoder {
                                 inPos0: Long,
                                 inPos1: Long,
                                 inPos2: Long,
-                                pxPos0: Long)(using Ctx): Unit = {
+                                pxPos0: Long)(using DecCtx): Unit = {
     decreases(inPos2 - inPos0)
     require(index.length == 64)
     require(pixels.length == pixelsLen)
@@ -897,7 +897,7 @@ object decoder {
   @opaque
   @inlineOnce
   @pure
-  def decodeNextPureBytesEqLemma(index: Array[Int], pixels: Array[Byte], pxPrev: Int, inPos0: Long, pxPos0: Long, bytes2: Array[Byte])(using ctx1: Ctx): Unit = {
+  def decodeNextPureBytesEqLemma(index: Array[Int], pixels: Array[Byte], pxPrev: Int, inPos0: Long, pxPos0: Long, bytes2: Array[Byte])(using ctx1: DecCtx): Unit = {
     require(index.length == 64)
     require(pixels.length == pixelsLen)
     require(inPosInv(inPos0))
@@ -905,7 +905,7 @@ object decoder {
     require(pxPos0 + chan <= pixels.length)
     require(inPos0 < chunksLen)
     require(bytes.length == bytes2.length)
-    val ctx2 = Ctx(freshCopy(bytes2), w, h, chan)
+    val ctx2 = DecCtx(freshCopy(bytes2), w, h, chan)
     val resNext1 = decodeNextPure(index, pixels, pxPrev, inPos0, pxPos0)(using ctx1)
     val ix1 = resNext1._1
     val pix1 = resNext1._2
@@ -994,13 +994,13 @@ object decoder {
   @opaque
   @inlineOnce
   @pure
-  def doDecodeNextBytesEqLemma(index: Array[Int], pxPrev: Int, inPos0: Long, bytes2: Array[Byte])(using ctx1: Ctx): Unit = {
+  def doDecodeNextBytesEqLemma(index: Array[Int], pxPrev: Int, inPos0: Long, bytes2: Array[Byte])(using ctx1: DecCtx): Unit = {
     require(index.length == 64)
     require(inPosInv(inPos0))
     require(inPos0 < chunksLen)
     require(bytes.length == bytes2.length)
 
-    val ctx2 = Ctx(freshCopy(bytes2), w, h, chan)
+    val ctx2 = DecCtx(freshCopy(bytes2), w, h, chan)
     val (res1, inPos1) = doDecodeNext(index, pxPrev, inPos0)(using ctx1)
     require(arraysEq(bytes, bytes2, inPos0, inPos1))
     val (res2, inPos2) = doDecodeNext(index, pxPrev, inPos0)(using ctx2)
@@ -1021,25 +1021,25 @@ object decoder {
 
   @inline
   @cCode.inline
-  def w(using ctx: Ctx): Long = ctx.w
+  def w(using ctx: DecCtx): Long = ctx.w
 
   @inline
   @cCode.inline
-  def h(using ctx: Ctx): Long = ctx.h
+  def h(using ctx: DecCtx): Long = ctx.h
 
   @inline
   @cCode.inline
-  def chan(using ctx: Ctx): Long = ctx.chan
+  def chan(using ctx: DecCtx): Long = ctx.chan
 
   @inline
   @cCode.inline
-  def pixelsLen(using ctx: Ctx): Long = ctx.pixelsLen
+  def pixelsLen(using ctx: DecCtx): Long = ctx.pixelsLen
 
   @inline
   @cCode.inline
-  def chunksLen(using ctx: Ctx): Long = ctx.chunksLen
+  def chunksLen(using ctx: DecCtx): Long = ctx.chunksLen
 
   @inline
   @cCode.inline
-  def bytes(using ctx: Ctx): Array[Byte] = ctx.bytes
+  def bytes(using ctx: DecCtx): Array[Byte] = ctx.bytes
 }
