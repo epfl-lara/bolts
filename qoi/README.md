@@ -16,3 +16,7 @@ Additionally, one may run the Stainless' GenC pipeline to transpile Scala into C
    - `make genc` triggers a command to run GenC and transpile Scala to C (generating files `stainless.c` and `stainless.h`)
   - The script `test-genc.sh` converts sample images from QOI to PNG and vice-versa (using a modified version of [`qoiconv.c`](https://github.com/phoboslab/qoi/blob/master/qoiconv.c))
   - The script `run-bench.sh` executes a modified version of [`qoibench.c`](https://github.com/phoboslab/qoi/blob/master/qoibench.c) to compare the reference implementation to ours.
+
+## Additional resources
+* This case study was presented as part of the [ASPLOS 2022 Stainless tutorial](https://github.com/epfl-lara/asplos2022tutorial).
+* [High-level summary of the case study](summary.pdf)
