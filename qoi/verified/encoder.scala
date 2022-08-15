@@ -463,7 +463,7 @@ object encoder {
     val runUpd = updateRun(bytes, run0, outPos0)
     ghostExpr {
       withinBoundsLemma(run0, outPos0, pxPos)
-      assert((run0 + bool2int(px == pxPrev) > 0 && runUpd.reset) ==> updateRunProp(bytes, run0, outPos0, runUpd))
+      assert(runUpd.reset ==> updateRunProp(bytes, run0, outPos0, runUpd))
       assert(bytesPre.length == bytes.length)
       assert(arraysEq(bytesPre, bytes, 0, outPos0))
     }
@@ -513,7 +513,7 @@ object encoder {
         check(rangesInv(index.length, bytes.length, 0, outPos1, pxPos))
 
         // Note: bool2int(px == pxPrev) == 0
-        check(((run0 > 0 && runUpd.reset) ==> updateRunProp(bytes, run0, outPos0, runUpd)) because {
+        check((runUpd.reset ==> updateRunProp(bytes, run0, outPos0, runUpd)) because {
           if (run0 > 0 && runUpd.reset) {
             updateRunPropBytesEqLemma(bytesPreEncNoRun, run0, outPos0, runUpd, bytes)
             trivial
@@ -584,7 +584,7 @@ object encoder {
     assert(HeaderSize <= outPos2 && outPos2 <= maxSize - Padding)
     assert((px != pxPrev) ==> (outPos1 < outPos2))
     assert((outPos2 <= bytes.length - Padding) because (bytes.length == maxSize))
-    assert((run0 + bool2int(px == pxPrev) > 0 && runUpd.reset) ==> updateRunProp(bytes, run0, outPos0, runUpd))
+    assert(runUpd.reset ==> updateRunProp(bytes, run0, outPos0, runUpd))
     assert((px != pxPrev) ==> encodeNoRunProp(indexPre, index, bytes, outPos1, outPos2))
 
     @ghost val newDecoded = if (run0 > 0 && runUpd.reset && px != pxPrev) {  // Note: bool2int(px == pxPrev) == 0
@@ -879,7 +879,7 @@ object encoder {
     (!ru.reset ==> (ru.outPos == outPos0)) &&&
     ((px != pxPrev && run0 == 0) ==> (ru.run == 0)) &&&
     ((px == pxPrev && !ru.reset) ==> (ru.run == run0 + 1)) &&&
-    ((run0 + bool2int(px == pxPrev) > 0 && ru.reset) ==> updateRunProp(bytes, run0, outPos0, ru))
+    (ru.reset ==> updateRunProp(bytes, run0, outPos0, ru))
   }
 
   @opaque
