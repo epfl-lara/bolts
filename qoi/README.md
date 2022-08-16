@@ -1,5 +1,8 @@
 # Verified Scala implementation of QOI using Stainless
+
 A Scala implementation of the [Quite OK Image lossless compression algorithm](https://github.com/phoboslab/qoi), formally verified using [Stainless](https://stainless.epfl.ch/).
+
+This case study is described in the [FMCAD](https://fmcad.org/) [2022](https://fmcad.org/FMCAD22/) paper [Formally Verified Quite OK Image Format](fmcad2022.pdf).
 
 The following properties are verified:
 - Absence of runtime failure such as out-of-bound array accesses, division by zero, pattern matching, and so on (but not OOM).
@@ -18,5 +21,5 @@ Additionally, one may run the Stainless' GenC pipeline to transpile Scala into C
   - The script `run-bench.sh` executes a modified version of [`qoibench.c`](https://github.com/phoboslab/qoi/blob/master/qoibench.c) to compare the reference implementation to ours.
 
 ## Additional resources
-* This case study was presented as part of the [ASPLOS 2022 Stainless tutorial](https://github.com/epfl-lara/asplos2022tutorial).
-* [High-level summary of the case study](summary.pdf)
+* This case study was first mentioned as part of the [ASPLOS 2022 Stainless tutorial](https://github.com/epfl-lara/asplos2022tutorial).
+* [FMCAD 2022 Paper](fmcad2022.pdf)
