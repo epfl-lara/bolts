@@ -1,7 +1,7 @@
 /**
   * Author: Samuel Chassot
   */
-  
+
 import stainless.annotation._
 import stainless.collection._
 import stainless.equations._
@@ -7065,7 +7065,7 @@ object MutableLongMap {
       if (from + 1 < to) {
         lemmaArrayEqualsFromToReflexivity(a, from + 1, to)
       }
-    }.ensuring(_ => arraysEqualsFromTo(a, a, from, to))
+    }.ensuring(_ => arraysEqualsFromTo(a, snapshot(a), from, to))
 
     @pure
     @opaque
