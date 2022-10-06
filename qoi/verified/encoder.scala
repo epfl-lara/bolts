@@ -1071,16 +1071,18 @@ object encoder {
   def withinBoundsLemma2(run: Long, outPos: Long, pxPos: Long)(using EncCtx): Unit = {
     require(rangesInv(run, outPos, pxPos))
     require(positionsIneqInv(run, outPos, pxPos))
-    assert(chan * (outPos - HeaderSize + chan * run + chan + 1) <= (chan + 1) * (pxPos + chan))
-    assert(chan * (outPos - HeaderSize + chan * run + chan + 1) <= (chan + 1) * (pixels.length + chan))
+    val lhs = outPos - HeaderSize + chan * run + chan + 1
+    assert(chan * lhs <= (chan + 1) * (pxPos + chan))
+    assert(chan * lhs <= (chan + 1) * (pixels.length + chan))
     assert(pixels.length * (chan + 1) == w * h * chan * (chan + 1))
-    assert(chan * (maxSize - HeaderSize - Padding) == w * h * chan * (chan + 1))
-    assert((chan + 1) * pixels.length == chan * (maxSize - HeaderSize - Padding))
-
-    assert(chan * (outPos - HeaderSize + chan * run + chan + 1) - (chan + 1) * chan <= (chan + 1) * (pixels.length + chan) - (chan + 1) * chan)
-    assert(chan * (outPos - HeaderSize + chan * run) <= (chan + 1) * pixels.length)
-    assert(chan * (outPos - HeaderSize + chan * run) <= chan * (maxSize - HeaderSize - Padding))
-    assert(outPos - HeaderSize + chan * run <= maxSize - HeaderSize - Padding)
+    val maxPxPos = maxSize - HeaderSize - Padding
+    assert(chan * maxPxPos == w * h * chan * (chan + 1))
+    assert((chan + 1) * pixels.length == chan * maxPxPos)
+    assert(chan * lhs - (chan + 1) * chan <= (chan + 1) * (pixels.length + chan) - (chan + 1) * chan)
+    val lhs2 = lhs - chan - 1
+    assert(chan * lhs2 <= (chan + 1) * pixels.length)
+    assert(chan * lhs2 <= chan * maxPxPos)
+    assert(outPos - HeaderSize + chan * run <= maxPxPos)
     assert(outPos + chan * run <= maxSize - Padding)
     assert(outPos + chan * run + Padding <= maxSize)
   }.ensuring(_ => outPos + chan * run + Padding <= maxSize)
