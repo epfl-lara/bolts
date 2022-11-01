@@ -185,10 +185,9 @@ object ComputableLanguage {
     decreases(to - from, to - k)
 
     if (l.contains(w.slice(from, to))) {
-      check(l.checkFromToStar(from + 1, k + 1, to + 1, Cons(e, w)))
+      ()
     } else if ((k < to && l.checkFromToStar(from, k + 1, to, w))) {
       lemmaCheckFromToStarAddingElementBeforePreserves(l, e, w, from, k + 1, to)
-      check(l.checkFromToStar(from + 1, k + 1, to + 1, Cons(e, w)))
     } else {
       assert(
         (from + 1 <= k && k < to &&
@@ -196,7 +195,6 @@ object ComputableLanguage {
       )
       lemmaCheckFromToStarAddingElementBeforePreserves(l, e, w, from, from + 1, k)
       lemmaCheckFromToStarAddingElementBeforePreserves(l, e, w, k, k + 1, to)
-      check(l.checkFromToStar(from + 1, k + 1, to + 1, Cons(e, w)))
     }
 
   } ensuring (l.checkFromToStar(from + 1, k + 1, to + 1, Cons(e, w)))
@@ -329,46 +327,20 @@ object VerifiedLanguageMatcher {
     (s1, s2) match {
       case (Cons(hd1, tl1), Cons(hd2, tl2)) => {
         lemmaSliceFrom0ToSizeEqualsList(s1)
-        assert(l.contains(s1.slice(0, s1.size)))
-        assert(l.checkFromToStar(0, 1, s2.size, s2))
-        assert(l.checkFromToStar(0, 1, s1.size, s1))
         lemmaSliceFromSizeToSizeTotEqualsListForConcat(s1, s2)
         lemmaSliceFrom0ToSizeEqualsListForConcat(s1, s2)
-        assert((s1 ++ s2).slice(s1.size, (s1 ++ s2).size) == s2)
 
         lemmaCheckFromToStarAddingListBeforePreserves(l, s1, s2)
-
-        assert(l.checkFromToStar(0, 1, s1.size, s1 ++ s2)) // OK
-        assert(l.checkFromToStar(s1.size, s1.size + 1, (s1 ++ s2).size, s1 ++ s2)) // OK
-
         val w = s1 ++ s2
         val from = BigInt(0)
         val to = w.size
         val k = s1.size
 
-        assert(l.checkFromToStar(from, from + 1, k, w) && l.checkFromToStar(k, k + 1, to, w))
-        assert(s1.size > 0)
-        assert(s2.size > 0)
         lemmaCheckFromToStarTrueForKThenTrueForSmallerK(l, w, from, k, from + 1, to)
-        if (s1.size > 1) {
-          check(l.checkFromToStar(0, 1, (s1 ++ s2).size, s1 ++ s2))
-        } else {
-          assert(s1.size == 1)
-          assert(k == 1)
-          assert(w == s1 ++ s2)
-          assert(l.checkFromToStar(0, 1, 1, w) && l.checkFromToStar(1, 1 + 1, to, w))
-          assert(l.checkFromToStar(0, 1, (s1 ++ s2).size, s1 ++ s2))
-          check(l.checkFromToStar(0, 1, (s1 ++ s2).size, s1 ++ s2)) // Done
-
-        }
       }
       case (Cons(hd1, tl1), Nil()) => {
         lemmaConcatWithNilReturnsSame(s1, s2)
-        assert(s1 ++ s2 == s1)
         lemmaSliceFrom0ToSizeEqualsList(s1)
-        assert(l.contains(s1.slice(0, s1.size)))
-        assert(l.checkFromToStar(0, 1, s1.size, s1))
-        assert(matchL(l.*(), s1 ++ s2))
       }
       case (Nil(), Cons(hd2, tl2)) => ()
       case (Nil(), Nil())          => ()
