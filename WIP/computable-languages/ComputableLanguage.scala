@@ -1,3 +1,8 @@
+/*
+ * Viktor Kunčak and Samuel Chassot
+ * Copyright 2019-2022 EPFL, Lausanne
+ */
+
 import stainless.lang._
 import stainless.collection._
 import stainless.annotation._
