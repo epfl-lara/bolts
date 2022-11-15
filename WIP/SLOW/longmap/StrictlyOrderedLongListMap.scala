@@ -398,6 +398,7 @@ object TupleListOps {
 
   @opaque
   def lemmaAddExistingKeyPreservesSize[B](l: List[(Long, B)], key: Long, value: B): Unit = {
+    decreases(l)
     require(invariantList(l))
     require(containsKey(l, key))
 
@@ -679,7 +680,7 @@ object ListMapLongKeyLemmas {
   }.ensuring(_ => (lm + (a -> b))(a0) == lm(a0))
 
   @opaque
-  @inline
+  @inlineOnce
   def addStillContains[B](lm: ListMapLongKey[B], a: Long, b: B, a0: Long): Unit = {
     require(lm.contains(a0))
 

@@ -377,7 +377,7 @@ object common {
   @opaque
   @inlineOnce
   def arraysEqAtIndex[T](arr1: Array[T], arr2: Array[T], from: Long, until: Long, at: Long): Unit = {
-    decreases(until - at)
+    decreases(until - from)
     require(arr1.length == arr2.length)
     require(0 <= from && from <= until && until <= arr1.length)
     require(arraysEq(arr1, arr2, from, until))

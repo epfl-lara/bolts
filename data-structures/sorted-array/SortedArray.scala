@@ -123,7 +123,7 @@ object SortedArray {
     isSortedRange(array, order, i2, j2)
   )
 
-  @pure @opaque @ghostAnnot @inline
+  @pure @opaque @ghostAnnot @inlineOnce
   def arrayGetSameIndex2[@mutable T](array: Array[T], i: Int, j: Int): Unit = {
     require(0 <= i && i < array.length - 1 && i == j)
 
