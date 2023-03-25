@@ -5,6 +5,7 @@ algorithms/extended-gcd
 algorithms/reachabilityChecker
 data-structures/amortized-queue1
 data-structures/amortized-queue2
+data-structures/lisp
 data-structures/trees/concrope
 data-structures/trees/redblack
 expression-compiler
