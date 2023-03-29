@@ -21,14 +21,14 @@ object ScalaList:
       this match
         case Cons(a, as) => a
 
-    def length: Int = {
+    def length: Long = {
       this match
         case Nil => 0
         case Cons(h, t) => 
           val tLen = t.length
           if tLen == Int.MaxValue then tLen
           else 1 + tLen
-    } ensuring(res => 0 <= res && res <= Int.MaxValue)
+    } ensuring(res => 0 <= res)
 
   end List
 

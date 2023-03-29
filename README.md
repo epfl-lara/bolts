@@ -12,5 +12,9 @@ Some highlights:
   * [Expression Compiler Correctness](expression-compiler)
   * [Algorithms of varrying complexity](algorithms)
   * [Functional Programming Principles](fp-principles), inspired by some of the Scala course labs
-  * [Software foundations](software-foundations), inspired by Software Foundations book
-  * [Examples from lectures and tutorials](tutorials)
+  * [Software foundations](software-foundations), inspired by Software Foundations book 
+  * [Examples from lectures and tutorials](tutorials) such as [Lambda Days'20 keynote](https://www.youtube.com/watch?v=dkO59PTcNxA) and [ASPLOS'20 tutorial](https://epfl-lara.github.io/asplos2022tutorial/)
+
+Notable Stainless case studies outside of this repository include:
+  * [From Verified Scala to STIX File System Embedded Code using Stainless](https://lara.epfl.ch/~kuncak/papers/HamzaETAL22NFM.pdf)
+  * [Specification and Verification of a Blockchain Light Client](https://mediaspace.epfl.ch/media/Specification+and+Verification+of+a+Blockchain+Light+Client/0_jkewunkd/30542)
