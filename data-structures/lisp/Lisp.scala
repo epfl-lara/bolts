@@ -12,39 +12,42 @@ object Lisp {
   val nil = ONil()
 
   def cons(x: Obj, y: Obj) = OCons(x,y)
-  
+
   def endp(x: Obj): Boolean =
     !x.isInstanceOf[OCons]
-    
-  def car(x: Obj): Obj =
+
+  def car(x: Obj): Obj = {
     require(x.isInstanceOf[OCons])
     x.asInstanceOf[OCons].car
-  
-  def cdr(x: Obj): Obj = 
+  }
+
+  def cdr(x: Obj): Obj = {
     require(x.isInstanceOf[OCons])
     x.asInstanceOf[OCons].cdr
+  }
 
   // if used to LISP, use conversion functions
   def i2o(x: BigInt): Obj = OInt(x)
-  def o2i(x: Obj): BigInt =
+  def o2i(x: Obj): BigInt = {
     require(x.isInstanceOf[OInt])
     x.asInstanceOf[OInt].v
-  
+  }
+
   def append(x: Obj, y: Obj): Obj = {
-    if endp(x) then y
+    if (endp(x)) y
     else cons(car(x),
               append(cdr(x),y))
   }.ensuring(len(_) == len(x) + len(y))
 
   def len(x: Obj): BigInt = {
-    if endp(x) then BigInt(0)
+    if (endp(x)) BigInt(0)
     else 1 + len(cdr(x))
   }.ensuring(n => n >= 0)
 
   def reverse(x: Obj): Obj = {
-    if endp(x) then x
+    if (endp(x)) x
     else append(reverse(cdr(x)),
                 cons(car(x),nil))
   }.ensuring(len(_) == len(x))
-           
+
 }
