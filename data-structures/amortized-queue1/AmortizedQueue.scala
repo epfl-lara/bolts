@@ -18,19 +18,19 @@ abstract class Queue[A] {
 }
 
 case class SimpleQueue[A](l: List[A]) extends Queue[A] {
-  def enqueue(a: A): SimpleQueue[A] = SimpleQueue(l ++ List(a))
+  override def enqueue(a: A): SimpleQueue[A] = SimpleQueue(l ++ List(a))
 
-  def dequeue: Option[(A, Queue[A])] = l match {
+  override def dequeue: Option[(A, Queue[A])] = l match {
     case Nil() => None()
     case Cons(x, xs) => Some((x, SimpleQueue(xs)))
   }
 
-  def toList = l
+  override def toList = l
 }
 
 
 case class AmortizedQueue[A](front: List[A], rear: List[A]) extends Queue[A] {
-  def enqueue(a: A): AmortizedQueue[A] = {
+  override def enqueue(a: A): AmortizedQueue[A] = {
     val res = AmortizedQueue(front, a :: rear)
     (
       res.toList                         ==:| trivial |:
@@ -43,7 +43,7 @@ case class AmortizedQueue[A](front: List[A], rear: List[A]) extends Queue[A] {
     res
   }
 
-  def dequeue: Option[(A, Queue[A])] = front match {
+  override def dequeue: Option[(A, Queue[A])] = front match {
     case Nil() =>
       rear.reverse match {
         case Nil() => None()
@@ -52,7 +52,7 @@ case class AmortizedQueue[A](front: List[A], rear: List[A]) extends Queue[A] {
     case Cons(x, xs) => Some((x, AmortizedQueue(xs, rear)))
   }
 
-  def toList = front ++ rear.reverse
+  override def toList = front ++ rear.reverse
 }
 
 /*

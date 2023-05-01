@@ -141,25 +141,25 @@ sealed abstract class TweetSet {
 }
 
 case class Empty() extends TweetSet {
-    def filter(p: Tweet => Boolean): TweetSet = new Empty
-    def filterAcc(p: Tweet => Boolean, acc: TweetSet): TweetSet = acc
-    def contains(tweet: Tweet): Boolean = false
-    def slowContains(tweet: Tweet): Boolean = false
-    def incl(tweet: Tweet): TweetSet = new NonEmpty(tweet, new Empty, new Empty)
-    def remove(tweet: Tweet): TweetSet = this
-    def foreach(f: Tweet => Unit): Unit = ()
-    def forall(p: Tweet => Boolean): Boolean = true
-    def union(that: TweetSet): TweetSet = that
-    def mostRetweeted(): Tweet = new Tweet("empty", -1,-1)
-    def mostRetweetedAcc(max: Tweet): Tweet = max
-    def descendingByRetweet: TweetList = Nil()
-    def size: BigInt = 0
-    def isSearchTree: Boolean = true
+    override def filter(p: Tweet => Boolean): TweetSet = new Empty
+    override def filterAcc(p: Tweet => Boolean, acc: TweetSet): TweetSet = acc
+    override def contains(tweet: Tweet): Boolean = false
+    override def slowContains(tweet: Tweet): Boolean = false
+    override def incl(tweet: Tweet): TweetSet = new NonEmpty(tweet, new Empty, new Empty)
+    override def remove(tweet: Tweet): TweetSet = this
+    override def foreach(f: Tweet => Unit): Unit = ()
+    override def forall(p: Tweet => Boolean): Boolean = true
+    override def union(that: TweetSet): TweetSet = that
+    override def mostRetweeted(): Tweet = new Tweet("empty", -1,-1)
+    override def mostRetweetedAcc(max: Tweet): Tweet = max
+    override def descendingByRetweet: TweetList = Nil()
+    override def size: BigInt = 0
+    override def isSearchTree: Boolean = true
 }
 
 case class NonEmpty(elem: Tweet, left: TweetSet, right: TweetSet) extends TweetSet {
 
-    def descendingByRetweet: TweetList = {
+    override def descendingByRetweet: TweetList = {
       require(isSearchTree)
       decreases((size, 0))
 
@@ -173,11 +173,11 @@ case class NonEmpty(elem: Tweet, left: TweetSet, right: TweetSet) extends TweetS
       Cons(elem, remove(elem).descendingByRetweet)
     }
 
-    def filter(p: Tweet => Boolean): TweetSet = {
+    override def filter(p: Tweet => Boolean): TweetSet = {
       filterAcc(p, new Empty)
     }
 
-    def filterAcc(p: Tweet => Boolean, acc: TweetSet): TweetSet = {
+    override def filterAcc(p: Tweet => Boolean, acc: TweetSet): TweetSet = {
       decreases((size, 0))
 
       // this lemma shows that the size of remove(elem) is strictly smaller than this.size
@@ -186,7 +186,7 @@ case class NonEmpty(elem: Tweet, left: TweetSet, right: TweetSet) extends TweetS
       else remove(elem).filterAcc(p, acc)
     }
 
-    def mostRetweetedAcc(max: Tweet): Tweet = {
+    override def mostRetweetedAcc(max: Tweet): Tweet = {
       decreases((this, 0))
 
       if(elem.retweets > max.retweets)
@@ -195,37 +195,37 @@ case class NonEmpty(elem: Tweet, left: TweetSet, right: TweetSet) extends TweetS
         maxRetweets(left.mostRetweetedAcc(max), right.mostRetweetedAcc(max))
     }
 
-    def mostRetweeted(): Tweet = {
+    override def mostRetweeted(): Tweet = {
       mostRetweetedAcc(elem)
     }
 
-    def contains(x: Tweet): Boolean = {
+    override def contains(x: Tweet): Boolean = {
       decreases((this, 0))
       if (x.text < elem.text) left.contains(x)
       else if (elem.text < x.text) right.contains(x)
       else true
     }
 
-    def slowContains(x: Tweet): Boolean = {
+    override def slowContains(x: Tweet): Boolean = {
       decreases((this, 0))
       x == elem || left.slowContains(x) || right.slowContains(x)
     }
 
-    def incl(x: Tweet): TweetSet = {
+    override def incl(x: Tweet): TweetSet = {
       decreases((this, 0))
       if (x.text < elem.text) new NonEmpty(elem, left.incl(x), right)
       else if (elem.text < x.text) new NonEmpty(elem, left, right.incl(x))
       else this
     } ensuring(res => (res contains x))
 
-    def remove(tw: Tweet): TweetSet = {
+    override def remove(tw: Tweet): TweetSet = {
       decreases((this, 0))
       if (tw.text < elem.text) new NonEmpty(elem, left.remove(tw), right)
       else if (elem.text < tw.text) new NonEmpty(elem, left, right.remove(tw))
       else left.union(right)
     }
 
-    def foreach(f: Tweet => Unit): Unit = {
+    override def foreach(f: Tweet => Unit): Unit = {
       decreases((this, 0))
 
       f(elem)
@@ -234,25 +234,25 @@ case class NonEmpty(elem: Tweet, left: TweetSet, right: TweetSet) extends TweetS
     }
 
 
-    def forall(p: Tweet => Boolean): Boolean = {
+    override def forall(p: Tweet => Boolean): Boolean = {
       decreases((this, 0))
 
       p(elem) && left.forall(p) && right.forall(p)
     }
 
-    def union(that: TweetSet): TweetSet = {
+    override def union(that: TweetSet): TweetSet = {
       decreases((this, 0))
 
       left union (right union (that incl elem))
     }
 
-    def size: BigInt = {
+    override def size: BigInt = {
       decreases((this, 0))
 
       1 + left.size + right.size
     } ensuring(_ >= 0)
 
-    def isSearchTree: Boolean = {
+    override def isSearchTree: Boolean = {
       decreases((this, 0))
 
       left.isSearchTree &&
@@ -485,13 +485,13 @@ sealed trait TweetList {
 }
 
 case class Nil() extends TweetList {
-  def head = new Tweet("empty", -1,-1)
-  def tail = Nil()
-  def isEmpty = true
+  override def head = new Tweet("empty", -1,-1)
+  override def tail = Nil()
+  override def isEmpty = true
 }
 
-case class Cons(val head: Tweet, val tail: TweetList) extends TweetList {
-  def isEmpty = false
+case class Cons(override val head: Tweet, override val tail: TweetList) extends TweetList {
+  override def isEmpty = false
 }
 
 object GoogleVsApple {
