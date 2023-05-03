@@ -150,7 +150,7 @@ case class Empty() extends TweetSet {
     override def foreach(f: Tweet => Unit): Unit = ()
     override def forall(p: Tweet => Boolean): Boolean = true
     override def union(that: TweetSet): TweetSet = that
-    override def mostRetweeted(): Tweet = new Tweet("empty", -1,-1)
+    override def mostRetweeted: Tweet = new Tweet("empty", -1,-1)
     override def mostRetweetedAcc(max: Tweet): Tweet = max
     override def descendingByRetweet: TweetList = Nil()
     override def size: BigInt = 0
@@ -163,7 +163,7 @@ case class NonEmpty(elem: Tweet, left: TweetSet, right: TweetSet) extends TweetS
       require(isSearchTree)
       decreases((size, 0))
 
-      val elem = mostRetweeted()
+      val elem = mostRetweeted
       check(mostRetweetedAccContained(this, elem))
       check(this.slowContains(elem))
       check(slowContainedIsContained(this, elem))
@@ -195,7 +195,7 @@ case class NonEmpty(elem: Tweet, left: TweetSet, right: TweetSet) extends TweetS
         maxRetweets(left.mostRetweetedAcc(max), right.mostRetweetedAcc(max))
     }
 
-    override def mostRetweeted(): Tweet = {
+    override def mostRetweeted: Tweet = {
       mostRetweetedAcc(elem)
     }
 
