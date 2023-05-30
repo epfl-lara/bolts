@@ -24,12 +24,12 @@ case class ListMapLongKey[B](toList: List[(Long, B)]) {
 
   @inline
   def size: Int = {
-    require(toList.size < Integer.MIN_VALUE)
+    require(toList.size < Integer.MAX_VALUE)
     TupleListOps.intSize(toList)
   }
 
   def nKeys: Int = {
-    require(toList.size < Integer.MIN_VALUE)
+    require(toList.size < Integer.MAX_VALUE)
     TupleListOps.intSizeKeys(TupleListOps.getKeysList(toList))
   }
 
