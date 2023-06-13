@@ -17,7 +17,7 @@ object VerifiedDFA {
   case class DFA[C](startState: State, finalStates: List[State], errorState: State, transitions: List[Transition[C]])
 
   def validDFA[C](dfa: DFA[C]): Boolean =
-    uniqueStateCharTransitions(dfa.transitions, Nil()) && noTransitionOutOfErrorState(dfa.transitions, dfa.errorState) && !dfa.finalStates.contains(
+    uniqueStateCharTransitions(dfa.transitions, Nil[(State, C)]()) && noTransitionOutOfErrorState(dfa.transitions, dfa.errorState) && !dfa.finalStates.contains(
       dfa.errorState
     )
 
@@ -72,13 +72,13 @@ object VerifiedDFAMatcher {
         ListUtils.lemmaConcatTwoListThenFirstIsPrefix(pastChars, suffix)
         (pastChars, suffix)
       } else {
-        (Nil(), pastChars ++ suffix)
+        (Nil[C](), pastChars ++ suffix)
       }
     } else {
 
       if (from == dfa.errorState) {
         // From the invariant => trap state => return directly
-        (Nil(), pastChars ++ suffix)
+        (Nil[C](), pastChars ++ suffix)
       } else {
         val nextChar = suffix.head
 
