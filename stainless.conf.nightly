@@ -1,6 +1,7 @@
-vc-cache = false
+vc-cache = true
 timeout = 300
 fail-early = true
 strict-arithmetic = false
-solvers="smt-z3"
+solvers = "smt-cvc4,smt-z3,no-inc:smt-z3:z3"
 no-colors=true
+simplifier = ocbsl
