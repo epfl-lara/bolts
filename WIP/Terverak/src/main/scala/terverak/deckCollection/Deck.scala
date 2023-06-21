@@ -144,32 +144,5 @@ object Deck {
   @opaque @inlineOnce
   def sumUpdatedLemma[K](xs: ListMap[K, BigInt], k: K, v: BigInt): Unit = {
     require(xs.contains(k))
-    @opaque @inlineOnce
-    def rec(xs: ListMap[K, BigInt]): Unit = {
-      decreases(xs)
-      xs.toList match {
-        case Nil() => () // Base case
-        case Cons((k2, v2), tl) =>
-          val tlMap = ListMap(tl)
-          rec(tlMap) // Rec case
-          assert(tlMap.contains(k) ==> (tlMap.updated(k, v).values.sum == tlMap.values.sum + (v - tlMap(k)))) // IH
-          if (k2 == k) {
-            check(xs.contains(k))
-            check(xs.updated(k, v).values.sum == xs.values.sum + (v - xs(k)))
-          } else {
-            if (tlMap.contains(k)) {
-              assert(tlMap.updated(k, v).values.sum == tlMap.values.sum + (v - tlMap(k))) // IH
-              assert(xs.contains(k)) // Because tlMap.contains(k)
-              assert(xs.updated(k, v) == ListMap(Cons((k2, v2), tl)).updated(k, v)) // By definition
-              assert(tlMap(k) == xs(k)) // Because k2 != k
-              assert(xs.values.sum == v2 + tlMap.values.sum) // By definition of sum
-              assert(xs.updated(k, v).values.sum == v2 + tlMap.updated(k, v).values.sum) // By definition of sum
-              check(xs.contains(k) ==> (xs.updated(k, v).values.sum == xs.values.sum + (v - xs(k)))) // What we want to prove
-            } else {
-              check(!xs.contains(k))
-            }
-          }
-      }
-    }.ensuring(_ => xs.contains(k) ==> (xs.updated(k, v).values.sum == xs.values.sum + (v - xs(k))))
   }.ensuring(xs.updated(k, v).values.sum == xs.values.sum + (v - xs(k)))
 }
