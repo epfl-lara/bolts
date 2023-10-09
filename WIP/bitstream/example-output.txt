@@ -1,0 +1,760 @@
+:~/bolts/WIP/bitstream$ time stainless *.scala
+
+info Finished compiling                                       
+info Preprocessing finished                                   
+info Finished lowering the symbols                            
+info Finished generating VCs                                  
+Starting verification...
+info Verified: 737 / 737
+  
+ stainless summary 
+                                                                                                                                                       
+                          BitStream_AppendBitOne                         precond. (call arrayUpdatedAtPrefixLemma[Byte](a, at...)                 valid from cache     0.0 
+bitstream.scala:206:30:   BitStream_AppendBitOne                         array index within bounds                                                valid from cache     0.0 
+bitstream.scala:206:60:   BitStream_AppendBitOne                         array index within bounds                                                valid from cache     0.0 
+bitstream.scala:207:18:   BitStream_AppendBitOne                         array index within bounds                                                valid from cache     0.0 
+bitstream.scala:207:42:   BitStream_AppendBitOne                         class invariant                                                          valid from cache     0.0 
+bitstream.scala:210:7:    BitStream_AppendBitOne                         body assertion: Inlined precondition of arrayUpdatedAtPrefixLemma        valid from cache     0.0 
+bitstream.scala:214:7:    BitStream_AppendBitOne                         class invariant                                                          valid from cache     0.0 
+bitstream.scala:216:29:   BitStream_AppendBitOne                         class invariant                                                          valid from cache     0.0 
+bitstream.scala:217:7:    BitStream_AppendBitOne                         class invariant                                                          valid from cache     0.0 
+bitstream.scala:220:5:    BitStream_AppendBitOne                         postcondition                                                            valid from cache     0.0 
+bitstream.scala:220:5:    BitStream_AppendBitOne                         postcondition                                                            valid from cache     0.0 
+bitstream.scala:223:22:   BitStream_AppendBitOne                         precond. (call reader(w1, w2))                                           valid from cache     0.0 
+bitstream.scala:223:22:   BitStream_AppendBitOne                         precond. (call reader(w1, w2))                                           valid from cache     0.0 
+bitstream.scala:224:29:   BitStream_AppendBitOne                         precond. (call BitStream_ReadBitPure(r1))                                valid from cache     0.0 
+bitstream.scala:224:29:   BitStream_AppendBitOne                         precond. (call BitStream_ReadBitPure(r1))                                valid from cache     0.0 
+                          BitStream_AppendByte                           precond. (call arrayPrefixTransitive[Byte](a1, a2, a... (require 1/5))   valid from cache     0.0 
+                          BitStream_AppendByte                           precond. (call arrayPrefixTransitive[Byte](a1, a2, a... (require 2/5))   valid from cache     0.0 
+                          BitStream_AppendByte                           precond. (call arrayPrefixTransitive[Byte](a1, a2, a... (require 3/5))   valid from cache     0.0 
+                          BitStream_AppendByte                           precond. (call arrayPrefixTransitive[Byte](a1, a2, a... (require 4/5))   valid from cache     0.0 
+                          BitStream_AppendByte                           precond. (call arrayPrefixTransitive[Byte](a1, a2, a... (require 5/5))   valid from cache     0.0 
+                          BitStream_AppendByte                           precond. (call arrayUpdatedAtPrefixLemma[Byte](a, at...)                 valid from cache     0.0 
+                          BitStream_AppendByte                           precond. (call arrayUpdatedAtPrefixLemma[Byte](a, at...)                 valid from cache     0.0 
+                          BitStream_AppendByte                           precond. (call arrayUpdatedAtPrefixLemma[Byte](a, at...)                 valid from cache     0.0 
+bitstream.scala:338:25:   BitStream_AppendByte                           array index within bounds                                                valid from cache     0.0 
+bitstream.scala:340:18:   BitStream_AppendByte                           array index within bounds                                                valid from cache     0.0 
+bitstream.scala:340:42:   BitStream_AppendByte                           class invariant                                                          valid from cache     0.0 
+bitstream.scala:340:56:   BitStream_AppendByte                           array index within bounds                                                valid from cache     0.0 
+bitstream.scala:341:18:   BitStream_AppendByte                           array index within bounds                                                valid from cache     0.0 
+bitstream.scala:341:42:   BitStream_AppendByte                           class invariant                                                          valid from cache     0.0 
+bitstream.scala:341:56:   BitStream_AppendByte                           array index within bounds                                                valid from cache     0.0 
+bitstream.scala:342:5:    BitStream_AppendByte                           class invariant                                                          valid from cache     0.0 
+bitstream.scala:345:7:    BitStream_AppendByte                           body assertion: Inlined precondition of check                            valid from cache     0.0 
+bitstream.scala:347:11:   BitStream_AppendByte                           precond. (call bytePrefix({   val a: Array[Byte] = o...)                 valid from cache     0.0 
+bitstream.scala:348:29:   BitStream_AppendByte                           array index within bounds                                                valid from cache     0.0 
+bitstream.scala:349:26:   BitStream_AppendByte                           array index within bounds                                                valid from cache     0.0 
+bitstream.scala:356:20:   BitStream_AppendByte                           array index within bounds                                                valid from cache     0.0 
+bitstream.scala:356:44:   BitStream_AppendByte                           class invariant                                                          valid from cache     0.0 
+bitstream.scala:356:58:   BitStream_AppendByte                           array index within bounds                                                valid from cache     0.0 
+bitstream.scala:357:20:   BitStream_AppendByte                           array index within bounds                                                valid from cache     0.0 
+bitstream.scala:357:44:   BitStream_AppendByte                           class invariant                                                          valid from cache     0.0 
+bitstream.scala:357:58:   BitStream_AppendByte                           array index within bounds                                                valid from cache     0.0 
+bitstream.scala:360:7:    BitStream_AppendByte                           body assertion: Inlined precondition of arrayUpdatedAtPrefixLemma        valid from cache     0.0 
+bitstream.scala:360:89:   BitStream_AppendByte                           array index within bounds                                                valid from cache     0.0 
+bitstream.scala:361:14:   BitStream_AppendByte                           body assertion                                                           valid from cache     0.0 
+bitstream.scala:361:14:   BitStream_AppendByte                           precond. (call arrayPrefix[Byte](oldpBitStrm.buf, ol... (require 1/3))   valid from cache     0.0 
+bitstream.scala:361:14:   BitStream_AppendByte                           precond. (call arrayPrefix[Byte](oldpBitStrm.buf, ol... (require 2/3))   valid from cache     0.0 
+bitstream.scala:361:14:   BitStream_AppendByte                           precond. (call arrayPrefix[Byte](oldpBitStrm.buf, ol... (require 3/3))   valid from cache     0.0 
+bitstream.scala:364:9:    BitStream_AppendByte                           body assertion: Inlined precondition of arrayUpdatedAtPrefixLemma        valid from cache     0.0 
+bitstream.scala:364:87:   BitStream_AppendByte                           array index within bounds                                                valid from cache     0.0 
+bitstream.scala:365:9:    BitStream_AppendByte                           body assertion: Inlined precondition of arrayUpdatedAtPrefixLemma        valid from cache     0.0 
+bitstream.scala:365:88:   BitStream_AppendByte                           array index within bounds                                                valid from cache     0.0 
+bitstream.scala:366:9:    BitStream_AppendByte                           body assertion: Inlined precondition (1/5) of arrayPrefixTransitive      valid from cache     0.0 
+bitstream.scala:366:9:    BitStream_AppendByte                           body assertion: Inlined precondition (2/5) of arrayPrefixTransitive      valid from cache     0.0 
+bitstream.scala:366:9:    BitStream_AppendByte                           body assertion: Inlined precondition (3/5) of arrayPrefixTransitive      valid from cache     0.0 
+bitstream.scala:366:9:    BitStream_AppendByte                           body assertion: Inlined precondition (4/5) of arrayPrefixTransitive      valid from cache     0.0 
+bitstream.scala:366:9:    BitStream_AppendByte                           body assertion: Inlined precondition (5/5) of arrayPrefixTransitive      valid from cache     0.0 
+bitstream.scala:372:9:    BitStream_AppendByte                           body assertion: Inlined precondition of check                            valid from cache     0.0 
+bitstream.scala:372:15:   BitStream_AppendByte                           precond. (call arrayPrefix[Byte](oldpBitStrm.buf, pB... (require 1/3))   valid from cache     0.0 
+bitstream.scala:372:15:   BitStream_AppendByte                           precond. (call arrayPrefix[Byte](oldpBitStrm.buf, pB... (require 2/3))   valid from cache     0.0 
+bitstream.scala:372:15:   BitStream_AppendByte                           precond. (call arrayPrefix[Byte](oldpBitStrm.buf, pB... (require 3/3))   valid from cache     0.0 
+bitstream.scala:379:9:    BitStream_AppendByte                           body assertion: Inlined precondition of check                            valid from cache     0.0 
+bitstream.scala:379:15:   BitStream_AppendByte                           precond. (call arrayPrefix[Byte](oldpBitStrm.buf, pB... (require 1/3))   valid from cache     0.0 
+bitstream.scala:379:15:   BitStream_AppendByte                           precond. (call arrayPrefix[Byte](oldpBitStrm.buf, pB... (require 2/3))   valid from cache     0.0 
+bitstream.scala:379:15:   BitStream_AppendByte                           precond. (call arrayPrefix[Byte](oldpBitStrm.buf, pB... (require 3/3))   valid from cache     0.0 
+bitstream.scala:388:5:    BitStream_AppendByte                           postcondition                                                            valid from cache     0.0 
+bitstream.scala:391:22:   BitStream_AppendByte                           precond. (call reader(w1, w2))                                           valid from cache     0.0 
+bitstream.scala:392:27:   BitStream_AppendByte                           precond. (call BitStream_ReadBytePure(r1))                               valid from cache     0.0 
+                          BitStream_AppendByteInvertibilityLemma         precond. (call BitStream_AppendByte(pBitStrm, v))                        valid from cache     0.0 
+bitstream.scala:399:5:    BitStream_AppendByteInvertibilityLemma         body assertion: Inlined precondition of BitStream_AppendByte             valid from cache     0.0 
+bitstream.scala:399:5:    BitStream_AppendByteInvertibilityLemma         postcondition                                                            valid from cache     0.0 
+bitstream.scala:402:5:    BitStream_AppendByteInvertibilityLemma         precond. (call moveOffset(pBitStrm, -8))                                 valid from cache     0.0 
+bitstream.scala:403:16:   BitStream_AppendByteInvertibilityLemma         precond. (call BitStream_ReadByte(pBitStrm))                             valid from cache     0.0 
+                          BitStream_BitStream_AppendBitOneLemma          precond. (call BitStream_AppendBitOne(pBitStrm))                         valid from cache     0.1 
+bitstream.scala:278:5:    BitStream_BitStream_AppendBitOneLemma          body assertion: Inlined precondition of BitStream_AppendBitOne           valid from cache     0.0 
+bitstream.scala:278:5:    BitStream_BitStream_AppendBitOneLemma          postcondition                                                            valid from cache     0.0 
+bitstream.scala:281:5:    BitStream_BitStream_AppendBitOneLemma          precond. (call moveOffset(pBitStrm, -1))                                 valid from cache     0.0 
+bitstream.scala:282:16:   BitStream_BitStream_AppendBitOneLemma          precond. (call BitStream_ReadBit(pBitStrm))                              valid from cache     0.0 
+bitstream.scala:411:14:   BitStream_DecodeInteger16                      precond. (call BitStream_ReadByte(pBitStrm))                             valid from cache     0.0 
+bitstream.scala:412:14:   BitStream_DecodeInteger16                      precond. (call BitStream_ReadByte(pBitStrm))                             valid from cache     0.0 
+bitstream.scala:420:13:   BitStream_DecodeInteger16Pure                  precond. (call BitStream_DecodeInteger16(cpy))                           valid from cache     0.0 
+bitstream.scala:85:14:    BitStream_DecodeInteger32                      precond. (call BitStream_ReadByte(pBitStrm))                             valid from cache     0.0 
+bitstream.scala:86:14:    BitStream_DecodeInteger32                      precond. (call BitStream_ReadByte(pBitStrm))                             valid from cache     0.0 
+bitstream.scala:87:14:    BitStream_DecodeInteger32                      precond. (call BitStream_ReadByte(pBitStrm))                             valid from cache     0.0 
+bitstream.scala:88:14:    BitStream_DecodeInteger32                      precond. (call BitStream_ReadByte(pBitStrm))                             valid from cache     0.0 
+bitstream.scala:98:13:    BitStream_DecodeInteger32Pure                  precond. (call BitStream_DecodeInteger32(cpy))                           valid from cache     0.0 
+bitstream.scala:520:14:   BitStream_DecodeInteger64                      precond. (call BitStream_DecodeInteger32(pBitStrm))                      valid from cache     0.0 
+bitstream.scala:521:14:   BitStream_DecodeInteger64                      precond. (call BitStream_DecodeInteger32(pBitStrm))                      valid from cache     0.0 
+bitstream.scala:529:13:   BitStream_DecodeInteger64Pure                  precond. (call BitStream_DecodeInteger64(cpy))                           valid from cache     0.0 
+                          BitStream_EncodeInteger16                      precond. (call BitStream_AppendByte(pBitStrm, v))                        valid from cache     0.0 
+                          BitStream_EncodeInteger16                      precond. (call BitStream_AppendByte(pBitStrm, v))                        valid from cache     0.0 
+                          BitStream_EncodeInteger16                      precond. (call readBytePrefixLemma(pBitStrm1, pBitSt... (require 1/4))   valid from cache     0.0 
+                          BitStream_EncodeInteger16                      precond. (call readBytePrefixLemma(pBitStrm1, pBitSt... (require 2/4))   valid from cache     0.0 
+                          BitStream_EncodeInteger16                      precond. (call readBytePrefixLemma(pBitStrm1, pBitSt... (require 3/4))   valid from cache     0.0 
+                          BitStream_EncodeInteger16                      precond. (call readBytePrefixLemma(pBitStrm1, pBitSt... (require 4/4))   valid from cache     0.0 
+                          BitStream_EncodeInteger16                      precond. (call validTransitiveLemma(w1, w2, w3) (require 1/2))           valid from cache     0.0 
+                          BitStream_EncodeInteger16                      precond. (call validTransitiveLemma(w1, w2, w3) (require 2/2))           valid from cache     0.0 
+bitstream.scala:456:5:    BitStream_EncodeInteger16                      body assertion: Inlined precondition of BitStream_AppendByte             valid from cache     0.0 
+bitstream.scala:458:5:    BitStream_EncodeInteger16                      body assertion: Inlined precondition of BitStream_AppendByte             valid from cache     0.0 
+bitstream.scala:462:7:    BitStream_EncodeInteger16                      body assertion: Inlined precondition (1/2) of validTransitiveLemma       valid from cache     0.0 
+bitstream.scala:462:7:    BitStream_EncodeInteger16                      body assertion: Inlined precondition (2/2) of validTransitiveLemma       valid from cache     0.0 
+bitstream.scala:464:28:   BitStream_EncodeInteger16                      class invariant                                                          valid from cache     0.0 
+bitstream.scala:465:7:    BitStream_EncodeInteger16                      body assertion: Inlined precondition (1/4) of readBytePrefixLemma        valid from cache     0.0 
+bitstream.scala:465:7:    BitStream_EncodeInteger16                      body assertion: Inlined precondition (2/4) of readBytePrefixLemma        valid from cache     0.0 
+bitstream.scala:465:7:    BitStream_EncodeInteger16                      body assertion: Inlined precondition (3/4) of readBytePrefixLemma        valid from cache     0.0 
+bitstream.scala:465:7:    BitStream_EncodeInteger16                      body assertion: Inlined precondition (4/4) of readBytePrefixLemma        valid from cache     0.0 
+bitstream.scala:468:5:    BitStream_EncodeInteger16                      postcondition                                                            valid from cache     0.0 
+bitstream.scala:471:22:   BitStream_EncodeInteger16                      precond. (call reader(w1, w3))                                           valid from cache     0.0 
+bitstream.scala:472:27:   BitStream_EncodeInteger16                      precond. (call BitStream_DecodeInteger16Pure(r1))                        valid from cache     0.0 
+                          BitStream_EncodeInteger16InvertibilityLemma    precond. (call BitStream_EncodeInteger16(pBitStrm, i))                   valid from cache     0.0 
+bitstream.scala:479:5:    BitStream_EncodeInteger16InvertibilityLemma    body assertion: Inlined precondition of BitStream_EncodeInteger16        valid from cache     0.0 
+bitstream.scala:479:5:    BitStream_EncodeInteger16InvertibilityLemma    postcondition                                                            valid from cache     0.0 
+bitstream.scala:482:5:    BitStream_EncodeInteger16InvertibilityLemma    precond. (call moveOffset(pBitStrm, -16))                                valid from cache     0.0 
+bitstream.scala:483:16:   BitStream_EncodeInteger16InvertibilityLemma    precond. (call BitStream_DecodeInteger16(pBitStrm))                      valid from cache     0.0 
+                          BitStream_EncodeInteger32                      precond. (call BitStream_AppendByte(pBitStrm, v))                        valid from cache     0.0 
+                          BitStream_EncodeInteger32                      precond. (call BitStream_AppendByte(pBitStrm, v))                        valid from cache     0.0 
+                          BitStream_EncodeInteger32                      precond. (call BitStream_AppendByte(pBitStrm, v))                        valid from cache     0.0 
+                          BitStream_EncodeInteger32                      precond. (call BitStream_AppendByte(pBitStrm, v))                        valid from cache     0.0 
+                          BitStream_EncodeInteger32                      precond. (call readBytePrefixLemma(pBitStrm1, pBitSt... (require 1/4))   valid from cache     0.0 
+                          BitStream_EncodeInteger32                      precond. (call readBytePrefixLemma(pBitStrm1, pBitSt... (require 1/4))   valid from cache     0.0 
+                          BitStream_EncodeInteger32                      precond. (call readBytePrefixLemma(pBitStrm1, pBitSt... (require 1/4))   valid from cache     0.0 
+                          BitStream_EncodeInteger32                      precond. (call readBytePrefixLemma(pBitStrm1, pBitSt... (require 2/4))   valid from cache     0.0 
+                          BitStream_EncodeInteger32                      precond. (call readBytePrefixLemma(pBitStrm1, pBitSt... (require 2/4))   valid from cache     0.0 
+                          BitStream_EncodeInteger32                      precond. (call readBytePrefixLemma(pBitStrm1, pBitSt... (require 2/4))   valid from cache     0.0 
+                          BitStream_EncodeInteger32                      precond. (call readBytePrefixLemma(pBitStrm1, pBitSt... (require 3/4))   valid from cache     0.0 
+                          BitStream_EncodeInteger32                      precond. (call readBytePrefixLemma(pBitStrm1, pBitSt... (require 3/4))   valid from cache     0.0 
+                          BitStream_EncodeInteger32                      precond. (call readBytePrefixLemma(pBitStrm1, pBitSt... (require 3/4))   valid from cache     0.0 
+                          BitStream_EncodeInteger32                      precond. (call readBytePrefixLemma(pBitStrm1, pBitSt... (require 4/4))   valid from cache     0.0 
+                          BitStream_EncodeInteger32                      precond. (call readBytePrefixLemma(pBitStrm1, pBitSt... (require 4/4))   valid from cache     0.0 
+                          BitStream_EncodeInteger32                      precond. (call readBytePrefixLemma(pBitStrm1, pBitSt... (require 4/4))   valid from cache     0.0 
+                          BitStream_EncodeInteger32                      precond. (call validTransitiveLemma(w1, w2, w3) (require 1/2))           valid from cache     0.0 
+                          BitStream_EncodeInteger32                      precond. (call validTransitiveLemma(w1, w2, w3) (require 1/2))           valid from cache     0.0 
+                          BitStream_EncodeInteger32                      precond. (call validTransitiveLemma(w1, w2, w3) (require 1/2))           valid from cache     0.0 
+                          BitStream_EncodeInteger32                      precond. (call validTransitiveLemma(w1, w2, w3) (require 1/2))           valid from cache     0.0 
+                          BitStream_EncodeInteger32                      precond. (call validTransitiveLemma(w1, w2, w3) (require 1/2))           valid from cache     0.0 
+                          BitStream_EncodeInteger32                      precond. (call validTransitiveLemma(w1, w2, w3) (require 1/2))           valid from cache     0.0 
+                          BitStream_EncodeInteger32                      precond. (call validTransitiveLemma(w1, w2, w3) (require 2/2))           valid from cache     0.0 
+                          BitStream_EncodeInteger32                      precond. (call validTransitiveLemma(w1, w2, w3) (require 2/2))           valid from cache     0.0 
+                          BitStream_EncodeInteger32                      precond. (call validTransitiveLemma(w1, w2, w3) (require 2/2))           valid from cache     0.0 
+                          BitStream_EncodeInteger32                      precond. (call validTransitiveLemma(w1, w2, w3) (require 2/2))           valid from cache     0.0 
+                          BitStream_EncodeInteger32                      precond. (call validTransitiveLemma(w1, w2, w3) (require 2/2))           valid from cache     0.0 
+                          BitStream_EncodeInteger32                      precond. (call validTransitiveLemma(w1, w2, w3) (require 2/2))           valid from cache     0.0 
+bitstream.scala:110:5:    BitStream_EncodeInteger32                      body assertion: Inlined precondition of BitStream_AppendByte             valid from cache     0.0 
+bitstream.scala:114:5:    BitStream_EncodeInteger32                      body assertion: Inlined precondition of BitStream_AppendByte             valid from cache     0.0 
+bitstream.scala:118:5:    BitStream_EncodeInteger32                      body assertion: Inlined precondition of BitStream_AppendByte             valid from cache     0.0 
+bitstream.scala:122:5:    BitStream_EncodeInteger32                      body assertion: Inlined precondition of BitStream_AppendByte             valid from cache     0.0 
+bitstream.scala:126:7:    BitStream_EncodeInteger32                      body assertion: Inlined precondition (1/2) of validTransitiveLemma       valid from cache     0.0 
+bitstream.scala:126:7:    BitStream_EncodeInteger32                      body assertion: Inlined precondition (2/2) of validTransitiveLemma       valid from cache     0.0 
+bitstream.scala:127:7:    BitStream_EncodeInteger32                      body assertion: Inlined precondition (1/2) of validTransitiveLemma       valid from cache     0.0 
+bitstream.scala:127:7:    BitStream_EncodeInteger32                      body assertion: Inlined precondition (2/2) of validTransitiveLemma       valid from cache     0.0 
+bitstream.scala:128:7:    BitStream_EncodeInteger32                      body assertion: Inlined precondition (1/2) of validTransitiveLemma       valid from cache     0.0 
+bitstream.scala:128:7:    BitStream_EncodeInteger32                      body assertion: Inlined precondition (2/2) of validTransitiveLemma       valid from cache     0.0 
+bitstream.scala:131:7:    BitStream_EncodeInteger32                      body assertion: Inlined precondition (1/2) of validTransitiveLemma       valid from cache     0.0 
+bitstream.scala:131:7:    BitStream_EncodeInteger32                      body assertion: Inlined precondition (2/2) of validTransitiveLemma       valid from cache     0.0 
+bitstream.scala:132:7:    BitStream_EncodeInteger32                      body assertion: Inlined precondition (1/2) of validTransitiveLemma       valid from cache     0.0 
+bitstream.scala:132:7:    BitStream_EncodeInteger32                      body assertion: Inlined precondition (2/2) of validTransitiveLemma       valid from cache     0.0 
+bitstream.scala:133:7:    BitStream_EncodeInteger32                      body assertion: Inlined precondition (1/2) of validTransitiveLemma       valid from cache     0.0 
+bitstream.scala:133:7:    BitStream_EncodeInteger32                      body assertion: Inlined precondition (2/2) of validTransitiveLemma       valid from cache     0.0 
+bitstream.scala:136:28:   BitStream_EncodeInteger32                      class invariant                                                          valid from cache     0.0 
+bitstream.scala:137:7:    BitStream_EncodeInteger32                      body assertion: Inlined precondition (1/4) of readBytePrefixLemma        valid from cache     0.0 
+bitstream.scala:137:7:    BitStream_EncodeInteger32                      body assertion: Inlined precondition (2/4) of readBytePrefixLemma        valid from cache     0.0 
+bitstream.scala:137:7:    BitStream_EncodeInteger32                      body assertion: Inlined precondition (3/4) of readBytePrefixLemma        valid from cache     0.0 
+bitstream.scala:137:7:    BitStream_EncodeInteger32                      body assertion: Inlined precondition (4/4) of readBytePrefixLemma        valid from cache     0.0 
+bitstream.scala:139:28:   BitStream_EncodeInteger32                      class invariant                                                          valid from cache     0.0 
+bitstream.scala:140:7:    BitStream_EncodeInteger32                      body assertion: Inlined precondition (1/4) of readBytePrefixLemma        valid from cache     0.0 
+bitstream.scala:140:7:    BitStream_EncodeInteger32                      body assertion: Inlined precondition (2/4) of readBytePrefixLemma        valid from cache     0.0 
+bitstream.scala:140:7:    BitStream_EncodeInteger32                      body assertion: Inlined precondition (3/4) of readBytePrefixLemma        valid from cache     0.0 
+bitstream.scala:140:7:    BitStream_EncodeInteger32                      body assertion: Inlined precondition (4/4) of readBytePrefixLemma        valid from cache     0.0 
+bitstream.scala:141:28:   BitStream_EncodeInteger32                      class invariant                                                          valid from cache     0.0 
+bitstream.scala:142:7:    BitStream_EncodeInteger32                      body assertion: Inlined precondition (1/4) of readBytePrefixLemma        valid from cache     0.0 
+bitstream.scala:142:7:    BitStream_EncodeInteger32                      body assertion: Inlined precondition (2/4) of readBytePrefixLemma        valid from cache     0.0 
+bitstream.scala:142:7:    BitStream_EncodeInteger32                      body assertion: Inlined precondition (3/4) of readBytePrefixLemma        valid from cache     0.0 
+bitstream.scala:142:7:    BitStream_EncodeInteger32                      body assertion: Inlined precondition (4/4) of readBytePrefixLemma        valid from cache     0.0 
+bitstream.scala:146:5:    BitStream_EncodeInteger32                      postcondition                                                            valid from cache     0.0 
+bitstream.scala:149:22:   BitStream_EncodeInteger32                      precond. (call reader(w1, w5))                                           valid from cache     0.0 
+bitstream.scala:150:27:   BitStream_EncodeInteger32                      precond. (call BitStream_DecodeInteger32Pure(r1))                        valid from cache     0.0 
+                          BitStream_EncodeInteger32InvertibilityTheorem  precond. (call BitStream_EncodeInteger32(pBitStrm, i))                   valid from cache     0.0 
+bitstream.scala:65:5:     BitStream_EncodeInteger32InvertibilityTheorem  body assertion: Inlined precondition of BitStream_EncodeInteger32        valid from cache     0.0 
+bitstream.scala:68:5:     BitStream_EncodeInteger32InvertibilityTheorem  precond. (call moveOffset(pBitStrm, -32))                                valid from cache     0.0 
+bitstream.scala:70:16:    BitStream_EncodeInteger32InvertibilityTheorem  precond. (call BitStream_DecodeInteger32(pBitStrm))                      valid from cache     0.0 
+bitstream.scala:73:12:    BitStream_EncodeInteger32InvertibilityTheorem  body assertion                                                           valid from cache     0.0 
+bitstream.scala:75:12:    BitStream_EncodeInteger32InvertibilityTheorem  body assertion                                                           valid from cache     0.0 
+                          BitStream_EncodeInteger64                      precond. (call BitStream_EncodeInteger32(pBitStrm, i))                   valid from cache     0.0 
+                          BitStream_EncodeInteger64                      precond. (call BitStream_EncodeInteger32(pBitStrm, i))                   valid from cache     0.0 
+                          BitStream_EncodeInteger64                      precond. (call decodeInt32PrefixLemma(pBitStrm1, pBi... (require 1/4))   valid from cache     0.0 
+                          BitStream_EncodeInteger64                      precond. (call decodeInt32PrefixLemma(pBitStrm1, pBi... (require 2/4))   valid from cache     0.0 
+                          BitStream_EncodeInteger64                      precond. (call decodeInt32PrefixLemma(pBitStrm1, pBi... (require 3/4))   valid from cache     0.0 
+                          BitStream_EncodeInteger64                      precond. (call decodeInt32PrefixLemma(pBitStrm1, pBi... (require 4/4))   valid from cache     0.0 
+                          BitStream_EncodeInteger64                      precond. (call validTransitiveLemma(w1, w2, w3) (require 1/2))           valid from cache     0.0 
+                          BitStream_EncodeInteger64                      precond. (call validTransitiveLemma(w1, w2, w3) (require 2/2))           valid from cache     0.0 
+bitstream.scala:571:5:    BitStream_EncodeInteger64                      body assertion: Inlined precondition of BitStream_EncodeInteger32        valid from cache     0.0 
+bitstream.scala:575:5:    BitStream_EncodeInteger64                      body assertion: Inlined precondition of BitStream_EncodeInteger32        valid from cache     0.0 
+bitstream.scala:578:7:    BitStream_EncodeInteger64                      body assertion: Inlined precondition (1/2) of validTransitiveLemma       valid from cache     0.0 
+bitstream.scala:578:7:    BitStream_EncodeInteger64                      body assertion: Inlined precondition (2/2) of validTransitiveLemma       valid from cache     0.0 
+bitstream.scala:579:28:   BitStream_EncodeInteger64                      class invariant                                                          valid from cache     0.0 
+bitstream.scala:580:7:    BitStream_EncodeInteger64                      body assertion: Inlined precondition (1/4) of decodeInt32PrefixLemma     valid from cache     0.0 
+bitstream.scala:580:7:    BitStream_EncodeInteger64                      body assertion: Inlined precondition (2/4) of decodeInt32PrefixLemma     valid from cache     0.0 
+bitstream.scala:580:7:    BitStream_EncodeInteger64                      body assertion: Inlined precondition (3/4) of decodeInt32PrefixLemma     valid from cache     0.0 
+bitstream.scala:580:7:    BitStream_EncodeInteger64                      body assertion: Inlined precondition (4/4) of decodeInt32PrefixLemma     valid from cache     0.0 
+bitstream.scala:583:5:    BitStream_EncodeInteger64                      postcondition                                                            valid from cache     0.0 
+bitstream.scala:586:22:   BitStream_EncodeInteger64                      precond. (call reader(w1, w3))                                           valid from cache     0.0 
+bitstream.scala:587:27:   BitStream_EncodeInteger64                      precond. (call BitStream_DecodeInteger64Pure(r1))                        valid from cache     0.0 
+                          BitStream_EncodeInteger64InvertibilityTheorem  precond. (call BitStream_EncodeInteger64(pBitStrm, i))                   valid from cache     0.0 
+bitstream.scala:598:5:    BitStream_EncodeInteger64InvertibilityTheorem  body assertion: Inlined precondition of BitStream_EncodeInteger64        valid from cache     0.0 
+bitstream.scala:601:5:    BitStream_EncodeInteger64InvertibilityTheorem  precond. (call moveOffset(pBitStrm, -64))                                valid from cache     0.0 
+bitstream.scala:603:16:   BitStream_EncodeInteger64InvertibilityTheorem  precond. (call BitStream_DecodeInteger64(pBitStrm))                      valid from cache     0.0 
+bitstream.scala:606:12:   BitStream_EncodeInteger64InvertibilityTheorem  body assertion                                                           valid from cache     0.0 
+bitstream.scala:608:12:   BitStream_EncodeInteger64InvertibilityTheorem  body assertion                                                           valid from cache     0.0 
+bitstream.scala:231:29:   BitStream_ReadBit                              array index within bounds                                                valid from cache     0.0 
+bitstream.scala:231:59:   BitStream_ReadBit                              array index within bounds                                                valid from cache     0.0 
+bitstream.scala:234:7:    BitStream_ReadBit                              class invariant                                                          valid from cache     0.0 
+bitstream.scala:236:29:   BitStream_ReadBit                              class invariant                                                          valid from cache     0.0 
+bitstream.scala:237:7:    BitStream_ReadBit                              class invariant                                                          valid from cache     0.0 
+bitstream.scala:246:13:   BitStream_ReadBitPure                          precond. (call BitStream_ReadBit(cpy))                                   valid from cache     0.0 
+bitstream.scala:292:27:   BitStream_ReadByte                             array index within bounds                                                valid from cache     0.0 
+bitstream.scala:293:5:    BitStream_ReadByte                             class invariant                                                          valid from cache     0.0 
+bitstream.scala:296:30:   BitStream_ReadByte                             array index within bounds                                                valid from cache     0.0 
+bitstream.scala:304:13:   BitStream_ReadBytePure                         precond. (call BitStream_ReadByte(cpy))                                  valid from cache     0.0 
+utils.scala:185:37:       arrayBitIndices                                division by zero                                                         valid from cache     0.0 
+utils.scala:185:56:       arrayBitIndices                                remainder by zero                                                        valid from cache     0.0 
+utils.scala:186:33:       arrayBitIndices                                division by zero                                                         valid from cache     0.0 
+utils.scala:187:32:       arrayBitIndices                                division by zero                                                         valid from cache     0.0 
+utils.scala:188:28:       arrayBitIndices                                division by zero                                                         valid from cache     0.0 
+utils.scala:197:64:       arrayBitPrefix                                 precond. (call arrayBitIndices(fromBit, toBit))                          valid from cache     0.0 
+utils.scala:198:33:       arrayBitPrefix                                 remainder by zero                                                        valid from cache     0.0 
+utils.scala:199:29:       arrayBitPrefix                                 remainder by zero                                                        valid from cache     0.0 
+utils.scala:200:44:       arrayBitPrefix                                 precond. (call arrayPrefix[Byte](a1, a2, arrPrefixSt... (require 1/3))   valid from cache     0.0 
+utils.scala:200:44:       arrayBitPrefix                                 precond. (call arrayPrefix[Byte](a1, a2, arrPrefixSt... (require 2/3))   valid from cache     0.0 
+utils.scala:200:44:       arrayBitPrefix                                 precond. (call arrayPrefix[Byte](a1, a2, arrPrefixSt... (require 3/3))   valid from cache     0.0 
+utils.scala:202:11:       arrayBitPrefix                                 precond. (call bytePrefix({   assert(fromBitIx >= 0 ...)                 valid from cache     0.0 
+utils.scala:202:25:       arrayBitPrefix                                 array index within bounds                                                valid from cache     0.0 
+utils.scala:202:40:       arrayBitPrefix                                 array index within bounds                                                valid from cache     0.0 
+utils.scala:204:11:       arrayBitPrefix                                 precond. (call bytePrefix({   assert(fromBitIx >= 0 ...)                 valid from cache     0.0 
+utils.scala:204:25:       arrayBitPrefix                                 array index within bounds                                                valid from cache     0.0 
+utils.scala:204:40:       arrayBitPrefix                                 array index within bounds                                                valid from cache     0.0 
+utils.scala:205:30:       arrayBitPrefix                                 precond. (call bytePrefix({   assert(toBitIx >= 0 &&...)                 valid from cache     0.0 
+utils.scala:205:44:       arrayBitPrefix                                 array index within bounds                                                valid from cache     0.0 
+utils.scala:205:57:       arrayBitPrefix                                 array index within bounds                                                valid from cache     0.0 
+                          arrayBitPrefixSlicedLemma                      precond. (call arrayPrefixImpliesEq[Byte](a1, a2, fr... (require 1/5))   valid from cache     0.0 
+                          arrayBitPrefixSlicedLemma                      precond. (call arrayPrefixImpliesEq[Byte](a1, a2, fr... (require 1/5))   valid from cache     0.0 
+                          arrayBitPrefixSlicedLemma                      precond. (call arrayPrefixImpliesEq[Byte](a1, a2, fr... (require 2/5))   valid from cache     0.0 
+                          arrayBitPrefixSlicedLemma                      precond. (call arrayPrefixImpliesEq[Byte](a1, a2, fr... (require 2/5))   valid from cache     0.0 
+                          arrayBitPrefixSlicedLemma                      precond. (call arrayPrefixImpliesEq[Byte](a1, a2, fr... (require 3/5))   valid from cache     0.0 
+                          arrayBitPrefixSlicedLemma                      precond. (call arrayPrefixImpliesEq[Byte](a1, a2, fr... (require 3/5))   valid from cache     0.0 
+                          arrayBitPrefixSlicedLemma                      precond. (call arrayPrefixImpliesEq[Byte](a1, a2, fr... (require 4/5))   valid from cache     0.0 
+                          arrayBitPrefixSlicedLemma                      precond. (call arrayPrefixImpliesEq[Byte](a1, a2, fr... (require 4/5))   valid from cache     0.0 
+                          arrayBitPrefixSlicedLemma                      precond. (call arrayPrefixImpliesEq[Byte](a1, a2, fr... (require 5/5))   valid from cache     0.0 
+                          arrayBitPrefixSlicedLemma                      precond. (call arrayPrefixImpliesEq[Byte](a1, a2, fr... (require 5/5))   valid from cache     0.0 
+                          arrayBitPrefixSlicedLemma                      precond. (call arrayPrefixSlicedLemma[Byte](a1, a2, ... (require 1/5))   valid from cache     0.0 
+                          arrayBitPrefixSlicedLemma                      precond. (call arrayPrefixSlicedLemma[Byte](a1, a2, ... (require 2/5))   valid from cache     0.0 
+                          arrayBitPrefixSlicedLemma                      precond. (call arrayPrefixSlicedLemma[Byte](a1, a2, ... (require 3/5))   valid from cache     0.0 
+                          arrayBitPrefixSlicedLemma                      precond. (call arrayPrefixSlicedLemma[Byte](a1, a2, ... (require 4/5))   valid from cache     0.0 
+                          arrayBitPrefixSlicedLemma                      precond. (call arrayPrefixSlicedLemma[Byte](a1, a2, ... (require 5/5))   valid from cache     0.0 
+utils.scala:216:13:       arrayBitPrefixSlicedLemma                      precond. (call arrayBitPrefix(a1, a2, fromBit, toBit) (require 1/3))     valid from cache     0.0 
+utils.scala:216:13:       arrayBitPrefixSlicedLemma                      precond. (call arrayBitPrefix(a1, a2, fromBit, toBit) (require 2/3))     valid from cache     0.0 
+utils.scala:216:13:       arrayBitPrefixSlicedLemma                      precond. (call arrayBitPrefix(a1, a2, fromBit, toBit) (require 3/3))     valid from cache     0.0 
+utils.scala:220:31:       arrayBitPrefixSlicedLemma                      postcondition                                                            valid from cache     0.0 
+utils.scala:222:64:       arrayBitPrefixSlicedLemma                      precond. (call arrayBitIndices(fromBit, toBit))                          valid from cache     0.0 
+utils.scala:223:33:       arrayBitPrefixSlicedLemma                      remainder by zero                                                        valid from cache     0.0 
+utils.scala:224:29:       arrayBitPrefixSlicedLemma                      remainder by zero                                                        valid from cache     0.0 
+utils.scala:226:78:       arrayBitPrefixSlicedLemma                      precond. (call arrayBitIndices(fromSlice, toSlice))                      valid from cache     0.0 
+utils.scala:227:40:       arrayBitPrefixSlicedLemma                      remainder by zero                                                        valid from cache     0.0 
+utils.scala:228:36:       arrayBitPrefixSlicedLemma                      remainder by zero                                                        valid from cache     0.0 
+utils.scala:231:9:        arrayBitPrefixSlicedLemma                      body assertion: Inlined precondition (1/5) of arrayPrefixSlicedLemma     valid from cache     0.0 
+utils.scala:231:9:        arrayBitPrefixSlicedLemma                      body assertion: Inlined precondition (2/5) of arrayPrefixSlicedLemma     valid from cache     0.0 
+utils.scala:231:9:        arrayBitPrefixSlicedLemma                      body assertion: Inlined precondition (3/5) of arrayPrefixSlicedLemma     valid from cache     0.0 
+utils.scala:231:9:        arrayBitPrefixSlicedLemma                      body assertion: Inlined precondition (4/5) of arrayPrefixSlicedLemma     valid from cache     0.0 
+utils.scala:231:9:        arrayBitPrefixSlicedLemma                      body assertion: Inlined precondition (5/5) of arrayPrefixSlicedLemma     valid from cache     0.0 
+utils.scala:234:9:        arrayBitPrefixSlicedLemma                      body assertion                                                           valid from cache     0.0 
+utils.scala:235:11:       arrayBitPrefixSlicedLemma                      precond. (call bytePrefix({   assert(fromBitIx >= 0 ...)                 valid from cache     0.0 
+utils.scala:235:25:       arrayBitPrefixSlicedLemma                      array index within bounds                                                valid from cache     0.0 
+utils.scala:235:40:       arrayBitPrefixSlicedLemma                      array index within bounds                                                valid from cache     0.0 
+utils.scala:237:11:       arrayBitPrefixSlicedLemma                      precond. (call bytePrefix({   assert(fromBitIx >= 0 ...)                 valid from cache     0.0 
+utils.scala:237:25:       arrayBitPrefixSlicedLemma                      array index within bounds                                                valid from cache     0.0 
+utils.scala:237:40:       arrayBitPrefixSlicedLemma                      array index within bounds                                                valid from cache     0.0 
+utils.scala:238:30:       arrayBitPrefixSlicedLemma                      precond. (call bytePrefix({   assert(toBitIx >= 0 &&...)                 valid from cache     0.0 
+utils.scala:238:44:       arrayBitPrefixSlicedLemma                      array index within bounds                                                valid from cache     0.0 
+utils.scala:238:57:       arrayBitPrefixSlicedLemma                      array index within bounds                                                valid from cache     0.0 
+utils.scala:243:9:        arrayBitPrefixSlicedLemma                      body assertion: Inlined precondition (1/5) of arrayPrefixImpliesEq       valid from cache     0.0 
+utils.scala:243:9:        arrayBitPrefixSlicedLemma                      body assertion: Inlined precondition (2/5) of arrayPrefixImpliesEq       valid from cache     0.0 
+utils.scala:243:9:        arrayBitPrefixSlicedLemma                      body assertion: Inlined precondition (3/5) of arrayPrefixImpliesEq       valid from cache     0.0 
+utils.scala:243:9:        arrayBitPrefixSlicedLemma                      body assertion: Inlined precondition (4/5) of arrayPrefixImpliesEq       valid from cache     0.0 
+utils.scala:243:9:        arrayBitPrefixSlicedLemma                      body assertion: Inlined precondition (5/5) of arrayPrefixImpliesEq       valid from cache     0.0 
+utils.scala:246:9:        arrayBitPrefixSlicedLemma                      body assertion: Inlined precondition (1/5) of arrayPrefixImpliesEq       valid from cache     0.0 
+utils.scala:246:9:        arrayBitPrefixSlicedLemma                      body assertion: Inlined precondition (2/5) of arrayPrefixImpliesEq       valid from cache     0.0 
+utils.scala:246:9:        arrayBitPrefixSlicedLemma                      body assertion: Inlined precondition (3/5) of arrayPrefixImpliesEq       valid from cache     0.0 
+utils.scala:246:9:        arrayBitPrefixSlicedLemma                      body assertion: Inlined precondition (4/5) of arrayPrefixImpliesEq       valid from cache     0.0 
+utils.scala:246:9:        arrayBitPrefixSlicedLemma                      body assertion: Inlined precondition (5/5) of arrayPrefixImpliesEq       valid from cache     0.0 
+utils.scala:250:9:        arrayBitPrefixSlicedLemma                      postcondition                                                            valid from cache     0.0 
+utils.scala:250:16:       arrayBitPrefixSlicedLemma                      body assertion                                                           valid from cache     0.0 
+utils.scala:250:16:       arrayBitPrefixSlicedLemma                      precond. (call bytePrefix({   assert(fromSliceIx >= ...)                 valid from cache     0.0 
+utils.scala:250:30:       arrayBitPrefixSlicedLemma                      array index within bounds                                                valid from cache     0.0 
+utils.scala:250:47:       arrayBitPrefixSlicedLemma                      array index within bounds                                                valid from cache     0.0 
+utils.scala:252:9:        arrayBitPrefixSlicedLemma                      postcondition                                                            valid from cache     0.0 
+utils.scala:252:16:       arrayBitPrefixSlicedLemma                      body assertion                                                           valid from cache     0.0 
+utils.scala:252:16:       arrayBitPrefixSlicedLemma                      precond. (call bytePrefix({   assert(fromSliceIx >= ...)                 valid from cache     0.0 
+utils.scala:252:30:       arrayBitPrefixSlicedLemma                      array index within bounds                                                valid from cache     0.0 
+utils.scala:252:47:       arrayBitPrefixSlicedLemma                      array index within bounds                                                valid from cache     0.0 
+utils.scala:253:17:       arrayBitPrefixSlicedLemma                      body assertion                                                           valid from cache     0.0 
+utils.scala:253:40:       arrayBitPrefixSlicedLemma                      precond. (call bytePrefix({   assert(toSliceIx >= 0 ...)                 valid from cache     0.0 
+utils.scala:253:54:       arrayBitPrefixSlicedLemma                      array index within bounds                                                valid from cache     0.0 
+utils.scala:253:69:       arrayBitPrefixSlicedLemma                      array index within bounds                                                valid from cache     0.0 
+utils.scala:256:19:       arrayBitPrefixSlicedLemma                      precond. (call arrayBitPrefix(a1, a2, fromSlice, toS... (require 1/3))   valid from cache     0.0 
+utils.scala:256:19:       arrayBitPrefixSlicedLemma                      precond. (call arrayBitPrefix(a1, a2, fromSlice, toS... (require 1/3))   valid from cache     0.0 
+utils.scala:256:19:       arrayBitPrefixSlicedLemma                      precond. (call arrayBitPrefix(a1, a2, fromSlice, toS... (require 1/3))   valid from cache     0.0 
+utils.scala:256:19:       arrayBitPrefixSlicedLemma                      precond. (call arrayBitPrefix(a1, a2, fromSlice, toS... (require 2/3))   valid from cache     0.0 
+utils.scala:256:19:       arrayBitPrefixSlicedLemma                      precond. (call arrayBitPrefix(a1, a2, fromSlice, toS... (require 2/3))   valid from cache     0.0 
+utils.scala:256:19:       arrayBitPrefixSlicedLemma                      precond. (call arrayBitPrefix(a1, a2, fromSlice, toS... (require 2/3))   valid from cache     0.0 
+utils.scala:256:19:       arrayBitPrefixSlicedLemma                      precond. (call arrayBitPrefix(a1, a2, fromSlice, toS... (require 3/3))   valid from cache     0.0 
+utils.scala:256:19:       arrayBitPrefixSlicedLemma                      precond. (call arrayBitPrefix(a1, a2, fromSlice, toS... (require 3/3))   valid from cache     0.0 
+utils.scala:256:19:       arrayBitPrefixSlicedLemma                      precond. (call arrayBitPrefix(a1, a2, fromSlice, toS... (require 3/3))   valid from cache     0.0 
+utils.scala:54:15:        arrayPrefix                                    non-negative measure                                                     valid from cache     0.0 
+utils.scala:56:34:        arrayPrefix                                    measure decreases                                                        valid from cache     0.0 
+utils.scala:56:34:        arrayPrefix                                    precond. (call arrayPrefix[T](a1, a2, from + 1, to) (require 1/3))       valid from cache     0.0 
+utils.scala:56:34:        arrayPrefix                                    precond. (call arrayPrefix[T](a1, a2, from + 1, to) (require 2/3))       valid from cache     0.0 
+utils.scala:56:34:        arrayPrefix                                    precond. (call arrayPrefix[T](a1, a2, from + 1, to) (require 3/3))       valid from cache     0.0 
+utils.scala:56:54:        arrayPrefix                                    array index within bounds                                                valid from cache     0.0 
+utils.scala:56:54:        arrayPrefix                                    array index within bounds                                                valid from cache     0.0 
+                          arrayPrefixAppend                              precond. (call rec[T](a1, a2, from, to, _$i) (require 2/3))              valid from cache     0.0 
+                          arrayPrefixAppend                              precond. (call rec[T](a1, a2, from, to, _$i) (require 3/3))              valid from cache     0.0 
+utils.scala:88:13:        arrayPrefixAppend                              precond. (call arrayPrefix[T](a1, a2, from, to) (require 1/3))           valid from cache     0.0 
+utils.scala:88:13:        arrayPrefixAppend                              precond. (call arrayPrefix[T](a1, a2, from, to) (require 2/3))           valid from cache     0.0 
+utils.scala:88:13:        arrayPrefixAppend                              precond. (call arrayPrefix[T](a1, a2, from, to) (require 3/3))           valid from cache     0.0 
+utils.scala:104:5:        arrayPrefixAppend                              body assertion: Inlined precondition (2/3) of rec                        valid from cache     0.0 
+utils.scala:104:5:        arrayPrefixAppend                              body assertion: Inlined precondition (3/3) of rec                        valid from cache     0.0 
+utils.scala:104:5:        arrayPrefixAppend                              postcondition                                                            valid from cache     0.0 
+utils.scala:105:19:       arrayPrefixAppend                              precond. (call arrayPrefix[T](a1, a2, from, to + 1) (require 1/3))       valid from cache     0.0 
+utils.scala:105:19:       arrayPrefixAppend                              precond. (call arrayPrefix[T](a1, a2, from, to + 1) (require 2/3))       valid from cache     0.0 
+utils.scala:105:19:       arrayPrefixAppend                              precond. (call arrayPrefix[T](a1, a2, from, to + 1) (require 3/3))       valid from cache     0.0 
+utils.scala:105:45:       arrayPrefixAppend                              array index within bounds                                                valid from cache     0.0 
+utils.scala:105:45:       arrayPrefixAppend                              array index within bounds                                                valid from cache     0.0 
+                          arrayPrefixImpliesEq                           precond. (call rec[T](a1, a2, at, from, to, _$i) (require 2/3))          valid from cache     0.0 
+                          arrayPrefixImpliesEq                           precond. (call rec[T](a1, a2, at, from, to, _$i) (require 3/3))          valid from cache     0.0 
+utils.scala:159:13:       arrayPrefixImpliesEq                           precond. (call arrayPrefix[T](a1, a2, from, to) (require 1/3))           valid from cache     0.0 
+utils.scala:159:13:       arrayPrefixImpliesEq                           precond. (call arrayPrefix[T](a1, a2, from, to) (require 2/3))           valid from cache     0.0 
+utils.scala:159:13:       arrayPrefixImpliesEq                           precond. (call arrayPrefix[T](a1, a2, from, to) (require 3/3))           valid from cache     0.0 
+utils.scala:171:5:        arrayPrefixImpliesEq                           body assertion: Inlined precondition (2/3) of rec                        valid from cache     0.0 
+utils.scala:171:5:        arrayPrefixImpliesEq                           body assertion: Inlined precondition (3/3) of rec                        valid from cache     0.0 
+utils.scala:171:5:        arrayPrefixImpliesEq                           postcondition                                                            valid from cache     0.0 
+utils.scala:172:32:       arrayPrefixImpliesEq                           array index within bounds                                                valid from cache     0.0 
+utils.scala:172:32:       arrayPrefixImpliesEq                           array index within bounds                                                valid from cache     0.0 
+utils.scala:178:15:       arrayPrefixRev                                 non-negative measure                                                     valid from cache     0.0 
+utils.scala:180:13:       arrayPrefixRev                                 array index within bounds                                                valid from cache     0.0 
+utils.scala:180:27:       arrayPrefixRev                                 array index within bounds                                                valid from cache     0.0 
+utils.scala:180:38:       arrayPrefixRev                                 measure decreases                                                        valid from cache     0.0 
+utils.scala:180:38:       arrayPrefixRev                                 precond. (call arrayPrefixRev[T](a1, a2, from, to - 1) (require 1/3))    valid from cache     0.0 
+utils.scala:180:38:       arrayPrefixRev                                 precond. (call arrayPrefixRev[T](a1, a2, from, to - 1) (require 2/3))    valid from cache     0.0 
+utils.scala:180:38:       arrayPrefixRev                                 precond. (call arrayPrefixRev[T](a1, a2, from, to - 1) (require 3/3))    valid from cache     0.0 
+                          arrayPrefixSlicedLemma                         precond. (call rec[T](a1, a2, from, fromSlice, to, t... (require 2/4))   valid from cache     0.0 
+                          arrayPrefixSlicedLemma                         precond. (call rec[T](a1, a2, from, fromSlice, to, t... (require 3/4))   valid from cache     0.0 
+                          arrayPrefixSlicedLemma                         precond. (call rec[T](a1, a2, from, fromSlice, to, t... (require 4/4))   valid from cache     0.0 
+utils.scala:65:13:        arrayPrefixSlicedLemma                         precond. (call arrayPrefix[T](a1, a2, from, to) (require 1/3))           valid from cache     0.0 
+utils.scala:65:13:        arrayPrefixSlicedLemma                         precond. (call arrayPrefix[T](a1, a2, from, to) (require 2/3))           valid from cache     0.0 
+utils.scala:65:13:        arrayPrefixSlicedLemma                         precond. (call arrayPrefix[T](a1, a2, from, to) (require 3/3))           valid from cache     0.0 
+utils.scala:80:5:         arrayPrefixSlicedLemma                         body assertion: Inlined precondition (2/4) of rec                        valid from cache     0.0 
+utils.scala:80:5:         arrayPrefixSlicedLemma                         body assertion: Inlined precondition (3/4) of rec                        valid from cache     0.0 
+utils.scala:80:5:         arrayPrefixSlicedLemma                         body assertion: Inlined precondition (4/4) of rec                        valid from cache     0.0 
+utils.scala:80:5:         arrayPrefixSlicedLemma                         postcondition                                                            valid from cache     0.0 
+utils.scala:81:19:        arrayPrefixSlicedLemma                         precond. (call arrayPrefix[T](a1, a2, fromSlice, toS... (require 1/3))   valid from cache     0.0 
+utils.scala:81:19:        arrayPrefixSlicedLemma                         precond. (call arrayPrefix[T](a1, a2, fromSlice, toS... (require 2/3))   valid from cache     0.0 
+utils.scala:81:19:        arrayPrefixSlicedLemma                         precond. (call arrayPrefix[T](a1, a2, fromSlice, toS... (require 3/3))   valid from cache     0.0 
+                          arrayPrefixTransitive                          precond. (call rec[T](a1, a2, a3, from, mid, to, _$i) (require 2/5))     valid from cache     0.0 
+                          arrayPrefixTransitive                          precond. (call rec[T](a1, a2, a3, from, mid, to, _$i) (require 3/5))     valid from cache     0.0 
+                          arrayPrefixTransitive                          precond. (call rec[T](a1, a2, a3, from, mid, to, _$i) (require 4/5))     valid from cache     0.0 
+                          arrayPrefixTransitive                          precond. (call rec[T](a1, a2, a3, from, mid, to, _$i) (require 5/5))     valid from cache     0.0 
+utils.scala:112:13:       arrayPrefixTransitive                          precond. (call arrayPrefix[T](a1, a2, from, mid) (require 1/3))          valid from cache     0.0 
+utils.scala:112:13:       arrayPrefixTransitive                          precond. (call arrayPrefix[T](a1, a2, from, mid) (require 2/3))          valid from cache     0.0 
+utils.scala:112:13:       arrayPrefixTransitive                          precond. (call arrayPrefix[T](a1, a2, from, mid) (require 3/3))          valid from cache     0.0 
+utils.scala:113:13:       arrayPrefixTransitive                          precond. (call arrayPrefix[T](a2, a3, from, to) (require 1/3))           valid from cache     0.0 
+utils.scala:113:13:       arrayPrefixTransitive                          precond. (call arrayPrefix[T](a2, a3, from, to) (require 2/3))           valid from cache     0.0 
+utils.scala:113:13:       arrayPrefixTransitive                          precond. (call arrayPrefix[T](a2, a3, from, to) (require 3/3))           valid from cache     0.0 
+utils.scala:130:5:        arrayPrefixTransitive                          body assertion: Inlined precondition (2/5) of rec                        valid from cache     0.0 
+utils.scala:130:5:        arrayPrefixTransitive                          body assertion: Inlined precondition (3/5) of rec                        valid from cache     0.0 
+utils.scala:130:5:        arrayPrefixTransitive                          body assertion: Inlined precondition (4/5) of rec                        valid from cache     0.0 
+utils.scala:130:5:        arrayPrefixTransitive                          body assertion: Inlined precondition (5/5) of rec                        valid from cache     0.0 
+utils.scala:130:5:        arrayPrefixTransitive                          postcondition                                                            valid from cache     0.0 
+utils.scala:131:19:       arrayPrefixTransitive                          precond. (call arrayPrefix[T](a1, a3, from, mid) (require 1/3))          valid from cache     0.0 
+utils.scala:131:19:       arrayPrefixTransitive                          precond. (call arrayPrefix[T](a1, a3, from, mid) (require 2/3))          valid from cache     0.0 
+utils.scala:131:19:       arrayPrefixTransitive                          precond. (call arrayPrefix[T](a1, a3, from, mid) (require 3/3))          valid from cache     0.0 
+                          arrayUpdatedAtPrefixLemma                      precond. (call rec[T](a, at, v, _$i) (require 2/3))                      valid from cache     0.0 
+                          arrayUpdatedAtPrefixLemma                      precond. (call rec[T](a, at, v, _$i) (require 3/3))                      valid from cache     0.0 
+utils.scala:148:5:        arrayUpdatedAtPrefixLemma                      body assertion: Inlined precondition (2/3) of rec                        valid from cache     0.0 
+utils.scala:148:5:        arrayUpdatedAtPrefixLemma                      body assertion: Inlined precondition (3/3) of rec                        valid from cache     0.0 
+utils.scala:150:5:        arrayUpdatedAtPrefixLemma                      postcondition                                                            valid from cache     0.0 
+utils.scala:150:5:        arrayUpdatedAtPrefixLemma                      precond. (call arrayPrefix[T](a, {   assert(at >= 0 ... (require 1/3))   valid from cache     0.0 
+utils.scala:150:5:        arrayUpdatedAtPrefixLemma                      precond. (call arrayPrefix[T](a, {   assert(at >= 0 ... (require 2/3))   valid from cache     0.0 
+utils.scala:150:5:        arrayUpdatedAtPrefixLemma                      precond. (call arrayPrefix[T](a, {   assert(at >= 0 ... (require 3/3))   valid from cache     0.0 
+utils.scala:150:52:       arrayUpdatedAtPrefixLemma                      array index within bounds                                                valid from cache     0.0 
+bitstream.scala:32:9:     bitIndex                                       postcondition                                                            valid from cache     0.0 
+utils.scala:260:32:       bytePrefix                                     array index within bounds                                                valid from cache     0.0 
+utils.scala:260:68:       bytePrefix                                     array index within bounds                                                valid from cache     0.0 
+utils.scala:260:68:       bytePrefix                                     array index within bounds                                                valid from cache     0.0 
+utils.scala:260:81:       bytePrefix                                     array index within bounds                                                valid from cache     0.0 
+utils.scala:264:7:        bytePrefixTransitive                           postcondition                                                            valid from cache     0.0 
+utils.scala:266:13:       bytePrefixTransitive                           precond. (call bytePrefix(b1, b2, 0, mid))                               valid from cache     0.0 
+utils.scala:267:13:       bytePrefixTransitive                           precond. (call bytePrefix(b2, b3, 0, to))                                valid from cache     0.0 
+utils.scala:269:19:       bytePrefixTransitive                           precond. (call bytePrefix(b1, b3, 0, mid))                               valid from cache     0.0 
+                          decodeInt16PrefixLemma                         precond. (call arrayPrefixImpliesEq[Byte](a1, a2, fr... (require 1/5))   valid from cache     0.0 
+                          decodeInt16PrefixLemma                         precond. (call arrayPrefixImpliesEq[Byte](a1, a2, fr... (require 1/5))   valid from cache     0.0 
+                          decodeInt16PrefixLemma                         precond. (call arrayPrefixImpliesEq[Byte](a1, a2, fr... (require 2/5))   valid from cache     0.0 
+                          decodeInt16PrefixLemma                         precond. (call arrayPrefixImpliesEq[Byte](a1, a2, fr... (require 2/5))   valid from cache     0.0 
+                          decodeInt16PrefixLemma                         precond. (call arrayPrefixImpliesEq[Byte](a1, a2, fr... (require 3/5))   valid from cache     0.0 
+                          decodeInt16PrefixLemma                         precond. (call arrayPrefixImpliesEq[Byte](a1, a2, fr... (require 3/5))   valid from cache     0.0 
+                          decodeInt16PrefixLemma                         precond. (call arrayPrefixImpliesEq[Byte](a1, a2, fr... (require 4/5))   valid from cache     0.0 
+                          decodeInt16PrefixLemma                         precond. (call arrayPrefixImpliesEq[Byte](a1, a2, fr... (require 4/5))   valid from cache     0.0 
+                          decodeInt16PrefixLemma                         precond. (call arrayPrefixImpliesEq[Byte](a1, a2, fr... (require 5/5))   valid from cache     0.0 
+                          decodeInt16PrefixLemma                         precond. (call arrayPrefixImpliesEq[Byte](a1, a2, fr... (require 5/5))   valid from cache     0.0 
+bitstream.scala:429:13:   decodeInt16PrefixLemma                         precond. (call arrayBitPrefix(pBitStrm1.buf, pBitStr... (require 1/3))   valid from cache     0.0 
+bitstream.scala:429:13:   decodeInt16PrefixLemma                         precond. (call arrayBitPrefix(pBitStrm1.buf, pBitStr... (require 2/3))   valid from cache     0.0 
+bitstream.scala:429:13:   decodeInt16PrefixLemma                         precond. (call arrayBitPrefix(pBitStrm1.buf, pBitStr... (require 3/3))   valid from cache     0.0 
+bitstream.scala:436:26:   decodeInt16PrefixLemma                         class invariant                                                          valid from cache     0.0 
+bitstream.scala:437:30:   decodeInt16PrefixLemma                         precond. (call BitStream_DecodeInteger16Pure(pBitStrm1))                 valid from cache     0.0 
+bitstream.scala:438:30:   decodeInt16PrefixLemma                         precond. (call BitStream_DecodeInteger16Pure(pBitStr...)                 valid from cache     0.0 
+bitstream.scala:441:39:   decodeInt16PrefixLemma                         division by zero                                                         valid from cache     0.0 
+bitstream.scala:442:7:    decodeInt16PrefixLemma                         body assertion: Inlined precondition (1/5) of arrayPrefixImpliesEq       valid from cache     0.0 
+bitstream.scala:442:7:    decodeInt16PrefixLemma                         body assertion: Inlined precondition (2/5) of arrayPrefixImpliesEq       valid from cache     0.0 
+bitstream.scala:442:7:    decodeInt16PrefixLemma                         body assertion: Inlined precondition (3/5) of arrayPrefixImpliesEq       valid from cache     0.0 
+bitstream.scala:442:7:    decodeInt16PrefixLemma                         body assertion: Inlined precondition (4/5) of arrayPrefixImpliesEq       valid from cache     0.0 
+bitstream.scala:442:7:    decodeInt16PrefixLemma                         body assertion: Inlined precondition (5/5) of arrayPrefixImpliesEq       valid from cache     0.0 
+bitstream.scala:443:7:    decodeInt16PrefixLemma                         body assertion: Inlined precondition (1/5) of arrayPrefixImpliesEq       valid from cache     0.0 
+bitstream.scala:443:7:    decodeInt16PrefixLemma                         body assertion: Inlined precondition (2/5) of arrayPrefixImpliesEq       valid from cache     0.0 
+bitstream.scala:443:7:    decodeInt16PrefixLemma                         body assertion: Inlined precondition (3/5) of arrayPrefixImpliesEq       valid from cache     0.0 
+bitstream.scala:443:7:    decodeInt16PrefixLemma                         body assertion: Inlined precondition (4/5) of arrayPrefixImpliesEq       valid from cache     0.0 
+bitstream.scala:443:7:    decodeInt16PrefixLemma                         body assertion: Inlined precondition (5/5) of arrayPrefixImpliesEq       valid from cache     0.0 
+bitstream.scala:443:7:    decodeInt16PrefixLemma                         postcondition                                                            valid from cache     0.0 
+                          decodeInt32PrefixLemma                         precond. (call arrayPrefixImpliesEq[Byte](a1, a2, fr... (require 1/5))   valid from cache     0.0 
+                          decodeInt32PrefixLemma                         precond. (call arrayPrefixImpliesEq[Byte](a1, a2, fr... (require 1/5))   valid from cache     0.0 
+                          decodeInt32PrefixLemma                         precond. (call arrayPrefixImpliesEq[Byte](a1, a2, fr... (require 1/5))   valid from cache     0.0 
+                          decodeInt32PrefixLemma                         precond. (call arrayPrefixImpliesEq[Byte](a1, a2, fr... (require 1/5))   valid from cache     0.0 
+                          decodeInt32PrefixLemma                         precond. (call arrayPrefixImpliesEq[Byte](a1, a2, fr... (require 2/5))   valid from cache     0.0 
+                          decodeInt32PrefixLemma                         precond. (call arrayPrefixImpliesEq[Byte](a1, a2, fr... (require 2/5))   valid from cache     0.0 
+                          decodeInt32PrefixLemma                         precond. (call arrayPrefixImpliesEq[Byte](a1, a2, fr... (require 2/5))   valid from cache     0.0 
+                          decodeInt32PrefixLemma                         precond. (call arrayPrefixImpliesEq[Byte](a1, a2, fr... (require 2/5))   valid from cache     0.0 
+                          decodeInt32PrefixLemma                         precond. (call arrayPrefixImpliesEq[Byte](a1, a2, fr... (require 3/5))   valid from cache     0.0 
+                          decodeInt32PrefixLemma                         precond. (call arrayPrefixImpliesEq[Byte](a1, a2, fr... (require 3/5))   valid from cache     0.0 
+                          decodeInt32PrefixLemma                         precond. (call arrayPrefixImpliesEq[Byte](a1, a2, fr... (require 3/5))   valid from cache     0.0 
+                          decodeInt32PrefixLemma                         precond. (call arrayPrefixImpliesEq[Byte](a1, a2, fr... (require 3/5))   valid from cache     0.0 
+                          decodeInt32PrefixLemma                         precond. (call arrayPrefixImpliesEq[Byte](a1, a2, fr... (require 4/5))   valid from cache     0.0 
+                          decodeInt32PrefixLemma                         precond. (call arrayPrefixImpliesEq[Byte](a1, a2, fr... (require 4/5))   valid from cache     0.0 
+                          decodeInt32PrefixLemma                         precond. (call arrayPrefixImpliesEq[Byte](a1, a2, fr... (require 4/5))   valid from cache     0.0 
+                          decodeInt32PrefixLemma                         precond. (call arrayPrefixImpliesEq[Byte](a1, a2, fr... (require 4/5))   valid from cache     0.0 
+                          decodeInt32PrefixLemma                         precond. (call arrayPrefixImpliesEq[Byte](a1, a2, fr... (require 5/5))   valid from cache     0.0 
+                          decodeInt32PrefixLemma                         precond. (call arrayPrefixImpliesEq[Byte](a1, a2, fr... (require 5/5))   valid from cache     0.0 
+                          decodeInt32PrefixLemma                         precond. (call arrayPrefixImpliesEq[Byte](a1, a2, fr... (require 5/5))   valid from cache     0.0 
+                          decodeInt32PrefixLemma                         precond. (call arrayPrefixImpliesEq[Byte](a1, a2, fr... (require 5/5))   valid from cache     0.0 
+bitstream.scala:494:13:   decodeInt32PrefixLemma                         precond. (call arrayBitPrefix(pBitStrm1.buf, pBitStr... (require 1/3))   valid from cache     0.0 
+bitstream.scala:494:13:   decodeInt32PrefixLemma                         precond. (call arrayBitPrefix(pBitStrm1.buf, pBitStr... (require 2/3))   valid from cache     0.0 
+bitstream.scala:494:13:   decodeInt32PrefixLemma                         precond. (call arrayBitPrefix(pBitStrm1.buf, pBitStr... (require 3/3))   valid from cache     0.0 
+bitstream.scala:500:26:   decodeInt32PrefixLemma                         class invariant                                                          valid from cache     0.0 
+bitstream.scala:501:30:   decodeInt32PrefixLemma                         precond. (call BitStream_DecodeInteger32Pure(pBitStrm1))                 valid from cache     0.0 
+bitstream.scala:502:30:   decodeInt32PrefixLemma                         precond. (call BitStream_DecodeInteger32Pure(pBitStr...)                 valid from cache     0.0 
+bitstream.scala:505:39:   decodeInt32PrefixLemma                         division by zero                                                         valid from cache     0.0 
+bitstream.scala:506:7:    decodeInt32PrefixLemma                         body assertion: Inlined precondition (1/5) of arrayPrefixImpliesEq       valid from cache     0.0 
+bitstream.scala:506:7:    decodeInt32PrefixLemma                         body assertion: Inlined precondition (2/5) of arrayPrefixImpliesEq       valid from cache     0.0 
+bitstream.scala:506:7:    decodeInt32PrefixLemma                         body assertion: Inlined precondition (3/5) of arrayPrefixImpliesEq       valid from cache     0.0 
+bitstream.scala:506:7:    decodeInt32PrefixLemma                         body assertion: Inlined precondition (4/5) of arrayPrefixImpliesEq       valid from cache     0.0 
+bitstream.scala:506:7:    decodeInt32PrefixLemma                         body assertion: Inlined precondition (5/5) of arrayPrefixImpliesEq       valid from cache     0.0 
+bitstream.scala:507:7:    decodeInt32PrefixLemma                         body assertion: Inlined precondition (1/5) of arrayPrefixImpliesEq       valid from cache     0.0 
+bitstream.scala:507:7:    decodeInt32PrefixLemma                         body assertion: Inlined precondition (2/5) of arrayPrefixImpliesEq       valid from cache     0.0 
+bitstream.scala:507:7:    decodeInt32PrefixLemma                         body assertion: Inlined precondition (3/5) of arrayPrefixImpliesEq       valid from cache     0.0 
+bitstream.scala:507:7:    decodeInt32PrefixLemma                         body assertion: Inlined precondition (4/5) of arrayPrefixImpliesEq       valid from cache     0.0 
+bitstream.scala:507:7:    decodeInt32PrefixLemma                         body assertion: Inlined precondition (5/5) of arrayPrefixImpliesEq       valid from cache     0.0 
+bitstream.scala:508:7:    decodeInt32PrefixLemma                         body assertion: Inlined precondition (1/5) of arrayPrefixImpliesEq       valid from cache     0.0 
+bitstream.scala:508:7:    decodeInt32PrefixLemma                         body assertion: Inlined precondition (2/5) of arrayPrefixImpliesEq       valid from cache     0.0 
+bitstream.scala:508:7:    decodeInt32PrefixLemma                         body assertion: Inlined precondition (3/5) of arrayPrefixImpliesEq       valid from cache     0.0 
+bitstream.scala:508:7:    decodeInt32PrefixLemma                         body assertion: Inlined precondition (4/5) of arrayPrefixImpliesEq       valid from cache     0.0 
+bitstream.scala:508:7:    decodeInt32PrefixLemma                         body assertion: Inlined precondition (5/5) of arrayPrefixImpliesEq       valid from cache     0.0 
+bitstream.scala:509:7:    decodeInt32PrefixLemma                         body assertion: Inlined precondition (1/5) of arrayPrefixImpliesEq       valid from cache     0.0 
+bitstream.scala:509:7:    decodeInt32PrefixLemma                         body assertion: Inlined precondition (2/5) of arrayPrefixImpliesEq       valid from cache     0.0 
+bitstream.scala:509:7:    decodeInt32PrefixLemma                         body assertion: Inlined precondition (3/5) of arrayPrefixImpliesEq       valid from cache     0.0 
+bitstream.scala:509:7:    decodeInt32PrefixLemma                         body assertion: Inlined precondition (4/5) of arrayPrefixImpliesEq       valid from cache     0.0 
+bitstream.scala:509:7:    decodeInt32PrefixLemma                         body assertion: Inlined precondition (5/5) of arrayPrefixImpliesEq       valid from cache     0.0 
+bitstream.scala:509:7:    decodeInt32PrefixLemma                         postcondition                                                            valid from cache     0.0 
+                          decodeInt64PrefixLemma                         precond. (call arrayBitPrefixSlicedLemma(a1, a2, fro... (require 1/6))   valid from cache     0.0 
+                          decodeInt64PrefixLemma                         precond. (call arrayBitPrefixSlicedLemma(a1, a2, fro... (require 2/6))   valid from cache     0.0 
+                          decodeInt64PrefixLemma                         precond. (call arrayBitPrefixSlicedLemma(a1, a2, fro... (require 3/6))   valid from cache     0.0 
+                          decodeInt64PrefixLemma                         precond. (call arrayBitPrefixSlicedLemma(a1, a2, fro... (require 4/6))   valid from cache     0.0 
+                          decodeInt64PrefixLemma                         precond. (call arrayBitPrefixSlicedLemma(a1, a2, fro... (require 5/6))   valid from cache     0.0 
+                          decodeInt64PrefixLemma                         precond. (call arrayBitPrefixSlicedLemma(a1, a2, fro... (require 6/6))   valid from cache     0.0 
+                          decodeInt64PrefixLemma                         precond. (call decodeInt32PrefixLemma(pBitStrm1, pBi... (require 1/4))   valid from cache     0.0 
+                          decodeInt64PrefixLemma                         precond. (call decodeInt32PrefixLemma(pBitStrm1, pBi... (require 1/4))   valid from cache     0.0 
+                          decodeInt64PrefixLemma                         precond. (call decodeInt32PrefixLemma(pBitStrm1, pBi... (require 2/4))   valid from cache     0.0 
+                          decodeInt64PrefixLemma                         precond. (call decodeInt32PrefixLemma(pBitStrm1, pBi... (require 2/4))   valid from cache     0.0 
+                          decodeInt64PrefixLemma                         precond. (call decodeInt32PrefixLemma(pBitStrm1, pBi... (require 3/4))   valid from cache     0.0 
+                          decodeInt64PrefixLemma                         precond. (call decodeInt32PrefixLemma(pBitStrm1, pBi... (require 3/4))   valid from cache     0.0 
+                          decodeInt64PrefixLemma                         precond. (call decodeInt32PrefixLemma(pBitStrm1, pBi... (require 4/4))   valid from cache     0.0 
+                          decodeInt64PrefixLemma                         precond. (call decodeInt32PrefixLemma(pBitStrm1, pBi... (require 4/4))   valid from cache     0.0 
+bitstream.scala:538:13:   decodeInt64PrefixLemma                         precond. (call arrayBitPrefix(pBitStrm1.buf, pBitStr... (require 1/3))   valid from cache     0.0 
+bitstream.scala:538:13:   decodeInt64PrefixLemma                         precond. (call arrayBitPrefix(pBitStrm1.buf, pBitStr... (require 2/3))   valid from cache     0.0 
+bitstream.scala:538:13:   decodeInt64PrefixLemma                         precond. (call arrayBitPrefix(pBitStrm1.buf, pBitStr... (require 3/3))   valid from cache     0.0 
+bitstream.scala:545:26:   decodeInt64PrefixLemma                         class invariant                                                          valid from cache     0.0 
+bitstream.scala:546:30:   decodeInt64PrefixLemma                         precond. (call BitStream_DecodeInteger64Pure(pBitStrm1))                 valid from cache     0.0 
+bitstream.scala:547:30:   decodeInt64PrefixLemma                         precond. (call BitStream_DecodeInteger64Pure(pBitStr...)                 valid from cache     0.0 
+bitstream.scala:550:7:    decodeInt64PrefixLemma                         body assertion: Inlined precondition (1/6) of arrayBitPrefixSlicedLemma  valid from cache     0.0 
+bitstream.scala:550:7:    decodeInt64PrefixLemma                         body assertion: Inlined precondition (2/6) of arrayBitPrefixSlicedLemma  valid from cache     0.0 
+bitstream.scala:550:7:    decodeInt64PrefixLemma                         body assertion: Inlined precondition (3/6) of arrayBitPrefixSlicedLemma  valid from cache     0.0 
+bitstream.scala:550:7:    decodeInt64PrefixLemma                         body assertion: Inlined precondition (4/6) of arrayBitPrefixSlicedLemma  valid from cache     0.0 
+bitstream.scala:550:7:    decodeInt64PrefixLemma                         body assertion: Inlined precondition (5/6) of arrayBitPrefixSlicedLemma  valid from cache     0.0 
+bitstream.scala:550:7:    decodeInt64PrefixLemma                         body assertion: Inlined precondition (6/6) of arrayBitPrefixSlicedLemma  valid from cache     0.0 
+bitstream.scala:551:7:    decodeInt64PrefixLemma                         body assertion: Inlined precondition (1/4) of decodeInt32PrefixLemma     valid from cache     0.0 
+bitstream.scala:551:7:    decodeInt64PrefixLemma                         body assertion: Inlined precondition (2/4) of decodeInt32PrefixLemma     valid from cache     0.0 
+bitstream.scala:551:7:    decodeInt64PrefixLemma                         body assertion: Inlined precondition (3/4) of decodeInt32PrefixLemma     valid from cache     0.0 
+bitstream.scala:551:7:    decodeInt64PrefixLemma                         body assertion: Inlined precondition (4/4) of decodeInt32PrefixLemma     valid from cache     0.0 
+bitstream.scala:551:41:   decodeInt64PrefixLemma                         class invariant                                                          valid from cache     0.0 
+bitstream.scala:552:32:   decodeInt64PrefixLemma                         precond. (call BitStream_DecodeInteger32Pure(pBitStrm1))                 valid from cache     0.0 
+bitstream.scala:553:32:   decodeInt64PrefixLemma                         precond. (call BitStream_DecodeInteger32Pure(pBitStr...)                 valid from cache     0.0 
+bitstream.scala:554:14:   decodeInt64PrefixLemma                         body assertion                                                           valid from cache     0.0 
+bitstream.scala:555:7:    decodeInt64PrefixLemma                         body assertion: Inlined precondition (1/4) of decodeInt32PrefixLemma     valid from cache     0.0 
+bitstream.scala:555:7:    decodeInt64PrefixLemma                         body assertion: Inlined precondition (2/4) of decodeInt32PrefixLemma     valid from cache     0.0 
+bitstream.scala:555:7:    decodeInt64PrefixLemma                         body assertion: Inlined precondition (3/4) of decodeInt32PrefixLemma     valid from cache     0.0 
+bitstream.scala:555:7:    decodeInt64PrefixLemma                         body assertion: Inlined precondition (4/4) of decodeInt32PrefixLemma     valid from cache     0.0 
+bitstream.scala:555:43:   decodeInt64PrefixLemma                         class invariant                                                          valid from cache     0.0 
+bitstream.scala:556:22:   decodeInt64PrefixLemma                         precond. (call BitStream_DecodeInteger32Pure(pBitStr...)                 valid from cache     0.0 
+bitstream.scala:557:22:   decodeInt64PrefixLemma                         precond. (call BitStream_DecodeInteger32Pure(pBitStr...)                 valid from cache     0.0 
+bitstream.scala:558:7:    decodeInt64PrefixLemma                         postcondition                                                            valid from cache     0.0 
+bitstream.scala:558:14:   decodeInt64PrefixLemma                         body assertion                                                           valid from cache     0.0 
+bitstream.scala:165:30:   isPrefix                                       precond. (call arrayBitPrefix(b1.buf, b2.buf, 0, bit... (require 1/3))   valid from cache     0.0 
+bitstream.scala:165:30:   isPrefix                                       precond. (call arrayBitPrefix(b1.buf, b2.buf, 0, bit... (require 2/3))   valid from cache     0.0 
+bitstream.scala:165:30:   isPrefix                                       precond. (call arrayBitPrefix(b1.buf, b2.buf, 0, bit... (require 3/3))   valid from cache     0.0 
+bitstream.scala:39:35:    moveOffset                                     division by zero                                                         valid from cache     0.0 
+bitstream.scala:40:34:    moveOffset                                     remainder by zero                                                        valid from cache     0.0 
+bitstream.scala:41:7:     moveOffset                                     class invariant                                                          valid from cache     0.0 
+bitstream.scala:43:9:     moveOffset                                     class invariant                                                          valid from cache     0.0 
+bitstream.scala:44:9:     moveOffset                                     postcondition                                                            valid from cache     0.0 
+bitstream.scala:44:22:    moveOffset                                     class invariant                                                          valid from cache     0.0 
+bitstream.scala:46:22:    moveOffset                                     class invariant                                                          valid from cache     0.0 
+bitstream.scala:47:9:     moveOffset                                     class invariant                                                          valid from cache     0.0 
+bitstream.scala:47:9:     moveOffset                                     postcondition                                                            valid from cache     0.0 
+bitstream.scala:49:9:     moveOffset                                     class invariant                                                          valid from cache     0.0 
+bitstream.scala:49:9:     moveOffset                                     postcondition                                                            valid from cache     0.0 
+                          readBitPrefixLemma                             precond. (call arrayPrefixImpliesEq[Byte](a1, a2, fr... (require 1/5))   valid from cache     0.0 
+                          readBitPrefixLemma                             precond. (call arrayPrefixImpliesEq[Byte](a1, a2, fr... (require 2/5))   valid from cache     0.0 
+                          readBitPrefixLemma                             precond. (call arrayPrefixImpliesEq[Byte](a1, a2, fr... (require 3/5))   valid from cache     0.0 
+                          readBitPrefixLemma                             precond. (call arrayPrefixImpliesEq[Byte](a1, a2, fr... (require 4/5))   valid from cache     0.0 
+                          readBitPrefixLemma                             precond. (call arrayPrefixImpliesEq[Byte](a1, a2, fr... (require 5/5))   valid from cache     0.0 
+bitstream.scala:255:13:   readBitPrefixLemma                             precond. (call arrayBitPrefix(pBitStrm1.buf, pBitStr... (require 1/3))   valid from cache     0.0 
+bitstream.scala:255:13:   readBitPrefixLemma                             precond. (call arrayBitPrefix(pBitStrm1.buf, pBitStr... (require 2/3))   valid from cache     0.0 
+bitstream.scala:255:13:   readBitPrefixLemma                             precond. (call arrayBitPrefix(pBitStrm1.buf, pBitStr... (require 3/3))   valid from cache     0.0 
+bitstream.scala:262:26:   readBitPrefixLemma                             class invariant                                                          valid from cache     0.0 
+bitstream.scala:263:30:   readBitPrefixLemma                             precond. (call BitStream_ReadBitPure(pBitStrm1))                         valid from cache     0.0 
+bitstream.scala:264:30:   readBitPrefixLemma                             precond. (call BitStream_ReadBitPure(pBitStrm2Reset))                    valid from cache     0.0 
+bitstream.scala:268:41:   readBitPrefixLemma                             division by zero                                                         valid from cache     0.0 
+bitstream.scala:269:9:    readBitPrefixLemma                             body assertion: Inlined precondition (1/5) of arrayPrefixImpliesEq       valid from cache     0.0 
+bitstream.scala:269:9:    readBitPrefixLemma                             body assertion: Inlined precondition (2/5) of arrayPrefixImpliesEq       valid from cache     0.0 
+bitstream.scala:269:9:    readBitPrefixLemma                             body assertion: Inlined precondition (3/5) of arrayPrefixImpliesEq       valid from cache     0.0 
+bitstream.scala:269:9:    readBitPrefixLemma                             body assertion: Inlined precondition (4/5) of arrayPrefixImpliesEq       valid from cache     0.0 
+bitstream.scala:269:9:    readBitPrefixLemma                             body assertion: Inlined precondition (5/5) of arrayPrefixImpliesEq       valid from cache     0.0 
+bitstream.scala:269:9:    readBitPrefixLemma                             postcondition                                                            valid from cache     0.0 
+bitstream.scala:270:8:    readBitPrefixLemma                             postcondition                                                            valid from cache     0.0 
+                          readBytePrefixLemma                            precond. (call arrayPrefixImpliesEq[Byte](a1, a2, fr... (require 1/5))   valid from cache     0.0 
+                          readBytePrefixLemma                            precond. (call arrayPrefixImpliesEq[Byte](a1, a2, fr... (require 2/5))   valid from cache     0.0 
+                          readBytePrefixLemma                            precond. (call arrayPrefixImpliesEq[Byte](a1, a2, fr... (require 3/5))   valid from cache     0.0 
+                          readBytePrefixLemma                            precond. (call arrayPrefixImpliesEq[Byte](a1, a2, fr... (require 4/5))   valid from cache     0.0 
+                          readBytePrefixLemma                            precond. (call arrayPrefixImpliesEq[Byte](a1, a2, fr... (require 5/5))   valid from cache     0.0 
+bitstream.scala:313:13:   readBytePrefixLemma                            precond. (call arrayBitPrefix(pBitStrm1.buf, pBitStr... (require 1/3))   valid from cache     0.0 
+bitstream.scala:313:13:   readBytePrefixLemma                            precond. (call arrayBitPrefix(pBitStrm1.buf, pBitStr... (require 2/3))   valid from cache     0.0 
+bitstream.scala:313:13:   readBytePrefixLemma                            precond. (call arrayBitPrefix(pBitStrm1.buf, pBitStr... (require 3/3))   valid from cache     0.0 
+bitstream.scala:320:26:   readBytePrefixLemma                            class invariant                                                          valid from cache     0.0 
+bitstream.scala:321:30:   readBytePrefixLemma                            precond. (call BitStream_ReadBytePure(pBitStrm1))                        valid from cache     0.0 
+bitstream.scala:322:30:   readBytePrefixLemma                            precond. (call BitStream_ReadBytePure(pBitStrm2Reset))                   valid from cache     0.0 
+bitstream.scala:325:39:   readBytePrefixLemma                            division by zero                                                         valid from cache     0.0 
+bitstream.scala:326:7:    readBytePrefixLemma                            body assertion: Inlined precondition (1/5) of arrayPrefixImpliesEq       valid from cache     0.0 
+bitstream.scala:326:7:    readBytePrefixLemma                            body assertion: Inlined precondition (2/5) of arrayPrefixImpliesEq       valid from cache     0.0 
+bitstream.scala:326:7:    readBytePrefixLemma                            body assertion: Inlined precondition (3/5) of arrayPrefixImpliesEq       valid from cache     0.0 
+bitstream.scala:326:7:    readBytePrefixLemma                            body assertion: Inlined precondition (4/5) of arrayPrefixImpliesEq       valid from cache     0.0 
+bitstream.scala:326:7:    readBytePrefixLemma                            body assertion: Inlined precondition (5/5) of arrayPrefixImpliesEq       valid from cache     0.0 
+bitstream.scala:326:7:    readBytePrefixLemma                            postcondition                                                            valid from cache     0.0 
+bitstream.scala:173:14:   reader                                         class invariant                                                          valid from cache     0.0 
+bitstream.scala:174:14:   reader                                         class invariant                                                          valid from cache     0.0 
+                          rec                                            measure decreases                                                        valid from cache     0.0 
+                          rec                                            precond. (call arrayPrefixImpliesEq[T](a1, a2, from,... (require 1/5))   valid from cache     0.0 
+                          rec                                            precond. (call arrayPrefixImpliesEq[T](a1, a2, from,... (require 2/5))   valid from cache     0.0 
+                          rec                                            precond. (call arrayPrefixImpliesEq[T](a1, a2, from,... (require 3/5))   valid from cache     0.0 
+                          rec                                            precond. (call arrayPrefixImpliesEq[T](a1, a2, from,... (require 4/5))   valid from cache     0.0 
+                          rec                                            precond. (call arrayPrefixImpliesEq[T](a1, a2, from,... (require 5/5))   valid from cache     0.0 
+                          rec                                            precond. (call rec[T](a1, a2, from, fromSlice, to, t... (require 2/4))   valid from cache     0.0 
+                          rec                                            precond. (call rec[T](a1, a2, from, fromSlice, to, t... (require 3/4))   valid from cache     0.0 
+                          rec                                            precond. (call rec[T](a1, a2, from, fromSlice, to, t... (require 4/4))   valid from cache     0.0 
+utils.scala:70:15:        rec                                            precond. (call arrayPrefix[T](a1, a2, _$i, to) (require 1/3))            valid from cache     0.0 
+utils.scala:70:15:        rec                                            precond. (call arrayPrefix[T](a1, a2, _$i, to) (require 2/3))            valid from cache     0.0 
+utils.scala:70:15:        rec                                            precond. (call arrayPrefix[T](a1, a2, _$i, to) (require 3/3))            valid from cache     0.0 
+utils.scala:71:34:        rec                                            precond. (call arrayPrefix[T](a1, a2, _$i, toSlice) (require 1/3))       valid from cache     0.0 
+utils.scala:71:34:        rec                                            precond. (call arrayPrefix[T](a1, a2, _$i, toSlice) (require 2/3))       valid from cache     0.0 
+utils.scala:71:34:        rec                                            precond. (call arrayPrefix[T](a1, a2, _$i, toSlice) (require 3/3))       valid from cache     0.0 
+utils.scala:72:17:        rec                                            non-negative measure                                                     valid from cache     0.0 
+utils.scala:73:27:        rec                                            postcondition                                                            valid from cache     0.0 
+utils.scala:75:9:         rec                                            body assertion: Inlined precondition (1/5) of arrayPrefixImpliesEq       valid from cache     0.0 
+utils.scala:75:9:         rec                                            body assertion: Inlined precondition (2/5) of arrayPrefixImpliesEq       valid from cache     0.0 
+utils.scala:75:9:         rec                                            body assertion: Inlined precondition (3/5) of arrayPrefixImpliesEq       valid from cache     0.0 
+utils.scala:75:9:         rec                                            body assertion: Inlined precondition (4/5) of arrayPrefixImpliesEq       valid from cache     0.0 
+utils.scala:75:9:         rec                                            body assertion: Inlined precondition (5/5) of arrayPrefixImpliesEq       valid from cache     0.0 
+utils.scala:76:9:         rec                                            body assertion: Inlined precondition (2/4) of rec                        valid from cache     0.0 
+utils.scala:76:9:         rec                                            body assertion: Inlined precondition (3/4) of rec                        valid from cache     0.0 
+utils.scala:76:9:         rec                                            body assertion: Inlined precondition (4/4) of rec                        valid from cache     0.0 
+utils.scala:76:9:         rec                                            postcondition                                                            valid from cache     0.0 
+utils.scala:78:21:        rec                                            precond. (call arrayPrefix[T](a1, a2, fromSlice, toS... (require 1/3))   valid from cache     0.0 
+utils.scala:78:21:        rec                                            precond. (call arrayPrefix[T](a1, a2, fromSlice, toS... (require 1/3))   valid from cache     0.0 
+utils.scala:78:21:        rec                                            precond. (call arrayPrefix[T](a1, a2, fromSlice, toS... (require 2/3))   valid from cache     0.0 
+utils.scala:78:21:        rec                                            precond. (call arrayPrefix[T](a1, a2, fromSlice, toS... (require 2/3))   valid from cache     0.0 
+utils.scala:78:21:        rec                                            precond. (call arrayPrefix[T](a1, a2, fromSlice, toS... (require 3/3))   valid from cache     0.0 
+utils.scala:78:21:        rec                                            precond. (call arrayPrefix[T](a1, a2, fromSlice, toS... (require 3/3))   valid from cache     0.0 
+                          rec                                            measure decreases                                                        valid from cache     0.0 
+                          rec                                            precond. (call arrayPrefixImpliesEq[T](a1, a2, from,... (require 1/5))   valid from cache     0.0 
+                          rec                                            precond. (call arrayPrefixImpliesEq[T](a1, a2, from,... (require 2/5))   valid from cache     0.0 
+                          rec                                            precond. (call arrayPrefixImpliesEq[T](a1, a2, from,... (require 3/5))   valid from cache     0.0 
+                          rec                                            precond. (call arrayPrefixImpliesEq[T](a1, a2, from,... (require 4/5))   valid from cache     0.0 
+                          rec                                            precond. (call arrayPrefixImpliesEq[T](a1, a2, from,... (require 5/5))   valid from cache     0.0 
+                          rec                                            precond. (call rec[T](a1, a2, from, to, _$i) (require 2/3))              valid from cache     0.0 
+                          rec                                            precond. (call rec[T](a1, a2, from, to, _$i) (require 3/3))              valid from cache     0.0 
+utils.scala:94:15:        rec                                            precond. (call arrayPrefix[T](a1, a2, _$i, to + 1) (require 1/3))        valid from cache     0.0 
+utils.scala:94:15:        rec                                            precond. (call arrayPrefix[T](a1, a2, _$i, to + 1) (require 2/3))        valid from cache     0.0 
+utils.scala:94:15:        rec                                            precond. (call arrayPrefix[T](a1, a2, _$i, to + 1) (require 3/3))        valid from cache     0.0 
+utils.scala:95:17:        rec                                            non-negative measure                                                     valid from cache     0.0 
+utils.scala:96:22:        rec                                            postcondition                                                            valid from cache     0.0 
+utils.scala:98:9:         rec                                            body assertion: Inlined precondition (1/5) of arrayPrefixImpliesEq       valid from cache     0.0 
+utils.scala:98:9:         rec                                            body assertion: Inlined precondition (2/5) of arrayPrefixImpliesEq       valid from cache     0.0 
+utils.scala:98:9:         rec                                            body assertion: Inlined precondition (3/5) of arrayPrefixImpliesEq       valid from cache     0.0 
+utils.scala:98:9:         rec                                            body assertion: Inlined precondition (4/5) of arrayPrefixImpliesEq       valid from cache     0.0 
+utils.scala:98:9:         rec                                            body assertion: Inlined precondition (5/5) of arrayPrefixImpliesEq       valid from cache     0.0 
+utils.scala:99:9:         rec                                            body assertion: Inlined precondition (2/3) of rec                        valid from cache     0.0 
+utils.scala:99:9:         rec                                            body assertion: Inlined precondition (3/3) of rec                        valid from cache     0.0 
+utils.scala:99:9:         rec                                            postcondition                                                            valid from cache     0.0 
+utils.scala:102:7:        rec                                            precond. (call arrayPrefix[T](a1, a2, from, to + 1) (require 1/3))       valid from cache     0.0 
+utils.scala:102:7:        rec                                            precond. (call arrayPrefix[T](a1, a2, from, to + 1) (require 1/3))       valid from cache     0.0 
+utils.scala:102:7:        rec                                            precond. (call arrayPrefix[T](a1, a2, from, to + 1) (require 2/3))       valid from cache     0.0 
+utils.scala:102:7:        rec                                            precond. (call arrayPrefix[T](a1, a2, from, to + 1) (require 2/3))       valid from cache     0.0 
+utils.scala:102:7:        rec                                            precond. (call arrayPrefix[T](a1, a2, from, to + 1) (require 3/3))       valid from cache     0.0 
+utils.scala:102:7:        rec                                            precond. (call arrayPrefix[T](a1, a2, from, to + 1) (require 3/3))       valid from cache     0.0 
+                          rec                                            measure decreases                                                        valid from cache     0.0 
+                          rec                                            precond. (call arrayPrefixAppend[T](a1, a2, from, to) (require 1/5))     valid from cache     0.0 
+                          rec                                            precond. (call arrayPrefixAppend[T](a1, a2, from, to) (require 2/5))     valid from cache     0.0 
+                          rec                                            precond. (call arrayPrefixAppend[T](a1, a2, from, to) (require 3/5))     valid from cache     0.0 
+                          rec                                            precond. (call arrayPrefixAppend[T](a1, a2, from, to) (require 4/5))     valid from cache     0.0 
+                          rec                                            precond. (call arrayPrefixAppend[T](a1, a2, from, to) (require 5/5))     valid from cache     0.0 
+                          rec                                            precond. (call rec[T](a1, a2, a3, from, mid, to, _$i) (require 2/5))     valid from cache     0.0 
+                          rec                                            precond. (call rec[T](a1, a2, a3, from, mid, to, _$i) (require 3/5))     valid from cache     0.0 
+                          rec                                            precond. (call rec[T](a1, a2, a3, from, mid, to, _$i) (require 4/5))     valid from cache     0.0 
+                          rec                                            precond. (call rec[T](a1, a2, a3, from, mid, to, _$i) (require 5/5))     valid from cache     0.0 
+utils.scala:118:15:       rec                                            precond. (call arrayPrefix[T](a1, a2, _$i, mid) (require 1/3))           valid from cache     0.0 
+utils.scala:118:15:       rec                                            precond. (call arrayPrefix[T](a1, a2, _$i, mid) (require 2/3))           valid from cache     0.0 
+utils.scala:118:15:       rec                                            precond. (call arrayPrefix[T](a1, a2, _$i, mid) (require 3/3))           valid from cache     0.0 
+utils.scala:119:15:       rec                                            precond. (call arrayPrefix[T](a2, a3, _$i, to) (require 1/3))            valid from cache     0.0 
+utils.scala:119:15:       rec                                            precond. (call arrayPrefix[T](a2, a3, _$i, to) (require 2/3))            valid from cache     0.0 
+utils.scala:119:15:       rec                                            precond. (call arrayPrefix[T](a2, a3, _$i, to) (require 3/3))            valid from cache     0.0 
+utils.scala:120:15:       rec                                            precond. (call arrayPrefix[T](a1, a3, from, _$i) (require 1/3))          valid from cache     0.0 
+utils.scala:120:15:       rec                                            precond. (call arrayPrefix[T](a1, a3, from, _$i) (require 2/3))          valid from cache     0.0 
+utils.scala:120:15:       rec                                            precond. (call arrayPrefix[T](a1, a3, from, _$i) (require 3/3))          valid from cache     0.0 
+utils.scala:121:17:       rec                                            non-negative measure                                                     valid from cache     0.0 
+utils.scala:122:21:       rec                                            postcondition                                                            valid from cache     0.0 
+utils.scala:124:9:        rec                                            body assertion: Inlined precondition (1/5) of arrayPrefixAppend          valid from cache     0.0 
+utils.scala:124:9:        rec                                            body assertion: Inlined precondition (2/5) of arrayPrefixAppend          valid from cache     0.0 
+utils.scala:124:9:        rec                                            body assertion: Inlined precondition (3/5) of arrayPrefixAppend          valid from cache     0.0 
+utils.scala:124:9:        rec                                            body assertion: Inlined precondition (4/5) of arrayPrefixAppend          valid from cache     0.0 
+utils.scala:124:9:        rec                                            body assertion: Inlined precondition (5/5) of arrayPrefixAppend          valid from cache     0.0 
+utils.scala:125:9:        rec                                            body assertion: Inlined precondition (2/5) of rec                        valid from cache     0.0 
+utils.scala:125:9:        rec                                            body assertion: Inlined precondition (3/5) of rec                        valid from cache     0.0 
+utils.scala:125:9:        rec                                            body assertion: Inlined precondition (4/5) of rec                        valid from cache     0.0 
+utils.scala:125:9:        rec                                            body assertion: Inlined precondition (5/5) of rec                        valid from cache     0.0 
+utils.scala:125:9:        rec                                            postcondition                                                            valid from cache     0.0 
+utils.scala:128:7:        rec                                            precond. (call arrayPrefix[T](a1, a3, from, mid) (require 1/3))          valid from cache     0.0 
+utils.scala:128:7:        rec                                            precond. (call arrayPrefix[T](a1, a3, from, mid) (require 1/3))          valid from cache     0.0 
+utils.scala:128:7:        rec                                            precond. (call arrayPrefix[T](a1, a3, from, mid) (require 2/3))          valid from cache     0.0 
+utils.scala:128:7:        rec                                            precond. (call arrayPrefix[T](a1, a3, from, mid) (require 2/3))          valid from cache     0.0 
+utils.scala:128:7:        rec                                            precond. (call arrayPrefix[T](a1, a3, from, mid) (require 3/3))          valid from cache     0.0 
+utils.scala:128:7:        rec                                            precond. (call arrayPrefix[T](a1, a3, from, mid) (require 3/3))          valid from cache     0.0 
+                          rec                                            measure decreases                                                        valid from cache     0.0 
+                          rec                                            precond. (call rec[T](a, at, v, _$i) (require 2/3))                      valid from cache     0.0 
+                          rec                                            precond. (call rec[T](a, at, v, _$i) (require 3/3))                      valid from cache     0.0 
+utils.scala:140:15:       rec                                            precond. (call arrayPrefix[T](a, {   assert(at >= 0 ... (require 1/3))   valid from cache     0.0 
+utils.scala:140:15:       rec                                            precond. (call arrayPrefix[T](a, {   assert(at >= 0 ... (require 2/3))   valid from cache     0.0 
+utils.scala:140:15:       rec                                            precond. (call arrayPrefix[T](a, {   assert(at >= 0 ... (require 3/3))   valid from cache     0.0 
+utils.scala:141:17:       rec                                            non-negative measure                                                     valid from cache     0.0 
+utils.scala:143:12:       rec                                            body assertion: Inlined precondition (2/3) of rec                        valid from cache     0.0 
+utils.scala:143:12:       rec                                            body assertion: Inlined precondition (3/3) of rec                        valid from cache     0.0 
+utils.scala:145:7:        rec                                            postcondition                                                            valid from cache     0.0 
+utils.scala:145:7:        rec                                            postcondition                                                            valid from cache     0.0 
+utils.scala:145:7:        rec                                            precond. (call arrayPrefix[T](a, {   assert(at >= 0 ... (require 1/3))   valid from cache     0.0 
+utils.scala:145:7:        rec                                            precond. (call arrayPrefix[T](a, {   assert(at >= 0 ... (require 1/3))   valid from cache     0.0 
+utils.scala:145:7:        rec                                            precond. (call arrayPrefix[T](a, {   assert(at >= 0 ... (require 2/3))   valid from cache     0.0 
+utils.scala:145:7:        rec                                            precond. (call arrayPrefix[T](a, {   assert(at >= 0 ... (require 2/3))   valid from cache     0.0 
+utils.scala:145:7:        rec                                            precond. (call arrayPrefix[T](a, {   assert(at >= 0 ... (require 3/3))   valid from cache     0.0 
+utils.scala:145:7:        rec                                            precond. (call arrayPrefix[T](a, {   assert(at >= 0 ... (require 3/3))   valid from cache     0.0 
+utils.scala:150:52:       rec                                            array index within bounds                                                valid from cache     0.0 
+utils.scala:150:52:       rec                                            array index within bounds                                                valid from cache     0.0 
+utils.scala:150:52:       rec                                            array index within bounds                                                valid from cache     0.0 
+                          rec                                            measure decreases                                                        valid from cache     0.0 
+                          rec                                            precond. (call rec[T](a1, a2, at, from, to, _$i) (require 2/3))          valid from cache     0.0 
+                          rec                                            precond. (call rec[T](a1, a2, at, from, to, _$i) (require 3/3))          valid from cache     0.0 
+utils.scala:164:15:       rec                                            precond. (call arrayPrefix[T](a1, a2, _$i, to) (require 1/3))            valid from cache     0.0 
+utils.scala:164:15:       rec                                            precond. (call arrayPrefix[T](a1, a2, _$i, to) (require 2/3))            valid from cache     0.0 
+utils.scala:164:15:       rec                                            precond. (call arrayPrefix[T](a1, a2, _$i, to) (require 3/3))            valid from cache     0.0 
+utils.scala:165:17:       rec                                            non-negative measure                                                     valid from cache     0.0 
+utils.scala:166:20:       rec                                            postcondition                                                            valid from cache     0.0 
+utils.scala:167:12:       rec                                            body assertion: Inlined precondition (2/3) of rec                        valid from cache     0.0 
+utils.scala:167:12:       rec                                            body assertion: Inlined precondition (3/3) of rec                        valid from cache     0.0 
+utils.scala:167:12:       rec                                            postcondition                                                            valid from cache     0.0 
+utils.scala:172:32:       rec                                            array index within bounds                                                valid from cache     0.0 
+utils.scala:172:32:       rec                                            array index within bounds                                                valid from cache     0.0 
+utils.scala:172:32:       rec                                            array index within bounds                                                valid from cache     0.0 
+utils.scala:172:32:       rec                                            array index within bounds                                                valid from cache     0.0 
+                          validTransitiveLemma                           precond. (call arrayPrefixImpliesEq[Byte](a1, a2, fr... (require 1/5))   valid from cache     0.0 
+                          validTransitiveLemma                           precond. (call arrayPrefixImpliesEq[Byte](a1, a2, fr... (require 2/5))   valid from cache     0.0 
+                          validTransitiveLemma                           precond. (call arrayPrefixImpliesEq[Byte](a1, a2, fr... (require 3/5))   valid from cache     0.0 
+                          validTransitiveLemma                           precond. (call arrayPrefixImpliesEq[Byte](a1, a2, fr... (require 4/5))   valid from cache     0.0 
+                          validTransitiveLemma                           precond. (call arrayPrefixImpliesEq[Byte](a1, a2, fr... (require 5/5))   valid from cache     0.0 
+                          validTransitiveLemma                           precond. (call arrayPrefixTransitive[Byte](a1, a2, a... (require 1/5))   valid from cache     0.0 
+                          validTransitiveLemma                           precond. (call arrayPrefixTransitive[Byte](a1, a2, a... (require 2/5))   valid from cache     0.0 
+                          validTransitiveLemma                           precond. (call arrayPrefixTransitive[Byte](a1, a2, a... (require 3/5))   valid from cache     0.0 
+                          validTransitiveLemma                           precond. (call arrayPrefixTransitive[Byte](a1, a2, a... (require 4/5))   valid from cache     0.0 
+                          validTransitiveLemma                           precond. (call arrayPrefixTransitive[Byte](a1, a2, a... (require 5/5))   valid from cache     0.0 
+bitstream.scala:182:5:    validTransitiveLemma                           body assertion: Inlined precondition (1/5) of arrayPrefixTransitive      valid from cache     0.0 
+bitstream.scala:182:5:    validTransitiveLemma                           body assertion: Inlined precondition (2/5) of arrayPrefixTransitive      valid from cache     0.0 
+bitstream.scala:182:5:    validTransitiveLemma                           body assertion: Inlined precondition (3/5) of arrayPrefixTransitive      valid from cache     0.0 
+bitstream.scala:182:5:    validTransitiveLemma                           body assertion: Inlined precondition (4/5) of arrayPrefixTransitive      valid from cache     0.0 
+bitstream.scala:182:5:    validTransitiveLemma                           body assertion: Inlined precondition (5/5) of arrayPrefixTransitive      valid from cache     0.0 
+bitstream.scala:185:9:    validTransitiveLemma                           body assertion: Inlined precondition (1/5) of arrayPrefixImpliesEq       valid from cache     0.0 
+bitstream.scala:185:9:    validTransitiveLemma                           body assertion: Inlined precondition (2/5) of arrayPrefixImpliesEq       valid from cache     0.0 
+bitstream.scala:185:9:    validTransitiveLemma                           body assertion: Inlined precondition (3/5) of arrayPrefixImpliesEq       valid from cache     0.0 
+bitstream.scala:185:9:    validTransitiveLemma                           body assertion: Inlined precondition (4/5) of arrayPrefixImpliesEq       valid from cache     0.0 
+bitstream.scala:185:9:    validTransitiveLemma                           body assertion: Inlined precondition (5/5) of arrayPrefixImpliesEq       valid from cache     0.0 
+bitstream.scala:186:16:   validTransitiveLemma                           body assertion                                                           valid from cache     0.0 
+bitstream.scala:186:23:   validTransitiveLemma                           array index within bounds                                                valid from cache     0.0 
+bitstream.scala:186:49:   validTransitiveLemma                           array index within bounds                                                valid from cache     0.0 
+bitstream.scala:187:9:    validTransitiveLemma                           body assertion: Inlined precondition of check                            valid from cache     0.0 
+bitstream.scala:187:15:   validTransitiveLemma                           precond. (call bytePrefix({   val a: Array[Byte] = w...)                 valid from cache     0.0 
+bitstream.scala:187:33:   validTransitiveLemma                           array index within bounds                                                valid from cache     0.0 
+bitstream.scala:187:57:   validTransitiveLemma                           array index within bounds                                                valid from cache     0.0 
+bitstream.scala:189:16:   validTransitiveLemma                           body assertion                                                           valid from cache     0.0 
+bitstream.scala:190:9:    validTransitiveLemma                           body assertion: Inlined precondition of check                            valid from cache     0.0 
+bitstream.scala:190:15:   validTransitiveLemma                           precond. (call bytePrefix({   val a: Array[Byte] = w...)                 valid from cache     0.0 
+bitstream.scala:190:33:   validTransitiveLemma                           array index within bounds                                                valid from cache     0.0 
+bitstream.scala:190:57:   validTransitiveLemma                           array index within bounds                                                valid from cache     0.0 
+bitstream.scala:193:13:   validTransitiveLemma                           body assertion                                                           valid from cache     0.0 
+bitstream.scala:193:50:   validTransitiveLemma                           precond. (call bytePrefix({   val a: Array[Byte] = w...)                 valid from cache     0.0 
+bitstream.scala:193:68:   validTransitiveLemma                           array index within bounds                                                valid from cache     0.0 
+bitstream.scala:193:92:   validTransitiveLemma                           array index within bounds                                                valid from cache     0.0 
+bitstream.scala:194:5:    validTransitiveLemma                           body assertion: Inlined precondition of check                            valid from cache     0.0 
+bitstream.scala:194:5:    validTransitiveLemma                           postcondition                                                            valid from cache     0.0 
+............................................................................................................................................................................
+total: 737  valid: 737  (737 from cache, 0 trivial) invalid: 0    unknown: 0    time:    0.65                                                                              
+
+Verification pipeline summary:
+  cache, anti-aliasing, imperative elimination, type encoding, 
+  no-inc:smt-z3:z3 tactic.default_tactic=smt sat.euf=true, smt-cvc4, smt-z3, 
+  batched
+Shutting down executor service.
+
+real    0m20.247s
+user    1m2.769s
+sys     0m0.526s
