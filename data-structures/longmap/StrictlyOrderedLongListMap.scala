@@ -1,5 +1,4 @@
-/**
-  * Author: Samuel Chassot
+/** Author: Samuel Chassot
   */
 
 import stainless.annotation._
@@ -58,9 +57,9 @@ case class ListMapLongKey[B](toList: List[(Long, B)]) {
     TupleListOps.getKeysOf(toList, value)
   }
 
-  // def keys(): List[Long] = {
-  //   TupleListOps.getKeysList(toList)
-  // }
+  def keys(): List[Long] = {
+    TupleListOps.getKeysList(toList)
+  }
 
   def apply(key: Long): B = {
     require(contains(key))
@@ -153,8 +152,9 @@ object TupleListOps {
       case Cons(head, tl) if (head._2 == value) => {
         if (!getKeysOf(tl, value).isEmpty) {
           lemmaForallGetValueByKeySameWithASmallerHead(tl, getKeysOf(tl, value), value, head)
+
         }
-        head._1 :: getKeysOf(tl, value)
+        Cons(head._1, getKeysOf(tl, value))
       }
       case Cons(head, tl) if (head._2 != value) => {
         val r = getKeysOf(tl, value)
@@ -205,7 +205,9 @@ object TupleListOps {
       case Cons(head, tl) if (head._1 > newKey)  => (newKey, newValue) :: Cons(head, tl)
       case Nil()                                 => (newKey, newValue) :: Nil()
     }
-  }.ensuring(res => invariantList(res) && containsKey(res, newKey) && res.contains((newKey, newValue)))
+  }.ensuring(res =>
+    invariantList(res) && containsKey(res, newKey) && res.contains((newKey, newValue))
+  )
 
   def removeStrictlySorted[B](l: List[(Long, B)], key: Long): List[(Long, B)] = {
     require(invariantList(l))
@@ -438,6 +440,7 @@ object TupleListOps {
   }.ensuring(_ => getValueByKey(l, key).isDefined)
 
   @opaque
+  @inlineOnce
   def lemmaForallGetValueByKeySameWithASmallerHead[B](
       l: List[(Long, B)],
       keys: List[Long],
@@ -445,22 +448,22 @@ object TupleListOps {
       newHead: (Long, B)
   ): Unit = {
     require(
-      invariantList(l) && !l.isEmpty && keys.forall(
-        getValueByKey(l, _) == Some[B](value)
-      ) && newHead._1 < l.head._1
+      invariantList(l) && !l.isEmpty &&
+        keys.forall(getValueByKey(l, _) == Some[B](value)) &&
+        newHead._1 < l.head._1
     )
     decreases(keys)
 
     keys match {
       case Cons(head, tl) => {
         lemmaGetValueByKeyIsDefinedImpliesContainsKey(l, head)
-        lemmaContainsKeyImpliesGetValueByKeyDefined(newHead :: l, head)
+        lemmaContainsKeyImpliesGetValueByKeyDefined(Cons(newHead, l), head)
         lemmaForallGetValueByKeySameWithASmallerHead(l, tl, value, newHead)
       }
       case _ => ()
     }
 
-  }.ensuring(_ => keys.forall(k => getValueByKey(newHead :: l, k) == Some[B](value)))
+  }.ensuring(_ => keys.forall(k => getValueByKey(Cons(newHead, l), k) == Some[B](value)))
 
   @opaque
   def lemmaInsertStrictlySortedDoesNotModifyOtherKeyValues[B](
@@ -605,7 +608,9 @@ object ListMapLongKeyLemmas {
   }.ensuring(_ => lm + (a1, b1) + (a2, b2) == lm + (a2, b2) + (a1, b1))
 
   @opaque
-  def emptyContainsNothing[B](k: Long): Unit = {}.ensuring(_ => !ListMapLongKey.empty[B].contains(k))
+  def emptyContainsNothing[B](k: Long): Unit = {}.ensuring(_ =>
+    !ListMapLongKey.empty[B].contains(k)
+  )
 
   @opaque
   def addValidProp[B](lm: ListMapLongKey[B], p: ((Long, B)) => Boolean, a: Long, b: B): Unit = {
@@ -729,6 +734,6 @@ object ListMapLongKeyLemmas {
 
   @opaque
   def keysOfSound[B](lm: ListMapLongKey[B], value: B): Unit = {
-    //trivial by postcondition of getKeysOf
+    // trivial by postcondition of getKeysOf
   }.ensuring(_ => lm.keysOf(value).forall(key => lm.get(key) == Some[B](value)))
 }
