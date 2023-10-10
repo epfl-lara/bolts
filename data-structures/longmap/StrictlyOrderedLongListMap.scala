@@ -73,7 +73,7 @@ case class ListMapLongKey[B](toList: List[(Long, B)]) {
     TupleListOps.lemmaContainsTupThenGetReturnValue(newList, keyValue._1, keyValue._2)
     ListMapLongKey(newList)
 
-  }.ensuring(res => res.contains(keyValue._1) && res.get(keyValue._1) == Some[B](keyValue._2))
+  }.ensuring(res => res.contains(keyValue._1) && res.get(keyValue._1) == Some[B](keyValue._2) && res.toList.contains(keyValue))
 
   // @inlineOnce
   def ++(keyValues: List[(Long, B)]): ListMapLongKey[B] = {
@@ -205,9 +205,7 @@ object TupleListOps {
       case Cons(head, tl) if (head._1 > newKey)  => (newKey, newValue) :: Cons(head, tl)
       case Nil()                                 => (newKey, newValue) :: Nil()
     }
-  }.ensuring(res =>
-    invariantList(res) && containsKey(res, newKey) && res.contains((newKey, newValue))
-  )
+  }.ensuring(res => invariantList(res) && containsKey(res, newKey) && res.contains((newKey, newValue)))
 
   def removeStrictlySorted[B](l: List[(Long, B)], key: Long): List[(Long, B)] = {
     require(invariantList(l))
@@ -524,6 +522,13 @@ object TupleListOps {
   }.ensuring(_ => containsKey(insertStrictlySorted(l, newKey, newValue), otherKey))
 
   @opaque
+  def lemmaInsertStrictlySortedNotContainedContent[B](@induct l: List[(Long, B)], newKey: Long, newValue: B): Unit = {
+    require(invariantList(l))
+    require(!containsKey(l, newKey))
+
+  } ensuring (l.content ++ Set((newKey, newValue)) == insertStrictlySorted(l, newKey, newValue).content)
+
+  @opaque
   def lemmaNotContainsKeyThenNotContainsTuple[B](
       @induct l: List[(Long, B)],
       key: Long,
@@ -608,9 +613,7 @@ object ListMapLongKeyLemmas {
   }.ensuring(_ => lm + (a1, b1) + (a2, b2) == lm + (a2, b2) + (a1, b1))
 
   @opaque
-  def emptyContainsNothing[B](k: Long): Unit = {}.ensuring(_ =>
-    !ListMapLongKey.empty[B].contains(k)
-  )
+  def emptyContainsNothing[B](k: Long): Unit = {}.ensuring(_ => !ListMapLongKey.empty[B].contains(k))
 
   @opaque
   def addValidProp[B](lm: ListMapLongKey[B], p: ((Long, B)) => Boolean, a: Long, b: B): Unit = {
@@ -736,4 +739,10 @@ object ListMapLongKeyLemmas {
   def keysOfSound[B](lm: ListMapLongKey[B], value: B): Unit = {
     // trivial by postcondition of getKeysOf
   }.ensuring(_ => lm.keysOf(value).forall(key => lm.get(key) == Some[B](value)))
+
+  @opaque
+  def addNotContainedContent[B](lm: ListMapLongKey[B], key: Long, value: B): Unit = {
+    require(!lm.contains(key))
+    TupleListOps.lemmaInsertStrictlySortedNotContainedContent(lm.toList, key, value)
+  } ensuring (lm.toList.content ++ Set((key, value)) == (lm + (key, value)).toList.content)
 }
