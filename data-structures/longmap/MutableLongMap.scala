@@ -11,6 +11,64 @@ import stainless.lang.StaticChecks._
 
 object MutableLongMap {
 
+  final case class LongMap[V](
+      private var underlying: LongMapFixedSize[V]
+  ) {
+    @pure
+    def size: Int = underlying.size
+
+    @pure
+    def isEmpty: Boolean = {
+      require(valid)
+      underlying.isEmpty
+    } ensuring (_ => valid)
+
+    @pure
+    def contains(key: Long): Boolean = {
+      require(valid)
+      underlying.contains(key)
+    }.ensuring(res => valid && (res == map.contains(key)))
+
+    @pure
+    def apply(key: Long): V = {
+      require(valid)
+      underlying.apply(key)
+    } ensuring (res =>
+      valid
+        && (if (contains(key)) res == map.get(key).get
+            else res == underlying.defaultEntry(key))
+    )
+
+    def update(key: Long, v: V): Boolean = {
+      require(valid)
+      val oldMap = underlying.map
+      {
+        underlying.update(key, v)
+      }.ensuring(res =>
+        valid && (if (res) map.contains(key) && (map == oldMap + (key, v)) else map == oldMap)
+      )
+    }
+
+    def remove(key: Long): Boolean = {
+      require(valid)
+      val oldMap = underlying.map
+      {
+        underlying.remove(key)
+      }.ensuring(res => valid && (if (res) map == oldMap - key else map == oldMap))
+    }
+
+    @inlineOnce
+    private def valid: Boolean = underlying.valid
+
+    @inline
+    @pure
+    private def map: ListMapLongKey[V] = {
+      require(valid)
+      underlying.map
+    }
+
+  }
+
   sealed trait ValueCell[V] {
     def get(defaultValue: V): V
   }
@@ -55,7 +113,7 @@ object MutableLongMap {
     * @param _values
     */
   @mutable
-  final case class LongMapLongVFixedSize[V](
+  final case class LongMapFixedSize[V](
       val defaultEntry: Long => V,
       var mask: Int = MAX_MASK,
       private var extraKeys: Int = 0,
@@ -65,45 +123,45 @@ object MutableLongMap {
       private var _keys: Array[Long] = Array.fill(MAX_MASK + 1)(0),
       private var _values: Array[ValueCell[V]] = Array.fill(MAX_MASK + 1)(EmptyCell[V]())
   ) {
-    import LongMapLongVFixedSize.validKeyInArray
-    import LongMapLongVFixedSize.arrayCountValidKeys
-    import LongMapLongVFixedSize.arrayContainsKey
-    import LongMapLongVFixedSize.arrayScanForKey
-    import LongMapLongVFixedSize.arrayNoDuplicates
-    import LongMapLongVFixedSize.seekEntryOrOpen
-    import LongMapLongVFixedSize.toIndex
-    import LongMapLongVFixedSize.lemmaArrayContainsFromImpliesContainsFromZero
-    import LongMapLongVFixedSize.arrayForallSeekEntryOrOpenFound
-    import LongMapLongVFixedSize.lemmaValidKeyAtIImpliesCountKeysIsOne
-    import LongMapLongVFixedSize.lemmaAddValidKeyIncreasesNumberOfValidKeysInArray
-    import LongMapLongVFixedSize.lemmaRemoveValidKeyDecreasesNumberOfValidKeysInArray
-    import LongMapLongVFixedSize.lemmaArrayForallSeekEntryOrOpenFoundFromSmallerThenFromBigger
-    import LongMapLongVFixedSize.lemmaArrayNoDuplicateThenKeysContainedNotEqual
-    import LongMapLongVFixedSize.lemmaNoDuplicateFromThenFromBigger
-    import LongMapLongVFixedSize.lemmaPutNonValidKeyPreservesNoDuplicate
-    import LongMapLongVFixedSize.lemmaPutNewValidKeyPreservesNoDuplicate
-    import LongMapLongVFixedSize.seekEntry
-    import LongMapLongVFixedSize.inRange
-    import LongMapLongVFixedSize.validMask
-    import LongMapLongVFixedSize.lemmaPutLongMinValuePreservesForallSeekEntryOrOpen
-    import LongMapLongVFixedSize.lemmaSeekEntryOrOpenFindsThenSeekEntryFinds
-    import LongMapLongVFixedSize.lemmaPutValidKeyPreservesForallSeekEntryOrOpen
-    import LongMapLongVFixedSize.lemmaArrayNoDuplicateRemoveOneThenNotContain
-    import LongMapLongVFixedSize.getCurrentListMap
-    import LongMapLongVFixedSize.lemmaKeyInListMapIsInArray
-    import LongMapLongVFixedSize.lemmaValidKeyInArrayIsInListMap
-    import LongMapLongVFixedSize.lemmaKeyInListMapThenSameValueInArray
-    import LongMapLongVFixedSize.lemmaArrayContainsKeyThenInListMap
-    import LongMapLongVFixedSize.lemmaSeekEntryGivesInRangeIndex
-    import LongMapLongVFixedSize.lemmaInListMapThenSeekEntryOrOpenFindsIt
-    import LongMapLongVFixedSize.lemmaNotInListMapThenSeekEntryOrOpenFindsFreeOrNothing
-    import LongMapLongVFixedSize.lemmaAddValidKeyToArrayThenAddPairToListMap
-    import LongMapLongVFixedSize.lemmaChangeZeroKeyThenAddPairToListMap
-    import LongMapLongVFixedSize.lemmaChangeLongMinValueKeyThenAddPairToListMap
-    import LongMapLongVFixedSize.lemmaChangeValueExistingKeyToArrayThenAddPairToListMap
-    import LongMapLongVFixedSize.lemmaRemoveZeroKeyThenRemoveKeyFromListMap
-    import LongMapLongVFixedSize.lemmaRemoveLongMinValueKeyThenRemoveKeyFromListMap
-    import LongMapLongVFixedSize.lemmaRemoveValidKeyToArrayThenRemoveKeyFromListMap
+    import LongMapFixedSize.validKeyInArray
+    import LongMapFixedSize.arrayCountValidKeys
+    import LongMapFixedSize.arrayContainsKey
+    import LongMapFixedSize.arrayScanForKey
+    import LongMapFixedSize.arrayNoDuplicates
+    import LongMapFixedSize.seekEntryOrOpen
+    import LongMapFixedSize.toIndex
+    import LongMapFixedSize.lemmaArrayContainsFromImpliesContainsFromZero
+    import LongMapFixedSize.arrayForallSeekEntryOrOpenFound
+    import LongMapFixedSize.lemmaValidKeyAtIImpliesCountKeysIsOne
+    import LongMapFixedSize.lemmaAddValidKeyIncreasesNumberOfValidKeysInArray
+    import LongMapFixedSize.lemmaRemoveValidKeyDecreasesNumberOfValidKeysInArray
+    import LongMapFixedSize.lemmaArrayForallSeekEntryOrOpenFoundFromSmallerThenFromBigger
+    import LongMapFixedSize.lemmaArrayNoDuplicateThenKeysContainedNotEqual
+    import LongMapFixedSize.lemmaNoDuplicateFromThenFromBigger
+    import LongMapFixedSize.lemmaPutNonValidKeyPreservesNoDuplicate
+    import LongMapFixedSize.lemmaPutNewValidKeyPreservesNoDuplicate
+    import LongMapFixedSize.seekEntry
+    import LongMapFixedSize.inRange
+    import LongMapFixedSize.validMask
+    import LongMapFixedSize.lemmaPutLongMinValuePreservesForallSeekEntryOrOpen
+    import LongMapFixedSize.lemmaSeekEntryOrOpenFindsThenSeekEntryFinds
+    import LongMapFixedSize.lemmaPutValidKeyPreservesForallSeekEntryOrOpen
+    import LongMapFixedSize.lemmaArrayNoDuplicateRemoveOneThenNotContain
+    import LongMapFixedSize.getCurrentListMap
+    import LongMapFixedSize.lemmaKeyInListMapIsInArray
+    import LongMapFixedSize.lemmaValidKeyInArrayIsInListMap
+    import LongMapFixedSize.lemmaKeyInListMapThenSameValueInArray
+    import LongMapFixedSize.lemmaArrayContainsKeyThenInListMap
+    import LongMapFixedSize.lemmaSeekEntryGivesInRangeIndex
+    import LongMapFixedSize.lemmaInListMapThenSeekEntryOrOpenFindsIt
+    import LongMapFixedSize.lemmaNotInListMapThenSeekEntryOrOpenFindsFreeOrNothing
+    import LongMapFixedSize.lemmaAddValidKeyToArrayThenAddPairToListMap
+    import LongMapFixedSize.lemmaChangeZeroKeyThenAddPairToListMap
+    import LongMapFixedSize.lemmaChangeLongMinValueKeyThenAddPairToListMap
+    import LongMapFixedSize.lemmaChangeValueExistingKeyToArrayThenAddPairToListMap
+    import LongMapFixedSize.lemmaRemoveZeroKeyThenRemoveKeyFromListMap
+    import LongMapFixedSize.lemmaRemoveLongMinValueKeyThenRemoveKeyFromListMap
+    import LongMapFixedSize.lemmaRemoveValidKeyToArrayThenRemoveKeyFromListMap
 
     @pure
     def size: Int = {
@@ -601,7 +659,7 @@ object MutableLongMap {
     }
 
     @inlineOnce
-    private def valid: Boolean = {
+    def valid: Boolean = {
       // class invariant
       simpleValid &&
       arrayCountValidKeys(_keys, 0, _keys.length) == _size &&
@@ -610,7 +668,7 @@ object MutableLongMap {
     }
 
     @inline
-    private def simpleValid: Boolean = {
+    def simpleValid: Boolean = {
       validMask(mask) &&
       _values.length == mask + 1 &&
       _keys.length == _values.length &&
@@ -624,7 +682,7 @@ object MutableLongMap {
 
     @inline
     @pure
-    private def map: ListMapLongKey[V] = {
+    def map: ListMapLongKey[V] = {
       require(valid)
       getCurrentListMap(_keys, _values, mask, extraKeys, zeroValue, minValue, 0, defaultEntry)
     }
@@ -638,7 +696,7 @@ object MutableLongMap {
   case class Intermediate(undefined: Boolean, index: Int, x: Int) extends SeekEntryResult
   case class Undefined() extends SeekEntryResult
 
-  object LongMapLongVFixedSize {
+  object LongMapFixedSize {
 
     @pure
     @inline
@@ -701,7 +759,7 @@ object MutableLongMap {
       else if (validKeyInArray(_keys(i))) {
         assert(arrayContainsKey(_keys, _keys(i), i))
         lemmaArrayContainsFromImpliesContainsFromZero(_keys, _keys(i), i)
-        LongMapLongVFixedSize.seekEntryOrOpen(_keys(i))(_keys, mask) == Found(i) &&
+        LongMapFixedSize.seekEntryOrOpen(_keys(i))(_keys, mask) == Found(i) &&
         arrayForallSeekEntryOrOpenFound(i + 1)
       } else arrayForallSeekEntryOrOpenFound(i + 1)
     }
@@ -7583,12 +7641,12 @@ object MutableLongMap {
     def lemmaKnownPivotPlusOneIsPivot(a: Array[Long], from: Int, to: Int, pivot: Int): Unit = {
       require(
         a.length < Integer.MAX_VALUE && from >= 0 && to > from && to <= a.length && pivot >= from && pivot < to - 1 &&
-          LongMapLongVFixedSize.isPivot(a, from, to, pivot)
+          LongMapFixedSize.isPivot(a, from, to, pivot)
       )
 
       lemmaCountingValidKeysAtTheEnd(a, from, pivot + 1)
 
-    }.ensuring(_ => LongMapLongVFixedSize.isPivot(a, from, to, pivot + 1))
+    }.ensuring(_ => LongMapFixedSize.isPivot(a, from, to, pivot + 1))
 
     @inline
     @pure
@@ -7901,7 +7959,7 @@ object MutableLongMap {
       require(i >= 0 && i < a.length)
       require(a(i) == k)
 
-      LongMapLongVFixedSize.lemmaArrayContainsFromImpliesContainsFromZero(a, k, i)
+      LongMapFixedSize.lemmaArrayContainsFromImpliesContainsFromZero(a, k, i)
     }.ensuring(_ => arrayContainsKey(a, k, 0))
 
   }
