@@ -97,6 +97,10 @@ object MutableLongMap {
           if (from > 0) {
             assert(newMap.map == oldNewMap + (currentKey, currentValue))
             val underlyingMapFromPOneNXtra = LongMapFixedSize.getCurrentListMapNoExtraKeys(underlying._keys, underlying._values, underlying.mask, underlying.extraKeys, underlying.zeroValue, underlying.minValue, from + 1, underlying.defaultEntry)
+            assert(
+              underlyingMapFromPOneNXtra + (currentKey, currentValue) ==
+                LongMapFixedSize.getCurrentListMapNoExtraKeys(underlying._keys, underlying._values, underlying.mask, underlying.extraKeys, underlying.zeroValue, underlying.minValue, from, underlying.defaultEntry)
+            )
             ListMapLongKeyLemmas.addCommutativeForDiffKeys(underlyingMapFromPOneNXtra, currentKey, currentValue, 0L, underlying.zeroValue)
             ListMapLongKeyLemmas.addCommutativeForDiffKeys(underlyingMapFromPOneNXtra + (0L, underlying.zeroValue), currentKey, currentValue, Long.MinValue, underlying.minValue)
 
@@ -110,6 +114,7 @@ object MutableLongMap {
             ListMapLongKeyLemmas.addCommutativeForDiffKeys(underlyingMapFromPOneNXtra, currentKey, currentValue, 0L, underlying.zeroValue)
             ListMapLongKeyLemmas.addCommutativeForDiffKeys(underlyingMapFromPOneNXtra + (0L, underlying.zeroValue), currentKey, currentValue, Long.MinValue, underlying.minValue)
 
+            assert(valid && newMap.map == underlying.map)
             true
           }
         } else {
