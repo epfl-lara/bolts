@@ -60,6 +60,75 @@ object MutableLongMap {
       require(valid)
     }
 
+    def repackFrom(newMap: LongMapFixedSize[V], from: Int): Boolean = {
+      require(valid)
+      require(from >= 0 && from < underlying._keys.length)
+      require(newMap.valid)
+      require(newMap.mask + 1 >= underlying._size)
+      require(LongMapFixedSize.getCurrentListMap(underlying._keys, underlying._values, underlying.mask, underlying.extraKeys, underlying.zeroValue, underlying.minValue, from + 1, underlying.defaultEntry) == newMap.map)
+      decreases(from)
+      val currentKey = underlying._keys(from)
+      val oldNewMap = newMap.map
+      val currentValue = underlying._values(from).get(underlying.defaultEntry(0L))
+
+      if (currentKey != 0 && currentKey != Long.MinValue) {
+        // There is a key in the array, add it to the new map
+        val res = newMap.update(currentKey, currentValue)
+        if (oldNewMap.contains(currentKey)) {
+          LongMapFixedSize.lemmaListMapContainsThenArrayContainsFrom(
+            underlying._keys,
+            underlying._values,
+            underlying.mask,
+            underlying.extraKeys,
+            underlying.zeroValue,
+            underlying.minValue,
+            currentKey,
+            from + 1,
+            underlying.defaultEntry
+          )
+          LongMapFixedSize.lemmaNoDuplicateFromThenFromBigger(underlying._keys, 0, from)
+          LongMapFixedSize.lemmaArrayNoDuplicateFromNotContainsKeysInAcc(underlying._keys, from + 1, currentKey, List(currentKey))
+          check(false)
+        }
+        assert(!oldNewMap.contains(currentKey))
+        assert(valid)
+        if (res) {
+          assert(newMap.map == oldNewMap + (currentKey, currentValue))
+          if (from > 0) {
+            assert(newMap.map == oldNewMap + (currentKey, currentValue))
+            val underlyingMapFromPOneNXtra = LongMapFixedSize.getCurrentListMapNoExtraKeys(underlying._keys, underlying._values, underlying.mask, underlying.extraKeys, underlying.zeroValue, underlying.minValue, from + 1, underlying.defaultEntry)
+            ListMapLongKeyLemmas.addCommutativeForDiffKeys(underlyingMapFromPOneNXtra, currentKey, currentValue, 0L, underlying.zeroValue)
+            ListMapLongKeyLemmas.addCommutativeForDiffKeys(underlyingMapFromPOneNXtra + (0L, underlying.zeroValue), currentKey, currentValue, Long.MinValue, underlying.minValue)
+
+            assert(
+              LongMapFixedSize.getCurrentListMap(underlying._keys, underlying._values, underlying.mask, underlying.extraKeys, underlying.zeroValue, underlying.minValue, from + 1, underlying.defaultEntry) + (currentKey, currentValue) ==
+                LongMapFixedSize.getCurrentListMap(underlying._keys, underlying._values, underlying.mask, underlying.extraKeys, underlying.zeroValue, underlying.minValue, from, underlying.defaultEntry)
+            )
+            repackFrom(newMap, from - 1)
+          } else {
+            val underlyingMapFromPOneNXtra = LongMapFixedSize.getCurrentListMapNoExtraKeys(underlying._keys, underlying._values, underlying.mask, underlying.extraKeys, underlying.zeroValue, underlying.minValue, from + 1, underlying.defaultEntry)
+            ListMapLongKeyLemmas.addCommutativeForDiffKeys(underlyingMapFromPOneNXtra, currentKey, currentValue, 0L, underlying.zeroValue)
+            ListMapLongKeyLemmas.addCommutativeForDiffKeys(underlyingMapFromPOneNXtra + (0L, underlying.zeroValue), currentKey, currentValue, Long.MinValue, underlying.minValue)
+
+            true
+          }
+        } else {
+          false
+        }
+
+      } else {
+        if (from > 0) {
+          assert(newMap.map == oldNewMap)
+          val res = repackFrom(newMap, from - 1)
+          res
+        } else {
+          assert(valid && newMap.map == underlying.map)
+          true
+        }
+      }
+
+    } ensuring (res => valid && (if (res) newMap.map == underlying.map else true))
+
     @inlineOnce
     private def valid: Boolean = underlying.valid
 
@@ -116,12 +185,12 @@ object MutableLongMap {
   final case class LongMapFixedSize[V](
       val defaultEntry: Long => V,
       var mask: Int = MAX_MASK,
-      private var extraKeys: Int = 0,
-      private var zeroValue: V,
-      private var minValue: V,
-      private var _size: Int = 0,
-      private var _keys: Array[Long] = Array.fill(MAX_MASK + 1)(0),
-      private var _values: Array[ValueCell[V]] = Array.fill(MAX_MASK + 1)(EmptyCell[V]())
+      var extraKeys: Int = 0,
+      var zeroValue: V,
+      var minValue: V,
+      var _size: Int = 0,
+      var _keys: Array[Long] = Array.fill(MAX_MASK + 1)(0),
+      var _values: Array[ValueCell[V]] = Array.fill(MAX_MASK + 1)(EmptyCell[V]())
   ) {
     import LongMapFixedSize.validKeyInArray
     import LongMapFixedSize.arrayCountValidKeys
@@ -1041,94 +1110,6 @@ object MutableLongMap {
            res == getCurrentListMapNoExtraKeys(_keys, _values, mask, extraKeys, zeroValue, minValue, from + 1, defaultEntry)
          else res.isEmpty)
     )
-
-    @pure
-    def getCurrentKeyValueList[V](
-        _keys: Array[Long],
-        _values: Array[ValueCell[V]],
-        mask: Int,
-        extraKeys: Int,
-        zeroValue: V,
-        minValue: V,
-        from: Int,
-        defaultEntry: Long => V
-    ): List[(Long, V)] = {
-      require(validMask(mask))
-      require(_values.length == mask + 1)
-      require(_keys.length == _values.length)
-      require(mask >= 0)
-
-      require(extraKeys >= 0)
-      require(extraKeys <= 3)
-      require(arrayForallSeekEntryOrOpenFound(0)(_keys, mask))
-      require(arrayNoDuplicates(_keys, 0))
-
-      require(from >= 0 && from <= _keys.length)
-      decreases(_keys.length + 1 - from)
-      if (from >= _keys.length) {
-        Nil[(Long, V)]()
-      } else if (validKeyInArray(_keys(from))) {
-
-        val correspondingMapBefore = getCurrentListMap(_keys, _values, mask, extraKeys, zeroValue, minValue, from + 1, defaultEntry)
-        val correspondingMap = getCurrentListMap(_keys, _values, mask, extraKeys, zeroValue, minValue, from, defaultEntry)
-        if (correspondingMapBefore.contains(_keys(from))) {
-          assert(arrayNoDuplicates(_keys, 0))
-          lemmaNoDuplicateFromThenFromBigger(_keys, 0, from)
-          assert(arrayNoDuplicates(_keys, from))
-          assert(arrayNoDuplicates(_keys, from + 1, Cons(_keys(from), Nil())))
-          lemmaListMapContainsThenArrayContainsFrom(_keys, _values, mask, extraKeys, zeroValue, minValue, _keys(from), from + 1, defaultEntry)
-          lemmaArrayNoDuplicateFromNotContainsKeysInAcc(_keys, from + 1, _keys(from), Cons(_keys(from), Nil()))
-          check(false)
-        }
-        assert(!correspondingMapBefore.contains(_keys(from)))
-        ListMapLongKeyLemmas.addNotContainedContent(correspondingMapBefore, _keys(from), _values(from).get(defaultEntry(0L)))
-        assert(correspondingMap.toList.content == correspondingMapBefore.toList.content ++ Set((_keys(from), _values(from).get(defaultEntry(0L)))))
-        Cons(
-          (_keys(from), _values(from).get(defaultEntry(0L))),
-          getCurrentKeyValueListNoExtraKeys(_keys, _values, mask, extraKeys, zeroValue, minValue, from + 1, defaultEntry)
-        )
-      } else {
-        getCurrentKeyValueListNoExtraKeys(_keys, _values, mask, extraKeys, zeroValue, minValue, from + 1, defaultEntry)
-      }
-    }.ensuring(res => res.content == getCurrentListMap(_keys, _values, mask, extraKeys, zeroValue, minValue, from, defaultEntry).toList.content)
-
-    @pure
-    def getCurrentKeyValueListNoExtraKeys[V](
-        _keys: Array[Long],
-        _values: Array[ValueCell[V]],
-        mask: Int,
-        extraKeys: Int,
-        zeroValue: V,
-        minValue: V,
-        from: Int,
-        defaultEntry: Long => V
-    ): List[(Long, V)] = {
-      require(validMask(mask))
-      require(_values.length == mask + 1)
-      require(_keys.length == _values.length)
-      require(mask >= 0)
-
-      require(extraKeys >= 0)
-      require(extraKeys <= 3)
-      require(arrayForallSeekEntryOrOpenFound(0)(_keys, mask))
-      require(arrayNoDuplicates(_keys, 0))
-
-      require(from >= 0 && from <= _keys.length)
-      decreases(_keys.length + 1 - from)
-      if (from >= _keys.length) {
-        Nil[(Long, V)]()
-      } else if (validKeyInArray(_keys(from))) {
-
-        val res: List[(Long, V)] = Cons(
-          (_keys(from), _values(from).get(defaultEntry(0L))),
-          getCurrentKeyValueListNoExtraKeys(_keys, _values, mask, extraKeys, zeroValue, minValue, from + 1, defaultEntry)
-        )
-        assert(getCurrentKeyValueListNoExtraKeys(_keys, _values, mask, extraKeys, zeroValue, minValue, from + 1, defaultEntry).content == getCurrentListMapNoExtraKeys(_keys, _values, mask, extraKeys, zeroValue, minValue, from + 1, defaultEntry).toList.content)
-        res
-      } else {
-        getCurrentKeyValueListNoExtraKeys(_keys, _values, mask, extraKeys, zeroValue, minValue, from + 1, defaultEntry)
-      }
-    }.ensuring(res => res.content == getCurrentListMapNoExtraKeys(_keys, _values, mask, extraKeys, zeroValue, minValue, from, defaultEntry).toList.content)
 
     // LEMMAS -----------------–-----------------–-----------------–-----------------–-----------------–---------------
 
