@@ -84,9 +84,12 @@ object VerifiedLexer {
     def ruleValid[C](r: Rule[C]): Boolean = {
       validRegex(r.regex) && !nullable(r.regex) && r.tag != ""
     }
-    def noDuplicateTag[C](rules: List[Rule[C]], acc: List[String] = Nil()): Boolean = rules match {
-      case Nil()        => true
-      case Cons(hd, tl) => !acc.contains(hd.tag) && noDuplicateTag(tl, Cons(hd.tag, acc))
+    def noDuplicateTag[C](rules: List[Rule[C]], acc: List[String] = Nil()): Boolean = {
+      decreases(rules)
+      rules match {
+        case Nil()        => true
+        case Cons(hd, tl) => !acc.contains(hd.tag) && noDuplicateTag(tl, Cons(hd.tag, acc))
+      }
     }
     def rulesValid[C](rs: List[Rule[C]]): Boolean = {
       rs match {
@@ -119,6 +122,7 @@ object VerifiedLexer {
     }
 
     def ruleDisjointCharsFromAllFromOtherType[C](r: Rule[C], rules: List[Rule[C]]): Boolean = {
+      decreases(rules)
       rules match {
         case Cons(hd, tl) if hd.isSeparator != r.isSeparator => rulesUseDisjointChars(r, hd) && ruleDisjointCharsFromAllFromOtherType(r, tl)
         case Cons(hd, tl)                                    => ruleDisjointCharsFromAllFromOtherType(r, tl)
@@ -170,6 +174,7 @@ object VerifiedLexer {
       * @param l
       */
     def print[C](l: List[Token[C]]): List[C] = {
+      decreases(l)
       l match {
         case Cons(hd, tl) => hd.characters ++ print(tl)
         case Nil()        => Nil[C]()
@@ -183,6 +188,7 @@ object VerifiedLexer {
       */
     def printWithSeparatorToken[C](l: List[Token[C]], separatorToken: Token[C]): List[C] = {
       require(separatorToken.isSeparator)
+      decreases(l)
       l match {
         case Cons(hd, tl) => hd.characters ++ separatorToken.characters ++ printWithSeparatorToken(tl, separatorToken)
         case Nil()        => Nil[C]()
@@ -203,6 +209,7 @@ object VerifiedLexer {
       require(separatorToken.isSeparator)
       require(l.forall(!_.isSeparator))
       require(sepAndNonSepRulesDisjointChars(rules, rules))
+      decreases(l)
 
       l match {
         case Cons(hd, tl) => {
@@ -376,6 +383,7 @@ object VerifiedLexer {
         getRuleFromTag(rules, separatorToken.tag).get.isSeparator
       })
       require(sepAndNonSepRulesDisjointChars(rules, rules))
+      decreases(tokens)
 
       tokens match {
         case Cons(hd, tl) => {
@@ -808,6 +816,7 @@ object VerifiedLexer {
       require(rulesInvariant(rules))
       require(!rules.isEmpty)
       require(maxPrefix(rules, input).isDefined && maxPrefix(rules, input).get._1 == token)
+      decreases(rules)
 
       rules match {
         case Cons(hd, tl) => {
@@ -885,6 +894,7 @@ object VerifiedLexer {
       require(ListUtils.getIndex(rules, rBis) < ListUtils.getIndex(rules, r))
       require(ruleValid(r))
       require(matchR(r.regex, p))
+      decreases(rules)
 
       assert(ListUtils.getIndex(rules, rBis) < ListUtils.getIndex(rules, r))
 
@@ -1136,6 +1146,7 @@ object VerifiedLexer {
     def lemmaNoDuplTagThenTailRulesCannotProduceHeadTagInTok[C](rHead: Rule[C], rTail: List[Rule[C]], input: List[C]): Unit = {
       require(!rTail.isEmpty)
       require(rulesInvariant(Cons(rHead, rTail)))
+      decreases(rTail)
 
       rTail match {
         case Cons(hd, tl) => {
@@ -1220,6 +1231,7 @@ object VerifiedLexer {
       require(rules.contains(r))
 
       require(maxPrefix(rules, input).isEmpty)
+      decreases(rules)
 
       lemmaRuleInListAndRulesValidThenRuleIsValid(r, rules)
 
@@ -1314,6 +1326,7 @@ object VerifiedLexer {
     def lemmaNoDuplicateSameWithAccWithSameContent[C](l: List[Rule[C]], acc: List[String], newAcc: List[String]): Unit = {
       require(noDuplicateTag(l, acc))
       require(acc.content == newAcc.content)
+      decreases(l)
 
       l match {
         case Cons(hd, tl) => {
@@ -1354,6 +1367,7 @@ object VerifiedLexer {
       require(rules.contains(r2))
       require(noDuplicateTag(rules))
       require(ListUtils.getIndex(rules, r1) < ListUtils.getIndex(rules, r2))
+      decreases(rules)
 
       if (rules.head == r1) {
         lemmaNoDuplicateAndTagInAccThenRuleCannotHaveSame(rules.tail, r2, r1.tag, List(r1.tag))
@@ -1409,6 +1423,7 @@ object VerifiedLexer {
       require(!rNSep.isSeparator)
       require(rSep.isSeparator)
       require(ruleDisjointCharsFromAllFromOtherType(rNSep, rules))
+      decreases(rules)
 
       rules match {
         case Cons(hd, tl) if hd == rSep =>
@@ -1454,6 +1469,7 @@ object VerifiedLexer {
       require(!rNSep.isSeparator)
       require(rSep.isSeparator)
       require(ruleDisjointCharsFromAllFromOtherType(rNSep, rules))
+      decreases(rules)
 
       rules match {
         case Cons(hd, tl) if hd == rSep =>
@@ -1473,6 +1489,7 @@ object VerifiedLexer {
       require(rulesInvariant(rules))
       require(tokens.contains(t))
       require(rulesProduceEachTokenIndividually(rules, tokens))
+      decreases(tokens)
 
       tokens match {
         case Cons(hd, tl) if hd == t => ()
