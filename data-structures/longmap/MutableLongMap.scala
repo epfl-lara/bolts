@@ -73,11 +73,9 @@ object MutableLongMap {
 
     def remove(key: Long): Boolean = {
       require(valid)
-      val oldMap = underlying.v.map
-      {
-        underlying.v.remove(key)
-      }.ensuring(res => valid && (if (res) map == oldMap - key else map == oldMap))
-    }
+
+      underlying.v.remove(key)
+    }.ensuring(res => valid && (if (res) map == old(this).map - key else map == old(this).map))
 
     @pure
     def computeNewMask(oldMask: Int, s: Int): Int = {
@@ -104,45 +102,41 @@ object MutableLongMap {
 
     def repack(): Boolean = {
       require(valid)
-      val oldMap = underlying.v.map
-      {
-        val res = repackHelper()
-        if (res._1) {
-          underlying.takeFrom(res._2)
-        }
-        res._1
-      }.ensuring(res => valid && map == oldMap)
-    }
+
+      val res = repackHelper()
+      if (res._1) {
+        underlying.takeFrom(res._2)
+      }
+      res._1
+    }.ensuring(res => valid && map == old(this).map)
 
     def repackHelper(): (Boolean, Cell[LongMapFixedSize[V]]) = {
       require(valid)
-      val oldMap = underlying.v.map
-      {
-        val newMask: Int = computeNewMask(underlying.v.mask, underlying.v._size)
-        val newMap = LongMapFixedSize.getNewLongMapFixedSize(newMask, underlying.v.defaultEntry)
-        val resExtraKeys = if ((underlying.v.extraKeys & 1) != 0 && (underlying.v.extraKeys & 2) != 0) {
-          // it means there is a mapping for the key 0 and the Long.MIN_VALUE
-          val u1 = newMap.update(0L, underlying.v.zeroValue)
-          val u2 = newMap.update(Long.MinValue, underlying.v.minValue)
-          u1 && u2
-        } else if ((underlying.v.extraKeys & 1) != 0 && (underlying.v.extraKeys & 2) == 0) {
-          // it means there is a mapping for the key 0
-          newMap.update(0L, underlying.v.zeroValue)
-        } else if ((underlying.v.extraKeys & 2) != 0 && (underlying.v.extraKeys & 1) == 0) {
-          // it means there is a mapping for the key Long.MIN_VALUE
-          newMap.update(Long.MinValue, underlying.v.minValue)
-        } else {
-          true
-        }
 
-        if (!resExtraKeys) {
-          (false, Cell(LongMapFixedSize.getNewLongMapFixedSize(newMask, underlying.v.defaultEntry)))
-        } else {
-          val repackFromRes = repackFrom(newMap, underlying.v._keys.length - 1)
-          (repackFromRes, if repackFromRes then Cell(newMap) else Cell(LongMapFixedSize.getNewLongMapFixedSize(newMask, underlying.v.defaultEntry)))
-        }
-      }.ensuring(res => res._1 == false || res._2.isOwned && res._2.v.valid && res._2.v.map == oldMap)
-    }
+      val newMask: Int = computeNewMask(underlying.v.mask, underlying.v._size)
+      val newMap = Cell(LongMapFixedSize.getNewLongMapFixedSize(newMask, underlying.v.defaultEntry))
+      val resExtraKeys = if ((underlying.v.extraKeys & 1) != 0 && (underlying.v.extraKeys & 2) != 0) {
+        // it means there is a mapping for the key 0 and the Long.MIN_VALUE
+        val u1 = newMap.v.update(0L, underlying.v.zeroValue)
+        val u2 = newMap.v.update(Long.MinValue, underlying.v.minValue)
+        u1 && u2
+      } else if ((underlying.v.extraKeys & 1) != 0 && (underlying.v.extraKeys & 2) == 0) {
+        // it means there is a mapping for the key 0
+        newMap.v.update(0L, underlying.v.zeroValue)
+      } else if ((underlying.v.extraKeys & 2) != 0 && (underlying.v.extraKeys & 1) == 0) {
+        // it means there is a mapping for the key Long.MIN_VALUE
+        newMap.v.update(Long.MinValue, underlying.v.minValue)
+      } else {
+        true
+      }
+
+      if (!resExtraKeys) {
+        (false, Cell(LongMapFixedSize.getNewLongMapFixedSize(newMask, underlying.v.defaultEntry)))
+      } else {
+        val repackFromRes = repackFrom(newMap.v, underlying.v._keys.length - 1)
+        (repackFromRes, if repackFromRes then newMap else Cell(LongMapFixedSize.getNewLongMapFixedSize(newMask, underlying.v.defaultEntry)))
+      }
+    }.ensuring(res => res._1 == false || res._2.isOwned && res._2.v.valid && res._2.v.map == old(this).map)
 
     @tailrec
     def repackFrom(newMap: LongMapFixedSize[V], from: Int): Boolean = {
