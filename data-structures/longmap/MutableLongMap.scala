@@ -19,19 +19,12 @@ object MutableLongMap {
     def isOwned: Boolean = owned
 
     @extern
-    def takeFrom(c2: Cell[T]): Unit = {
-      require(c2.owned)
-      c2.owned = false
+    def takeFrom(other: Cell[T]): Unit = {
+      require(isOwned && other.owned)
+      other.owned = false
       owned = true
-      v = c2.v
-    }.ensuring(_ => v == old(c2).v && !c2.owned && owned)
-
-    @extern
-    def expire(): Cell[T] = {
-      require(owned)
-      owned = false
-      Cell(v, true)
-    }.ensuring(res => old(this).v == res.v && !owned && res.owned)
+      v = other.v
+    }.ensuring(_ => v == old(other).v && !other.owned && owned)
   }
 
   @mutable
@@ -65,11 +58,8 @@ object MutableLongMap {
 
     def update(key: Long, v: V): Boolean = {
       require(valid)
-      val oldMap = underlying.v.map
-      {
-        underlying.v.update(key, v)
-      }.ensuring(res => valid && (if (res) map.contains(key) && (map == oldMap + (key, v)) else map == oldMap))
-    }
+      underlying.v.update(key, v)
+    }.ensuring(res => valid && (if (res) map.contains(key) && (map == old(this).map + (key, v)) else map == old(this).map))
 
     def remove(key: Long): Boolean = {
       require(valid)
@@ -499,160 +489,155 @@ object MutableLongMap {
       */
     def update(key: Long, v: V): Boolean = {
       require(valid)
-      val oldMap =
-        getCurrentListMap(_keys, _values, mask, extraKeys, zeroValue, minValue, 0, defaultEntry)
-
-      {
-        if (key == -key) {
-          if (key == 0) {
-            lemmaChangeZeroKeyThenAddPairToListMap(
-              _keys,
-              _values,
-              mask,
-              extraKeys,
-              (extraKeys | 1),
-              zeroValue,
-              v,
-              minValue,
-              defaultEntry
-            )
-            zeroValue = v
-            extraKeys |= 1
-            true
-          } else {
-            val extraKeysBefore = extraKeys
-            lemmaChangeLongMinValueKeyThenAddPairToListMap(
-              _keys,
-              _values,
-              mask,
-              extraKeys,
-              (extraKeys | 2),
-              zeroValue,
-              minValue,
-              v,
-              defaultEntry
-            )
-            minValue = v
-            extraKeys |= 2
-            true
-          }
-
+      if (key == -key) {
+        if (key == 0) {
+          lemmaChangeZeroKeyThenAddPairToListMap(
+            _keys,
+            _values,
+            mask,
+            extraKeys,
+            (extraKeys | 1),
+            zeroValue,
+            v,
+            minValue,
+            defaultEntry
+          )
+          zeroValue = v
+          extraKeys |= 1
+          true
         } else {
-          val seekEntryRes = seekEntryOrOpen(key)(_keys, mask)
-          seekEntryRes match {
-            case Undefined() => {
-              // the key is not in the array, it was not able to find an empty space, the map is maybe full
-              if (
-                getCurrentListMap(
-                  _keys,
-                  _values,
-                  mask,
-                  extraKeys,
-                  zeroValue,
-                  minValue,
-                  0,
-                  defaultEntry
-                ).contains(
-                  key
-                )
-              ) {
-                lemmaInListMapThenSeekEntryOrOpenFindsIt(
-                  _keys,
-                  _values,
-                  mask,
-                  extraKeys,
-                  zeroValue,
-                  minValue,
-                  key,
-                  defaultEntry
-                )
-                check(false)
-              } else {
-                lemmaNotInListMapThenSeekEntryOrOpenFindsFreeOrNothing(
-                  _keys,
-                  _values,
-                  mask,
-                  extraKeys,
-                  zeroValue,
-                  minValue,
-                  key,
-                  defaultEntry
-                )
-              }
-              false
-            }
-            case MissingVacant(index) => updateHelperNewKey(key, v, index)
-            case MissingZero(index)   => updateHelperNewKey(key, v, index)
-            case Found(index) => {
-              if (
-                getCurrentListMap(
-                  _keys,
-                  _values,
-                  mask,
-                  extraKeys,
-                  zeroValue,
-                  minValue,
-                  0,
-                  defaultEntry
-                ).contains(
-                  key
-                )
-              ) {
-                lemmaInListMapThenSeekEntryOrOpenFindsIt(
-                  _keys,
-                  _values,
-                  mask,
-                  extraKeys,
-                  zeroValue,
-                  minValue,
-                  key,
-                  defaultEntry
-                )
-              } else {
-                lemmaNotInListMapThenSeekEntryOrOpenFindsFreeOrNothing(
-                  _keys,
-                  _values,
-                  mask,
-                  extraKeys,
-                  zeroValue,
-                  minValue,
-                  key,
-                  defaultEntry
-                )
-                check(false)
-              }
+          val extraKeysBefore = extraKeys
+          lemmaChangeLongMinValueKeyThenAddPairToListMap(
+            _keys,
+            _values,
+            mask,
+            extraKeys,
+            (extraKeys | 2),
+            zeroValue,
+            minValue,
+            v,
+            defaultEntry
+          )
+          minValue = v
+          extraKeys |= 2
+          true
+        }
 
-              lemmaChangeValueExistingKeyToArrayThenAddPairToListMap(
+      } else {
+        val seekEntryRes = seekEntryOrOpen(key)(_keys, mask)
+        seekEntryRes match {
+          case Undefined() => {
+            // the key is not in the array, it was not able to find an empty space, the map is maybe full
+            if (
+              getCurrentListMap(
                 _keys,
                 _values,
                 mask,
                 extraKeys,
                 zeroValue,
                 minValue,
-                index,
+                0,
+                defaultEntry
+              ).contains(
+                key
+              )
+            ) {
+              lemmaInListMapThenSeekEntryOrOpenFindsIt(
+                _keys,
+                _values,
+                mask,
+                extraKeys,
+                zeroValue,
+                minValue,
                 key,
-                v,
                 defaultEntry
               )
-
-              _values(index) = ValueCellFull(v)
-
-              lemmaValidKeyInArrayIsInListMap(
+              check(false)
+            } else {
+              lemmaNotInListMapThenSeekEntryOrOpenFindsFreeOrNothing(
                 _keys,
                 _values,
                 mask,
                 extraKeys,
                 zeroValue,
                 minValue,
-                index,
+                key,
                 defaultEntry
               )
-              true
             }
+            false
+          }
+          case MissingVacant(index) => updateHelperNewKey(key, v, index)
+          case MissingZero(index)   => updateHelperNewKey(key, v, index)
+          case Found(index) => {
+            if (
+              getCurrentListMap(
+                _keys,
+                _values,
+                mask,
+                extraKeys,
+                zeroValue,
+                minValue,
+                0,
+                defaultEntry
+              ).contains(
+                key
+              )
+            ) {
+              lemmaInListMapThenSeekEntryOrOpenFindsIt(
+                _keys,
+                _values,
+                mask,
+                extraKeys,
+                zeroValue,
+                minValue,
+                key,
+                defaultEntry
+              )
+            } else {
+              lemmaNotInListMapThenSeekEntryOrOpenFindsFreeOrNothing(
+                _keys,
+                _values,
+                mask,
+                extraKeys,
+                zeroValue,
+                minValue,
+                key,
+                defaultEntry
+              )
+              check(false)
+            }
+
+            lemmaChangeValueExistingKeyToArrayThenAddPairToListMap(
+              _keys,
+              _values,
+              mask,
+              extraKeys,
+              zeroValue,
+              minValue,
+              index,
+              key,
+              v,
+              defaultEntry
+            )
+
+            _values(index) = ValueCellFull(v)
+
+            lemmaValidKeyInArrayIsInListMap(
+              _keys,
+              _values,
+              mask,
+              extraKeys,
+              zeroValue,
+              minValue,
+              index,
+              defaultEntry
+            )
+            true
           }
         }
-      }.ensuring(res => valid && (if (res) map.contains(key) && (map == oldMap + (key, v)) else map == oldMap))
-    }
+      }
+    }.ensuring(res => valid && (if (res) map.contains(key) && (map == old(this).map + (key, v)) else map == old(this).map))
 
     /** Removes the given key from the map. Returns true if the key was present and is removed, false if the key was not present
       *
@@ -661,102 +646,97 @@ object MutableLongMap {
       */
     def remove(key: Long): Boolean = {
       require(valid)
-      val oldMap =
-        getCurrentListMap(_keys, _values, mask, extraKeys, zeroValue, minValue, 0, defaultEntry)
+      if (key == -key) {
+        if (key == 0L) {
+          lemmaRemoveZeroKeyThenRemoveKeyFromListMap(
+            _keys,
+            _values,
+            mask,
+            extraKeys,
+            extraKeys & 0x2,
+            zeroValue,
+            defaultEntry(0L),
+            minValue,
+            defaultEntry
+          )
+          extraKeys &= 0x2
+          zeroValue = defaultEntry(0L)
 
-      {
-        if (key == -key) {
-          if (key == 0L) {
-            lemmaRemoveZeroKeyThenRemoveKeyFromListMap(
-              _keys,
-              _values,
-              mask,
-              extraKeys,
-              extraKeys & 0x2,
-              zeroValue,
-              defaultEntry(0L),
-              minValue,
-              defaultEntry
-            )
-            extraKeys &= 0x2
-            zeroValue = defaultEntry(0L)
-
-            true
-          } else {
-            lemmaRemoveLongMinValueKeyThenRemoveKeyFromListMap(
-              _keys,
-              _values,
-              mask,
-              extraKeys,
-              extraKeys & 0x1,
-              zeroValue,
-              minValue,
-              defaultEntry(Long.MinValue),
-              defaultEntry
-            )
-            extraKeys &= 0x1
-            minValue = defaultEntry(Long.MinValue)
-
-            true
-          }
+          true
         } else {
-          val seekEntryRes = seekEntry(key)(_keys, mask)
-          seekEntryRes match {
-            case Found(index) => {
-              // _vacant += 1
-              lemmaRemoveValidKeyDecreasesNumberOfValidKeysInArray(_keys, index, Long.MinValue)
-              lemmaPutNonValidKeyPreservesNoDuplicate(_keys, Long.MinValue, index, 0, List())
-              lemmaPutLongMinValuePreservesForallSeekEntryOrOpen(_keys, index)(mask)
-              lemmaArrayNoDuplicateRemoveOneThenNotContain(_keys, index, key)
-              lemmaRemoveValidKeyToArrayThenRemoveKeyFromListMap(
+          lemmaRemoveLongMinValueKeyThenRemoveKeyFromListMap(
+            _keys,
+            _values,
+            mask,
+            extraKeys,
+            extraKeys & 0x1,
+            zeroValue,
+            minValue,
+            defaultEntry(Long.MinValue),
+            defaultEntry
+          )
+          extraKeys &= 0x1
+          minValue = defaultEntry(Long.MinValue)
+
+          true
+        }
+      } else {
+        val seekEntryRes = seekEntry(key)(_keys, mask)
+        seekEntryRes match {
+          case Found(index) => {
+            // _vacant += 1
+            lemmaRemoveValidKeyDecreasesNumberOfValidKeysInArray(_keys, index, Long.MinValue)
+            lemmaPutNonValidKeyPreservesNoDuplicate(_keys, Long.MinValue, index, 0, List())
+            lemmaPutLongMinValuePreservesForallSeekEntryOrOpen(_keys, index)(mask)
+            lemmaArrayNoDuplicateRemoveOneThenNotContain(_keys, index, key)
+            lemmaRemoveValidKeyToArrayThenRemoveKeyFromListMap(
+              _keys,
+              _values,
+              mask,
+              extraKeys,
+              zeroValue,
+              minValue,
+              index,
+              key,
+              defaultEntry
+            )
+            _size -= 1
+            _keys(index) = Long.MinValue
+            _values(index) = ValueCellFull(defaultEntry(0L))
+
+            if (
+              getCurrentListMap(
                 _keys,
                 _values,
                 mask,
                 extraKeys,
                 zeroValue,
                 minValue,
-                index,
+                0,
+                defaultEntry
+              ).contains(
+                key
+              )
+            ) {
+              lemmaKeyInListMapIsInArray(
+                _keys,
+                _values,
+                mask,
+                extraKeys,
+                zeroValue,
+                minValue,
                 key,
                 defaultEntry
               )
-              _size -= 1
-              _keys(index) = Long.MinValue
-              _values(index) = ValueCellFull(defaultEntry(0L))
-
-              if (
-                getCurrentListMap(
-                  _keys,
-                  _values,
-                  mask,
-                  extraKeys,
-                  zeroValue,
-                  minValue,
-                  0,
-                  defaultEntry
-                ).contains(
-                  key
-                )
-              ) {
-                lemmaKeyInListMapIsInArray(
-                  _keys,
-                  _values,
-                  mask,
-                  extraKeys,
-                  zeroValue,
-                  minValue,
-                  key,
-                  defaultEntry
-                )
-                check(false)
-              }
-
-              true
+              check(false)
             }
-            case _ => false
+
+            true
           }
+          case _ => false
         }
-      }.ensuring(res => valid && (if (res) map == oldMap - key else map == oldMap))
-    }
+      }
+    }.ensuring(res => valid && (if (res) map == old(this).map - key else map == old(this).map))
 
     /** Go through an helper function because this piece of code has to be called in 2 cases of the pattern matching
       *
@@ -774,94 +754,90 @@ object MutableLongMap {
           mask
         ) == MissingVacant(index)
       )
-      val oldMap =
+
+      if (
         getCurrentListMap(_keys, _values, mask, extraKeys, zeroValue, minValue, 0, defaultEntry)
-
-      {
-        if (
-          getCurrentListMap(_keys, _values, mask, extraKeys, zeroValue, minValue, 0, defaultEntry)
-            .contains(key)
-        ) {
-          lemmaInListMapThenSeekEntryOrOpenFindsIt(
-            _keys,
-            _values,
-            mask,
-            extraKeys,
-            zeroValue,
-            minValue,
-            key,
-            defaultEntry
-          )
-          check(false)
-        } else {
-          lemmaNotInListMapThenSeekEntryOrOpenFindsFreeOrNothing(
-            _keys,
-            _values,
-            mask,
-            extraKeys,
-            zeroValue,
-            minValue,
-            key,
-            defaultEntry
-          )
-        }
-        val _oldSize = _size
-        val _oldNKeys = arrayCountValidKeys(_keys, 0, _keys.length)
-        assert(inRange(index, mask))
-        if (arrayContainsKey(_keys, key, 0)) {
-          lemmaArrayContainsKeyThenInListMap(
-            _keys,
-            _values,
-            mask,
-            extraKeys,
-            zeroValue,
-            minValue,
-            key,
-            0,
-            defaultEntry
-          )
-          check(false)
-        }
-
-        lemmaPutNewValidKeyPreservesNoDuplicate(_keys, key, index, 0, List())
-        lemmaAddValidKeyIncreasesNumberOfValidKeysInArray(_keys, index, key)
-        lemmaPutValidKeyPreservesForallSeekEntryOrOpen(key, _keys, index)(mask)
-
-        lemmaAddValidKeyToArrayThenAddPairToListMap(
+          .contains(key)
+      ) {
+        lemmaInListMapThenSeekEntryOrOpenFindsIt(
           _keys,
           _values,
           mask,
           extraKeys,
           zeroValue,
           minValue,
-          index,
           key,
-          v,
           defaultEntry
         )
-
-        _keys(index) = key
-        _size += 1
-
-        lemmaArrayContainsFromImpliesContainsFromZero(_keys, key, index)
-        lemmaValidKeyAtIImpliesCountKeysIsOne(_keys, index)
-
-        _values(index) = ValueCellFull(v)
-
-        lemmaValidKeyInArrayIsInListMap(
+        check(false)
+      } else {
+        lemmaNotInListMapThenSeekEntryOrOpenFindsFreeOrNothing(
           _keys,
           _values,
           mask,
           extraKeys,
           zeroValue,
           minValue,
-          index,
+          key,
           defaultEntry
         )
-        true
+      }
+      val _oldSize = _size
+      val _oldNKeys = arrayCountValidKeys(_keys, 0, _keys.length)
+      assert(inRange(index, mask))
+      if (arrayContainsKey(_keys, key, 0)) {
+        lemmaArrayContainsKeyThenInListMap(
+          _keys,
+          _values,
+          mask,
+          extraKeys,
+          zeroValue,
+          minValue,
+          key,
+          0,
+          defaultEntry
+        )
+        check(false)
+      }
 
-      }.ensuring(res => res && valid && map.contains(key) && (map == oldMap + (key, v)))
-    }
+      lemmaPutNewValidKeyPreservesNoDuplicate(_keys, key, index, 0, List())
+      lemmaAddValidKeyIncreasesNumberOfValidKeysInArray(_keys, index, key)
+      lemmaPutValidKeyPreservesForallSeekEntryOrOpen(key, _keys, index)(mask)
+
+      lemmaAddValidKeyToArrayThenAddPairToListMap(
+        _keys,
+        _values,
+        mask,
+        extraKeys,
+        zeroValue,
+        minValue,
+        index,
+        key,
+        v,
+        defaultEntry
+      )
+
+      _keys(index) = key
+      _size += 1
+
+      lemmaArrayContainsFromImpliesContainsFromZero(_keys, key, index)
+      lemmaValidKeyAtIImpliesCountKeysIsOne(_keys, index)
+
+      _values(index) = ValueCellFull(v)
+
+      lemmaValidKeyInArrayIsInListMap(
+        _keys,
+        _values,
+        mask,
+        extraKeys,
+        zeroValue,
+        minValue,
+        index,
+        defaultEntry
+      )
+      true
+
+    }.ensuring(res => res && valid && map.contains(key) && (map == old(this).map + (key, v)))
 
     def valid: Boolean = {
       // class invariant
