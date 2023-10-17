@@ -8,6 +8,7 @@ import stainless.lang._
 import stainless.proof.check
 import scala.annotation.tailrec
 import stainless.lang.StaticChecks._
+import MutableLongMap.LongMapFixedSize.validMask
 
 object MutableLongMap {
 
@@ -56,10 +57,69 @@ object MutableLongMap {
       }.ensuring(res => valid && (if (res) map == oldMap - key else map == oldMap))
     }
 
-    def repack(newMask: Int) = {
+    @pure
+    def computeNewMask(oldMask: Int, s: Int): Int = {
+      require(validMask(oldMask))
+      require(s >= 0 && s <= oldMask + 1)
+
+      val newMask = if (oldMask == MAX_MASK || 8 * s <= 0) {
+        ((oldMask << 1) + 1) & MAX_MASK
+      } else {
+
+        var m = oldMask
+        if (2 * s >= oldMask) m = ((m << 1) + 1) & MAX_MASK
+        while (m > 8 && 8 * s < m) {
+          decreases(m)
+          m = m >>> 1
+        }
+
+        assert(validMask(m))
+        assert(s <= m + 1)
+        m
+      }
+      newMask
+    } ensuring (res => validMask(res) && (res == MAX_MASK || (2 * s <= res + 1)))
+
+    // def repack(): Boolean = {
+    //   require(valid)
+    //   val oldMap = underlying.map
+    //   {
+    //     underlying = repackHelper()._2
+    //     true
+    //   }.ensuring(res => valid && map == oldMap)
+    // }
+
+    def repackHelper(): (Boolean, LongMapFixedSize[V]) = {
       require(valid)
+      val oldMap = underlying.map
+      {
+        val newMask: Int = computeNewMask(underlying.mask, underlying._size)
+        val newMap = LongMapFixedSize.getNewLongMapFixedSize(newMask, underlying.defaultEntry)
+        val resExtraKeys = if ((underlying.extraKeys & 1) != 0 && (underlying.extraKeys & 2) != 0) {
+          // it means there is a mapping for the key 0 and the Long.MIN_VALUE
+          val u1 = newMap.update(0L, underlying.zeroValue)
+          val u2 = newMap.update(Long.MinValue, underlying.minValue)
+          u1 && u2
+        } else if ((underlying.extraKeys & 1) != 0 && (underlying.extraKeys & 2) == 0) {
+          // it means there is a mapping for the key 0
+          newMap.update(0L, underlying.zeroValue)
+        } else if ((underlying.extraKeys & 2) != 0 && (underlying.extraKeys & 1) == 0) {
+          // it means there is a mapping for the key Long.MIN_VALUE
+          newMap.update(Long.MinValue, underlying.minValue)
+        } else {
+          true
+        }
+
+        if (!resExtraKeys) {
+          (false, underlying)
+        } else {
+          val repackFromRes = repackFrom(newMap, underlying._keys.length - 1)
+          (repackFromRes, if repackFromRes then newMap else underlying)
+        }
+      }.ensuring(res => res._2.valid && res._2.map == oldMap)
     }
 
+    @tailrec
     def repackFrom(newMap: LongMapFixedSize[V], from: Int): Boolean = {
       require(valid)
       require(from >= 0 && from < underlying._keys.length)
@@ -114,7 +174,7 @@ object MutableLongMap {
             ListMapLongKeyLemmas.addCommutativeForDiffKeys(underlyingMapFromPOneNXtra, currentKey, currentValue, 0L, underlying.zeroValue)
             ListMapLongKeyLemmas.addCommutativeForDiffKeys(underlyingMapFromPOneNXtra + (0L, underlying.zeroValue), currentKey, currentValue, Long.MinValue, underlying.minValue)
 
-            assert(valid && newMap.map == underlying.map)
+            assert(newMap.valid && newMap.map == underlying.map)
             true
           }
         } else {
@@ -127,17 +187,15 @@ object MutableLongMap {
           val res = repackFrom(newMap, from - 1)
           res
         } else {
-          assert(valid && newMap.map == underlying.map)
+          assert(newMap.valid && newMap.map == underlying.map)
           true
         }
       }
 
-    } ensuring (res => valid && (if (res) newMap.map == underlying.map else true))
+    } ensuring (res => if (res) newMap.valid && newMap.map == underlying.map else true)
 
-    @inlineOnce
     private def valid: Boolean = underlying.valid
 
-    @inline
     @pure
     private def map: ListMapLongKey[V] = {
       require(valid)
@@ -174,7 +232,7 @@ object MutableLongMap {
 
   private final val MAX_MASK: Int = 0x3fffffff
 
-  private final val MAX_ITER = 2048 // arbitrary
+  private final val MAX_ITER = 16384 // arbitrary
 
   /** A Map with keys of type Long and values of type Long mask must be a valid mask, i.e., 2^n - 1. The smallest possible mask is 0 and the biggest is 0x3fffffff _keys and _values must be initialized to an array of length mask + 1, containing all 0 values, i.e., Array.fill(mask + 1)(0) extraKeys must be initialized to 0 _size must be initialized to 0
     *
@@ -189,13 +247,13 @@ object MutableLongMap {
   @mutable
   final case class LongMapFixedSize[V](
       val defaultEntry: Long => V,
-      var mask: Int = MAX_MASK,
+      val mask: Int = MAX_MASK,
       var extraKeys: Int = 0,
       var zeroValue: V,
       var minValue: V,
       var _size: Int = 0,
-      var _keys: Array[Long] = Array.fill(MAX_MASK + 1)(0),
-      var _values: Array[ValueCell[V]] = Array.fill(MAX_MASK + 1)(EmptyCell[V]())
+      val _keys: Array[Long] = Array.fill(MAX_MASK + 1)(0),
+      val _values: Array[ValueCell[V]] = Array.fill(MAX_MASK + 1)(EmptyCell[V]())
   ) {
     import LongMapFixedSize.validKeyInArray
     import LongMapFixedSize.arrayCountValidKeys
@@ -730,7 +788,6 @@ object MutableLongMap {
       }.ensuring(res => res && valid && map.contains(key) && (map == oldMap + (key, v)))
     }
 
-    @inlineOnce
     def valid: Boolean = {
       // class invariant
       simpleValid &&
@@ -739,7 +796,6 @@ object MutableLongMap {
       arrayNoDuplicates(_keys, 0)
     }
 
-    @inline
     def simpleValid: Boolean = {
       validMask(mask) &&
       _values.length == mask + 1 &&
@@ -752,7 +808,6 @@ object MutableLongMap {
       extraKeys <= 3
     }
 
-    @inline
     @pure
     def map: ListMapLongKey[V] = {
       require(valid)
@@ -770,8 +825,43 @@ object MutableLongMap {
 
   object LongMapFixedSize {
 
+    def getNewLongMapFixedSize[V](mask: Int, defaultEntry: Long => V): LongMapFixedSize[V] = {
+      require(validMask(mask))
+      val _keys: Array[Long] = Array.fill(mask + 1)(0)
+      val res = LongMapFixedSize[V](defaultEntry, mask, 0, defaultEntry(0L), defaultEntry(0L), 0, Array.fill(mask + 1)(0), Array.fill(mask + 1)(EmptyCell[V]()))
+      assert(res.simpleValid)
+      assert(res._keys == Array.fill(mask + 1)(0L))
+      assert(_keys.length == mask + 1)
+      assert(res._keys.length == mask + 1)
+      assert(res._size == 0)
+      LongMapFixedSize.lemmaArrayCountValidKeysOfFilled0ArrayIs0(res._keys, 0, mask + 1)
+
+      assert(arrayCountValidKeys(res._keys, 0, res._keys.length) == res._size)
+
+      LongMapFixedSize.lemmaArrayForallSeekEntryOrOpenFoundAlwaysTrueFor0Array(res._keys, mask, 0)
+      assert(arrayForallSeekEntryOrOpenFound(0)(res._keys, mask))
+
+      LongMapFixedSize.lemmaArrayNoDuplicatesInAll0Array(res._keys, 0, mask + 1)
+      assert(arrayNoDuplicates(res._keys, 0))
+      assert(res.valid)
+      assert(res.mask == mask)
+      if (res.map != ListMapLongKey.empty[V]) {
+        assert(!res.map.toList.isEmpty)
+        val kv = res.map.toList.head
+        val k = kv._1
+        assert(res.map.contains(k))
+        LongMapFixedSize.lemmaKeyInListMapIsInArray(res._keys, res._values, mask, res.extraKeys, res.zeroValue, res.minValue, k, res.defaultEntry)
+        assert(arrayContainsKey(res._keys, k, 0))
+        val index = arrayScanForKey(res._keys, k, 0)
+        assert(res._keys(index) == k)
+        check(false)
+
+      }
+      assert(res.map == ListMapLongKey.empty[V]) // TODO
+      res
+    } ensuring (res => res.valid && res.mask == mask && res.map == ListMapLongKey.empty[V])
+
     @pure
-    @inline
     def validMask(mask: Int): Boolean = {
       (mask == 0x00000000 ||
         mask == 0x00000001 ||
@@ -812,7 +902,6 @@ object MutableLongMap {
       * @param i
       * @return
       */
-    @inline
     private def inRange(i: Int, mask: Int): Boolean = {
       // mask + 1 is the size of the Array
       i >= 0 && i < mask + 1
@@ -3860,6 +3949,7 @@ object MutableLongMap {
     }.ensuring(_ => lm.contains(k))
 
     @opaque
+    @inlineOnce
     @pure
     def lemmaInListMapFromThenFromPlsOneIfNotEqToFstNoXMin[V](
         _keys: Array[Long],
@@ -4801,6 +4891,21 @@ object MutableLongMap {
 
     // ------------------SEEKENTRY RELATED--------------------------------------------------------------------------------------------------------------------
     // ------------------BEGIN--------------------------------------------------------------------------------------------------------------------------------
+
+    @opaque
+    @inlineOnce
+    @pure
+    def lemmaArrayForallSeekEntryOrOpenFoundAlwaysTrueFor0Array(_keys: Array[Long], mask: Int, i: Int): Unit = {
+      require(validMask(mask))
+      require(_keys.length == mask + 1)
+      require(_keys == Array.fill(mask + 1)(0L))
+      require(i >= 0 && i <= _keys.length)
+      decreases(_keys.length - i)
+
+      if (i < _keys.length) {
+        lemmaArrayForallSeekEntryOrOpenFoundAlwaysTrueFor0Array(_keys, mask, i + 1)
+      }
+    } ensuring (_ => arrayForallSeekEntryOrOpenFound(i)(_keys, mask))
 
     @opaque
     @pure
@@ -7063,7 +7168,6 @@ object MutableLongMap {
 
     // ARRAY UTILITY FUNCTIONS ----------------------------------------------------------------------------------------
 
-    @inline
     @pure
     def validKeyInArray(l: Long): Boolean = {
       l != 0 && l != Long.MinValue
@@ -7580,7 +7684,6 @@ object MutableLongMap {
 
     }.ensuring(_ => LongMapFixedSize.isPivot(a, from, to, pivot + 1))
 
-    @inline
     @pure
     def isPivot(a: Array[Long], from: Int, to: Int, pivot: Int): Boolean = {
       require(
@@ -7893,6 +7996,38 @@ object MutableLongMap {
 
       LongMapFixedSize.lemmaArrayContainsFromImpliesContainsFromZero(a, k, i)
     }.ensuring(_ => arrayContainsKey(a, k, 0))
+
+    @pure
+    @opaque
+    @inlineOnce
+    def lemmaArrayCountValidKeysOfFilled0ArrayIs0(a: Array[Long], i: Int, size: Int): Unit = {
+      require(a.length < Integer.MAX_VALUE)
+      require(i >= 0 && i <= a.length)
+      require(a.length == size)
+      require(a == Array.fill(size)(0L))
+      decreases(size - i)
+      if (i != size) {
+        assert(a(i) == 0)
+        lemmaArrayCountValidKeysOfFilled0ArrayIs0(a, i + 1, size)
+      }
+
+    } ensuring (_ => arrayCountValidKeys(a, i, size) == 0)
+
+    @pure
+    @opaque
+    @inlineOnce
+    def lemmaArrayNoDuplicatesInAll0Array(a: Array[Long], from: Int, size: Int, acc: List[Long] = Nil[Long]()): Unit = {
+      require(a.length == size)
+      require(size < Integer.MAX_VALUE)
+      require(a == Array.fill(size)(0L))
+      require(from >= 0 && from <= a.length)
+      require(!acc.contains(0) && !acc.contains(Long.MinValue))
+      require(ListOps.noDuplicate(acc))
+      decreases(size - from)
+      if (from < size) {
+        lemmaArrayNoDuplicatesInAll0Array(a, from + 1, size, acc)
+      }
+    } ensuring (res => arrayNoDuplicates(a, from, acc))
 
   }
 
