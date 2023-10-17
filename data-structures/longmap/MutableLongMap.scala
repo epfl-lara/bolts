@@ -80,14 +80,15 @@ object MutableLongMap {
       newMask
     } ensuring (res => validMask(res) && (res == MAX_MASK || (2 * s <= res + 1)))
 
-    // def repack(): Boolean = {
-    //   require(valid)
-    //   val oldMap = underlying.map
-    //   {
-    //     underlying = repackHelper()._2
-    //     true
-    //   }.ensuring(res => valid && map == oldMap)
-    // }
+    def repack(): Boolean = {
+      require(valid)
+      val oldMap = underlying.map
+      {
+        val res = repackHelper()
+        underlying = res._2
+        res._1
+      }.ensuring(res => valid && map == oldMap)
+    }
 
     def repackHelper(): (Boolean, LongMapFixedSize[V]) = {
       require(valid)
