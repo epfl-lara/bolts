@@ -72,7 +72,7 @@ object MutableLongMap {
       require(validMask(oldMask))
       require(s >= 0 && s <= oldMask + 1)
 
-      val newMask = if (oldMask == MAX_MASK || 8 * s <= 0) {
+      val newMask = if (s > (MAX_MASK >> 3)) {
         ((oldMask << 1) + 1) & MAX_MASK
       } else {
 
