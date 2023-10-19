@@ -31,6 +31,12 @@ object MutableLongMap {
   final case class LongMap[V](
       var underlying: Cell[LongMapFixedSize[V]]
   ) {
+    // @pure
+    // def completeImbalanced: Boolean = (_size + _vacant) > 0.5 * mask || _vacant > _size
+
+    @pure
+    def imbalanced: Boolean = (2 * underlying.v._size) > underlying.v.mask
+
     @pure
     def size: Int = underlying.v.size
 
@@ -58,7 +64,16 @@ object MutableLongMap {
 
     def update(key: Long, v: V): Boolean = {
       require(valid)
-      underlying.v.update(key, v)
+      val repacked = if (imbalanced) {
+        repack()
+      } else {
+        true
+      }
+      if (repacked) {
+        underlying.v.update(key, v)
+      } else {
+        false
+      }
     }.ensuring(res => valid && (if (res) map.contains(key) && (map == old(this).map + (key, v)) else map == old(this).map))
 
     def remove(key: Long): Boolean = {
