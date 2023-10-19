@@ -1,0 +1,54 @@
+BEGIN repack, with oldMask = 7, size = 5, vacant = 0
+END repack, new mask = 15
+BEGIN repack, with oldMask = 15, size = 9, vacant = 0
+END repack, new mask = 31
+BEGIN repack, with oldMask = 31, size = 17, vacant = 0
+END repack, new mask = 63
+BEGIN repack, with oldMask = 63, size = 33, vacant = 0
+END repack, new mask = 127
+BEGIN repack, with oldMask = 127, size = 65, vacant = 0
+END repack, new mask = 255
+BEGIN repack, with oldMask = 255, size = 129, vacant = 0
+END repack, new mask = 511
+BEGIN repack, with oldMask = 511, size = 257, vacant = 0
+END repack, new mask = 1023
+BEGIN repack, with oldMask = 1023, size = 513, vacant = 0
+END repack, new mask = 2047
+BEGIN repack, with oldMask = 2047, size = 1025, vacant = 0
+END repack, new mask = 4095
+BEGIN repack, with oldMask = 4095, size = 2049, vacant = 0
+END repack, new mask = 8191
+BEGIN repack, with oldMask = 8191, size = 4097, vacant = 0
+END repack, new mask = 16383
+BEGIN repack, with oldMask = 16383, size = 8193, vacant = 0
+END repack, new mask = 32767
+BEGIN repack, with oldMask = 32767, size = 16385, vacant = 0
+END repack, new mask = 65535
+BEGIN repack, with oldMask = 65535, size = 32769, vacant = 0
+END repack, new mask = 131071
+BEGIN repack, with oldMask = 131071, size = 65537, vacant = 0
+END repack, new mask = 262143
+BEGIN repack, with oldMask = 262143, size = 131073, vacant = 0
+END repack, new mask = 524287
+BEGIN repack, with oldMask = 524287, size = 262145, vacant = 0
+END repack, new mask = 1048575
+BEGIN repack, with oldMask = 1048575, size = 524289, vacant = 0
+END repack, new mask = 2097151
+BEGIN repack, with oldMask = 2097151, size = 1048577, vacant = 0
+END repack, new mask = 4194303
+BEGIN repack, with oldMask = 4194303, size = 2097153, vacant = 0
+END repack, new mask = 8388607
+BEGIN repack, with oldMask = 8388607, size = 4194305, vacant = 0
+END repack, new mask = 16777215
+BEGIN repack, with oldMask = 16777215, size = 8388609, vacant = 0
+END repack, new mask = 33554431
+BEGIN repack, with oldMask = 33554431, size = 16777217, vacant = 0
+END repack, new mask = 67108863
+BEGIN repack, with oldMask = 67108863, size = 33554433, vacant = 0
+END repack, new mask = 134217727
+BEGIN repack, with oldMask = 134217727, size = 67108865, vacant = 0
+END repack, new mask = 268435455
+BEGIN repack, with oldMask = 268435455, size = 134217729, vacant = 0
+END repack, new mask = 536870911
+BEGIN repack, with oldMask = 536870911, size = 268435457, vacant = 0
+END repack, new mask = 7
