@@ -1,17 +1,15 @@
 import scala.collection.mutable.LongMap
 
+/** This makes the LongMap hangs, when the size reaches 268 435 456 So the counter example we found in Stainless is actually triggering a bug :)
+  */
 object BugLongMap {
 
   def main(): Unit = {
     val m = LongMap[Long]()
     for (i <- 0 to Math.pow(2, 30).toInt) {
       m.update(i, i)
-      if (i % Math.pow(2, 20).toLong == 0) println(f"m.size = ${m.size} for i = $i")
+      println(f"m.size = ${m.size} for i = $i")
     }
-  }
-
-  def baseTwoLogarithm(i: Long): Long = {
-    0L
   }
 
 }

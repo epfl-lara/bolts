@@ -90,6 +90,24 @@ object MutableLongMap {
       newMask
     } ensuring (res => validMask(res) && (res == MAX_MASK || (2 * s <= res + 1)))
 
+    @pure
+    def completeComputeNewMask(oldMask: Int, _vacant: Int, _size: Int): Int = {
+      require(validMask(oldMask))
+      require(_size >= 0 && _size <= oldMask + 1)
+      require(_vacant >= 0 && _vacant + _size <= oldMask + 1)
+      require(_vacant == 0)
+      // require(_size < 268435456) // Smallest size that can trigger a problem with a certain mask
+      var m = oldMask
+      if (2 * (_size + _vacant) >= oldMask && !(5 * _vacant > oldMask)) {
+        m = ((m << 1) + 1) & MAX_MASK
+      }
+      while (m > 8 && 8 * _size < m) {
+        decreases(m)
+        m = m >>> 1
+      }
+      m
+    } ensuring (res => validMask(res) && _size <= res + 1)
+
     def repack(): Boolean = {
       require(valid)
 
