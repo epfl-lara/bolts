@@ -1,6 +1,8 @@
 /** Author: Samuel Chassot
   */
 
+package ch.epfl.chassot
+
 import stainless.annotation._
 import stainless.collection._
 import stainless.equations._
