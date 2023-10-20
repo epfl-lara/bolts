@@ -1,5 +1,7 @@
 import scala.collection.mutable.LongMap
 
+// To run it using scala-cli with enough heap space:
+// scala-cli -J -Xmx24576m BugLongMap.scala
 /** This makes the LongMap hangs, when the size reaches 268'435'456 So the counter example we found in Stainless is actually triggering a bug :)
   */
 object BugLongMap {
