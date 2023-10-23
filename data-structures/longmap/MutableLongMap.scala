@@ -178,6 +178,7 @@ object MutableLongMap {
       if (!resExtraKeys) {
         (false, Cell(LongMapFixedSize.getNewLongMapFixedSize(newMask, underlying.v.defaultEntry)))
       } else {
+        assert(LongMapFixedSize.validMask(underlying.v.mask))
         assert((underlying.v._keys.length - 1) >= 0)
         val repackFromRes = repackFrom(newMap.v, underlying.v._keys.length - 1)
         (repackFromRes, if repackFromRes then newMap else Cell(LongMapFixedSize.getNewLongMapFixedSize(newMask, underlying.v.defaultEntry)))
@@ -386,42 +387,69 @@ object MutableLongMap {
     //   require(newMap.valid)
     //   require(newMap.mask + 1 >= underlying.v._size)
     //   require(
-    //     LongMapFixedSize.getCurrentListMap(
+    //      LongMapFixedSize.getCurrentListMap(
     //       underlying.v._keys,
     //       underlying.v._values,
     //       underlying.v.mask,
     //       underlying.v.extraKeys,
     //       underlying.v.zeroValue,
     //       underlying.v.minValue,
-    //       0,
+    //       underlying.v._keys.length,
     //       underlying.v.defaultEntry
-    //     ) == ListMapLongKey.empty[V]
+    //     ) == newMap.map
     //   )
     //   var i = underlying.v._keys.length - 1
-    //   while (i >= 0) {
+    //   (while (i >= 0) {
     //     decreases(i)
+    //     assert(i>=0 && i < underlying.v._keys.length)
+    //     assert(underlying.v._keys.length == underlying.v._values.length)
+
+    //     @ghost val newMapListMapBefore = newMap.map
+
+
     //     val currentKey = underlying.v._keys(i)
     //     val currentValue = underlying.v._values(i).get(underlying.v.defaultEntry(0L))
     //     if (currentKey != 0 && currentKey != Long.MinValue) {
     //       // There is a key in the array, add it to the new map
     //       val res = newMap.update(currentKey, currentValue)
+    //       ghostExpr(if (newMapListMapBefore.contains(currentKey)) {
+    //         LongMapFixedSize.lemmaListMapContainsThenArrayContainsFrom(
+    //           underlying.v._keys,
+    //           underlying.v._values,
+    //           underlying.v.mask,
+    //           underlying.v.extraKeys,
+    //           underlying.v.zeroValue,
+    //           underlying.v.minValue,
+    //           currentKey,
+    //           i + 1,
+    //           underlying.v.defaultEntry
+    //         )
+    //         LongMapFixedSize.lemmaNoDuplicateFromThenFromBigger(underlying.v._keys, 0, i)
+    //         LongMapFixedSize.lemmaArrayNoDuplicateFromNotContainsKeysInAcc(underlying.v._keys, i + 1, currentKey, List(currentKey))
+    //         check(false)
+    //         } else { () })
+
+    //       assert(!newMapListMapBefore.contains(currentKey))
+    //       assert(valid)
     //       if (!res) {
+    //         assert(if (false) newMap.valid && newMap.map == underlying.v.map else true)
     //         return false
     //       }
     //     }
     //     i = i - 1
-    //   }.invariant(i >= 0) // .invariant(
-    //   //     LongMapFixedSize.getCurrentListMap(
-    //   //       underlying.v._keys,
-    //   //       underlying.v._values,
-    //   //       underlying.v.mask,
-    //   //       underlying.v.extraKeys,
-    //   //       underlying.v.zeroValue,
-    //   //       underlying.v.minValue,
-    //   //       i,
-    //   //       underlying.v.defaultEntry
-    //   //     ) == newMap.map
-    //   //   )
+    //   }).invariant(i >= -1 && i <= underlying.v._keys.length && 
+    //       valid && newMap.valid &&
+    //       LongMapFixedSize.getCurrentListMap(
+    //         underlying.v._keys,
+    //         underlying.v._values,
+    //         underlying.v.mask,
+    //         underlying.v.extraKeys,
+    //         underlying.v.zeroValue,
+    //         underlying.v.minValue,
+    //         i + 1,
+    //         underlying.v.defaultEntry
+    //       ) == newMap.map
+    //     )
     //   true
 
     // } ensuring (res => if (res) newMap.valid && newMap.map == underlying.v.map else true)
@@ -1091,7 +1119,7 @@ object MutableLongMap {
       require(validMask(mask))
       @ghost val _keys: Array[Long] = Array.fill(mask + 1)(0)
 
-      val res = LongMapFixedSize[V](defaultEntry, mask, 0, defaultEntry(0L), defaultEntry(0L), 0, new Array[Long](mask + 1), Array.fill(mask + 1)(EmptyCell[V]()))
+      val res = LongMapFixedSize[V](defaultEntry, mask, 0, defaultEntry(0L), defaultEntry(0L), 0,Array.fill(mask + 1)(0L), Array.fill(mask + 1)(EmptyCell[V]()))
 
       assert(res.simpleValid)
       assert(res._keys == Array.fill(mask + 1)(0L))
