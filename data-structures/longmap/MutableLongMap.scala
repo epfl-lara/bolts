@@ -836,32 +836,36 @@ object MutableLongMap {
       require(valid)
       if (key == -key) {
         if (key == 0L) {
-          lemmaRemoveZeroKeyThenRemoveKeyFromListMap(
-            _keys,
-            _values,
-            mask,
-            extraKeys,
-            extraKeys & 0x2,
-            zeroValue,
-            defaultEntry(0L),
-            minValue,
-            defaultEntry
+          ghostExpr(
+            lemmaRemoveZeroKeyThenRemoveKeyFromListMap(
+              _keys,
+              _values,
+              mask,
+              extraKeys,
+              extraKeys & 0x2,
+              zeroValue,
+              defaultEntry(0L),
+              minValue,
+              defaultEntry
+            )
           )
           extraKeys &= 0x2
           zeroValue = defaultEntry(0L)
 
           true
         } else {
-          lemmaRemoveLongMinValueKeyThenRemoveKeyFromListMap(
-            _keys,
-            _values,
-            mask,
-            extraKeys,
-            extraKeys & 0x1,
-            zeroValue,
-            minValue,
-            defaultEntry(Long.MinValue),
-            defaultEntry
+          ghostExpr(
+            lemmaRemoveLongMinValueKeyThenRemoveKeyFromListMap(
+              _keys,
+              _values,
+              mask,
+              extraKeys,
+              extraKeys & 0x1,
+              zeroValue,
+              minValue,
+              defaultEntry(Long.MinValue),
+              defaultEntry
+            )
           )
           extraKeys &= 0x1
           minValue = defaultEntry(Long.MinValue)
@@ -1167,6 +1171,7 @@ object MutableLongMap {
     }
 
     @pure
+    @ghost
     def arrayForallSeekEntryOrOpenFound(i: Int)(implicit _keys: Array[Long], mask: Int): Boolean = {
       require(validMask(mask))
       require(_keys.length == mask + 1)
@@ -1370,6 +1375,7 @@ object MutableLongMap {
     )
 
     @pure
+    @ghost
     def getCurrentListMap[V](
         _keys: Array[Long],
         _values: Array[ValueCell[V]],
@@ -1423,6 +1429,7 @@ object MutableLongMap {
          else !res.contains(Long.MinValue))
     )
 
+    @ghost
     @pure
     def getCurrentListMapNoExtraKeys[V](
         _keys: Array[Long],
@@ -1467,7 +1474,9 @@ object MutableLongMap {
     // LEMMAS -----------------–-----------------–-----------------–-----------------–-----------------–---------------
 
     @opaque
+    @inlineOnce
     @pure
+    @ghost
     def lemmaAddValidKeyToArrayThenAddPairToListMap[V](
         _keys: Array[Long],
         _values: Array[ValueCell[V]],
@@ -1628,7 +1637,9 @@ object MutableLongMap {
     )
 
     @opaque
+    @inlineOnce
     @pure
+    @ghost
     def lemmaAddValidKeyToArrayThenMapNoExtrasAddPair[V](
         _keys: Array[Long],
         _values: Array[ValueCell[V]],
@@ -1865,7 +1876,9 @@ object MutableLongMap {
     )
 
     @opaque
+    @inlineOnce
     @pure
+    @ghost
     def lemmaChangeValueExistingKeyToArrayThenAddPairToListMap[V](
         _keys: Array[Long],
         _values: Array[ValueCell[V]],
@@ -2003,7 +2016,9 @@ object MutableLongMap {
     )
 
     @opaque
+    @inlineOnce
     @pure
+    @ghost
     def lemmaChangeValueExistingKeyToArrayThenMapNoExtrasAddPair[V](
         _keys: Array[Long],
         _values: Array[ValueCell[V]],
@@ -2235,7 +2250,9 @@ object MutableLongMap {
     )
 
     @opaque
+    @inlineOnce
     @pure
+    @ghost
     def lemmaChangeZeroKeyThenAddPairToListMap[V](
         _keys: Array[Long],
         _values: Array[ValueCell[V]],
@@ -2473,7 +2490,9 @@ object MutableLongMap {
     )
 
     @opaque
+    @inlineOnce
     @pure
+    @ghost
     def lemmaChangeLongMinValueKeyThenAddPairToListMap[V](
         _keys: Array[Long],
         _values: Array[ValueCell[V]],
@@ -2653,7 +2672,9 @@ object MutableLongMap {
     )
 
     @opaque
+    @inlineOnce
     @pure
+    @ghost
     def lemmaRemoveValidKeyToArrayThenRemoveKeyFromListMap[V](
         _keys: Array[Long],
         _values: Array[ValueCell[V]],
@@ -2796,7 +2817,9 @@ object MutableLongMap {
     )
 
     @opaque
+    @inlineOnce
     @pure
+    @ghost
     def lemmaRemoveLongMinValueKeyThenRemoveKeyFromListMap[V](
         _keys: Array[Long],
         _values: Array[ValueCell[V]],
@@ -2986,7 +3009,9 @@ object MutableLongMap {
     )
 
     @opaque
+    @inlineOnce
     @pure
+    @ghost
     def lemmaRemoveZeroKeyThenRemoveKeyFromListMap[V](
         _keys: Array[Long],
         _values: Array[ValueCell[V]],
@@ -3183,9 +3208,13 @@ object MutableLongMap {
     )
 
     @opaque
+    @inlineOnce
     @pure
+    @ghost
     @opaque
+    @inlineOnce
     @pure
+    @ghost
     def lemmaRemoveValidKeyFromArrayThenMapNoExtrasRemoveKey[V](
         _keys: Array[Long],
         _values: Array[ValueCell[V]],
@@ -3605,7 +3634,9 @@ object MutableLongMap {
     )
 
     @opaque
+    @inlineOnce
     @pure
+    @ghost
     def lemmaNoChangeToArrayThenSameMapNoExtras[V](
         _keys: Array[Long],
         _values: Array[ValueCell[V]],
@@ -3676,7 +3707,9 @@ object MutableLongMap {
     // ------------------BEGIN--------------------------------------------------------------------------------------------------------------------------------
 
     @opaque
+    @inlineOnce
     @pure
+    @ghost
     def lemmaKeyInListMapThenSameValueInArray[V](
         _keys: Array[Long],
         _values: Array[ValueCell[V]],
@@ -3770,7 +3803,9 @@ object MutableLongMap {
     )
 
     @opaque
+    @inlineOnce
     @pure
+    @ghost
     def lemmaKeyInListMapIsInArray[V](
         _keys: Array[Long],
         _values: Array[ValueCell[V]],
@@ -3814,7 +3849,9 @@ object MutableLongMap {
     )
 
     @opaque
+    @inlineOnce
     @pure
+    @ghost
     def lemmaValidKeyInArrayIsInListMap[V](
         _keys: Array[Long],
         _values: Array[ValueCell[V]],
@@ -3856,7 +3893,9 @@ object MutableLongMap {
     )
 
     @opaque
+    @inlineOnce
     @pure
+    @ghost
     def lemmaArrayContainsKeyThenInListMap[V](
         _keys: Array[Long],
         _values: Array[ValueCell[V]],
@@ -3924,7 +3963,9 @@ object MutableLongMap {
     )
 
     @opaque
+    @inlineOnce
     @pure
+    @ghost
     def lemmaListMapApplyFromThenApplyFromZero[V](
         _keys: Array[Long],
         _values: Array[ValueCell[V]],
@@ -4047,7 +4088,9 @@ object MutableLongMap {
     )
 
     @opaque
+    @inlineOnce
     @pure
+    @ghost
     def lemmaArrayContainsFromAndNotEqualThenContainsFromPlusOne[V](
         _keys: Array[Long],
         _values: Array[ValueCell[V]],
@@ -4075,7 +4118,9 @@ object MutableLongMap {
     }.ensuring(_ => arrayContainsKey(_keys, k, from + 1))
 
     @opaque
+    @inlineOnce
     @pure
+    @ghost
     def lemmaListMapRecursiveValidKeyArray[V](
         _keys: Array[Long],
         _values: Array[ValueCell[V]],
@@ -4193,6 +4238,7 @@ object MutableLongMap {
     @opaque
     @inlineOnce
     @pure
+    @ghost
     def lemmaInListMapAfterAddingDiffThenInBefore[V](
         k: Long,
         otherKey: Long,
@@ -4210,6 +4256,7 @@ object MutableLongMap {
     @opaque
     @inlineOnce
     @pure
+    @ghost
     def lemmaInListMapFromThenFromPlsOneIfNotEqToFstNoXMin[V](
         _keys: Array[Long],
         _values: Array[ValueCell[V]],
@@ -4326,7 +4373,9 @@ object MutableLongMap {
     )
 
     @opaque
+    @inlineOnce
     @pure
+    @ghost
     def lemmaInListMapFromThenFromPlsOneIfNotEqToFstNoXZero[V](
         _keys: Array[Long],
         _values: Array[ValueCell[V]],
@@ -4443,7 +4492,9 @@ object MutableLongMap {
     )
 
     @opaque
+    @inlineOnce
     @pure
+    @ghost
     def lemmaInListMapFromThenFromPlsOneIfNotEqToFstXKeys[V](
         _keys: Array[Long],
         _values: Array[ValueCell[V]],
@@ -4571,7 +4622,9 @@ object MutableLongMap {
     )
 
     @opaque
+    @inlineOnce
     @pure
+    @ghost
     def lemmaInListMapFromThenFromPlsOneIfNotEqToFst[V](
         _keys: Array[Long],
         _values: Array[ValueCell[V]],
@@ -4656,7 +4709,9 @@ object MutableLongMap {
     )
 
     @opaque
+    @inlineOnce
     @pure
+    @ghost
     def lemmaInListMapFromThenFromZero[V](
         _keys: Array[Long],
         _values: Array[ValueCell[V]],
@@ -4709,6 +4764,7 @@ object MutableLongMap {
     @opaque
     @inlineOnce
     @pure
+    @ghost
     def lemmaInListMapFromThenInFromSmaller[V](
         _keys: Array[Long],
         _values: Array[ValueCell[V]],
@@ -4782,7 +4838,9 @@ object MutableLongMap {
     )
 
     @opaque
+    @inlineOnce
     @pure
+    @ghost
     def lemmaInListMapFromThenInFromMinusOne[V](
         _keys: Array[Long],
         _values: Array[ValueCell[V]],
@@ -4876,7 +4934,9 @@ object MutableLongMap {
     )
 
     @opaque
+    @inlineOnce
     @pure
+    @ghost
     def lemmaListMapContainsThenArrayContainsFrom[V](
         _keys: Array[Long],
         _values: Array[ValueCell[V]],
@@ -5167,7 +5227,9 @@ object MutableLongMap {
     } ensuring (_ => arrayForallSeekEntryOrOpenFound(i)(_keys, mask))
 
     @opaque
+    @inlineOnce
     @pure
+    @ghost
     def lemmaInListMapThenSeekEntryFinds[V](
         _keys: Array[Long],
         _values: Array[ValueCell[V]],
@@ -5216,7 +5278,9 @@ object MutableLongMap {
     )
 
     @opaque
+    @inlineOnce
     @pure
+    @ghost
     def lemmaNotInListMapThenSeekEntryFindsMissingBit[V](
         _keys: Array[Long],
         _values: Array[ValueCell[V]],
@@ -5286,7 +5350,9 @@ object MutableLongMap {
     )
 
     @opaque
+    @inlineOnce
     @pure
+    @ghost
     def lemmaInListMapThenSeekEntryOrOpenFindsIt[V](
         _keys: Array[Long],
         _values: Array[ValueCell[V]],
@@ -5333,7 +5399,9 @@ object MutableLongMap {
     )
 
     @opaque
+    @inlineOnce
     @pure
+    @ghost
     def lemmaNotInListMapThenSeekEntryOrOpenFindsFreeOrNothing[V](
         _keys: Array[Long],
         _values: Array[ValueCell[V]],
@@ -5432,7 +5500,9 @@ object MutableLongMap {
     })
 
     @opaque
+    @inlineOnce
     @pure
+    @ghost
     def lemmaSeekEntryOrOpenReturnsValidIndex[V](
         _keys: Array[Long],
         _values: Array[ValueCell[V]],
@@ -5463,7 +5533,9 @@ object MutableLongMap {
     )
 
     @opaque
+    @inlineOnce
     @pure
+    @ghost
     def lemmaSeekEntryGivesInRangeIndex[V](
         _keys: Array[Long],
         _values: Array[ValueCell[V]],
@@ -5495,7 +5567,9 @@ object MutableLongMap {
     // ------------------SEEKENTRY RELATED--------------------------------------------------------------------------------------------------------------------
 
     @opaque
+    @inlineOnce
     @pure
+    @ghost
     def lemmaPutLongMinValuePreservesForallSeekEntryOrOpenKey1Helper(
         a: Array[Long],
         i: Int,
@@ -5550,7 +5624,9 @@ object MutableLongMap {
     )
 
     @opaque
+    @inlineOnce
     @pure
+    @ghost
     def lemmaPutLongMinValuePreservesForallSeekEntryOrOpenKey1(
         a: Array[Long],
         i: Int,
@@ -5666,7 +5742,9 @@ object MutableLongMap {
     )
 
     @opaque
+    @inlineOnce
     @pure
+    @ghost
     def lemmaPutLongMinValueIntermediateNotSameThenNewIsSmallerXAndAtI(
         a: Array[Long],
         i: Int,
@@ -5778,7 +5856,9 @@ object MutableLongMap {
     }.ensuring(_ => !undefinedAfter && intermediateAfterIndex == i && intermediateAfterX < intermediateBeforeX)
 
     @opaque
+    @inlineOnce
     @pure
+    @ghost
     def lemmaPutLongMinValuePreservesSeekKeyOrZeroReturnVacant(
         a: Array[Long],
         i: Int,
@@ -5836,7 +5916,9 @@ object MutableLongMap {
     )
 
     @opaque
+    @inlineOnce
     @pure
+    @ghost
     def lemmaPutLongMinValuePreservesForallSeekEntryOrOpenKey2Helper(
         a: Array[Long],
         i: Int,
@@ -6013,7 +6095,9 @@ object MutableLongMap {
     )
 
     @opaque
+    @inlineOnce
     @pure
+    @ghost
     def lemmaPutLongMinValuePreservesForallSeekEntryOrOpenKey2(a: Array[Long], i: Int, j: Int)(implicit
         mask: Int
     ): Unit = {
@@ -6122,7 +6206,9 @@ object MutableLongMap {
     )
 
     @opaque
+    @inlineOnce
     @pure
+    @ghost
     def lemmaPutLongMinValuePreservesForallSeekEntryOrOpenStartIndex(
         a: Array[Long],
         i: Int,
@@ -6156,7 +6242,9 @@ object MutableLongMap {
     }.ensuring(_ => arrayForallSeekEntryOrOpenFound(startIndex)(a.updated(i, Long.MinValue), mask))
 
     @opaque
+    @inlineOnce
     @pure
+    @ghost
     def lemmaPutLongMinValuePreservesForallSeekEntryOrOpen(a: Array[Long], i: Int)(implicit
         mask: Int
     ): Unit = {
@@ -6174,7 +6262,9 @@ object MutableLongMap {
     }.ensuring(_ => arrayForallSeekEntryOrOpenFound(0)(a.updated(i, Long.MinValue), mask))
 
     @opaque
+    @inlineOnce
     @pure
+    @ghost
     def lemmaPutValidKeyPreservesseekKeyOrZeroReturnVacant(
         a: Array[Long],
         i: Int,
@@ -6326,7 +6416,9 @@ object MutableLongMap {
     )
 
     @opaque
+    @inlineOnce
     @pure
+    @ghost
     def lemmaPutValidKeyPreservesForallSeekEntryOrOpenKey1(a: Array[Long], i: Int, k: Long, j: Int)(implicit
         mask: Int
     ): Unit = {
@@ -6421,7 +6513,9 @@ object MutableLongMap {
     )
 
     @opaque
+    @inlineOnce
     @pure
+    @ghost
     def lemmaseekKeyOrZeroOrLongMinValueFoundKeyThenSameAfterChangingI(
         a: Array[Long],
         i: Int,
@@ -6502,7 +6596,9 @@ object MutableLongMap {
     )
 
     @opaque
+    @inlineOnce
     @pure
+    @ghost
     def lemmaPutValidKeyPreservesForallSeekEntryOrOpenKey2AfterFindingLongMinValueLater(
         a: Array[Long],
         i: Int,
@@ -6612,7 +6708,9 @@ object MutableLongMap {
     )
 
     @opaque
+    @inlineOnce
     @pure
+    @ghost
     def lemmaPutValidKeyPreservesVacantIsAtI(
         a: Array[Long],
         i: Int,
@@ -6808,8 +6906,10 @@ object MutableLongMap {
 
     }.ensuring(_ => seekEntryOrOpen(a.updated(i, k).apply(j))(a.updated(i, k), mask) == Found(j))
 
-    @pure
     @opaque
+    @inlineOnce
+    @pure
+    @ghost
     def lemmaseekKeyOrZeroOrLongMinValueThenChangedAtReturnedIndex(
         a: Array[Long],
         i: Int,
@@ -6911,7 +7011,9 @@ object MutableLongMap {
     }.ensuring(_ => resIndex == i)
 
     @opaque
+    @inlineOnce
     @pure
+    @ghost
     def lemmaPutValidKeyPreservesForallSeekEntryOrOpenKey2(a: Array[Long], i: Int, k: Long, j: Int)(implicit
         mask: Int
     ): Unit = {
@@ -7027,8 +7129,10 @@ object MutableLongMap {
       )
     )
 
-    @pure
     @opaque
+    @inlineOnce
+    @pure
+    @ghost
     def lemmaPutValidKeyAtRightPlaceThenFindsHelper1(
         a: Array[Long],
         i: Int,
@@ -7235,8 +7339,10 @@ object MutableLongMap {
       ) == seekKeyOrZeroOrLongMinValue(x, index)(k, a, mask)
     )
 
-    @pure
     @opaque
+    @inlineOnce
+    @pure
+    @ghost
     def lemmaPutValidKeyAtRightPlaceThenFinds(a: Array[Long], i: Int, k: Long)(implicit
         mask: Int
     ): Unit = {
@@ -7298,7 +7404,9 @@ object MutableLongMap {
     }.ensuring(_ => seekEntryOrOpen(k)(a.updated(i, k), mask) == Found(i))
 
     @opaque
+    @inlineOnce
     @pure
+    @ghost
     def lemmaPutValidKeyPreservesForallSeekEntryOrOpenStartIndex(
         a: Array[Long],
         i: Int,
@@ -7355,7 +7463,9 @@ object MutableLongMap {
     }.ensuring(_ => arrayForallSeekEntryOrOpenFound(startIndex)(a.updated(i, k), mask))
 
     @opaque
+    @inlineOnce
     @pure
+    @ghost
     def lemmaPutValidKeyPreservesForallSeekEntryOrOpen(k: Long, a: Array[Long], i: Int)(implicit
         mask: Int
     ): Unit = {
@@ -7381,7 +7491,9 @@ object MutableLongMap {
     }.ensuring(_ => arrayForallSeekEntryOrOpenFound(0)(a.updated(i, k), mask))
 
     @opaque
+    @inlineOnce
     @pure
+    @ghost
     def lemmaSeekEntryOrOpenFindsThenSeekEntryFinds(
         k: Long,
         i: Int,
@@ -7402,7 +7514,9 @@ object MutableLongMap {
     )
 
     @opaque
+    @inlineOnce
     @pure
+    @ghost
     def lemmaSeekEntryOrOpenMissThenSeekEntryMiss(
         k: Long,
         i: Int,
@@ -7507,6 +7621,7 @@ object MutableLongMap {
       */
     @tailrec
     @pure
+    @ghost
     def arraysEqualsFromTo(a1: Array[Long], a2: Array[Long], from: Int, to: Int): Boolean = {
       require(
         a1.length == a2.length && from >= 0 && from <= to && to <= a1.length && a1.length < Integer.MAX_VALUE
@@ -7524,8 +7639,11 @@ object MutableLongMap {
 
     // --------------------- ARRAY RELATED LEMMAS ------------------------------------------
 
-    @pure
     @opaque
+    @inlineOnce
+    @pure
+    @ghost
+    @ghost
     def lemmaArrayNoDuplicateRemoveOneThenNotContain(a: Array[Long], i: Int, k: Long): Unit = {
       require(i >= 0)
       require(i < a.length)
@@ -7556,8 +7674,11 @@ object MutableLongMap {
 
     }.ensuring(_ => !arrayContainsKey(a.updated(i, Long.MinValue), k, 0))
 
-    @pure
     @opaque
+    @inlineOnce
+    @pure
+    @ghost
+    @ghost
     def lemmaArrayContainsFromImpliesContainsFromZero(
         a: Array[Long],
         k: Long,
@@ -7574,8 +7695,11 @@ object MutableLongMap {
       }
     }.ensuring(_ => arrayContainsKey(a, k, 0))
 
-    @pure
     @opaque
+    @inlineOnce
+    @pure
+    @ghost
+    @ghost
     def lemmaArrayContainsFromImpliesContainsFromSmaller(
         a: Array[Long],
         k: Long,
@@ -7596,7 +7720,9 @@ object MutableLongMap {
     }.ensuring(_ => arrayContainsKey(a, k, newFrom))
 
     @opaque
+    @inlineOnce
     @pure
+    @ghost
     def lemmaAddKeyNoContainsInAccStillNoDuplicate(
         a: Array[Long],
         k: Long,
@@ -7636,7 +7762,9 @@ object MutableLongMap {
     }.ensuring(_ => arrayNoDuplicates(a, from, newAcc))
 
     @opaque
+    @inlineOnce
     @pure
+    @ghost
     def lemmaListMinusENotContainedEqualsList(e: Long, l: List[Long]): Unit = {
       require(!l.contains(e))
       decreases(l)
@@ -7648,7 +7776,9 @@ object MutableLongMap {
     }.ensuring(_ => l - e == l)
 
     @opaque
+    @inlineOnce
     @pure
+    @ghost
     def lemmaLMinusHeadEqualsTail(head: Long, tail: List[Long]): Unit = {
       require(!tail.contains(head))
       assert(!tail.content.contains(head))
@@ -7662,7 +7792,9 @@ object MutableLongMap {
     }.ensuring(_ => (head :: tail) - head == tail)
 
     @opaque
+    @inlineOnce
     @pure
+    @ghost
     def lemmaPutNewValidKeyPreservesNoDuplicate(
         a: Array[Long],
         k: Long,
@@ -7718,7 +7850,9 @@ object MutableLongMap {
     }.ensuring(_ => arrayNoDuplicates(a.updated(i, k), from, acc))
 
     @opaque
+    @inlineOnce
     @pure
+    @ghost
     def lemmaPutNonValidKeyPreservesNoDuplicate(
         a: Array[Long],
         l: Long,
@@ -7755,7 +7889,9 @@ object MutableLongMap {
     }.ensuring(_ => arrayNoDuplicates(a.updated(i, l), from, acc))
 
     @opaque
+    @inlineOnce
     @pure
+    @ghost
     def lemmaArrayNoDuplicateThenKeysContainedNotEqual(
         a: Array[Long],
         k: Long,
@@ -7783,7 +7919,9 @@ object MutableLongMap {
     }.ensuring(_ => a(from) != k)
 
     @opaque
+    @inlineOnce
     @pure
+    @ghost
     def lemmaArrayNoDuplicateFromNotContainsKeysInAcc(
         a: Array[Long],
         from: Int,
@@ -7813,7 +7951,9 @@ object MutableLongMap {
     }.ensuring(_ => !arrayContainsKey(a, k, from))
 
     @opaque
+    @inlineOnce
     @pure
+    @ghost
     def lemmaListSubSeqRefl(l: List[Long]): Unit = {
       decreases(l)
       l match {
@@ -7827,7 +7967,9 @@ object MutableLongMap {
     }.ensuring(_ => ListSpecs.subseq(l, l))
 
     @opaque
+    @inlineOnce
     @pure
+    @ghost
     def lemmaArrayNoDuplicateWithAnAccThenWithSubSeqAcc(
         a: Array[Long],
         acc: List[Long],
@@ -7867,7 +8009,9 @@ object MutableLongMap {
     }.ensuring(_ => arrayNoDuplicates(a, from, newAcc))
 
     @opaque
+    @inlineOnce
     @pure
+    @ghost
     def lemmaNoDuplicateFromThenFromBigger(a: Array[Long], from: Int, newFrom: Int): Unit = {
       require(a.length < Integer.MAX_VALUE)
       require(from >= 0)
@@ -7895,7 +8039,9 @@ object MutableLongMap {
     }.ensuring(_ => arrayNoDuplicates(a, newFrom))
 
     @opaque
+    @inlineOnce
     @pure
+    @ghost
     def lemmaArrayForallSeekEntryOrOpenFoundFromSmallerThenFromBigger(
         a: Array[Long],
         mask: Int,
@@ -7915,8 +8061,10 @@ object MutableLongMap {
       }
     }.ensuring(_ => arrayForallSeekEntryOrOpenFound(newFrom)(a, mask))
 
-    @pure
     @opaque
+    @inlineOnce
+    @pure
+    @ghost
     def lemmaCountingValidKeysAtTheEnd(a: Array[Long], from: Int, to: Int): Unit = {
       require(a.length < Integer.MAX_VALUE && from >= 0 && to > from && to <= a.length)
 
@@ -7931,8 +8079,10 @@ object MutableLongMap {
         arrayCountValidKeys(a, from, to - 1) == arrayCountValidKeys(a, from, to)
     )
 
-    @pure
     @opaque
+    @inlineOnce
+    @pure
+    @ghost
     def lemmaKnownPivotPlusOneIsPivot(a: Array[Long], from: Int, to: Int, pivot: Int): Unit = {
       require(
         a.length < Integer.MAX_VALUE && from >= 0 && to > from && to <= a.length && pivot >= from && pivot < to - 1 &&
@@ -7955,8 +8105,10 @@ object MutableLongMap {
       ) == arrayCountValidKeys(a, from, to)
     }
 
-    @pure
     @opaque
+    @inlineOnce
+    @pure
+    @ghost
     def lemmaSumOfNumOfKeysOfSubArraysIsEqualToWholeFromTo(
         a: Array[Long],
         from: Int,
@@ -7978,8 +8130,10 @@ object MutableLongMap {
       }
     }.ensuring(_ => isPivot(a, from, to, pivot))
 
-    @pure
     @opaque
+    @inlineOnce
+    @pure
+    @ghost
     def lemmaSumOfNumOfKeysOfSubArraysIsEqualToWhole(
         a: Array[Long],
         from: Int,
@@ -8002,8 +8156,10 @@ object MutableLongMap {
       ) == arrayCountValidKeys(a, from, to)
     )
 
-    @pure
     @opaque
+    @inlineOnce
+    @pure
+    @ghost
     def lemmaRemoveValidKeyAndNumKeysToImpliesToALength(
         a: Array[Long],
         i: Int,
@@ -8042,8 +8198,10 @@ object MutableLongMap {
       )
     )
 
-    @pure
     @opaque
+    @inlineOnce
+    @pure
+    @ghost
     def lemmaRemoveValidKeyAndNumKeysFromImpliesFromZero(
         a: Array[Long],
         i: Int,
@@ -8079,8 +8237,10 @@ object MutableLongMap {
       ) - 1
     })
 
-    @pure
     @opaque
+    @inlineOnce
+    @pure
+    @ghost
     def lemmaRemoveValidKeyDecreasesNumberOfValidKeysInArray(
         a: Array[Long],
         i: Int,
@@ -8105,8 +8265,10 @@ object MutableLongMap {
       ) - 1
     )
 
-    @pure
     @opaque
+    @inlineOnce
+    @pure
+    @ghost
     def lemmaValidKeyIncreasesNumOfKeys(a: Array[Long], from: Int, to: Int): Unit = {
       require(
         a.length < Integer.MAX_VALUE && from >= 0 && to >= from && to < a.length && validKeyInArray(
@@ -8118,8 +8280,10 @@ object MutableLongMap {
 
     }.ensuring(_ => arrayCountValidKeys(a, from, to + 1) == arrayCountValidKeys(a, from, to) + 1)
 
-    @pure
     @opaque
+    @inlineOnce
+    @pure
+    @ghost
     def lemmaNotValidKeyDoesNotIncreaseNumOfKeys(a: Array[Long], from: Int, to: Int): Unit = {
       require(
         a.length < Integer.MAX_VALUE && from >= 0 && to >= from && to < a.length && !validKeyInArray(
@@ -8131,8 +8295,10 @@ object MutableLongMap {
 
     }.ensuring(_ => arrayCountValidKeys(a, from, to + 1) == arrayCountValidKeys(a, from, to))
 
-    @pure
     @opaque
+    @inlineOnce
+    @pure
+    @ghost
     def lemmaAddValidKeyAndNumKeysToImpliesToALength(
         a: Array[Long],
         i: Int,
@@ -8170,8 +8336,10 @@ object MutableLongMap {
       )
     )
 
-    @pure
     @opaque
+    @inlineOnce
+    @pure
+    @ghost
     def lemmaAddValidKeyAndNumKeysFromImpliesFromZero(
         a: Array[Long],
         i: Int,
@@ -8207,8 +8375,10 @@ object MutableLongMap {
       ) + 1
     })
 
-    @pure
     @opaque
+    @inlineOnce
+    @pure
+    @ghost
     def lemmaAddValidKeyIncreasesNumberOfValidKeysInArray(a: Array[Long], i: Int, k: Long): Unit = {
       require(
         i >= 0 && i < a.length && !validKeyInArray(a(i)) && validKeyInArray(
@@ -8229,15 +8399,19 @@ object MutableLongMap {
       ) + 1
     )
 
-    @pure
     @opaque
+    @inlineOnce
+    @pure
+    @ghost
     def lemmaValidKeyAtIImpliesCountKeysIsOne(a: Array[Long], i: Int): Unit = {
       require(i >= 0 && i < a.length && validKeyInArray(a(i)) && a.length < Integer.MAX_VALUE)
 
     }.ensuring(_ => arrayCountValidKeys(a, i, i + 1) == 1)
 
-    @pure
     @opaque
+    @inlineOnce
+    @pure
+    @ghost
     def lemmaArrayEqualsFromToReflexivity(a: Array[Long], from: Int, to: Int): Unit = {
       require(from >= 0 && from < to && to <= a.length && a.length < Integer.MAX_VALUE)
       decreases(to - from)
@@ -8246,8 +8420,10 @@ object MutableLongMap {
       }
     }.ensuring(_ => arraysEqualsFromTo(a, snapshot(a), from, to))
 
-    @pure
     @opaque
+    @inlineOnce
+    @pure
+    @ghost
     def lemmaValidKeyIndexImpliesArrayContainsKey(a: Array[Long], k: Long, i: Int): Unit = {
       require(a.length < Integer.MAX_VALUE)
       require(i >= 0 && i < a.length)
@@ -8256,9 +8432,10 @@ object MutableLongMap {
       LongMapFixedSize.lemmaArrayContainsFromImpliesContainsFromZero(a, k, i)
     }.ensuring(_ => arrayContainsKey(a, k, 0))
 
-    @pure
     @opaque
     @inlineOnce
+    @pure
+    @ghost
     def lemmaArrayCountValidKeysOfFilled0ArrayIs0(a: Array[Long], i: Int, size: Int): Unit = {
       require(a.length < Integer.MAX_VALUE)
       require(i >= 0 && i <= a.length)
@@ -8272,9 +8449,10 @@ object MutableLongMap {
 
     } ensuring (_ => arrayCountValidKeys(a, i, size) == 0)
 
-    @pure
     @opaque
     @inlineOnce
+    @pure
+    @ghost
     def lemmaArrayNoDuplicatesInAll0Array(a: Array[Long], from: Int, size: Int, acc: List[Long] = Nil[Long]()): Unit = {
       require(a.length == size)
       require(size < Integer.MAX_VALUE)
