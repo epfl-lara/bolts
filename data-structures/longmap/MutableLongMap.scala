@@ -107,6 +107,7 @@ object MutableLongMap {
     def computeNewMask(oldMask: Int, s: Int): Int = {
       require(validMask(oldMask))
       require(s >= 0 && s <= oldMask + 1)
+      require(oldMask >= 7)
 
       val newMask = if (s > (MAX_MASK >> 3)) {
         ((oldMask << 1) + 1) & MAX_MASK
