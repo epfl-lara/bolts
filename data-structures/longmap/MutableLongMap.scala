@@ -178,6 +178,7 @@ object MutableLongMap {
       if (!resExtraKeys) {
         (false, Cell(LongMapFixedSize.getNewLongMapFixedSize(newMask, underlying.v.defaultEntry)))
       } else {
+        assert((underlying.v._keys.length - 1) >= 0)
         val repackFromRes = repackFrom(newMap.v, underlying.v._keys.length - 1)
         (repackFromRes, if repackFromRes then newMap else Cell(LongMapFixedSize.getNewLongMapFixedSize(newMask, underlying.v.defaultEntry)))
       }
@@ -1124,10 +1125,7 @@ object MutableLongMap {
 
     @pure
     def validMask(mask: Int): Boolean = {
-      (mask == 0x00000000 ||
-        mask == 0x00000001 ||
-        mask == 0x00000003 ||
-        mask == 0x00000007 ||
+      (mask == 0x00000007 ||
         mask == 0x0000000f ||
         mask == 0x0000001f ||
         mask == 0x0000003f ||
@@ -7567,7 +7565,6 @@ object MutableLongMap {
       }
     } ensuring (res => res >= 0 && res <= a.length - from)
 
-    @tailrec
     @pure
     @ghost
     def arrayContainsKey(a: Array[Long], k: Long, from: Int): Boolean = {
@@ -7585,7 +7582,6 @@ object MutableLongMap {
       }
     }
 
-    @tailrec
     @pure
     @ghost
     def arrayScanForKey(a: Array[Long], k: Long, from: Int): Int = {
@@ -7597,7 +7593,6 @@ object MutableLongMap {
       else arrayScanForKey(a, k, from + 1)
     } ensuring (res => res >= 0 && res < a.length && a(res) == k)
 
-    @tailrec
     @pure
     @ghost
     def arrayNoDuplicates(a: Array[Long], from: Int, acc: List[Long] = Nil[Long]()): Boolean = {
@@ -7621,7 +7616,6 @@ object MutableLongMap {
       * @param to
       * @return
       */
-    @tailrec
     @pure
     @ghost
     def arraysEqualsFromTo(a1: Array[Long], a2: Array[Long], from: Int, to: Int): Boolean = {
