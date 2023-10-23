@@ -183,7 +183,7 @@ object MutableLongMap {
       }
     }.ensuring(res => res._1 == false || res._2.isOwned && res._2.v.valid && res._2.v.map == old(this).map)
 
-    // @tailrec
+    @tailrec
     def repackFrom(newMap: LongMapFixedSize[V], from: Int): Boolean = {
       require(valid)
       require(from >= 0 && from < underlying.v._keys.length)
@@ -1297,7 +1297,7 @@ object MutableLongMap {
       )
     )
 
-    // @tailrec
+    @tailrec
     @pure
     private def seekKeyOrZeroOrLongMinValue(x: Int, ee: Int)(implicit
         k: Long,
@@ -1331,7 +1331,7 @@ object MutableLongMap {
       })
     )
 
-    // @tailrec
+    @tailrec
     @pure
     private def seekKeyOrZeroReturnVacant(x: Int, ee: Int, vacantSpotIndex: Int)(implicit
         k: Long,
@@ -7432,7 +7432,7 @@ object MutableLongMap {
       l != 0 && l != Long.MinValue
     }
 
-    // @tailrec
+    @tailrec
     @pure
     def arrayCountValidKeys(
         a: Array[Long],
@@ -7454,7 +7454,7 @@ object MutableLongMap {
       }
     }.ensuring(res => res >= 0 && res <= a.length - from)
 
-    // @tailrec
+    @tailrec
     @pure
     def arrayContainsKey(a: Array[Long], k: Long, from: Int): Boolean = {
       require(from >= 0)
@@ -7471,7 +7471,7 @@ object MutableLongMap {
       }
     }
 
-    // @tailrec
+    @tailrec
     @pure
     def arrayScanForKey(a: Array[Long], k: Long, from: Int): Int = {
       require(from >= 0 && from < a.length && a.length < Integer.MAX_VALUE)
@@ -7482,7 +7482,7 @@ object MutableLongMap {
       else arrayScanForKey(a, k, from + 1)
     }.ensuring(res => res >= 0 && res < a.length && a(res) == k)
 
-    // @tailrec
+    @tailrec
     @pure
     def arrayNoDuplicates(a: Array[Long], from: Int, acc: List[Long] = Nil[Long]()): Boolean = {
       require(from >= 0 && from <= a.length)
@@ -7505,7 +7505,7 @@ object MutableLongMap {
       * @param to
       * @return
       */
-    // @tailrec
+    @tailrec
     @pure
     def arraysEqualsFromTo(a1: Array[Long], a2: Array[Long], from: Int, to: Int): Boolean = {
       require(
