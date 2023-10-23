@@ -985,25 +985,23 @@ object MutableLongMap {
           )
         }
       )
-      val _oldSize = _size
-      val _oldNKeys = arrayCountValidKeys(_keys, 0, _keys.length)
       assert(inRange(index, mask))
-      if (arrayContainsKey(_keys, key, 0)) {
-        ghostExpr(
-          lemmaArrayContainsKeyThenInListMap(
-            _keys,
-            _values,
-            mask,
-            extraKeys,
-            zeroValue,
-            minValue,
-            key,
-            0,
-            defaultEntry
-          )
+      ghostExpr(if (arrayContainsKey(_keys, key, 0)) {
+
+        lemmaArrayContainsKeyThenInListMap(
+          _keys,
+          _values,
+          mask,
+          extraKeys,
+          zeroValue,
+          minValue,
+          key,
+          0,
+          defaultEntry
         )
+
         check(false)
-      }
+      } else {})
 
       ghostExpr(lemmaPutNewValidKeyPreservesNoDuplicate(_keys, key, index, 0, List()))
       ghostExpr(lemmaAddValidKeyIncreasesNumberOfValidKeysInArray(_keys, index, key))
@@ -7542,12 +7540,14 @@ object MutableLongMap {
     // ARRAY UTILITY FUNCTIONS ----------------------------------------------------------------------------------------
 
     @pure
+    @ghost
     def validKeyInArray(l: Long): Boolean = {
       l != 0 && l != Long.MinValue
     }
 
     @tailrec
     @pure
+    @ghost
     def arrayCountValidKeys(
         a: Array[Long],
         from: Int,
@@ -7570,6 +7570,7 @@ object MutableLongMap {
 
     @tailrec
     @pure
+    @ghost
     def arrayContainsKey(a: Array[Long], k: Long, from: Int): Boolean = {
       require(from >= 0)
       require(from < a.length)
@@ -7587,6 +7588,7 @@ object MutableLongMap {
 
     @tailrec
     @pure
+    @ghost
     def arrayScanForKey(a: Array[Long], k: Long, from: Int): Int = {
       require(from >= 0 && from < a.length && a.length < Integer.MAX_VALUE)
       require(arrayContainsKey(a, k, from))
@@ -7598,6 +7600,7 @@ object MutableLongMap {
 
     @tailrec
     @pure
+    @ghost
     def arrayNoDuplicates(a: Array[Long], from: Int, acc: List[Long] = Nil[Long]()): Boolean = {
       require(from >= 0 && from <= a.length)
       require(a.length < Integer.MAX_VALUE)
@@ -7643,7 +7646,6 @@ object MutableLongMap {
     @inlineOnce
     @pure
     @ghost
-    @ghost
     def lemmaArrayNoDuplicateRemoveOneThenNotContain(a: Array[Long], i: Int, k: Long): Unit = {
       require(i >= 0)
       require(i < a.length)
@@ -7678,7 +7680,6 @@ object MutableLongMap {
     @inlineOnce
     @pure
     @ghost
-    @ghost
     def lemmaArrayContainsFromImpliesContainsFromZero(
         a: Array[Long],
         k: Long,
@@ -7698,7 +7699,6 @@ object MutableLongMap {
     @opaque
     @inlineOnce
     @pure
-    @ghost
     @ghost
     def lemmaArrayContainsFromImpliesContainsFromSmaller(
         a: Array[Long],
@@ -8094,6 +8094,7 @@ object MutableLongMap {
     } ensuring (_ => LongMapFixedSize.isPivot(a, from, to, pivot + 1))
 
     @pure
+    @ghost
     def isPivot(a: Array[Long], from: Int, to: Int, pivot: Int): Boolean = {
       require(
         a.length < Integer.MAX_VALUE && from >= 0 && to > from && to <= a.length && pivot >= from && pivot < to
