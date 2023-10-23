@@ -107,7 +107,6 @@ object MutableLongMap {
     def computeNewMask(oldMask: Int, s: Int): Int = {
       require(validMask(oldMask))
       require(s >= 0 && s <= oldMask + 1)
-      require(oldMask >= 7)
 
       val newMask = if (s > (MAX_MASK >> 3)) {
         ((oldMask << 1) + 1) & MAX_MASK
@@ -125,7 +124,7 @@ object MutableLongMap {
         m
       }
       newMask
-    } ensuring (res => validMask(res) && (res == MAX_MASK || (2 * s <= res + 1)) && res >= 7)
+    } ensuring (res => validMask(res) && (res == MAX_MASK || (2 * s <= res + 1)))
 
     // @pure
     // def completeComputeNewMask(oldMask: Int, _vacant: Int, _size: Int): Int = {
@@ -208,11 +207,14 @@ object MutableLongMap {
 
       val currentValue = underlying.v._values(from).get(underlying.v.defaultEntry(0L))
 
+      @ghost val newMapListMapBefore = newMap.map
+
       if (currentKey != 0 && currentKey != Long.MinValue) {
+
         // There is a key in the array, add it to the new map
         val res = newMap.update(currentKey, currentValue)
 
-        ghostExpr(if (old(newMap).map.contains(currentKey)) {
+        ghostExpr(if (newMapListMapBefore.contains(currentKey)) {
           LongMapFixedSize.lemmaListMapContainsThenArrayContainsFrom(
             underlying.v._keys,
             underlying.v._values,
@@ -229,12 +231,12 @@ object MutableLongMap {
           check(false)
         } else { () })
 
-        assert(!old(newMap).map.contains(currentKey))
+        assert(!newMapListMapBefore.contains(currentKey))
         assert(valid)
         if (res) {
-          assert(newMap.map == old(newMap).map + (currentKey, currentValue))
+          assert(newMap.map == newMapListMapBefore + (currentKey, currentValue))
           if (from > 0) {
-            assert(newMap.map == old(newMap).map + (currentKey, currentValue))
+            assert(newMap.map == newMapListMapBefore + (currentKey, currentValue))
 
             // val underlyingMapFromPOneNXtra = LongMapFixedSize.getCurrentListMapNoExtraKeys(underlying.v._keys,underlying.v._values,underlying.v.mask,underlying.v.extraKeys,underlying.v.zeroValue,underlying.v.minValue,from + 1,underlying.v.defaultEntry)
             assert(
@@ -368,7 +370,7 @@ object MutableLongMap {
 
       } else {
         if (from > 0) {
-          assert(newMap.map == old(newMap).map)
+          assert(newMap.map == newMapListMapBefore)
           repackFrom(newMap, from - 1)
         } else {
           assert(newMap.valid && newMap.map == underlying.v.map)
