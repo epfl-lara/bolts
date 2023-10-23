@@ -481,13 +481,13 @@ object MutableLongMap {
   @mutable
   final case class LongMapFixedSize[V](
       val defaultEntry: Long => V,
-      val mask: Int = MAX_MASK,
-      var extraKeys: Int = 0,
+      val mask: Int,
+      var extraKeys: Int,
       var zeroValue: V,
       var minValue: V,
-      var _size: Int = 0,
-      val _keys: Array[Long] = Array.fill(MAX_MASK + 1)(0),
-      val _values: Array[ValueCell[V]] = Array.fill(MAX_MASK + 1)(EmptyCell[V]())
+      var _size: Int,
+      val _keys: Array[Long],
+      val _values: Array[ValueCell[V]]
   ) {
     import LongMapFixedSize.validKeyInArray
     import LongMapFixedSize.arrayCountValidKeys
@@ -1089,8 +1089,10 @@ object MutableLongMap {
 
     def getNewLongMapFixedSize[V](mask: Int, defaultEntry: Long => V): LongMapFixedSize[V] = {
       require(validMask(mask))
-      val _keys: Array[Long] = Array.fill(mask + 1)(0)
-      val res = LongMapFixedSize[V](defaultEntry, mask, 0, defaultEntry(0L), defaultEntry(0L), 0, Array.fill(mask + 1)(0), Array.fill(mask + 1)(EmptyCell[V]()))
+      @ghost val _keys: Array[Long] = Array.fill(mask + 1)(0)
+
+      val res = LongMapFixedSize[V](defaultEntry, mask, 0, defaultEntry(0L), defaultEntry(0L), 0, new Array[Long](mask + 1), Array.fill(mask + 1)(EmptyCell[V]()))
+
       assert(res.simpleValid)
       assert(res._keys == Array.fill(mask + 1)(0L))
       assert(_keys.length == mask + 1)
