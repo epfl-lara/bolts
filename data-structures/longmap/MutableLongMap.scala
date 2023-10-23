@@ -7545,7 +7545,6 @@ object MutableLongMap {
       l != 0 && l != Long.MinValue
     }
 
-    @tailrec
     @pure
     @ghost
     def arrayCountValidKeys(
