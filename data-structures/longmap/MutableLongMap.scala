@@ -64,7 +64,8 @@ object MutableLongMap {
     // def completeImbalanced: Boolean = (_size + _vacant) > 0.5 * mask || _vacant > _size
 
     @pure
-    def imbalanced(): Boolean = (2 * underlying.v._size) > underlying.v.mask
+    // TODO experiment to see the best version i.e., with or without || (5 * underlying.v._size) < underlying.v.mask
+    def imbalanced(): Boolean = (2 * underlying.v._size) > underlying.v.mask || (5 * underlying.v._size) < underlying.v.mask
 
     @pure
     def size: Int = underlying.v.size
