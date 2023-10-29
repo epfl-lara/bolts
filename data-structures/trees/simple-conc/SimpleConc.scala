@@ -7,6 +7,8 @@ import ListSpecs._
 import stainless.annotation._
 
 object SimpleConc:
+  def max(x: BigInt, y: BigInt) =
+    if x < y then y else x
 
   trait Seq[T]:
     def toList: List[T]
@@ -35,6 +37,12 @@ object SimpleConc:
         case Leaf(_) => BigInt(1)
         case Node(_, _, csize) => csize
     }.ensuring(_ == t.toList.size)
+
+    def height: BigInt = 
+      t match 
+        case Empty() => 0
+        case Leaf(x) => 1
+        case Node(l, r, _) => 1 + max(l.height, r.height)
 
     def apply(i: BigInt): T = {
       require(0 <= i && i < t.size)
@@ -77,6 +85,7 @@ object SimpleConc:
     }.ensuring(_.toList == t.toList.slice(from, until))
 
   extension[T](t: Conc[T])
+    @extern
     def toStr: Vector[String] = 
       t match
         case Empty() => Vector("Empty()")
@@ -97,6 +106,7 @@ object SimpleConc:
     end toStr
 
   extension[T](t: Conc[T])
+    @extern
     def toDraw: Vector[String] = 
       t match
         case Empty() => Vector("()")
@@ -104,28 +114,28 @@ object SimpleConc:
         case Node(l, r, csize) =>
           val ls = l.toDraw
           val rs = r.toDraw         
-
           val p = 3* ls.size / 2 // push first subtree right for visual balance
-
           val ls1 = Vector("─┬─" + "─"*p + ls.head) ++
                     ls.tail.map(" │ " + " "*p + _)
-
           val rs1 = Vector(" └─" + rs.head) ++
                     rs.tail.map("   " + _)
-
           ls1 ++ rs1
     end toDraw
 
 
+  @extern
   def show[T](t: Conc[T]): String = 
     t.toDraw.mkString("\n")
 
   @main @extern
   def test =
-    val c1: Conc[Int] = (1 to 10).map(Leaf(_)).foldLeft[Conc[Int]](Empty())((a, b) => a <> b)
-    val c2: Conc[Int] = (1 to 10).map(Leaf(_)).foldRight[Conc[Int]](Empty())((a, b) => a <> b)
-    println(show(c1 <> c2))
-    println(show(c2 <> c1))
+    val c1: Conc[Int] = (1 to 8).map(Leaf(_)).foldLeft[Conc[Int]](Empty())((a, b) => a <> b)
+    println(show(c1))
+    println(f"c1.height = ${c1.height}")
+    val c2: Conc[Int] = (1 to 3).foldRight[Conc[Int]](Leaf(4))((_,t) => t <> t)
+    println(show(c2))
+    println(f"c2.height = ${c2.height}")
+
 
 
   // **************************************************************************
