@@ -7,9 +7,6 @@ import stainless.lang._
 import stainless.proof._
 
 object StrictlyOrderedList {
-    import CheckingAndPrinting.*
-    given nochks: SpecConfig = SpecConfig.Zero()
-
     // Some helpers
     def concatLast(@induct left: List[BigInt], right: List[BigInt]): Boolean = {
         right.nonEmpty ==> ((left ++ right).last == right.last)
@@ -181,10 +178,4 @@ object StrictlyOrderedList {
         check(bigger(xs, y, e))
         deleteFirst(xs ++ (y :: ys), e) == (xs ++ deleteFirst(y :: ys, e))
     }.holds
-
-    val l: List[BigInt] = List(1,2,3,5,8).map(BigInt(_))
-    val dl = deleteFirst(l, 2)
-
-    val ldup: List[BigInt] = List(1,2,2,3,5,8).map(BigInt(_))
 }
-
