@@ -18,7 +18,8 @@ object SimpleConc:
   sealed abstract class Conc[T]
   case class Empty[T]() extends Conc[T]
   case class Leaf[T](x: T) extends Conc[T]
-  case class Node[T](left: Conc[T], right: Conc[T], csize: BigInt, cheight: BigInt) extends Conc[T] {
+  case class Node[T](left: Conc[T], right: Conc[T], 
+                     csize: BigInt, cheight: BigInt) extends Conc[T] {
     require(csize == left.size + right.size && left != Empty[T]() && right != Empty[T]() &&
             cheight == max(left.height, right.height) + 1)
   }
