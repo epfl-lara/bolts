@@ -1,19 +1,12 @@
 // Simplification of: http://aleksandar-prokopec.com/resources/docs/lcpc-conc-trees.pdf
 import stainless.lang._
 import stainless.proof._
-import stainless.lang.StaticChecks._
+//import stainless.lang.StaticChecks._
 import stainless.collection._
 import ListSpecs._
 import stainless.annotation._
 
-object SimpleConc:
-  trait Seq[T]:
-    def toList: List[T]
-    def size: Int
-    def apply(i: Int): T
-    def ++(that: Seq[T]): Seq[T]
-    def slice(from: Int, until: Int): Seq[T]
-  end Seq
+object BalanceConc:
 
   sealed abstract class Conc[T]
   case class Empty[T]() extends Conc[T]
@@ -21,11 +14,14 @@ object SimpleConc:
   case class Node[T](left: Conc[T], right: Conc[T], 
                      csize: BigInt, cheight: BigInt) extends Conc[T] {
     require(csize == left.size + right.size && left != Empty[T]() && right != Empty[T]() &&
-            cheight == max(left.height, right.height) + 1)
+            cheight == max(left.height, right.height) + 1 &&
+            0 <= cheight)
   }
 
   def max(x: BigInt, y: BigInt) =
     if x < y then y else x
+  def abs(x: BigInt) =
+    if 0 <= x then x else -x
 
   extension[T](t: Conc[T])
     def toList: List[T] = t match
@@ -66,78 +62,84 @@ object SimpleConc:
     }
     
 
-  extension[T](t1: Conc[T])
-    def <>(t2: Conc[T]) = 
-      if t1 == Empty[T]() then t2
-      else if t2 == Empty[T]() then t1
-      else Node(t1, t2, t1.size + t2.size, max(t1.height, t2.height) + 1)
+  extension[T](xs: Conc[T])
+    def <>(ys: Conc[T]) = {
+      if xs == Empty[T]() then ys
+      else if ys == Empty[T]() then xs
+      else Node(xs, ys, xs.size + ys.size, 
+                        max(xs.height, ys.height) + 1)
+    }.ensuring(_.toList == xs.toList ++ ys.toList)
 
-    def ++(t2: Conc[T]): Conc[T] = {
-      if t1 == Empty[T]() then t2
-      else if t2 == Empty[T]() then t1
+    def ++(ys: Conc[T]): Conc[T] = {
+      require(xs.isBalanced && ys.isBalanced)
+      decreases(abs(xs.height - ys.height))
+      if xs == Empty[T]() then ys
+      else if ys == Empty[T]() then xs
       else
-        val diff = t2.height - t1.height
-        if -1 <= diff && diff <= 1 then
-          t1 <> t2
+        val diff = ys.height - xs.height
+        if -1 <= diff && diff <= 1 then xs <> ys
         else if diff < -1 then
-          t1 match
+          xs match
             case Node(l, r, _, _) =>
               if l.height >= r.height then
-                l <> (r ++ t2)
+                l <> (r ++ ys)
               else
                 r match
                   case Node(rl, rr, _, _) =>
-                    val nrr = rr ++ t2
-                    if nrr.height == t1.height - 3 then
+                    val nrr = rr ++ ys
+                    if nrr.height == xs.height - 3 then
                       l <> (rl <> nrr)
                     else
                       (l <> rl) <> nrr
         else 
-          t2 match
+          ys match
             case Node(l, r, _, _) =>
               if r.height >= l.height then
-                (t1 ++ l) <> r
+                (xs ++ l) <> r
               else
                 l match
                   case Node(ll, lr, _, _) =>
-                    val nll = t1 ++ ll
-                    if nll.height == t2.height - 3 then
+                    val nll = xs ++ ll
+                    if nll.height == ys.height - 3 then
                       (nll <> lr) <> r
                     else
                       nll <> (lr <> r)
-    }.ensuring(_.toList == t1.toList ++ t2.toList)
+    }.ensuring(res => 
+        appendAssocInst(xs, ys) &&
+        res.isBalanced &&
+        res.height <= max(xs.height, ys.height) + 1 &&
+        res.height >= max(xs.height, ys.height) &&
+        res.toList == xs.toList ++ ys.toList)
 
 
-/* // Hahaha, I did this originally.
+  def appendAssocInst[T](xs: Conc[T], ys: Conc[T]): Boolean = {
+    (xs match {
+      case Node(l, r, _, _) =>
+        appendAssoc(l.toList, r.toList, ys.toList) && //instantiation of associativity of concatenation
+          (r match {
+            case Node(rl, rr, _, _) =>
+              appendAssoc(rl.toList, rr.toList, ys.toList) &&
+                appendAssoc(l.toList, rl.toList, rr.toList ++ ys.toList)
+            case _ => true
+          })
+      case _ => true
+    }) &&
+    (ys match {
+        case Node(l, r, _, _) =>
+          appendAssoc(xs.toList, l.toList, r.toList) &&
+            (l match {
+              case Node(ll, lr, _, _) =>
+                appendAssoc(xs.toList, ll.toList, lr.toList) &&
+                  appendAssoc(xs.toList ++ ll.toList, lr.toList, r.toList)
+              case _ => true
+            })
+        case _ => true
+    })
+  }.holds
 
-    def ++(t2: Conc[T]): Conc[T] = {
-      if t1 == Empty[T]() then t2
-      else if t2 == Empty[T]() then t1
-      else
-        val diff = t2.height - t1.height
-        if -1 <= diff && diff <= 1 then
-          t1 <> t2
-        else if diff < -1 then
-          t1 match
-            case Node(l, r, _, _) =>
-              if l.height >= r.height then
-                l <> (r ++ t2)
-              else
-                r match
-                  case Node(rl, rr, _, _) =>
-                    val nrr = rr ++ t2
-                    if nrr.height == t1.height - 3 then
-                      l <> (rl <> nrr)
-                    else
-                      (l <> rl) <> nrr
-        else 
-          t2 ++ t1
-    }.ensuring(_.toList == t1.toList ++ t2.toList)
- */
- 
   extension[T](t: Conc[T])
     def slice(from: BigInt, until: BigInt): Conc[T] = {
-      require(0 <= from && from <= until && until <= t.size)
+      require(0 <= from && from <= until && until <= t.size && t.isBalanced)
       decreases(t)
       if from == until then Empty[T]()
       else 
@@ -153,7 +155,7 @@ object SimpleConc:
               val l1 = l.slice(from, l.size)
               val r1 = r.slice(0, until - l.size)
               l1 ++ r1
-    }.ensuring(_.toList == t.toList.slice(from, until))
+    }.ensuring(res => res.isBalanced && res.toList == t.toList.slice(from, until))
 
   extension[T](t: Conc[T])
     @extern
@@ -208,20 +210,17 @@ object SimpleConc:
 
   @main @extern
   def test =
-
-/*
     val c1: Conc[Int] = (1 to 8).map(Leaf(_)).foldRight[Conc[Int]](Empty())((a, b) => a <> b)
     println(f"\nc1.height = ${c1.height}, isBalanced=${c1.isBalanced}")
     println(show(c1))
     val c2: Conc[Int] = (1 to 8).map(Leaf(_)).foldLeft[Conc[Int]](Empty())((a, b) => a <> b)
     println(f"\nc2.height = ${c2.height}, isBalanced=${c2.isBalanced}")
     println(show(c2))
- */
-
     val c3 = mkTree(1, 9)
     val c4 = mkTree(0,1) ++ ((c3 ++ mkTree(9, 11)) ++ mkTree(12, 14))
     println(f"\nc4.height = ${c4.height}, isBalanced=${c4.isBalanced}")
     println(show(c4))
+    println(show(c4.slice(3,8)))
 
 
   // **************************************************************************
@@ -264,4 +263,5 @@ object SimpleConc:
   }
 */
 
-end SimpleConc
+end BalanceConc
+
