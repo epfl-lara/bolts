@@ -109,13 +109,13 @@ object SimpleConc:
 
   extension[T](t: Conc[T])
     @extern
-    def toDraw: Vector[String] = 
+    def toDraw: Vector[String] = // note that down is left
       t match
         case Empty() => Vector("()")
         case Leaf(x) => Vector(x.toString)
         case Node(l, r, csize, _) =>
-          val ls = l.toDraw
-          val rs = r.toDraw         
+          val ls = r.toDraw
+          val rs = l.toDraw      
           val p = 3* ls.size / 2 // push first subtree right for visual balance
           val ls1 = Vector("┬" + "─"*p + ls.head) ++
                     ls.tail.map("│" + " "*p + _)
@@ -123,7 +123,6 @@ object SimpleConc:
                     rs.tail.map(" " + _)
           ls1 ++ rs1
     end toDraw
-
 
   @extern
   def show[T](t: Conc[T]): String = 

@@ -93,9 +93,47 @@ object SimpleConc:
                     else
                       (l <> rl) <> nrr
         else 
-          t2 ++ t1
+          t2 match
+            case Node(l, r, _, _) =>
+              if r.height >= l.height then
+                (t1 ++ l) <> r
+              else
+                l match
+                  case Node(ll, lr, _, _) =>
+                    val nll = t1 ++ ll
+                    if nll.height == t2.height - 3 then
+                      (nll <> lr) <> r
+                    else
+                      nll <> (lr <> r)
     }.ensuring(_.toList == t1.toList ++ t2.toList)
 
+
+/* // Hahaha, I did this originally.
+
+    def ++(t2: Conc[T]): Conc[T] = {
+      if t1 == Empty[T]() then t2
+      else if t2 == Empty[T]() then t1
+      else
+        val diff = t2.height - t1.height
+        if -1 <= diff && diff <= 1 then
+          t1 <> t2
+        else if diff < -1 then
+          t1 match
+            case Node(l, r, _, _) =>
+              if l.height >= r.height then
+                l <> (r ++ t2)
+              else
+                r match
+                  case Node(rl, rr, _, _) =>
+                    val nrr = rr ++ t2
+                    if nrr.height == t1.height - 3 then
+                      l <> (rl <> nrr)
+                    else
+                      (l <> rl) <> nrr
+        else 
+          t2 ++ t1
+    }.ensuring(_.toList == t1.toList ++ t2.toList)
+ */
  
   extension[T](t: Conc[T])
     def slice(from: BigInt, until: BigInt): Conc[T] = {
@@ -140,13 +178,13 @@ object SimpleConc:
 
   extension[T](t: Conc[T])
     @extern
-    def toDraw: Vector[String] = 
+    def toDraw: Vector[String] = // note that down is left
       t match
         case Empty() => Vector("()")
         case Leaf(x) => Vector(x.toString)
         case Node(l, r, csize, _) =>
-          val ls = l.toDraw
-          val rs = r.toDraw         
+          val ls = r.toDraw
+          val rs = l.toDraw      
           val p = 3* ls.size / 2 // push first subtree right for visual balance
           val ls1 = Vector("┬" + "─"*p + ls.head) ++
                     ls.tail.map("│" + " "*p + _)
@@ -154,7 +192,6 @@ object SimpleConc:
                     rs.tail.map(" " + _)
           ls1 ++ rs1
     end toDraw
-
 
   @extern
   def show[T](t: Conc[T]): String = 
@@ -182,7 +219,7 @@ object SimpleConc:
  */
 
     val c3 = mkTree(1, 9)
-    val c4 = c3 ++ mkTree(1, 3)
+    val c4 = mkTree(0,1) ++ ((c3 ++ mkTree(9, 11)) ++ mkTree(12, 14))
     println(f"\nc4.height = ${c4.height}, isBalanced=${c4.isBalanced}")
     println(show(c4))
 
