@@ -18,29 +18,29 @@ object SimpleConc:
 
   sealed abstract class Conc[T]
   case class Empty[T]() extends Conc[T]
-  case class Single[T](x: T) extends Conc[T]
-  case class CC[T](left: Conc[T], right: Conc[T], csize: BigInt) extends Conc[T] {
+  case class Leaf[T](x: T) extends Conc[T]
+  case class Node[T](left: Conc[T], right: Conc[T], csize: BigInt) extends Conc[T] {
     require(csize == left.size + right.size && left != Empty[T]() && right != Empty[T]())
   }
 
   extension[T](t: Conc[T])
     def toList: List[T] = t match
       case Empty() => Nil[T]()
-      case Single(x) => List(x)
-      case CC(l, r, _) => l.toList ++ r.toList
+      case Leaf(x) => List(x)
+      case Node(l, r, _) => l.toList ++ r.toList
 
     def size: BigInt = {
       t match
         case Empty() => BigInt(0)
-        case Single(_) => BigInt(1)
-        case CC(_, _, csize) => csize
+        case Leaf(_) => BigInt(1)
+        case Node(_, _, csize) => csize
     }.ensuring(_ == t.toList.size)
 
     def apply(i: BigInt): T = {
       require(0 <= i && i < t.size)
       t match
-        case Single(x) => assert(i == 0); x
-        case CC(l, r, _) =>
+        case Leaf(x) => assert(i == 0); x
+        case Node(l, r, _) =>
           appendIndex(l.toList, r.toList, i) // lemma
           if i < l.size then l(i)
           else r(i - l.size)
@@ -50,7 +50,7 @@ object SimpleConc:
     def <>(t2: Conc[T]) = 
       if t1 == Empty[T]() then t2
       else if t2 == Empty[T]() then t1
-      else CC(t1, t2, t1.size + t2.size)
+      else Node(t1, t2, t1.size + t2.size)
 
     def ++(t2: Conc[T]): Conc[T] = {
       t1 <> t2
@@ -63,10 +63,10 @@ object SimpleConc:
       if from == until then Empty[T]()
       else 
         t match
-          case Single(x) => 
-            if from == 0 && until == 1 then Single(x)
+          case Leaf(x) => 
+            if from == 0 && until == 1 then Leaf(x)
             else Empty[T]()
-          case CC(l, r, _) =>
+          case Node(l, r, _) =>
             sliceLemma(l.toList, r.toList, from, until) // lemma
             if l.size <= from then r.slice(from - l.size, until - l.size)
             else if until <= l.size then l.slice(from, until)
@@ -79,34 +79,36 @@ object SimpleConc:
   extension[T](t: Conc[T])
     def toStr: Vector[String] = 
       t match
-        case Empty() => Vector("()")
-        case Single(x) => Vector(x.toString)
-        case CC(l, r, csize) =>
+        case Empty() => Vector("Empty()")
+        case Leaf(x) => Vector("Leaf(" + x.toString + ")")
+        case Node(l, r, csize) =>
           if csize <= 4 then
-            Vector("CC(" + l.toStr.head + ", " + r.toStr.head + ")")
+            Vector("Node(" + l.toStr.head + ", " + r.toStr.head + ")")
           else  
             val ls = l.toStr
             val rs = r.toStr          
             def indent(k: Int) = (s: String) => " " * k + s
-            val lsCC = Vector("CC(" + ls.head) ++
+            val lsNode = Vector("Node(" + ls.head) ++
                                       ls.tail.map(indent(3))
-            val lsCCcomma = lsCC.init ++ Vector(lsCC.last + ",")
+            val lsNodecomma = lsNode.init ++ Vector(lsNode.last + ",")
             val rsIndent = rs.map(indent(3))
             val rsIndentClosed = rsIndent.init ++ Vector(rsIndent.last + ")")
-            lsCCcomma ++ rsIndentClosed
+            lsNodecomma ++ rsIndentClosed
     end toStr
 
   extension[T](t: Conc[T])
     def toDraw: Vector[String] = 
       t match
         case Empty() => Vector("()")
-        case Single(x) => Vector(x.toString)
-        case CC(l, r, csize) =>
+        case Leaf(x) => Vector(x.toString)
+        case Node(l, r, csize) =>
           val ls = l.toDraw
           val rs = r.toDraw         
 
-          val ls1 = Vector("─┬─" + ls.head) ++
-                    ls.tail.map(" │ " + _)
+          val p = 3* ls.size / 2 // push first subtree right for visual balance
+
+          val ls1 = Vector("─┬─" + "─"*p + ls.head) ++
+                    ls.tail.map(" │ " + " "*p + _)
 
           val rs1 = Vector(" └─" + rs.head) ++
                     rs.tail.map("   " + _)
@@ -120,9 +122,11 @@ object SimpleConc:
 
   @main @extern
   def test =
-    val c1: Conc[Int] = (1 to 10).map(Single(_)).foldLeft[Conc[Int]](Empty())((a, b) => a <> b)
-    val c2: Conc[Int] = (1 to 10).map(Single(_)).foldRight[Conc[Int]](Empty())((a, b) => a <> b)
-    println(show(c2 <> (c2 <> c2)))
+    val c1: Conc[Int] = (1 to 10).map(Leaf(_)).foldLeft[Conc[Int]](Empty())((a, b) => a <> b)
+    val c2: Conc[Int] = (1 to 10).map(Leaf(_)).foldRight[Conc[Int]](Empty())((a, b) => a <> b)
+    println(show(c1 <> c2))
+    println(show(c2 <> c1))
+
 
   // **************************************************************************
   // lemmas for proofs
