@@ -176,7 +176,7 @@ object MutableLongMap {
         val repackFromRes = repackFrom(newMapCell.v, underlying.v._keys.length - 1)
         if (repackFromRes) {
           // Swap the current underyling with the new one
-          underlying.swap(newMapCell)
+          swap(underlying, newMapCell)
           true
         } else {
           false
