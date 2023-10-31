@@ -1,0 +1,417 @@
+[info] welcome to sbt 1.9.6 (Private Build Java 17.0.8.1)
+[info] loading settings for project mutablemap-build-build-build from metals.sbt ...
+[info] loading project definition from /localhome/chassot/bolts/data-structures/longmap/mutablemap/project/project/project
+[info] loading settings for project mutablemap-build-build from metals.sbt ...
+[info] loading project definition from /localhome/chassot/bolts/data-structures/longmap/mutablemap/project/project
+[success] Generated .bloop/mutablemap-build-build.json
+[success] Total time: 2 s, completed Oct 31, 2023, 5:52:33 PM
+[info] loading settings for project mutablemap-build from metals.sbt,plugins.sbt ...
+[info] loading project definition from /localhome/chassot/bolts/data-structures/longmap/mutablemap/project
+[info] loading settings for project mutablemap from build.sbt ...
+[info] set current project to MutableMap (in build file:/localhome/chassot/bolts/data-structures/longmap/mutablemap/)
+[info] compiling 47 Scala sources to /localhome/chassot/bolts/data-structures/longmap/mutablemap/target/scala-3.3.0/classes ...
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/data-structures/longmap/mutablemap/src/main/scala/ch/epfl/chassot/MutableLongMap.scala:373:4 
+[warn] 373 |    c match {
+[warn]     |    ^
+[warn]     |    match may not be exhaustive.
+[warn]     |
+[warn]     |    It would fail on pattern case: EmptyCell()
+[warn]     |
+[warn]     | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/data-structures/longmap/mutablemap/src/main/scala/ch/epfl/chassot/MutableLongMap.scala:620:8 
+[warn] 620 |        seekEntryRes match {
+[warn]     |        ^^^^^^^^^^^^
+[warn]     |   match may not be exhaustive.
+[warn]     |
+[warn]     |   It would fail on pattern case: MutableLongMap.Intermediate(_, _, _)
+[warn]     |
+[warn]     | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/data-structures/longmap/mutablemap/src/main/scala/ch/epfl/chassot/MutableLongMap.scala:1133:6 
+[warn] 1133 |      intermediate match {
+[warn]      |      ^^^^^^^^^^^^
+[warn]      |    match may not be exhaustive.
+[warn]      |
+[warn]      |    It would fail on pattern case: _: MutableLongMap.SeekEntryResult
+[warn]      |
+[warn]      | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/data-structures/longmap/mutablemap/src/main/scala/ch/epfl/chassot/MutableLongMap.scala:1183:6 
+[warn] 1183 |      intermediate match {
+[warn]      |      ^^^^^^^^^^^^
+[warn]      |    match may not be exhaustive.
+[warn]      |
+[warn]      |    It would fail on pattern case: _: MutableLongMap.SeekEntryResult
+[warn]      |
+[warn]      | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/data-structures/longmap/mutablemap/src/main/scala/ch/epfl/chassot/StrictlyOrderedLongListMap.scala:162:4 
+[warn] 162 |    l match {
+[warn]     |    ^
+[warn]     |    match may not be exhaustive.
+[warn]     |
+[warn]     |    It would fail on pattern case: collection.Cons(_, _)
+[warn]     |
+[warn]     | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/data-structures/longmap/mutablemap/src/main/scala/ch/epfl/chassot/StrictlyOrderedLongListMap.scala:196:4 
+[warn] 196 |    l match {
+[warn]     |    ^
+[warn]     |    match may not be exhaustive.
+[warn]     |
+[warn]     |    It would fail on pattern case: collection.Cons(_, _)
+[warn]     |
+[warn]     | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/data-structures/longmap/mutablemap/src/main/scala/ch/epfl/chassot/StrictlyOrderedLongListMap.scala:211:4 
+[warn] 211 |    l match {
+[warn]     |    ^
+[warn]     |    match may not be exhaustive.
+[warn]     |
+[warn]     |    It would fail on pattern case: collection.Cons(_, _)
+[warn]     |
+[warn]     | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/data-structures/longmap/mutablemap/src/main/scala/ch/epfl/chassot/StrictlyOrderedLongListMap.scala:227:4 
+[warn] 227 |    l match {
+[warn]     |    ^
+[warn]     |    match may not be exhaustive.
+[warn]     |
+[warn]     |    It would fail on pattern case: collection.Cons(_, _)
+[warn]     |
+[warn]     | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/data-structures/longmap/mutablemap/src/main/scala/ch/epfl/chassot/StrictlyOrderedLongListMap.scala:248:4 
+[warn] 248 |    l match {
+[warn]     |    ^
+[warn]     |    match may not be exhaustive.
+[warn]     |
+[warn]     |    It would fail on pattern case: collection.Cons(_, _)
+[warn]     |
+[warn]     | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/data-structures/longmap/mutablemap/src/main/scala/ch/epfl/chassot/StrictlyOrderedLongListMap.scala:279:4 
+[warn] 279 |    l match {
+[warn]     |    ^
+[warn]     |    match may not be exhaustive.
+[warn]     |
+[warn]     |    It would fail on pattern case: collection.Cons(_, _)
+[warn]     |
+[warn]     | longer explanation available when compiling with `-explain`
+[warn] 10 warnings found
+[info] done compiling
+[info] compiling 26 Java sources to /localhome/chassot/bolts/data-structures/longmap/mutablemap/target/scala-3.3.0/classes ...
+[info] done compiling
+[info] running (fork) org.openjdk.jmh.Main -i 10 -wi 10 -f1 -t1
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1-Ubuntu-0ubuntu120.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 10 iterations, 10 s each
+[info] # Measurement: 10 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.echassot.benchmark.LongListMapBenchmark.createListMapAndUpdateThenLookup
+[info] # Parameters: (n = 1)
+[info] # Run progress: 0.00% complete, ETA 13:40:00
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 39953.011 ms/op
+[info] # Warmup Iteration   2: 0.001 ms/op
+[info] # Warmup Iteration   3: 0.001 ms/op
+[info] # Warmup Iteration   4: 0.001 ms/op
+[info] # Warmup Iteration   5: 0.001 ms/op
+[info] # Warmup Iteration   6: 0.001 ms/op
+[info] # Warmup Iteration   7: 0.001 ms/op
+[info] # Warmup Iteration   8: 0.001 ms/op
+[info] # Warmup Iteration   9: 0.001 ms/op
+[info] # Warmup Iteration  10: 0.001 ms/op
+[info] Iteration   1: 0.001 ms/op
+[info] Iteration   2: 0.001 ms/op
+[info] Iteration   3: 0.001 ms/op
+[info] Iteration   4: 0.001 ms/op
+[info] Iteration   5: 0.001 ms/op
+[info] Iteration   6: 0.001 ms/op
+[info] Iteration   7: 0.001 ms/op
+[info] Iteration   8: 0.001 ms/op
+[info] Iteration   9: 0.001 ms/op
+[info] Iteration  10: 0.001 ms/op
+[info] Result "ch.epfl.echassot.benchmark.LongListMapBenchmark.createListMapAndUpdateThenLookup":
+[info]   0.001 ±(99.9%) 0.001 ms/op [Average]
+[info]   (min, avg, max) = (0.001, 0.001, 0.001), stdev = 0.001
+[info]   CI (99.9%): [0.001, 0.001] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1-Ubuntu-0ubuntu120.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 10 iterations, 10 s each
+[info] # Measurement: 10 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.echassot.benchmark.LongListMapBenchmark.createListMapAndUpdateThenLookup
+[info] # Parameters: (n = 2)
+[info] # Run progress: 0.41% complete, ETA 15:40:40
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 40152.058 ms/op
+[info] # Warmup Iteration   2: 0.003 ms/op
+[info] # Warmup Iteration   3: 0.002 ms/op
+[info] # Warmup Iteration   4: 0.002 ms/op
+[info] # Warmup Iteration   5: 0.002 ms/op
+[info] # Warmup Iteration   6: 0.002 ms/op
+[info] # Warmup Iteration   7: 0.002 ms/op
+[info] # Warmup Iteration   8: 0.002 ms/op
+[info] # Warmup Iteration   9: 0.002 ms/op
+[info] # Warmup Iteration  10: 0.002 ms/op
+[info] Iteration   1: 0.002 ms/op
+[info] Iteration   2: 0.002 ms/op
+[info] Iteration   3: 0.002 ms/op
+[info] Iteration   4: 0.002 ms/op
+[info] Iteration   5: 0.002 ms/op
+[info] Iteration   6: 0.002 ms/op
+[info] Iteration   7: 0.002 ms/op
+[info] Iteration   8: 0.003 ms/op
+[info] Iteration   9: 0.003 ms/op
+[info] Iteration  10: 0.003 ms/op
+[info] Result "ch.epfl.echassot.benchmark.LongListMapBenchmark.createListMapAndUpdateThenLookup":
+[info]   0.002 ±(99.9%) 0.001 ms/op [Average]
+[info]   (min, avg, max) = (0.002, 0.002, 0.003), stdev = 0.001
+[info]   CI (99.9%): [0.002, 0.003] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1-Ubuntu-0ubuntu120.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 10 iterations, 10 s each
+[info] # Measurement: 10 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.echassot.benchmark.LongListMapBenchmark.createListMapAndUpdateThenLookup
+[info] # Parameters: (n = 3)
+[info] # Run progress: 0.81% complete, ETA 15:37:15
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 39804.493 ms/op
+[info] # Warmup Iteration   2: 0.016 ms/op
+[info] # Warmup Iteration   3: 0.016 ms/op
+[info] # Warmup Iteration   4: 0.016 ms/op
+[info] # Warmup Iteration   5: 0.016 ms/op
+[info] # Warmup Iteration   6: 0.016 ms/op
+[info] # Warmup Iteration   7: 0.016 ms/op
+[info] # Warmup Iteration   8: 0.016 ms/op
+[info] # Warmup Iteration   9: 0.016 ms/op
+[info] # Warmup Iteration  10: 0.016 ms/op
+[info] Iteration   1: 0.016 ms/op
+[info] Iteration   2: 0.016 ms/op
+[info] Iteration   3: 0.016 ms/op
+[info] Iteration   4: 0.016 ms/op
+[info] Iteration   5: 0.016 ms/op
+[info] Iteration   6: 0.016 ms/op
+[info] Iteration   7: 0.016 ms/op
+[info] Iteration   8: 0.016 ms/op
+[info] Iteration   9: 0.016 ms/op
+[info] Iteration  10: 0.016 ms/op
+[info] Result "ch.epfl.echassot.benchmark.LongListMapBenchmark.createListMapAndUpdateThenLookup":
+[info]   0.016 ±(99.9%) 0.001 ms/op [Average]
+[info]   (min, avg, max) = (0.016, 0.016, 0.016), stdev = 0.001
+[info]   CI (99.9%): [0.016, 0.016] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1-Ubuntu-0ubuntu120.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 10 iterations, 10 s each
+[info] # Measurement: 10 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.echassot.benchmark.LongListMapBenchmark.createListMapAndUpdateThenLookup
+[info] # Parameters: (n = 4)
+[info] # Run progress: 1.22% complete, ETA 15:33:01
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 40019.595 ms/op
+[info] # Warmup Iteration   2: 0.189 ms/op
+[info] # Warmup Iteration   3: 0.180 ms/op
+[info] # Warmup Iteration   4: 0.181 ms/op
+[info] # Warmup Iteration   5: 0.180 ms/op
+[info] # Warmup Iteration   6: 0.180 ms/op
+[info] # Warmup Iteration   7: 0.180 ms/op
+[info] # Warmup Iteration   8: 0.178 ms/op
+[info] # Warmup Iteration   9: 0.180 ms/op
+[info] # Warmup Iteration  10: 0.180 ms/op
+[info] Iteration   1: 0.178 ms/op
+[info] Iteration   2: 0.179 ms/op
+[info] Iteration   3: 0.181 ms/op
+[info] Iteration   4: 0.179 ms/op
+[info] Iteration   5: 0.179 ms/op
+[info] Iteration   6: 0.179 ms/op
+[info] Iteration   7: 0.180 ms/op
+[info] Iteration   8: 0.180 ms/op
+[info] Iteration   9: 0.179 ms/op
+[info] Iteration  10: 0.179 ms/op
+[info] Result "ch.epfl.echassot.benchmark.LongListMapBenchmark.createListMapAndUpdateThenLookup":
+[info]   0.179 ±(99.9%) 0.001 ms/op [Average]
+[info]   (min, avg, max) = (0.178, 0.179, 0.181), stdev = 0.001
+[info]   CI (99.9%): [0.178, 0.180] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1-Ubuntu-0ubuntu120.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 10 iterations, 10 s each
+[info] # Measurement: 10 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.echassot.benchmark.LongListMapBenchmark.createListMapAndUpdateThenLookup
+[info] # Parameters: (n = 5)
+[info] # Run progress: 1.63% complete, ETA 15:29:12
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 39493.237 ms/op
+[info] # Warmup Iteration   2: 1.763 ms/op
+[info] # Warmup Iteration   3: 1.776 ms/op
+[info] # Warmup Iteration   4: 1.766 ms/op
+[info] # Warmup Iteration   5: 1.750 ms/op
+[info] # Warmup Iteration   6: 1.745 ms/op
+[info] # Warmup Iteration   7: 1.758 ms/op
+[info] # Warmup Iteration   8: 1.758 ms/op
+[info] # Warmup Iteration   9: 1.747 ms/op
+[info] # Warmup Iteration  10: 1.740 ms/op
+[info] Iteration   1: 1.749 ms/op
+[info] Iteration   2: 1.751 ms/op
+[info] Iteration   3: 1.811 ms/op
+[info] Iteration   4: 1.751 ms/op
+[info] Iteration   5: 1.760 ms/op
+[info] Iteration   6: 1.761 ms/op
+[info] Iteration   7: 1.756 ms/op
+[info] Iteration   8: 1.757 ms/op
+[info] Iteration   9: 1.754 ms/op
+[info] Iteration  10: 1.747 ms/op
+[info] Result "ch.epfl.echassot.benchmark.LongListMapBenchmark.createListMapAndUpdateThenLookup":
+[info]   1.760 ±(99.9%) 0.028 ms/op [Average]
+[info]   (min, avg, max) = (1.747, 1.760, 1.811), stdev = 0.019
+[info]   CI (99.9%): [1.732, 1.788] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1-Ubuntu-0ubuntu120.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 10 iterations, 10 s each
+[info] # Measurement: 10 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.echassot.benchmark.LongListMapBenchmark.createListMapAndUpdateThenLookup
+[info] # Parameters: (n = 6)
+[info] # Run progress: 2.03% complete, ETA 15:24:59
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 39550.820 ms/op
+[info] # Warmup Iteration   2: 21.633 ms/op
+[info] # Warmup Iteration   3: 21.551 ms/op
+[info] # Warmup Iteration   4: 21.607 ms/op
+[info] # Warmup Iteration   5: 21.638 ms/op
+[info] # Warmup Iteration   6: 21.623 ms/op
+[info] # Warmup Iteration   7: 21.597 ms/op
+[info] # Warmup Iteration   8: 21.591 ms/op
+[info] # Warmup Iteration   9: 21.598 ms/op
+[info] # Warmup Iteration  10: 21.577 ms/op
+[info] Iteration   1: 21.533 ms/op
+[info] Iteration   2: 21.505 ms/op
+[info] Iteration   3: 21.545 ms/op
+[info] Iteration   4: 21.644 ms/op
+[info] Iteration   5: 21.658 ms/op
+[info] Iteration   6: 21.703 ms/op
+[info] Iteration   7: 21.667 ms/op
+[info] Iteration   8: 21.786 ms/op
+[info] Iteration   9: 21.696 ms/op
+[info] Iteration  10: 21.684 ms/op
+[info] Result "ch.epfl.echassot.benchmark.LongListMapBenchmark.createListMapAndUpdateThenLookup":
+[info]   21.642 ±(99.9%) 0.134 ms/op [Average]
+[info]   (min, avg, max) = (21.505, 21.642, 21.786), stdev = 0.088
+[info]   CI (99.9%): [21.509, 21.776] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1-Ubuntu-0ubuntu120.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 10 iterations, 10 s each
+[info] # Measurement: 10 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.echassot.benchmark.LongListMapBenchmark.createListMapAndUpdateThenLookup
+[info] # Parameters: (n = 7)
+[info] # Run progress: 2.44% complete, ETA 15:21:05
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 40170.344 ms/op
+[info] # Warmup Iteration   2: 334.512 ms/op
+[info] # Warmup Iteration   3: 334.453 ms/op
+[info] # Warmup Iteration   4: 332.713 ms/op
+[info] # Warmup Iteration   5: 332.697 ms/op
+[info] # Warmup Iteration   6: 333.087 ms/op
+[info] # Warmup Iteration   7: 332.428 ms/op
+[info] # Warmup Iteration   8: 333.398 ms/op
+[info] # Warmup Iteration   9: 333.090 ms/op
+[info] # Warmup Iteration  10: 333.130 ms/op
+[info] Iteration   1: 331.895 ms/op
+[info] Iteration   2: 333.315 ms/op
+[info] Iteration   3: 332.354 ms/op
+[info] Iteration   4: 332.351 ms/op
+[info] Iteration   5: 332.320 ms/op
+[info] Iteration   6: 332.490 ms/op
+[info] Iteration   7: 332.069 ms/op
+[info] Iteration   8: 332.465 ms/op
+[info] Iteration   9: 332.709 ms/op
+[info] Iteration  10: 333.502 ms/op
+[info] Result "ch.epfl.echassot.benchmark.LongListMapBenchmark.createListMapAndUpdateThenLookup":
+[info]   332.547 ±(99.9%) 0.767 ms/op [Average]
+[info]   (min, avg, max) = (331.895, 332.547, 333.502), stdev = 0.508
+[info]   CI (99.9%): [331.780, 333.314] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1-Ubuntu-0ubuntu120.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 10 iterations, 10 s each
+[info] # Measurement: 10 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.echassot.benchmark.LongListMapBenchmark.createListMapAndUpdateThenLookup
+[info] # Parameters: (n = 8)
+[info] # Run progress: 2.85% complete, ETA 15:20:05
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 44868.723 ms/op
+[info] # Warmup Iteration   2: 5660.576 ms/op
+[info] # Warmup Iteration   3: 5668.926 ms/op
+[info] # Warmup Iteration   4: 5623.611 ms/op
+[info] # Warmup Iteration   5: 5585.509 ms/op
+[info] # Warmup Iteration   6: 5596.493 ms/op
+[info] # Warmup Iteration   7: 5551.802 ms/op
+[info] # Warmup Iteration   8: 5612.085 ms/op
+[info] # Warmup Iteration   9: 5588.132 ms/op
+[info] # Warmup Iteration  10: 5573.021 ms/op
+[info] Iteration   1: 5681.560 ms/op
+[info] Iteration   2: 5626.818 ms/op
+[info] Iteration   3: 5585.461 ms/op
+[info] Iteration   4: 5600.565 ms/op
+[info] Iteration   5: 5624.381 ms/op
+[info] Iteration   6: 5619.121 ms/op
+[info] Iteration   7: 5664.134 ms/op
+[info] Iteration   8: 5634.654 ms/op
+[info] Iteration   9: 5561.854 ms/op
+[info] Iteration  10: 5547.178 ms/op
+[info] Result "ch.epfl.echassot.benchmark.LongListMapBenchmark.createListMapAndUpdateThenLookup":
+[info]   5614.573 ±(99.9%) 63.703 ms/op [Average]
+[info]   (min, avg, max) = (5547.178, 5614.573, 5681.560), stdev = 42.136
+[info]   CI (99.9%): [5550.870, 5678.276] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1-Ubuntu-0ubuntu120.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 10 iterations, 10 s each
+[info] # Measurement: 10 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.echassot.benchmark.LongListMapBenchmark.createListMapAndUpdateThenLookup
+[info] # Parameters: (n = 9)
+[info] # Run progress: 3.25% complete, ETA 15:29:52
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 141971.582 ms/op
+[info] # Warmup Iteration   2: 103412.856 ms/op
