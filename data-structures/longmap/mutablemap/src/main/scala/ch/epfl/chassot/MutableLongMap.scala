@@ -1,3 +1,6 @@
+//> using jar /localhome/chassot/stainless/frontends/library/target/scala-2.13/classes
+//> using sourceJar /localhome/chassot/stainless/frontends/dotty/target/scala-3.2.0/classes
+
 /** Author: Samuel Chassot
   */
 package ch.epfl.chassot
@@ -5,43 +8,25 @@ package ch.epfl.chassot
 import stainless.annotation._
 import stainless.collection._
 import stainless.equations._
-import stainless.lang.{ghost => ghostExpr, _}
+import stainless.lang.{ghost => ghostExpr, *}
 import stainless.proof.check
 import scala.annotation.tailrec
-import stainless.lang.StaticChecks._
-// import stainless.lang.StaticChecks.WhileDecorations
+import stainless.lang.StaticChecks.*
 import StaticChecks._
-import MutableLongMap.LongMapFixedSize.validMask
-import OptimisedEnsuring.*
+import stainless.lang.Cell
 
 object MutableLongMap {
-  object Cell {
-    def apply[@mutable T](v: T): Cell[T] = new Cell(v, true)
-  }
+  import LongMapFixedSize.validMask
 
-  case class Cell[@mutable T] private (var v: T, private var owned: Boolean) {
-    def isOwned: Boolean = owned
-
-    @extern
-    def takeFrom(other: Cell[T]): Unit = {
-      require(isOwned && other.owned)
-      other.owned = false
-      owned = true
-      v = other.v
-    } ensuring (_ => v == old(other).v && !other.owned && owned)
-  }
-
-  /** Helper method to create a new empty LongMap with an initial array size of 16
+  /** Helper method to create a new empty LongMap
     *
     * @param defaultEntry
     * @return
     */
-  @extern
   def getEmptyLongMap[V](defaultEntry: Long => V): LongMap[V] = {
-    val m = 15
+    val m = 127
     assert(validMask(m))
-    val emptyMap = LongMapFixedSize.getNewLongMapFixedSize(m, defaultEntry)
-    LongMap(Cell(emptyMap))
+    LongMap(Cell(LongMapFixedSize.getNewLongMapFixedSize(m, defaultEntry)))
   } ensuring (res => res.valid && res.size == 0)
 
   /** Helper method to create a new empty LongMap with a given initial array size WARNING: UNSOUND!!! The given size must be a power of 2 <= 2^30
@@ -49,22 +34,22 @@ object MutableLongMap {
     * @param defaultEntry
     * @return
     */
-  @extern
   def getEmptyLongMap[V](defaultEntry: Long => V, initialSize: Int): LongMap[V] = {
+    require(validMask(initialSize - 1))
     val m = initialSize - 1
     assert(validMask(m))
-    val emptyMap = LongMapFixedSize.getNewLongMapFixedSize(m, defaultEntry)
-    LongMap(Cell(emptyMap))
+    LongMap(Cell(LongMapFixedSize.getNewLongMapFixedSize(m, defaultEntry)))
   } ensuring (res => res.valid && res.size == 0)
 
   @mutable
   final case class LongMap[V](
-      var underlying: Cell[LongMapFixedSize[V]]
+      val underlying: Cell[LongMapFixedSize[V]]
   ) {
     // @pure
     // def completeImbalanced: Boolean = (_size + _vacant) > 0.5 * mask || _vacant > _size
 
     @pure
+    // TODO experiment to see the best version i.e., with or without || (5 * underlying.v._size) < underlying.v.mask
     def imbalanced(): Boolean = (2 * underlying.v._size) > underlying.v.mask || (5 * underlying.v._size) < underlying.v.mask
 
     @pure
@@ -161,43 +146,40 @@ object MutableLongMap {
     def repack(): Boolean = {
       require(valid)
 
-      val res = repackHelper()
-      if (res._1) {
-        underlying.takeFrom(res._2)
-      }
-      res._1
-    } ensuring (res => valid && map == old(this).map)
-    
-    def repackHelper(): (Boolean, Cell[LongMapFixedSize[V]]) = {
-      require(valid)
-
       val newMask: Int = computeNewMask(underlying.v.mask, underlying.v._size)
       // println(f"NewMask = $newMask")
-      val newMap = Cell(LongMapFixedSize.getNewLongMapFixedSize(newMask, underlying.v.defaultEntry))
+      val newMapCell: Cell[LongMapFixedSize[V]] = Cell(LongMapFixedSize.getNewLongMapFixedSize(newMask, underlying.v.defaultEntry))
       val resExtraKeys = if ((underlying.v.extraKeys & 1) != 0 && (underlying.v.extraKeys & 2) != 0) {
         // it means there is a mapping for the key 0 and the Long.MIN_VALUE
-        val u1 = newMap.v.update(0L, underlying.v.zeroValue)
-        val u2 = newMap.v.update(Long.MinValue, underlying.v.minValue)
+        val u1 = newMapCell.v.update(0L, underlying.v.zeroValue)
+        val u2 = newMapCell.v.update(Long.MinValue, underlying.v.minValue)
         u1 && u2
       } else if ((underlying.v.extraKeys & 1) != 0 && (underlying.v.extraKeys & 2) == 0) {
         // it means there is a mapping for the key 0
-        newMap.v.update(0L, underlying.v.zeroValue)
+        newMapCell.v.update(0L, underlying.v.zeroValue)
       } else if ((underlying.v.extraKeys & 2) != 0 && (underlying.v.extraKeys & 1) == 0) {
         // it means there is a mapping for the key Long.MIN_VALUE
-        newMap.v.update(Long.MinValue, underlying.v.minValue)
+        newMapCell.v.update(Long.MinValue, underlying.v.minValue)
       } else {
         true
       }
 
       if (!resExtraKeys) {
-        (false, Cell(LongMapFixedSize.getNewLongMapFixedSize(newMask, underlying.v.defaultEntry)))
+        false
       } else {
         assert(LongMapFixedSize.validMask(underlying.v.mask))
+        assert(underlying.v._keys.length == underlying.v.mask + 1)
         assert((underlying.v._keys.length - 1) >= 0)
-        val repackFromRes = repackFrom(newMap.v, underlying.v._keys.length - 1)
-        (repackFromRes, if repackFromRes then newMap else Cell(LongMapFixedSize.getNewLongMapFixedSize(newMask, underlying.v.defaultEntry)))
+        val repackFromRes = repackFrom(newMapCell.v, underlying.v._keys.length - 1)
+        if (repackFromRes) {
+          // Swap the current underyling with the new one
+          swap(underlying, newMapCell)
+          true
+        } else {
+          false
+        }
       }
-    } ensuring (res => res._1 == false || res._2.isOwned && res._2.v.valid && res._2.v.map == old(this).map)
+    } ensuring (res => res == false || map == old(this).map)
 
     @tailrec
     def repackFrom(newMap: LongMapFixedSize[V], from: Int): Boolean = {
@@ -250,7 +232,7 @@ object MutableLongMap {
         if (res) {
           if (from > 0) {
 
-            val underlyingMapFromPOneNXtra = LongMapFixedSize.getCurrentListMapNoExtraKeys(underlying.v._keys,underlying.v._values,underlying.v.mask,underlying.v.extraKeys,underlying.v.zeroValue,underlying.v.minValue,from + 1,underlying.v.defaultEntry)
+            // val underlyingMapFromPOneNXtra = LongMapFixedSize.getCurrentListMapNoExtraKeys(underlying.v._keys,underlying.v._values,underlying.v.mask,underlying.v.extraKeys,underlying.v.zeroValue,underlying.v.minValue,from + 1,underlying.v.defaultEntry)
             ghostExpr(
               ListMapLongKeyLemmas.addCommutativeForDiffKeys(
                 LongMapFixedSize.getCurrentListMapNoExtraKeys(
@@ -354,9 +336,8 @@ object MutableLongMap {
 
     } ensuring (res => if (res) newMap.valid && newMap.map == underlying.v.map else true)
 
-
     @ghost
-    def valid: Boolean = underlying.isOwned && underlying.v.valid
+    def valid: Boolean = underlying.v.valid
 
     @pure
     @ghost
@@ -1050,7 +1031,7 @@ object MutableLongMap {
         check(false)
 
       } else { () })
-      assert(res.map == ListMapLongKey.empty[V])
+      assert(res.map == ListMapLongKey.empty[V]) // TODO
       res
     } ensuring (res => res.valid && res.mask == mask && res.map == ListMapLongKey.empty[V])
 
@@ -6738,13 +6719,62 @@ object MutableLongMap {
       intermediateAfter match {
         case Intermediate(undefined, indexIntermediateAfter, xIntermediateAfter) => {
           if (x < xIntermediateAfter) {
+            val nextIndex = (index + 2 * (x + 1) * x - 3) & mask
+            val nextX = x + 1
+
+            if(nextX <= resIntermediateX){
+              check(
+                if (nextX <= resIntermediateX)
+                  seekKeyOrZeroOrLongMinValue(nextX, nextIndex)(a(j), a, mask) == Intermediate(
+                    false,
+                    resIntermediateIndex,
+                    resIntermediateX
+                  )
+                else
+                  seekKeyOrZeroReturnVacant(nextX, nextIndex, resIntermediateIndex)(
+                    a(j),
+                    a,
+                    mask
+                  ) == Found(j)
+              ) 
+            } else {
+               if(seekKeyOrZeroReturnVacant(x, index, resIntermediateIndex)(
+                          a(j),
+                          a,
+                          mask
+                        ) == Found(j)){
+                  check(
+                    seekKeyOrZeroReturnVacant(
+                      nextX, 
+                      nextIndex, 
+                      resIntermediateIndex
+                    )(
+                      a(j),
+                      a,
+                      mask
+                    ) == Found(j)
+                  ) 
+                }else{
+                  check(
+                      seekKeyOrZeroReturnVacant(
+                        nextX, 
+                        nextIndex, 
+                        resIntermediateIndex
+                      )(
+                        a(j),
+                        a,
+                        mask
+                      ) == Found(j)
+                    ) 
+                }
+            }
             lemmaPutValidKeyPreservesVacantIsAtI(
               a,
               i,
               k,
               j,
-              (index + 2 * (x + 1) * x - 3) & mask,
-              x + 1,
+              nextIndex,
+              nextX,
               resIntermediateIndex,
               resIntermediateX
             )
