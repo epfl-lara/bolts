@@ -11,9 +11,10 @@ import stainless.equations._
 import stainless.lang.{ghost => ghostExpr, *}
 import stainless.proof.check
 import scala.annotation.tailrec
-import stainless.lang.StaticChecks.*
-import StaticChecks._
 import stainless.lang.Cell
+
+// import stainless.lang.StaticChecks.* // Comment out when using the OptimisedEnsuring object below
+import OptimisedEnsuring.* // Import to remove `ensuring` and `require` from the code for the benchmarks
 
 object MutableLongMap {
   import LongMapFixedSize.validMask

@@ -1,0 +1,103 @@
+[info] welcome to sbt 1.9.6 (Private Build Java 17.0.8.1)
+[info] loading settings for project mutablemap-build-build-build from metals.sbt ...
+[info] loading project definition from /localhome/chassot/bolts/data-structures/longmap/mutablemap/project/project/project
+[info] loading settings for project mutablemap-build-build from metals.sbt ...
+[info] loading project definition from /localhome/chassot/bolts/data-structures/longmap/mutablemap/project/project
+[success] Generated .bloop/mutablemap-build-build.json
+[success] Total time: 2 s, completed Oct 31, 2023, 5:51:02 PM
+[info] loading settings for project mutablemap-build from metals.sbt,plugins.sbt ...
+[info] loading project definition from /localhome/chassot/bolts/data-structures/longmap/mutablemap/project
+[info] loading settings for project mutablemap from build.sbt ...
+[info] set current project to MutableMap (in build file:/localhome/chassot/bolts/data-structures/longmap/mutablemap/)
+[info] compiling 47 Scala sources to /localhome/chassot/bolts/data-structures/longmap/mutablemap/target/scala-3.3.0/classes ...
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/data-structures/longmap/mutablemap/src/main/scala/ch/epfl/chassot/MutableLongMap.scala:373:4 
+[warn] 373 |    c match {
+[warn]     |    ^
+[warn]     |    match may not be exhaustive.
+[warn]     |
+[warn]     |    It would fail on pattern case: EmptyCell()
+[warn]     |
+[warn]     | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/data-structures/longmap/mutablemap/src/main/scala/ch/epfl/chassot/MutableLongMap.scala:620:8 
+[warn] 620 |        seekEntryRes match {
+[warn]     |        ^^^^^^^^^^^^
+[warn]     |   match may not be exhaustive.
+[warn]     |
+[warn]     |   It would fail on pattern case: MutableLongMap.Intermediate(_, _, _)
+[warn]     |
+[warn]     | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/data-structures/longmap/mutablemap/src/main/scala/ch/epfl/chassot/MutableLongMap.scala:1133:6 
+[warn] 1133 |      intermediate match {
+[warn]      |      ^^^^^^^^^^^^
+[warn]      |    match may not be exhaustive.
+[warn]      |
+[warn]      |    It would fail on pattern case: _: MutableLongMap.SeekEntryResult
+[warn]      |
+[warn]      | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/data-structures/longmap/mutablemap/src/main/scala/ch/epfl/chassot/MutableLongMap.scala:1183:6 
+[warn] 1183 |      intermediate match {
+[warn]      |      ^^^^^^^^^^^^
+[warn]      |    match may not be exhaustive.
+[warn]      |
+[warn]      |    It would fail on pattern case: _: MutableLongMap.SeekEntryResult
+[warn]      |
+[warn]      | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/data-structures/longmap/mutablemap/src/main/scala/ch/epfl/chassot/StrictlyOrderedLongListMap.scala:162:4 
+[warn] 162 |    l match {
+[warn]     |    ^
+[warn]     |    match may not be exhaustive.
+[warn]     |
+[warn]     |    It would fail on pattern case: collection.Cons(_, _)
+[warn]     |
+[warn]     | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/data-structures/longmap/mutablemap/src/main/scala/ch/epfl/chassot/StrictlyOrderedLongListMap.scala:196:4 
+[warn] 196 |    l match {
+[warn]     |    ^
+[warn]     |    match may not be exhaustive.
+[warn]     |
+[warn]     |    It would fail on pattern case: collection.Cons(_, _)
+[warn]     |
+[warn]     | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/data-structures/longmap/mutablemap/src/main/scala/ch/epfl/chassot/StrictlyOrderedLongListMap.scala:211:4 
+[warn] 211 |    l match {
+[warn]     |    ^
+[warn]     |    match may not be exhaustive.
+[warn]     |
+[warn]     |    It would fail on pattern case: collection.Cons(_, _)
+[warn]     |
+[warn]     | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/data-structures/longmap/mutablemap/src/main/scala/ch/epfl/chassot/StrictlyOrderedLongListMap.scala:227:4 
+[warn] 227 |    l match {
+[warn]     |    ^
+[warn]     |    match may not be exhaustive.
+[warn]     |
+[warn]     |    It would fail on pattern case: collection.Cons(_, _)
+[warn]     |
+[warn]     | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/data-structures/longmap/mutablemap/src/main/scala/ch/epfl/chassot/StrictlyOrderedLongListMap.scala:248:4 
+[warn] 248 |    l match {
+[warn]     |    ^
+[warn]     |    match may not be exhaustive.
+[warn]     |
+[warn]     |    It would fail on pattern case: collection.Cons(_, _)
+[warn]     |
+[warn]     | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/data-structures/longmap/mutablemap/src/main/scala/ch/epfl/chassot/StrictlyOrderedLongListMap.scala:279:4 
+[warn] 279 |    l match {
+[warn]     |    ^
+[warn]     |    match may not be exhaustive.
+[warn]     |
+[warn]     |    It would fail on pattern case: collection.Cons(_, _)
+[warn]     |
+[warn]     | longer explanation available when compiling with `-explain`
+[warn] 10 warnings found
+[info] done compiling
+[info] compiling 26 Java sources to /localhome/chassot/bolts/data-structures/longmap/mutablemap/target/scala-3.3.0/classes ...
+[info] done compiling
+[info] running (fork) org.openjdk.jmh.Main -i 10 -wi 10 -f1 -t1 MutableLongMapBenchmark.*
+[error] ERROR: org.openjdk.jmh.runner.RunnerException: ERROR: Another JMH instance might be running. Unable to acquire the JMH lock (/tmp/jmh.lock), exiting. Use -Djmh.ignoreLock=true to forcefully continue.
+[error] 	at org.openjdk.jmh.runner.Runner.run(Runner.java:211)
+[error] 	at org.openjdk.jmh.Main.main(Main.java:71)
+[error] Nonzero exit code returned from runner: 1
+[error] (Jmh / run) Nonzero exit code returned from runner: 1
+[error] Total time: 25 s, completed Oct 31, 2023, 5:51:28 PM
