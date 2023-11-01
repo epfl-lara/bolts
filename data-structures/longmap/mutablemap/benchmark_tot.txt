@@ -9299,3 +9299,375 @@
 [info] Iteration   6: 5.636 ms/op
 [info] Iteration   7: 5.647 ms/op
 [info] Iteration   8: 5.600 ms/op
+[info] Iteration   9: 5.644 ms/op
+[info] Iteration  10: 5.621 ms/op
+[info] Result "ch.epfl.echassot.benchmark.MutableLongMapBenchmark.update2to15KeysThenLookup2to17BufferVerified":
+[info]   5.624 ±(99.9%) 0.053 ms/op [Average]
+[info]   (min, avg, max) = (5.571, 5.624, 5.699), stdev = 0.035
+[info]   CI (99.9%): [5.571, 5.677] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1-Ubuntu-0ubuntu120.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 10 iterations, 10 s each
+[info] # Measurement: 10 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.echassot.benchmark.MutableLongMapBenchmark.update2to15KeysThenLookup2to17BufferVerified
+[info] # Parameters: (keysListName = 57344)
+[info] # Run progress: 98.78% complete, ETA 00:12:02
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 39189.260 ms/op
+[info] # Warmup Iteration   2: 5.612 ms/op
+[info] # Warmup Iteration   3: 5.483 ms/op
+[info] # Warmup Iteration   4: 5.387 ms/op
+[info] # Warmup Iteration   5: 5.533 ms/op
+[info] # Warmup Iteration   6: 5.439 ms/op
+[info] # Warmup Iteration   7: 5.422 ms/op
+[info] # Warmup Iteration   8: 5.489 ms/op
+[info] # Warmup Iteration   9: 5.402 ms/op
+[info] # Warmup Iteration  10: 5.461 ms/op
+[info] Iteration   1: 5.420 ms/op
+[info] Iteration   2: 5.520 ms/op
+[info] Iteration   3: 5.405 ms/op
+[info] Iteration   4: 5.459 ms/op
+[info] Iteration   5: 5.556 ms/op
+[info] Iteration   6: 5.407 ms/op
+[info] Iteration   7: 5.407 ms/op
+[info] Iteration   8: 5.412 ms/op
+[info] Iteration   9: 5.424 ms/op
+[info] Iteration  10: 5.442 ms/op
+[info] Result "ch.epfl.echassot.benchmark.MutableLongMapBenchmark.update2to15KeysThenLookup2to17BufferVerified":
+[info]   5.445 ±(99.9%) 0.080 ms/op [Average]
+[info]   (min, avg, max) = (5.405, 5.445, 5.556), stdev = 0.053
+[info]   CI (99.9%): [5.366, 5.525] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1-Ubuntu-0ubuntu120.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 10 iterations, 10 s each
+[info] # Measurement: 10 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.echassot.benchmark.MutableLongMapBenchmark.update2to15KeysThenLookup2to17BufferVerified
+[info] # Parameters: (keysListName = 61440)
+[info] # Run progress: 99.19% complete, ETA 00:08:01
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 39390.598 ms/op
+[info] # Warmup Iteration   2: 5.635 ms/op
+[info] # Warmup Iteration   3: 5.471 ms/op
+[info] # Warmup Iteration   4: 5.386 ms/op
+[info] # Warmup Iteration   5: 5.403 ms/op
+[info] # Warmup Iteration   6: 5.460 ms/op
+[info] # Warmup Iteration   7: 5.387 ms/op
+[info] # Warmup Iteration   8: 5.382 ms/op
+[info] # Warmup Iteration   9: 5.392 ms/op
+[info] # Warmup Iteration  10: 5.407 ms/op
+[info] Iteration   1: 5.436 ms/op
+[info] Iteration   2: 5.429 ms/op
+[info] Iteration   3: 5.431 ms/op
+[info] Iteration   4: 5.377 ms/op
+[info] Iteration   5: 5.378 ms/op
+[info] Iteration   6: 5.524 ms/op
+[info] Iteration   7: 5.547 ms/op
+[info] Iteration   8: 5.530 ms/op
+[info] Iteration   9: 5.528 ms/op
+[info] Iteration  10: 5.470 ms/op
+[info] Result "ch.epfl.echassot.benchmark.MutableLongMapBenchmark.update2to15KeysThenLookup2to17BufferVerified":
+[info]   5.465 ±(99.9%) 0.097 ms/op [Average]
+[info]   (min, avg, max) = (5.377, 5.465, 5.547), stdev = 0.064
+[info]   CI (99.9%): [5.368, 5.562] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1-Ubuntu-0ubuntu120.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 10 iterations, 10 s each
+[info] # Measurement: 10 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.echassot.benchmark.MutableLongMapBenchmark.update2to15KeysThenLookup2to17BufferVerified
+[info] # Parameters: (keysListName = 65536)
+[info] # Run progress: 99.59% complete, ETA 00:04:00
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 39488.646 ms/op
+[info] # Warmup Iteration   2: 5.568 ms/op
+[info] # Warmup Iteration   3: 5.416 ms/op
+[info] # Warmup Iteration   4: 5.403 ms/op
+[info] # Warmup Iteration   5: 5.385 ms/op
+[info] # Warmup Iteration   6: 5.359 ms/op
+[info] # Warmup Iteration   7: 5.467 ms/op
+[info] # Warmup Iteration   8: 5.427 ms/op
+[info] # Warmup Iteration   9: 5.383 ms/op
+[info] # Warmup Iteration  10: 5.426 ms/op
+[info] Iteration   1: 5.479 ms/op
+[info] Iteration   2: 5.390 ms/op
+[info] Iteration   3: 5.380 ms/op
+[info] Iteration   4: 5.390 ms/op
+[info] Iteration   5: 5.417 ms/op
+[info] Iteration   6: 5.412 ms/op
+[info] Iteration   7: 5.373 ms/op
+[info] Iteration   8: 5.397 ms/op
+[info] Iteration   9: 5.420 ms/op
+[info] Iteration  10: 5.413 ms/op
+[info] Result "ch.epfl.echassot.benchmark.MutableLongMapBenchmark.update2to15KeysThenLookup2to17BufferVerified":
+[info]   5.407 ±(99.9%) 0.045 ms/op [Average]
+[info]   (min, avg, max) = (5.373, 5.407, 5.479), stdev = 0.030
+[info]   CI (99.9%): [5.362, 5.453] (assumes normal distribution)
+[info] # Run complete. Total time: 16:26:56
+[info] REMEMBER: The numbers below are just data. To gain reusable insights, you need to follow up on
+[info] why the numbers are the way they are. Use profilers (see -prof, -lprof), design factorial
+[info] experiments, perform baseline and negative tests that provide experimental control, make sure
+[info] the benchmarking environment is safe on JVM/OS/HW level, ask for reviews from the domain experts.
+[info] Do not assume the numbers tell you what you want them to tell.
+[info] Benchmark                                                                                     (keysListName)  (n)  Mode  Cnt       Score      Error  Units
+[info] LongListMapBenchmark.createListMapAndUpdateThenLookup                                                    N/A    1  avgt   10       0.001 ±    0.001  ms/op
+[info] LongListMapBenchmark.createListMapAndUpdateThenLookup                                                    N/A    2  avgt   10       0.002 ±    0.001  ms/op
+[info] LongListMapBenchmark.createListMapAndUpdateThenLookup                                                    N/A    3  avgt   10       0.016 ±    0.001  ms/op
+[info] LongListMapBenchmark.createListMapAndUpdateThenLookup                                                    N/A    4  avgt   10       0.179 ±    0.001  ms/op
+[info] LongListMapBenchmark.createListMapAndUpdateThenLookup                                                    N/A    5  avgt   10       1.760 ±    0.028  ms/op
+[info] LongListMapBenchmark.createListMapAndUpdateThenLookup                                                    N/A    6  avgt   10      21.642 ±    0.134  ms/op
+[info] LongListMapBenchmark.createListMapAndUpdateThenLookup                                                    N/A    7  avgt   10     332.547 ±    0.767  ms/op
+[info] LongListMapBenchmark.createListMapAndUpdateThenLookup                                                    N/A    8  avgt   10    5614.573 ±   63.703  ms/op
+[info] LongListMapBenchmark.createListMapAndUpdateThenLookup                                                    N/A    9  avgt   10  100974.574 ± 7520.500  ms/op
+[info] LongListMapBenchmark.createMapAndUpdateThenLookupOriginal                                                N/A    1  avgt   10      ≈ 10⁻⁴             ms/op
+[info] LongListMapBenchmark.createMapAndUpdateThenLookupOriginal                                                N/A    2  avgt   10      ≈ 10⁻⁴             ms/op
+[info] LongListMapBenchmark.createMapAndUpdateThenLookupOriginal                                                N/A    3  avgt   10       0.001 ±    0.001  ms/op
+[info] LongListMapBenchmark.createMapAndUpdateThenLookupOriginal                                                N/A    4  avgt   10       0.001 ±    0.001  ms/op
+[info] LongListMapBenchmark.createMapAndUpdateThenLookupOriginal                                                N/A    5  avgt   10       0.003 ±    0.001  ms/op
+[info] LongListMapBenchmark.createMapAndUpdateThenLookupOriginal                                                N/A    6  avgt   10       0.004 ±    0.001  ms/op
+[info] LongListMapBenchmark.createMapAndUpdateThenLookupOriginal                                                N/A    7  avgt   10       0.011 ±    0.001  ms/op
+[info] LongListMapBenchmark.createMapAndUpdateThenLookupOriginal                                                N/A    8  avgt   10       0.022 ±    0.001  ms/op
+[info] LongListMapBenchmark.createMapAndUpdateThenLookupOriginal                                                N/A    9  avgt   10       0.049 ±    0.001  ms/op
+[info] LongListMapBenchmark.createMapAndUpdateThenLookupVerified                                                N/A    1  avgt   10      ≈ 10⁻³             ms/op
+[info] LongListMapBenchmark.createMapAndUpdateThenLookupVerified                                                N/A    2  avgt   10       0.001 ±    0.001  ms/op
+[info] LongListMapBenchmark.createMapAndUpdateThenLookupVerified                                                N/A    3  avgt   10       0.001 ±    0.001  ms/op
+[info] LongListMapBenchmark.createMapAndUpdateThenLookupVerified                                                N/A    4  avgt   10       0.002 ±    0.001  ms/op
+[info] LongListMapBenchmark.createMapAndUpdateThenLookupVerified                                                N/A    5  avgt   10       0.003 ±    0.001  ms/op
+[info] LongListMapBenchmark.createMapAndUpdateThenLookupVerified                                                N/A    6  avgt   10       0.006 ±    0.001  ms/op
+[info] LongListMapBenchmark.createMapAndUpdateThenLookupVerified                                                N/A    7  avgt   10       0.012 ±    0.001  ms/op
+[info] LongListMapBenchmark.createMapAndUpdateThenLookupVerified                                                N/A    8  avgt   10       0.024 ±    0.001  ms/op
+[info] LongListMapBenchmark.createMapAndUpdateThenLookupVerified                                                N/A    9  avgt   10       0.051 ±    0.001  ms/op
+[info] LongListMapBenchmark.lookupListMap                                                                       N/A    3  avgt   10       0.008 ±    0.001  ms/op
+[info] LongListMapBenchmark.lookupListMap                                                                       N/A    4  avgt   10       0.082 ±    0.001  ms/op
+[info] LongListMapBenchmark.lookupListMap                                                                       N/A    5  avgt   10       1.019 ±    0.002  ms/op
+[info] LongListMapBenchmark.lookupListMap                                                                       N/A    6  avgt   10      13.234 ±    0.013  ms/op
+[info] LongListMapBenchmark.lookupListMap                                                                       N/A    7  avgt   10     175.088 ±    0.042  ms/op
+[info] LongListMapBenchmark.lookupListMap                                                                       N/A    8  avgt   10    3068.818 ±   10.417  ms/op
+[info] LongListMapBenchmark.lookupListMap                                                                       N/A    9  avgt   10   63877.750 ±  578.660  ms/op
+[info] LongListMapBenchmark.lookupOriginal                                                                      N/A    1  avgt   10      ≈ 10⁻⁴             ms/op
+[info] LongListMapBenchmark.lookupOriginal                                                                      N/A    2  avgt   10      ≈ 10⁻⁴             ms/op
+[info] LongListMapBenchmark.lookupOriginal                                                                      N/A    3  avgt   10      ≈ 10⁻⁴             ms/op
+[info] LongListMapBenchmark.lookupOriginal                                                                      N/A    4  avgt   10      ≈ 10⁻⁴             ms/op
+[info] LongListMapBenchmark.lookupOriginal                                                                      N/A    5  avgt   10       0.001 ±    0.001  ms/op
+[info] LongListMapBenchmark.lookupOriginal                                                                      N/A    6  avgt   10       0.001 ±    0.001  ms/op
+[info] LongListMapBenchmark.lookupOriginal                                                                      N/A    7  avgt   10       0.001 ±    0.001  ms/op
+[info] LongListMapBenchmark.lookupOriginal                                                                      N/A    8  avgt   10       0.005 ±    0.001  ms/op
+[info] LongListMapBenchmark.lookupOriginal                                                                      N/A    9  avgt   10       0.011 ±    0.001  ms/op
+[info] LongListMapBenchmark.lookupVerified                                                                      N/A    1  avgt   10      ≈ 10⁻⁴             ms/op
+[info] LongListMapBenchmark.lookupVerified                                                                      N/A    2  avgt   10      ≈ 10⁻⁴             ms/op
+[info] LongListMapBenchmark.lookupVerified                                                                      N/A    3  avgt   10      ≈ 10⁻⁴             ms/op
+[info] LongListMapBenchmark.lookupVerified                                                                      N/A    4  avgt   10      ≈ 10⁻⁴             ms/op
+[info] LongListMapBenchmark.lookupVerified                                                                      N/A    5  avgt   10      ≈ 10⁻³             ms/op
+[info] LongListMapBenchmark.lookupVerified                                                                      N/A    6  avgt   10       0.001 ±    0.001  ms/op
+[info] LongListMapBenchmark.lookupVerified                                                                      N/A    7  avgt   10       0.002 ±    0.001  ms/op
+[info] LongListMapBenchmark.lookupVerified                                                                      N/A    8  avgt   10       0.006 ±    0.001  ms/op
+[info] LongListMapBenchmark.lookupVerified                                                                      N/A    9  avgt   10       0.013 ±    0.001  ms/op
+[info] MutableLongMapBenchmark.createMapAndUpdate2to15KeysThenLookupOriginal                                   4096  N/A  avgt   10       2.472 ±    0.011  ms/op
+[info] MutableLongMapBenchmark.createMapAndUpdate2to15KeysThenLookupOriginal                                   8192  N/A  avgt   10       2.680 ±    0.310  ms/op
+[info] MutableLongMapBenchmark.createMapAndUpdate2to15KeysThenLookupOriginal                                  12288  N/A  avgt   10       2.650 ±    0.034  ms/op
+[info] MutableLongMapBenchmark.createMapAndUpdate2to15KeysThenLookupOriginal                                  16384  N/A  avgt   10       2.725 ±    0.017  ms/op
+[info] MutableLongMapBenchmark.createMapAndUpdate2to15KeysThenLookupOriginal                                  20480  N/A  avgt   10       2.789 ±    0.013  ms/op
+[info] MutableLongMapBenchmark.createMapAndUpdate2to15KeysThenLookupOriginal                                  24576  N/A  avgt   10       2.956 ±    0.016  ms/op
+[info] MutableLongMapBenchmark.createMapAndUpdate2to15KeysThenLookupOriginal                                  28672  N/A  avgt   10       3.052 ±    0.048  ms/op
+[info] MutableLongMapBenchmark.createMapAndUpdate2to15KeysThenLookupOriginal                                  32768  N/A  avgt   10       3.173 ±    0.015  ms/op
+[info] MutableLongMapBenchmark.createMapAndUpdate2to15KeysThenLookupOriginal                                  36864  N/A  avgt   10       3.231 ±    0.021  ms/op
+[info] MutableLongMapBenchmark.createMapAndUpdate2to15KeysThenLookupOriginal                                  40960  N/A  avgt   10       3.177 ±    0.025  ms/op
+[info] MutableLongMapBenchmark.createMapAndUpdate2to15KeysThenLookupOriginal                                  45056  N/A  avgt   10       3.287 ±    0.029  ms/op
+[info] MutableLongMapBenchmark.createMapAndUpdate2to15KeysThenLookupOriginal                                  49152  N/A  avgt   10       3.205 ±    0.021  ms/op
+[info] MutableLongMapBenchmark.createMapAndUpdate2to15KeysThenLookupOriginal                                  53248  N/A  avgt   10       3.177 ±    0.022  ms/op
+[info] MutableLongMapBenchmark.createMapAndUpdate2to15KeysThenLookupOriginal                                  57344  N/A  avgt   10       3.070 ±    0.016  ms/op
+[info] MutableLongMapBenchmark.createMapAndUpdate2to15KeysThenLookupOriginal                                  61440  N/A  avgt   10       3.057 ±    0.027  ms/op
+[info] MutableLongMapBenchmark.createMapAndUpdate2to15KeysThenLookupOriginal                                  65536  N/A  avgt   10       3.066 ±    0.029  ms/op
+[info] MutableLongMapBenchmark.createMapAndUpdate2to15KeysThenLookupVerified                                   4096  N/A  avgt   10       3.244 ±    0.026  ms/op
+[info] MutableLongMapBenchmark.createMapAndUpdate2to15KeysThenLookupVerified                                   8192  N/A  avgt   10       3.343 ±    0.025  ms/op
+[info] MutableLongMapBenchmark.createMapAndUpdate2to15KeysThenLookupVerified                                  12288  N/A  avgt   10       3.507 ±    0.029  ms/op
+[info] MutableLongMapBenchmark.createMapAndUpdate2to15KeysThenLookupVerified                                  16384  N/A  avgt   10       3.591 ±    0.033  ms/op
+[info] MutableLongMapBenchmark.createMapAndUpdate2to15KeysThenLookupVerified                                  20480  N/A  avgt   10       3.818 ±    0.022  ms/op
+[info] MutableLongMapBenchmark.createMapAndUpdate2to15KeysThenLookupVerified                                  24576  N/A  avgt   10       3.978 ±    0.034  ms/op
+[info] MutableLongMapBenchmark.createMapAndUpdate2to15KeysThenLookupVerified                                  28672  N/A  avgt   10       4.148 ±    0.039  ms/op
+[info] MutableLongMapBenchmark.createMapAndUpdate2to15KeysThenLookupVerified                                  32768  N/A  avgt   10       4.302 ±    0.033  ms/op
+[info] MutableLongMapBenchmark.createMapAndUpdate2to15KeysThenLookupVerified                                  36864  N/A  avgt   10       4.276 ±    0.049  ms/op
+[info] MutableLongMapBenchmark.createMapAndUpdate2to15KeysThenLookupVerified                                  40960  N/A  avgt   10       4.341 ±    0.019  ms/op
+[info] MutableLongMapBenchmark.createMapAndUpdate2to15KeysThenLookupVerified                                  45056  N/A  avgt   10       4.352 ±    0.049  ms/op
+[info] MutableLongMapBenchmark.createMapAndUpdate2to15KeysThenLookupVerified                                  49152  N/A  avgt   10       4.373 ±    0.086  ms/op
+[info] MutableLongMapBenchmark.createMapAndUpdate2to15KeysThenLookupVerified                                  53248  N/A  avgt   10       4.151 ±    0.027  ms/op
+[info] MutableLongMapBenchmark.createMapAndUpdate2to15KeysThenLookupVerified                                  57344  N/A  avgt   10       4.195 ±    0.020  ms/op
+[info] MutableLongMapBenchmark.createMapAndUpdate2to15KeysThenLookupVerified                                  61440  N/A  avgt   10       4.099 ±    0.028  ms/op
+[info] MutableLongMapBenchmark.createMapAndUpdate2to15KeysThenLookupVerified                                  65536  N/A  avgt   10       4.226 ±    0.221  ms/op
+[info] MutableLongMapBenchmark.createMapAndUpdate2to15KeysVerifiedWith2to17BufferThenLookupOriginal            4096  N/A  avgt   10       1.823 ±    0.014  ms/op
+[info] MutableLongMapBenchmark.createMapAndUpdate2to15KeysVerifiedWith2to17BufferThenLookupOriginal            8192  N/A  avgt   10       1.901 ±    0.020  ms/op
+[info] MutableLongMapBenchmark.createMapAndUpdate2to15KeysVerifiedWith2to17BufferThenLookupOriginal           12288  N/A  avgt   10       2.017 ±    0.030  ms/op
+[info] MutableLongMapBenchmark.createMapAndUpdate2to15KeysVerifiedWith2to17BufferThenLookupOriginal           16384  N/A  avgt   10       2.097 ±    0.023  ms/op
+[info] MutableLongMapBenchmark.createMapAndUpdate2to15KeysVerifiedWith2to17BufferThenLookupOriginal           20480  N/A  avgt   10       2.241 ±    0.026  ms/op
+[info] MutableLongMapBenchmark.createMapAndUpdate2to15KeysVerifiedWith2to17BufferThenLookupOriginal           24576  N/A  avgt   10       2.317 ±    0.017  ms/op
+[info] MutableLongMapBenchmark.createMapAndUpdate2to15KeysVerifiedWith2to17BufferThenLookupOriginal           28672  N/A  avgt   10       2.408 ±    0.016  ms/op
+[info] MutableLongMapBenchmark.createMapAndUpdate2to15KeysVerifiedWith2to17BufferThenLookupOriginal           32768  N/A  avgt   10       2.591 ±    0.017  ms/op
+[info] MutableLongMapBenchmark.createMapAndUpdate2to15KeysVerifiedWith2to17BufferThenLookupOriginal           36864  N/A  avgt   10       2.581 ±    0.025  ms/op
+[info] MutableLongMapBenchmark.createMapAndUpdate2to15KeysVerifiedWith2to17BufferThenLookupOriginal           40960  N/A  avgt   10       2.528 ±    0.022  ms/op
+[info] MutableLongMapBenchmark.createMapAndUpdate2to15KeysVerifiedWith2to17BufferThenLookupOriginal           45056  N/A  avgt   10       2.555 ±    0.013  ms/op
+[info] MutableLongMapBenchmark.createMapAndUpdate2to15KeysVerifiedWith2to17BufferThenLookupOriginal           49152  N/A  avgt   10       2.336 ±    0.019  ms/op
+[info] MutableLongMapBenchmark.createMapAndUpdate2to15KeysVerifiedWith2to17BufferThenLookupOriginal           53248  N/A  avgt   10       2.402 ±    0.037  ms/op
+[info] MutableLongMapBenchmark.createMapAndUpdate2to15KeysVerifiedWith2to17BufferThenLookupOriginal           57344  N/A  avgt   10       2.386 ±    0.029  ms/op
+[info] MutableLongMapBenchmark.createMapAndUpdate2to15KeysVerifiedWith2to17BufferThenLookupOriginal           61440  N/A  avgt   10       3.536 ±    1.153  ms/op
+[info] MutableLongMapBenchmark.createMapAndUpdate2to15KeysVerifiedWith2to17BufferThenLookupOriginal           65536  N/A  avgt   10       5.088 ±    2.471  ms/op
+[info] MutableLongMapBenchmark.createMapAndUpdate2to15KeysVerifiedWith2to17BufferThenLookupVerified            4096  N/A  avgt   10       6.487 ±    0.310  ms/op
+[info] MutableLongMapBenchmark.createMapAndUpdate2to15KeysVerifiedWith2to17BufferThenLookupVerified            8192  N/A  avgt   10       6.466 ±    0.285  ms/op
+[info] MutableLongMapBenchmark.createMapAndUpdate2to15KeysVerifiedWith2to17BufferThenLookupVerified           12288  N/A  avgt   10       6.842 ±    0.905  ms/op
+[info] MutableLongMapBenchmark.createMapAndUpdate2to15KeysVerifiedWith2to17BufferThenLookupVerified           16384  N/A  avgt   10       6.962 ±    0.291  ms/op
+[info] MutableLongMapBenchmark.createMapAndUpdate2to15KeysVerifiedWith2to17BufferThenLookupVerified           20480  N/A  avgt   10       7.223 ±    0.363  ms/op
+[info] MutableLongMapBenchmark.createMapAndUpdate2to15KeysVerifiedWith2to17BufferThenLookupVerified           24576  N/A  avgt   10       6.981 ±    0.750  ms/op
+[info] MutableLongMapBenchmark.createMapAndUpdate2to15KeysVerifiedWith2to17BufferThenLookupVerified           28672  N/A  avgt   10       6.204 ±    1.201  ms/op
+[info] MutableLongMapBenchmark.createMapAndUpdate2to15KeysVerifiedWith2to17BufferThenLookupVerified           32768  N/A  avgt   10       7.157 ±    1.171  ms/op
+[info] MutableLongMapBenchmark.createMapAndUpdate2to15KeysVerifiedWith2to17BufferThenLookupVerified           36864  N/A  avgt   10       6.292 ±    0.944  ms/op
+[info] MutableLongMapBenchmark.createMapAndUpdate2to15KeysVerifiedWith2to17BufferThenLookupVerified           40960  N/A  avgt   10       6.506 ±    1.362  ms/op
+[info] MutableLongMapBenchmark.createMapAndUpdate2to15KeysVerifiedWith2to17BufferThenLookupVerified           45056  N/A  avgt   10       6.158 ±    0.099  ms/op
+[info] MutableLongMapBenchmark.createMapAndUpdate2to15KeysVerifiedWith2to17BufferThenLookupVerified           49152  N/A  avgt   10       6.053 ±    0.056  ms/op
+[info] MutableLongMapBenchmark.createMapAndUpdate2to15KeysVerifiedWith2to17BufferThenLookupVerified           53248  N/A  avgt   10       6.005 ±    0.049  ms/op
+[info] MutableLongMapBenchmark.createMapAndUpdate2to15KeysVerifiedWith2to17BufferThenLookupVerified           57344  N/A  avgt   10       5.991 ±    0.098  ms/op
+[info] MutableLongMapBenchmark.createMapAndUpdate2to15KeysVerifiedWith2to17BufferThenLookupVerified           61440  N/A  avgt   10       5.972 ±    0.223  ms/op
+[info] MutableLongMapBenchmark.createMapAndUpdate2to15KeysVerifiedWith2to17BufferThenLookupVerified           65536  N/A  avgt   10       5.809 ±    0.069  ms/op
+[info] MutableLongMapBenchmark.retrieve1Original                                                               4096  N/A  avgt   10       0.002 ±    0.001  us/op
+[info] MutableLongMapBenchmark.retrieve1Original                                                               8192  N/A  avgt   10       0.002 ±    0.001  us/op
+[info] MutableLongMapBenchmark.retrieve1Original                                                              12288  N/A  avgt   10       0.002 ±    0.001  us/op
+[info] MutableLongMapBenchmark.retrieve1Original                                                              16384  N/A  avgt   10       0.002 ±    0.001  us/op
+[info] MutableLongMapBenchmark.retrieve1Original                                                              20480  N/A  avgt   10       0.002 ±    0.001  us/op
+[info] MutableLongMapBenchmark.retrieve1Original                                                              24576  N/A  avgt   10       0.002 ±    0.001  us/op
+[info] MutableLongMapBenchmark.retrieve1Original                                                              28672  N/A  avgt   10       0.002 ±    0.001  us/op
+[info] MutableLongMapBenchmark.retrieve1Original                                                              32768  N/A  avgt   10       0.002 ±    0.001  us/op
+[info] MutableLongMapBenchmark.retrieve1Original                                                              36864  N/A  avgt   10       0.002 ±    0.001  us/op
+[info] MutableLongMapBenchmark.retrieve1Original                                                              40960  N/A  avgt   10       0.002 ±    0.001  us/op
+[info] MutableLongMapBenchmark.retrieve1Original                                                              45056  N/A  avgt   10       0.002 ±    0.001  us/op
+[info] MutableLongMapBenchmark.retrieve1Original                                                              49152  N/A  avgt   10       0.002 ±    0.001  us/op
+[info] MutableLongMapBenchmark.retrieve1Original                                                              53248  N/A  avgt   10       0.002 ±    0.001  us/op
+[info] MutableLongMapBenchmark.retrieve1Original                                                              57344  N/A  avgt   10       0.002 ±    0.001  us/op
+[info] MutableLongMapBenchmark.retrieve1Original                                                              61440  N/A  avgt   10       0.002 ±    0.001  us/op
+[info] MutableLongMapBenchmark.retrieve1Original                                                              65536  N/A  avgt   10       0.002 ±    0.001  us/op
+[info] MutableLongMapBenchmark.retrieve1Verified                                                               4096  N/A  avgt   10       0.004 ±    0.001  us/op
+[info] MutableLongMapBenchmark.retrieve1Verified                                                               8192  N/A  avgt   10       0.004 ±    0.001  us/op
+[info] MutableLongMapBenchmark.retrieve1Verified                                                              12288  N/A  avgt   10       0.004 ±    0.001  us/op
+[info] MutableLongMapBenchmark.retrieve1Verified                                                              16384  N/A  avgt   10       0.004 ±    0.001  us/op
+[info] MutableLongMapBenchmark.retrieve1Verified                                                              20480  N/A  avgt   10       0.004 ±    0.001  us/op
+[info] MutableLongMapBenchmark.retrieve1Verified                                                              24576  N/A  avgt   10       0.004 ±    0.001  us/op
+[info] MutableLongMapBenchmark.retrieve1Verified                                                              28672  N/A  avgt   10       0.005 ±    0.001  us/op
+[info] MutableLongMapBenchmark.retrieve1Verified                                                              32768  N/A  avgt   10       0.004 ±    0.001  us/op
+[info] MutableLongMapBenchmark.retrieve1Verified                                                              36864  N/A  avgt   10       0.004 ±    0.001  us/op
+[info] MutableLongMapBenchmark.retrieve1Verified                                                              40960  N/A  avgt   10       0.004 ±    0.001  us/op
+[info] MutableLongMapBenchmark.retrieve1Verified                                                              45056  N/A  avgt   10       0.004 ±    0.001  us/op
+[info] MutableLongMapBenchmark.retrieve1Verified                                                              49152  N/A  avgt   10       0.004 ±    0.001  us/op
+[info] MutableLongMapBenchmark.retrieve1Verified                                                              53248  N/A  avgt   10       0.004 ±    0.001  us/op
+[info] MutableLongMapBenchmark.retrieve1Verified                                                              57344  N/A  avgt   10       0.004 ±    0.001  us/op
+[info] MutableLongMapBenchmark.retrieve1Verified                                                              61440  N/A  avgt   10       0.004 ±    0.001  us/op
+[info] MutableLongMapBenchmark.retrieve1Verified                                                              65536  N/A  avgt   10       0.004 ±    0.001  us/op
+[info] MutableLongMapBenchmark.retrieveOriginal                                                                4096  N/A  avgt   10      40.201 ±    0.364  us/op
+[info] MutableLongMapBenchmark.retrieveOriginal                                                                8192  N/A  avgt   10     107.064 ±    0.420  us/op
+[info] MutableLongMapBenchmark.retrieveOriginal                                                               12288  N/A  avgt   10     213.061 ±    0.254  us/op
+[info] MutableLongMapBenchmark.retrieveOriginal                                                               16384  N/A  avgt   10     297.049 ±    1.120  us/op
+[info] MutableLongMapBenchmark.retrieveOriginal                                                               20480  N/A  avgt   10     397.967 ±    7.685  us/op
+[info] MutableLongMapBenchmark.retrieveOriginal                                                               24576  N/A  avgt   10     487.160 ±    0.305  us/op
+[info] MutableLongMapBenchmark.retrieveOriginal                                                               28672  N/A  avgt   10     652.255 ±    0.530  us/op
+[info] MutableLongMapBenchmark.retrieveOriginal                                                               32768  N/A  avgt   10     771.777 ±    2.420  us/op
+[info] MutableLongMapBenchmark.retrieveOriginal                                                               36864  N/A  avgt   10     772.530 ±    3.654  us/op
+[info] MutableLongMapBenchmark.retrieveOriginal                                                               40960  N/A  avgt   10     771.439 ±    3.155  us/op
+[info] MutableLongMapBenchmark.retrieveOriginal                                                               45056  N/A  avgt   10     776.177 ±    1.280  us/op
+[info] MutableLongMapBenchmark.retrieveOriginal                                                               49152  N/A  avgt   10     740.728 ±    0.478  us/op
+[info] MutableLongMapBenchmark.retrieveOriginal                                                               53248  N/A  avgt   10     653.577 ±    2.381  us/op
+[info] MutableLongMapBenchmark.retrieveOriginal                                                               57344  N/A  avgt   10     638.742 ±    8.290  us/op
+[info] MutableLongMapBenchmark.retrieveOriginal                                                               61440  N/A  avgt   10     622.611 ±    0.368  us/op
+[info] MutableLongMapBenchmark.retrieveOriginal                                                               65536  N/A  avgt   10     642.156 ±    0.107  us/op
+[info] MutableLongMapBenchmark.retrieveVerified                                                                4096  N/A  avgt   10      68.642 ±    0.992  us/op
+[info] MutableLongMapBenchmark.retrieveVerified                                                                8192  N/A  avgt   10     149.177 ±    4.738  us/op
+[info] MutableLongMapBenchmark.retrieveVerified                                                               12288  N/A  avgt   10     309.848 ±    0.597  us/op
+[info] MutableLongMapBenchmark.retrieveVerified                                                               16384  N/A  avgt   10     407.184 ±    0.108  us/op
+[info] MutableLongMapBenchmark.retrieveVerified                                                               20480  N/A  avgt   10     532.001 ±    0.509  us/op
+[info] MutableLongMapBenchmark.retrieveVerified                                                               24576  N/A  avgt   10     728.591 ±   11.962  us/op
+[info] MutableLongMapBenchmark.retrieveVerified                                                               28672  N/A  avgt   10     860.945 ±   16.711  us/op
+[info] MutableLongMapBenchmark.retrieveVerified                                                               32768  N/A  avgt   10    1032.060 ±   15.244  us/op
+[info] MutableLongMapBenchmark.retrieveVerified                                                               36864  N/A  avgt   10    1026.796 ±   17.542  us/op
+[info] MutableLongMapBenchmark.retrieveVerified                                                               40960  N/A  avgt   10    1026.691 ±    5.962  us/op
+[info] MutableLongMapBenchmark.retrieveVerified                                                               45056  N/A  avgt   10    1031.261 ±   13.388  us/op
+[info] MutableLongMapBenchmark.retrieveVerified                                                               49152  N/A  avgt   10    1020.945 ±   11.929  us/op
+[info] MutableLongMapBenchmark.retrieveVerified                                                               53248  N/A  avgt   10     996.726 ±   14.052  us/op
+[info] MutableLongMapBenchmark.retrieveVerified                                                               57344  N/A  avgt   10     857.267 ±   16.240  us/op
+[info] MutableLongMapBenchmark.retrieveVerified                                                               61440  N/A  avgt   10     801.863 ±    2.980  us/op
+[info] MutableLongMapBenchmark.retrieveVerified                                                               65536  N/A  avgt   10     827.442 ±    1.663  us/op
+[info] MutableLongMapBenchmark.update2to15KeysThenLookup16BufferOriginal                                       4096  N/A  avgt   10       2.486 ±    0.009  ms/op
+[info] MutableLongMapBenchmark.update2to15KeysThenLookup16BufferOriginal                                       8192  N/A  avgt   10       2.565 ±    0.018  ms/op
+[info] MutableLongMapBenchmark.update2to15KeysThenLookup16BufferOriginal                                      12288  N/A  avgt   10       2.655 ±    0.042  ms/op
+[info] MutableLongMapBenchmark.update2to15KeysThenLookup16BufferOriginal                                      16384  N/A  avgt   10       2.762 ±    0.013  ms/op
+[info] MutableLongMapBenchmark.update2to15KeysThenLookup16BufferOriginal                                      20480  N/A  avgt   10       2.834 ±    0.020  ms/op
+[info] MutableLongMapBenchmark.update2to15KeysThenLookup16BufferOriginal                                      24576  N/A  avgt   10       2.920 ±    0.033  ms/op
+[info] MutableLongMapBenchmark.update2to15KeysThenLookup16BufferOriginal                                      28672  N/A  avgt   10       3.096 ±    0.027  ms/op
+[info] MutableLongMapBenchmark.update2to15KeysThenLookup16BufferOriginal                                      32768  N/A  avgt   10       3.200 ±    0.020  ms/op
+[info] MutableLongMapBenchmark.update2to15KeysThenLookup16BufferOriginal                                      36864  N/A  avgt   10       3.242 ±    0.023  ms/op
+[info] MutableLongMapBenchmark.update2to15KeysThenLookup16BufferOriginal                                      40960  N/A  avgt   10       3.215 ±    0.013  ms/op
+[info] MutableLongMapBenchmark.update2to15KeysThenLookup16BufferOriginal                                      45056  N/A  avgt   10       3.235 ±    0.036  ms/op
+[info] MutableLongMapBenchmark.update2to15KeysThenLookup16BufferOriginal                                      49152  N/A  avgt   10       3.244 ±    0.018  ms/op
+[info] MutableLongMapBenchmark.update2to15KeysThenLookup16BufferOriginal                                      53248  N/A  avgt   10       3.154 ±    0.015  ms/op
+[info] MutableLongMapBenchmark.update2to15KeysThenLookup16BufferOriginal                                      57344  N/A  avgt   10       3.093 ±    0.034  ms/op
+[info] MutableLongMapBenchmark.update2to15KeysThenLookup16BufferOriginal                                      61440  N/A  avgt   10       3.129 ±    0.015  ms/op
+[info] MutableLongMapBenchmark.update2to15KeysThenLookup16BufferOriginal                                      65536  N/A  avgt   10       3.084 ±    0.023  ms/op
+[info] MutableLongMapBenchmark.update2to15KeysThenLookup16BufferVerified                                       4096  N/A  avgt   10       3.252 ±    0.029  ms/op
+[info] MutableLongMapBenchmark.update2to15KeysThenLookup16BufferVerified                                       8192  N/A  avgt   10       3.324 ±    0.025  ms/op
+[info] MutableLongMapBenchmark.update2to15KeysThenLookup16BufferVerified                                      12288  N/A  avgt   10       3.481 ±    0.020  ms/op
+[info] MutableLongMapBenchmark.update2to15KeysThenLookup16BufferVerified                                      16384  N/A  avgt   10       3.622 ±    0.023  ms/op
+[info] MutableLongMapBenchmark.update2to15KeysThenLookup16BufferVerified                                      20480  N/A  avgt   10       3.791 ±    0.018  ms/op
+[info] MutableLongMapBenchmark.update2to15KeysThenLookup16BufferVerified                                      24576  N/A  avgt   10       3.916 ±    0.028  ms/op
+[info] MutableLongMapBenchmark.update2to15KeysThenLookup16BufferVerified                                      28672  N/A  avgt   10       4.076 ±    0.017  ms/op
+[info] MutableLongMapBenchmark.update2to15KeysThenLookup16BufferVerified                                      32768  N/A  avgt   10       4.314 ±    0.019  ms/op
+[info] MutableLongMapBenchmark.update2to15KeysThenLookup16BufferVerified                                      36864  N/A  avgt   10       4.337 ±    0.046  ms/op
+[info] MutableLongMapBenchmark.update2to15KeysThenLookup16BufferVerified                                      40960  N/A  avgt   10       4.383 ±    0.045  ms/op
+[info] MutableLongMapBenchmark.update2to15KeysThenLookup16BufferVerified                                      45056  N/A  avgt   10       4.320 ±    0.023  ms/op
+[info] MutableLongMapBenchmark.update2to15KeysThenLookup16BufferVerified                                      49152  N/A  avgt   10       4.275 ±    0.055  ms/op
+[info] MutableLongMapBenchmark.update2to15KeysThenLookup16BufferVerified                                      53248  N/A  avgt   10       4.251 ±    0.032  ms/op
+[info] MutableLongMapBenchmark.update2to15KeysThenLookup16BufferVerified                                      57344  N/A  avgt   10       4.092 ±    0.022  ms/op
+[info] MutableLongMapBenchmark.update2to15KeysThenLookup16BufferVerified                                      61440  N/A  avgt   10       4.137 ±    0.039  ms/op
+[info] MutableLongMapBenchmark.update2to15KeysThenLookup16BufferVerified                                      65536  N/A  avgt   10       4.162 ±    0.010  ms/op
+[info] MutableLongMapBenchmark.update2to15KeysThenLookup2to17BufferOriginal                                    4096  N/A  avgt   10       1.839 ±    0.011  ms/op
+[info] MutableLongMapBenchmark.update2to15KeysThenLookup2to17BufferOriginal                                    8192  N/A  avgt   10       1.934 ±    0.010  ms/op
+[info] MutableLongMapBenchmark.update2to15KeysThenLookup2to17BufferOriginal                                   12288  N/A  avgt   10       1.980 ±    0.014  ms/op
+[info] MutableLongMapBenchmark.update2to15KeysThenLookup2to17BufferOriginal                                   16384  N/A  avgt   10       2.096 ±    0.009  ms/op
+[info] MutableLongMapBenchmark.update2to15KeysThenLookup2to17BufferOriginal                                   20480  N/A  avgt   10       2.228 ±    0.046  ms/op
+[info] MutableLongMapBenchmark.update2to15KeysThenLookup2to17BufferOriginal                                   24576  N/A  avgt   10       2.323 ±    0.038  ms/op
+[info] MutableLongMapBenchmark.update2to15KeysThenLookup2to17BufferOriginal                                   28672  N/A  avgt   10       2.448 ±    0.026  ms/op
+[info] MutableLongMapBenchmark.update2to15KeysThenLookup2to17BufferOriginal                                   32768  N/A  avgt   10       2.554 ±    0.027  ms/op
+[info] MutableLongMapBenchmark.update2to15KeysThenLookup2to17BufferOriginal                                   36864  N/A  avgt   10       2.859 ±    0.566  ms/op
+[info] MutableLongMapBenchmark.update2to15KeysThenLookup2to17BufferOriginal                                   40960  N/A  avgt   10       2.561 ±    0.059  ms/op
+[info] MutableLongMapBenchmark.update2to15KeysThenLookup2to17BufferOriginal                                   45056  N/A  avgt   10       2.550 ±    0.013  ms/op
+[info] MutableLongMapBenchmark.update2to15KeysThenLookup2to17BufferOriginal                                   49152  N/A  avgt   10       2.537 ±    0.030  ms/op
+[info] MutableLongMapBenchmark.update2to15KeysThenLookup2to17BufferOriginal                                   53248  N/A  avgt   10       2.428 ±    0.028  ms/op
+[info] MutableLongMapBenchmark.update2to15KeysThenLookup2to17BufferOriginal                                   57344  N/A  avgt   10       2.387 ±    0.028  ms/op
+[info] MutableLongMapBenchmark.update2to15KeysThenLookup2to17BufferOriginal                                   61440  N/A  avgt   10       2.375 ±    0.038  ms/op
+[info] MutableLongMapBenchmark.update2to15KeysThenLookup2to17BufferOriginal                                   65536  N/A  avgt   10       2.421 ±    0.025  ms/op
+[info] MutableLongMapBenchmark.update2to15KeysThenLookup2to17BufferVerified                                    4096  N/A  avgt   10       4.137 ±    0.061  ms/op
+[info] MutableLongMapBenchmark.update2to15KeysThenLookup2to17BufferVerified                                    8192  N/A  avgt   10       4.748 ±    0.471  ms/op
+[info] MutableLongMapBenchmark.update2to15KeysThenLookup2to17BufferVerified                                   12288  N/A  avgt   10       4.507 ±    0.036  ms/op
+[info] MutableLongMapBenchmark.update2to15KeysThenLookup2to17BufferVerified                                   16384  N/A  avgt   10       4.630 ±    0.025  ms/op
+[info] MutableLongMapBenchmark.update2to15KeysThenLookup2to17BufferVerified                                   20480  N/A  avgt   10       4.914 ±    0.052  ms/op
+[info] MutableLongMapBenchmark.update2to15KeysThenLookup2to17BufferVerified                                   24576  N/A  avgt   10       5.010 ±    0.038  ms/op
+[info] MutableLongMapBenchmark.update2to15KeysThenLookup2to17BufferVerified                                   28672  N/A  avgt   10       5.532 ±    0.240  ms/op
+[info] MutableLongMapBenchmark.update2to15KeysThenLookup2to17BufferVerified                                   32768  N/A  avgt   10       6.589 ±    0.780  ms/op
+[info] MutableLongMapBenchmark.update2to15KeysThenLookup2to17BufferVerified                                   36864  N/A  avgt   10       5.588 ±    0.075  ms/op
+[info] MutableLongMapBenchmark.update2to15KeysThenLookup2to17BufferVerified                                   40960  N/A  avgt   10       5.536 ±    0.085  ms/op
+[info] MutableLongMapBenchmark.update2to15KeysThenLookup2to17BufferVerified                                   45056  N/A  avgt   10       5.531 ±    0.050  ms/op
+[info] MutableLongMapBenchmark.update2to15KeysThenLookup2to17BufferVerified                                   49152  N/A  avgt   10       5.514 ±    0.076  ms/op
+[info] MutableLongMapBenchmark.update2to15KeysThenLookup2to17BufferVerified                                   53248  N/A  avgt   10       5.624 ±    0.053  ms/op
+[info] MutableLongMapBenchmark.update2to15KeysThenLookup2to17BufferVerified                                   57344  N/A  avgt   10       5.445 ±    0.080  ms/op
+[info] MutableLongMapBenchmark.update2to15KeysThenLookup2to17BufferVerified                                   61440  N/A  avgt   10       5.465 ±    0.097  ms/op
+[info] MutableLongMapBenchmark.update2to15KeysThenLookup2to17BufferVerified                                   65536  N/A  avgt   10       5.407 ±    0.045  ms/op
+[success] Total time: 59243 s (16:27:23), completed Nov 1, 2023, 10:19:57 AM
