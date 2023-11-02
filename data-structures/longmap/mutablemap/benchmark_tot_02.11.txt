@@ -2445,3 +2445,684 @@ Writing out Java source to /localhome/chassot/bolts/data-structures/longmap/muta
 [info] Iteration   7: 2622.182 us/op
 [info] Iteration   8: 2859.993 us/op
 [info] Iteration   9: 2362.828 us/op
+[info] Iteration  10: 2352.272 us/op
+[info] Result "benchmark.MutableLongMapBenchmark.createUpdateLookup_16Buffer_Original":
+[info]   2422.748 ±(99.9%) 268.758 us/op [Average]
+[info]   (min, avg, max) = (2316.352, 2422.748, 2859.993), stdev = 177.767
+[info]   CI (99.9%): [2153.989, 2691.506] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1-Ubuntu-0ubuntu120.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 10 iterations, 10 s each
+[info] # Measurement: 10 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: benchmark.MutableLongMapBenchmark.createUpdateLookup_16Buffer_Original
+[info] # Parameters: (keysListName = 18432)
+[info] # Run progress: 12.60% complete, ETA 1 days, 08:22:08
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 2776.990 us/op
+[info] # Warmup Iteration   2: 2426.510 us/op
+[info] # Warmup Iteration   3: 2389.459 us/op
+[info] # Warmup Iteration   4: 2417.480 us/op
+[info] # Warmup Iteration   5: 2379.701 us/op
+[info] # Warmup Iteration   6: 2406.107 us/op
+[info] # Warmup Iteration   7: 2423.862 us/op
+[info] # Warmup Iteration   8: 2446.173 us/op
+[info] # Warmup Iteration   9: 2421.132 us/op
+[info] # Warmup Iteration  10: 2446.093 us/op
+[info] Iteration   1: 2435.566 us/op
+[info] Iteration   2: 2394.736 us/op
+[info] Iteration   3: 2373.987 us/op
+[info] Iteration   4: 2387.144 us/op
+[info] Iteration   5: 2387.426 us/op
+[info] Iteration   6: 2376.038 us/op
+[info] Iteration   7: 2374.703 us/op
+[info] Iteration   8: 2374.353 us/op
+[info] Iteration   9: 2388.171 us/op
+[info] Iteration  10: 2384.753 us/op
+[info] Result "benchmark.MutableLongMapBenchmark.createUpdateLookup_16Buffer_Original":
+[info]   2387.688 ±(99.9%) 27.699 us/op [Average]
+[info]   (min, avg, max) = (2373.987, 2387.688, 2435.566), stdev = 18.321
+[info]   CI (99.9%): [2359.988, 2415.387] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1-Ubuntu-0ubuntu120.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 10 iterations, 10 s each
+[info] # Measurement: 10 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: benchmark.MutableLongMapBenchmark.createUpdateLookup_16Buffer_Original
+[info] # Parameters: (keysListName = 20480)
+[info] # Run progress: 12.80% complete, ETA 1 days, 08:09:36
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 2795.141 us/op
+[info] # Warmup Iteration   2: 2474.839 us/op
+[info] # Warmup Iteration   3: 2418.685 us/op
+[info] # Warmup Iteration   4: 2441.822 us/op
+[info] # Warmup Iteration   5: 2402.275 us/op
+[info] # Warmup Iteration   6: 2413.281 us/op
+[info] # Warmup Iteration   7: 2427.442 us/op
+[info] # Warmup Iteration   8: 2415.076 us/op
+[info] # Warmup Iteration   9: 2399.183 us/op
+[info] # Warmup Iteration  10: 2378.506 us/op
+[info] Iteration   1: 2384.118 us/op
+[info] Iteration   2: 2389.624 us/op
+[info] Iteration   3: 2391.461 us/op
+[info] Iteration   4: 2389.856 us/op
+[info] Iteration   5: 2392.191 us/op
+[info] Iteration   6: 2426.600 us/op
+[info] Iteration   7: 2423.040 us/op
+[info] Iteration   8: 2429.145 us/op
+[info] Iteration   9: 2444.645 us/op
+[info] Iteration  10: 2409.365 us/op
+[info] Result "benchmark.MutableLongMapBenchmark.createUpdateLookup_16Buffer_Original":
+[info]   2408.004 ±(99.9%) 32.366 us/op [Average]
+[info]   (min, avg, max) = (2384.118, 2408.004, 2444.645), stdev = 21.408
+[info]   CI (99.9%): [2375.639, 2440.370] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1-Ubuntu-0ubuntu120.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 10 iterations, 10 s each
+[info] # Measurement: 10 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: benchmark.MutableLongMapBenchmark.createUpdateLookup_16Buffer_Original
+[info] # Parameters: (keysListName = 22528)
+[info] # Run progress: 13.01% complete, ETA 1 days, 07:57:22
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 2851.268 us/op
+[info] # Warmup Iteration   2: 2504.464 us/op
+[info] # Warmup Iteration   3: 2480.577 us/op
+[info] # Warmup Iteration   4: 2444.723 us/op
+[info] # Warmup Iteration   5: 2474.320 us/op
+[info] # Warmup Iteration   6: 2439.295 us/op
+[info] # Warmup Iteration   7: 2429.949 us/op
+[info] # Warmup Iteration   8: 2455.349 us/op
+[info] # Warmup Iteration   9: 2443.365 us/op
+[info] # Warmup Iteration  10: 2439.249 us/op
+[info] Iteration   1: 2425.878 us/op
+[info] Iteration   2: 2424.356 us/op
+[info] Iteration   3: 2427.825 us/op
+[info] Iteration   4: 2444.295 us/op
+[info] Iteration   5: 2443.013 us/op
+[info] Iteration   6: 2441.165 us/op
+[info] Iteration   7: 2431.477 us/op
+[info] Iteration   8: 2458.870 us/op
+[info] Iteration   9: 2447.448 us/op
+[info] Iteration  10: 2446.480 us/op
+[info] Result "benchmark.MutableLongMapBenchmark.createUpdateLookup_16Buffer_Original":
+[info]   2439.081 ±(99.9%) 17.008 us/op [Average]
+[info]   (min, avg, max) = (2424.356, 2439.081, 2458.870), stdev = 11.250
+[info]   CI (99.9%): [2422.072, 2456.089] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1-Ubuntu-0ubuntu120.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 10 iterations, 10 s each
+[info] # Measurement: 10 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: benchmark.MutableLongMapBenchmark.createUpdateLookup_16Buffer_Original
+[info] # Parameters: (keysListName = 24576)
+[info] # Run progress: 13.21% complete, ETA 1 days, 07:45:24
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 2977.645 us/op
+[info] # Warmup Iteration   2: 2536.759 us/op
+[info] # Warmup Iteration   3: 2534.066 us/op
+[info] # Warmup Iteration   4: 2474.158 us/op
+[info] # Warmup Iteration   5: 2511.973 us/op
+[info] # Warmup Iteration   6: 2486.094 us/op
+[info] # Warmup Iteration   7: 2509.990 us/op
+[info] # Warmup Iteration   8: 2501.909 us/op
+[info] # Warmup Iteration   9: 2518.033 us/op
+[info] # Warmup Iteration  10: 2501.895 us/op
+[info] Iteration   1: 2494.916 us/op
+[info] Iteration   2: 2494.669 us/op
+[info] Iteration   3: 2498.509 us/op
+[info] Iteration   4: 2490.080 us/op
+[info] Iteration   5: 2508.612 us/op
+[info] Iteration   6: 2501.612 us/op
+[info] Iteration   7: 2480.901 us/op
+[info] Iteration   8: 2466.444 us/op
+[info] Iteration   9: 2466.259 us/op
+[info] Iteration  10: 2464.670 us/op
+[info] Result "benchmark.MutableLongMapBenchmark.createUpdateLookup_16Buffer_Original":
+[info]   2486.667 ±(99.9%) 24.333 us/op [Average]
+[info]   (min, avg, max) = (2464.670, 2486.667, 2508.612), stdev = 16.095
+[info]   CI (99.9%): [2462.334, 2511.001] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1-Ubuntu-0ubuntu120.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 10 iterations, 10 s each
+[info] # Measurement: 10 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: benchmark.MutableLongMapBenchmark.createUpdateLookup_16Buffer_Original
+[info] # Parameters: (keysListName = 26624)
+[info] # Run progress: 13.41% complete, ETA 1 days, 07:33:42
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 3029.821 us/op
+[info] # Warmup Iteration   2: 2639.464 us/op
+[info] # Warmup Iteration   3: 2641.739 us/op
+[info] # Warmup Iteration   4: 2623.901 us/op
+[info] # Warmup Iteration   5: 2613.241 us/op
+[info] # Warmup Iteration   6: 2624.545 us/op
+[info] # Warmup Iteration   7: 2582.395 us/op
+[info] # Warmup Iteration   8: 2592.972 us/op
+[info] # Warmup Iteration   9: 2604.770 us/op
+[info] # Warmup Iteration  10: 2613.448 us/op
+[info] Iteration   1: 2588.802 us/op
+[info] Iteration   2: 2578.802 us/op
+[info] Iteration   3: 2580.405 us/op
+[info] Iteration   4: 2579.535 us/op
+[info] Iteration   5: 2586.954 us/op
+[info] Iteration   6: 2604.592 us/op
+[info] Iteration   7: 2617.052 us/op
+[info] Iteration   8: 2600.994 us/op
+[info] Iteration   9: 2607.419 us/op
+[info] Iteration  10: 2594.571 us/op
+[info] Result "benchmark.MutableLongMapBenchmark.createUpdateLookup_16Buffer_Original":
+[info]   2593.913 ±(99.9%) 19.997 us/op [Average]
+[info]   (min, avg, max) = (2578.802, 2593.913, 2617.052), stdev = 13.227
+[info]   CI (99.9%): [2573.916, 2613.909] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1-Ubuntu-0ubuntu120.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 10 iterations, 10 s each
+[info] # Measurement: 10 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: benchmark.MutableLongMapBenchmark.createUpdateLookup_16Buffer_Original
+[info] # Parameters: (keysListName = 28672)
+[info] # Run progress: 13.62% complete, ETA 1 days, 07:22:15
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 2998.099 us/op
+[info] # Warmup Iteration   2: 2639.807 us/op
+[info] # Warmup Iteration   3: 2559.931 us/op
+[info] # Warmup Iteration   4: 2624.119 us/op
+[info] # Warmup Iteration   5: 2563.860 us/op
+[info] # Warmup Iteration   6: 2558.229 us/op
+[info] # Warmup Iteration   7: 2573.841 us/op
+[info] # Warmup Iteration   8: 2590.654 us/op
+[info] # Warmup Iteration   9: 2589.189 us/op
+[info] # Warmup Iteration  10: 2559.707 us/op
+[info] Iteration   1: 2559.245 us/op
+[info] Iteration   2: 2573.976 us/op
+[info] Iteration   3: 2575.559 us/op
+[info] Iteration   4: 2576.882 us/op
+[info] Iteration   5: 2573.320 us/op
+[info] Iteration   6: 2565.209 us/op
+[info] Iteration   7: 2558.323 us/op
+[info] Iteration   8: 2557.150 us/op
+[info] Iteration   9: 2557.195 us/op
+[info] Iteration  10: 2557.167 us/op
+[info] Result "benchmark.MutableLongMapBenchmark.createUpdateLookup_16Buffer_Original":
+[info]   2565.403 ±(99.9%) 12.971 us/op [Average]
+[info]   (min, avg, max) = (2557.150, 2565.403, 2576.882), stdev = 8.580
+[info]   CI (99.9%): [2552.431, 2578.374] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1-Ubuntu-0ubuntu120.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 10 iterations, 10 s each
+[info] # Measurement: 10 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: benchmark.MutableLongMapBenchmark.createUpdateLookup_16Buffer_Original
+[info] # Parameters: (keysListName = 30720)
+[info] # Run progress: 13.82% complete, ETA 1 days, 07:11:02
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 3075.099 us/op
+[info] # Warmup Iteration   2: 2635.714 us/op
+[info] # Warmup Iteration   3: 2613.238 us/op
+[info] # Warmup Iteration   4: 2568.539 us/op
+[info] # Warmup Iteration   5: 2589.830 us/op
+[info] # Warmup Iteration   6: 2604.204 us/op
+[info] # Warmup Iteration   7: 2558.946 us/op
+[info] # Warmup Iteration   8: 2585.614 us/op
+[info] # Warmup Iteration   9: 2597.851 us/op
+[info] # Warmup Iteration  10: 2614.851 us/op
+[info] Iteration   1: 2604.381 us/op
+[info] Iteration   2: 2578.162 us/op
+[info] Iteration   3: 2577.484 us/op
+[info] Iteration   4: 2576.838 us/op
+[info] Iteration   5: 2575.805 us/op
+[info] Iteration   6: 2596.867 us/op
+[info] Iteration   7: 2593.991 us/op
+[info] Iteration   8: 2589.771 us/op
+[info] Iteration   9: 2591.912 us/op
+[info] Iteration  10: 2575.415 us/op
+[info] Result "benchmark.MutableLongMapBenchmark.createUpdateLookup_16Buffer_Original":
+[info]   2586.063 ±(99.9%) 15.959 us/op [Average]
+[info]   (min, avg, max) = (2575.415, 2586.063, 2604.381), stdev = 10.556
+[info]   CI (99.9%): [2570.104, 2602.022] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1-Ubuntu-0ubuntu120.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 10 iterations, 10 s each
+[info] # Measurement: 10 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: benchmark.MutableLongMapBenchmark.createUpdateLookup_16Buffer_Original
+[info] # Parameters: (keysListName = 32768)
+[info] # Run progress: 14.02% complete, ETA 1 days, 07:00:03
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 3187.704 us/op
+[info] # Warmup Iteration   2: 2728.300 us/op
+[info] # Warmup Iteration   3: 2714.111 us/op
+[info] # Warmup Iteration   4: 2729.749 us/op
+[info] # Warmup Iteration   5: 2682.103 us/op
+[info] # Warmup Iteration   6: 2661.670 us/op
+[info] # Warmup Iteration   7: 2732.065 us/op
+[info] # Warmup Iteration   8: 2732.520 us/op
+[info] # Warmup Iteration   9: 2689.010 us/op
+[info] # Warmup Iteration  10: 2711.667 us/op
+[info] Iteration   1: 2715.430 us/op
+[info] Iteration   2: 2719.352 us/op
+[info] Iteration   3: 2748.043 us/op
+[info] Iteration   4: 2728.613 us/op
+[info] Iteration   5: 2752.609 us/op
+[info] Iteration   6: 2730.168 us/op
+[info] Iteration   7: 2726.904 us/op
+[info] Iteration   8: 2703.158 us/op
+[info] Iteration   9: 2696.306 us/op
+[info] Iteration  10: 2707.830 us/op
+[info] Result "benchmark.MutableLongMapBenchmark.createUpdateLookup_16Buffer_Original":
+[info]   2722.841 ±(99.9%) 27.643 us/op [Average]
+[info]   (min, avg, max) = (2696.306, 2722.841, 2752.609), stdev = 18.284
+[info]   CI (99.9%): [2695.198, 2750.484] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1-Ubuntu-0ubuntu120.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 10 iterations, 10 s each
+[info] # Measurement: 10 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: benchmark.MutableLongMapBenchmark.createUpdateLookup_16Buffer_Original
+[info] # Parameters: (keysListName = 34816)
+[info] # Run progress: 14.23% complete, ETA 1 days, 06:49:17
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 4067.747 us/op
+[info] # Warmup Iteration   2: 3771.277 us/op
+[info] # Warmup Iteration   3: 3258.872 us/op
+[info] # Warmup Iteration   4: 2765.637 us/op
+[info] # Warmup Iteration   5: 2863.835 us/op
+[info] # Warmup Iteration   6: 3044.676 us/op
+[info] # Warmup Iteration   7: 2816.921 us/op
+[info] # Warmup Iteration   8: 2727.182 us/op
+[info] # Warmup Iteration   9: 2732.458 us/op
+[info] # Warmup Iteration  10: 2714.230 us/op
+[info] Iteration   1: 2704.031 us/op
+[info] Iteration   2: 2765.095 us/op
+[info] Iteration   3: 2700.169 us/op
+[info] Iteration   4: 2701.447 us/op
+[info] Iteration   5: 2699.280 us/op
+[info] Iteration   6: 2698.592 us/op
+[info] Iteration   7: 2701.612 us/op
+[info] Iteration   8: 2767.259 us/op
+[info] Iteration   9: 2694.526 us/op
+[info] Iteration  10: 2695.742 us/op
+[info] Result "benchmark.MutableLongMapBenchmark.createUpdateLookup_16Buffer_Original":
+[info]   2712.775 ±(99.9%) 42.763 us/op [Average]
+[info]   (min, avg, max) = (2694.526, 2712.775, 2767.259), stdev = 28.285
+[info]   CI (99.9%): [2670.012, 2755.539] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1-Ubuntu-0ubuntu120.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 10 iterations, 10 s each
+[info] # Measurement: 10 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: benchmark.MutableLongMapBenchmark.createUpdateLookup_16Buffer_Original
+[info] # Parameters: (keysListName = 36864)
+[info] # Run progress: 14.43% complete, ETA 1 days, 06:38:43
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 3167.483 us/op
+[info] # Warmup Iteration   2: 2700.313 us/op
+[info] # Warmup Iteration   3: 2737.523 us/op
+[info] # Warmup Iteration   4: 2693.076 us/op
+[info] # Warmup Iteration   5: 2704.851 us/op
+[info] # Warmup Iteration   6: 2693.665 us/op
+[info] # Warmup Iteration   7: 2682.911 us/op
+[info] # Warmup Iteration   8: 2691.037 us/op
+[info] # Warmup Iteration   9: 2711.809 us/op
+[info] # Warmup Iteration  10: 2693.708 us/op
+[info] Iteration   1: 2692.274 us/op
+[info] Iteration   2: 2682.796 us/op
+[info] Iteration   3: 2671.367 us/op
+[info] Iteration   4: 2669.020 us/op
+[info] Iteration   5: 2679.783 us/op
+[info] Iteration   6: 2689.133 us/op
+[info] Iteration   7: 2681.767 us/op
+[info] Iteration   8: 2688.339 us/op
+[info] Iteration   9: 2669.586 us/op
+[info] Iteration  10: 2689.050 us/op
+[info] Result "benchmark.MutableLongMapBenchmark.createUpdateLookup_16Buffer_Original":
+[info]   2681.312 ±(99.9%) 13.169 us/op [Average]
+[info]   (min, avg, max) = (2669.020, 2681.312, 2692.274), stdev = 8.711
+[info]   CI (99.9%): [2668.142, 2694.481] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1-Ubuntu-0ubuntu120.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 10 iterations, 10 s each
+[info] # Measurement: 10 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: benchmark.MutableLongMapBenchmark.createUpdateLookup_16Buffer_Original
+[info] # Parameters: (keysListName = 38912)
+[info] # Run progress: 14.63% complete, ETA 1 days, 06:28:22
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 3017.367 us/op
+[info] # Warmup Iteration   2: 2681.440 us/op
+[info] # Warmup Iteration   3: 2674.085 us/op
+[info] # Warmup Iteration   4: 2663.706 us/op
+[info] # Warmup Iteration   5: 2662.160 us/op
+[info] # Warmup Iteration   6: 2676.202 us/op
+[info] # Warmup Iteration   7: 2644.180 us/op
+[info] # Warmup Iteration   8: 2632.845 us/op
+[info] # Warmup Iteration   9: 2644.178 us/op
+[info] # Warmup Iteration  10: 2649.263 us/op
+[info] Iteration   1: 2650.592 us/op
+[info] Iteration   2: 2657.474 us/op
+[info] Iteration   3: 2653.861 us/op
+[info] Iteration   4: 2640.396 us/op
+[info] Iteration   5: 2637.310 us/op
+[info] Iteration   6: 2638.666 us/op
+[info] Iteration   7: 2662.112 us/op
+[info] Iteration   8: 2653.171 us/op
+[info] Iteration   9: 2642.046 us/op
+[info] Iteration  10: 2621.738 us/op
+[info] Result "benchmark.MutableLongMapBenchmark.createUpdateLookup_16Buffer_Original":
+[info]   2645.737 ±(99.9%) 18.099 us/op [Average]
+[info]   (min, avg, max) = (2621.738, 2645.737, 2662.112), stdev = 11.971
+[info]   CI (99.9%): [2627.637, 2663.836] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1-Ubuntu-0ubuntu120.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 10 iterations, 10 s each
+[info] # Measurement: 10 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: benchmark.MutableLongMapBenchmark.createUpdateLookup_16Buffer_Original
+[info] # Parameters: (keysListName = 40960)
+[info] # Run progress: 14.84% complete, ETA 1 days, 06:18:12
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 3144.548 us/op
+[info] # Warmup Iteration   2: 2754.048 us/op
+[info] # Warmup Iteration   3: 2700.092 us/op
+[info] # Warmup Iteration   4: 2717.808 us/op
+[info] # Warmup Iteration   5: 2739.159 us/op
+[info] # Warmup Iteration   6: 2737.805 us/op
+[info] # Warmup Iteration   7: 2688.046 us/op
+[info] # Warmup Iteration   8: 2729.326 us/op
+[info] # Warmup Iteration   9: 2680.664 us/op
+[info] # Warmup Iteration  10: 2711.020 us/op
+[info] Iteration   1: 2706.507 us/op
+[info] Iteration   2: 2662.125 us/op
+[info] Iteration   3: 2660.276 us/op
+[info] Iteration   4: 2699.626 us/op
+[info] Iteration   5: 2691.633 us/op
+[info] Iteration   6: 2659.383 us/op
+[info] Iteration   7: 2667.313 us/op
+[info] Iteration   8: 2688.592 us/op
+[info] Iteration   9: 2693.241 us/op
+[info] Iteration  10: 2722.837 us/op
+[info] Result "benchmark.MutableLongMapBenchmark.createUpdateLookup_16Buffer_Original":
+[info]   2685.153 ±(99.9%) 33.186 us/op [Average]
+[info]   (min, avg, max) = (2659.383, 2685.153, 2722.837), stdev = 21.950
+[info]   CI (99.9%): [2651.968, 2718.339] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1-Ubuntu-0ubuntu120.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 10 iterations, 10 s each
+[info] # Measurement: 10 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: benchmark.MutableLongMapBenchmark.createUpdateLookup_16Buffer_Original
+[info] # Parameters: (keysListName = 43008)
+[info] # Run progress: 15.04% complete, ETA 1 days, 06:08:13
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 3187.825 us/op
+[info] # Warmup Iteration   2: 2800.042 us/op
+[info] # Warmup Iteration   3: 2812.062 us/op
+[info] # Warmup Iteration   4: 2783.479 us/op
+[info] # Warmup Iteration   5: 2847.978 us/op
+[info] # Warmup Iteration   6: 2772.663 us/op
+[info] # Warmup Iteration   7: 2775.176 us/op
+[info] # Warmup Iteration   8: 2818.573 us/op
+[info] # Warmup Iteration   9: 2744.972 us/op
+[info] # Warmup Iteration  10: 2754.935 us/op
+[info] Iteration   1: 2812.796 us/op
+[info] Iteration   2: 2769.209 us/op
+[info] Iteration   3: 2803.175 us/op
+[info] Iteration   4: 2786.779 us/op
+[info] Iteration   5: 2757.812 us/op
+[info] Iteration   6: 2780.704 us/op
+[info] Iteration   7: 2793.157 us/op
+[info] Iteration   8: 2731.718 us/op
+[info] Iteration   9: 2724.712 us/op
+[info] Iteration  10: 2735.305 us/op
+[info] Result "benchmark.MutableLongMapBenchmark.createUpdateLookup_16Buffer_Original":
+[info]   2769.537 ±(99.9%) 47.091 us/op [Average]
+[info]   (min, avg, max) = (2724.712, 2769.537, 2812.796), stdev = 31.148
+[info]   CI (99.9%): [2722.446, 2816.628] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1-Ubuntu-0ubuntu120.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 10 iterations, 10 s each
+[info] # Measurement: 10 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: benchmark.MutableLongMapBenchmark.createUpdateLookup_16Buffer_Original
+[info] # Parameters: (keysListName = 45056)
+[info] # Run progress: 15.24% complete, ETA 1 days, 05:58:25
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 3153.001 us/op
+[info] # Warmup Iteration   2: 2739.072 us/op
+[info] # Warmup Iteration   3: 2684.706 us/op
+[info] # Warmup Iteration   4: 2688.447 us/op
+[info] # Warmup Iteration   5: 2732.117 us/op
+[info] # Warmup Iteration   6: 2668.159 us/op
+[info] # Warmup Iteration   7: 2684.703 us/op
+[info] # Warmup Iteration   8: 2717.612 us/op
+[info] # Warmup Iteration   9: 2715.828 us/op
+[info] # Warmup Iteration  10: 2691.923 us/op
+[info] Iteration   1: 2695.640 us/op
+[info] Iteration   2: 2702.655 us/op
+[info] Iteration   3: 2697.932 us/op
+[info] Iteration   4: 2699.143 us/op
+[info] Iteration   5: 2712.751 us/op
+[info] Iteration   6: 2717.540 us/op
+[info] Iteration   7: 2717.597 us/op
+[info] Iteration   8: 2736.888 us/op
+[info] Iteration   9: 2699.564 us/op
+[info] Iteration  10: 2700.880 us/op
+[info] Result "benchmark.MutableLongMapBenchmark.createUpdateLookup_16Buffer_Original":
+[info]   2708.059 ±(99.9%) 19.668 us/op [Average]
+[info]   (min, avg, max) = (2695.640, 2708.059, 2736.888), stdev = 13.009
+[info]   CI (99.9%): [2688.391, 2727.727] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1-Ubuntu-0ubuntu120.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 10 iterations, 10 s each
+[info] # Measurement: 10 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: benchmark.MutableLongMapBenchmark.createUpdateLookup_16Buffer_Original
+[info] # Parameters: (keysListName = 47104)
+[info] # Run progress: 15.45% complete, ETA 1 days, 05:48:47
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 3242.929 us/op
+[info] # Warmup Iteration   2: 2761.866 us/op
+[info] # Warmup Iteration   3: 2706.918 us/op
+[info] # Warmup Iteration   4: 2739.329 us/op
+[info] # Warmup Iteration   5: 2706.798 us/op
+[info] # Warmup Iteration   6: 2723.466 us/op
+[info] # Warmup Iteration   7: 2700.123 us/op
+[info] # Warmup Iteration   8: 2684.714 us/op
+[info] # Warmup Iteration   9: 2709.391 us/op
+[info] # Warmup Iteration  10: 2706.273 us/op
+[info] Iteration   1: 2705.182 us/op
+[info] Iteration   2: 2700.954 us/op
+[info] Iteration   3: 2684.339 us/op
+[info] Iteration   4: 2683.720 us/op
+[info] Iteration   5: 2686.528 us/op
+[info] Iteration   6: 2701.255 us/op
+[info] Iteration   7: 2694.373 us/op
+[info] Iteration   8: 2687.540 us/op
+[info] Iteration   9: 2703.816 us/op
+[info] Iteration  10: 2701.026 us/op
+[info] Result "benchmark.MutableLongMapBenchmark.createUpdateLookup_16Buffer_Original":
+[info]   2694.873 ±(99.9%) 12.955 us/op [Average]
+[info]   (min, avg, max) = (2683.720, 2694.873, 2705.182), stdev = 8.569
+[info]   CI (99.9%): [2681.919, 2707.828] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1-Ubuntu-0ubuntu120.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 10 iterations, 10 s each
+[info] # Measurement: 10 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: benchmark.MutableLongMapBenchmark.createUpdateLookup_16Buffer_Original
+[info] # Parameters: (keysListName = 49152)
+[info] # Run progress: 15.65% complete, ETA 1 days, 05:39:19
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 3108.307 us/op
+[info] # Warmup Iteration   2: 2722.840 us/op
+[info] # Warmup Iteration   3: 2701.919 us/op
+[info] # Warmup Iteration   4: 2661.757 us/op
+[info] # Warmup Iteration   5: 2707.715 us/op
+[info] # Warmup Iteration   6: 2655.304 us/op
+[info] # Warmup Iteration   7: 2684.449 us/op
+[info] # Warmup Iteration   8: 2692.181 us/op
+[info] # Warmup Iteration   9: 2677.982 us/op
+[info] # Warmup Iteration  10: 2669.499 us/op
+[info] Iteration   1: 2630.311 us/op
+[info] Iteration   2: 2629.050 us/op
+[info] Iteration   3: 2634.398 us/op
+[info] Iteration   4: 2650.669 us/op
+[info] Iteration   5: 2648.017 us/op
+[info] Iteration   6: 2649.472 us/op
+[info] Iteration   7: 2633.011 us/op
+[info] Iteration   8: 2649.233 us/op
+[info] Iteration   9: 2632.826 us/op
+[info] Iteration  10: 2632.010 us/op
+[info] Result "benchmark.MutableLongMapBenchmark.createUpdateLookup_16Buffer_Original":
+[info]   2638.900 ±(99.9%) 13.804 us/op [Average]
+[info]   (min, avg, max) = (2629.050, 2638.900, 2650.669), stdev = 9.130
+[info]   CI (99.9%): [2625.096, 2652.704] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1-Ubuntu-0ubuntu120.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 10 iterations, 10 s each
+[info] # Measurement: 10 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: benchmark.MutableLongMapBenchmark.createUpdateLookup_16Buffer_Original
+[info] # Parameters: (keysListName = 51200)
+[info] # Run progress: 15.85% complete, ETA 1 days, 05:30:00
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 3104.190 us/op
+[info] # Warmup Iteration   2: 2718.357 us/op
+[info] # Warmup Iteration   3: 2719.442 us/op
+[info] # Warmup Iteration   4: 2685.094 us/op
+[info] # Warmup Iteration   5: 2703.225 us/op
+[info] # Warmup Iteration   6: 2660.131 us/op
+[info] # Warmup Iteration   7: 2708.534 us/op
+[info] # Warmup Iteration   8: 2677.291 us/op
+[info] # Warmup Iteration   9: 2717.752 us/op
+[info] # Warmup Iteration  10: 2661.082 us/op
+[info] Iteration   1: 2709.086 us/op
+[info] Iteration   2: 2655.035 us/op
+[info] Iteration   3: 2620.275 us/op
+[info] Iteration   4: 2620.480 us/op
+[info] Iteration   5: 2629.667 us/op
+[info] Iteration   6: 2671.266 us/op
+[info] Iteration   7: 2720.671 us/op
+[info] Iteration   8: 2726.128 us/op
+[info] Iteration   9: 2672.687 us/op
+[info] Iteration  10: 2645.130 us/op
+[info] Result "benchmark.MutableLongMapBenchmark.createUpdateLookup_16Buffer_Original":
+[info]   2667.042 ±(99.9%) 60.812 us/op [Average]
+[info]   (min, avg, max) = (2620.275, 2667.042, 2726.128), stdev = 40.223
+[info]   CI (99.9%): [2606.231, 2727.854] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1-Ubuntu-0ubuntu120.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 10 iterations, 10 s each
+[info] # Measurement: 10 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: benchmark.MutableLongMapBenchmark.createUpdateLookup_16Buffer_Original
+[info] # Parameters: (keysListName = 53248)
+[info] # Run progress: 16.06% complete, ETA 1 days, 05:20:50
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 3421.757 us/op
+[info] # Warmup Iteration   2: 2721.092 us/op
+[info] # Warmup Iteration   3: 2760.158 us/op
+[info] # Warmup Iteration   4: 2773.378 us/op
+[info] # Warmup Iteration   5: 2705.790 us/op
+[info] # Warmup Iteration   6: 2762.269 us/op
+[info] # Warmup Iteration   7: 2711.966 us/op
+[info] # Warmup Iteration   8: 2713.308 us/op
+[info] # Warmup Iteration   9: 2733.913 us/op
+[info] # Warmup Iteration  10: 2721.398 us/op
+[info] Iteration   1: 2735.346 us/op
+[info] Iteration   2: 2834.423 us/op
+[info] Iteration   3: 2805.935 us/op
+[info] Iteration   4: 2734.010 us/op
+[info] Iteration   5: 2814.452 us/op
+[info] Iteration   6: 2759.535 us/op
