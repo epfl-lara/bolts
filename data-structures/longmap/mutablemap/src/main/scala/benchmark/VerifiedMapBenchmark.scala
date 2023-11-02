@@ -1,4 +1,4 @@
-package ch.epfl.echassot.benchmark
+package benchmark
 
 
 import java.util.concurrent.TimeUnit
@@ -13,15 +13,16 @@ import scala.collection.immutable
 
 @State(Scope.Benchmark)
 class LongListMapBenchmark {
+    import BenchmarkUtilListMap.*
     import BenchmarkUtil.*
-    // ------------------------------------------------ UPDATE + LOOKUPS --------------------------------------------------------------------
+    // ------------------------------------------------ CREATE + UPDATE + LOOKUPS --------------------------------------------------------------------
     @Param(Array("1", "2", "3", "4", "5", "6", "7", "8", "9"))
     var n: String = _
 
     @Benchmark    
     @BenchmarkMode(Array(Mode.AverageTime))
-    @OutputTimeUnit(TimeUnit.MILLISECONDS)
-    def createMapAndUpdateThenLookupVerified(): Unit = {
+    @OutputTimeUnit(TimeUnit.MICROSECONDS)
+    def createUpdateLookup_Verified(): Unit = {
         val mutableMap = getVerifiedMapEmptyBuffer(16)
         val pairs = getSmallKeyValuePairsList(n)
         for (k, v) <- pairs do
@@ -35,8 +36,8 @@ class LongListMapBenchmark {
 
     @Benchmark    
     @BenchmarkMode(Array(Mode.AverageTime))
-    @OutputTimeUnit(TimeUnit.MILLISECONDS)
-    def createMapAndUpdateThenLookupOriginal(): Unit = {
+    @OutputTimeUnit(TimeUnit.MICROSECONDS)
+    def createUpdateLookup_Original(): Unit = {
         val mutableMap = getOriginalMapEmptyBuffer(16)
         val pairs = getSmallKeyValuePairsList(n)
         for (k, v) <- pairs do
@@ -50,8 +51,8 @@ class LongListMapBenchmark {
 
     @Benchmark
     @BenchmarkMode(Array(Mode.AverageTime))
-    @OutputTimeUnit(TimeUnit.MILLISECONDS)
-    def createListMapAndUpdateThenLookup(): Unit = {
+    @OutputTimeUnit(TimeUnit.MICROSECONDS)
+    def createUpdateLookup_ListMap(): Unit = {
         var listMap = emptyListMap
         val pairs = getSmallKeyValuePairsList(n)
         for (k, v) <- pairs do
@@ -67,8 +68,8 @@ class LongListMapBenchmark {
 
     @Benchmark
     @BenchmarkMode(Array(Mode.AverageTime))
-    @OutputTimeUnit(TimeUnit.MILLISECONDS)
-    def lookupVerified(): Unit = {
+    @OutputTimeUnit(TimeUnit.MICROSECONDS)
+    def lookup_Verified(): Unit = {
         val mutableMap = getVerifiedMapFilledWith2toNValues(n)
         for (k, _) <- getSmallKeyValuePairsList(n) do
             mutableMap(k)
@@ -77,8 +78,8 @@ class LongListMapBenchmark {
 
     @Benchmark
     @BenchmarkMode(Array(Mode.AverageTime))
-    @OutputTimeUnit(TimeUnit.MILLISECONDS)
-    def lookupOriginal(): Unit = {
+    @OutputTimeUnit(TimeUnit.MICROSECONDS)
+    def lookup_Original(): Unit = {
         val mutableMap = getOriginalMapFilledWith2toNValues(n)
         for (k, _) <- getSmallKeyValuePairsList(n) do
             mutableMap(k)
@@ -87,8 +88,8 @@ class LongListMapBenchmark {
 
     @Benchmark
     @BenchmarkMode(Array(Mode.AverageTime))
-    @OutputTimeUnit(TimeUnit.MILLISECONDS)
-    def lookupListMap(): Unit = {
+    @OutputTimeUnit(TimeUnit.MICROSECONDS)
+    def lookup_ListMap(): Unit = {
         val listMap = getListMapFilledWith2toNValues(n)
         for (k, _) <- getSmallKeyValuePairsList(n) do
             listMap(k)
@@ -103,29 +104,15 @@ class MutableLongMapBenchmark {
     import BenchmarkUtil.*
     // ------------------------------------------------ RETRIEVE ONE KEY --------------------------------------------------------------------
     
-    @Param(Array("4096","8192","12288","16384","20480","24576","28672","32768","36864","40960","45056","49152","53248","57344","61440","65536"))
+    @Param(Array("2048","4096","6144","8192","10240","12288","14336","16384","18432","20480","22528","24576","26624","28672","30720","32768","34816","36864","38912","40960","43008","45056","47104","49152","51200","53248","55296","57344","59392","61440","63488", "65536"))
     var keysListName: String = _
-
-    @Benchmark    
-    @BenchmarkMode(Array(Mode.AverageTime))
-    @OutputTimeUnit(TimeUnit.MICROSECONDS)
-    def retrieve1Verified(): Unit = {
-        verifiedMapFilledWith2to15Values(randomKey)
-    }   
-
-    @Benchmark    
-    @BenchmarkMode(Array(Mode.AverageTime))
-    @OutputTimeUnit(TimeUnit.MICROSECONDS)
-    def retrieve1Original(): Unit = {
-        originalMapFilledWith2to15Values(randomKey)
-    }
 
     // ------------------------------------------------ RETRIEVE N KEYS FROM 2^^15 MAP ---------------------------------------------------
 
     @Benchmark    
     @BenchmarkMode(Array(Mode.AverageTime))
     @OutputTimeUnit(TimeUnit.MICROSECONDS)
-    def retrieveVerified(): Unit = {
+    def lookupN_Verified(): Unit = {
         val m = verifiedMapFilledWith2to15Values
         for k <- getKeysList(keysListName) do
             m(k)
@@ -135,7 +122,7 @@ class MutableLongMapBenchmark {
     @Benchmark    
     @BenchmarkMode(Array(Mode.AverageTime))
     @OutputTimeUnit(TimeUnit.MICROSECONDS)
-    def retrieveOriginal(): Unit = {
+    def lookupN_Original(): Unit = {
         val m = originalMapFilledWith2to15Values
         for k <- getKeysList(keysListName) do
             m(k)
@@ -144,10 +131,10 @@ class MutableLongMapBenchmark {
 
 
     // ------------------------------------------------ UPDATE 2^^15 KEYS THEN LOOKUPS IN MAPS WITH 16 INITIAL BUFFER ----------------------------------------------------------
-      @Benchmark    
+    @Benchmark    
     @BenchmarkMode(Array(Mode.AverageTime))
-    @OutputTimeUnit(TimeUnit.MILLISECONDS)
-    def update2to15KeysThenLookup16BufferVerified(): Unit = {
+    @OutputTimeUnit(TimeUnit.MICROSECONDS)
+    def createUpdateLookup_16Buffer_Verified(): Unit = {
         val mutableMap = getVerifiedMapEmptyBuffer(16)
         for (k, v) <- random2to15Pairs do
             mutableMap.update(k, v)
@@ -160,8 +147,8 @@ class MutableLongMapBenchmark {
 
     @Benchmark    
     @BenchmarkMode(Array(Mode.AverageTime))
-    @OutputTimeUnit(TimeUnit.MILLISECONDS)
-    def update2to15KeysThenLookup16BufferOriginal(): Unit = {
+    @OutputTimeUnit(TimeUnit.MICROSECONDS)
+    def createUpdateLookup_16Buffer_Original(): Unit = {
         val map = getOriginalMapEmptyBuffer(16)
         for (k, v) <- random2to15Pairs do
             map.update(k, v)
@@ -172,41 +159,11 @@ class MutableLongMapBenchmark {
         end for
     }
 
-    // ------------------------------------------------ CREATE + UPDATE 2^^15 KEYS THEN LOOKUPS IN MAPS WITH 16 INITIAL BUFFER -------------------------------------------------
-    
-    @Benchmark    
-    @BenchmarkMode(Array(Mode.AverageTime))
-    @OutputTimeUnit(TimeUnit.MILLISECONDS)
-    def createMapAndUpdate2to15KeysThenLookupVerified(): Unit = {
-        val mutableMap = MutableLongMap.getEmptyLongMap[Long](k => 0L, 16)
-        for (k, v) <- random2to15Pairs do
-        mutableMap.update(k, v)
-        end for
-
-        for k <- getKeysList(keysListName) do
-            mutableMap(k)
-        end for
-    }
-
-    @Benchmark    
-    @BenchmarkMode(Array(Mode.AverageTime))
-    @OutputTimeUnit(TimeUnit.MILLISECONDS)
-    def createMapAndUpdate2to15KeysThenLookupOriginal(): Unit = {
-        val map = new LongMap[Long](k => 0L, 16)
-        for (k, v) <- random2to15Pairs do
-        map.update(k, v)
-        end for
-
-        for k <- getKeysList(keysListName) do
-            map(k)
-        end for
-    }
-
     // ------------------------------------------------ UPDATE 2^^15 KEYS THEN LOOKUPS IN MAPS WITH 2^^17 INITIAL BUFFER ----------------------------------------------------------
       @Benchmark    
     @BenchmarkMode(Array(Mode.AverageTime))
-    @OutputTimeUnit(TimeUnit.MILLISECONDS)
-    def update2to15KeysThenLookup2to17BufferVerified(): Unit = {
+    @OutputTimeUnit(TimeUnit.MICROSECONDS)
+    def createUpdateLookup_2to17Buffer_Verified(): Unit = {
         val mutableMap = getVerifiedMapEmptyBuffer(Math.pow(2, 17).toInt)
         for (k, v) <- random2to15Pairs do
             mutableMap.update(k, v)
@@ -219,8 +176,8 @@ class MutableLongMapBenchmark {
 
     @Benchmark    
     @BenchmarkMode(Array(Mode.AverageTime))
-    @OutputTimeUnit(TimeUnit.MILLISECONDS)
-    def update2to15KeysThenLookup2to17BufferOriginal(): Unit = {
+    @OutputTimeUnit(TimeUnit.MICROSECONDS)
+    def createUpdateLookup_2to17Buffer_Original(): Unit = {
         val map = getOriginalMapEmptyBuffer(Math.pow(2, 17).toInt)
         for (k, v) <- random2to15Pairs do
             map.update(k, v)
@@ -231,15 +188,23 @@ class MutableLongMapBenchmark {
         end for
     }
 
-    // ------------------------------------------------ CREATE + UPDATE 2^^15 KEYS THEN LOOKUPS IN MAPS WITH 2^^17 INITIAL BUFFER -------------------------------------------------
+    // ------------------------------------------------ UPDATE 2^^15 KEYS THEN REMOVE 2^^14 + 8192 THEN UPDATE AGAIN THEN LOOKUPS ----------------------------------------------------------
 
-    @Benchmark    
+      @Benchmark    
     @BenchmarkMode(Array(Mode.AverageTime))
-    @OutputTimeUnit(TimeUnit.MILLISECONDS)
-    def createMapAndUpdate2to15KeysVerifiedWith2to17BufferThenLookupVerified(): Unit = {
-        val mutableMap = MutableLongMap.getEmptyLongMap[Long](k => 0L, Math.pow(2, 17).toInt)
+    @OutputTimeUnit(TimeUnit.MICROSECONDS)
+    def createUpdateRemoveUpdateLookup_16Buffer_Verified(): Unit = {
+        val mutableMap = getVerifiedMapEmptyBuffer(Math.pow(2, 17).toInt)
         for (k, v) <- random2to15Pairs do
-        mutableMap.update(k, v)
+            mutableMap.update(k, v)
+        end for
+
+        for k <- getKeysList("24576") do
+            mutableMap.remove(k)
+        end for
+
+        for (k, v) <- random2to15Pairs do
+            mutableMap.update(k, v)
         end for
 
         for k <- getKeysList(keysListName) do
@@ -249,11 +214,19 @@ class MutableLongMapBenchmark {
 
     @Benchmark    
     @BenchmarkMode(Array(Mode.AverageTime))
-    @OutputTimeUnit(TimeUnit.MILLISECONDS)
-    def createMapAndUpdate2to15KeysVerifiedWith2to17BufferThenLookupOriginal(): Unit = {
-        val map = new LongMap[Long](k => 0L, Math.pow(2, 17).toInt)
+    @OutputTimeUnit(TimeUnit.MICROSECONDS)
+    def createUpdateRemoveUpdateLookup_16Buffer_Original(): Unit = {
+        val map = getOriginalMapEmptyBuffer(Math.pow(2, 17).toInt)
         for (k, v) <- random2to15Pairs do
-        map.update(k, v)
+            map.update(k, v)
+        end for
+
+        for k <- getKeysList("24576") do
+            map.remove(k)
+        end for
+
+        for (k, v) <- random2to15Pairs do
+            map.update(k, v)
         end for
 
         for k <- getKeysList(keysListName) do
@@ -268,25 +241,18 @@ object BenchmarkUtil {
     Random.setSeed(seed)
 
     val long2to15 = Math.pow(2, 15).toLong
+    val long2to20 = Math.pow(2, 20).toLong
 
     val random2to15Pairs = Random.shuffle((0L until long2to15).map(i => (i.toLong, Random.nextLong())).toList)
 
-    val randomKey = Random.between(0, long2to15)
-    val randomKeysList: Map[String, List[Long]] = 
-        (1 to 16).map(_*4096).map(n => (n.toString(), random2to15Pairs.take(n).map(_._1)))
-        .map((t: (String, List[Long])) => (t._1, Random.shuffle(t._2))).toMap[String, List[Long]]
+    val randomKeysListsUpTo2to16: Map[String, Array[Long]] = 
+        (1 to 32).map(_*2048).map(n => (n.toString(), random2to15Pairs.take(n).map(_._1)))
+        .map((t: (String, List[Long])) => (t._1, Random.shuffle(t._2))).toMap[String, List[Long]].map(t => (t._1, t._2.toArray))
         
-    def getKeysList(n: String): List[Long] = randomKeysList.getOrElse(n, List.empty[Long])
+    def getKeysList(n: String): Array[Long] = randomKeysListsUpTo2to16.getOrElse(n, Array.fill(1)(0L))
 
-    val smallRandomKeyValuePairsList: Map[String, List[(Long, Long)]] = 
-        (1 to 9).map(Math.pow(2, _).toInt).map(n => random2to15Pairs.take(n)).zip((1 to 9).map(_.toString())).map(t => (t._2, t._1))
-        .map((t: (String, List[(Long, Long)])) => (t._1, Random.shuffle(t._2))).toMap[String, List[(Long, Long)]]
-        
-    def getSmallKeyValuePairsList(n: String): List[(Long, Long)] = smallRandomKeyValuePairsList.getOrElse(n, List.empty[(Long, Long)])
-    
     def getVerifiedMapEmptyBuffer(n: Int) = MutableLongMap.getEmptyLongMap[Long](k => 0L, n)
     def getOriginalMapEmptyBuffer(n: Int) = new LongMap[Long](k => 0L, n)
-    val emptyListMap = ListMapLongKey[Long](StainlessList[(Long, Long)]())
 
     val verifiedMapFilledWith2to15Values = {
         val mutableMap = getVerifiedMapEmptyBuffer(16)
@@ -303,6 +269,18 @@ object BenchmarkUtil {
         end for
         map
     }
+}
+
+object BenchmarkUtilListMap {
+    import BenchmarkUtil.*
+
+    val smallRandomKeyValuePairsList: Map[String, Array[(Long, Long)]] = 
+        (1 to 9).map(Math.pow(2, _).toInt).map(n => random2to15Pairs.take(n)).zip((1 to 9).map(_.toString())).map(t => (t._2, t._1))
+        .map((t: (String, List[(Long, Long)])) => (t._1, Random.shuffle(t._2))).toMap[String, List[(Long, Long)]].map(t => (t._1, t._2.toArray))
+
+    def getSmallKeyValuePairsList(n: String): Array[(Long, Long)] = smallRandomKeyValuePairsList.getOrElse(n, Array.fill(1)((0L, 0L)))
+
+    val emptyListMap = ListMapLongKey[Long](StainlessList[(Long, Long)]())
 
     // To benchmark the ListMap
     val verifiedMapFilledWith2to1Values = {

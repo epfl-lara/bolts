@@ -61,7 +61,7 @@ object MutableLongMap {
       require(valid)
       underlying.v.isEmpty
     } ensuring (_ => valid)
-
+    
     @pure
     def contains(key: Long): Boolean = {
       require(valid)
