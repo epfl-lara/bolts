@@ -1,0 +1,2411 @@
+[info] welcome to sbt 1.9.6 (Private Build Java 17.0.8.1)
+[info] loading settings for project mutablemap-build-build-build from metals.sbt ...
+[info] loading project definition from /localhome/chassot/bolts/data-structures/longmap/mutablemap/project/project/project
+[info] loading settings for project mutablemap-build-build from metals.sbt ...
+[info] loading project definition from /localhome/chassot/bolts/data-structures/longmap/mutablemap/project/project
+[success] Generated .bloop/mutablemap-build-build.json
+[success] Total time: 2 s, completed Nov 2, 2023, 8:38:16 AM
+[info] loading settings for project mutablemap-build from metals.sbt,plugins.sbt ...
+[info] loading project definition from /localhome/chassot/bolts/data-structures/longmap/mutablemap/project
+[success] Generated .bloop/mutablemap-build.json
+[success] Total time: 1 s, completed Nov 2, 2023, 8:38:17 AM
+[info] loading settings for project mutablemap from build.sbt ...
+[info] set current project to MutableMap (in build file:/localhome/chassot/bolts/data-structures/longmap/mutablemap/)
+[info] compiling 47 Scala sources to /localhome/chassot/bolts/data-structures/longmap/mutablemap/target/scala-3.3.0/classes ...
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/data-structures/longmap/mutablemap/src/main/scala/ch/epfl/chassot/MutableLongMap.scala:373:4 
+[warn] 373 |    c match {
+[warn]     |    ^
+[warn]     |    match may not be exhaustive.
+[warn]     |
+[warn]     |    It would fail on pattern case: EmptyCell()
+[warn]     |
+[warn]     | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/data-structures/longmap/mutablemap/src/main/scala/ch/epfl/chassot/MutableLongMap.scala:620:8 
+[warn] 620 |        seekEntryRes match {
+[warn]     |        ^^^^^^^^^^^^
+[warn]     |   match may not be exhaustive.
+[warn]     |
+[warn]     |   It would fail on pattern case: MutableLongMap.Intermediate(_, _, _)
+[warn]     |
+[warn]     | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/data-structures/longmap/mutablemap/src/main/scala/ch/epfl/chassot/MutableLongMap.scala:1133:6 
+[warn] 1133 |      intermediate match {
+[warn]      |      ^^^^^^^^^^^^
+[warn]      |    match may not be exhaustive.
+[warn]      |
+[warn]      |    It would fail on pattern case: _: MutableLongMap.SeekEntryResult
+[warn]      |
+[warn]      | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/data-structures/longmap/mutablemap/src/main/scala/ch/epfl/chassot/MutableLongMap.scala:1183:6 
+[warn] 1183 |      intermediate match {
+[warn]      |      ^^^^^^^^^^^^
+[warn]      |    match may not be exhaustive.
+[warn]      |
+[warn]      |    It would fail on pattern case: _: MutableLongMap.SeekEntryResult
+[warn]      |
+[warn]      | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/data-structures/longmap/mutablemap/src/main/scala/ch/epfl/chassot/StrictlyOrderedLongListMap.scala:162:4 
+[warn] 162 |    l match {
+[warn]     |    ^
+[warn]     |    match may not be exhaustive.
+[warn]     |
+[warn]     |    It would fail on pattern case: collection.Cons(_, _)
+[warn]     |
+[warn]     | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/data-structures/longmap/mutablemap/src/main/scala/ch/epfl/chassot/StrictlyOrderedLongListMap.scala:196:4 
+[warn] 196 |    l match {
+[warn]     |    ^
+[warn]     |    match may not be exhaustive.
+[warn]     |
+[warn]     |    It would fail on pattern case: collection.Cons(_, _)
+[warn]     |
+[warn]     | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/data-structures/longmap/mutablemap/src/main/scala/ch/epfl/chassot/StrictlyOrderedLongListMap.scala:211:4 
+[warn] 211 |    l match {
+[warn]     |    ^
+[warn]     |    match may not be exhaustive.
+[warn]     |
+[warn]     |    It would fail on pattern case: collection.Cons(_, _)
+[warn]     |
+[warn]     | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/data-structures/longmap/mutablemap/src/main/scala/ch/epfl/chassot/StrictlyOrderedLongListMap.scala:227:4 
+[warn] 227 |    l match {
+[warn]     |    ^
+[warn]     |    match may not be exhaustive.
+[warn]     |
+[warn]     |    It would fail on pattern case: collection.Cons(_, _)
+[warn]     |
+[warn]     | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/data-structures/longmap/mutablemap/src/main/scala/ch/epfl/chassot/StrictlyOrderedLongListMap.scala:248:4 
+[warn] 248 |    l match {
+[warn]     |    ^
+[warn]     |    match may not be exhaustive.
+[warn]     |
+[warn]     |    It would fail on pattern case: collection.Cons(_, _)
+[warn]     |
+[warn]     | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/data-structures/longmap/mutablemap/src/main/scala/ch/epfl/chassot/StrictlyOrderedLongListMap.scala:279:4 
+[warn] 279 |    l match {
+[warn]     |    ^
+[warn]     |    match may not be exhaustive.
+[warn]     |
+[warn]     |    It would fail on pattern case: collection.Cons(_, _)
+[warn]     |
+[warn]     | longer explanation available when compiling with `-explain`
+[warn] 10 warnings found
+[info] done compiling
+[info] compiling 22 Java sources to /localhome/chassot/bolts/data-structures/longmap/mutablemap/target/scala-3.3.0/classes ...
+[info] done compiling
+[info] running (fork) org.openjdk.jmh.Main -i 1 -wi 0 -f1 -t1 MutableLongMapBenchmark.*
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1-Ubuntu-0ubuntu120.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: <none>
+[info] # Measurement: 1 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.echassot.benchmark.MutableLongMapBenchmark.createUpdateLookup_16Buffer_Original
+[info] # Parameters: (keysListName = 4096)
+[info] # Run progress: 0.00% complete, ETA 00:21:20
+[info] # Fork: 1 of 1
+[info] Iteration   1: 2509.497 us/op
+[info] Result "ch.epfl.echassot.benchmark.MutableLongMapBenchmark.createUpdateLookup_16Buffer_Original":
+[info]   2509.497 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1-Ubuntu-0ubuntu120.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: <none>
+[info] # Measurement: 1 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.echassot.benchmark.MutableLongMapBenchmark.createUpdateLookup_16Buffer_Original
+[info] # Parameters: (keysListName = 8192)
+[info] # Run progress: 0.78% complete, ETA 00:22:03
+[info] # Fork: 1 of 1
+[info] Iteration   1: 2515.929 us/op
+[info] Result "ch.epfl.echassot.benchmark.MutableLongMapBenchmark.createUpdateLookup_16Buffer_Original":
+[info]   2515.929 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1-Ubuntu-0ubuntu120.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: <none>
+[info] # Measurement: 1 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.echassot.benchmark.MutableLongMapBenchmark.createUpdateLookup_16Buffer_Original
+[info] # Parameters: (keysListName = 12288)
+[info] # Run progress: 1.56% complete, ETA 00:21:50
+[info] # Fork: 1 of 1
+[info] Iteration   1: 2671.164 us/op
+[info] Result "ch.epfl.echassot.benchmark.MutableLongMapBenchmark.createUpdateLookup_16Buffer_Original":
+[info]   2671.164 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1-Ubuntu-0ubuntu120.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: <none>
+[info] # Measurement: 1 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.echassot.benchmark.MutableLongMapBenchmark.createUpdateLookup_16Buffer_Original
+[info] # Parameters: (keysListName = 16384)
+[info] # Run progress: 2.34% complete, ETA 00:21:38
+[info] # Fork: 1 of 1
+[info] Iteration   1: 2859.550 us/op
+[info] Result "ch.epfl.echassot.benchmark.MutableLongMapBenchmark.createUpdateLookup_16Buffer_Original":
+[info]   2859.550 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1-Ubuntu-0ubuntu120.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: <none>
+[info] # Measurement: 1 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.echassot.benchmark.MutableLongMapBenchmark.createUpdateLookup_16Buffer_Original
+[info] # Parameters: (keysListName = 20480)
+[info] # Run progress: 3.13% complete, ETA 00:21:27
+[info] # Fork: 1 of 1
+[info] Iteration   1: 2833.079 us/op
+[info] Result "ch.epfl.echassot.benchmark.MutableLongMapBenchmark.createUpdateLookup_16Buffer_Original":
+[info]   2833.079 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1-Ubuntu-0ubuntu120.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: <none>
+[info] # Measurement: 1 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.echassot.benchmark.MutableLongMapBenchmark.createUpdateLookup_16Buffer_Original
+[info] # Parameters: (keysListName = 24576)
+[info] # Run progress: 3.91% complete, ETA 00:21:16
+[info] # Fork: 1 of 1
+[info] Iteration   1: 2982.217 us/op
+[info] Result "ch.epfl.echassot.benchmark.MutableLongMapBenchmark.createUpdateLookup_16Buffer_Original":
+[info]   2982.217 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1-Ubuntu-0ubuntu120.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: <none>
+[info] # Measurement: 1 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.echassot.benchmark.MutableLongMapBenchmark.createUpdateLookup_16Buffer_Original
+[info] # Parameters: (keysListName = 28672)
+[info] # Run progress: 4.69% complete, ETA 00:21:05
+[info] # Fork: 1 of 1
+[info] Iteration   1: 2932.959 us/op
+[info] Result "ch.epfl.echassot.benchmark.MutableLongMapBenchmark.createUpdateLookup_16Buffer_Original":
+[info]   2932.959 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1-Ubuntu-0ubuntu120.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: <none>
+[info] # Measurement: 1 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.echassot.benchmark.MutableLongMapBenchmark.createUpdateLookup_16Buffer_Original
+[info] # Parameters: (keysListName = 32768)
+[info] # Run progress: 5.47% complete, ETA 00:20:55
+[info] # Fork: 1 of 1
+[info] Iteration   1: 3040.036 us/op
+[info] Result "ch.epfl.echassot.benchmark.MutableLongMapBenchmark.createUpdateLookup_16Buffer_Original":
+[info]   3040.036 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1-Ubuntu-0ubuntu120.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: <none>
+[info] # Measurement: 1 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.echassot.benchmark.MutableLongMapBenchmark.createUpdateLookup_16Buffer_Original
+[info] # Parameters: (keysListName = 36864)
+[info] # Run progress: 6.25% complete, ETA 00:20:44
+[info] # Fork: 1 of 1
+[info] Iteration   1: 3005.262 us/op
+[info] Result "ch.epfl.echassot.benchmark.MutableLongMapBenchmark.createUpdateLookup_16Buffer_Original":
+[info]   3005.262 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1-Ubuntu-0ubuntu120.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: <none>
+[info] # Measurement: 1 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.echassot.benchmark.MutableLongMapBenchmark.createUpdateLookup_16Buffer_Original
+[info] # Parameters: (keysListName = 40960)
+[info] # Run progress: 7.03% complete, ETA 00:20:33
+[info] # Fork: 1 of 1
+[info] Iteration   1: 3146.317 us/op
+[info] Result "ch.epfl.echassot.benchmark.MutableLongMapBenchmark.createUpdateLookup_16Buffer_Original":
+[info]   3146.317 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1-Ubuntu-0ubuntu120.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: <none>
+[info] # Measurement: 1 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.echassot.benchmark.MutableLongMapBenchmark.createUpdateLookup_16Buffer_Original
+[info] # Parameters: (keysListName = 45056)
+[info] # Run progress: 7.81% complete, ETA 00:20:23
+[info] # Fork: 1 of 1
+[info] Iteration   1: 3245.980 us/op
+[info] Result "ch.epfl.echassot.benchmark.MutableLongMapBenchmark.createUpdateLookup_16Buffer_Original":
+[info]   3245.980 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1-Ubuntu-0ubuntu120.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: <none>
+[info] # Measurement: 1 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.echassot.benchmark.MutableLongMapBenchmark.createUpdateLookup_16Buffer_Original
+[info] # Parameters: (keysListName = 49152)
+[info] # Run progress: 8.59% complete, ETA 00:20:13
+[info] # Fork: 1 of 1
+[info] Iteration   1: 3130.544 us/op
+[info] Result "ch.epfl.echassot.benchmark.MutableLongMapBenchmark.createUpdateLookup_16Buffer_Original":
+[info]   3130.544 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1-Ubuntu-0ubuntu120.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: <none>
+[info] # Measurement: 1 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.echassot.benchmark.MutableLongMapBenchmark.createUpdateLookup_16Buffer_Original
+[info] # Parameters: (keysListName = 53248)
+[info] # Run progress: 9.38% complete, ETA 00:20:02
+[info] # Fork: 1 of 1
+[info] Iteration   1: 3057.042 us/op
+[info] Result "ch.epfl.echassot.benchmark.MutableLongMapBenchmark.createUpdateLookup_16Buffer_Original":
+[info]   3057.042 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1-Ubuntu-0ubuntu120.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: <none>
+[info] # Measurement: 1 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.echassot.benchmark.MutableLongMapBenchmark.createUpdateLookup_16Buffer_Original
+[info] # Parameters: (keysListName = 57344)
+[info] # Run progress: 10.16% complete, ETA 00:19:52
+[info] # Fork: 1 of 1
+[info] Iteration   1: 3232.074 us/op
+[info] Result "ch.epfl.echassot.benchmark.MutableLongMapBenchmark.createUpdateLookup_16Buffer_Original":
+[info]   3232.074 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1-Ubuntu-0ubuntu120.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: <none>
+[info] # Measurement: 1 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.echassot.benchmark.MutableLongMapBenchmark.createUpdateLookup_16Buffer_Original
+[info] # Parameters: (keysListName = 61440)
+[info] # Run progress: 10.94% complete, ETA 00:19:42
+[info] # Fork: 1 of 1
+[info] Iteration   1: 3165.390 us/op
+[info] Result "ch.epfl.echassot.benchmark.MutableLongMapBenchmark.createUpdateLookup_16Buffer_Original":
+[info]   3165.390 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1-Ubuntu-0ubuntu120.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: <none>
+[info] # Measurement: 1 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.echassot.benchmark.MutableLongMapBenchmark.createUpdateLookup_16Buffer_Original
+[info] # Parameters: (keysListName = 65536)
+[info] # Run progress: 11.72% complete, ETA 00:19:32
+[info] # Fork: 1 of 1
+[info] Iteration   1: 3056.574 us/op
+[info] Result "ch.epfl.echassot.benchmark.MutableLongMapBenchmark.createUpdateLookup_16Buffer_Original":
+[info]   3056.574 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1-Ubuntu-0ubuntu120.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: <none>
+[info] # Measurement: 1 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.echassot.benchmark.MutableLongMapBenchmark.createUpdateLookup_16Buffer_Verified
+[info] # Parameters: (keysListName = 4096)
+[info] # Run progress: 12.50% complete, ETA 00:19:21
+[info] # Fork: 1 of 1
+[info] Iteration   1: 3968.801 us/op
+[info] Result "ch.epfl.echassot.benchmark.MutableLongMapBenchmark.createUpdateLookup_16Buffer_Verified":
+[info]   3968.801 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1-Ubuntu-0ubuntu120.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: <none>
+[info] # Measurement: 1 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.echassot.benchmark.MutableLongMapBenchmark.createUpdateLookup_16Buffer_Verified
+[info] # Parameters: (keysListName = 8192)
+[info] # Run progress: 13.28% complete, ETA 00:19:11
+[info] # Fork: 1 of 1
+[info] Iteration   1: 4286.735 us/op
+[info] Result "ch.epfl.echassot.benchmark.MutableLongMapBenchmark.createUpdateLookup_16Buffer_Verified":
+[info]   4286.735 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1-Ubuntu-0ubuntu120.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: <none>
+[info] # Measurement: 1 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.echassot.benchmark.MutableLongMapBenchmark.createUpdateLookup_16Buffer_Verified
+[info] # Parameters: (keysListName = 12288)
+[info] # Run progress: 14.06% complete, ETA 00:19:00
+[info] # Fork: 1 of 1
+[info] Iteration   1: 4304.810 us/op
+[info] Result "ch.epfl.echassot.benchmark.MutableLongMapBenchmark.createUpdateLookup_16Buffer_Verified":
+[info]   4304.810 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1-Ubuntu-0ubuntu120.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: <none>
+[info] # Measurement: 1 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.echassot.benchmark.MutableLongMapBenchmark.createUpdateLookup_16Buffer_Verified
+[info] # Parameters: (keysListName = 16384)
+[info] # Run progress: 14.84% complete, ETA 00:18:50
+[info] # Fork: 1 of 1
+[info] Iteration   1: 4411.976 us/op
+[info] Result "ch.epfl.echassot.benchmark.MutableLongMapBenchmark.createUpdateLookup_16Buffer_Verified":
+[info]   4411.976 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1-Ubuntu-0ubuntu120.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: <none>
+[info] # Measurement: 1 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.echassot.benchmark.MutableLongMapBenchmark.createUpdateLookup_16Buffer_Verified
+[info] # Parameters: (keysListName = 20480)
+[info] # Run progress: 15.63% complete, ETA 00:18:40
+[info] # Fork: 1 of 1
+[info] Iteration   1: 4345.512 us/op
+[info] Result "ch.epfl.echassot.benchmark.MutableLongMapBenchmark.createUpdateLookup_16Buffer_Verified":
+[info]   4345.512 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1-Ubuntu-0ubuntu120.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: <none>
+[info] # Measurement: 1 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.echassot.benchmark.MutableLongMapBenchmark.createUpdateLookup_16Buffer_Verified
+[info] # Parameters: (keysListName = 24576)
+[info] # Run progress: 16.41% complete, ETA 00:18:29
+[info] # Fork: 1 of 1
+[info] Iteration   1: 4505.292 us/op
+[info] Result "ch.epfl.echassot.benchmark.MutableLongMapBenchmark.createUpdateLookup_16Buffer_Verified":
+[info]   4505.292 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1-Ubuntu-0ubuntu120.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: <none>
+[info] # Measurement: 1 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.echassot.benchmark.MutableLongMapBenchmark.createUpdateLookup_16Buffer_Verified
+[info] # Parameters: (keysListName = 28672)
+[info] # Run progress: 17.19% complete, ETA 00:18:19
+[info] # Fork: 1 of 1
+[info] Iteration   1: 4886.058 us/op
+[info] Result "ch.epfl.echassot.benchmark.MutableLongMapBenchmark.createUpdateLookup_16Buffer_Verified":
+[info]   4886.058 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1-Ubuntu-0ubuntu120.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: <none>
+[info] # Measurement: 1 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.echassot.benchmark.MutableLongMapBenchmark.createUpdateLookup_16Buffer_Verified
+[info] # Parameters: (keysListName = 32768)
+[info] # Run progress: 17.97% complete, ETA 00:18:09
+[info] # Fork: 1 of 1
+[info] Iteration   1: 4940.006 us/op
+[info] Result "ch.epfl.echassot.benchmark.MutableLongMapBenchmark.createUpdateLookup_16Buffer_Verified":
+[info]   4940.006 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1-Ubuntu-0ubuntu120.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: <none>
+[info] # Measurement: 1 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.echassot.benchmark.MutableLongMapBenchmark.createUpdateLookup_16Buffer_Verified
+[info] # Parameters: (keysListName = 36864)
+[info] # Run progress: 18.75% complete, ETA 00:17:58
+[info] # Fork: 1 of 1
+[info] Iteration   1: 4785.742 us/op
+[info] Result "ch.epfl.echassot.benchmark.MutableLongMapBenchmark.createUpdateLookup_16Buffer_Verified":
+[info]   4785.742 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1-Ubuntu-0ubuntu120.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: <none>
+[info] # Measurement: 1 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.echassot.benchmark.MutableLongMapBenchmark.createUpdateLookup_16Buffer_Verified
+[info] # Parameters: (keysListName = 40960)
+[info] # Run progress: 19.53% complete, ETA 00:17:48
+[info] # Fork: 1 of 1
+[info] Iteration   1: 4766.891 us/op
+[info] Result "ch.epfl.echassot.benchmark.MutableLongMapBenchmark.createUpdateLookup_16Buffer_Verified":
+[info]   4766.891 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1-Ubuntu-0ubuntu120.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: <none>
+[info] # Measurement: 1 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.echassot.benchmark.MutableLongMapBenchmark.createUpdateLookup_16Buffer_Verified
+[info] # Parameters: (keysListName = 45056)
+[info] # Run progress: 20.31% complete, ETA 00:17:38
+[info] # Fork: 1 of 1
+[info] Iteration   1: 5029.778 us/op
+[info] Result "ch.epfl.echassot.benchmark.MutableLongMapBenchmark.createUpdateLookup_16Buffer_Verified":
+[info]   5029.778 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1-Ubuntu-0ubuntu120.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: <none>
+[info] # Measurement: 1 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.echassot.benchmark.MutableLongMapBenchmark.createUpdateLookup_16Buffer_Verified
+[info] # Parameters: (keysListName = 49152)
+[info] # Run progress: 21.09% complete, ETA 00:17:27
+[info] # Fork: 1 of 1
+[info] Iteration   1: 4839.975 us/op
+[info] Result "ch.epfl.echassot.benchmark.MutableLongMapBenchmark.createUpdateLookup_16Buffer_Verified":
+[info]   4839.975 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1-Ubuntu-0ubuntu120.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: <none>
+[info] # Measurement: 1 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.echassot.benchmark.MutableLongMapBenchmark.createUpdateLookup_16Buffer_Verified
+[info] # Parameters: (keysListName = 53248)
+[info] # Run progress: 21.88% complete, ETA 00:17:17
+[info] # Fork: 1 of 1
+[info] Iteration   1: 5043.342 us/op
+[info] Result "ch.epfl.echassot.benchmark.MutableLongMapBenchmark.createUpdateLookup_16Buffer_Verified":
+[info]   5043.342 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1-Ubuntu-0ubuntu120.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: <none>
+[info] # Measurement: 1 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.echassot.benchmark.MutableLongMapBenchmark.createUpdateLookup_16Buffer_Verified
+[info] # Parameters: (keysListName = 57344)
+[info] # Run progress: 22.66% complete, ETA 00:17:07
+[info] # Fork: 1 of 1
+[info] Iteration   1: 5041.194 us/op
+[info] Result "ch.epfl.echassot.benchmark.MutableLongMapBenchmark.createUpdateLookup_16Buffer_Verified":
+[info]   5041.194 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1-Ubuntu-0ubuntu120.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: <none>
+[info] # Measurement: 1 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.echassot.benchmark.MutableLongMapBenchmark.createUpdateLookup_16Buffer_Verified
+[info] # Parameters: (keysListName = 61440)
+[info] # Run progress: 23.44% complete, ETA 00:16:56
+[info] # Fork: 1 of 1
+[info] Iteration   1: 4736.199 us/op
+[info] Result "ch.epfl.echassot.benchmark.MutableLongMapBenchmark.createUpdateLookup_16Buffer_Verified":
+[info]   4736.199 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1-Ubuntu-0ubuntu120.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: <none>
+[info] # Measurement: 1 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.echassot.benchmark.MutableLongMapBenchmark.createUpdateLookup_16Buffer_Verified
+[info] # Parameters: (keysListName = 65536)
+[info] # Run progress: 24.22% complete, ETA 00:16:46
+[info] # Fork: 1 of 1
+[info] Iteration   1: 4804.790 us/op
+[info] Result "ch.epfl.echassot.benchmark.MutableLongMapBenchmark.createUpdateLookup_16Buffer_Verified":
+[info]   4804.790 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1-Ubuntu-0ubuntu120.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: <none>
+[info] # Measurement: 1 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.echassot.benchmark.MutableLongMapBenchmark.createUpdateLookup_2to17Buffer_Original
+[info] # Parameters: (keysListName = 4096)
+[info] # Run progress: 25.00% complete, ETA 00:16:35
+[info] # Fork: 1 of 1
+[info] Iteration   1: 1778.409 us/op
+[info] Result "ch.epfl.echassot.benchmark.MutableLongMapBenchmark.createUpdateLookup_2to17Buffer_Original":
+[info]   1778.409 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1-Ubuntu-0ubuntu120.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: <none>
+[info] # Measurement: 1 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.echassot.benchmark.MutableLongMapBenchmark.createUpdateLookup_2to17Buffer_Original
+[info] # Parameters: (keysListName = 8192)
+[info] # Run progress: 25.78% complete, ETA 00:16:25
+[info] # Fork: 1 of 1
+[info] Iteration   1: 1870.785 us/op
+[info] Result "ch.epfl.echassot.benchmark.MutableLongMapBenchmark.createUpdateLookup_2to17Buffer_Original":
+[info]   1870.785 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1-Ubuntu-0ubuntu120.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: <none>
+[info] # Measurement: 1 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.echassot.benchmark.MutableLongMapBenchmark.createUpdateLookup_2to17Buffer_Original
+[info] # Parameters: (keysListName = 12288)
+[info] # Run progress: 26.56% complete, ETA 00:16:15
+[info] # Fork: 1 of 1
+[info] Iteration   1: 1877.275 us/op
+[info] Result "ch.epfl.echassot.benchmark.MutableLongMapBenchmark.createUpdateLookup_2to17Buffer_Original":
+[info]   1877.275 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1-Ubuntu-0ubuntu120.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: <none>
+[info] # Measurement: 1 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.echassot.benchmark.MutableLongMapBenchmark.createUpdateLookup_2to17Buffer_Original
+[info] # Parameters: (keysListName = 16384)
+[info] # Run progress: 27.34% complete, ETA 00:16:04
+[info] # Fork: 1 of 1
+[info] Iteration   1: 2063.200 us/op
+[info] Result "ch.epfl.echassot.benchmark.MutableLongMapBenchmark.createUpdateLookup_2to17Buffer_Original":
+[info]   2063.200 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1-Ubuntu-0ubuntu120.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: <none>
+[info] # Measurement: 1 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.echassot.benchmark.MutableLongMapBenchmark.createUpdateLookup_2to17Buffer_Original
+[info] # Parameters: (keysListName = 20480)
+[info] # Run progress: 28.13% complete, ETA 00:15:54
+[info] # Fork: 1 of 1
+[info] Iteration   1: 2124.565 us/op
+[info] Result "ch.epfl.echassot.benchmark.MutableLongMapBenchmark.createUpdateLookup_2to17Buffer_Original":
+[info]   2124.565 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1-Ubuntu-0ubuntu120.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: <none>
+[info] # Measurement: 1 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.echassot.benchmark.MutableLongMapBenchmark.createUpdateLookup_2to17Buffer_Original
+[info] # Parameters: (keysListName = 24576)
+[info] # Run progress: 28.91% complete, ETA 00:15:44
+[info] # Fork: 1 of 1
+[info] Iteration   1: 2117.603 us/op
+[info] Result "ch.epfl.echassot.benchmark.MutableLongMapBenchmark.createUpdateLookup_2to17Buffer_Original":
+[info]   2117.603 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1-Ubuntu-0ubuntu120.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: <none>
+[info] # Measurement: 1 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.echassot.benchmark.MutableLongMapBenchmark.createUpdateLookup_2to17Buffer_Original
+[info] # Parameters: (keysListName = 28672)
+[info] # Run progress: 29.69% complete, ETA 00:15:33
+[info] # Fork: 1 of 1
+[info] Iteration   1: 2129.873 us/op
+[info] Result "ch.epfl.echassot.benchmark.MutableLongMapBenchmark.createUpdateLookup_2to17Buffer_Original":
+[info]   2129.873 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1-Ubuntu-0ubuntu120.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: <none>
+[info] # Measurement: 1 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.echassot.benchmark.MutableLongMapBenchmark.createUpdateLookup_2to17Buffer_Original
+[info] # Parameters: (keysListName = 32768)
+[info] # Run progress: 30.47% complete, ETA 00:15:23
+[info] # Fork: 1 of 1
+[info] Iteration   1: 2301.466 us/op
+[info] Result "ch.epfl.echassot.benchmark.MutableLongMapBenchmark.createUpdateLookup_2to17Buffer_Original":
+[info]   2301.466 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1-Ubuntu-0ubuntu120.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: <none>
+[info] # Measurement: 1 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.echassot.benchmark.MutableLongMapBenchmark.createUpdateLookup_2to17Buffer_Original
+[info] # Parameters: (keysListName = 36864)
+[info] # Run progress: 31.25% complete, ETA 00:15:13
+[info] # Fork: 1 of 1
+[info] Iteration   1: 2359.533 us/op
+[info] Result "ch.epfl.echassot.benchmark.MutableLongMapBenchmark.createUpdateLookup_2to17Buffer_Original":
+[info]   2359.533 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1-Ubuntu-0ubuntu120.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: <none>
+[info] # Measurement: 1 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.echassot.benchmark.MutableLongMapBenchmark.createUpdateLookup_2to17Buffer_Original
+[info] # Parameters: (keysListName = 40960)
+[info] # Run progress: 32.03% complete, ETA 00:15:02
+[info] # Fork: 1 of 1
+[info] Iteration   1: 2301.720 us/op
+[info] Result "ch.epfl.echassot.benchmark.MutableLongMapBenchmark.createUpdateLookup_2to17Buffer_Original":
+[info]   2301.720 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1-Ubuntu-0ubuntu120.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: <none>
+[info] # Measurement: 1 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.echassot.benchmark.MutableLongMapBenchmark.createUpdateLookup_2to17Buffer_Original
+[info] # Parameters: (keysListName = 45056)
+[info] # Run progress: 32.81% complete, ETA 00:14:52
+[info] # Fork: 1 of 1
+[info] Iteration   1: 2327.607 us/op
+[info] Result "ch.epfl.echassot.benchmark.MutableLongMapBenchmark.createUpdateLookup_2to17Buffer_Original":
+[info]   2327.607 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1-Ubuntu-0ubuntu120.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: <none>
+[info] # Measurement: 1 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.echassot.benchmark.MutableLongMapBenchmark.createUpdateLookup_2to17Buffer_Original
+[info] # Parameters: (keysListName = 49152)
+[info] # Run progress: 33.59% complete, ETA 00:14:42
+[info] # Fork: 1 of 1
+[info] Iteration   1: 2265.162 us/op
+[info] Result "ch.epfl.echassot.benchmark.MutableLongMapBenchmark.createUpdateLookup_2to17Buffer_Original":
+[info]   2265.162 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1-Ubuntu-0ubuntu120.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: <none>
+[info] # Measurement: 1 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.echassot.benchmark.MutableLongMapBenchmark.createUpdateLookup_2to17Buffer_Original
+[info] # Parameters: (keysListName = 53248)
+[info] # Run progress: 34.38% complete, ETA 00:14:31
+[info] # Fork: 1 of 1
+[info] Iteration   1: 2307.295 us/op
+[info] Result "ch.epfl.echassot.benchmark.MutableLongMapBenchmark.createUpdateLookup_2to17Buffer_Original":
+[info]   2307.295 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1-Ubuntu-0ubuntu120.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: <none>
+[info] # Measurement: 1 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.echassot.benchmark.MutableLongMapBenchmark.createUpdateLookup_2to17Buffer_Original
+[info] # Parameters: (keysListName = 57344)
+[info] # Run progress: 35.16% complete, ETA 00:14:21
+[info] # Fork: 1 of 1
+[info] Iteration   1: 2241.120 us/op
+[info] Result "ch.epfl.echassot.benchmark.MutableLongMapBenchmark.createUpdateLookup_2to17Buffer_Original":
+[info]   2241.120 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1-Ubuntu-0ubuntu120.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: <none>
+[info] # Measurement: 1 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.echassot.benchmark.MutableLongMapBenchmark.createUpdateLookup_2to17Buffer_Original
+[info] # Parameters: (keysListName = 61440)
+[info] # Run progress: 35.94% complete, ETA 00:14:10
+[info] # Fork: 1 of 1
+[info] Iteration   1: 2430.648 us/op
+[info] Result "ch.epfl.echassot.benchmark.MutableLongMapBenchmark.createUpdateLookup_2to17Buffer_Original":
+[info]   2430.648 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1-Ubuntu-0ubuntu120.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: <none>
+[info] # Measurement: 1 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.echassot.benchmark.MutableLongMapBenchmark.createUpdateLookup_2to17Buffer_Original
+[info] # Parameters: (keysListName = 65536)
+[info] # Run progress: 36.72% complete, ETA 00:14:00
+[info] # Fork: 1 of 1
+[info] Iteration   1: 2322.397 us/op
+[info] Result "ch.epfl.echassot.benchmark.MutableLongMapBenchmark.createUpdateLookup_2to17Buffer_Original":
+[info]   2322.397 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1-Ubuntu-0ubuntu120.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: <none>
+[info] # Measurement: 1 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.echassot.benchmark.MutableLongMapBenchmark.createUpdateLookup_2to17Buffer_Verified
+[info] # Parameters: (keysListName = 4096)
+[info] # Run progress: 37.50% complete, ETA 00:13:50
+[info] # Fork: 1 of 1
+[info] Iteration   1: 4917.943 us/op
+[info] Result "ch.epfl.echassot.benchmark.MutableLongMapBenchmark.createUpdateLookup_2to17Buffer_Verified":
+[info]   4917.943 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1-Ubuntu-0ubuntu120.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: <none>
+[info] # Measurement: 1 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.echassot.benchmark.MutableLongMapBenchmark.createUpdateLookup_2to17Buffer_Verified
+[info] # Parameters: (keysListName = 8192)
+[info] # Run progress: 38.28% complete, ETA 00:13:39
+[info] # Fork: 1 of 1
+[info] Iteration   1: 5523.580 us/op
+[info] Result "ch.epfl.echassot.benchmark.MutableLongMapBenchmark.createUpdateLookup_2to17Buffer_Verified":
+[info]   5523.580 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1-Ubuntu-0ubuntu120.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: <none>
+[info] # Measurement: 1 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.echassot.benchmark.MutableLongMapBenchmark.createUpdateLookup_2to17Buffer_Verified
+[info] # Parameters: (keysListName = 12288)
+[info] # Run progress: 39.06% complete, ETA 00:13:29
+[info] # Fork: 1 of 1
+[info] Iteration   1: 5417.713 us/op
+[info] Result "ch.epfl.echassot.benchmark.MutableLongMapBenchmark.createUpdateLookup_2to17Buffer_Verified":
+[info]   5417.713 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1-Ubuntu-0ubuntu120.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: <none>
+[info] # Measurement: 1 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.echassot.benchmark.MutableLongMapBenchmark.createUpdateLookup_2to17Buffer_Verified
+[info] # Parameters: (keysListName = 16384)
+[info] # Run progress: 39.84% complete, ETA 00:13:19
+[info] # Fork: 1 of 1
+[info] Iteration   1: 5254.553 us/op
+[info] Result "ch.epfl.echassot.benchmark.MutableLongMapBenchmark.createUpdateLookup_2to17Buffer_Verified":
+[info]   5254.553 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1-Ubuntu-0ubuntu120.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: <none>
+[info] # Measurement: 1 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.echassot.benchmark.MutableLongMapBenchmark.createUpdateLookup_2to17Buffer_Verified
+[info] # Parameters: (keysListName = 20480)
+[info] # Run progress: 40.63% complete, ETA 00:13:08
+[info] # Fork: 1 of 1
+[info] Iteration   1: 5824.250 us/op
+[info] Result "ch.epfl.echassot.benchmark.MutableLongMapBenchmark.createUpdateLookup_2to17Buffer_Verified":
+[info]   5824.250 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1-Ubuntu-0ubuntu120.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: <none>
+[info] # Measurement: 1 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.echassot.benchmark.MutableLongMapBenchmark.createUpdateLookup_2to17Buffer_Verified
+[info] # Parameters: (keysListName = 24576)
+[info] # Run progress: 41.41% complete, ETA 00:12:58
+[info] # Fork: 1 of 1
+[info] Iteration   1: 5554.034 us/op
+[info] Result "ch.epfl.echassot.benchmark.MutableLongMapBenchmark.createUpdateLookup_2to17Buffer_Verified":
+[info]   5554.034 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1-Ubuntu-0ubuntu120.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: <none>
+[info] # Measurement: 1 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.echassot.benchmark.MutableLongMapBenchmark.createUpdateLookup_2to17Buffer_Verified
+[info] # Parameters: (keysListName = 28672)
+[info] # Run progress: 42.19% complete, ETA 00:12:47
+[info] # Fork: 1 of 1
+[info] Iteration   1: 5789.212 us/op
+[info] Result "ch.epfl.echassot.benchmark.MutableLongMapBenchmark.createUpdateLookup_2to17Buffer_Verified":
+[info]   5789.212 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1-Ubuntu-0ubuntu120.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: <none>
+[info] # Measurement: 1 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.echassot.benchmark.MutableLongMapBenchmark.createUpdateLookup_2to17Buffer_Verified
+[info] # Parameters: (keysListName = 32768)
+[info] # Run progress: 42.97% complete, ETA 00:12:37
+[info] # Fork: 1 of 1
+[info] Iteration   1: 5926.957 us/op
+[info] Result "ch.epfl.echassot.benchmark.MutableLongMapBenchmark.createUpdateLookup_2to17Buffer_Verified":
+[info]   5926.957 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1-Ubuntu-0ubuntu120.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: <none>
+[info] # Measurement: 1 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.echassot.benchmark.MutableLongMapBenchmark.createUpdateLookup_2to17Buffer_Verified
+[info] # Parameters: (keysListName = 36864)
+[info] # Run progress: 43.75% complete, ETA 00:12:27
+[info] # Fork: 1 of 1
+[info] Iteration   1: 6070.202 us/op
+[info] Result "ch.epfl.echassot.benchmark.MutableLongMapBenchmark.createUpdateLookup_2to17Buffer_Verified":
+[info]   6070.202 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1-Ubuntu-0ubuntu120.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: <none>
+[info] # Measurement: 1 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.echassot.benchmark.MutableLongMapBenchmark.createUpdateLookup_2to17Buffer_Verified
+[info] # Parameters: (keysListName = 40960)
+[info] # Run progress: 44.53% complete, ETA 00:12:16
+[info] # Fork: 1 of 1
+[info] Iteration   1: 6283.822 us/op
+[info] Result "ch.epfl.echassot.benchmark.MutableLongMapBenchmark.createUpdateLookup_2to17Buffer_Verified":
+[info]   6283.822 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1-Ubuntu-0ubuntu120.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: <none>
+[info] # Measurement: 1 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.echassot.benchmark.MutableLongMapBenchmark.createUpdateLookup_2to17Buffer_Verified
+[info] # Parameters: (keysListName = 45056)
+[info] # Run progress: 45.31% complete, ETA 00:12:06
+[info] # Fork: 1 of 1
+[info] Iteration   1: 6414.960 us/op
+[info] Result "ch.epfl.echassot.benchmark.MutableLongMapBenchmark.createUpdateLookup_2to17Buffer_Verified":
+[info]   6414.960 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1-Ubuntu-0ubuntu120.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: <none>
+[info] # Measurement: 1 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.echassot.benchmark.MutableLongMapBenchmark.createUpdateLookup_2to17Buffer_Verified
+[info] # Parameters: (keysListName = 49152)
+[info] # Run progress: 46.09% complete, ETA 00:11:56
+[info] # Fork: 1 of 1
+[info] Iteration   1: 5946.722 us/op
+[info] Result "ch.epfl.echassot.benchmark.MutableLongMapBenchmark.createUpdateLookup_2to17Buffer_Verified":
+[info]   5946.722 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1-Ubuntu-0ubuntu120.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: <none>
+[info] # Measurement: 1 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.echassot.benchmark.MutableLongMapBenchmark.createUpdateLookup_2to17Buffer_Verified
+[info] # Parameters: (keysListName = 53248)
+[info] # Run progress: 46.88% complete, ETA 00:11:45
+[info] # Fork: 1 of 1
+[info] Iteration   1: 5954.189 us/op
+[info] Result "ch.epfl.echassot.benchmark.MutableLongMapBenchmark.createUpdateLookup_2to17Buffer_Verified":
+[info]   5954.189 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1-Ubuntu-0ubuntu120.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: <none>
+[info] # Measurement: 1 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.echassot.benchmark.MutableLongMapBenchmark.createUpdateLookup_2to17Buffer_Verified
+[info] # Parameters: (keysListName = 57344)
+[info] # Run progress: 47.66% complete, ETA 00:11:35
+[info] # Fork: 1 of 1
+[info] Iteration   1: 6297.365 us/op
+[info] Result "ch.epfl.echassot.benchmark.MutableLongMapBenchmark.createUpdateLookup_2to17Buffer_Verified":
+[info]   6297.365 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1-Ubuntu-0ubuntu120.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: <none>
+[info] # Measurement: 1 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.echassot.benchmark.MutableLongMapBenchmark.createUpdateLookup_2to17Buffer_Verified
+[info] # Parameters: (keysListName = 61440)
+[info] # Run progress: 48.44% complete, ETA 00:11:24
+[info] # Fork: 1 of 1
+[info] Iteration   1: 6315.757 us/op
+[info] Result "ch.epfl.echassot.benchmark.MutableLongMapBenchmark.createUpdateLookup_2to17Buffer_Verified":
+[info]   6315.757 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1-Ubuntu-0ubuntu120.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: <none>
+[info] # Measurement: 1 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.echassot.benchmark.MutableLongMapBenchmark.createUpdateLookup_2to17Buffer_Verified
+[info] # Parameters: (keysListName = 65536)
+[info] # Run progress: 49.22% complete, ETA 00:11:14
+[info] # Fork: 1 of 1
+[info] Iteration   1: 5784.344 us/op
+[info] Result "ch.epfl.echassot.benchmark.MutableLongMapBenchmark.createUpdateLookup_2to17Buffer_Verified":
+[info]   5784.344 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1-Ubuntu-0ubuntu120.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: <none>
+[info] # Measurement: 1 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.echassot.benchmark.MutableLongMapBenchmark.createUpdateRemoveUpdateLookup_16Buffer_Original
+[info] # Parameters: (keysListName = 4096)
+[info] # Run progress: 50.00% complete, ETA 00:11:04
+[info] # Fork: 1 of 1
+[info] Iteration   1: 5474.041 us/op
+[info] Result "ch.epfl.echassot.benchmark.MutableLongMapBenchmark.createUpdateRemoveUpdateLookup_16Buffer_Original":
+[info]   5474.041 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1-Ubuntu-0ubuntu120.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: <none>
+[info] # Measurement: 1 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.echassot.benchmark.MutableLongMapBenchmark.createUpdateRemoveUpdateLookup_16Buffer_Original
+[info] # Parameters: (keysListName = 8192)
+[info] # Run progress: 50.78% complete, ETA 00:10:53
+[info] # Fork: 1 of 1
+[info] Iteration   1: 5578.446 us/op
+[info] Result "ch.epfl.echassot.benchmark.MutableLongMapBenchmark.createUpdateRemoveUpdateLookup_16Buffer_Original":
+[info]   5578.446 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1-Ubuntu-0ubuntu120.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: <none>
+[info] # Measurement: 1 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.echassot.benchmark.MutableLongMapBenchmark.createUpdateRemoveUpdateLookup_16Buffer_Original
+[info] # Parameters: (keysListName = 12288)
+[info] # Run progress: 51.56% complete, ETA 00:10:43
+[info] # Fork: 1 of 1
+[info] Iteration   1: 5658.595 us/op
+[info] Result "ch.epfl.echassot.benchmark.MutableLongMapBenchmark.createUpdateRemoveUpdateLookup_16Buffer_Original":
+[info]   5658.595 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1-Ubuntu-0ubuntu120.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: <none>
+[info] # Measurement: 1 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.echassot.benchmark.MutableLongMapBenchmark.createUpdateRemoveUpdateLookup_16Buffer_Original
+[info] # Parameters: (keysListName = 16384)
+[info] # Run progress: 52.34% complete, ETA 00:10:32
+[info] # Fork: 1 of 1
+[info] Iteration   1: 5870.075 us/op
+[info] Result "ch.epfl.echassot.benchmark.MutableLongMapBenchmark.createUpdateRemoveUpdateLookup_16Buffer_Original":
+[info]   5870.075 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1-Ubuntu-0ubuntu120.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: <none>
+[info] # Measurement: 1 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.echassot.benchmark.MutableLongMapBenchmark.createUpdateRemoveUpdateLookup_16Buffer_Original
+[info] # Parameters: (keysListName = 20480)
+[info] # Run progress: 53.13% complete, ETA 00:10:22
+[info] # Fork: 1 of 1
+[info] Iteration   1: 5988.984 us/op
+[info] Result "ch.epfl.echassot.benchmark.MutableLongMapBenchmark.createUpdateRemoveUpdateLookup_16Buffer_Original":
+[info]   5988.984 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1-Ubuntu-0ubuntu120.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: <none>
+[info] # Measurement: 1 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.echassot.benchmark.MutableLongMapBenchmark.createUpdateRemoveUpdateLookup_16Buffer_Original
+[info] # Parameters: (keysListName = 24576)
+[info] # Run progress: 53.91% complete, ETA 00:10:12
+[info] # Fork: 1 of 1
+[info] Iteration   1: 5776.081 us/op
+[info] Result "ch.epfl.echassot.benchmark.MutableLongMapBenchmark.createUpdateRemoveUpdateLookup_16Buffer_Original":
+[info]   5776.081 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1-Ubuntu-0ubuntu120.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: <none>
+[info] # Measurement: 1 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.echassot.benchmark.MutableLongMapBenchmark.createUpdateRemoveUpdateLookup_16Buffer_Original
+[info] # Parameters: (keysListName = 28672)
+[info] # Run progress: 54.69% complete, ETA 00:10:01
+[info] # Fork: 1 of 1
+[info] Iteration   1: 6299.267 us/op
+[info] Result "ch.epfl.echassot.benchmark.MutableLongMapBenchmark.createUpdateRemoveUpdateLookup_16Buffer_Original":
+[info]   6299.267 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1-Ubuntu-0ubuntu120.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: <none>
+[info] # Measurement: 1 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.echassot.benchmark.MutableLongMapBenchmark.createUpdateRemoveUpdateLookup_16Buffer_Original
+[info] # Parameters: (keysListName = 32768)
+[info] # Run progress: 55.47% complete, ETA 00:09:51
+[info] # Fork: 1 of 1
+[info] Iteration   1: 5976.002 us/op
+[info] Result "ch.epfl.echassot.benchmark.MutableLongMapBenchmark.createUpdateRemoveUpdateLookup_16Buffer_Original":
+[info]   5976.002 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1-Ubuntu-0ubuntu120.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: <none>
+[info] # Measurement: 1 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.echassot.benchmark.MutableLongMapBenchmark.createUpdateRemoveUpdateLookup_16Buffer_Original
+[info] # Parameters: (keysListName = 36864)
+[info] # Run progress: 56.25% complete, ETA 00:09:41
+[info] # Fork: 1 of 1
+[info] Iteration   1: 5951.147 us/op
+[info] Result "ch.epfl.echassot.benchmark.MutableLongMapBenchmark.createUpdateRemoveUpdateLookup_16Buffer_Original":
+[info]   5951.147 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1-Ubuntu-0ubuntu120.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: <none>
+[info] # Measurement: 1 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.echassot.benchmark.MutableLongMapBenchmark.createUpdateRemoveUpdateLookup_16Buffer_Original
+[info] # Parameters: (keysListName = 40960)
+[info] # Run progress: 57.03% complete, ETA 00:09:30
+[info] # Fork: 1 of 1
+[info] Iteration   1: 6263.779 us/op
+[info] Result "ch.epfl.echassot.benchmark.MutableLongMapBenchmark.createUpdateRemoveUpdateLookup_16Buffer_Original":
+[info]   6263.779 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1-Ubuntu-0ubuntu120.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: <none>
+[info] # Measurement: 1 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.echassot.benchmark.MutableLongMapBenchmark.createUpdateRemoveUpdateLookup_16Buffer_Original
+[info] # Parameters: (keysListName = 45056)
+[info] # Run progress: 57.81% complete, ETA 00:09:20
+[info] # Fork: 1 of 1
+[info] Iteration   1: 5967.363 us/op
+[info] Result "ch.epfl.echassot.benchmark.MutableLongMapBenchmark.createUpdateRemoveUpdateLookup_16Buffer_Original":
+[info]   5967.363 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1-Ubuntu-0ubuntu120.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: <none>
+[info] # Measurement: 1 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.echassot.benchmark.MutableLongMapBenchmark.createUpdateRemoveUpdateLookup_16Buffer_Original
+[info] # Parameters: (keysListName = 49152)
+[info] # Run progress: 58.59% complete, ETA 00:09:10
+[info] # Fork: 1 of 1
+[info] Iteration   1: 5936.068 us/op
+[info] Result "ch.epfl.echassot.benchmark.MutableLongMapBenchmark.createUpdateRemoveUpdateLookup_16Buffer_Original":
+[info]   5936.068 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1-Ubuntu-0ubuntu120.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: <none>
+[info] # Measurement: 1 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.echassot.benchmark.MutableLongMapBenchmark.createUpdateRemoveUpdateLookup_16Buffer_Original
+[info] # Parameters: (keysListName = 53248)
+[info] # Run progress: 59.38% complete, ETA 00:08:59
+[info] # Fork: 1 of 1
+[info] Iteration   1: 6022.030 us/op
+[info] Result "ch.epfl.echassot.benchmark.MutableLongMapBenchmark.createUpdateRemoveUpdateLookup_16Buffer_Original":
+[info]   6022.030 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1-Ubuntu-0ubuntu120.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: <none>
+[info] # Measurement: 1 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.echassot.benchmark.MutableLongMapBenchmark.createUpdateRemoveUpdateLookup_16Buffer_Original
+[info] # Parameters: (keysListName = 57344)
+[info] # Run progress: 60.16% complete, ETA 00:08:49
+[info] # Fork: 1 of 1
+[info] Iteration   1: 6151.828 us/op
+[info] Result "ch.epfl.echassot.benchmark.MutableLongMapBenchmark.createUpdateRemoveUpdateLookup_16Buffer_Original":
+[info]   6151.828 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1-Ubuntu-0ubuntu120.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: <none>
+[info] # Measurement: 1 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.echassot.benchmark.MutableLongMapBenchmark.createUpdateRemoveUpdateLookup_16Buffer_Original
+[info] # Parameters: (keysListName = 61440)
+[info] # Run progress: 60.94% complete, ETA 00:08:38
+[info] # Fork: 1 of 1
+[info] Iteration   1: 6346.732 us/op
+[info] Result "ch.epfl.echassot.benchmark.MutableLongMapBenchmark.createUpdateRemoveUpdateLookup_16Buffer_Original":
+[info]   6346.732 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1-Ubuntu-0ubuntu120.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: <none>
+[info] # Measurement: 1 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.echassot.benchmark.MutableLongMapBenchmark.createUpdateRemoveUpdateLookup_16Buffer_Original
+[info] # Parameters: (keysListName = 65536)
+[info] # Run progress: 61.72% complete, ETA 00:08:28
+[info] # Fork: 1 of 1
+[info] Iteration   1: 6070.377 us/op
+[info] Result "ch.epfl.echassot.benchmark.MutableLongMapBenchmark.createUpdateRemoveUpdateLookup_16Buffer_Original":
+[info]   6070.377 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1-Ubuntu-0ubuntu120.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: <none>
+[info] # Measurement: 1 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.echassot.benchmark.MutableLongMapBenchmark.createUpdateRemoveUpdateLookup_16Buffer_Verified
+[info] # Parameters: (keysListName = 4096)
+[info] # Run progress: 62.50% complete, ETA 00:08:18
+[info] # Fork: 1 of 1
+[info] Iteration   1: 3521706.829 us/op
+[info] Result "ch.epfl.echassot.benchmark.MutableLongMapBenchmark.createUpdateRemoveUpdateLookup_16Buffer_Verified":
+[info]   3521706.829 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1-Ubuntu-0ubuntu120.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: <none>
+[info] # Measurement: 1 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.echassot.benchmark.MutableLongMapBenchmark.createUpdateRemoveUpdateLookup_16Buffer_Verified
+[info] # Parameters: (keysListName = 8192)
+[info] # Run progress: 63.28% complete, ETA 00:08:08
+[info] # Fork: 1 of 1
+[info] Iteration   1: 3543694.103 us/op
+[info] Result "ch.epfl.echassot.benchmark.MutableLongMapBenchmark.createUpdateRemoveUpdateLookup_16Buffer_Verified":
+[info]   3543694.103 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1-Ubuntu-0ubuntu120.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: <none>
+[info] # Measurement: 1 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.echassot.benchmark.MutableLongMapBenchmark.createUpdateRemoveUpdateLookup_16Buffer_Verified
+[info] # Parameters: (keysListName = 12288)
+[info] # Run progress: 64.06% complete, ETA 00:07:58
+[info] # Fork: 1 of 1
+[info] Iteration   1: 3546935.829 us/op
+[info] Result "ch.epfl.echassot.benchmark.MutableLongMapBenchmark.createUpdateRemoveUpdateLookup_16Buffer_Verified":
+[info]   3546935.829 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1-Ubuntu-0ubuntu120.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: <none>
+[info] # Measurement: 1 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.echassot.benchmark.MutableLongMapBenchmark.createUpdateRemoveUpdateLookup_16Buffer_Verified
+[info] # Parameters: (keysListName = 16384)
+[info] # Run progress: 64.84% complete, ETA 00:07:48
+[info] # Fork: 1 of 1
+[info] Iteration   1: 3790890.534 us/op
+[info] Result "ch.epfl.echassot.benchmark.MutableLongMapBenchmark.createUpdateRemoveUpdateLookup_16Buffer_Verified":
+[info]   3790890.534 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1-Ubuntu-0ubuntu120.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: <none>
+[info] # Measurement: 1 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.echassot.benchmark.MutableLongMapBenchmark.createUpdateRemoveUpdateLookup_16Buffer_Verified
+[info] # Parameters: (keysListName = 20480)
+[info] # Run progress: 65.63% complete, ETA 00:07:38
+[info] # Fork: 1 of 1
+[info] Iteration   1: 3751031.252 us/op
+[info] Result "ch.epfl.echassot.benchmark.MutableLongMapBenchmark.createUpdateRemoveUpdateLookup_16Buffer_Verified":
+[info]   3751031.252 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1-Ubuntu-0ubuntu120.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: <none>
+[info] # Measurement: 1 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.echassot.benchmark.MutableLongMapBenchmark.createUpdateRemoveUpdateLookup_16Buffer_Verified
+[info] # Parameters: (keysListName = 24576)
+[info] # Run progress: 66.41% complete, ETA 00:07:28
+[info] # Fork: 1 of 1
+[info] Iteration   1: 3779020.817 us/op
+[info] Result "ch.epfl.echassot.benchmark.MutableLongMapBenchmark.createUpdateRemoveUpdateLookup_16Buffer_Verified":
+[info]   3779020.817 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1-Ubuntu-0ubuntu120.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: <none>
+[info] # Measurement: 1 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.echassot.benchmark.MutableLongMapBenchmark.createUpdateRemoveUpdateLookup_16Buffer_Verified
+[info] # Parameters: (keysListName = 28672)
+[info] # Run progress: 67.19% complete, ETA 00:07:18
+[info] # Fork: 1 of 1
+[info] Iteration   1: 3801593.124 us/op
+[info] Result "ch.epfl.echassot.benchmark.MutableLongMapBenchmark.createUpdateRemoveUpdateLookup_16Buffer_Verified":
+[info]   3801593.124 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1-Ubuntu-0ubuntu120.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: <none>
+[info] # Measurement: 1 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.echassot.benchmark.MutableLongMapBenchmark.createUpdateRemoveUpdateLookup_16Buffer_Verified
+[info] # Parameters: (keysListName = 32768)
+[info] # Run progress: 67.97% complete, ETA 00:07:08
+[info] # Fork: 1 of 1
+[info] Iteration   1: 3618156.953 us/op
+[info] Result "ch.epfl.echassot.benchmark.MutableLongMapBenchmark.createUpdateRemoveUpdateLookup_16Buffer_Verified":
+[info]   3618156.953 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1-Ubuntu-0ubuntu120.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: <none>
+[info] # Measurement: 1 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.echassot.benchmark.MutableLongMapBenchmark.createUpdateRemoveUpdateLookup_16Buffer_Verified
+[info] # Parameters: (keysListName = 36864)
+[info] # Run progress: 68.75% complete, ETA 00:06:58
+[info] # Fork: 1 of 1
+[info] Iteration   1: 3542390.631 us/op
+[info] Result "ch.epfl.echassot.benchmark.MutableLongMapBenchmark.createUpdateRemoveUpdateLookup_16Buffer_Verified":
+[info]   3542390.631 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1-Ubuntu-0ubuntu120.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: <none>
+[info] # Measurement: 1 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.echassot.benchmark.MutableLongMapBenchmark.createUpdateRemoveUpdateLookup_16Buffer_Verified
+[info] # Parameters: (keysListName = 40960)
+[info] # Run progress: 69.53% complete, ETA 00:06:48
+[info] # Fork: 1 of 1
+[info] Iteration   1: 3802965.383 us/op
+[info] Result "ch.epfl.echassot.benchmark.MutableLongMapBenchmark.createUpdateRemoveUpdateLookup_16Buffer_Verified":
+[info]   3802965.383 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1-Ubuntu-0ubuntu120.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: <none>
+[info] # Measurement: 1 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.echassot.benchmark.MutableLongMapBenchmark.createUpdateRemoveUpdateLookup_16Buffer_Verified
+[info] # Parameters: (keysListName = 45056)
+[info] # Run progress: 70.31% complete, ETA 00:06:38
+[info] # Fork: 1 of 1
+[info] Iteration   1: 3555109.744 us/op
+[info] Result "ch.epfl.echassot.benchmark.MutableLongMapBenchmark.createUpdateRemoveUpdateLookup_16Buffer_Verified":
+[info]   3555109.744 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1-Ubuntu-0ubuntu120.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: <none>
+[info] # Measurement: 1 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.echassot.benchmark.MutableLongMapBenchmark.createUpdateRemoveUpdateLookup_16Buffer_Verified
+[info] # Parameters: (keysListName = 49152)
+[info] # Run progress: 71.09% complete, ETA 00:06:28
+[info] # Fork: 1 of 1
+[info] Iteration   1: 3555809.194 us/op
+[info] Result "ch.epfl.echassot.benchmark.MutableLongMapBenchmark.createUpdateRemoveUpdateLookup_16Buffer_Verified":
+[info]   3555809.194 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1-Ubuntu-0ubuntu120.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: <none>
+[info] # Measurement: 1 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.echassot.benchmark.MutableLongMapBenchmark.createUpdateRemoveUpdateLookup_16Buffer_Verified
+[info] # Parameters: (keysListName = 53248)
+[info] # Run progress: 71.88% complete, ETA 00:06:18
+[info] # Fork: 1 of 1
+[info] Iteration   1: 3593088.902 us/op
+[info] Result "ch.epfl.echassot.benchmark.MutableLongMapBenchmark.createUpdateRemoveUpdateLookup_16Buffer_Verified":
+[info]   3593088.902 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1-Ubuntu-0ubuntu120.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: <none>
+[info] # Measurement: 1 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.echassot.benchmark.MutableLongMapBenchmark.createUpdateRemoveUpdateLookup_16Buffer_Verified
+[info] # Parameters: (keysListName = 57344)
+[info] # Run progress: 72.66% complete, ETA 00:06:07
+[info] # Fork: 1 of 1
+[info] Iteration   1: 3801019.107 us/op
+[info] Result "ch.epfl.echassot.benchmark.MutableLongMapBenchmark.createUpdateRemoveUpdateLookup_16Buffer_Verified":
+[info]   3801019.107 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1-Ubuntu-0ubuntu120.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: <none>
+[info] # Measurement: 1 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.echassot.benchmark.MutableLongMapBenchmark.createUpdateRemoveUpdateLookup_16Buffer_Verified
+[info] # Parameters: (keysListName = 61440)
+[info] # Run progress: 73.44% complete, ETA 00:05:57
+[info] # Fork: 1 of 1
+[info] Iteration   1: 3547562.410 us/op
+[info] Result "ch.epfl.echassot.benchmark.MutableLongMapBenchmark.createUpdateRemoveUpdateLookup_16Buffer_Verified":
+[info]   3547562.410 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1-Ubuntu-0ubuntu120.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: <none>
+[info] # Measurement: 1 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.echassot.benchmark.MutableLongMapBenchmark.createUpdateRemoveUpdateLookup_16Buffer_Verified
+[info] # Parameters: (keysListName = 65536)
+[info] # Run progress: 74.22% complete, ETA 00:05:47
+[info] # Fork: 1 of 1
+[info] Iteration   1: 3524807.915 us/op
+[info] Result "ch.epfl.echassot.benchmark.MutableLongMapBenchmark.createUpdateRemoveUpdateLookup_16Buffer_Verified":
+[info]   3524807.915 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1-Ubuntu-0ubuntu120.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: <none>
+[info] # Measurement: 1 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.echassot.benchmark.MutableLongMapBenchmark.lookupN_Original
+[info] # Parameters: (keysListName = 4096)
+[info] # Run progress: 75.00% complete, ETA 00:05:37
+[info] # Fork: 1 of 1
+[info] Iteration   1: 51.471 us/op
+[info] Result "ch.epfl.echassot.benchmark.MutableLongMapBenchmark.lookupN_Original":
+[info]   51.471 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1-Ubuntu-0ubuntu120.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: <none>
+[info] # Measurement: 1 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.echassot.benchmark.MutableLongMapBenchmark.lookupN_Original
+[info] # Parameters: (keysListName = 8192)
+[info] # Run progress: 75.78% complete, ETA 00:05:26
+[info] # Fork: 1 of 1
+[info] Iteration   1: 101.099 us/op
+[info] Result "ch.epfl.echassot.benchmark.MutableLongMapBenchmark.lookupN_Original":
+[info]   101.099 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1-Ubuntu-0ubuntu120.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: <none>
+[info] # Measurement: 1 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.echassot.benchmark.MutableLongMapBenchmark.lookupN_Original
+[info] # Parameters: (keysListName = 12288)
+[info] # Run progress: 76.56% complete, ETA 00:05:15
+[info] # Fork: 1 of 1
+[info] Iteration   1: 156.830 us/op
+[info] Result "ch.epfl.echassot.benchmark.MutableLongMapBenchmark.lookupN_Original":
+[info]   156.830 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1-Ubuntu-0ubuntu120.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: <none>
+[info] # Measurement: 1 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.echassot.benchmark.MutableLongMapBenchmark.lookupN_Original
+[info] # Parameters: (keysListName = 16384)
+[info] # Run progress: 77.34% complete, ETA 00:05:05
+[info] # Fork: 1 of 1
+[info] Iteration   1: 216.964 us/op
+[info] Result "ch.epfl.echassot.benchmark.MutableLongMapBenchmark.lookupN_Original":
+[info]   216.964 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1-Ubuntu-0ubuntu120.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: <none>
+[info] # Measurement: 1 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.echassot.benchmark.MutableLongMapBenchmark.lookupN_Original
+[info] # Parameters: (keysListName = 20480)
+[info] # Run progress: 78.13% complete, ETA 00:04:54
+[info] # Fork: 1 of 1
+[info] Iteration   1: 285.421 us/op
+[info] Result "ch.epfl.echassot.benchmark.MutableLongMapBenchmark.lookupN_Original":
+[info]   285.421 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1-Ubuntu-0ubuntu120.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: <none>
+[info] # Measurement: 1 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.echassot.benchmark.MutableLongMapBenchmark.lookupN_Original
+[info] # Parameters: (keysListName = 24576)
+[info] # Run progress: 78.91% complete, ETA 00:04:44
+[info] # Fork: 1 of 1
+[info] Iteration   1: 379.173 us/op
+[info] Result "ch.epfl.echassot.benchmark.MutableLongMapBenchmark.lookupN_Original":
+[info]   379.173 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1-Ubuntu-0ubuntu120.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: <none>
+[info] # Measurement: 1 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.echassot.benchmark.MutableLongMapBenchmark.lookupN_Original
+[info] # Parameters: (keysListName = 28672)
+[info] # Run progress: 79.69% complete, ETA 00:04:33
+[info] # Fork: 1 of 1
+[info] Iteration   1: 470.479 us/op
+[info] Result "ch.epfl.echassot.benchmark.MutableLongMapBenchmark.lookupN_Original":
+[info]   470.479 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1-Ubuntu-0ubuntu120.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: <none>
+[info] # Measurement: 1 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.echassot.benchmark.MutableLongMapBenchmark.lookupN_Original
+[info] # Parameters: (keysListName = 32768)
+[info] # Run progress: 80.47% complete, ETA 00:04:23
+[info] # Fork: 1 of 1
+[info] Iteration   1: 569.445 us/op
+[info] Result "ch.epfl.echassot.benchmark.MutableLongMapBenchmark.lookupN_Original":
+[info]   569.445 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1-Ubuntu-0ubuntu120.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: <none>
+[info] # Measurement: 1 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.echassot.benchmark.MutableLongMapBenchmark.lookupN_Original
+[info] # Parameters: (keysListName = 36864)
+[info] # Run progress: 81.25% complete, ETA 00:04:12
+[info] # Fork: 1 of 1
+[info] Iteration   1: 568.194 us/op
+[info] Result "ch.epfl.echassot.benchmark.MutableLongMapBenchmark.lookupN_Original":
+[info]   568.194 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1-Ubuntu-0ubuntu120.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: <none>
+[info] # Measurement: 1 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.echassot.benchmark.MutableLongMapBenchmark.lookupN_Original
+[info] # Parameters: (keysListName = 40960)
+[info] # Run progress: 82.03% complete, ETA 00:04:01
+[info] # Fork: 1 of 1
+[info] Iteration   1: 585.942 us/op
+[info] Result "ch.epfl.echassot.benchmark.MutableLongMapBenchmark.lookupN_Original":
+[info]   585.942 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1-Ubuntu-0ubuntu120.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: <none>
+[info] # Measurement: 1 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.echassot.benchmark.MutableLongMapBenchmark.lookupN_Original
+[info] # Parameters: (keysListName = 45056)
+[info] # Run progress: 82.81% complete, ETA 00:03:51
+[info] # Fork: 1 of 1
+[info] Iteration   1: 562.106 us/op
+[info] Result "ch.epfl.echassot.benchmark.MutableLongMapBenchmark.lookupN_Original":
+[info]   562.106 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1-Ubuntu-0ubuntu120.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: <none>
+[info] # Measurement: 1 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.echassot.benchmark.MutableLongMapBenchmark.lookupN_Original
+[info] # Parameters: (keysListName = 49152)
+[info] # Run progress: 83.59% complete, ETA 00:03:40
+[info] # Fork: 1 of 1
+[info] Iteration   1: 613.250 us/op
+[info] Result "ch.epfl.echassot.benchmark.MutableLongMapBenchmark.lookupN_Original":
+[info]   613.250 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1-Ubuntu-0ubuntu120.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: <none>
+[info] # Measurement: 1 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.echassot.benchmark.MutableLongMapBenchmark.lookupN_Original
+[info] # Parameters: (keysListName = 53248)
+[info] # Run progress: 84.38% complete, ETA 00:03:30
+[info] # Fork: 1 of 1
+[info] Iteration   1: 582.053 us/op
+[info] Result "ch.epfl.echassot.benchmark.MutableLongMapBenchmark.lookupN_Original":
+[info]   582.053 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1-Ubuntu-0ubuntu120.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: <none>
+[info] # Measurement: 1 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.echassot.benchmark.MutableLongMapBenchmark.lookupN_Original
+[info] # Parameters: (keysListName = 57344)
+[info] # Run progress: 85.16% complete, ETA 00:03:19
+[info] # Fork: 1 of 1
+[info] Iteration   1: 624.225 us/op
+[info] Result "ch.epfl.echassot.benchmark.MutableLongMapBenchmark.lookupN_Original":
+[info]   624.225 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1-Ubuntu-0ubuntu120.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: <none>
+[info] # Measurement: 1 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.echassot.benchmark.MutableLongMapBenchmark.lookupN_Original
+[info] # Parameters: (keysListName = 61440)
+[info] # Run progress: 85.94% complete, ETA 00:03:09
+[info] # Fork: 1 of 1
+[info] Iteration   1: 573.148 us/op
+[info] Result "ch.epfl.echassot.benchmark.MutableLongMapBenchmark.lookupN_Original":
+[info]   573.148 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1-Ubuntu-0ubuntu120.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: <none>
+[info] # Measurement: 1 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.echassot.benchmark.MutableLongMapBenchmark.lookupN_Original
+[info] # Parameters: (keysListName = 65536)
+[info] # Run progress: 86.72% complete, ETA 00:02:58
+[info] # Fork: 1 of 1
+[info] Iteration   1: 574.321 us/op
+[info] Result "ch.epfl.echassot.benchmark.MutableLongMapBenchmark.lookupN_Original":
+[info]   574.321 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1-Ubuntu-0ubuntu120.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: <none>
+[info] # Measurement: 1 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.echassot.benchmark.MutableLongMapBenchmark.lookupN_Verified
+[info] # Parameters: (keysListName = 4096)
+[info] # Run progress: 87.50% complete, ETA 00:02:48
+[info] # Fork: 1 of 1
+[info] Iteration   1: 86.777 us/op
+[info] Result "ch.epfl.echassot.benchmark.MutableLongMapBenchmark.lookupN_Verified":
+[info]   86.777 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1-Ubuntu-0ubuntu120.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: <none>
+[info] # Measurement: 1 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.echassot.benchmark.MutableLongMapBenchmark.lookupN_Verified
+[info] # Parameters: (keysListName = 8192)
+[info] # Run progress: 88.28% complete, ETA 00:02:37
+[info] # Fork: 1 of 1
+[info] Iteration   1: 173.358 us/op
+[info] Result "ch.epfl.echassot.benchmark.MutableLongMapBenchmark.lookupN_Verified":
+[info]   173.358 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1-Ubuntu-0ubuntu120.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: <none>
+[info] # Measurement: 1 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.echassot.benchmark.MutableLongMapBenchmark.lookupN_Verified
+[info] # Parameters: (keysListName = 12288)
+[info] # Run progress: 89.06% complete, ETA 00:02:27
+[info] # Fork: 1 of 1
+[info] Iteration   1: 293.493 us/op
+[info] Result "ch.epfl.echassot.benchmark.MutableLongMapBenchmark.lookupN_Verified":
+[info]   293.493 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1-Ubuntu-0ubuntu120.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: <none>
+[info] # Measurement: 1 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.echassot.benchmark.MutableLongMapBenchmark.lookupN_Verified
+[info] # Parameters: (keysListName = 16384)
+[info] # Run progress: 89.84% complete, ETA 00:02:16
+[info] # Fork: 1 of 1
+[info] Iteration   1: 392.056 us/op
+[info] Result "ch.epfl.echassot.benchmark.MutableLongMapBenchmark.lookupN_Verified":
+[info]   392.056 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1-Ubuntu-0ubuntu120.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: <none>
+[info] # Measurement: 1 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.echassot.benchmark.MutableLongMapBenchmark.lookupN_Verified
+[info] # Parameters: (keysListName = 20480)
+[info] # Run progress: 90.63% complete, ETA 00:02:06
+[info] # Fork: 1 of 1
+[info] Iteration   1: 504.507 us/op
+[info] Result "ch.epfl.echassot.benchmark.MutableLongMapBenchmark.lookupN_Verified":
+[info]   504.507 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1-Ubuntu-0ubuntu120.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: <none>
+[info] # Measurement: 1 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.echassot.benchmark.MutableLongMapBenchmark.lookupN_Verified
+[info] # Parameters: (keysListName = 24576)
+[info] # Run progress: 91.41% complete, ETA 00:01:55
+[info] # Fork: 1 of 1
+[info] Iteration   1: 595.932 us/op
+[info] Result "ch.epfl.echassot.benchmark.MutableLongMapBenchmark.lookupN_Verified":
+[info]   595.932 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1-Ubuntu-0ubuntu120.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: <none>
+[info] # Measurement: 1 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.echassot.benchmark.MutableLongMapBenchmark.lookupN_Verified
+[info] # Parameters: (keysListName = 28672)
+[info] # Run progress: 92.19% complete, ETA 00:01:45
+[info] # Fork: 1 of 1
+[info] Iteration   1: 746.923 us/op
+[info] Result "ch.epfl.echassot.benchmark.MutableLongMapBenchmark.lookupN_Verified":
+[info]   746.923 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1-Ubuntu-0ubuntu120.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: <none>
+[info] # Measurement: 1 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.echassot.benchmark.MutableLongMapBenchmark.lookupN_Verified
+[info] # Parameters: (keysListName = 32768)
+[info] # Run progress: 92.97% complete, ETA 00:01:34
+[info] # Fork: 1 of 1
+[info] Iteration   1: 911.183 us/op
+[info] Result "ch.epfl.echassot.benchmark.MutableLongMapBenchmark.lookupN_Verified":
+[info]   911.183 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1-Ubuntu-0ubuntu120.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: <none>
+[info] # Measurement: 1 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.echassot.benchmark.MutableLongMapBenchmark.lookupN_Verified
+[info] # Parameters: (keysListName = 36864)
+[info] # Run progress: 93.75% complete, ETA 00:01:24
+[info] # Fork: 1 of 1
+[info] Iteration   1: 909.642 us/op
+[info] Result "ch.epfl.echassot.benchmark.MutableLongMapBenchmark.lookupN_Verified":
+[info]   909.642 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1-Ubuntu-0ubuntu120.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: <none>
+[info] # Measurement: 1 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.echassot.benchmark.MutableLongMapBenchmark.lookupN_Verified
+[info] # Parameters: (keysListName = 40960)
+[info] # Run progress: 94.53% complete, ETA 00:01:13
+[info] # Fork: 1 of 1
+[info] Iteration   1: 914.537 us/op
+[info] Result "ch.epfl.echassot.benchmark.MutableLongMapBenchmark.lookupN_Verified":
+[info]   914.537 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1-Ubuntu-0ubuntu120.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: <none>
+[info] # Measurement: 1 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.echassot.benchmark.MutableLongMapBenchmark.lookupN_Verified
+[info] # Parameters: (keysListName = 45056)
+[info] # Run progress: 95.31% complete, ETA 00:01:03
+[info] # Fork: 1 of 1
+[info] Iteration   1: 876.476 us/op
+[info] Result "ch.epfl.echassot.benchmark.MutableLongMapBenchmark.lookupN_Verified":
+[info]   876.476 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1-Ubuntu-0ubuntu120.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: <none>
+[info] # Measurement: 1 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.echassot.benchmark.MutableLongMapBenchmark.lookupN_Verified
+[info] # Parameters: (keysListName = 49152)
+[info] # Run progress: 96.09% complete, ETA 00:00:52
+[info] # Fork: 1 of 1
+[info] Iteration   1: 900.749 us/op
+[info] Result "ch.epfl.echassot.benchmark.MutableLongMapBenchmark.lookupN_Verified":
+[info]   900.749 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1-Ubuntu-0ubuntu120.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: <none>
+[info] # Measurement: 1 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.echassot.benchmark.MutableLongMapBenchmark.lookupN_Verified
+[info] # Parameters: (keysListName = 53248)
+[info] # Run progress: 96.88% complete, ETA 00:00:41
+[info] # Fork: 1 of 1
+[info] Iteration   1: 886.891 us/op
+[info] Result "ch.epfl.echassot.benchmark.MutableLongMapBenchmark.lookupN_Verified":
+[info]   886.891 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1-Ubuntu-0ubuntu120.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: <none>
+[info] # Measurement: 1 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.echassot.benchmark.MutableLongMapBenchmark.lookupN_Verified
+[info] # Parameters: (keysListName = 57344)
+[info] # Run progress: 97.66% complete, ETA 00:00:31
+[info] # Fork: 1 of 1
+[info] Iteration   1: 885.533 us/op
+[info] Result "ch.epfl.echassot.benchmark.MutableLongMapBenchmark.lookupN_Verified":
+[info]   885.533 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1-Ubuntu-0ubuntu120.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: <none>
+[info] # Measurement: 1 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.echassot.benchmark.MutableLongMapBenchmark.lookupN_Verified
+[info] # Parameters: (keysListName = 61440)
+[info] # Run progress: 98.44% complete, ETA 00:00:20
+[info] # Fork: 1 of 1
+[info] Iteration   1: 898.479 us/op
+[info] Result "ch.epfl.echassot.benchmark.MutableLongMapBenchmark.lookupN_Verified":
+[info]   898.479 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1-Ubuntu-0ubuntu120.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: <none>
+[info] # Measurement: 1 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.echassot.benchmark.MutableLongMapBenchmark.lookupN_Verified
+[info] # Parameters: (keysListName = 65536)
+[info] # Run progress: 99.22% complete, ETA 00:00:10
+[info] # Fork: 1 of 1
+[info] Iteration   1: 935.767 us/op
+[info] Result "ch.epfl.echassot.benchmark.MutableLongMapBenchmark.lookupN_Verified":
+[info]   935.767 us/op
+[info] # Run complete. Total time: 00:22:23
+[info] REMEMBER: The numbers below are just data. To gain reusable insights, you need to follow up on
+[info] why the numbers are the way they are. Use profilers (see -prof, -lprof), design factorial
+[info] experiments, perform baseline and negative tests that provide experimental control, make sure
+[info] the benchmarking environment is safe on JVM/OS/HW level, ask for reviews from the domain experts.
+[info] Do not assume the numbers tell you what you want them to tell.
+[info] Benchmark                                                                 (keysListName)  Mode  Cnt        Score   Error  Units
+[info] MutableLongMapBenchmark.createUpdateLookup_16Buffer_Original                        8192  avgt 1          2515.929 ±    0.001          us/op
+[info] MutableLongMapBenchmark.createUpdateLookup_16Buffer_Original                        4096  avgt 1          2509.497 ±    0.001          us/op
+[info] MutableLongMapBenchmark.createUpdateLookup_16Buffer_Original                       12288  avgt 1          2671.164 ±    0.001          us/op
+[info] MutableLongMapBenchmark.createUpdateLookup_16Buffer_Original                       16384  avgt 1          2859.550 ±    0.001          us/op
+[info] MutableLongMapBenchmark.createUpdateLookup_16Buffer_Original                       20480  avgt 1          2833.079 ±    0.001          us/op
+[info] MutableLongMapBenchmark.createUpdateLookup_16Buffer_Original                       24576  avgt 1          2982.217 ±    0.001          us/op
+[info] MutableLongMapBenchmark.createUpdateLookup_16Buffer_Original                       28672  avgt 1          2932.959 ±    0.001          us/op
+[info] MutableLongMapBenchmark.createUpdateLookup_16Buffer_Original                       32768  avgt 1          3040.036 ±    0.001          us/op
+[info] MutableLongMapBenchmark.createUpdateLookup_16Buffer_Original                       36864  avgt 1          3005.262 ±    0.001          us/op
+[info] MutableLongMapBenchmark.createUpdateLookup_16Buffer_Original                       40960  avgt 1          3146.317 ±    0.001          us/op
+[info] MutableLongMapBenchmark.createUpdateLookup_16Buffer_Original                       45056  avgt 1          3245.980 ±    0.001          us/op
+[info] MutableLongMapBenchmark.createUpdateLookup_16Buffer_Original                       49152  avgt 1          3130.544 ±    0.001          us/op
+[info] MutableLongMapBenchmark.createUpdateLookup_16Buffer_Original                       53248  avgt 1          3057.042 ±    0.001          us/op
+[info] MutableLongMapBenchmark.createUpdateLookup_16Buffer_Original                       57344  avgt 1          3232.074 ±    0.001          us/op
+[info] MutableLongMapBenchmark.createUpdateLookup_16Buffer_Original                       61440  avgt 1          3165.390 ±    0.001          us/op
+[info] MutableLongMapBenchmark.createUpdateLookup_16Buffer_Original                       65536  avgt 1          3056.574 ±    0.001          us/op
+[info] MutableLongMapBenchmark.createUpdateLookup_16Buffer_Verified                        4096  avgt 1          3968.801 ±    0.001          us/op
+[info] MutableLongMapBenchmark.createUpdateLookup_16Buffer_Verified                        8192  avgt 1          4286.735 ±    0.001          us/op
+[info] MutableLongMapBenchmark.createUpdateLookup_16Buffer_Verified                       12288  avgt 1          4304.810 ±    0.001          us/op
+[info] MutableLongMapBenchmark.createUpdateLookup_16Buffer_Verified                       16384  avgt 1          4411.976 ±    0.001          us/op
+[info] MutableLongMapBenchmark.createUpdateLookup_16Buffer_Verified                       20480  avgt 1          4345.512 ±    0.001          us/op
+[info] MutableLongMapBenchmark.createUpdateLookup_16Buffer_Verified                       24576  avgt 1          4505.292 ±    0.001          us/op
+[info] MutableLongMapBenchmark.createUpdateLookup_16Buffer_Verified                       28672  avgt 1          4886.058 ±    0.001          us/op
+[info] MutableLongMapBenchmark.createUpdateLookup_16Buffer_Verified                       32768  avgt 1          4940.006 ±    0.001          us/op
+[info] MutableLongMapBenchmark.createUpdateLookup_16Buffer_Verified                       36864  avgt 1          4785.742 ±    0.001          us/op
+[info] MutableLongMapBenchmark.createUpdateLookup_16Buffer_Verified                       40960  avgt 1          4766.891 ±    0.001          us/op
+[info] MutableLongMapBenchmark.createUpdateLookup_16Buffer_Verified                       45056  avgt 1          5029.778 ±    0.001          us/op
+[info] MutableLongMapBenchmark.createUpdateLookup_16Buffer_Verified                       49152  avgt 1          4839.975 ±    0.001          us/op
+[info] MutableLongMapBenchmark.createUpdateLookup_16Buffer_Verified                       53248  avgt 1          5043.342 ±    0.001          us/op
+[info] MutableLongMapBenchmark.createUpdateLookup_16Buffer_Verified                       57344  avgt 1          5041.194 ±    0.001          us/op
+[info] MutableLongMapBenchmark.createUpdateLookup_16Buffer_Verified                       61440  avgt 1          4736.199 ±    0.001          us/op
+[info] MutableLongMapBenchmark.createUpdateLookup_16Buffer_Verified                       65536  avgt 1          4804.790 ±    0.001          us/op
+[info] MutableLongMapBenchmark.createUpdateLookup_2to17Buffer_Original                     4096  avgt 1          1778.409 ±    0.001          us/op
+[info] MutableLongMapBenchmark.createUpdateLookup_2to17Buffer_Original                     8192  avgt 1          1870.785 ±    0.001          us/op
+[info] MutableLongMapBenchmark.createUpdateLookup_2to17Buffer_Original                    12288  avgt 1          1877.275 ±    0.001          us/op
+[info] MutableLongMapBenchmark.createUpdateLookup_2to17Buffer_Original                    16384  avgt 1          2063.200 ±    0.001          us/op
+[info] MutableLongMapBenchmark.createUpdateLookup_2to17Buffer_Original                    20480  avgt 1          2124.565 ±    0.001          us/op
+[info] MutableLongMapBenchmark.createUpdateLookup_2to17Buffer_Original                    24576  avgt 1          2117.603 ±    0.001          us/op
+[info] MutableLongMapBenchmark.createUpdateLookup_2to17Buffer_Original                    28672  avgt 1          2129.873 ±    0.001          us/op
+[info] MutableLongMapBenchmark.createUpdateLookup_2to17Buffer_Original                    32768  avgt 1          2301.466 ±    0.001          us/op
+[info] MutableLongMapBenchmark.createUpdateLookup_2to17Buffer_Original                    36864  avgt 1          2359.533 ±    0.001          us/op
+[info] MutableLongMapBenchmark.createUpdateLookup_2to17Buffer_Original                    40960  avgt 1          2301.720 ±    0.001          us/op
+[info] MutableLongMapBenchmark.createUpdateLookup_2to17Buffer_Original                    45056  avgt 1          2327.607 ±    0.001          us/op
+[info] MutableLongMapBenchmark.createUpdateLookup_2to17Buffer_Original                    49152  avgt 1          2265.162 ±    0.001          us/op
+[info] MutableLongMapBenchmark.createUpdateLookup_2to17Buffer_Original                    53248  avgt 1          2307.295 ±    0.001          us/op
+[info] MutableLongMapBenchmark.createUpdateLookup_2to17Buffer_Original                    57344  avgt 1          2241.120 ±    0.001          us/op
+[info] MutableLongMapBenchmark.createUpdateLookup_2to17Buffer_Original                    61440  avgt 1          2430.648 ±    0.001          us/op
+[info] MutableLongMapBenchmark.createUpdateLookup_2to17Buffer_Original                    65536  avgt 1          2322.397 ±    0.001          us/op
+[info] MutableLongMapBenchmark.createUpdateLookup_2to17Buffer_Verified                     4096  avgt 1          4917.943 ±    0.001          us/op
+[info] MutableLongMapBenchmark.createUpdateLookup_2to17Buffer_Verified                     8192  avgt 1          5523.580 ±    0.001          us/op
+[info] MutableLongMapBenchmark.createUpdateLookup_2to17Buffer_Verified                    12288  avgt 1          5417.713 ±    0.001          us/op
+[info] MutableLongMapBenchmark.createUpdateLookup_2to17Buffer_Verified                    16384  avgt 1          5254.553 ±    0.001          us/op
+[info] MutableLongMapBenchmark.createUpdateLookup_2to17Buffer_Verified                    20480  avgt 1          5824.250 ±    0.001          us/op
+[info] MutableLongMapBenchmark.createUpdateLookup_2to17Buffer_Verified                    24576  avgt 1          5554.034 ±    0.001          us/op
+[info] MutableLongMapBenchmark.createUpdateLookup_2to17Buffer_Verified                    28672  avgt 1          5789.212 ±    0.001          us/op
+[info] MutableLongMapBenchmark.createUpdateLookup_2to17Buffer_Verified                    32768  avgt 1          5926.957 ±    0.001          us/op
+[info] MutableLongMapBenchmark.createUpdateLookup_2to17Buffer_Verified                    36864  avgt 1          6070.202 ±    0.001          us/op
+[info] MutableLongMapBenchmark.createUpdateLookup_2to17Buffer_Verified                    40960  avgt 1          6283.822 ±    0.001          us/op
+[info] MutableLongMapBenchmark.createUpdateLookup_2to17Buffer_Verified                    45056  avgt 1          6414.960 ±    0.001          us/op
+[info] MutableLongMapBenchmark.createUpdateLookup_2to17Buffer_Verified                    49152  avgt 1          5946.722 ±    0.001          us/op
+[info] MutableLongMapBenchmark.createUpdateLookup_2to17Buffer_Verified                    53248  avgt 1          5954.189 ±    0.001          us/op
+[info] MutableLongMapBenchmark.createUpdateLookup_2to17Buffer_Verified                    57344  avgt 1          6297.365 ±    0.001          us/op
+[info] MutableLongMapBenchmark.createUpdateLookup_2to17Buffer_Verified                    61440  avgt 1          6315.757 ±    0.001          us/op
+[info] MutableLongMapBenchmark.createUpdateLookup_2to17Buffer_Verified                    65536  avgt 1          5784.344 ±    0.001          us/op
+[info] MutableLongMapBenchmark.createUpdateRemoveUpdateLookup_16Buffer_Original            4096  avgt 1          5474.041 ±    0.001          us/op
+[info] MutableLongMapBenchmark.createUpdateRemoveUpdateLookup_16Buffer_Original            8192  avgt 1          5578.446 ±    0.001          us/op
+[info] MutableLongMapBenchmark.createUpdateRemoveUpdateLookup_16Buffer_Original           12288  avgt 1          5658.595 ±    0.001          us/op
+[info] MutableLongMapBenchmark.createUpdateRemoveUpdateLookup_16Buffer_Original           16384  avgt 1          5870.075 ±    0.001          us/op
+[info] MutableLongMapBenchmark.createUpdateRemoveUpdateLookup_16Buffer_Original           20480  avgt 1          5988.984 ±    0.001          us/op
+[info] MutableLongMapBenchmark.createUpdateRemoveUpdateLookup_16Buffer_Original           24576  avgt 1          5776.081 ±    0.001          us/op
+[info] MutableLongMapBenchmark.createUpdateRemoveUpdateLookup_16Buffer_Original           28672  avgt 1          6299.267 ±    0.001          us/op
+[info] MutableLongMapBenchmark.createUpdateRemoveUpdateLookup_16Buffer_Original           32768  avgt 1          5976.002 ±    0.001          us/op
+[info] MutableLongMapBenchmark.createUpdateRemoveUpdateLookup_16Buffer_Original           36864  avgt 1          5951.147 ±    0.001          us/op
+[info] MutableLongMapBenchmark.createUpdateRemoveUpdateLookup_16Buffer_Original           40960  avgt 1          6263.779 ±    0.001          us/op
+[info] MutableLongMapBenchmark.createUpdateRemoveUpdateLookup_16Buffer_Original           45056  avgt 1          5967.363 ±    0.001          us/op
+[info] MutableLongMapBenchmark.createUpdateRemoveUpdateLookup_16Buffer_Original           49152  avgt 1          5936.068 ±    0.001          us/op
+[info] MutableLongMapBenchmark.createUpdateRemoveUpdateLookup_16Buffer_Original           53248  avgt 1          6022.030 ±    0.001          us/op
+[info] MutableLongMapBenchmark.createUpdateRemoveUpdateLookup_16Buffer_Original           57344  avgt 1          6151.828 ±    0.001          us/op
+[info] MutableLongMapBenchmark.createUpdateRemoveUpdateLookup_16Buffer_Original           61440  avgt 1          6346.732 ±    0.001          us/op
+[info] MutableLongMapBenchmark.createUpdateRemoveUpdateLookup_16Buffer_Original           65536  avgt 1          6070.377 ±    0.001          us/op
+[info] MutableLongMapBenchmark.createUpdateRemoveUpdateLookup_16Buffer_Verified            4096  avgt 1       3521706.829 ±    0.001          us/op
+[info] MutableLongMapBenchmark.createUpdateRemoveUpdateLookup_16Buffer_Verified            8192  avgt 1       3543694.103 ±    0.001          us/op
+[info] MutableLongMapBenchmark.createUpdateRemoveUpdateLookup_16Buffer_Verified           12288  avgt 1       3546935.829 ±    0.001          us/op
+[info] MutableLongMapBenchmark.createUpdateRemoveUpdateLookup_16Buffer_Verified           16384  avgt 1       3790890.534 ±    0.001          us/op
+[info] MutableLongMapBenchmark.createUpdateRemoveUpdateLookup_16Buffer_Verified           20480  avgt 1       3751031.252 ±    0.001          us/op
+[info] MutableLongMapBenchmark.createUpdateRemoveUpdateLookup_16Buffer_Verified           24576  avgt 1       3779020.817 ±    0.001          us/op
+[info] MutableLongMapBenchmark.createUpdateRemoveUpdateLookup_16Buffer_Verified           28672  avgt 1       3801593.124 ±    0.001          us/op
+[info] MutableLongMapBenchmark.createUpdateRemoveUpdateLookup_16Buffer_Verified           32768  avgt 1       3618156.953 ±    0.001          us/op
+[info] MutableLongMapBenchmark.createUpdateRemoveUpdateLookup_16Buffer_Verified           36864  avgt 1       3542390.631 ±    0.001          us/op
+[info] MutableLongMapBenchmark.createUpdateRemoveUpdateLookup_16Buffer_Verified           40960  avgt 1       3802965.383 ±    0.001          us/op
+[info] MutableLongMapBenchmark.createUpdateRemoveUpdateLookup_16Buffer_Verified           45056  avgt 1       3555109.744 ±    0.001          us/op
+[info] MutableLongMapBenchmark.createUpdateRemoveUpdateLookup_16Buffer_Verified           49152  avgt 1       3555809.194 ±    0.001          us/op
+[info] MutableLongMapBenchmark.createUpdateRemoveUpdateLookup_16Buffer_Verified           53248  avgt 1       3593088.902 ±    0.001          us/op
+[info] MutableLongMapBenchmark.createUpdateRemoveUpdateLookup_16Buffer_Verified           57344  avgt 1       3801019.107 ±    0.001          us/op
+[info] MutableLongMapBenchmark.createUpdateRemoveUpdateLookup_16Buffer_Verified           61440  avgt 1       3547562.410 ±    0.001          us/op
+[info] MutableLongMapBenchmark.createUpdateRemoveUpdateLookup_16Buffer_Verified           65536  avgt 1       3524807.915 ±    0.001          us/op
+[info] MutableLongMapBenchmark.lookupN_Original                                            4096  avgt 1            51.471 ±    0.001          us/op
+[info] MutableLongMapBenchmark.lookupN_Original                                            8192  avgt 1           101.099 ±    0.001          us/op
+[info] MutableLongMapBenchmark.lookupN_Original                                           12288  avgt 1           156.830 ±    0.001          us/op
+[info] MutableLongMapBenchmark.lookupN_Original                                           16384  avgt 1           216.964 ±    0.001          us/op
+[info] MutableLongMapBenchmark.lookupN_Original                                           20480  avgt 1           285.421 ±    0.001          us/op
+[info] MutableLongMapBenchmark.lookupN_Original                                           24576  avgt 1           379.173 ±    0.001          us/op
+[info] MutableLongMapBenchmark.lookupN_Original                                           28672  avgt 1           470.479 ±    0.001          us/op
+[info] MutableLongMapBenchmark.lookupN_Original                                           32768  avgt 1           569.445 ±    0.001          us/op
+[info] MutableLongMapBenchmark.lookupN_Original                                           36864  avgt 1           568.194 ±    0.001          us/op
+[info] MutableLongMapBenchmark.lookupN_Original                                           40960  avgt 1           585.942 ±    0.001          us/op
+[info] MutableLongMapBenchmark.lookupN_Original                                           45056  avgt 1           562.106 ±    0.001          us/op
+[info] MutableLongMapBenchmark.lookupN_Original                                           49152  avgt 1           613.250 ±    0.001          us/op
+[info] MutableLongMapBenchmark.lookupN_Original                                           53248  avgt 1           582.053 ±    0.001          us/op
+[info] MutableLongMapBenchmark.lookupN_Original                                           57344  avgt 1           624.225 ±    0.001          us/op
+[info] MutableLongMapBenchmark.lookupN_Original                                           61440  avgt 1           573.148 ±    0.001          us/op
+[info] MutableLongMapBenchmark.lookupN_Original                                           65536  avgt 1           574.321 ±    0.001          us/op
+[info] MutableLongMapBenchmark.lookupN_Verified                                            4096  avgt 1            86.777 ±    0.001          us/op
+[info] MutableLongMapBenchmark.lookupN_Verified                                            8192  avgt 1           173.358 ±    0.001          us/op
+[info] MutableLongMapBenchmark.lookupN_Verified                                           12288  avgt 1           293.493 ±    0.001          us/op
+[info] MutableLongMapBenchmark.lookupN_Verified                                           16384  avgt 1           392.056 ±    0.001          us/op
+[info] MutableLongMapBenchmark.lookupN_Verified                                           20480  avgt 1           504.507 ±    0.001          us/op
+[info] MutableLongMapBenchmark.lookupN_Verified                                           24576  avgt 1           595.932 ±    0.001          us/op
+[info] MutableLongMapBenchmark.lookupN_Verified                                           28672  avgt 1           746.923 ±    0.001          us/op
+[info] MutableLongMapBenchmark.lookupN_Verified                                           32768  avgt 1           911.183 ±    0.001          us/op
+[info] MutableLongMapBenchmark.lookupN_Verified                                           36864  avgt 1           909.642 ±    0.001          us/op
+[info] MutableLongMapBenchmark.lookupN_Verified                                           40960  avgt 1           914.537 ±    0.001          us/op
+[info] MutableLongMapBenchmark.lookupN_Verified                                           45056  avgt 1           876.476 ±    0.001          us/op
+[info] MutableLongMapBenchmark.lookupN_Verified                                           49152  avgt 1           900.749 ±    0.001          us/op
+[info] MutableLongMapBenchmark.lookupN_Verified                                           53248  avgt 1           886.891 ±    0.001          us/op
+[info] MutableLongMapBenchmark.lookupN_Verified                                           57344  avgt 1           885.533 ±    0.001          us/op
+[info] MutableLongMapBenchmark.lookupN_Verified                                           61440  avgt 1           898.479 ±    0.001          us/op
+[info] MutableLongMapBenchmark.lookupN_Verified                                           65536  avgt 1           935.767 ±    0.001          us/op
+[success] Total time: 1366 s (22:46), completed Nov 2, 2023, 9:01:03 AM
