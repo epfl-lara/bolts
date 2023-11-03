@@ -636,7 +636,7 @@ object TupleListOps {
     require(invariantList(l))
     require(!containsKey(l, newKey))
 
-  } ensuring (l.content ++ Set((newKey, newValue)) == insertStrictlySorted(
+  } ensuring (_ => l.content ++ Set((newKey, newValue)) == insertStrictlySorted(
     l,
     newKey,
     newValue
@@ -942,7 +942,7 @@ object ListMapLongKeyLemmas {
       key,
       value
     )
-  } ensuring (lm.toList.content ++ Set(
+  } ensuring (_ => lm.toList.content ++ Set(
     (key, value)
   ) == (lm + (key, value)).toList.content)
 }
