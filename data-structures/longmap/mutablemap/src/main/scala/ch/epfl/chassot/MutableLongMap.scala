@@ -13,8 +13,8 @@ import stainless.proof.check
 import scala.annotation.tailrec
 import stainless.lang.Cell
 
-// import stainless.lang.StaticChecks.* // Comment out when using the OptimisedEnsuring object below
-import OptimisedEnsuring.* // Import to remove `ensuring` and `require` from the code for the benchmarks
+import stainless.lang.StaticChecks.* // Comment out when using the OptimisedEnsuring object below
+// import OptimisedEnsuring.* // Import to remove `ensuring` and `require` from the code for the benchmarks
 
 object MutableLongMap {
   import LongMapFixedSize.validMask
@@ -46,12 +46,9 @@ object MutableLongMap {
   final case class LongMap[V](
       val underlying: Cell[LongMapFixedSize[V]]
   ) {
-    // @pure
-    // def completeImbalanced: Boolean = (_size + _vacant) > 0.5 * mask || _vacant > _size
 
     @pure
-    // TODO experiment to see the best version i.e., with or without || (5 * underlying.v._size) < underlying.v.mask
-    def imbalanced(): Boolean = (2 * underlying.v._size) > underlying.v.mask || (5 * underlying.v._size) < underlying.v.mask
+    def imbalanced(): Boolean = (2 * (underlying.v._size + underlying.v._vacant)) > underlying.v.mask || underlying.v._vacant > underlying.v._size
 
     @pure
     def size: Int = underlying.v.size
@@ -80,13 +77,7 @@ object MutableLongMap {
 
     def update(key: Long, v: V): Boolean = {
       require(valid)
-      // println(f"Update: $key -> $v")
-      // println(f"Current mask = ${underlying.v.mask}")
-      // println(f"Current size = ${underlying.v._size}")
-      // println(f"Current imbalance = ${imbalanced()}")
-      // println(f"Current array = ${underlying.v._keys.toList}")
       val repacked = if (imbalanced()) {
-        // println(f"Update: repack initiated")
         repack()
       } else {
         true
@@ -126,29 +117,31 @@ object MutableLongMap {
       newMask
     } ensuring (res => validMask(res) && (res == MAX_MASK || (2 * s <= res + 1)))
 
-    // @pure
-    // def completeComputeNewMask(oldMask: Int, _vacant: Int, _size: Int): Int = {
-    //   require(validMask(oldMask))
-    //   require(_size >= 0 && _size <= oldMask + 1)
-    //   require(_vacant >= 0 && _vacant + _size <= oldMask + 1)
-    //   require(_vacant == 0)
-    //   // require(_size < 268435456) // Smallest size that can trigger a problem with a certain mask
-    //   var m = oldMask
-    //   if (2 * (_size + _vacant) >= oldMask && !(5 * _vacant > oldMask)) {
-    //     m = ((m << 1) + 1) & MAX_MASK
-    //   }
-    //   while (m > 8 && 8 * _size < m) {
-    //     decreases(m)
-    //     m = m >>> 1
-    //   }
-    //   m
-    // } ensuring (res => validMask(res) && _size <= res + 1)
+    @pure
+    def completeComputeNewMask(oldMask: Int, _vacant: Int, _size: Int): Int = {
+      require(validMask(oldMask))
+      require(_size >= 0 && _size <= oldMask + 1)
+      require(_vacant >= 0)
+      // require(_size < 268435456) // Smallest size that can trigger a problem with a certain mask
+      if (_size > (MAX_MASK >> 3)) {
+        ((oldMask << 1) + 1) & MAX_MASK
+      } else {
+      var m = oldMask
+      if (2 * (_size + _vacant) >= oldMask && !(5 * _vacant > oldMask)) {
+        m = ((m << 1) + 1) & MAX_MASK
+      }
+      while (m > 8 && 8 * _size < m) {
+        decreases(m)
+        m = m >>> 1
+      }
+      m
+    }
+    } ensuring (res => validMask(res) && _size <= res + 1)
 
     def repack(): Boolean = {
       require(valid)
 
-      val newMask: Int = computeNewMask(underlying.v.mask, underlying.v._size)
-      // println(f"NewMask = $newMask")
+      val newMask: Int = completeComputeNewMask(underlying.v.mask, underlying.v._vacant, underlying.v._size)
       val newMapCell: Cell[LongMapFixedSize[V]] = Cell(LongMapFixedSize.getNewLongMapFixedSize(newMask, underlying.v.defaultEntry))
       val resExtraKeys = if ((underlying.v.extraKeys & 1) != 0 && (underlying.v.extraKeys & 2) != 0) {
         // it means there is a mapping for the key 0 and the Long.MIN_VALUE
@@ -398,7 +391,8 @@ object MutableLongMap {
       var minValue: V,
       var _size: Int,
       val _keys: Array[Long],
-      val _values: Array[ValueCell[V]]
+      val _values: Array[ValueCell[V]],
+      var _vacant: Int
   ) {
     import LongMapFixedSize.validKeyInArray
     import LongMapFixedSize.arrayCountValidKeys
@@ -810,6 +804,10 @@ object MutableLongMap {
             _size -= 1
             _keys(index) = Long.MinValue
             _values(index) = ValueCellFull(defaultEntry(0L))
+            val tempVac = _vacant + 1
+            if (tempVac > 0) {
+              _vacant = tempVac 
+            }
 
             ghostExpr(
               if (
@@ -977,7 +975,8 @@ object MutableLongMap {
       size >= _size &&
       size == _size + (extraKeys + 1) / 2 &&
       extraKeys >= 0 &&
-      extraKeys <= 3
+      extraKeys <= 3 && 
+      _vacant >= 0
     }
 
     @pure
@@ -1002,7 +1001,7 @@ object MutableLongMap {
       require(validMask(mask))
       @ghost val _keys: Array[Long] = Array.fill(mask + 1)(0)
 
-      val res = LongMapFixedSize[V](defaultEntry, mask, 0, defaultEntry(0L), defaultEntry(0L), 0, Array.fill(mask + 1)(0L), Array.fill(mask + 1)(EmptyCell[V]()))
+      val res = LongMapFixedSize[V](defaultEntry = defaultEntry, mask = mask, extraKeys = 0, zeroValue = defaultEntry(0L), minValue = defaultEntry(0L), _size = 0, _keys = Array.fill(mask + 1)(0L), _values = Array.fill(mask + 1)(EmptyCell[V]()), _vacant = 0)
 
       assert(res.simpleValid)
       assert(res._keys == Array.fill(mask + 1)(0L))
@@ -1032,7 +1031,6 @@ object MutableLongMap {
         check(false)
 
       } else { () })
-      assert(res.map == ListMapLongKey.empty[V]) // TODO
       res
     } ensuring (res => res.valid && res.mask == mask && res.map == ListMapLongKey.empty[V])
 

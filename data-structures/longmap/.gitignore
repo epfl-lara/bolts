@@ -1,0 +1,10 @@
+**/.scala-build
+**/.metals
+**/.bsp
+**/.stainless-cache
+**/.vscode
+**/smt_out
+**/.DS_Store
+stainless-stack-trace.txt
+**/target
+**/*.log
