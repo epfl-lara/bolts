@@ -106,6 +106,7 @@ object VerifiedLexer {
     }
 
     def rulesProduceEachTokenIndividually[C](rs: List[Rule[C]], ts: List[Token[C]]): Boolean = {
+      decreases(ts)
       require(!rs.isEmpty)
       require(rulesInvariant(rs))
       ts match {
@@ -1174,6 +1175,7 @@ object VerifiedLexer {
         rBis: Rule[C],
         tBis: Token[C]
     ): Unit = {
+      decreases(rules)
       require(p ++ suffix == input)
       require(ListUtils.isPrefix(p, input))
       require(ListUtils.isPrefix(pBis, input))

@@ -783,6 +783,7 @@ object VerifiedRegexMatcher {
   } ensuring (_ => usedCharacters(r).contains(c))
 
   def lemmaDerivativeStepDoesNotAddCharToUsedCharacters[C](r: Regex[C], c: C, cNot: C): Unit = {
+    decreases(r)
     require(validRegex(r))
     require(!usedCharacters(r).contains(cNot))
 

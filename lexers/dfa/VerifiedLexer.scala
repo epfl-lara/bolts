@@ -109,6 +109,7 @@ object VerifiedLexer {
       case Cons(hd, tl) => !acc.contains(hd.tag) && noDuplicateTag(tl, Cons(hd.tag, acc))
     }
     def rulesValid[C](rs: List[Rule[C]]): Boolean = {
+      decreases(rs)
       rs match {
         case Cons(hd, tl) => ruleValid(hd) && rulesValid(tl)
         case Nil()        => true
@@ -123,6 +124,7 @@ object VerifiedLexer {
     }
 
     def rulesProduceEachTokenIndividually[C](rs: List[Rule[C]], ts: List[Token[C]]): Boolean = {
+      decreases(ts)
       require(!rs.isEmpty)
       require(rulesInvariant(rs))
       ts match {
@@ -216,6 +218,7 @@ object VerifiedLexer {
       * @param separatorToken
       */
     def printWithSeparatorTokenWhenNeeded[C](rules: List[Rule[C]], l: List[Token[C]], separatorToken: Token[C]): List[C] = {
+      decreases(l)
       require(!rules.isEmpty)
       require(rulesInvariant(rules))
       require(rulesProduceEachTokenIndividually(rules, l))
