@@ -17050,3 +17050,2233 @@ Writing out Java source to /localhome/chassot/bolts/data-structures/longmap/muta
 [info] # Parameters: (keysListName = 12288)
 [info] # Run progress: 90.65% complete, ETA 02:50:40
 [info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 3467804.727 us/op
+[info] # Warmup Iteration   2: 3092837.639 us/op
+[info] # Warmup Iteration   3: 3099352.154 us/op
+[info] # Warmup Iteration   4: 3062933.476 us/op
+[info] # Warmup Iteration   5: 3075225.630 us/op
+[info] # Warmup Iteration   6: 3024458.159 us/op
+[info] # Warmup Iteration   7: 3359169.423 us/op
+[info] # Warmup Iteration   8: 3079241.557 us/op
+[info] # Warmup Iteration   9: 3192053.328 us/op
+[info] # Warmup Iteration  10: 3117361.294 us/op
+[info] Iteration   1: 3343441.475 us/op
+[info] Iteration   2: 3058776.559 us/op
+[info] Iteration   3: 3034273.784 us/op
+[info] Iteration   4: 3137902.855 us/op
+[info] Iteration   5: 3024266.763 us/op
+[info] Iteration   6: 3090312.747 us/op
+[info] Iteration   7: 3025072.569 us/op
+[info] Iteration   8: 3091687.904 us/op
+[info] Iteration   9: 3019425.048 us/op
+[info] Iteration  10: 3089408.033 us/op
+[info] Result "ch.epfl.echassot.benchmark.MutableLongMapBenchmark.createUpdateRemoveUpdateLookup_16Buffer_Verified":
+[info]   3091456.774 ±(99.9%) 146152.208 us/op [Average]
+[info]   (min, avg, max) = (3019425.048, 3091456.774, 3343441.475), stdev = 96670.637
+[info]   CI (99.9%): [2945304.565, 3237608.982] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1-Ubuntu-0ubuntu120.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 10 iterations, 10 s each
+[info] # Measurement: 10 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.echassot.benchmark.MutableLongMapBenchmark.createUpdateRemoveUpdateLookup_16Buffer_Verified
+[info] # Parameters: (keysListName = 16384)
+[info] # Run progress: 90.85% complete, ETA 02:47:00
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 3478201.701 us/op
+[info] # Warmup Iteration   2: 3093452.070 us/op
+[info] # Warmup Iteration   3: 3087508.803 us/op
+[info] # Warmup Iteration   4: 3073879.646 us/op
+[info] # Warmup Iteration   5: 3040640.087 us/op
+[info] # Warmup Iteration   6: 3113665.008 us/op
+[info] # Warmup Iteration   7: 3060581.638 us/op
+[info] # Warmup Iteration   8: 3034794.264 us/op
+[info] # Warmup Iteration   9: 3047632.248 us/op
+[info] # Warmup Iteration  10: 3081494.843 us/op
+[info] Iteration   1: 3071204.150 us/op
+[info] Iteration   2: 3049390.840 us/op
+[info] Iteration   3: 3046295.768 us/op
+[info] Iteration   4: 3027792.431 us/op
+[info] Iteration   5: 3023771.792 us/op
+[info] Iteration   6: 3036522.177 us/op
+[info] Iteration   7: 3045164.118 us/op
+[info] Iteration   8: 3040710.354 us/op
+[info] Iteration   9: 3045958.857 us/op
+[info] Iteration  10: 3026403.764 us/op
+[info] Result "ch.epfl.echassot.benchmark.MutableLongMapBenchmark.createUpdateRemoveUpdateLookup_16Buffer_Verified":
+[info]   3041321.425 ±(99.9%) 21118.403 us/op [Average]
+[info]   (min, avg, max) = (3023771.792, 3041321.425, 3071204.150), stdev = 13968.516
+[info]   CI (99.9%): [3020203.022, 3062439.828] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1-Ubuntu-0ubuntu120.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 10 iterations, 10 s each
+[info] # Measurement: 10 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.echassot.benchmark.MutableLongMapBenchmark.createUpdateRemoveUpdateLookup_16Buffer_Verified
+[info] # Parameters: (keysListName = 20480)
+[info] # Run progress: 91.06% complete, ETA 02:43:19
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 3476217.898 us/op
+[info] # Warmup Iteration   2: 3211057.390 us/op
+[info] # Warmup Iteration   3: 3479868.479 us/op
+[info] # Warmup Iteration   4: 3510118.367 us/op
+[info] # Warmup Iteration   5: 3584294.712 us/op
+[info] # Warmup Iteration   6: 3580382.621 us/op
+[info] # Warmup Iteration   7: 3243006.538 us/op
+[info] # Warmup Iteration   8: 3375044.478 us/op
+[info] # Warmup Iteration   9: 3392015.438 us/op
+[info] # Warmup Iteration  10: 3125589.693 us/op
+[info] Iteration   1: 3360787.953 us/op
+[info] Iteration   2: 3425444.674 us/op
+[info] Iteration   3: 3489118.943 us/op
+[info] Iteration   4: 3564533.625 us/op
+[info] Iteration   5: 3404224.976 us/op
+[info] Iteration   6: 3614189.939 us/op
+[info] Iteration   7: 3530922.748 us/op
+[info] Iteration   8: 3667468.888 us/op
+[info] Iteration   9: 3398252.717 us/op
+[info] Iteration  10: 3439967.378 us/op
+[info] Result "ch.epfl.echassot.benchmark.MutableLongMapBenchmark.createUpdateRemoveUpdateLookup_16Buffer_Verified":
+[info]   3489491.184 ±(99.9%) 153922.446 us/op [Average]
+[info]   (min, avg, max) = (3360787.953, 3489491.184, 3667468.888), stdev = 101810.168
+[info]   CI (99.9%): [3335568.738, 3643413.630] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1-Ubuntu-0ubuntu120.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 10 iterations, 10 s each
+[info] # Measurement: 10 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.echassot.benchmark.MutableLongMapBenchmark.createUpdateRemoveUpdateLookup_16Buffer_Verified
+[info] # Parameters: (keysListName = 24576)
+[info] # Run progress: 91.26% complete, ETA 02:39:36
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 3832092.735 us/op
+[info] # Warmup Iteration   2: 3431431.213 us/op
+[info] # Warmup Iteration   3: 3413301.080 us/op
+[info] # Warmup Iteration   4: 3536627.481 us/op
+[info] # Warmup Iteration   5: 3518383.211 us/op
+[info] # Warmup Iteration   6: 3499050.707 us/op
+[info] # Warmup Iteration   7: 3494808.724 us/op
+[info] # Warmup Iteration   8: 3364338.654 us/op
+[info] # Warmup Iteration   9: 3386532.792 us/op
+[info] # Warmup Iteration  10: 3340220.398 us/op
+[info] Iteration   1: 3396889.919 us/op
+[info] Iteration   2: 3324317.856 us/op
+[info] Iteration   3: 3159354.991 us/op
+[info] Iteration   4: 3279108.602 us/op
+[info] Iteration   5: 3354074.992 us/op
+[info] Iteration   6: 3411138.763 us/op
+[info] Iteration   7: 3440151.879 us/op
+[info] Iteration   8: 3509318.232 us/op
+[info] Iteration   9: 3685638.257 us/op
+[info] Iteration  10: 3596752.646 us/op
+[info] Result "ch.epfl.echassot.benchmark.MutableLongMapBenchmark.createUpdateRemoveUpdateLookup_16Buffer_Verified":
+[info]   3415674.614 ±(99.9%) 231983.445 us/op [Average]
+[info]   (min, avg, max) = (3159354.991, 3415674.614, 3685638.257), stdev = 153442.686
+[info]   CI (99.9%): [3183691.168, 3647658.059] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1-Ubuntu-0ubuntu120.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 10 iterations, 10 s each
+[info] # Measurement: 10 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.echassot.benchmark.MutableLongMapBenchmark.createUpdateRemoveUpdateLookup_16Buffer_Verified
+[info] # Parameters: (keysListName = 28672)
+[info] # Run progress: 91.46% complete, ETA 02:35:53
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 4112442.339 us/op
+[info] # Warmup Iteration   2: 4076111.859 us/op
+[info] # Warmup Iteration   3: 4007225.983 us/op
+[info] # Warmup Iteration   4: 3753467.895 us/op
+[info] # Warmup Iteration   5: 3803924.363 us/op
+[info] # Warmup Iteration   6: 3658400.782 us/op
+[info] # Warmup Iteration   7: 3606565.020 us/op
+[info] # Warmup Iteration   8: 3787954.654 us/op
+[info] # Warmup Iteration   9: 3693626.508 us/op
+[info] # Warmup Iteration  10: 3697320.074 us/op
+[info] Iteration   1: 3485173.314 us/op
+[info] Iteration   2: 3745262.881 us/op
+[info] Iteration   3: 3547658.424 us/op
+[info] Iteration   4: 3707659.371 us/op
+[info] Iteration   5: 3768147.673 us/op
+[info] Iteration   6: 3549931.260 us/op
+[info] Iteration   7: 3509506.244 us/op
+[info] Iteration   8: 3642723.823 us/op
+[info] Iteration   9: 3633301.418 us/op
+[info] Iteration  10: 3468627.986 us/op
+[info] Result "ch.epfl.echassot.benchmark.MutableLongMapBenchmark.createUpdateRemoveUpdateLookup_16Buffer_Verified":
+[info]   3605799.239 ±(99.9%) 165187.964 us/op [Average]
+[info]   (min, avg, max) = (3468627.986, 3605799.239, 3768147.673), stdev = 109261.610
+[info]   CI (99.9%): [3440611.275, 3770987.203] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1-Ubuntu-0ubuntu120.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 10 iterations, 10 s each
+[info] # Measurement: 10 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.echassot.benchmark.MutableLongMapBenchmark.createUpdateRemoveUpdateLookup_16Buffer_Verified
+[info] # Parameters: (keysListName = 32768)
+[info] # Run progress: 91.67% complete, ETA 02:32:10
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 3864187.053 us/op
+[info] # Warmup Iteration   2: 3568240.624 us/op
+[info] # Warmup Iteration   3: 3276543.172 us/op
+[info] # Warmup Iteration   4: 3441778.069 us/op
+[info] # Warmup Iteration   5: 3725295.081 us/op
+[info] # Warmup Iteration   6: 3808851.067 us/op
+[info] # Warmup Iteration   7: 3665632.868 us/op
+[info] # Warmup Iteration   8: 3841990.109 us/op
+[info] # Warmup Iteration   9: 3715421.787 us/op
+[info] # Warmup Iteration  10: 3647557.179 us/op
+[info] Iteration   1: 3931151.214 us/op
+[info] Iteration   2: 3701111.042 us/op
+[info] Iteration   3: 3634747.018 us/op
+[info] Iteration   4: 3723221.158 us/op
+[info] Iteration   5: 3561807.270 us/op
+[info] Iteration   6: 3487687.640 us/op
+[info] Iteration   7: 3472848.191 us/op
+[info] Iteration   8: 3449343.464 us/op
+[info] Iteration   9: 3496839.274 us/op
+[info] Iteration  10: 3423559.815 us/op
+[info] Result "ch.epfl.echassot.benchmark.MutableLongMapBenchmark.createUpdateRemoveUpdateLookup_16Buffer_Verified":
+[info]   3588231.609 ±(99.9%) 241477.594 us/op [Average]
+[info]   (min, avg, max) = (3423559.815, 3588231.609, 3931151.214), stdev = 159722.477
+[info]   CI (99.9%): [3346754.015, 3829709.203] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1-Ubuntu-0ubuntu120.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 10 iterations, 10 s each
+[info] # Measurement: 10 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.echassot.benchmark.MutableLongMapBenchmark.createUpdateRemoveUpdateLookup_16Buffer_Verified
+[info] # Parameters: (keysListName = 36864)
+[info] # Run progress: 91.87% complete, ETA 02:28:27
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 3858730.615 us/op
+[info] # Warmup Iteration   2: 3474852.717 us/op
+[info] # Warmup Iteration   3: 3432680.317 us/op
+[info] # Warmup Iteration   4: 3488939.240 us/op
+[info] # Warmup Iteration   5: 3413170.213 us/op
+[info] # Warmup Iteration   6: 3424386.842 us/op
+[info] # Warmup Iteration   7: 3412529.809 us/op
+[info] # Warmup Iteration   8: 3449357.975 us/op
+[info] # Warmup Iteration   9: 3414910.588 us/op
+[info] # Warmup Iteration  10: 3449301.312 us/op
+[info] Iteration   1: 3422961.614 us/op
+[info] Iteration   2: 3365855.353 us/op
+[info] Iteration   3: 3454028.284 us/op
+[info] Iteration   4: 3425978.312 us/op
+[info] Iteration   5: 3474592.329 us/op
+[info] Iteration   6: 3505757.713 us/op
+[info] Iteration   7: 3205541.168 us/op
+[info] Iteration   8: 3138393.110 us/op
+[info] Iteration   9: 3079735.959 us/op
+[info] Iteration  10: 3069859.936 us/op
+[info] Result "ch.epfl.echassot.benchmark.MutableLongMapBenchmark.createUpdateRemoveUpdateLookup_16Buffer_Verified":
+[info]   3314270.378 ±(99.9%) 260087.293 us/op [Average]
+[info]   (min, avg, max) = (3069859.936, 3314270.378, 3505757.713), stdev = 172031.641
+[info]   CI (99.9%): [3054183.084, 3574357.671] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1-Ubuntu-0ubuntu120.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 10 iterations, 10 s each
+[info] # Measurement: 10 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.echassot.benchmark.MutableLongMapBenchmark.createUpdateRemoveUpdateLookup_16Buffer_Verified
+[info] # Parameters: (keysListName = 40960)
+[info] # Run progress: 92.07% complete, ETA 02:24:44
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 3489985.175 us/op
+[info] # Warmup Iteration   2: 3096172.212 us/op
+[info] # Warmup Iteration   3: 3071306.903 us/op
+[info] # Warmup Iteration   4: 3087520.356 us/op
+[info] # Warmup Iteration   5: 3038849.134 us/op
+[info] # Warmup Iteration   6: 3054577.523 us/op
+[info] # Warmup Iteration   7: 3055619.114 us/op
+[info] # Warmup Iteration   8: 3048037.492 us/op
+[info] # Warmup Iteration   9: 3033038.515 us/op
+[info] # Warmup Iteration  10: 3035342.728 us/op
+[info] Iteration   1: 3043689.018 us/op
+[info] Iteration   2: 3059209.890 us/op
+[info] Iteration   3: 3062641.305 us/op
+[info] Iteration   4: 3048094.470 us/op
+[info] Iteration   5: 3056545.272 us/op
+[info] Iteration   6: 3038256.176 us/op
+[info] Iteration   7: 3022670.260 us/op
+[info] Iteration   8: 3032120.440 us/op
+[info] Iteration   9: 3028173.776 us/op
+[info] Iteration  10: 3051695.734 us/op
+[info] Result "ch.epfl.echassot.benchmark.MutableLongMapBenchmark.createUpdateRemoveUpdateLookup_16Buffer_Verified":
+[info]   3044309.634 ±(99.9%) 20722.758 us/op [Average]
+[info]   (min, avg, max) = (3022670.260, 3044309.634, 3062641.305), stdev = 13706.821
+[info]   CI (99.9%): [3023586.876, 3065032.392] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1-Ubuntu-0ubuntu120.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 10 iterations, 10 s each
+[info] # Measurement: 10 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.echassot.benchmark.MutableLongMapBenchmark.createUpdateRemoveUpdateLookup_16Buffer_Verified
+[info] # Parameters: (keysListName = 45056)
+[info] # Run progress: 92.28% complete, ETA 02:21:03
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 3479581.155 us/op
+[info] # Warmup Iteration   2: 3096588.535 us/op
+[info] # Warmup Iteration   3: 3044843.174 us/op
+[info] # Warmup Iteration   4: 3092596.931 us/op
+[info] # Warmup Iteration   5: 3049531.729 us/op
+[info] # Warmup Iteration   6: 3053110.366 us/op
+[info] # Warmup Iteration   7: 3095766.895 us/op
+[info] # Warmup Iteration   8: 3066579.459 us/op
+[info] # Warmup Iteration   9: 3046212.563 us/op
+[info] # Warmup Iteration  10: 3037790.136 us/op
+[info] Iteration   1: 3041324.358 us/op
+[info] Iteration   2: 3041176.863 us/op
+[info] Iteration   3: 3055793.213 us/op
+[info] Iteration   4: 3055607.786 us/op
+[info] Iteration   5: 3036053.715 us/op
+[info] Iteration   6: 3052178.452 us/op
+[info] Iteration   7: 3043504.988 us/op
+[info] Iteration   8: 3048644.418 us/op
+[info] Iteration   9: 3042241.855 us/op
+[info] Iteration  10: 3044730.519 us/op
+[info] Result "ch.epfl.echassot.benchmark.MutableLongMapBenchmark.createUpdateRemoveUpdateLookup_16Buffer_Verified":
+[info]   3046125.617 ±(99.9%) 10069.446 us/op [Average]
+[info]   (min, avg, max) = (3036053.715, 3046125.617, 3055793.213), stdev = 6660.315
+[info]   CI (99.9%): [3036056.171, 3056195.062] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1-Ubuntu-0ubuntu120.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 10 iterations, 10 s each
+[info] # Measurement: 10 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.echassot.benchmark.MutableLongMapBenchmark.createUpdateRemoveUpdateLookup_16Buffer_Verified
+[info] # Parameters: (keysListName = 49152)
+[info] # Run progress: 92.48% complete, ETA 02:17:22
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 3734386.918 us/op
+[info] # Warmup Iteration   2: 3103699.143 us/op
+[info] # Warmup Iteration   3: 3100702.650 us/op
+[info] # Warmup Iteration   4: 3043656.858 us/op
+[info] # Warmup Iteration   5: 3044757.449 us/op
+[info] # Warmup Iteration   6: 3093118.872 us/op
+[info] # Warmup Iteration   7: 3036895.801 us/op
+[info] # Warmup Iteration   8: 3043461.089 us/op
+[info] # Warmup Iteration   9: 3118797.167 us/op
+[info] # Warmup Iteration  10: 3081159.399 us/op
+[info] Iteration   1: 3051949.028 us/op
+[info] Iteration   2: 3045170.133 us/op
+[info] Iteration   3: 3041588.741 us/op
+[info] Iteration   4: 3040037.553 us/op
+[info] Iteration   5: 3049484.809 us/op
+[info] Iteration   6: 3056982.686 us/op
+[info] Iteration   7: 3057423.252 us/op
+[info] Iteration   8: 3048573.647 us/op
+[info] Iteration   9: 3038003.418 us/op
+[info] Iteration  10: 3033731.775 us/op
+[info] Result "ch.epfl.echassot.benchmark.MutableLongMapBenchmark.createUpdateRemoveUpdateLookup_16Buffer_Verified":
+[info]   3046294.504 ±(99.9%) 12079.673 us/op [Average]
+[info]   (min, avg, max) = (3033731.775, 3046294.504, 3057423.252), stdev = 7989.956
+[info]   CI (99.9%): [3034214.831, 3058374.177] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1-Ubuntu-0ubuntu120.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 10 iterations, 10 s each
+[info] # Measurement: 10 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.echassot.benchmark.MutableLongMapBenchmark.createUpdateRemoveUpdateLookup_16Buffer_Verified
+[info] # Parameters: (keysListName = 53248)
+[info] # Run progress: 92.68% complete, ETA 02:13:41
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 3681776.876 us/op
+[info] # Warmup Iteration   2: 3112097.747 us/op
+[info] # Warmup Iteration   3: 3045431.053 us/op
+[info] # Warmup Iteration   4: 3056297.753 us/op
+[info] # Warmup Iteration   5: 3066571.592 us/op
+[info] # Warmup Iteration   6: 3036781.099 us/op
+[info] # Warmup Iteration   7: 3056227.681 us/op
+[info] # Warmup Iteration   8: 3055181.718 us/op
+[info] # Warmup Iteration   9: 3045807.189 us/op
+[info] # Warmup Iteration  10: 3032959.759 us/op
+[info] Iteration   1: 3036665.382 us/op
+[info] Iteration   2: 3040377.017 us/op
+[info] Iteration   3: 3059671.980 us/op
+[info] Iteration   4: 3078572.694 us/op
+[info] Iteration   5: 3093391.984 us/op
+[info] Iteration   6: 3087685.526 us/op
+[info] Iteration   7: 3039791.357 us/op
+[info] Iteration   8: 3045521.780 us/op
+[info] Iteration   9: 3049970.472 us/op
+[info] Iteration  10: 3064001.748 us/op
+[info] Result "ch.epfl.echassot.benchmark.MutableLongMapBenchmark.createUpdateRemoveUpdateLookup_16Buffer_Verified":
+[info]   3059564.994 ±(99.9%) 31426.809 us/op [Average]
+[info]   (min, avg, max) = (3036665.382, 3059564.994, 3093391.984), stdev = 20786.889
+[info]   CI (99.9%): [3028138.185, 3090991.803] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1-Ubuntu-0ubuntu120.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 10 iterations, 10 s each
+[info] # Measurement: 10 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.echassot.benchmark.MutableLongMapBenchmark.createUpdateRemoveUpdateLookup_16Buffer_Verified
+[info] # Parameters: (keysListName = 57344)
+[info] # Run progress: 92.89% complete, ETA 02:10:00
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 3497717.461 us/op
+[info] # Warmup Iteration   2: 3106096.211 us/op
+[info] # Warmup Iteration   3: 3064875.679 us/op
+[info] # Warmup Iteration   4: 3076815.437 us/op
+[info] # Warmup Iteration   5: 3043974.876 us/op
+[info] # Warmup Iteration   6: 3067012.927 us/op
+[info] # Warmup Iteration   7: 3065432.884 us/op
+[info] # Warmup Iteration   8: 3054746.303 us/op
+[info] # Warmup Iteration   9: 3040975.071 us/op
+[info] # Warmup Iteration  10: 3048680.877 us/op
+[info] Iteration   1: 3041631.138 us/op
+[info] Iteration   2: 3057799.007 us/op
+[info] Iteration   3: 3058129.282 us/op
+[info] Iteration   4: 3066310.233 us/op
+[info] Iteration   5: 3057422.346 us/op
+[info] Iteration   6: 3051036.673 us/op
+[info] Iteration   7: 3038963.814 us/op
+[info] Iteration   8: 3042398.056 us/op
+[info] Iteration   9: 3082509.052 us/op
+[info] Iteration  10: 3069303.314 us/op
+[info] Result "ch.epfl.echassot.benchmark.MutableLongMapBenchmark.createUpdateRemoveUpdateLookup_16Buffer_Verified":
+[info]   3056550.292 ±(99.9%) 20773.096 us/op [Average]
+[info]   (min, avg, max) = (3038963.814, 3056550.292, 3082509.052), stdev = 13740.117
+[info]   CI (99.9%): [3035777.195, 3077323.388] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1-Ubuntu-0ubuntu120.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 10 iterations, 10 s each
+[info] # Measurement: 10 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.echassot.benchmark.MutableLongMapBenchmark.createUpdateRemoveUpdateLookup_16Buffer_Verified
+[info] # Parameters: (keysListName = 61440)
+[info] # Run progress: 93.09% complete, ETA 02:06:18
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 3720818.046 us/op
+[info] # Warmup Iteration   2: 3143530.988 us/op
+[info] # Warmup Iteration   3: 3055067.775 us/op
+[info] # Warmup Iteration   4: 3037392.373 us/op
+[info] # Warmup Iteration   5: 3085671.524 us/op
+[info] # Warmup Iteration   6: 3036524.832 us/op
+[info] # Warmup Iteration   7: 3038557.367 us/op
+[info] # Warmup Iteration   8: 3099872.538 us/op
+[info] # Warmup Iteration   9: 3046143.524 us/op
+[info] # Warmup Iteration  10: 3044303.694 us/op
+[info] Iteration   1: 3028339.315 us/op
+[info] Iteration   2: 3065599.420 us/op
+[info] Iteration   3: 3048215.264 us/op
+[info] Iteration   4: 3042190.330 us/op
+[info] Iteration   5: 3028699.886 us/op
+[info] Iteration   6: 3034463.850 us/op
+[info] Iteration   7: 3033895.756 us/op
+[info] Iteration   8: 3048486.765 us/op
+[info] Iteration   9: 3054975.342 us/op
+[info] Iteration  10: 3049249.111 us/op
+[info] Result "ch.epfl.echassot.benchmark.MutableLongMapBenchmark.createUpdateRemoveUpdateLookup_16Buffer_Verified":
+[info]   3043411.504 ±(99.9%) 18341.666 us/op [Average]
+[info]   (min, avg, max) = (3028339.315, 3043411.504, 3065599.420), stdev = 12131.876
+[info]   CI (99.9%): [3025069.838, 3061753.170] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1-Ubuntu-0ubuntu120.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 10 iterations, 10 s each
+[info] # Measurement: 10 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.echassot.benchmark.MutableLongMapBenchmark.createUpdateRemoveUpdateLookup_16Buffer_Verified
+[info] # Parameters: (keysListName = 65536)
+[info] # Run progress: 93.29% complete, ETA 02:02:37
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 3479373.325 us/op
+[info] # Warmup Iteration   2: 3113911.600 us/op
+[info] # Warmup Iteration   3: 3060117.625 us/op
+[info] # Warmup Iteration   4: 3080822.087 us/op
+[info] # Warmup Iteration   5: 3030866.892 us/op
+[info] # Warmup Iteration   6: 3073732.443 us/op
+[info] # Warmup Iteration   7: 3045414.255 us/op
+[info] # Warmup Iteration   8: 3034270.504 us/op
+[info] # Warmup Iteration   9: 3032281.397 us/op
+[info] # Warmup Iteration  10: 3038833.712 us/op
+[info] Iteration   1: 3026859.988 us/op
+[info] Iteration   2: 3045901.514 us/op
+[info] Iteration   3: 3045126.140 us/op
+[info] Iteration   4: 3038511.434 us/op
+[info] Iteration   5: 3026200.561 us/op
+[info] Iteration   6: 3030809.871 us/op
+[info] Iteration   7: 3025477.520 us/op
+[info] Iteration   8: 3030368.931 us/op
+[info] Iteration   9: 3044120.743 us/op
+[info] Iteration  10: 3042706.580 us/op
+[info] Result "ch.epfl.echassot.benchmark.MutableLongMapBenchmark.createUpdateRemoveUpdateLookup_16Buffer_Verified":
+[info]   3035608.328 ±(99.9%) 12808.346 us/op [Average]
+[info]   (min, avg, max) = (3025477.520, 3035608.328, 3045901.514), stdev = 8471.928
+[info]   CI (99.9%): [3022799.982, 3048416.674] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1-Ubuntu-0ubuntu120.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 10 iterations, 10 s each
+[info] # Measurement: 10 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.echassot.benchmark.MutableLongMapBenchmark.lookupN_Original
+[info] # Parameters: (keysListName = 4096)
+[info] # Run progress: 93.50% complete, ETA 01:58:55
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 49.631 us/op
+[info] # Warmup Iteration   2: 43.467 us/op
+[info] # Warmup Iteration   3: 44.438 us/op
+[info] # Warmup Iteration   4: 43.674 us/op
+[info] # Warmup Iteration   5: 44.073 us/op
+[info] # Warmup Iteration   6: 43.369 us/op
+[info] # Warmup Iteration   7: 43.355 us/op
+[info] # Warmup Iteration   8: 43.717 us/op
+[info] # Warmup Iteration   9: 43.364 us/op
+[info] # Warmup Iteration  10: 43.839 us/op
+[info] Iteration   1: 43.392 us/op
+[info] Iteration   2: 43.655 us/op
+[info] Iteration   3: 43.393 us/op
+[info] Iteration   4: 43.384 us/op
+[info] Iteration   5: 43.732 us/op
+[info] Iteration   6: 43.652 us/op
+[info] Iteration   7: 43.329 us/op
+[info] Iteration   8: 43.641 us/op
+[info] Iteration   9: 43.304 us/op
+[info] Iteration  10: 43.335 us/op
+[info] Result "ch.epfl.echassot.benchmark.MutableLongMapBenchmark.lookupN_Original":
+[info]   43.482 ±(99.9%) 0.251 us/op [Average]
+[info]   (min, avg, max) = (43.304, 43.482, 43.732), stdev = 0.166
+[info]   CI (99.9%): [43.230, 43.733] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1-Ubuntu-0ubuntu120.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 10 iterations, 10 s each
+[info] # Measurement: 10 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.echassot.benchmark.MutableLongMapBenchmark.lookupN_Original
+[info] # Parameters: (keysListName = 8192)
+[info] # Run progress: 93.70% complete, ETA 01:55:11
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 99.432 us/op
+[info] # Warmup Iteration   2: 90.826 us/op
+[info] # Warmup Iteration   3: 89.143 us/op
+[info] # Warmup Iteration   4: 90.430 us/op
+[info] # Warmup Iteration   5: 88.911 us/op
+[info] # Warmup Iteration   6: 89.240 us/op
+[info] # Warmup Iteration   7: 89.643 us/op
+[info] # Warmup Iteration   8: 89.597 us/op
+[info] # Warmup Iteration   9: 88.809 us/op
+[info] # Warmup Iteration  10: 88.832 us/op
+[info] Iteration   1: 88.927 us/op
+[info] Iteration   2: 89.168 us/op
+[info] Iteration   3: 89.717 us/op
+[info] Iteration   4: 88.909 us/op
+[info] Iteration   5: 89.564 us/op
+[info] Iteration   6: 88.891 us/op
+[info] Iteration   7: 88.821 us/op
+[info] Iteration   8: 88.804 us/op
+[info] Iteration   9: 89.256 us/op
+[info] Iteration  10: 89.121 us/op
+[info] Result "ch.epfl.echassot.benchmark.MutableLongMapBenchmark.lookupN_Original":
+[info]   89.118 ±(99.9%) 0.477 us/op [Average]
+[info]   (min, avg, max) = (88.804, 89.118, 89.717), stdev = 0.316
+[info]   CI (99.9%): [88.640, 89.595] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1-Ubuntu-0ubuntu120.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 10 iterations, 10 s each
+[info] # Measurement: 10 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.echassot.benchmark.MutableLongMapBenchmark.lookupN_Original
+[info] # Parameters: (keysListName = 12288)
+[info] # Run progress: 93.90% complete, ETA 01:51:26
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 160.371 us/op
+[info] # Warmup Iteration   2: 142.799 us/op
+[info] # Warmup Iteration   3: 138.496 us/op
+[info] # Warmup Iteration   4: 140.494 us/op
+[info] # Warmup Iteration   5: 139.716 us/op
+[info] # Warmup Iteration   6: 138.186 us/op
+[info] # Warmup Iteration   7: 139.156 us/op
+[info] # Warmup Iteration   8: 139.280 us/op
+[info] # Warmup Iteration   9: 139.650 us/op
+[info] # Warmup Iteration  10: 138.184 us/op
+[info] Iteration   1: 138.138 us/op
+[info] Iteration   2: 138.155 us/op
+[info] Iteration   3: 139.196 us/op
+[info] Iteration   4: 139.398 us/op
+[info] Iteration   5: 139.247 us/op
+[info] Iteration   6: 138.503 us/op
+[info] Iteration   7: 137.914 us/op
+[info] Iteration   8: 138.079 us/op
+[info] Iteration   9: 138.003 us/op
+[info] Iteration  10: 139.068 us/op
+[info] Result "ch.epfl.echassot.benchmark.MutableLongMapBenchmark.lookupN_Original":
+[info]   138.570 ±(99.9%) 0.893 us/op [Average]
+[info]   (min, avg, max) = (137.914, 138.570, 139.398), stdev = 0.591
+[info]   CI (99.9%): [137.677, 139.463] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1-Ubuntu-0ubuntu120.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 10 iterations, 10 s each
+[info] # Measurement: 10 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.echassot.benchmark.MutableLongMapBenchmark.lookupN_Original
+[info] # Parameters: (keysListName = 16384)
+[info] # Run progress: 94.11% complete, ETA 01:47:42
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 227.461 us/op
+[info] # Warmup Iteration   2: 190.204 us/op
+[info] # Warmup Iteration   3: 191.541 us/op
+[info] # Warmup Iteration   4: 187.793 us/op
+[info] # Warmup Iteration   5: 191.388 us/op
+[info] # Warmup Iteration   6: 189.440 us/op
+[info] # Warmup Iteration   7: 191.004 us/op
+[info] # Warmup Iteration   8: 191.200 us/op
+[info] # Warmup Iteration   9: 191.353 us/op
+[info] # Warmup Iteration  10: 189.412 us/op
+[info] Iteration   1: 190.429 us/op
+[info] Iteration   2: 191.791 us/op
+[info] Iteration   3: 190.140 us/op
+[info] Iteration   4: 191.713 us/op
+[info] Iteration   5: 191.125 us/op
+[info] Iteration   6: 189.834 us/op
+[info] Iteration   7: 189.835 us/op
+[info] Iteration   8: 189.500 us/op
+[info] Iteration   9: 189.616 us/op
+[info] Iteration  10: 191.162 us/op
+[info] Result "ch.epfl.echassot.benchmark.MutableLongMapBenchmark.lookupN_Original":
+[info]   190.515 ±(99.9%) 1.311 us/op [Average]
+[info]   (min, avg, max) = (189.500, 190.515, 191.791), stdev = 0.867
+[info]   CI (99.9%): [189.204, 191.825] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1-Ubuntu-0ubuntu120.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 10 iterations, 10 s each
+[info] # Measurement: 10 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.echassot.benchmark.MutableLongMapBenchmark.lookupN_Original
+[info] # Parameters: (keysListName = 20480)
+[info] # Run progress: 94.31% complete, ETA 01:43:58
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 280.869 us/op
+[info] # Warmup Iteration   2: 251.425 us/op
+[info] # Warmup Iteration   3: 248.525 us/op
+[info] # Warmup Iteration   4: 250.631 us/op
+[info] # Warmup Iteration   5: 247.563 us/op
+[info] # Warmup Iteration   6: 245.977 us/op
+[info] # Warmup Iteration   7: 245.877 us/op
+[info] # Warmup Iteration   8: 248.364 us/op
+[info] # Warmup Iteration   9: 248.193 us/op
+[info] # Warmup Iteration  10: 247.450 us/op
+[info] Iteration   1: 245.945 us/op
+[info] Iteration   2: 246.124 us/op
+[info] Iteration   3: 245.865 us/op
+[info] Iteration   4: 246.133 us/op
+[info] Iteration   5: 247.974 us/op
+[info] Iteration   6: 246.057 us/op
+[info] Iteration   7: 248.122 us/op
+[info] Iteration   8: 247.601 us/op
+[info] Iteration   9: 245.913 us/op
+[info] Iteration  10: 248.870 us/op
+[info] Result "ch.epfl.echassot.benchmark.MutableLongMapBenchmark.lookupN_Original":
+[info]   246.860 ±(99.9%) 1.736 us/op [Average]
+[info]   (min, avg, max) = (245.865, 246.860, 248.870), stdev = 1.148
+[info]   CI (99.9%): [245.124, 248.596] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1-Ubuntu-0ubuntu120.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 10 iterations, 10 s each
+[info] # Measurement: 10 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.echassot.benchmark.MutableLongMapBenchmark.lookupN_Original
+[info] # Parameters: (keysListName = 24576)
+[info] # Run progress: 94.51% complete, ETA 01:40:14
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 365.976 us/op
+[info] # Warmup Iteration   2: 323.552 us/op
+[info] # Warmup Iteration   3: 325.953 us/op
+[info] # Warmup Iteration   4: 322.597 us/op
+[info] # Warmup Iteration   5: 322.197 us/op
+[info] # Warmup Iteration   6: 313.100 us/op
+[info] # Warmup Iteration   7: 313.047 us/op
+[info] # Warmup Iteration   8: 315.482 us/op
+[info] # Warmup Iteration   9: 315.575 us/op
+[info] # Warmup Iteration  10: 315.516 us/op
+[info] Iteration   1: 313.161 us/op
+[info] Iteration   2: 313.180 us/op
+[info] Iteration   3: 313.208 us/op
+[info] Iteration   4: 312.971 us/op
+[info] Iteration   5: 317.112 us/op
+[info] Iteration   6: 315.729 us/op
+[info] Iteration   7: 313.354 us/op
+[info] Iteration   8: 315.817 us/op
+[info] Iteration   9: 313.134 us/op
+[info] Iteration  10: 313.014 us/op
+[info] Result "ch.epfl.echassot.benchmark.MutableLongMapBenchmark.lookupN_Original":
+[info]   314.068 ±(99.9%) 2.317 us/op [Average]
+[info]   (min, avg, max) = (312.971, 314.068, 317.112), stdev = 1.532
+[info]   CI (99.9%): [311.751, 316.384] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1-Ubuntu-0ubuntu120.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 10 iterations, 10 s each
+[info] # Measurement: 10 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.echassot.benchmark.MutableLongMapBenchmark.lookupN_Original
+[info] # Parameters: (keysListName = 28672)
+[info] # Run progress: 94.72% complete, ETA 01:36:30
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 470.967 us/op
+[info] # Warmup Iteration   2: 412.022 us/op
+[info] # Warmup Iteration   3: 410.948 us/op
+[info] # Warmup Iteration   4: 410.114 us/op
+[info] # Warmup Iteration   5: 408.260 us/op
+[info] # Warmup Iteration   6: 403.624 us/op
+[info] # Warmup Iteration   7: 405.043 us/op
+[info] # Warmup Iteration   8: 408.829 us/op
+[info] # Warmup Iteration   9: 410.914 us/op
+[info] # Warmup Iteration  10: 405.019 us/op
+[info] Iteration   1: 404.210 us/op
+[info] Iteration   2: 403.971 us/op
+[info] Iteration   3: 404.735 us/op
+[info] Iteration   4: 403.869 us/op
+[info] Iteration   5: 407.400 us/op
+[info] Iteration   6: 406.613 us/op
+[info] Iteration   7: 404.817 us/op
+[info] Iteration   8: 404.555 us/op
+[info] Iteration   9: 405.024 us/op
+[info] Iteration  10: 411.120 us/op
+[info] Result "ch.epfl.echassot.benchmark.MutableLongMapBenchmark.lookupN_Original":
+[info]   405.631 ±(99.9%) 3.384 us/op [Average]
+[info]   (min, avg, max) = (403.869, 405.631, 411.120), stdev = 2.238
+[info]   CI (99.9%): [402.247, 409.015] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1-Ubuntu-0ubuntu120.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 10 iterations, 10 s each
+[info] # Measurement: 10 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.echassot.benchmark.MutableLongMapBenchmark.lookupN_Original
+[info] # Parameters: (keysListName = 32768)
+[info] # Run progress: 94.92% complete, ETA 01:32:46
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 570.845 us/op
+[info] # Warmup Iteration   2: 516.611 us/op
+[info] # Warmup Iteration   3: 505.305 us/op
+[info] # Warmup Iteration   4: 513.543 us/op
+[info] # Warmup Iteration   5: 508.462 us/op
+[info] # Warmup Iteration   6: 505.233 us/op
+[info] # Warmup Iteration   7: 508.814 us/op
+[info] # Warmup Iteration   8: 508.649 us/op
+[info] # Warmup Iteration   9: 507.669 us/op
+[info] # Warmup Iteration  10: 504.429 us/op
+[info] Iteration   1: 504.830 us/op
+[info] Iteration   2: 504.677 us/op
+[info] Iteration   3: 504.659 us/op
+[info] Iteration   4: 508.406 us/op
+[info] Iteration   5: 504.454 us/op
+[info] Iteration   6: 508.389 us/op
+[info] Iteration   7: 508.634 us/op
+[info] Iteration   8: 506.059 us/op
+[info] Iteration   9: 509.946 us/op
+[info] Iteration  10: 501.555 us/op
+[info] Result "ch.epfl.echassot.benchmark.MutableLongMapBenchmark.lookupN_Original":
+[info]   506.161 ±(99.9%) 3.930 us/op [Average]
+[info]   (min, avg, max) = (501.555, 506.161, 509.946), stdev = 2.599
+[info]   CI (99.9%): [502.231, 510.091] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1-Ubuntu-0ubuntu120.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 10 iterations, 10 s each
+[info] # Measurement: 10 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.echassot.benchmark.MutableLongMapBenchmark.lookupN_Original
+[info] # Parameters: (keysListName = 36864)
+[info] # Run progress: 95.12% complete, ETA 01:29:02
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 572.600 us/op
+[info] # Warmup Iteration   2: 520.544 us/op
+[info] # Warmup Iteration   3: 516.148 us/op
+[info] # Warmup Iteration   4: 516.723 us/op
+[info] # Warmup Iteration   5: 508.658 us/op
+[info] # Warmup Iteration   6: 513.165 us/op
+[info] # Warmup Iteration   7: 503.765 us/op
+[info] # Warmup Iteration   8: 515.381 us/op
+[info] # Warmup Iteration   9: 503.613 us/op
+[info] # Warmup Iteration  10: 500.707 us/op
+[info] Iteration   1: 503.285 us/op
+[info] Iteration   2: 496.125 us/op
+[info] Iteration   3: 495.690 us/op
+[info] Iteration   4: 500.632 us/op
+[info] Iteration   5: 503.870 us/op
+[info] Iteration   6: 496.585 us/op
+[info] Iteration   7: 495.875 us/op
+[info] Iteration   8: 497.978 us/op
+[info] Iteration   9: 497.556 us/op
+[info] Iteration  10: 496.637 us/op
+[info] Result "ch.epfl.echassot.benchmark.MutableLongMapBenchmark.lookupN_Original":
+[info]   498.423 ±(99.9%) 4.645 us/op [Average]
+[info]   (min, avg, max) = (495.690, 498.423, 503.870), stdev = 3.072
+[info]   CI (99.9%): [493.778, 503.068] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1-Ubuntu-0ubuntu120.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 10 iterations, 10 s each
+[info] # Measurement: 10 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.echassot.benchmark.MutableLongMapBenchmark.lookupN_Original
+[info] # Parameters: (keysListName = 40960)
+[info] # Run progress: 95.33% complete, ETA 01:25:18
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 563.055 us/op
+[info] # Warmup Iteration   2: 504.227 us/op
+[info] # Warmup Iteration   3: 499.359 us/op
+[info] # Warmup Iteration   4: 504.984 us/op
+[info] # Warmup Iteration   5: 499.596 us/op
+[info] # Warmup Iteration   6: 496.625 us/op
+[info] # Warmup Iteration   7: 498.540 us/op
+[info] # Warmup Iteration   8: 505.282 us/op
+[info] # Warmup Iteration   9: 503.594 us/op
+[info] # Warmup Iteration  10: 507.034 us/op
+[info] Iteration   1: 499.872 us/op
+[info] Iteration   2: 506.785 us/op
+[info] Iteration   3: 501.232 us/op
+[info] Iteration   4: 498.475 us/op
+[info] Iteration   5: 501.870 us/op
+[info] Iteration   6: 498.128 us/op
+[info] Iteration   7: 500.097 us/op
+[info] Iteration   8: 502.589 us/op
+[info] Iteration   9: 502.592 us/op
+[info] Iteration  10: 502.823 us/op
+[info] Result "ch.epfl.echassot.benchmark.MutableLongMapBenchmark.lookupN_Original":
+[info]   501.446 ±(99.9%) 3.817 us/op [Average]
+[info]   (min, avg, max) = (498.128, 501.446, 506.785), stdev = 2.525
+[info]   CI (99.9%): [497.629, 505.264] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1-Ubuntu-0ubuntu120.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 10 iterations, 10 s each
+[info] # Measurement: 10 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.echassot.benchmark.MutableLongMapBenchmark.lookupN_Original
+[info] # Parameters: (keysListName = 45056)
+[info] # Run progress: 95.53% complete, ETA 01:21:35
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 565.522 us/op
+[info] # Warmup Iteration   2: 518.285 us/op
+[info] # Warmup Iteration   3: 517.138 us/op
+[info] # Warmup Iteration   4: 509.719 us/op
+[info] # Warmup Iteration   5: 507.934 us/op
+[info] # Warmup Iteration   6: 509.859 us/op
+[info] # Warmup Iteration   7: 500.787 us/op
+[info] # Warmup Iteration   8: 507.423 us/op
+[info] # Warmup Iteration   9: 499.215 us/op
+[info] # Warmup Iteration  10: 504.606 us/op
+[info] Iteration   1: 503.084 us/op
+[info] Iteration   2: 499.575 us/op
+[info] Iteration   3: 501.249 us/op
+[info] Iteration   4: 506.957 us/op
+[info] Iteration   5: 500.018 us/op
+[info] Iteration   6: 499.362 us/op
+[info] Iteration   7: 518.270 us/op
+[info] Iteration   8: 526.961 us/op
+[info] Iteration   9: 528.900 us/op
+[info] Iteration  10: 512.364 us/op
+[info] Result "ch.epfl.echassot.benchmark.MutableLongMapBenchmark.lookupN_Original":
+[info]   509.674 ±(99.9%) 17.260 us/op [Average]
+[info]   (min, avg, max) = (499.362, 509.674, 528.900), stdev = 11.416
+[info]   CI (99.9%): [492.414, 526.934] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1-Ubuntu-0ubuntu120.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 10 iterations, 10 s each
+[info] # Measurement: 10 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.echassot.benchmark.MutableLongMapBenchmark.lookupN_Original
+[info] # Parameters: (keysListName = 49152)
+[info] # Run progress: 95.73% complete, ETA 01:17:51
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 593.476 us/op
+[info] # Warmup Iteration   2: 513.873 us/op
+[info] # Warmup Iteration   3: 513.407 us/op
+[info] # Warmup Iteration   4: 513.188 us/op
+[info] # Warmup Iteration   5: 517.844 us/op
+[info] # Warmup Iteration   6: 510.353 us/op
+[info] # Warmup Iteration   7: 508.403 us/op
+[info] # Warmup Iteration   8: 511.711 us/op
+[info] # Warmup Iteration   9: 511.164 us/op
+[info] # Warmup Iteration  10: 510.536 us/op
+[info] Iteration   1: 507.570 us/op
+[info] Iteration   2: 507.868 us/op
+[info] Iteration   3: 507.942 us/op
+[info] Iteration   4: 508.208 us/op
+[info] Iteration   5: 511.817 us/op
+[info] Iteration   6: 507.840 us/op
+[info] Iteration   7: 513.207 us/op
+[info] Iteration   8: 512.643 us/op
+[info] Iteration   9: 509.276 us/op
+[info] Iteration  10: 509.319 us/op
+[info] Result "ch.epfl.echassot.benchmark.MutableLongMapBenchmark.lookupN_Original":
+[info]   509.569 ±(99.9%) 3.276 us/op [Average]
+[info]   (min, avg, max) = (507.570, 509.569, 513.207), stdev = 2.167
+[info]   CI (99.9%): [506.293, 512.845] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1-Ubuntu-0ubuntu120.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 10 iterations, 10 s each
+[info] # Measurement: 10 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.echassot.benchmark.MutableLongMapBenchmark.lookupN_Original
+[info] # Parameters: (keysListName = 53248)
+[info] # Run progress: 95.93% complete, ETA 01:14:08
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 608.781 us/op
+[info] # Warmup Iteration   2: 519.109 us/op
+[info] # Warmup Iteration   3: 522.789 us/op
+[info] # Warmup Iteration   4: 511.746 us/op
+[info] # Warmup Iteration   5: 511.227 us/op
+[info] # Warmup Iteration   6: 504.070 us/op
+[info] # Warmup Iteration   7: 506.334 us/op
+[info] # Warmup Iteration   8: 511.941 us/op
+[info] # Warmup Iteration   9: 512.369 us/op
+[info] # Warmup Iteration  10: 512.244 us/op
+[info] Iteration   1: 507.083 us/op
+[info] Iteration   2: 533.606 us/op
+[info] Iteration   3: 518.749 us/op
+[info] Iteration   4: 505.305 us/op
+[info] Iteration   5: 505.306 us/op
+[info] Iteration   6: 517.290 us/op
+[info] Iteration   7: 504.091 us/op
+[info] Iteration   8: 503.441 us/op
+[info] Iteration   9: 515.542 us/op
+[info] Iteration  10: 503.490 us/op
+[info] Result "ch.epfl.echassot.benchmark.MutableLongMapBenchmark.lookupN_Original":
+[info]   511.390 ±(99.9%) 14.875 us/op [Average]
+[info]   (min, avg, max) = (503.441, 511.390, 533.606), stdev = 9.839
+[info]   CI (99.9%): [496.515, 526.265] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1-Ubuntu-0ubuntu120.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 10 iterations, 10 s each
+[info] # Measurement: 10 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.echassot.benchmark.MutableLongMapBenchmark.lookupN_Original
+[info] # Parameters: (keysListName = 57344)
+[info] # Run progress: 96.14% complete, ETA 01:10:25
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 573.485 us/op
+[info] # Warmup Iteration   2: 516.176 us/op
+[info] # Warmup Iteration   3: 516.361 us/op
+[info] # Warmup Iteration   4: 516.901 us/op
+[info] # Warmup Iteration   5: 505.676 us/op
+[info] # Warmup Iteration   6: 505.127 us/op
+[info] # Warmup Iteration   7: 515.592 us/op
+[info] # Warmup Iteration   8: 508.721 us/op
+[info] # Warmup Iteration   9: 504.084 us/op
+[info] # Warmup Iteration  10: 508.439 us/op
+[info] Iteration   1: 508.167 us/op
+[info] Iteration   2: 504.171 us/op
+[info] Iteration   3: 513.387 us/op
+[info] Iteration   4: 507.367 us/op
+[info] Iteration   5: 504.659 us/op
+[info] Iteration   6: 504.432 us/op
+[info] Iteration   7: 509.733 us/op
+[info] Iteration   8: 514.901 us/op
+[info] Iteration   9: 507.819 us/op
+[info] Iteration  10: 507.993 us/op
+[info] Result "ch.epfl.echassot.benchmark.MutableLongMapBenchmark.lookupN_Original":
+[info]   508.263 ±(99.9%) 5.474 us/op [Average]
+[info]   (min, avg, max) = (504.171, 508.263, 514.901), stdev = 3.621
+[info]   CI (99.9%): [502.789, 513.737] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1-Ubuntu-0ubuntu120.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 10 iterations, 10 s each
+[info] # Measurement: 10 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.echassot.benchmark.MutableLongMapBenchmark.lookupN_Original
+[info] # Parameters: (keysListName = 61440)
+[info] # Run progress: 96.34% complete, ETA 01:06:41
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 565.208 us/op
+[info] # Warmup Iteration   2: 515.756 us/op
+[info] # Warmup Iteration   3: 506.261 us/op
+[info] # Warmup Iteration   4: 507.535 us/op
+[info] # Warmup Iteration   5: 515.624 us/op
+[info] # Warmup Iteration   6: 506.713 us/op
+[info] # Warmup Iteration   7: 506.878 us/op
+[info] # Warmup Iteration   8: 509.354 us/op
+[info] # Warmup Iteration   9: 509.115 us/op
+[info] # Warmup Iteration  10: 555.412 us/op
+[info] Iteration   1: 521.367 us/op
+[info] Iteration   2: 505.198 us/op
+[info] Iteration   3: 506.439 us/op
+[info] Iteration   4: 508.905 us/op
+[info] Iteration   5: 504.976 us/op
+[info] Iteration   6: 509.637 us/op
+[info] Iteration   7: 507.182 us/op
+[info] Iteration   8: 507.187 us/op
+[info] Iteration   9: 507.441 us/op
+[info] Iteration  10: 507.352 us/op
+[info] Result "ch.epfl.echassot.benchmark.MutableLongMapBenchmark.lookupN_Original":
+[info]   508.568 ±(99.9%) 7.135 us/op [Average]
+[info]   (min, avg, max) = (504.976, 508.568, 521.367), stdev = 4.719
+[info]   CI (99.9%): [501.434, 515.703] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1-Ubuntu-0ubuntu120.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 10 iterations, 10 s each
+[info] # Measurement: 10 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.echassot.benchmark.MutableLongMapBenchmark.lookupN_Original
+[info] # Parameters: (keysListName = 65536)
+[info] # Run progress: 96.54% complete, ETA 01:02:58
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 581.587 us/op
+[info] # Warmup Iteration   2: 511.162 us/op
+[info] # Warmup Iteration   3: 516.267 us/op
+[info] # Warmup Iteration   4: 511.306 us/op
+[info] # Warmup Iteration   5: 517.223 us/op
+[info] # Warmup Iteration   6: 507.857 us/op
+[info] # Warmup Iteration   7: 516.285 us/op
+[info] # Warmup Iteration   8: 518.024 us/op
+[info] # Warmup Iteration   9: 517.613 us/op
+[info] # Warmup Iteration  10: 517.650 us/op
+[info] Iteration   1: 512.967 us/op
+[info] Iteration   2: 516.649 us/op
+[info] Iteration   3: 513.690 us/op
+[info] Iteration   4: 516.760 us/op
+[info] Iteration   5: 512.209 us/op
+[info] Iteration   6: 516.164 us/op
+[info] Iteration   7: 507.544 us/op
+[info] Iteration   8: 506.678 us/op
+[info] Iteration   9: 506.577 us/op
+[info] Iteration  10: 510.111 us/op
+[info] Result "ch.epfl.echassot.benchmark.MutableLongMapBenchmark.lookupN_Original":
+[info]   511.935 ±(99.9%) 6.101 us/op [Average]
+[info]   (min, avg, max) = (506.577, 511.935, 516.760), stdev = 4.035
+[info]   CI (99.9%): [505.834, 518.036] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1-Ubuntu-0ubuntu120.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 10 iterations, 10 s each
+[info] # Measurement: 10 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.echassot.benchmark.MutableLongMapBenchmark.lookupN_Verified
+[info] # Parameters: (keysListName = 4096)
+[info] # Run progress: 96.75% complete, ETA 00:59:15
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 83.701 us/op
+[info] # Warmup Iteration   2: 77.065 us/op
+[info] # Warmup Iteration   3: 76.071 us/op
+[info] # Warmup Iteration   4: 75.942 us/op
+[info] # Warmup Iteration   5: 74.444 us/op
+[info] # Warmup Iteration   6: 74.697 us/op
+[info] # Warmup Iteration   7: 75.206 us/op
+[info] # Warmup Iteration   8: 75.082 us/op
+[info] # Warmup Iteration   9: 74.517 us/op
+[info] # Warmup Iteration  10: 74.556 us/op
+[info] Iteration   1: 74.450 us/op
+[info] Iteration   2: 74.717 us/op
+[info] Iteration   3: 74.548 us/op
+[info] Iteration   4: 75.086 us/op
+[info] Iteration   5: 75.149 us/op
+[info] Iteration   6: 74.489 us/op
+[info] Iteration   7: 74.369 us/op
+[info] Iteration   8: 74.363 us/op
+[info] Iteration   9: 74.796 us/op
+[info] Iteration  10: 74.727 us/op
+[info] Result "ch.epfl.echassot.benchmark.MutableLongMapBenchmark.lookupN_Verified":
+[info]   74.670 ±(99.9%) 0.423 us/op [Average]
+[info]   (min, avg, max) = (74.363, 74.670, 75.149), stdev = 0.280
+[info]   CI (99.9%): [74.247, 75.093] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1-Ubuntu-0ubuntu120.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 10 iterations, 10 s each
+[info] # Measurement: 10 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.echassot.benchmark.MutableLongMapBenchmark.lookupN_Verified
+[info] # Parameters: (keysListName = 8192)
+[info] # Run progress: 96.95% complete, ETA 00:55:32
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 175.849 us/op
+[info] # Warmup Iteration   2: 160.041 us/op
+[info] # Warmup Iteration   3: 156.611 us/op
+[info] # Warmup Iteration   4: 158.617 us/op
+[info] # Warmup Iteration   5: 155.415 us/op
+[info] # Warmup Iteration   6: 155.949 us/op
+[info] # Warmup Iteration   7: 156.612 us/op
+[info] # Warmup Iteration   8: 156.532 us/op
+[info] # Warmup Iteration   9: 155.440 us/op
+[info] # Warmup Iteration  10: 155.359 us/op
+[info] Iteration   1: 155.485 us/op
+[info] Iteration   2: 155.771 us/op
+[info] Iteration   3: 155.268 us/op
+[info] Iteration   4: 156.628 us/op
+[info] Iteration   5: 156.261 us/op
+[info] Iteration   6: 155.067 us/op
+[info] Iteration   7: 155.331 us/op
+[info] Iteration   8: 155.377 us/op
+[info] Iteration   9: 155.478 us/op
+[info] Iteration  10: 155.364 us/op
+[info] Result "ch.epfl.echassot.benchmark.MutableLongMapBenchmark.lookupN_Verified":
+[info]   155.603 ±(99.9%) 0.734 us/op [Average]
+[info]   (min, avg, max) = (155.067, 155.603, 156.628), stdev = 0.486
+[info]   CI (99.9%): [154.869, 156.337] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1-Ubuntu-0ubuntu120.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 10 iterations, 10 s each
+[info] # Measurement: 10 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.echassot.benchmark.MutableLongMapBenchmark.lookupN_Verified
+[info] # Parameters: (keysListName = 12288)
+[info] # Run progress: 97.15% complete, ETA 00:51:50
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 272.750 us/op
+[info] # Warmup Iteration   2: 249.538 us/op
+[info] # Warmup Iteration   3: 245.941 us/op
+[info] # Warmup Iteration   4: 248.713 us/op
+[info] # Warmup Iteration   5: 244.739 us/op
+[info] # Warmup Iteration   6: 245.561 us/op
+[info] # Warmup Iteration   7: 246.931 us/op
+[info] # Warmup Iteration   8: 246.555 us/op
+[info] # Warmup Iteration   9: 244.742 us/op
+[info] # Warmup Iteration  10: 246.410 us/op
+[info] Iteration   1: 245.886 us/op
+[info] Iteration   2: 246.502 us/op
+[info] Iteration   3: 246.752 us/op
+[info] Iteration   4: 245.804 us/op
+[info] Iteration   5: 247.120 us/op
+[info] Iteration   6: 245.048 us/op
+[info] Iteration   7: 244.471 us/op
+[info] Iteration   8: 244.602 us/op
+[info] Iteration   9: 244.596 us/op
+[info] Iteration  10: 244.515 us/op
+[info] Result "ch.epfl.echassot.benchmark.MutableLongMapBenchmark.lookupN_Verified":
+[info]   245.530 ±(99.9%) 1.536 us/op [Average]
+[info]   (min, avg, max) = (244.471, 245.530, 247.120), stdev = 1.016
+[info]   CI (99.9%): [243.994, 247.065] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1-Ubuntu-0ubuntu120.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 10 iterations, 10 s each
+[info] # Measurement: 10 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.echassot.benchmark.MutableLongMapBenchmark.lookupN_Verified
+[info] # Parameters: (keysListName = 16384)
+[info] # Run progress: 97.36% complete, ETA 00:48:07
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 380.930 us/op
+[info] # Warmup Iteration   2: 346.532 us/op
+[info] # Warmup Iteration   3: 341.631 us/op
+[info] # Warmup Iteration   4: 344.922 us/op
+[info] # Warmup Iteration   5: 342.397 us/op
+[info] # Warmup Iteration   6: 339.802 us/op
+[info] # Warmup Iteration   7: 339.921 us/op
+[info] # Warmup Iteration   8: 340.830 us/op
+[info] # Warmup Iteration   9: 342.424 us/op
+[info] # Warmup Iteration  10: 342.561 us/op
+[info] Iteration   1: 340.031 us/op
+[info] Iteration   2: 340.025 us/op
+[info] Iteration   3: 340.026 us/op
+[info] Iteration   4: 340.056 us/op
+[info] Iteration   5: 341.158 us/op
+[info] Iteration   6: 340.023 us/op
+[info] Iteration   7: 342.707 us/op
+[info] Iteration   8: 341.652 us/op
+[info] Iteration   9: 343.745 us/op
+[info] Iteration  10: 342.717 us/op
+[info] Result "ch.epfl.echassot.benchmark.MutableLongMapBenchmark.lookupN_Verified":
+[info]   341.214 ±(99.9%) 2.143 us/op [Average]
+[info]   (min, avg, max) = (340.023, 341.214, 343.745), stdev = 1.417
+[info]   CI (99.9%): [339.072, 343.357] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1-Ubuntu-0ubuntu120.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 10 iterations, 10 s each
+[info] # Measurement: 10 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.echassot.benchmark.MutableLongMapBenchmark.lookupN_Verified
+[info] # Parameters: (keysListName = 20480)
+[info] # Run progress: 97.56% complete, ETA 00:44:24
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 491.479 us/op
+[info] # Warmup Iteration   2: 448.390 us/op
+[info] # Warmup Iteration   3: 439.391 us/op
+[info] # Warmup Iteration   4: 440.410 us/op
+[info] # Warmup Iteration   5: 445.953 us/op
+[info] # Warmup Iteration   6: 438.876 us/op
+[info] # Warmup Iteration   7: 440.225 us/op
+[info] # Warmup Iteration   8: 442.473 us/op
+[info] # Warmup Iteration   9: 442.673 us/op
+[info] # Warmup Iteration  10: 439.118 us/op
+[info] Iteration   1: 439.259 us/op
+[info] Iteration   2: 439.211 us/op
+[info] Iteration   3: 440.574 us/op
+[info] Iteration   4: 442.656 us/op
+[info] Iteration   5: 439.290 us/op
+[info] Iteration   6: 442.168 us/op
+[info] Iteration   7: 437.949 us/op
+[info] Iteration   8: 438.089 us/op
+[info] Iteration   9: 438.145 us/op
+[info] Iteration  10: 438.095 us/op
+[info] Result "ch.epfl.echassot.benchmark.MutableLongMapBenchmark.lookupN_Verified":
+[info]   439.544 ±(99.9%) 2.599 us/op [Average]
+[info]   (min, avg, max) = (437.949, 439.544, 442.656), stdev = 1.719
+[info]   CI (99.9%): [436.944, 442.143] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1-Ubuntu-0ubuntu120.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 10 iterations, 10 s each
+[info] # Measurement: 10 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.echassot.benchmark.MutableLongMapBenchmark.lookupN_Verified
+[info] # Parameters: (keysListName = 24576)
+[info] # Run progress: 97.76% complete, ETA 00:40:42
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 597.508 us/op
+[info] # Warmup Iteration   2: 537.931 us/op
+[info] # Warmup Iteration   3: 525.879 us/op
+[info] # Warmup Iteration   4: 534.103 us/op
+[info] # Warmup Iteration   5: 529.426 us/op
+[info] # Warmup Iteration   6: 526.659 us/op
+[info] # Warmup Iteration   7: 526.826 us/op
+[info] # Warmup Iteration   8: 530.438 us/op
+[info] # Warmup Iteration   9: 533.087 us/op
+[info] # Warmup Iteration  10: 534.050 us/op
+[info] Iteration   1: 530.236 us/op
+[info] Iteration   2: 528.245 us/op
+[info] Iteration   3: 529.087 us/op
+[info] Iteration   4: 530.097 us/op
+[info] Iteration   5: 525.801 us/op
+[info] Iteration   6: 530.364 us/op
+[info] Iteration   7: 528.028 us/op
+[info] Iteration   8: 524.788 us/op
+[info] Iteration   9: 525.085 us/op
+[info] Iteration  10: 525.381 us/op
+[info] Result "ch.epfl.echassot.benchmark.MutableLongMapBenchmark.lookupN_Verified":
+[info]   527.711 ±(99.9%) 3.415 us/op [Average]
+[info]   (min, avg, max) = (524.788, 527.711, 530.364), stdev = 2.259
+[info]   CI (99.9%): [524.297, 531.126] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1-Ubuntu-0ubuntu120.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 10 iterations, 10 s each
+[info] # Measurement: 10 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.echassot.benchmark.MutableLongMapBenchmark.lookupN_Verified
+[info] # Parameters: (keysListName = 28672)
+[info] # Run progress: 97.97% complete, ETA 00:36:59
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 735.729 us/op
+[info] # Warmup Iteration   2: 666.191 us/op
+[info] # Warmup Iteration   3: 663.259 us/op
+[info] # Warmup Iteration   4: 661.417 us/op
+[info] # Warmup Iteration   5: 647.096 us/op
+[info] # Warmup Iteration   6: 648.114 us/op
+[info] # Warmup Iteration   7: 651.779 us/op
+[info] # Warmup Iteration   8: 649.694 us/op
+[info] # Warmup Iteration   9: 644.203 us/op
+[info] # Warmup Iteration  10: 644.703 us/op
+[info] Iteration   1: 644.180 us/op
+[info] Iteration   2: 646.185 us/op
+[info] Iteration   3: 644.906 us/op
+[info] Iteration   4: 649.354 us/op
+[info] Iteration   5: 649.289 us/op
+[info] Iteration   6: 644.589 us/op
+[info] Iteration   7: 650.085 us/op
+[info] Iteration   8: 651.094 us/op
+[info] Iteration   9: 650.464 us/op
+[info] Iteration  10: 647.859 us/op
+[info] Result "ch.epfl.echassot.benchmark.MutableLongMapBenchmark.lookupN_Verified":
+[info]   647.801 ±(99.9%) 3.975 us/op [Average]
+[info]   (min, avg, max) = (644.180, 647.801, 651.094), stdev = 2.629
+[info]   CI (99.9%): [643.826, 651.775] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1-Ubuntu-0ubuntu120.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 10 iterations, 10 s each
+[info] # Measurement: 10 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.echassot.benchmark.MutableLongMapBenchmark.lookupN_Verified
+[info] # Parameters: (keysListName = 32768)
+[info] # Run progress: 98.17% complete, ETA 00:33:17
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 872.058 us/op
+[info] # Warmup Iteration   2: 794.248 us/op
+[info] # Warmup Iteration   3: 779.478 us/op
+[info] # Warmup Iteration   4: 789.723 us/op
+[info] # Warmup Iteration   5: 778.010 us/op
+[info] # Warmup Iteration   6: 780.932 us/op
+[info] # Warmup Iteration   7: 784.910 us/op
+[info] # Warmup Iteration   8: 785.373 us/op
+[info] # Warmup Iteration   9: 778.774 us/op
+[info] # Warmup Iteration  10: 776.980 us/op
+[info] Iteration   1: 777.678 us/op
+[info] Iteration   2: 779.049 us/op
+[info] Iteration   3: 783.545 us/op
+[info] Iteration   4: 777.433 us/op
+[info] Iteration   5: 783.037 us/op
+[info] Iteration   6: 777.047 us/op
+[info] Iteration   7: 776.842 us/op
+[info] Iteration   8: 778.090 us/op
+[info] Iteration   9: 777.426 us/op
+[info] Iteration  10: 779.190 us/op
+[info] Result "ch.epfl.echassot.benchmark.MutableLongMapBenchmark.lookupN_Verified":
+[info]   778.934 ±(99.9%) 3.666 us/op [Average]
+[info]   (min, avg, max) = (776.842, 778.934, 783.545), stdev = 2.425
+[info]   CI (99.9%): [775.267, 782.600] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1-Ubuntu-0ubuntu120.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 10 iterations, 10 s each
+[info] # Measurement: 10 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.echassot.benchmark.MutableLongMapBenchmark.lookupN_Verified
+[info] # Parameters: (keysListName = 36864)
+[info] # Run progress: 98.37% complete, ETA 00:29:34
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 852.010 us/op
+[info] # Warmup Iteration   2: 769.751 us/op
+[info] # Warmup Iteration   3: 765.810 us/op
+[info] # Warmup Iteration   4: 763.381 us/op
+[info] # Warmup Iteration   5: 758.394 us/op
+[info] # Warmup Iteration   6: 760.834 us/op
+[info] # Warmup Iteration   7: 779.986 us/op
+[info] # Warmup Iteration   8: 780.458 us/op
+[info] # Warmup Iteration   9: 778.853 us/op
+[info] # Warmup Iteration  10: 767.943 us/op
+[info] Iteration   1: 774.805 us/op
+[info] Iteration   2: 776.665 us/op
+[info] Iteration   3: 772.718 us/op
+[info] Iteration   4: 778.096 us/op
+[info] Iteration   5: 777.757 us/op
+[info] Iteration   6: 772.267 us/op
+[info] Iteration   7: 766.902 us/op
+[info] Iteration   8: 757.639 us/op
+[info] Iteration   9: 757.494 us/op
+[info] Iteration  10: 757.541 us/op
+[info] Result "ch.epfl.echassot.benchmark.MutableLongMapBenchmark.lookupN_Verified":
+[info]   769.188 ±(99.9%) 13.076 us/op [Average]
+[info]   (min, avg, max) = (757.494, 769.188, 778.096), stdev = 8.649
+[info]   CI (99.9%): [756.113, 782.264] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1-Ubuntu-0ubuntu120.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 10 iterations, 10 s each
+[info] # Measurement: 10 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.echassot.benchmark.MutableLongMapBenchmark.lookupN_Verified
+[info] # Parameters: (keysListName = 40960)
+[info] # Run progress: 98.58% complete, ETA 00:25:52
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 855.182 us/op
+[info] # Warmup Iteration   2: 775.513 us/op
+[info] # Warmup Iteration   3: 772.080 us/op
+[info] # Warmup Iteration   4: 770.317 us/op
+[info] # Warmup Iteration   5: 763.123 us/op
+[info] # Warmup Iteration   6: 765.155 us/op
+[info] # Warmup Iteration   7: 769.934 us/op
+[info] # Warmup Iteration   8: 768.655 us/op
+[info] # Warmup Iteration   9: 763.472 us/op
+[info] # Warmup Iteration  10: 762.903 us/op
+[info] Iteration   1: 762.757 us/op
+[info] Iteration   2: 764.414 us/op
+[info] Iteration   3: 763.078 us/op
+[info] Iteration   4: 768.480 us/op
+[info] Iteration   5: 764.835 us/op
+[info] Iteration   6: 766.090 us/op
+[info] Iteration   7: 780.016 us/op
+[info] Iteration   8: 779.276 us/op
+[info] Iteration   9: 784.812 us/op
+[info] Iteration  10: 779.026 us/op
+[info] Result "ch.epfl.echassot.benchmark.MutableLongMapBenchmark.lookupN_Verified":
+[info]   771.278 ±(99.9%) 12.816 us/op [Average]
+[info]   (min, avg, max) = (762.757, 771.278, 784.812), stdev = 8.477
+[info]   CI (99.9%): [758.462, 784.094] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1-Ubuntu-0ubuntu120.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 10 iterations, 10 s each
+[info] # Measurement: 10 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.echassot.benchmark.MutableLongMapBenchmark.lookupN_Verified
+[info] # Parameters: (keysListName = 45056)
+[info] # Run progress: 98.78% complete, ETA 00:22:10
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 874.783 us/op
+[info] # Warmup Iteration   2: 792.428 us/op
+[info] # Warmup Iteration   3: 786.510 us/op
+[info] # Warmup Iteration   4: 783.453 us/op
+[info] # Warmup Iteration   5: 762.620 us/op
+[info] # Warmup Iteration   6: 762.874 us/op
+[info] # Warmup Iteration   7: 765.294 us/op
+[info] # Warmup Iteration   8: 769.537 us/op
+[info] # Warmup Iteration   9: 768.617 us/op
+[info] # Warmup Iteration  10: 762.765 us/op
+[info] Iteration   1: 761.969 us/op
+[info] Iteration   2: 762.011 us/op
+[info] Iteration   3: 764.867 us/op
+[info] Iteration   4: 762.539 us/op
+[info] Iteration   5: 768.108 us/op
+[info] Iteration   6: 768.018 us/op
+[info] Iteration   7: 761.488 us/op
+[info] Iteration   8: 762.148 us/op
+[info] Iteration   9: 763.826 us/op
+[info] Iteration  10: 763.140 us/op
+[info] Result "ch.epfl.echassot.benchmark.MutableLongMapBenchmark.lookupN_Verified":
+[info]   763.811 ±(99.9%) 3.708 us/op [Average]
+[info]   (min, avg, max) = (761.488, 763.811, 768.108), stdev = 2.453
+[info]   CI (99.9%): [760.104, 767.519] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1-Ubuntu-0ubuntu120.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 10 iterations, 10 s each
+[info] # Measurement: 10 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.echassot.benchmark.MutableLongMapBenchmark.lookupN_Verified
+[info] # Parameters: (keysListName = 49152)
+[info] # Run progress: 98.98% complete, ETA 00:18:28
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 855.258 us/op
+[info] # Warmup Iteration   2: 775.258 us/op
+[info] # Warmup Iteration   3: 772.014 us/op
+[info] # Warmup Iteration   4: 768.399 us/op
+[info] # Warmup Iteration   5: 763.237 us/op
+[info] # Warmup Iteration   6: 767.643 us/op
+[info] # Warmup Iteration   7: 787.055 us/op
+[info] # Warmup Iteration   8: 790.617 us/op
+[info] # Warmup Iteration   9: 784.814 us/op
+[info] # Warmup Iteration  10: 778.645 us/op
+[info] Iteration   1: 778.142 us/op
+[info] Iteration   2: 779.373 us/op
+[info] Iteration   3: 776.253 us/op
+[info] Iteration   4: 782.700 us/op
+[info] Iteration   5: 779.606 us/op
+[info] Iteration   6: 778.209 us/op
+[info] Iteration   7: 778.115 us/op
+[info] Iteration   8: 777.393 us/op
+[info] Iteration   9: 777.820 us/op
+[info] Iteration  10: 777.941 us/op
+[info] Result "ch.epfl.echassot.benchmark.MutableLongMapBenchmark.lookupN_Verified":
+[info]   778.555 ±(99.9%) 2.619 us/op [Average]
+[info]   (min, avg, max) = (776.253, 778.555, 782.700), stdev = 1.732
+[info]   CI (99.9%): [775.936, 781.174] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1-Ubuntu-0ubuntu120.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 10 iterations, 10 s each
+[info] # Measurement: 10 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.echassot.benchmark.MutableLongMapBenchmark.lookupN_Verified
+[info] # Parameters: (keysListName = 53248)
+[info] # Run progress: 99.19% complete, ETA 00:14:46
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 855.093 us/op
+[info] # Warmup Iteration   2: 774.715 us/op
+[info] # Warmup Iteration   3: 764.889 us/op
+[info] # Warmup Iteration   4: 777.011 us/op
+[info] # Warmup Iteration   5: 775.671 us/op
+[info] # Warmup Iteration   6: 776.186 us/op
+[info] # Warmup Iteration   7: 779.221 us/op
+[info] # Warmup Iteration   8: 782.278 us/op
+[info] # Warmup Iteration   9: 781.564 us/op
+[info] # Warmup Iteration  10: 775.282 us/op
+[info] Iteration   1: 775.882 us/op
+[info] Iteration   2: 775.926 us/op
+[info] Iteration   3: 778.405 us/op
+[info] Iteration   4: 781.897 us/op
+[info] Iteration   5: 776.513 us/op
+[info] Iteration   6: 781.581 us/op
+[info] Iteration   7: 775.600 us/op
+[info] Iteration   8: 779.394 us/op
+[info] Iteration   9: 779.849 us/op
+[info] Iteration  10: 782.965 us/op
+[info] Result "ch.epfl.echassot.benchmark.MutableLongMapBenchmark.lookupN_Verified":
+[info]   778.801 ±(99.9%) 4.172 us/op [Average]
+[info]   (min, avg, max) = (775.600, 778.801, 782.965), stdev = 2.759
+[info]   CI (99.9%): [774.629, 782.973] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1-Ubuntu-0ubuntu120.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 10 iterations, 10 s each
+[info] # Measurement: 10 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.echassot.benchmark.MutableLongMapBenchmark.lookupN_Verified
+[info] # Parameters: (keysListName = 57344)
+[info] # Run progress: 99.39% complete, ETA 00:11:04
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 867.621 us/op
+[info] # Warmup Iteration   2: 790.402 us/op
+[info] # Warmup Iteration   3: 776.965 us/op
+[info] # Warmup Iteration   4: 786.448 us/op
+[info] # Warmup Iteration   5: 774.368 us/op
+[info] # Warmup Iteration   6: 776.703 us/op
+[info] # Warmup Iteration   7: 780.125 us/op
+[info] # Warmup Iteration   8: 779.896 us/op
+[info] # Warmup Iteration   9: 773.864 us/op
+[info] # Warmup Iteration  10: 773.877 us/op
+[info] Iteration   1: 773.558 us/op
+[info] Iteration   2: 775.393 us/op
+[info] Iteration   3: 779.550 us/op
+[info] Iteration   4: 773.373 us/op
+[info] Iteration   5: 779.510 us/op
+[info] Iteration   6: 774.069 us/op
+[info] Iteration   7: 774.604 us/op
+[info] Iteration   8: 774.119 us/op
+[info] Iteration   9: 774.161 us/op
+[info] Iteration  10: 774.739 us/op
+[info] Result "ch.epfl.echassot.benchmark.MutableLongMapBenchmark.lookupN_Verified":
+[info]   775.308 ±(99.9%) 3.475 us/op [Average]
+[info]   (min, avg, max) = (773.373, 775.308, 779.550), stdev = 2.298
+[info]   CI (99.9%): [771.833, 778.783] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1-Ubuntu-0ubuntu120.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 10 iterations, 10 s each
+[info] # Measurement: 10 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.echassot.benchmark.MutableLongMapBenchmark.lookupN_Verified
+[info] # Parameters: (keysListName = 61440)
+[info] # Run progress: 99.59% complete, ETA 00:07:23
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 855.069 us/op
+[info] # Warmup Iteration   2: 775.385 us/op
+[info] # Warmup Iteration   3: 771.713 us/op
+[info] # Warmup Iteration   4: 769.068 us/op
+[info] # Warmup Iteration   5: 763.592 us/op
+[info] # Warmup Iteration   6: 764.767 us/op
+[info] # Warmup Iteration   7: 771.562 us/op
+[info] # Warmup Iteration   8: 777.063 us/op
+[info] # Warmup Iteration   9: 773.809 us/op
+[info] # Warmup Iteration  10: 767.303 us/op
+[info] Iteration   1: 765.690 us/op
+[info] Iteration   2: 764.270 us/op
+[info] Iteration   3: 769.955 us/op
+[info] Iteration   4: 776.964 us/op
+[info] Iteration   5: 783.283 us/op
+[info] Iteration   6: 782.764 us/op
+[info] Iteration   7: 777.501 us/op
+[info] Iteration   8: 777.152 us/op
+[info] Iteration   9: 777.398 us/op
+[info] Iteration  10: 777.178 us/op
+[info] Result "ch.epfl.echassot.benchmark.MutableLongMapBenchmark.lookupN_Verified":
+[info]   775.216 ±(99.9%) 9.836 us/op [Average]
+[info]   (min, avg, max) = (764.270, 775.216, 783.283), stdev = 6.506
+[info]   CI (99.9%): [765.380, 785.051] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1-Ubuntu-0ubuntu120.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 10 iterations, 10 s each
+[info] # Measurement: 10 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.echassot.benchmark.MutableLongMapBenchmark.lookupN_Verified
+[info] # Parameters: (keysListName = 65536)
+[info] # Run progress: 99.80% complete, ETA 00:03:41
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 859.028 us/op
+[info] # Warmup Iteration   2: 780.447 us/op
+[info] # Warmup Iteration   3: 786.915 us/op
+[info] # Warmup Iteration   4: 781.046 us/op
+[info] # Warmup Iteration   5: 774.550 us/op
+[info] # Warmup Iteration   6: 778.220 us/op
+[info] # Warmup Iteration   7: 767.538 us/op
+[info] # Warmup Iteration   8: 777.103 us/op
+[info] # Warmup Iteration   9: 773.226 us/op
+[info] # Warmup Iteration  10: 757.646 us/op
+[info] Iteration   1: 753.211 us/op
+[info] Iteration   2: 762.980 us/op
+[info] Iteration   3: 751.800 us/op
+[info] Iteration   4: 765.377 us/op
+[info] Iteration   5: 770.537 us/op
+[info] Iteration   6: 764.271 us/op
+[info] Iteration   7: 771.820 us/op
+[info] Iteration   8: 774.207 us/op
+[info] Iteration   9: 769.629 us/op
+[info] Iteration  10: 770.955 us/op
+[info] Result "ch.epfl.echassot.benchmark.MutableLongMapBenchmark.lookupN_Verified":
+[info]   765.479 ±(99.9%) 11.651 us/op [Average]
+[info]   (min, avg, max) = (751.800, 765.479, 774.207), stdev = 7.707
+[info]   CI (99.9%): [753.828, 777.130] (assumes normal distribution)
+[info] # Run complete. Total time: 1 days, 06:16:30
+[info] REMEMBER: The numbers below are just data. To gain reusable insights, you need to follow up on
+[info] why the numbers are the way they are. Use profilers (see -prof, -lprof), design factorial
+[info] experiments, perform baseline and negative tests that provide experimental control, make sure
+[info] the benchmarking environment is safe on JVM/OS/HW level, ask for reviews from the domain experts.
+[info] Do not assume the numbers tell you what you want them to tell.
+[info] Benchmark                                                                                            (keysListName)  (n)  Mode  Cnt          Score         Error  Units
+[info] benchmark.LongListMapBenchmark.createUpdateLookup_ListMap                                                       N/A    1  avgt   10          0.617 ±       0.005  us/op
+[info] benchmark.LongListMapBenchmark.createUpdateLookup_ListMap                                                       N/A    2  avgt   10          2.781 ±       0.028  us/op
+[info] benchmark.LongListMapBenchmark.createUpdateLookup_ListMap                                                       N/A    3  avgt   10         17.324 ±       0.094  us/op
+[info] benchmark.LongListMapBenchmark.createUpdateLookup_ListMap                                                       N/A    4  avgt   10        170.439 ±       1.155  us/op
+[info] benchmark.LongListMapBenchmark.createUpdateLookup_ListMap                                                       N/A    5  avgt   10       1783.279 ±       5.124  us/op
+[info] benchmark.LongListMapBenchmark.createUpdateLookup_ListMap                                                       N/A    6  avgt   10      23927.023 ±      90.400  us/op
+[info] benchmark.LongListMapBenchmark.createUpdateLookup_ListMap                                                       N/A    7  avgt   10     324689.489 ±    7525.859  us/op
+[info] benchmark.LongListMapBenchmark.createUpdateLookup_ListMap                                                       N/A    8  avgt   10    5337855.024 ±   84222.990  us/op
+[info] benchmark.LongListMapBenchmark.createUpdateLookup_ListMap                                                       N/A    9  avgt   10  107125015.783 ± 1814628.395  us/op
+[info] benchmark.LongListMapBenchmark.createUpdateLookup_Original                                                      N/A    1  avgt   10          0.094 ±       0.001  us/op
+[info] benchmark.LongListMapBenchmark.createUpdateLookup_Original                                                      N/A    2  avgt   10          0.134 ±       0.006  us/op
+[info] benchmark.LongListMapBenchmark.createUpdateLookup_Original                                                      N/A    3  avgt   10          0.299 ±       0.003  us/op
+[info] benchmark.LongListMapBenchmark.createUpdateLookup_Original                                                      N/A    4  avgt   10          0.679 ±       0.012  us/op
+[info] benchmark.LongListMapBenchmark.createUpdateLookup_Original                                                      N/A    5  avgt   10          1.279 ±       0.010  us/op
+[info] benchmark.LongListMapBenchmark.createUpdateLookup_Original                                                      N/A    6  avgt   10          2.696 ±       0.020  us/op
+[info] benchmark.LongListMapBenchmark.createUpdateLookup_Original                                                      N/A    7  avgt   10          5.666 ±       0.046  us/op
+[info] benchmark.LongListMapBenchmark.createUpdateLookup_Original                                                      N/A    8  avgt   10         12.124 ±       0.094  us/op
+[info] benchmark.LongListMapBenchmark.createUpdateLookup_Original                                                      N/A    9  avgt   10         28.459 ±       0.256  us/op
+[info] benchmark.LongListMapBenchmark.createUpdateLookup_Verified                                                      N/A    1  avgt   10          0.416 ±       0.002  us/op
+[info] benchmark.LongListMapBenchmark.createUpdateLookup_Verified                                                      N/A    2  avgt   10          0.475 ±       0.002  us/op
+[info] benchmark.LongListMapBenchmark.createUpdateLookup_Verified                                                      N/A    3  avgt   10          0.759 ±       0.006  us/op
+[info] benchmark.LongListMapBenchmark.createUpdateLookup_Verified                                                      N/A    4  avgt   10          1.257 ±       0.011  us/op
+[info] benchmark.LongListMapBenchmark.createUpdateLookup_Verified                                                      N/A    5  avgt   10          2.192 ±       0.019  us/op
+[info] benchmark.LongListMapBenchmark.createUpdateLookup_Verified                                                      N/A    6  avgt   10          4.195 ±       0.026  us/op
+[info] benchmark.LongListMapBenchmark.createUpdateLookup_Verified                                                      N/A    7  avgt   10          8.064 ±       0.084  us/op
+[info] benchmark.LongListMapBenchmark.createUpdateLookup_Verified                                                      N/A    8  avgt   10         16.763 ±       0.173  us/op
+[info] benchmark.LongListMapBenchmark.createUpdateLookup_Verified                                                      N/A    9  avgt   10         33.834 ±       0.311  us/op
+[info] benchmark.LongListMapBenchmark.lookup_ListMap                                                                   N/A    3  avgt   10          7.511 ±       0.014  us/op
+[info] benchmark.LongListMapBenchmark.lookup_ListMap                                                                   N/A    4  avgt   10         81.357 ±       0.166  us/op
+[info] benchmark.LongListMapBenchmark.lookup_ListMap                                                                   N/A    5  avgt   10       1016.327 ±       1.946  us/op
+[info] benchmark.LongListMapBenchmark.lookup_ListMap                                                                   N/A    6  avgt   10      13316.241 ±      67.743  us/op
+[info] benchmark.LongListMapBenchmark.lookup_ListMap                                                                   N/A    7  avgt   10     200335.062 ±   21733.473  us/op
+[info] benchmark.LongListMapBenchmark.lookup_ListMap                                                                   N/A    8  avgt   10    3378464.058 ±   82948.525  us/op
+[info] benchmark.LongListMapBenchmark.lookup_ListMap                                                                   N/A    9  avgt   10   68990208.101 ± 4435369.062  us/op
+[info] benchmark.LongListMapBenchmark.lookup_Original                                                                  N/A    1  avgt   10          0.044 ±       0.001  us/op
+[info] benchmark.LongListMapBenchmark.lookup_Original                                                                  N/A    2  avgt   10          0.053 ±       0.001  us/op
+[info] benchmark.LongListMapBenchmark.lookup_Original                                                                  N/A    3  avgt   10          0.055 ±       0.001  us/op
+[info] benchmark.LongListMapBenchmark.lookup_Original                                                                  N/A    4  avgt   10          0.094 ±       0.001  us/op
+[info] benchmark.LongListMapBenchmark.lookup_Original                                                                  N/A    5  avgt   10          0.159 ±       0.001  us/op
+[info] benchmark.LongListMapBenchmark.lookup_Original                                                                  N/A    6  avgt   10          0.306 ±       0.002  us/op
+[info] benchmark.LongListMapBenchmark.lookup_Original                                                                  N/A    7  avgt   10          0.584 ±       0.002  us/op
+[info] benchmark.LongListMapBenchmark.lookup_Original                                                                  N/A    8  avgt   10          1.460 ±       0.004  us/op
+[info] benchmark.LongListMapBenchmark.lookup_Original                                                                  N/A    9  avgt   10          3.302 ±       0.013  us/op
+[info] benchmark.LongListMapBenchmark.lookup_Verified                                                                  N/A    1  avgt   10          0.040 ±       0.002  us/op
+[info] benchmark.LongListMapBenchmark.lookup_Verified                                                                  N/A    2  avgt   10          0.054 ±       0.002  us/op
+[info] benchmark.LongListMapBenchmark.lookup_Verified                                                                  N/A    3  avgt   10          0.066 ±       0.001  us/op
+[info] benchmark.LongListMapBenchmark.lookup_Verified                                                                  N/A    4  avgt   10          0.121 ±       0.001  us/op
+[info] benchmark.LongListMapBenchmark.lookup_Verified                                                                  N/A    5  avgt   10          0.239 ±       0.001  us/op
+[info] benchmark.LongListMapBenchmark.lookup_Verified                                                                  N/A    6  avgt   10          0.439 ±       0.002  us/op
+[info] benchmark.LongListMapBenchmark.lookup_Verified                                                                  N/A    7  avgt   10          0.896 ±       0.007  us/op
+[info] benchmark.LongListMapBenchmark.lookup_Verified                                                                  N/A    8  avgt   10          2.101 ±       0.003  us/op
+[info] benchmark.LongListMapBenchmark.lookup_Verified                                                                  N/A    9  avgt   10          4.800 ±       0.496  us/op
+[info] benchmark.MutableLongMapBenchmark.createUpdateLookup_16Buffer_Original                                         2048  N/A  avgt   10       3029.903 ±     702.482  us/op
+[info] benchmark.MutableLongMapBenchmark.createUpdateLookup_16Buffer_Original                                         4096  N/A  avgt   10       2834.240 ±     680.793  us/op
+[info] benchmark.MutableLongMapBenchmark.createUpdateLookup_16Buffer_Original                                         6144  N/A  avgt   10       3168.219 ±     559.656  us/op
+[info] benchmark.MutableLongMapBenchmark.createUpdateLookup_16Buffer_Original                                         8192  N/A  avgt   10       2648.301 ±      71.102  us/op
+[info] benchmark.MutableLongMapBenchmark.createUpdateLookup_16Buffer_Original                                        10240  N/A  avgt   10       2581.860 ±      62.649  us/op
+[info] benchmark.MutableLongMapBenchmark.createUpdateLookup_16Buffer_Original                                        12288  N/A  avgt   10       2271.928 ±      31.666  us/op
+[info] benchmark.MutableLongMapBenchmark.createUpdateLookup_16Buffer_Original                                        14336  N/A  avgt   10       2325.730 ±      43.088  us/op
+[info] benchmark.MutableLongMapBenchmark.createUpdateLookup_16Buffer_Original                                        16384  N/A  avgt   10       2422.748 ±     268.758  us/op
+[info] benchmark.MutableLongMapBenchmark.createUpdateLookup_16Buffer_Original                                        18432  N/A  avgt   10       2387.688 ±      27.699  us/op
+[info] benchmark.MutableLongMapBenchmark.createUpdateLookup_16Buffer_Original                                        20480  N/A  avgt   10       2408.004 ±      32.366  us/op
+[info] benchmark.MutableLongMapBenchmark.createUpdateLookup_16Buffer_Original                                        22528  N/A  avgt   10       2439.081 ±      17.008  us/op
+[info] benchmark.MutableLongMapBenchmark.createUpdateLookup_16Buffer_Original                                        24576  N/A  avgt   10       2486.667 ±      24.333  us/op
+[info] benchmark.MutableLongMapBenchmark.createUpdateLookup_16Buffer_Original                                        26624  N/A  avgt   10       2593.913 ±      19.997  us/op
+[info] benchmark.MutableLongMapBenchmark.createUpdateLookup_16Buffer_Original                                        28672  N/A  avgt   10       2565.403 ±      12.971  us/op
+[info] benchmark.MutableLongMapBenchmark.createUpdateLookup_16Buffer_Original                                        30720  N/A  avgt   10       2586.063 ±      15.959  us/op
+[info] benchmark.MutableLongMapBenchmark.createUpdateLookup_16Buffer_Original                                        32768  N/A  avgt   10       2722.841 ±      27.643  us/op
+[info] benchmark.MutableLongMapBenchmark.createUpdateLookup_16Buffer_Original                                        34816  N/A  avgt   10       2712.775 ±      42.763  us/op
+[info] benchmark.MutableLongMapBenchmark.createUpdateLookup_16Buffer_Original                                        36864  N/A  avgt   10       2681.312 ±      13.169  us/op
+[info] benchmark.MutableLongMapBenchmark.createUpdateLookup_16Buffer_Original                                        38912  N/A  avgt   10       2645.737 ±      18.099  us/op
+[info] benchmark.MutableLongMapBenchmark.createUpdateLookup_16Buffer_Original                                        40960  N/A  avgt   10       2685.153 ±      33.186  us/op
+[info] benchmark.MutableLongMapBenchmark.createUpdateLookup_16Buffer_Original                                        43008  N/A  avgt   10       2769.537 ±      47.091  us/op
+[info] benchmark.MutableLongMapBenchmark.createUpdateLookup_16Buffer_Original                                        45056  N/A  avgt   10       2708.059 ±      19.668  us/op
+[info] benchmark.MutableLongMapBenchmark.createUpdateLookup_16Buffer_Original                                        47104  N/A  avgt   10       2694.873 ±      12.955  us/op
+[info] benchmark.MutableLongMapBenchmark.createUpdateLookup_16Buffer_Original                                        49152  N/A  avgt   10       2638.900 ±      13.804  us/op
+[info] benchmark.MutableLongMapBenchmark.createUpdateLookup_16Buffer_Original                                        51200  N/A  avgt   10       2667.042 ±      60.812  us/op
+[info] benchmark.MutableLongMapBenchmark.createUpdateLookup_16Buffer_Original                                        53248  N/A  avgt   10       2757.245 ±      77.147  us/op
+[info] benchmark.MutableLongMapBenchmark.createUpdateLookup_16Buffer_Original                                        55296  N/A  avgt   10       2646.818 ±      59.989  us/op
+[info] benchmark.MutableLongMapBenchmark.createUpdateLookup_16Buffer_Original                                        57344  N/A  avgt   10       3605.704 ±    1116.395  us/op
+[info] benchmark.MutableLongMapBenchmark.createUpdateLookup_16Buffer_Original                                        59392  N/A  avgt   10       3511.809 ±     798.976  us/op
+[info] benchmark.MutableLongMapBenchmark.createUpdateLookup_16Buffer_Original                                        61440  N/A  avgt   10       3729.349 ±     703.480  us/op
+[info] benchmark.MutableLongMapBenchmark.createUpdateLookup_16Buffer_Original                                        63488  N/A  avgt   10       3262.584 ±     304.915  us/op
+[info] benchmark.MutableLongMapBenchmark.createUpdateLookup_16Buffer_Original                                        65536  N/A  avgt   10       3102.288 ±      92.266  us/op
+[info] benchmark.MutableLongMapBenchmark.createUpdateLookup_16Buffer_Verified                                         2048  N/A  avgt   10       3321.921 ±      71.039  us/op
+[info] benchmark.MutableLongMapBenchmark.createUpdateLookup_16Buffer_Verified                                         4096  N/A  avgt   10       3392.466 ±      38.399  us/op
+[info] benchmark.MutableLongMapBenchmark.createUpdateLookup_16Buffer_Verified                                         6144  N/A  avgt   10       3403.846 ±      26.130  us/op
+[info] benchmark.MutableLongMapBenchmark.createUpdateLookup_16Buffer_Verified                                         8192  N/A  avgt   10       3438.374 ±      48.210  us/op
+[info] benchmark.MutableLongMapBenchmark.createUpdateLookup_16Buffer_Verified                                        10240  N/A  avgt   10       3448.130 ±      51.345  us/op
+[info] benchmark.MutableLongMapBenchmark.createUpdateLookup_16Buffer_Verified                                        12288  N/A  avgt   10       3536.797 ±      42.871  us/op
+[info] benchmark.MutableLongMapBenchmark.createUpdateLookup_16Buffer_Verified                                        14336  N/A  avgt   10       3639.633 ±      49.134  us/op
+[info] benchmark.MutableLongMapBenchmark.createUpdateLookup_16Buffer_Verified                                        16384  N/A  avgt   10       3706.376 ±      68.808  us/op
+[info] benchmark.MutableLongMapBenchmark.createUpdateLookup_16Buffer_Verified                                        18432  N/A  avgt   10       3738.777 ±      24.974  us/op
+[info] benchmark.MutableLongMapBenchmark.createUpdateLookup_16Buffer_Verified                                        20480  N/A  avgt   10       3708.853 ±      60.587  us/op
+[info] benchmark.MutableLongMapBenchmark.createUpdateLookup_16Buffer_Verified                                        22528  N/A  avgt   10       3785.489 ±      34.835  us/op
+[info] benchmark.MutableLongMapBenchmark.createUpdateLookup_16Buffer_Verified                                        24576  N/A  avgt   10       3801.270 ±      21.114  us/op
+[info] benchmark.MutableLongMapBenchmark.createUpdateLookup_16Buffer_Verified                                        26624  N/A  avgt   10       3962.131 ±      47.395  us/op
+[info] benchmark.MutableLongMapBenchmark.createUpdateLookup_16Buffer_Verified                                        28672  N/A  avgt   10       3954.545 ±      35.110  us/op
+[info] benchmark.MutableLongMapBenchmark.createUpdateLookup_16Buffer_Verified                                        30720  N/A  avgt   10       3977.213 ±      32.395  us/op
+[info] benchmark.MutableLongMapBenchmark.createUpdateLookup_16Buffer_Verified                                        32768  N/A  avgt   10       4080.788 ±      23.148  us/op
+[info] benchmark.MutableLongMapBenchmark.createUpdateLookup_16Buffer_Verified                                        34816  N/A  avgt   10       4146.605 ±      40.563  us/op
+[info] benchmark.MutableLongMapBenchmark.createUpdateLookup_16Buffer_Verified                                        36864  N/A  avgt   10       4165.053 ±      25.376  us/op
+[info] benchmark.MutableLongMapBenchmark.createUpdateLookup_16Buffer_Verified                                        38912  N/A  avgt   10       4124.604 ±      54.549  us/op
+[info] benchmark.MutableLongMapBenchmark.createUpdateLookup_16Buffer_Verified                                        40960  N/A  avgt   10       4191.546 ±      38.434  us/op
+[info] benchmark.MutableLongMapBenchmark.createUpdateLookup_16Buffer_Verified                                        43008  N/A  avgt   10       4108.144 ±      56.722  us/op
+[info] benchmark.MutableLongMapBenchmark.createUpdateLookup_16Buffer_Verified                                        45056  N/A  avgt   10       4094.593 ±      46.481  us/op
+[info] benchmark.MutableLongMapBenchmark.createUpdateLookup_16Buffer_Verified                                        47104  N/A  avgt   10       4191.340 ±      41.819  us/op
+[info] benchmark.MutableLongMapBenchmark.createUpdateLookup_16Buffer_Verified                                        49152  N/A  avgt   10       4105.793 ±      49.549  us/op
+[info] benchmark.MutableLongMapBenchmark.createUpdateLookup_16Buffer_Verified                                        51200  N/A  avgt   10       4067.034 ±      20.812  us/op
+[info] benchmark.MutableLongMapBenchmark.createUpdateLookup_16Buffer_Verified                                        53248  N/A  avgt   10       4146.503 ±      16.457  us/op
+[info] benchmark.MutableLongMapBenchmark.createUpdateLookup_16Buffer_Verified                                        55296  N/A  avgt   10       4103.702 ±      46.446  us/op
+[info] benchmark.MutableLongMapBenchmark.createUpdateLookup_16Buffer_Verified                                        57344  N/A  avgt   10       4026.546 ±      34.310  us/op
+[info] benchmark.MutableLongMapBenchmark.createUpdateLookup_16Buffer_Verified                                        59392  N/A  avgt   10       4151.541 ±      57.520  us/op
+[info] benchmark.MutableLongMapBenchmark.createUpdateLookup_16Buffer_Verified                                        61440  N/A  avgt   10       4153.666 ±      39.434  us/op
+[info] benchmark.MutableLongMapBenchmark.createUpdateLookup_16Buffer_Verified                                        63488  N/A  avgt   10       4124.194 ±      48.936  us/op
+[info] benchmark.MutableLongMapBenchmark.createUpdateLookup_16Buffer_Verified                                        65536  N/A  avgt   10       4129.328 ±      39.881  us/op
+[info] benchmark.MutableLongMapBenchmark.createUpdateLookup_2to17Buffer_Original                                      2048  N/A  avgt   10       1489.361 ±      16.800  us/op
+[info] benchmark.MutableLongMapBenchmark.createUpdateLookup_2to17Buffer_Original                                      4096  N/A  avgt   10       1573.786 ±      20.060  us/op
+[info] benchmark.MutableLongMapBenchmark.createUpdateLookup_2to17Buffer_Original                                      6144  N/A  avgt   10       1641.652 ±      14.636  us/op
+[info] benchmark.MutableLongMapBenchmark.createUpdateLookup_2to17Buffer_Original                                      8192  N/A  avgt   10       1551.687 ±      20.362  us/op
+[info] benchmark.MutableLongMapBenchmark.createUpdateLookup_2to17Buffer_Original                                     10240  N/A  avgt   10       1632.429 ±      20.806  us/op
+[info] benchmark.MutableLongMapBenchmark.createUpdateLookup_2to17Buffer_Original                                     12288  N/A  avgt   10       1661.546 ±      12.418  us/op
+[info] benchmark.MutableLongMapBenchmark.createUpdateLookup_2to17Buffer_Original                                     14336  N/A  avgt   10       1628.939 ±      12.000  us/op
+[info] benchmark.MutableLongMapBenchmark.createUpdateLookup_2to17Buffer_Original                                     16384  N/A  avgt   10       1693.215 ±       8.058  us/op
+[info] benchmark.MutableLongMapBenchmark.createUpdateLookup_2to17Buffer_Original                                     18432  N/A  avgt   10       1712.966 ±      10.803  us/op
+[info] benchmark.MutableLongMapBenchmark.createUpdateLookup_2to17Buffer_Original                                     20480  N/A  avgt   10       1781.061 ±      13.530  us/op
+[info] benchmark.MutableLongMapBenchmark.createUpdateLookup_2to17Buffer_Original                                     22528  N/A  avgt   10       1771.645 ±      10.468  us/op
+[info] benchmark.MutableLongMapBenchmark.createUpdateLookup_2to17Buffer_Original                                     24576  N/A  avgt   10       1817.270 ±      16.108  us/op
+[info] benchmark.MutableLongMapBenchmark.createUpdateLookup_2to17Buffer_Original                                     26624  N/A  avgt   10       1871.285 ±       8.611  us/op
+[info] benchmark.MutableLongMapBenchmark.createUpdateLookup_2to17Buffer_Original                                     28672  N/A  avgt   10       2112.988 ±     302.147  us/op
+[info] benchmark.MutableLongMapBenchmark.createUpdateLookup_2to17Buffer_Original                                     30720  N/A  avgt   10       2011.250 ±     245.319  us/op
+[info] benchmark.MutableLongMapBenchmark.createUpdateLookup_2to17Buffer_Original                                     32768  N/A  avgt   10       2100.256 ±     445.121  us/op
+[info] benchmark.MutableLongMapBenchmark.createUpdateLookup_2to17Buffer_Original                                     34816  N/A  avgt   10       1880.229 ±      29.018  us/op
+[info] benchmark.MutableLongMapBenchmark.createUpdateLookup_2to17Buffer_Original                                     36864  N/A  avgt   10       1897.312 ±      26.096  us/op
+[info] benchmark.MutableLongMapBenchmark.createUpdateLookup_2to17Buffer_Original                                     38912  N/A  avgt   10       1875.894 ±       6.476  us/op
+[info] benchmark.MutableLongMapBenchmark.createUpdateLookup_2to17Buffer_Original                                     40960  N/A  avgt   10       1888.230 ±       8.826  us/op
+[info] benchmark.MutableLongMapBenchmark.createUpdateLookup_2to17Buffer_Original                                     43008  N/A  avgt   10       1935.941 ±      34.732  us/op
+[info] benchmark.MutableLongMapBenchmark.createUpdateLookup_2to17Buffer_Original                                     45056  N/A  avgt   10       1917.001 ±      36.632  us/op
+[info] benchmark.MutableLongMapBenchmark.createUpdateLookup_2to17Buffer_Original                                     47104  N/A  avgt   10       1916.315 ±      34.291  us/op
+[info] benchmark.MutableLongMapBenchmark.createUpdateLookup_2to17Buffer_Original                                     49152  N/A  avgt   10       1848.995 ±      37.829  us/op
+[info] benchmark.MutableLongMapBenchmark.createUpdateLookup_2to17Buffer_Original                                     51200  N/A  avgt   10       1893.162 ±       9.149  us/op
+[info] benchmark.MutableLongMapBenchmark.createUpdateLookup_2to17Buffer_Original                                     53248  N/A  avgt   10       1957.628 ±      25.876  us/op
+[info] benchmark.MutableLongMapBenchmark.createUpdateLookup_2to17Buffer_Original                                     55296  N/A  avgt   10       1935.693 ±      39.332  us/op
+[info] benchmark.MutableLongMapBenchmark.createUpdateLookup_2to17Buffer_Original                                     57344  N/A  avgt   10       1981.091 ±      28.232  us/op
+[info] benchmark.MutableLongMapBenchmark.createUpdateLookup_2to17Buffer_Original                                     59392  N/A  avgt   10       1921.354 ±      10.147  us/op
+[info] benchmark.MutableLongMapBenchmark.createUpdateLookup_2to17Buffer_Original                                     61440  N/A  avgt   10       1873.598 ±      26.049  us/op
+[info] benchmark.MutableLongMapBenchmark.createUpdateLookup_2to17Buffer_Original                                     63488  N/A  avgt   10       1969.106 ±      10.060  us/op
+[info] benchmark.MutableLongMapBenchmark.createUpdateLookup_2to17Buffer_Original                                     65536  N/A  avgt   10       1878.163 ±      22.401  us/op
+[info] benchmark.MutableLongMapBenchmark.createUpdateLookup_2to17Buffer_Verified                                      2048  N/A  avgt   10       4135.596 ±      48.052  us/op
+[info] benchmark.MutableLongMapBenchmark.createUpdateLookup_2to17Buffer_Verified                                      4096  N/A  avgt   10       4245.360 ±      46.159  us/op
+[info] benchmark.MutableLongMapBenchmark.createUpdateLookup_2to17Buffer_Verified                                      6144  N/A  avgt   10       4282.969 ±      59.990  us/op
+[info] benchmark.MutableLongMapBenchmark.createUpdateLookup_2to17Buffer_Verified                                      8192  N/A  avgt   10       4358.910 ±      43.852  us/op
+[info] benchmark.MutableLongMapBenchmark.createUpdateLookup_2to17Buffer_Verified                                     10240  N/A  avgt   10       4354.857 ±      20.090  us/op
+[info] benchmark.MutableLongMapBenchmark.createUpdateLookup_2to17Buffer_Verified                                     12288  N/A  avgt   10       4460.780 ±      89.164  us/op
+[info] benchmark.MutableLongMapBenchmark.createUpdateLookup_2to17Buffer_Verified                                     14336  N/A  avgt   10       4422.891 ±      66.391  us/op
+[info] benchmark.MutableLongMapBenchmark.createUpdateLookup_2to17Buffer_Verified                                     16384  N/A  avgt   10       4601.487 ±      54.983  us/op
+[info] benchmark.MutableLongMapBenchmark.createUpdateLookup_2to17Buffer_Verified                                     18432  N/A  avgt   10       4565.427 ±      36.903  us/op
+[info] benchmark.MutableLongMapBenchmark.createUpdateLookup_2to17Buffer_Verified                                     20480  N/A  avgt   10       4694.088 ±      32.797  us/op
+[info] benchmark.MutableLongMapBenchmark.createUpdateLookup_2to17Buffer_Verified                                     22528  N/A  avgt   10       4744.190 ±      62.199  us/op
+[info] benchmark.MutableLongMapBenchmark.createUpdateLookup_2to17Buffer_Verified                                     24576  N/A  avgt   10       4708.267 ±      62.484  us/op
+[info] benchmark.MutableLongMapBenchmark.createUpdateLookup_2to17Buffer_Verified                                     26624  N/A  avgt   10       4835.686 ±      61.328  us/op
+[info] benchmark.MutableLongMapBenchmark.createUpdateLookup_2to17Buffer_Verified                                     28672  N/A  avgt   10       4942.032 ±      27.503  us/op
+[info] benchmark.MutableLongMapBenchmark.createUpdateLookup_2to17Buffer_Verified                                     30720  N/A  avgt   10       4987.890 ±      28.413  us/op
+[info] benchmark.MutableLongMapBenchmark.createUpdateLookup_2to17Buffer_Verified                                     32768  N/A  avgt   10       5130.721 ±      49.193  us/op
+[info] benchmark.MutableLongMapBenchmark.createUpdateLookup_2to17Buffer_Verified                                     34816  N/A  avgt   10       5006.648 ±      61.552  us/op
+[info] benchmark.MutableLongMapBenchmark.createUpdateLookup_2to17Buffer_Verified                                     36864  N/A  avgt   10       5048.614 ±      77.807  us/op
+[info] benchmark.MutableLongMapBenchmark.createUpdateLookup_2to17Buffer_Verified                                     38912  N/A  avgt   10       5088.569 ±      54.717  us/op
+[info] benchmark.MutableLongMapBenchmark.createUpdateLookup_2to17Buffer_Verified                                     40960  N/A  avgt   10       5023.945 ±      29.661  us/op
+[info] benchmark.MutableLongMapBenchmark.createUpdateLookup_2to17Buffer_Verified                                     43008  N/A  avgt   10       5060.934 ±      53.601  us/op
+[info] benchmark.MutableLongMapBenchmark.createUpdateLookup_2to17Buffer_Verified                                     45056  N/A  avgt   10       5123.406 ±      50.910  us/op
+[info] benchmark.MutableLongMapBenchmark.createUpdateLookup_2to17Buffer_Verified                                     47104  N/A  avgt   10       5062.768 ±      27.830  us/op
+[info] benchmark.MutableLongMapBenchmark.createUpdateLookup_2to17Buffer_Verified                                     49152  N/A  avgt   10       5004.645 ±      60.860  us/op
+[info] benchmark.MutableLongMapBenchmark.createUpdateLookup_2to17Buffer_Verified                                     51200  N/A  avgt   10       5039.316 ±      86.595  us/op
+[info] benchmark.MutableLongMapBenchmark.createUpdateLookup_2to17Buffer_Verified                                     53248  N/A  avgt   10       5016.653 ±      23.592  us/op
+[info] benchmark.MutableLongMapBenchmark.createUpdateLookup_2to17Buffer_Verified                                     55296  N/A  avgt   10       5162.540 ±      83.285  us/op
+[info] benchmark.MutableLongMapBenchmark.createUpdateLookup_2to17Buffer_Verified                                     57344  N/A  avgt   10       5044.565 ±      39.960  us/op
+[info] benchmark.MutableLongMapBenchmark.createUpdateLookup_2to17Buffer_Verified                                     59392  N/A  avgt   10       5054.480 ±      68.151  us/op
+[info] benchmark.MutableLongMapBenchmark.createUpdateLookup_2to17Buffer_Verified                                     61440  N/A  avgt   10       5166.598 ±      26.836  us/op
+[info] benchmark.MutableLongMapBenchmark.createUpdateLookup_2to17Buffer_Verified                                     63488  N/A  avgt   10       5024.190 ±      46.357  us/op
+[info] benchmark.MutableLongMapBenchmark.createUpdateLookup_2to17Buffer_Verified                                     65536  N/A  avgt   10       5040.732 ±      26.470  us/op
+[info] benchmark.MutableLongMapBenchmark.createUpdateRemoveUpdateLookup_16Buffer_Original                             2048  N/A  avgt   10       4711.378 ±      24.773  us/op
+[info] benchmark.MutableLongMapBenchmark.createUpdateRemoveUpdateLookup_16Buffer_Original                             4096  N/A  avgt   10       4721.236 ±      33.375  us/op
+[info] benchmark.MutableLongMapBenchmark.createUpdateRemoveUpdateLookup_16Buffer_Original                             6144  N/A  avgt   10       4734.070 ±      23.535  us/op
+[info] benchmark.MutableLongMapBenchmark.createUpdateRemoveUpdateLookup_16Buffer_Original                             8192  N/A  avgt   10       4724.195 ±      28.801  us/op
+[info] benchmark.MutableLongMapBenchmark.createUpdateRemoveUpdateLookup_16Buffer_Original                            10240  N/A  avgt   10       4787.427 ±      82.488  us/op
+[info] benchmark.MutableLongMapBenchmark.createUpdateRemoveUpdateLookup_16Buffer_Original                            12288  N/A  avgt   10       4824.616 ±      90.221  us/op
+[info] benchmark.MutableLongMapBenchmark.createUpdateRemoveUpdateLookup_16Buffer_Original                            14336  N/A  avgt   10       4906.664 ±      24.827  us/op
+[info] benchmark.MutableLongMapBenchmark.createUpdateRemoveUpdateLookup_16Buffer_Original                            16384  N/A  avgt   10       4960.406 ±      47.111  us/op
+[info] benchmark.MutableLongMapBenchmark.createUpdateRemoveUpdateLookup_16Buffer_Original                            18432  N/A  avgt   10       4944.008 ±      68.892  us/op
+[info] benchmark.MutableLongMapBenchmark.createUpdateRemoveUpdateLookup_16Buffer_Original                            20480  N/A  avgt   10       4899.467 ±      24.580  us/op
+[info] benchmark.MutableLongMapBenchmark.createUpdateRemoveUpdateLookup_16Buffer_Original                            22528  N/A  avgt   10       5069.116 ±     143.477  us/op
+[info] benchmark.MutableLongMapBenchmark.createUpdateRemoveUpdateLookup_16Buffer_Original                            24576  N/A  avgt   10       5003.895 ±      59.109  us/op
+[info] benchmark.MutableLongMapBenchmark.createUpdateRemoveUpdateLookup_16Buffer_Original                            26624  N/A  avgt   10       4982.129 ±      58.038  us/op
+[info] benchmark.MutableLongMapBenchmark.createUpdateRemoveUpdateLookup_16Buffer_Original                            28672  N/A  avgt   10       5034.678 ±      62.514  us/op
+[info] benchmark.MutableLongMapBenchmark.createUpdateRemoveUpdateLookup_16Buffer_Original                            30720  N/A  avgt   10       5173.725 ±      48.171  us/op
+[info] benchmark.MutableLongMapBenchmark.createUpdateRemoveUpdateLookup_16Buffer_Original                            32768  N/A  avgt   10       5161.757 ±      34.610  us/op
+[info] benchmark.MutableLongMapBenchmark.createUpdateRemoveUpdateLookup_16Buffer_Original                            34816  N/A  avgt   10       5243.560 ±      72.175  us/op
+[info] benchmark.MutableLongMapBenchmark.createUpdateRemoveUpdateLookup_16Buffer_Original                            36864  N/A  avgt   10       5133.533 ±      45.382  us/op
+[info] benchmark.MutableLongMapBenchmark.createUpdateRemoveUpdateLookup_16Buffer_Original                            38912  N/A  avgt   10       5161.778 ±      39.231  us/op
+[info] benchmark.MutableLongMapBenchmark.createUpdateRemoveUpdateLookup_16Buffer_Original                            40960  N/A  avgt   10       5150.147 ±      29.700  us/op
+[info] benchmark.MutableLongMapBenchmark.createUpdateRemoveUpdateLookup_16Buffer_Original                            43008  N/A  avgt   10       5103.610 ±      27.639  us/op
+[info] benchmark.MutableLongMapBenchmark.createUpdateRemoveUpdateLookup_16Buffer_Original                            45056  N/A  avgt   10       5220.236 ±      25.417  us/op
+[info] benchmark.MutableLongMapBenchmark.createUpdateRemoveUpdateLookup_16Buffer_Original                            47104  N/A  avgt   10       5200.227 ±      39.060  us/op
+[info] benchmark.MutableLongMapBenchmark.createUpdateRemoveUpdateLookup_16Buffer_Original                            49152  N/A  avgt   10       5166.722 ±      27.703  us/op
+[info] benchmark.MutableLongMapBenchmark.createUpdateRemoveUpdateLookup_16Buffer_Original                            51200  N/A  avgt   10       5289.958 ±      63.176  us/op
+[info] benchmark.MutableLongMapBenchmark.createUpdateRemoveUpdateLookup_16Buffer_Original                            53248  N/A  avgt   10       5114.252 ±      55.901  us/op
+[info] benchmark.MutableLongMapBenchmark.createUpdateRemoveUpdateLookup_16Buffer_Original                            55296  N/A  avgt   10       5148.430 ±      27.756  us/op
+[info] benchmark.MutableLongMapBenchmark.createUpdateRemoveUpdateLookup_16Buffer_Original                            57344  N/A  avgt   10       5242.576 ±      62.628  us/op
+[info] benchmark.MutableLongMapBenchmark.createUpdateRemoveUpdateLookup_16Buffer_Original                            59392  N/A  avgt   10       5260.776 ±      37.634  us/op
+[info] benchmark.MutableLongMapBenchmark.createUpdateRemoveUpdateLookup_16Buffer_Original                            61440  N/A  avgt   10       5278.143 ±      74.632  us/op
+[info] benchmark.MutableLongMapBenchmark.createUpdateRemoveUpdateLookup_16Buffer_Original                            63488  N/A  avgt   10       5141.489 ±      41.852  us/op
+[info] benchmark.MutableLongMapBenchmark.createUpdateRemoveUpdateLookup_16Buffer_Original                            65536  N/A  avgt   10       5104.360 ±      37.463  us/op
+[info] benchmark.MutableLongMapBenchmark.createUpdateRemoveUpdateLookup_16Buffer_Verified                             2048  N/A  avgt   10    3036116.265 ±   10922.820  us/op
+[info] benchmark.MutableLongMapBenchmark.createUpdateRemoveUpdateLookup_16Buffer_Verified                             4096  N/A  avgt   10    3038649.804 ±   14610.873  us/op
+[info] benchmark.MutableLongMapBenchmark.createUpdateRemoveUpdateLookup_16Buffer_Verified                             6144  N/A  avgt   10    3045497.049 ±   17073.626  us/op
+[info] benchmark.MutableLongMapBenchmark.createUpdateRemoveUpdateLookup_16Buffer_Verified                             8192  N/A  avgt   10    3051699.070 ±   11669.642  us/op
+[info] benchmark.MutableLongMapBenchmark.createUpdateRemoveUpdateLookup_16Buffer_Verified                            10240  N/A  avgt   10    3009138.313 ±   14257.072  us/op
+[info] benchmark.MutableLongMapBenchmark.createUpdateRemoveUpdateLookup_16Buffer_Verified                            12288  N/A  avgt   10    3041509.078 ±   16553.332  us/op
+[info] benchmark.MutableLongMapBenchmark.createUpdateRemoveUpdateLookup_16Buffer_Verified                            14336  N/A  avgt   10    3041500.816 ±   12736.173  us/op
+[info] benchmark.MutableLongMapBenchmark.createUpdateRemoveUpdateLookup_16Buffer_Verified                            16384  N/A  avgt   10    3012199.022 ±    7517.617  us/op
+[info] benchmark.MutableLongMapBenchmark.createUpdateRemoveUpdateLookup_16Buffer_Verified                            18432  N/A  avgt   10    3027443.698 ±   12321.537  us/op
+[info] benchmark.MutableLongMapBenchmark.createUpdateRemoveUpdateLookup_16Buffer_Verified                            20480  N/A  avgt   10    3023955.942 ±   12572.595  us/op
+[info] benchmark.MutableLongMapBenchmark.createUpdateRemoveUpdateLookup_16Buffer_Verified                            22528  N/A  avgt   10    3047507.659 ±   19379.334  us/op
+[info] benchmark.MutableLongMapBenchmark.createUpdateRemoveUpdateLookup_16Buffer_Verified                            24576  N/A  avgt   10    3037831.425 ±   12182.131  us/op
+[info] benchmark.MutableLongMapBenchmark.createUpdateRemoveUpdateLookup_16Buffer_Verified                            26624  N/A  avgt   10    3022297.125 ±   12116.694  us/op
+[info] benchmark.MutableLongMapBenchmark.createUpdateRemoveUpdateLookup_16Buffer_Verified                            28672  N/A  avgt   10    3020372.732 ±   15494.644  us/op
+[info] benchmark.MutableLongMapBenchmark.createUpdateRemoveUpdateLookup_16Buffer_Verified                            30720  N/A  avgt   10    3034980.639 ±   15842.090  us/op
+[info] benchmark.MutableLongMapBenchmark.createUpdateRemoveUpdateLookup_16Buffer_Verified                            32768  N/A  avgt   10    3094305.979 ±   90338.488  us/op
+[info] benchmark.MutableLongMapBenchmark.createUpdateRemoveUpdateLookup_16Buffer_Verified                            34816  N/A  avgt   10    3049388.280 ±   16195.519  us/op
+[info] benchmark.MutableLongMapBenchmark.createUpdateRemoveUpdateLookup_16Buffer_Verified                            36864  N/A  avgt   10    3040226.834 ±   12465.477  us/op
+[info] benchmark.MutableLongMapBenchmark.createUpdateRemoveUpdateLookup_16Buffer_Verified                            38912  N/A  avgt   10    3313041.223 ±  234555.589  us/op
+[info] benchmark.MutableLongMapBenchmark.createUpdateRemoveUpdateLookup_16Buffer_Verified                            40960  N/A  avgt   10    3110753.860 ±   80397.360  us/op
+[info] benchmark.MutableLongMapBenchmark.createUpdateRemoveUpdateLookup_16Buffer_Verified                            43008  N/A  avgt   10    3084077.979 ±   75997.037  us/op
+[info] benchmark.MutableLongMapBenchmark.createUpdateRemoveUpdateLookup_16Buffer_Verified                            45056  N/A  avgt   10    3333377.009 ±  421372.335  us/op
+[info] benchmark.MutableLongMapBenchmark.createUpdateRemoveUpdateLookup_16Buffer_Verified                            47104  N/A  avgt   10    3072605.759 ±   64075.232  us/op
+[info] benchmark.MutableLongMapBenchmark.createUpdateRemoveUpdateLookup_16Buffer_Verified                            49152  N/A  avgt   10    3377952.181 ±  114465.634  us/op
+[info] benchmark.MutableLongMapBenchmark.createUpdateRemoveUpdateLookup_16Buffer_Verified                            51200  N/A  avgt   10    3420750.913 ±  200113.192  us/op
+[info] benchmark.MutableLongMapBenchmark.createUpdateRemoveUpdateLookup_16Buffer_Verified                            53248  N/A  avgt   10    3397933.380 ±   61076.061  us/op
+[info] benchmark.MutableLongMapBenchmark.createUpdateRemoveUpdateLookup_16Buffer_Verified                            55296  N/A  avgt   10    3097222.139 ±   52868.576  us/op
+[info] benchmark.MutableLongMapBenchmark.createUpdateRemoveUpdateLookup_16Buffer_Verified                            57344  N/A  avgt   10    3062303.438 ±   10976.246  us/op
+[info] benchmark.MutableLongMapBenchmark.createUpdateRemoveUpdateLookup_16Buffer_Verified                            59392  N/A  avgt   10    3161583.424 ±  178798.241  us/op
+[info] benchmark.MutableLongMapBenchmark.createUpdateRemoveUpdateLookup_16Buffer_Verified                            61440  N/A  avgt   10    3073417.965 ±   43161.833  us/op
+[info] benchmark.MutableLongMapBenchmark.createUpdateRemoveUpdateLookup_16Buffer_Verified                            63488  N/A  avgt   10    3186906.989 ±  171040.679  us/op
+[info] benchmark.MutableLongMapBenchmark.createUpdateRemoveUpdateLookup_16Buffer_Verified                            65536  N/A  avgt   10    3580745.887 ±  157608.734  us/op
+[info] benchmark.MutableLongMapBenchmark.lookupN_Original                                                             2048  N/A  avgt   10         25.403 ±       1.308  us/op
+[info] benchmark.MutableLongMapBenchmark.lookupN_Original                                                             4096  N/A  avgt   10         51.328 ±       5.067  us/op
+[info] benchmark.MutableLongMapBenchmark.lookupN_Original                                                             6144  N/A  avgt   10         78.130 ±       7.044  us/op
+[info] benchmark.MutableLongMapBenchmark.lookupN_Original                                                             8192  N/A  avgt   10         97.516 ±       5.406  us/op
+[info] benchmark.MutableLongMapBenchmark.lookupN_Original                                                            10240  N/A  avgt   10        116.959 ±       1.316  us/op
+[info] benchmark.MutableLongMapBenchmark.lookupN_Original                                                            12288  N/A  avgt   10        139.290 ±       1.977  us/op
+[info] benchmark.MutableLongMapBenchmark.lookupN_Original                                                            14336  N/A  avgt   10        161.954 ±       1.613  us/op
+[info] benchmark.MutableLongMapBenchmark.lookupN_Original                                                            16384  N/A  avgt   10        199.943 ±      13.483  us/op
+[info] benchmark.MutableLongMapBenchmark.lookupN_Original                                                            18432  N/A  avgt   10        224.075 ±      18.177  us/op
+[info] benchmark.MutableLongMapBenchmark.lookupN_Original                                                            20480  N/A  avgt   10        253.484 ±      12.374  us/op
+[info] benchmark.MutableLongMapBenchmark.lookupN_Original                                                            22528  N/A  avgt   10        290.082 ±       3.306  us/op
+[info] benchmark.MutableLongMapBenchmark.lookupN_Original                                                            24576  N/A  avgt   10        338.538 ±      26.848  us/op
+[info] benchmark.MutableLongMapBenchmark.lookupN_Original                                                            26624  N/A  avgt   10        364.054 ±       1.785  us/op
+[info] benchmark.MutableLongMapBenchmark.lookupN_Original                                                            28672  N/A  avgt   10        456.328 ±      14.529  us/op
+[info] benchmark.MutableLongMapBenchmark.lookupN_Original                                                            30720  N/A  avgt   10        465.629 ±       7.909  us/op
+[info] benchmark.MutableLongMapBenchmark.lookupN_Original                                                            32768  N/A  avgt   10        512.558 ±       6.078  us/op
+[info] benchmark.MutableLongMapBenchmark.lookupN_Original                                                            34816  N/A  avgt   10        519.985 ±       2.437  us/op
+[info] benchmark.MutableLongMapBenchmark.lookupN_Original                                                            36864  N/A  avgt   10        502.139 ±       5.504  us/op
+[info] benchmark.MutableLongMapBenchmark.lookupN_Original                                                            38912  N/A  avgt   10        507.654 ±       3.724  us/op
+[info] benchmark.MutableLongMapBenchmark.lookupN_Original                                                            40960  N/A  avgt   10        519.913 ±       2.977  us/op
+[info] benchmark.MutableLongMapBenchmark.lookupN_Original                                                            43008  N/A  avgt   10        498.054 ±       3.991  us/op
+[info] benchmark.MutableLongMapBenchmark.lookupN_Original                                                            45056  N/A  avgt   10        497.654 ±       2.908  us/op
+[info] benchmark.MutableLongMapBenchmark.lookupN_Original                                                            47104  N/A  avgt   10        500.172 ±       9.039  us/op
+[info] benchmark.MutableLongMapBenchmark.lookupN_Original                                                            49152  N/A  avgt   10        512.155 ±       9.151  us/op
+[info] benchmark.MutableLongMapBenchmark.lookupN_Original                                                            51200  N/A  avgt   10        516.313 ±      12.527  us/op
+[info] benchmark.MutableLongMapBenchmark.lookupN_Original                                                            53248  N/A  avgt   10        520.475 ±       8.700  us/op
+[info] benchmark.MutableLongMapBenchmark.lookupN_Original                                                            55296  N/A  avgt   10        512.016 ±       7.396  us/op
+[info] benchmark.MutableLongMapBenchmark.lookupN_Original                                                            57344  N/A  avgt   10        494.873 ±       2.264  us/op
+[info] benchmark.MutableLongMapBenchmark.lookupN_Original                                                            59392  N/A  avgt   10        508.538 ±       5.179  us/op
+[info] benchmark.MutableLongMapBenchmark.lookupN_Original                                                            61440  N/A  avgt   10        502.980 ±       5.656  us/op
+[info] benchmark.MutableLongMapBenchmark.lookupN_Original                                                            63488  N/A  avgt   10        509.265 ±       4.118  us/op
+[info] benchmark.MutableLongMapBenchmark.lookupN_Original                                                            65536  N/A  avgt   10        502.895 ±       3.335  us/op
+[info] benchmark.MutableLongMapBenchmark.lookupN_Verified                                                             2048  N/A  avgt   10         42.424 ±       0.330  us/op
+[info] benchmark.MutableLongMapBenchmark.lookupN_Verified                                                             4096  N/A  avgt   10         86.728 ±       0.754  us/op
+[info] benchmark.MutableLongMapBenchmark.lookupN_Verified                                                             6144  N/A  avgt   10        134.922 ±       1.309  us/op
+[info] benchmark.MutableLongMapBenchmark.lookupN_Verified                                                             8192  N/A  avgt   10        183.153 ±       3.534  us/op
+[info] benchmark.MutableLongMapBenchmark.lookupN_Verified                                                            10240  N/A  avgt   10        213.233 ±       1.418  us/op
+[info] benchmark.MutableLongMapBenchmark.lookupN_Verified                                                            12288  N/A  avgt   10        269.652 ±       1.850  us/op
+[info] benchmark.MutableLongMapBenchmark.lookupN_Verified                                                            14336  N/A  avgt   10        307.486 ±       1.896  us/op
+[info] benchmark.MutableLongMapBenchmark.lookupN_Verified                                                            16384  N/A  avgt   10        370.487 ±       2.089  us/op
+[info] benchmark.MutableLongMapBenchmark.lookupN_Verified                                                            18432  N/A  avgt   10        408.407 ±       2.860  us/op
+[info] benchmark.MutableLongMapBenchmark.lookupN_Verified                                                            20480  N/A  avgt   10        450.975 ±       6.796  us/op
+[info] benchmark.MutableLongMapBenchmark.lookupN_Verified                                                            22528  N/A  avgt   10        487.324 ±       6.528  us/op
+[info] benchmark.MutableLongMapBenchmark.lookupN_Verified                                                            24576  N/A  avgt   10        535.587 ±       3.462  us/op
+[info] benchmark.MutableLongMapBenchmark.lookupN_Verified                                                            26624  N/A  avgt   10        597.095 ±       6.168  us/op
+[info] benchmark.MutableLongMapBenchmark.lookupN_Verified                                                            28672  N/A  avgt   10        705.106 ±      21.621  us/op
+[info] benchmark.MutableLongMapBenchmark.lookupN_Verified                                                            30720  N/A  avgt   10        735.788 ±       5.044  us/op
+[info] benchmark.MutableLongMapBenchmark.lookupN_Verified                                                            32768  N/A  avgt   10       1023.885 ±       4.146  us/op
+[info] benchmark.MutableLongMapBenchmark.lookupN_Verified                                                            34816  N/A  avgt   10        769.263 ±      11.338  us/op
+[info] benchmark.MutableLongMapBenchmark.lookupN_Verified                                                            36864  N/A  avgt   10        794.195 ±       4.505  us/op
+[info] benchmark.MutableLongMapBenchmark.lookupN_Verified                                                            38912  N/A  avgt   10        809.616 ±       6.536  us/op
+[info] benchmark.MutableLongMapBenchmark.lookupN_Verified                                                            40960  N/A  avgt   10        801.077 ±       5.525  us/op
+[info] benchmark.MutableLongMapBenchmark.lookupN_Verified                                                            43008  N/A  avgt   10        821.541 ±       7.202  us/op
+[info] benchmark.MutableLongMapBenchmark.lookupN_Verified                                                            45056  N/A  avgt   10        787.602 ±       7.497  us/op
+[info] benchmark.MutableLongMapBenchmark.lookupN_Verified                                                            47104  N/A  avgt   10        814.748 ±      11.670  us/op
+[info] benchmark.MutableLongMapBenchmark.lookupN_Verified                                                            49152  N/A  avgt   10        809.242 ±       9.589  us/op
+[info] benchmark.MutableLongMapBenchmark.lookupN_Verified                                                            51200  N/A  avgt   10        813.850 ±       7.076  us/op
+[info] benchmark.MutableLongMapBenchmark.lookupN_Verified                                                            53248  N/A  avgt   10        807.116 ±       4.965  us/op
+[info] benchmark.MutableLongMapBenchmark.lookupN_Verified                                                            55296  N/A  avgt   10        788.938 ±       6.120  us/op
+[info] benchmark.MutableLongMapBenchmark.lookupN_Verified                                                            57344  N/A  avgt   10        812.694 ±       8.831  us/op
+[info] benchmark.MutableLongMapBenchmark.lookupN_Verified                                                            59392  N/A  avgt   10        779.475 ±       5.423  us/op
+[info] benchmark.MutableLongMapBenchmark.lookupN_Verified                                                            61440  N/A  avgt   10        769.963 ±       4.913  us/op
+[info] benchmark.MutableLongMapBenchmark.lookupN_Verified                                                            63488  N/A  avgt   10        808.343 ±      10.652  us/op
+[info] benchmark.MutableLongMapBenchmark.lookupN_Verified                                                            65536  N/A  avgt   10        798.220 ±       5.699  us/op
+[info] ch.epfl.echassot.benchmark.LongListMapBenchmark.createUpdateLookup_ListMap                                      N/A    1  avgt   10          0.513 ±       0.002  us/op
+[info] ch.epfl.echassot.benchmark.LongListMapBenchmark.createUpdateLookup_ListMap                                      N/A    2  avgt   10          2.440 ±       0.019  us/op
+[info] ch.epfl.echassot.benchmark.LongListMapBenchmark.createUpdateLookup_ListMap                                      N/A    3  avgt   10         15.225 ±       0.098  us/op
+[info] ch.epfl.echassot.benchmark.LongListMapBenchmark.createUpdateLookup_ListMap                                      N/A    4  avgt   10        172.849 ±       1.505  us/op
+[info] ch.epfl.echassot.benchmark.LongListMapBenchmark.createUpdateLookup_ListMap                                      N/A    5  avgt   10       1716.817 ±       4.151  us/op
+[info] ch.epfl.echassot.benchmark.LongListMapBenchmark.createUpdateLookup_ListMap                                      N/A    6  avgt   10      21332.720 ±     105.063  us/op
+[info] ch.epfl.echassot.benchmark.LongListMapBenchmark.createUpdateLookup_ListMap                                      N/A    7  avgt   10     331942.942 ±    1228.520  us/op
+[info] ch.epfl.echassot.benchmark.LongListMapBenchmark.createUpdateLookup_ListMap                                      N/A    8  avgt   10    5541064.241 ±   92994.976  us/op
+[info] ch.epfl.echassot.benchmark.LongListMapBenchmark.createUpdateLookup_ListMap                                      N/A    9  avgt   10   99111281.842 ± 6614184.376  us/op
+[info] ch.epfl.echassot.benchmark.LongListMapBenchmark.createUpdateLookup_Original                                     N/A    1  avgt   10          0.092 ±       0.001  us/op
+[info] ch.epfl.echassot.benchmark.LongListMapBenchmark.createUpdateLookup_Original                                     N/A    2  avgt   10          0.126 ±       0.002  us/op
+[info] ch.epfl.echassot.benchmark.LongListMapBenchmark.createUpdateLookup_Original                                     N/A    3  avgt   10          0.300 ±       0.004  us/op
+[info] ch.epfl.echassot.benchmark.LongListMapBenchmark.createUpdateLookup_Original                                     N/A    4  avgt   10          0.688 ±       0.004  us/op
+[info] ch.epfl.echassot.benchmark.LongListMapBenchmark.createUpdateLookup_Original                                     N/A    5  avgt   10          1.292 ±       0.006  us/op
+[info] ch.epfl.echassot.benchmark.LongListMapBenchmark.createUpdateLookup_Original                                     N/A    6  avgt   10          2.820 ±       0.014  us/op
+[info] ch.epfl.echassot.benchmark.LongListMapBenchmark.createUpdateLookup_Original                                     N/A    7  avgt   10          5.716 ±       0.088  us/op
+[info] ch.epfl.echassot.benchmark.LongListMapBenchmark.createUpdateLookup_Original                                     N/A    8  avgt   10         12.165 ±       0.964  us/op
+[info] ch.epfl.echassot.benchmark.LongListMapBenchmark.createUpdateLookup_Original                                     N/A    9  avgt   10         28.631 ±       0.161  us/op
+[info] ch.epfl.echassot.benchmark.LongListMapBenchmark.createUpdateLookup_Verified                                     N/A    1  avgt   10          0.425 ±       0.004  us/op
+[info] ch.epfl.echassot.benchmark.LongListMapBenchmark.createUpdateLookup_Verified                                     N/A    2  avgt   10          0.471 ±       0.009  us/op
+[info] ch.epfl.echassot.benchmark.LongListMapBenchmark.createUpdateLookup_Verified                                     N/A    3  avgt   10          0.752 ±       0.007  us/op
+[info] ch.epfl.echassot.benchmark.LongListMapBenchmark.createUpdateLookup_Verified                                     N/A    4  avgt   10          1.296 ±       0.006  us/op
+[info] ch.epfl.echassot.benchmark.LongListMapBenchmark.createUpdateLookup_Verified                                     N/A    5  avgt   10          2.263 ±       0.015  us/op
+[info] ch.epfl.echassot.benchmark.LongListMapBenchmark.createUpdateLookup_Verified                                     N/A    6  avgt   10          4.240 ±       0.066  us/op
+[info] ch.epfl.echassot.benchmark.LongListMapBenchmark.createUpdateLookup_Verified                                     N/A    7  avgt   10          8.256 ±       0.160  us/op
+[info] ch.epfl.echassot.benchmark.LongListMapBenchmark.createUpdateLookup_Verified                                     N/A    8  avgt   10         16.830 ±       0.105  us/op
+[info] ch.epfl.echassot.benchmark.LongListMapBenchmark.createUpdateLookup_Verified                                     N/A    9  avgt   10         34.016 ±       0.227  us/op
+[info] ch.epfl.echassot.benchmark.LongListMapBenchmark.lookup_ListMap                                                  N/A    3  avgt   10          7.388 ±       0.020  us/op
+[info] ch.epfl.echassot.benchmark.LongListMapBenchmark.lookup_ListMap                                                  N/A    4  avgt   10         81.284 ±       0.379  us/op
+[info] ch.epfl.echassot.benchmark.LongListMapBenchmark.lookup_ListMap                                                  N/A    5  avgt   10       1016.310 ±       3.660  us/op
+[info] ch.epfl.echassot.benchmark.LongListMapBenchmark.lookup_ListMap                                                  N/A    6  avgt   10      13329.198 ±       9.808  us/op
+[info] ch.epfl.echassot.benchmark.LongListMapBenchmark.lookup_ListMap                                                  N/A    7  avgt   10     187321.641 ±    3168.469  us/op
+[info] ch.epfl.echassot.benchmark.LongListMapBenchmark.lookup_ListMap                                                  N/A    8  avgt   10    3381250.877 ±   17916.270  us/op
+[info] ch.epfl.echassot.benchmark.LongListMapBenchmark.lookup_ListMap                                                  N/A    9  avgt   10   64520804.995 ±  586548.700  us/op
+[info] ch.epfl.echassot.benchmark.LongListMapBenchmark.lookup_Original                                                 N/A    1  avgt   10          0.039 ±       0.001  us/op
+[info] ch.epfl.echassot.benchmark.LongListMapBenchmark.lookup_Original                                                 N/A    2  avgt   10          0.052 ±       0.001  us/op
+[info] ch.epfl.echassot.benchmark.LongListMapBenchmark.lookup_Original                                                 N/A    3  avgt   10          0.054 ±       0.001  us/op
+[info] ch.epfl.echassot.benchmark.LongListMapBenchmark.lookup_Original                                                 N/A    4  avgt   10          0.091 ±       0.001  us/op
+[info] ch.epfl.echassot.benchmark.LongListMapBenchmark.lookup_Original                                                 N/A    5  avgt   10          0.157 ±       0.001  us/op
+[info] ch.epfl.echassot.benchmark.LongListMapBenchmark.lookup_Original                                                 N/A    6  avgt   10          0.303 ±       0.001  us/op
+[info] ch.epfl.echassot.benchmark.LongListMapBenchmark.lookup_Original                                                 N/A    7  avgt   10          0.570 ±       0.002  us/op
+[info] ch.epfl.echassot.benchmark.LongListMapBenchmark.lookup_Original                                                 N/A    8  avgt   10          1.463 ±       0.002  us/op
+[info] ch.epfl.echassot.benchmark.LongListMapBenchmark.lookup_Original                                                 N/A    9  avgt   10          3.755 ±       0.430  us/op
+[info] ch.epfl.echassot.benchmark.LongListMapBenchmark.lookup_Verified                                                 N/A    1  avgt   10          0.040 ±       0.001  us/op
+[info] ch.epfl.echassot.benchmark.LongListMapBenchmark.lookup_Verified                                                 N/A    2  avgt   10          0.054 ±       0.001  us/op
+[info] ch.epfl.echassot.benchmark.LongListMapBenchmark.lookup_Verified                                                 N/A    3  avgt   10          0.067 ±       0.001  us/op
+[info] ch.epfl.echassot.benchmark.LongListMapBenchmark.lookup_Verified                                                 N/A    4  avgt   10          0.122 ±       0.001  us/op
+[info] ch.epfl.echassot.benchmark.LongListMapBenchmark.lookup_Verified                                                 N/A    5  avgt   10          0.240 ±       0.002  us/op
+[info] ch.epfl.echassot.benchmark.LongListMapBenchmark.lookup_Verified                                                 N/A    6  avgt   10          0.452 ±       0.002  us/op
+[info] ch.epfl.echassot.benchmark.LongListMapBenchmark.lookup_Verified                                                 N/A    7  avgt   10          0.887 ±       0.007  us/op
+[info] ch.epfl.echassot.benchmark.LongListMapBenchmark.lookup_Verified                                                 N/A    8  avgt   10          2.097 ±       0.008  us/op
+[info] ch.epfl.echassot.benchmark.LongListMapBenchmark.lookup_Verified                                                 N/A    9  avgt   10          4.430 ±       0.017  us/op
+[info] ch.epfl.echassot.benchmark.MutableLongMapBenchmark.createUpdateLookup_16Buffer_Original                        4096  N/A  avgt   10       2192.338 ±      15.893  us/op
+[info] ch.epfl.echassot.benchmark.MutableLongMapBenchmark.createUpdateLookup_16Buffer_Original                        8192  N/A  avgt   10       2222.089 ±       8.921  us/op
+[info] ch.epfl.echassot.benchmark.MutableLongMapBenchmark.createUpdateLookup_16Buffer_Original                       12288  N/A  avgt   10       2290.412 ±      16.169  us/op
+[info] ch.epfl.echassot.benchmark.MutableLongMapBenchmark.createUpdateLookup_16Buffer_Original                       16384  N/A  avgt   10       2341.246 ±      12.479  us/op
+[info] ch.epfl.echassot.benchmark.MutableLongMapBenchmark.createUpdateLookup_16Buffer_Original                       20480  N/A  avgt   10       2396.171 ±      19.471  us/op
+[info] ch.epfl.echassot.benchmark.MutableLongMapBenchmark.createUpdateLookup_16Buffer_Original                       24576  N/A  avgt   10       2544.883 ±      10.817  us/op
+[info] ch.epfl.echassot.benchmark.MutableLongMapBenchmark.createUpdateLookup_16Buffer_Original                       28672  N/A  avgt   10       2614.641 ±      12.938  us/op
+[info] ch.epfl.echassot.benchmark.MutableLongMapBenchmark.createUpdateLookup_16Buffer_Original                       32768  N/A  avgt   10       2685.907 ±      12.317  us/op
+[info] ch.epfl.echassot.benchmark.MutableLongMapBenchmark.createUpdateLookup_16Buffer_Original                       36864  N/A  avgt   10       2632.213 ±      20.125  us/op
+[info] ch.epfl.echassot.benchmark.MutableLongMapBenchmark.createUpdateLookup_16Buffer_Original                       40960  N/A  avgt   10       2702.952 ±       7.783  us/op
+[info] ch.epfl.echassot.benchmark.MutableLongMapBenchmark.createUpdateLookup_16Buffer_Original                       45056  N/A  avgt   10       2650.885 ±      12.535  us/op
+[info] ch.epfl.echassot.benchmark.MutableLongMapBenchmark.createUpdateLookup_16Buffer_Original                       49152  N/A  avgt   10       2644.702 ±       9.303  us/op
+[info] ch.epfl.echassot.benchmark.MutableLongMapBenchmark.createUpdateLookup_16Buffer_Original                       53248  N/A  avgt   10       2644.236 ±      25.408  us/op
+[info] ch.epfl.echassot.benchmark.MutableLongMapBenchmark.createUpdateLookup_16Buffer_Original                       57344  N/A  avgt   10       2648.359 ±      21.368  us/op
+[info] ch.epfl.echassot.benchmark.MutableLongMapBenchmark.createUpdateLookup_16Buffer_Original                       61440  N/A  avgt   10       2694.219 ±      14.853  us/op
+[info] ch.epfl.echassot.benchmark.MutableLongMapBenchmark.createUpdateLookup_16Buffer_Original                       65536  N/A  avgt   10       2659.852 ±      11.235  us/op
+[info] ch.epfl.echassot.benchmark.MutableLongMapBenchmark.createUpdateLookup_16Buffer_Verified                        4096  N/A  avgt   10       3305.419 ±      16.267  us/op
+[info] ch.epfl.echassot.benchmark.MutableLongMapBenchmark.createUpdateLookup_16Buffer_Verified                        8192  N/A  avgt   10       3406.400 ±      15.239  us/op
+[info] ch.epfl.echassot.benchmark.MutableLongMapBenchmark.createUpdateLookup_16Buffer_Verified                       12288  N/A  avgt   10       3518.101 ±      21.040  us/op
+[info] ch.epfl.echassot.benchmark.MutableLongMapBenchmark.createUpdateLookup_16Buffer_Verified                       16384  N/A  avgt   10       3719.833 ±      40.901  us/op
+[info] ch.epfl.echassot.benchmark.MutableLongMapBenchmark.createUpdateLookup_16Buffer_Verified                       20480  N/A  avgt   10       3760.376 ±      19.969  us/op
+[info] ch.epfl.echassot.benchmark.MutableLongMapBenchmark.createUpdateLookup_16Buffer_Verified                       24576  N/A  avgt   10       3896.396 ±      21.259  us/op
+[info] ch.epfl.echassot.benchmark.MutableLongMapBenchmark.createUpdateLookup_16Buffer_Verified                       28672  N/A  avgt   10       3934.719 ±      21.733  us/op
+[info] ch.epfl.echassot.benchmark.MutableLongMapBenchmark.createUpdateLookup_16Buffer_Verified                       32768  N/A  avgt   10       4614.411 ±     813.527  us/op
+[info] ch.epfl.echassot.benchmark.MutableLongMapBenchmark.createUpdateLookup_16Buffer_Verified                       36864  N/A  avgt   10       6825.862 ±    3469.301  us/op
+[info] ch.epfl.echassot.benchmark.MutableLongMapBenchmark.createUpdateLookup_16Buffer_Verified                       40960  N/A  avgt   10       4455.717 ±     597.985  us/op
+[info] ch.epfl.echassot.benchmark.MutableLongMapBenchmark.createUpdateLookup_16Buffer_Verified                       45056  N/A  avgt   10       4093.361 ±      21.938  us/op
+[info] ch.epfl.echassot.benchmark.MutableLongMapBenchmark.createUpdateLookup_16Buffer_Verified                       49152  N/A  avgt   10       4159.941 ±      18.248  us/op
+[info] ch.epfl.echassot.benchmark.MutableLongMapBenchmark.createUpdateLookup_16Buffer_Verified                       53248  N/A  avgt   10       4187.398 ±     185.849  us/op
+[info] ch.epfl.echassot.benchmark.MutableLongMapBenchmark.createUpdateLookup_16Buffer_Verified                       57344  N/A  avgt   10       4122.769 ±      18.852  us/op
+[info] ch.epfl.echassot.benchmark.MutableLongMapBenchmark.createUpdateLookup_16Buffer_Verified                       61440  N/A  avgt   10       4165.630 ±      21.768  us/op
+[info] ch.epfl.echassot.benchmark.MutableLongMapBenchmark.createUpdateLookup_16Buffer_Verified                       65536  N/A  avgt   10       4201.189 ±      36.871  us/op
+[info] ch.epfl.echassot.benchmark.MutableLongMapBenchmark.createUpdateLookup_2to17Buffer_Original                     4096  N/A  avgt   10       1521.319 ±      11.637  us/op
+[info] ch.epfl.echassot.benchmark.MutableLongMapBenchmark.createUpdateLookup_2to17Buffer_Original                     8192  N/A  avgt   10       1595.576 ±       9.952  us/op
+[info] ch.epfl.echassot.benchmark.MutableLongMapBenchmark.createUpdateLookup_2to17Buffer_Original                    12288  N/A  avgt   10       1703.508 ±      16.161  us/op
+[info] ch.epfl.echassot.benchmark.MutableLongMapBenchmark.createUpdateLookup_2to17Buffer_Original                    16384  N/A  avgt   10       1688.195 ±      23.108  us/op
+[info] ch.epfl.echassot.benchmark.MutableLongMapBenchmark.createUpdateLookup_2to17Buffer_Original                    20480  N/A  avgt   10       1736.134 ±      14.912  us/op
+[info] ch.epfl.echassot.benchmark.MutableLongMapBenchmark.createUpdateLookup_2to17Buffer_Original                    24576  N/A  avgt   10       1816.373 ±      12.946  us/op
+[info] ch.epfl.echassot.benchmark.MutableLongMapBenchmark.createUpdateLookup_2to17Buffer_Original                    28672  N/A  avgt   10       1875.597 ±       8.380  us/op
+[info] ch.epfl.echassot.benchmark.MutableLongMapBenchmark.createUpdateLookup_2to17Buffer_Original                    32768  N/A  avgt   10       1979.542 ±      38.040  us/op
+[info] ch.epfl.echassot.benchmark.MutableLongMapBenchmark.createUpdateLookup_2to17Buffer_Original                    36864  N/A  avgt   10       1896.801 ±      32.506  us/op
+[info] ch.epfl.echassot.benchmark.MutableLongMapBenchmark.createUpdateLookup_2to17Buffer_Original                    40960  N/A  avgt   10       1950.656 ±      14.453  us/op
+[info] ch.epfl.echassot.benchmark.MutableLongMapBenchmark.createUpdateLookup_2to17Buffer_Original                    45056  N/A  avgt   10       1911.946 ±      12.453  us/op
+[info] ch.epfl.echassot.benchmark.MutableLongMapBenchmark.createUpdateLookup_2to17Buffer_Original                    49152  N/A  avgt   10       1935.995 ±      14.959  us/op
+[info] ch.epfl.echassot.benchmark.MutableLongMapBenchmark.createUpdateLookup_2to17Buffer_Original                    53248  N/A  avgt   10       1908.073 ±      25.448  us/op
+[info] ch.epfl.echassot.benchmark.MutableLongMapBenchmark.createUpdateLookup_2to17Buffer_Original                    57344  N/A  avgt   10       1916.004 ±      10.802  us/op
+[info] ch.epfl.echassot.benchmark.MutableLongMapBenchmark.createUpdateLookup_2to17Buffer_Original                    61440  N/A  avgt   10       1876.169 ±      14.166  us/op
+[info] ch.epfl.echassot.benchmark.MutableLongMapBenchmark.createUpdateLookup_2to17Buffer_Original                    65536  N/A  avgt   10       1920.524 ±      15.812  us/op
+[info] ch.epfl.echassot.benchmark.MutableLongMapBenchmark.createUpdateLookup_2to17Buffer_Verified                     4096  N/A  avgt   10       4166.064 ±      24.361  us/op
+[info] ch.epfl.echassot.benchmark.MutableLongMapBenchmark.createUpdateLookup_2to17Buffer_Verified                     8192  N/A  avgt   10       4436.626 ±      81.414  us/op
+[info] ch.epfl.echassot.benchmark.MutableLongMapBenchmark.createUpdateLookup_2to17Buffer_Verified                    12288  N/A  avgt   10       4474.868 ±      27.666  us/op
+[info] ch.epfl.echassot.benchmark.MutableLongMapBenchmark.createUpdateLookup_2to17Buffer_Verified                    16384  N/A  avgt   10       4601.493 ±      48.926  us/op
+[info] ch.epfl.echassot.benchmark.MutableLongMapBenchmark.createUpdateLookup_2to17Buffer_Verified                    20480  N/A  avgt   10       4686.337 ±      68.641  us/op
+[info] ch.epfl.echassot.benchmark.MutableLongMapBenchmark.createUpdateLookup_2to17Buffer_Verified                    24576  N/A  avgt   10       4832.372 ±     104.048  us/op
+[info] ch.epfl.echassot.benchmark.MutableLongMapBenchmark.createUpdateLookup_2to17Buffer_Verified                    28672  N/A  avgt   10       5438.969 ±    1118.677  us/op
+[info] ch.epfl.echassot.benchmark.MutableLongMapBenchmark.createUpdateLookup_2to17Buffer_Verified                    32768  N/A  avgt   10       6630.269 ±    1099.903  us/op
+[info] ch.epfl.echassot.benchmark.MutableLongMapBenchmark.createUpdateLookup_2to17Buffer_Verified                    36864  N/A  avgt   10       5669.032 ±    1308.570  us/op
+[info] ch.epfl.echassot.benchmark.MutableLongMapBenchmark.createUpdateLookup_2to17Buffer_Verified                    40960  N/A  avgt   10       6429.931 ±    1793.761  us/op
+[info] ch.epfl.echassot.benchmark.MutableLongMapBenchmark.createUpdateLookup_2to17Buffer_Verified                    45056  N/A  avgt   10       5605.241 ±     662.962  us/op
+[info] ch.epfl.echassot.benchmark.MutableLongMapBenchmark.createUpdateLookup_2to17Buffer_Verified                    49152  N/A  avgt   10       6765.611 ±    1314.875  us/op
+[info] ch.epfl.echassot.benchmark.MutableLongMapBenchmark.createUpdateLookup_2to17Buffer_Verified                    53248  N/A  avgt   10       7261.862 ±    2551.576  us/op
+[info] ch.epfl.echassot.benchmark.MutableLongMapBenchmark.createUpdateLookup_2to17Buffer_Verified                    57344  N/A  avgt   10       5789.753 ±     607.328  us/op
+[info] ch.epfl.echassot.benchmark.MutableLongMapBenchmark.createUpdateLookup_2to17Buffer_Verified                    61440  N/A  avgt   10       9693.920 ±    1338.313  us/op
+[info] ch.epfl.echassot.benchmark.MutableLongMapBenchmark.createUpdateLookup_2to17Buffer_Verified                    65536  N/A  avgt   10       8125.959 ±    1814.702  us/op
+[info] ch.epfl.echassot.benchmark.MutableLongMapBenchmark.createUpdateRemoveUpdateLookup_16Buffer_Original            4096  N/A  avgt   10       6058.593 ±     289.056  us/op
+[info] ch.epfl.echassot.benchmark.MutableLongMapBenchmark.createUpdateRemoveUpdateLookup_16Buffer_Original            8192  N/A  avgt   10       6362.707 ±     342.251  us/op
+[info] ch.epfl.echassot.benchmark.MutableLongMapBenchmark.createUpdateRemoveUpdateLookup_16Buffer_Original           12288  N/A  avgt   10       4931.523 ±     167.421  us/op
+[info] ch.epfl.echassot.benchmark.MutableLongMapBenchmark.createUpdateRemoveUpdateLookup_16Buffer_Original           16384  N/A  avgt   10       4992.915 ±      96.001  us/op
+[info] ch.epfl.echassot.benchmark.MutableLongMapBenchmark.createUpdateRemoveUpdateLookup_16Buffer_Original           20480  N/A  avgt   10       5128.933 ±      24.071  us/op
+[info] ch.epfl.echassot.benchmark.MutableLongMapBenchmark.createUpdateRemoveUpdateLookup_16Buffer_Original           24576  N/A  avgt   10       7691.433 ±    2080.449  us/op
+[info] ch.epfl.echassot.benchmark.MutableLongMapBenchmark.createUpdateRemoveUpdateLookup_16Buffer_Original           28672  N/A  avgt   10       8755.302 ±     661.725  us/op
+[info] ch.epfl.echassot.benchmark.MutableLongMapBenchmark.createUpdateRemoveUpdateLookup_16Buffer_Original           32768  N/A  avgt   10       5192.536 ±      63.330  us/op
+[info] ch.epfl.echassot.benchmark.MutableLongMapBenchmark.createUpdateRemoveUpdateLookup_16Buffer_Original           36864  N/A  avgt   10       5209.911 ±     109.375  us/op
+[info] ch.epfl.echassot.benchmark.MutableLongMapBenchmark.createUpdateRemoveUpdateLookup_16Buffer_Original           40960  N/A  avgt   10       5236.954 ±      98.966  us/op
+[info] ch.epfl.echassot.benchmark.MutableLongMapBenchmark.createUpdateRemoveUpdateLookup_16Buffer_Original           45056  N/A  avgt   10       5236.894 ±      39.574  us/op
+[info] ch.epfl.echassot.benchmark.MutableLongMapBenchmark.createUpdateRemoveUpdateLookup_16Buffer_Original           49152  N/A  avgt   10       5159.299 ±      36.976  us/op
+[info] ch.epfl.echassot.benchmark.MutableLongMapBenchmark.createUpdateRemoveUpdateLookup_16Buffer_Original           53248  N/A  avgt   10       5203.248 ±      31.296  us/op
+[info] ch.epfl.echassot.benchmark.MutableLongMapBenchmark.createUpdateRemoveUpdateLookup_16Buffer_Original           57344  N/A  avgt   10       5151.117 ±      31.195  us/op
+[info] ch.epfl.echassot.benchmark.MutableLongMapBenchmark.createUpdateRemoveUpdateLookup_16Buffer_Original           61440  N/A  avgt   10       5224.916 ±      55.825  us/op
+[info] ch.epfl.echassot.benchmark.MutableLongMapBenchmark.createUpdateRemoveUpdateLookup_16Buffer_Original           65536  N/A  avgt   10       5197.144 ±      29.785  us/op
+[info] ch.epfl.echassot.benchmark.MutableLongMapBenchmark.createUpdateRemoveUpdateLookup_16Buffer_Verified            4096  N/A  avgt   10    3134132.388 ±  187521.310  us/op
+[info] ch.epfl.echassot.benchmark.MutableLongMapBenchmark.createUpdateRemoveUpdateLookup_16Buffer_Verified            8192  N/A  avgt   10    3079350.058 ±   34385.463  us/op
+[info] ch.epfl.echassot.benchmark.MutableLongMapBenchmark.createUpdateRemoveUpdateLookup_16Buffer_Verified           12288  N/A  avgt   10    3091456.774 ±  146152.208  us/op
+[info] ch.epfl.echassot.benchmark.MutableLongMapBenchmark.createUpdateRemoveUpdateLookup_16Buffer_Verified           16384  N/A  avgt   10    3041321.425 ±   21118.403  us/op
+[info] ch.epfl.echassot.benchmark.MutableLongMapBenchmark.createUpdateRemoveUpdateLookup_16Buffer_Verified           20480  N/A  avgt   10    3489491.184 ±  153922.446  us/op
+[info] ch.epfl.echassot.benchmark.MutableLongMapBenchmark.createUpdateRemoveUpdateLookup_16Buffer_Verified           24576  N/A  avgt   10    3415674.614 ±  231983.445  us/op
+[info] ch.epfl.echassot.benchmark.MutableLongMapBenchmark.createUpdateRemoveUpdateLookup_16Buffer_Verified           28672  N/A  avgt   10    3605799.239 ±  165187.964  us/op
+[info] ch.epfl.echassot.benchmark.MutableLongMapBenchmark.createUpdateRemoveUpdateLookup_16Buffer_Verified           32768  N/A  avgt   10    3588231.609 ±  241477.594  us/op
+[info] ch.epfl.echassot.benchmark.MutableLongMapBenchmark.createUpdateRemoveUpdateLookup_16Buffer_Verified           36864  N/A  avgt   10    3314270.378 ±  260087.293  us/op
+[info] ch.epfl.echassot.benchmark.MutableLongMapBenchmark.createUpdateRemoveUpdateLookup_16Buffer_Verified           40960  N/A  avgt   10    3044309.634 ±   20722.758  us/op
+[info] ch.epfl.echassot.benchmark.MutableLongMapBenchmark.createUpdateRemoveUpdateLookup_16Buffer_Verified           45056  N/A  avgt   10    3046125.617 ±   10069.446  us/op
+[info] ch.epfl.echassot.benchmark.MutableLongMapBenchmark.createUpdateRemoveUpdateLookup_16Buffer_Verified           49152  N/A  avgt   10    3046294.504 ±   12079.673  us/op
+[info] ch.epfl.echassot.benchmark.MutableLongMapBenchmark.createUpdateRemoveUpdateLookup_16Buffer_Verified           53248  N/A  avgt   10    3059564.994 ±   31426.809  us/op
+[info] ch.epfl.echassot.benchmark.MutableLongMapBenchmark.createUpdateRemoveUpdateLookup_16Buffer_Verified           57344  N/A  avgt   10    3056550.292 ±   20773.096  us/op
+[info] ch.epfl.echassot.benchmark.MutableLongMapBenchmark.createUpdateRemoveUpdateLookup_16Buffer_Verified           61440  N/A  avgt   10    3043411.504 ±   18341.666  us/op
+[info] ch.epfl.echassot.benchmark.MutableLongMapBenchmark.createUpdateRemoveUpdateLookup_16Buffer_Verified           65536  N/A  avgt   10    3035608.328 ±   12808.346  us/op
+[info] ch.epfl.echassot.benchmark.MutableLongMapBenchmark.lookupN_Original                                            4096  N/A  avgt   10         43.482 ±       0.251  us/op
+[info] ch.epfl.echassot.benchmark.MutableLongMapBenchmark.lookupN_Original                                            8192  N/A  avgt   10         89.118 ±       0.477  us/op
+[info] ch.epfl.echassot.benchmark.MutableLongMapBenchmark.lookupN_Original                                           12288  N/A  avgt   10        138.570 ±       0.893  us/op
+[info] ch.epfl.echassot.benchmark.MutableLongMapBenchmark.lookupN_Original                                           16384  N/A  avgt   10        190.515 ±       1.311  us/op
+[info] ch.epfl.echassot.benchmark.MutableLongMapBenchmark.lookupN_Original                                           20480  N/A  avgt   10        246.860 ±       1.736  us/op
+[info] ch.epfl.echassot.benchmark.MutableLongMapBenchmark.lookupN_Original                                           24576  N/A  avgt   10        314.068 ±       2.317  us/op
+[info] ch.epfl.echassot.benchmark.MutableLongMapBenchmark.lookupN_Original                                           28672  N/A  avgt   10        405.631 ±       3.384  us/op
+[info] ch.epfl.echassot.benchmark.MutableLongMapBenchmark.lookupN_Original                                           32768  N/A  avgt   10        506.161 ±       3.930  us/op
+[info] ch.epfl.echassot.benchmark.MutableLongMapBenchmark.lookupN_Original                                           36864  N/A  avgt   10        498.423 ±       4.645  us/op
+[info] ch.epfl.echassot.benchmark.MutableLongMapBenchmark.lookupN_Original                                           40960  N/A  avgt   10        501.446 ±       3.817  us/op
+[info] ch.epfl.echassot.benchmark.MutableLongMapBenchmark.lookupN_Original                                           45056  N/A  avgt   10        509.674 ±      17.260  us/op
+[info] ch.epfl.echassot.benchmark.MutableLongMapBenchmark.lookupN_Original                                           49152  N/A  avgt   10        509.569 ±       3.276  us/op
+[info] ch.epfl.echassot.benchmark.MutableLongMapBenchmark.lookupN_Original                                           53248  N/A  avgt   10        511.390 ±      14.875  us/op
+[info] ch.epfl.echassot.benchmark.MutableLongMapBenchmark.lookupN_Original                                           57344  N/A  avgt   10        508.263 ±       5.474  us/op
+[info] ch.epfl.echassot.benchmark.MutableLongMapBenchmark.lookupN_Original                                           61440  N/A  avgt   10        508.568 ±       7.135  us/op
+[info] ch.epfl.echassot.benchmark.MutableLongMapBenchmark.lookupN_Original                                           65536  N/A  avgt   10        511.935 ±       6.101  us/op
+[info] ch.epfl.echassot.benchmark.MutableLongMapBenchmark.lookupN_Verified                                            4096  N/A  avgt   10         74.670 ±       0.423  us/op
+[info] ch.epfl.echassot.benchmark.MutableLongMapBenchmark.lookupN_Verified                                            8192  N/A  avgt   10        155.603 ±       0.734  us/op
+[info] ch.epfl.echassot.benchmark.MutableLongMapBenchmark.lookupN_Verified                                           12288  N/A  avgt   10        245.530 ±       1.536  us/op
+[info] ch.epfl.echassot.benchmark.MutableLongMapBenchmark.lookupN_Verified                                           16384  N/A  avgt   10        341.214 ±       2.143  us/op
+[info] ch.epfl.echassot.benchmark.MutableLongMapBenchmark.lookupN_Verified                                           20480  N/A  avgt   10        439.544 ±       2.599  us/op
+[info] ch.epfl.echassot.benchmark.MutableLongMapBenchmark.lookupN_Verified                                           24576  N/A  avgt   10        527.711 ±       3.415  us/op
+[info] ch.epfl.echassot.benchmark.MutableLongMapBenchmark.lookupN_Verified                                           28672  N/A  avgt   10        647.801 ±       3.975  us/op
+[info] ch.epfl.echassot.benchmark.MutableLongMapBenchmark.lookupN_Verified                                           32768  N/A  avgt   10        778.934 ±       3.666  us/op
+[info] ch.epfl.echassot.benchmark.MutableLongMapBenchmark.lookupN_Verified                                           36864  N/A  avgt   10        769.188 ±      13.076  us/op
+[info] ch.epfl.echassot.benchmark.MutableLongMapBenchmark.lookupN_Verified                                           40960  N/A  avgt   10        771.278 ±      12.816  us/op
+[info] ch.epfl.echassot.benchmark.MutableLongMapBenchmark.lookupN_Verified                                           45056  N/A  avgt   10        763.811 ±       3.708  us/op
+[info] ch.epfl.echassot.benchmark.MutableLongMapBenchmark.lookupN_Verified                                           49152  N/A  avgt   10        778.555 ±       2.619  us/op
+[info] ch.epfl.echassot.benchmark.MutableLongMapBenchmark.lookupN_Verified                                           53248  N/A  avgt   10        778.801 ±       4.172  us/op
+[info] ch.epfl.echassot.benchmark.MutableLongMapBenchmark.lookupN_Verified                                           57344  N/A  avgt   10        775.308 ±       3.475  us/op
+[info] ch.epfl.echassot.benchmark.MutableLongMapBenchmark.lookupN_Verified                                           61440  N/A  avgt   10        775.216 ±       9.836  us/op
+[info] ch.epfl.echassot.benchmark.MutableLongMapBenchmark.lookupN_Verified                                           65536  N/A  avgt   10        765.479 ±      11.651  us/op
+[success] Total time: 109014 s (30:16:54), completed Nov 3, 2023, 4:55:44 PM
