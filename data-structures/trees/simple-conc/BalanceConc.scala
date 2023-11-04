@@ -144,9 +144,7 @@ object BalanceConc:
       if from == until then Empty[T]()
       else 
         t match
-          case Leaf(x) => 
-            if from == 0 && until == 1 then Leaf(x)
-            else Empty[T]()
+          case Leaf(x) => Leaf(x)
           case Node(l, r, _, _) =>
             sliceLemma(l.toList, r.toList, from, until) // lemma
             if l.size <= from then r.slice(from - l.size, until - l.size)
@@ -243,25 +241,6 @@ object BalanceConc:
                   (if l.size <= from then r.slice(from - l.size, until - l.size)
                    else if until <= l.size then l.slice(from, until)
                    else l.slice(from, l.size) ++ r.slice(0, until - l.size)))
-
-/* Expects this definition of method slice of list:
-
-  def slice(from: BigInt, until: BigInt): List[T] = {
-    require(0 <= from && from <= until && until <= size)
-    this match {
-      case Nil() => Nil[T]()
-      case Cons(h, t) =>
-        if (to == 0) Nil[T]()
-        else {
-          if (from == 0) {
-            Cons[T](h, t.islice(0, to - 1))
-          } else {
-            t.islice(from - 1, to - 1)
-          }
-        }
-    }
-  }
-*/
 
 end BalanceConc
 
