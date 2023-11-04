@@ -208,7 +208,7 @@ object BalanceConc:
       val mid = from + (until - from)/2
       mkTree(from, mid) ++ mkTree(mid, until)    
 
-  @main @extern
+  @extern
   def test =
     val c1: Conc[Int] = (1 to 8).map(Leaf(_)).foldRight[Conc[Int]](Empty())((a, b) => a <> b)
     println(f"\nc1.height = ${c1.height}, isBalanced=${c1.isBalanced}")
