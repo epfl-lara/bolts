@@ -1,6 +1,6 @@
-/* 
- * Copyright 2009-2022 EPFL, Lausanne 
- * 
+/*
+ * Copyright 2009-2022 EPFL, Lausanne
+ *
  * Authors: Andrea Gilot, Noé De Santo
  */
 
@@ -81,7 +81,7 @@ object Typing {
         }
       }
     }
-    
+
     def ===(that: TypeDerivation): Boolean = {
       this.t == that.t && this.env == that.env
     }
@@ -108,7 +108,7 @@ object Typing {
         (deriveType(env, t1), deriveType(env, t2)) match {
           case (Some(ts1), Some(ts2)) => {
             ts1.t match{
-              case ArrowType(targ, tres) if (targ == ts2.t) => 
+              case ArrowType(targ, tres) if (targ == ts2.t) =>
                 Some(AppDerivation(env, tres, app, ts1, ts2))
               case _ => None()
             }
@@ -140,14 +140,14 @@ object Typing {
               case UniversalType(b) => Some(TAppDerivation(env, universalSubstitution(b, typ), tapp, btd))
               case _ => None()
             }
-            
+
           }
           case None() => None()
         }
       }
     }
   }
-  
+
   def deriveType(t: Term): Option[TypeDerivation] = {
     deriveType(Nil(), t)
   }
@@ -158,7 +158,7 @@ object Typing {
 object TypingProperties {
   import SystemF._
   import Typing._
-  import Reduction._  
+  import Reduction._
   import Transformations.{ Terms => TermTr, Types => TypeTr }
 
   import ListProperties._
@@ -196,8 +196,8 @@ object TypingProperties {
       }
     }
   }.ensuring(
-    deriveType(env, t).get.isValid && 
-    deriveType(env, t).get.term == t && 
+    deriveType(env, t).get.isValid &&
+    deriveType(env, t).get.term == t &&
     deriveType(env, t).get.env == env
   )
 
@@ -221,7 +221,7 @@ object TypingProperties {
       case Abs(_, _) => ()
       case App(t1, t2) => {
         callByValueProgress(t1)
-        callByValueProgress(t2) 
+        callByValueProgress(t2)
       }
       case Fix(f) => callByValueProgress(f)
       case TAbs(t) => ()
@@ -263,10 +263,10 @@ object TypingProperties {
         TAppDerivation(env ++ envExt, typ, TApp(body, argType), resBtd)
       }
     }
-  }.ensuring(res => 
-    res.isValid && 
-    ( res.env == td.env ++ envExt ) && 
-    ( res.term == td.term ) && 
+  }.ensuring(res =>
+    res.isValid &&
+    ( res.env == td.env ++ envExt ) &&
+    ( res.term == td.term ) &&
     ( res.t == td.t )
   )
 
@@ -277,10 +277,10 @@ object TypingProperties {
     require(v.ter.k < env.length)
     concatFirstIndexing(env, envExt, v.ter.k)
     VarDerivation(env, v.typ, v.ter)
-  }.ensuring(res => 
-    res.isValid && 
-    ( res.env == env ) && 
-    ( res.t == v.t ) && 
+  }.ensuring(res =>
+    res.isValid &&
+    ( res.env == env ) &&
+    ( res.t == v.t ) &&
     ( res.term == v.term )
   )
 
@@ -288,13 +288,13 @@ object TypingProperties {
   def variableEnvironmentUpdate(v: VarDerivation, env: Environment, oldEnv: Environment, newEnv: Environment): TypeDerivation = {
     require(v.env == env ++ oldEnv)
     require(v.isValid)
-    require(v.ter.k < env.length)  
-    val v2 = variableEnvironmentStrengthening(v, env, oldEnv) 
+    require(v.ter.k < env.length)
+    val v2 = variableEnvironmentStrengthening(v, env, oldEnv)
     environmentWeakening(v2, newEnv)
-  }.ensuring(res => 
-    res.isValid && 
-    ( res.env == (env ++ newEnv) ) && 
-    ( res.t == v.t ) && 
+  }.ensuring(res =>
+    res.isValid &&
+    ( res.env == (env ++ newEnv) ) &&
+    ( res.t == v.t ) &&
     ( res.term == v.term )
   )
 
@@ -340,7 +340,7 @@ object TypingProperties {
         TAppDerivation(newEnv, typ, TApp(TermTr.shift(body, 1, env1.size), typeArg), resBtd)
       }
     }
-    
+
   }.ensuring(res =>
     res.isValid &&
     ( res.term == TermTr.shift(td.term, 1, env1.size) ) &&
@@ -471,7 +471,7 @@ object TypingProperties {
         termAndEnvNegativeShiftValidityImplyTypeNegativeShiftValidity(btd, s, c)
         assert(btd.t.isInstanceOf[UniversalType])
         val UniversalType(bodyTyp) = btd.t
-        
+
         TypeTrProp.boundRangeShift(typArg, 1, 0, c, -s)
         assert(!TypeTr.shift(typArg, 1, 0).hasFreeVariablesIn(c + 1, -s))
         TypeTrProp.shiftCommutativity2(typArg, s, c, 1, 0)
@@ -486,8 +486,8 @@ object TypingProperties {
           TypeTrProp.shiftCommutativity2(typArg, s, c, 1, 0)
 
           TypeTrProp.boundRangeSubstitutionLemma(
-            TypeTr.shift(bodyTyp, s, c+1), 
-            0, 
+            TypeTr.shift(bodyTyp, s, c+1),
+            0,
             TypeTr.shift(TypeTr.shift(typArg, 1, 0), s, c+1)
           )
         }
@@ -501,6 +501,7 @@ object TypingProperties {
 
   @opaque @pure
   def shiftAllTypes(td: TypeDerivation, s: BigInt, c: BigInt): TypeDerivation = {
+    decreases(td)
     require(td.isValid)
     require(c >= 0)
     require(if(s < 0) !hasFreeVariablesIn(td.env, c, -s) else true )
@@ -550,7 +551,7 @@ object TypingProperties {
       }
       case TAppDerivation(_, typ, TApp(_, typeArg), btd) => {
         val btdp = shiftAllTypes(btd, s, c)
-        
+
         assert(btd.t.isInstanceOf[UniversalType])
         val UniversalType(bodyTyp) = btd.t
 
@@ -570,6 +571,7 @@ object TypingProperties {
 
   @opaque @pure
   def preservationUnderSubst(td: TypeDerivation, j: BigInt, sd: TypeDerivation): TypeDerivation = {
+    decreases(td)
     require(td.isValid)
     require(sd.isValid)
     require(td.env == sd.env)
@@ -658,15 +660,15 @@ object TypingProperties {
       }
     }
   }.ensuring(
-    TypeTr.shift(TypeTr.substitute(env, k, subs), s, 0) 
-    == 
+    TypeTr.shift(TypeTr.substitute(env, k, subs), s, 0)
+    ==
     TypeTr.substitute(TypeTr.shift(env, s, 0), k+s, TypeTr.shift(subs, s, 0))
   )
 
   @opaque @pure
   def universalSubstitutionSubstitutionCommutativity(body: Type, arg: Type, j: BigInt, s: Type): Unit = {
     require(j >= 0)
-    
+
     TypeTrProp.boundRangeShift(arg, 1, 0, 0, 0)
     TypeTrProp.boundRangeSubstitutionLemma(body, 0, TypeTr.shift(arg, 1, 0))
 
@@ -686,8 +688,8 @@ object TypingProperties {
       ==
       TypeTr.shift(
         TypeTr.substitute(
-          TypeTr.substitute(body, 0, TypeTr.shift(arg, 1, 0)), 
-          j+1, 
+          TypeTr.substitute(body, 0, TypeTr.shift(arg, 1, 0)),
+          j+1,
           TypeTr.shift(s, 1, 0)),
         -1,
         0
@@ -702,8 +704,8 @@ object TypingProperties {
       ==
       TypeTr.shift(
         TypeTr.substitute(
-          TypeTr.substitute(body, j+1, TypeTr.shift(s, 1, 0)), 
-          0, 
+          TypeTr.substitute(body, j+1, TypeTr.shift(s, 1, 0)),
+          0,
           TypeTr.substitute(TypeTr.shift(arg, 1, 0), j+1, TypeTr.shift(s, 1, 0))),
         -1,
         0
@@ -716,8 +718,8 @@ object TypingProperties {
       ==
       TypeTr.shift(
         TypeTr.substitute(
-          TypeTr.substitute(body, j+1, TypeTr.shift(s, 1, 0)), 
-          0, 
+          TypeTr.substitute(body, j+1, TypeTr.shift(s, 1, 0)),
+          0,
           TypeTr.shift(TypeTr.substitute(arg, j, s), 1, 0)),
         -1,
         0
@@ -732,6 +734,7 @@ object TypingProperties {
 
   @opaque @pure
   def preservationUnderTypeSubst(td: TypeDerivation, j: BigInt, styp: Type): TypeDerivation = {
+    decreases(td)
     require(td.isValid)
     require(j >= 0)
 
@@ -797,7 +800,7 @@ object TypingProperties {
     TermTrProp.boundRangeShift(sd0.term, 1, 0, 0, 0)
     TermTrProp.boundRangeSubstitutionLemma(absTd.btd.term, 0, sd1.term)
     removeTypeInEnv(Nil(), argType, env, sd2)
-  }.ensuring(res => 
+  }.ensuring(res =>
     res.isValid &&
     ( res.term == absSubstitution(absTd.ter.body, argTd.term) ) &&
     ( res.env == env ) &&
@@ -889,7 +892,7 @@ object TypingProperties {
             app2CongruenceInversion(t, reduced)
             val tp = reduced.asInstanceOf[App]
             val t2p = tp.t2
-            
+
             val td2p = preservation(td2, t2p)
             val tdp = AppDerivation(env, typ, tp, td1, td2p)
             assert(tdp.isValid)
@@ -953,7 +956,7 @@ object TypingProperties {
       }
     }
 
-  }.ensuring(res => 
+  }.ensuring(res =>
     res.isValid &&
     ( res.term == reduced ) &&
     ( res === td )

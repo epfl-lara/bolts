@@ -784,6 +784,7 @@ object VerifiedDFAMatcher {
   @opaque
   @inlineOnce
   def lemmaNoTransitionOutOfErrorStateThenForAParticularTransition[C](l: List[Transition[C]], errorState: State, t: Transition[C]): Unit = {
+    decreases(l)
     require(noTransitionOutOfErrorState(l, errorState))
     require(l.contains(t))
 
