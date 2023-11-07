@@ -1,4 +1,3 @@
-algorithms/aggregate-correct
 algorithms/sorting
 algorithms/fulcrum
 algorithms/leftpad
@@ -9,7 +8,6 @@ data-structures/amortized-queue2
 data-structures/lisp
 data-structures/trees/concrope
 data-structures/trees/redblack
-data-structures/trees/simple-conc
 expression-compiler
 fp-principles/example
 fp-principles/functional-sets
