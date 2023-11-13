@@ -7,7 +7,7 @@
 import stainless.lang._
 import stainless.annotation._
 
- 
+
 object MoreExtendedEuclidGCD {
   case class Result(gcd: BigInt, // GCD value
         ka: BigInt, kb: BigInt,  // witnesses for divisibility (quotients)
@@ -51,6 +51,9 @@ object MoreExtendedEuclidGCD {
       assert(ka * r1.y + kb * (r1.x - (a/b)*r1.y) == BigInt(1))
       val x = r1.y
       val y = r1.x - (a/b)*r1.y
+      assert(a == ka * r1.gcd)
+      assert(b == kb * r1.gcd)
+      assert(ka * x + kb * y == BigInt(1))
       Result(r1.gcd, ka, kb, x, y)
     }
   } ensuring(res => gcd(a, b, res))

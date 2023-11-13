@@ -145,6 +145,7 @@ object ListUtils {
   @inlineOnce
   @opaque
   def lemmaNotHeadSoGetIndexTailIsMinusOne[B](l: List[B], e: B): Unit = {
+    decreases(l)
     require(l.contains(e))
     require(l.head != e)
 
@@ -156,6 +157,7 @@ object ListUtils {
   @inlineOnce
   @opaque
   def lemmaIsPrefixRefl[B](l1: List[B], l2: List[B]): Unit = {
+    decreases(l1)
     require(l1 == l2)
     l1 match {
       case Cons(hd, tl) => lemmaIsPrefixRefl(tl, l2.tail)
@@ -246,6 +248,7 @@ object ListUtils {
   @inlineOnce
   @opaque
   def lemmaPrefixStaysPrefixWhenAddingToSuffix[B](p: List[B], l: List[B], suffix: List[B]): Unit = {
+    decreases(p)
     require(isPrefix(p, l))
     p match {
       case Cons(hd, tl) => lemmaPrefixStaysPrefixWhenAddingToSuffix(tl, l.tail, suffix)
