@@ -1,0 +1,32 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>ch.epfl.lara</groupId>
+    <artifactId>stainless-library_2.13</artifactId>
+    <packaging>pom</packaging>
+    <description>stainless-library</description>
+    <version>0.9.8.1-12-gc0633c6</version>
+    <licenses>
+        <license>
+            <name>Apache-2.0</name>
+            <url>https://www.apache.org/licenses/LICENSE-2.0.html</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+    <name>stainless-library</name>
+    <organization>
+        <name>ch.epfl.lara</name>
+    </organization>
+    <scm>
+        <url>https://github.com/epfl-lara/stainless</url>
+        <connection>scm:git:https://github.com/epfl-lara/stainless.git</connection>
+        <developerConnection>scm:git:git@github.com:epfl-lara/stainless.git</developerConnection>
+    </scm>
+    <dependencies>
+        <dependency>
+            <groupId>org.scala-lang</groupId>
+            <artifactId>scala-library</artifactId>
+            <version>2.13.10</version>
+        </dependency>
+    </dependencies>
+</project>
