@@ -142,7 +142,7 @@ class MutableLongMapBenchmark {
       "65536"
     )
   )
-  var keysListName: String = _
+  var nKeys: String = _
 
   // ------------------------------------------------ RETRIEVE N KEYS FROM 2^^15 MAP ---------------------------------------------------
 
@@ -150,9 +150,15 @@ class MutableLongMapBenchmark {
   @BenchmarkMode(Array(Mode.AverageTime))
   @OutputTimeUnit(TimeUnit.MICROSECONDS)
   def lookupN_Verified(): Unit = {
-    val m: MutableLongMap.LongMap[Long]  = verifiedMapFilledWith2to15Values
-    for k <- getKeysList(keysListName) do m(k)
-    end for
+    val m: MutableLongMap.LongMap[Long] = verifiedMapFilledWith2to15Values
+    var i = 0
+    val n = nKeys.toInt
+    var acc: Long = 1
+    while (i < n) do
+      acc *= m(randomArrayOfKeysSize2to16(i))
+      i += 1
+    end while
+    val temp = acc * 5
   }
 
   @Benchmark
@@ -160,17 +166,29 @@ class MutableLongMapBenchmark {
   @OutputTimeUnit(TimeUnit.MICROSECONDS)
   def lookupN_Original(): Unit = {
     val m: LongMap[Long] = originalMapFilledWith2to15Values
-    for k <- getKeysList(keysListName) do m(k)
-    end for
+    var i = 0
+    val n = nKeys.toInt
+    var acc: Long = 1
+    while (i < n) do
+      acc *= m(randomArrayOfKeysSize2to16(i))
+      i += 1
+    end while
+    val temp = acc * 5
   }
 
   @Benchmark
   @BenchmarkMode(Array(Mode.AverageTime))
   @OutputTimeUnit(TimeUnit.MICROSECONDS)
   def lookupN_Opti(): Unit = {
-    val m: MutableLongMapOpti.LongMapOpti[Long]  = verifiedOptiMapFilledWith2to15Values
-    for k <- getKeysList(keysListName) do m(k)
-    end for
+    val m: MutableLongMapOpti.LongMapOpti[Long] = verifiedOptiMapFilledWith2to15Values
+    var i = 0
+    val n = nKeys.toInt
+    var acc: Long = 1
+    while (i < n) do
+      acc *= m(randomArrayOfKeysSize2to16(i))
+      i += 1
+    end while
+    val temp = acc * 5
   }
 
   // ------------------------------------------------ UPDATE 2^^15 KEYS THEN LOOKUPS IN MAPS WITH 16 INITIAL BUFFER ----------------------------------------------------------
@@ -182,8 +200,14 @@ class MutableLongMapBenchmark {
     for (k, v) <- random2to15Pairs do m.update(k, v)
     end for
 
-    for k <- getKeysList(keysListName) do m(k)
-    end for
+    var i = 0
+    val n = nKeys.toInt
+    var acc: Long = 1
+    while (i < n) do
+      acc *= m(randomArrayOfKeysSize2to16(i))
+      i += 1
+    end while
+    val temp = acc * 5
   }
 
   @Benchmark
@@ -194,8 +218,14 @@ class MutableLongMapBenchmark {
     for (k, v) <- random2to15Pairs do m.update(k, v)
     end for
 
-    for k <- getKeysList(keysListName) do m(k)
-    end for
+    var i = 0
+    val n = nKeys.toInt
+    var acc: Long = 1
+    while (i < n) do
+      acc *= m(randomArrayOfKeysSize2to16(i))
+      i += 1
+    end while
+    val temp = acc * 5
   }
 
   @Benchmark
@@ -206,8 +236,14 @@ class MutableLongMapBenchmark {
     for (k, v) <- random2to15Pairs do m.update(k, v)
     end for
 
-    for k <- getKeysList(keysListName) do m(k)
-    end for
+    var i = 0
+    val n = nKeys.toInt
+    var acc: Long = 1
+    while (i < n) do
+      acc *= m(randomArrayOfKeysSize2to16(i))
+      i += 1
+    end while
+    val temp = acc * 5
   }
 
   // ------------------------------------------------ UPDATE 2^^15 KEYS THEN LOOKUPS IN MAPS WITH 2^^17 INITIAL BUFFER ----------------------------------------------------------
@@ -219,8 +255,14 @@ class MutableLongMapBenchmark {
     for (k, v) <- random2to15Pairs do m.update(k, v)
     end for
 
-    for k <- getKeysList(keysListName) do m(k)
-    end for
+    var i = 0
+    val n = nKeys.toInt
+    var acc: Long = 1
+    while (i < n) do
+      acc *= m(randomArrayOfKeysSize2to16(i))
+      i += 1
+    end while
+    val temp = acc * 5
   }
 
   @Benchmark
@@ -231,8 +273,14 @@ class MutableLongMapBenchmark {
     for (k, v) <- random2to15Pairs do m.update(k, v)
     end for
 
-    for k <- getKeysList(keysListName) do m(k)
-    end for
+    var i = 0
+    val n = nKeys.toInt
+    var acc: Long = 1
+    while (i < n) do
+      acc *= m(randomArrayOfKeysSize2to16(i))
+      i += 1
+    end while
+    val temp = acc * 5
   }
 
   @Benchmark
@@ -243,8 +291,14 @@ class MutableLongMapBenchmark {
     for (k, v) <- random2to15Pairs do m.update(k, v)
     end for
 
-    for k <- getKeysList(keysListName) do m(k)
-    end for
+    var i = 0
+    val n = nKeys.toInt
+    var acc: Long = 1
+    while (i < n) do
+      acc *= m(randomArrayOfKeysSize2to16(i))
+      i += 1
+    end while
+    val temp = acc * 5
   }
 
   // ------------------------------------------------ UPDATE 2^^15 KEYS THEN REMOVE 2^^14 + 8192 THEN UPDATE AGAIN THEN LOOKUPS ----------------------------------------------------------
@@ -257,14 +311,24 @@ class MutableLongMapBenchmark {
     for (k, v) <- random2to15Pairs do m.update(k, v)
     end for
 
-    for k <- getKeysList("24576") do m.remove(k)
-    end for
+    var i1 = 0
+    val n1 = 24576
+    while (i1 < n1) do
+      m.remove(randomArrayOfKeysSize2to16(i1))
+      i1 += 1
+    end while
 
     for (k, v) <- random2to15Pairs do m.update(k, v)
     end for
 
-    for k <- getKeysList(keysListName) do m(k)
-    end for
+    var i = 0
+    val n = nKeys.toInt
+    var acc: Long = 1
+    while (i < n) do
+      acc *= m(randomArrayOfKeysSize2to16(i))
+      i += 1
+    end while
+    val temp = acc * 5
   }
 
   @Benchmark
@@ -275,14 +339,24 @@ class MutableLongMapBenchmark {
     for (k, v) <- random2to15Pairs do m.update(k, v)
     end for
 
-    for k <- getKeysList("24576") do m.remove(k)
-    end for
+    var i1 = 0
+    val n1 = 24576
+    while (i1 < n1) do
+      m.remove(randomArrayOfKeysSize2to16(i1))
+      i1 += 1
+    end while
 
     for (k, v) <- random2to15Pairs do m.update(k, v)
     end for
 
-    for k <- getKeysList(keysListName) do m(k)
-    end for
+    var i = 0
+    val n = nKeys.toInt
+    var acc: Long = 1
+    while (i < n) do
+      acc *= m(randomArrayOfKeysSize2to16(i))
+      i += 1
+    end while
+    val temp = acc * 5
   }
 
   @Benchmark
@@ -293,14 +367,25 @@ class MutableLongMapBenchmark {
     for (k, v) <- random2to15Pairs do m.update(k, v)
     end for
 
-    for k <- getKeysList("24576") do m.remove(k)
-    end for
+    var i1 = 0
+    val n1 = 24576
+    while (i1 < n1) do
+      m.remove(randomArrayOfKeysSize2to16(i1))
+      i1 += 1
+    end while
 
     for (k, v) <- random2to15Pairs do m.update(k, v)
     end for
 
-    for k <- getKeysList(keysListName) do m(k)
-    end for
+    var i = 0
+    val n = nKeys.toInt
+    var acc: Long = 1
+    while (i < n) do
+      acc *= m(randomArrayOfKeysSize2to16(i))
+      i += 1
+    end while
+    val temp = acc * 5
+
   }
 
 }
@@ -345,7 +430,7 @@ class MutableLongMapBenchmarkBig {
       "8388608"
     )
   )
-  var keysListName: String = _
+  var nKeys: String = _
 
   // ------------------------------------------------ RETRIEVE N KEYS FROM 2^^22 MAP ---------------------------------------------------
 
@@ -353,9 +438,16 @@ class MutableLongMapBenchmarkBig {
   @BenchmarkMode(Array(Mode.AverageTime))
   @OutputTimeUnit(TimeUnit.MICROSECONDS)
   def lookupN_Verified(): Unit = {
-    val m: MutableLongMap.LongMap[Long]  = verifiedMapFilledWith2to22Values
-    for k <- getKeysList(keysListName) do m(k)
-    end for
+    val m: MutableLongMap.LongMap[Long] = verifiedMapFilledWith2to22Values
+    var i = 0
+    val n = nKeys.toInt
+    var acc: Long = 1
+    while (i < n) do
+      acc *= m(randomArrayOfKeysSize2to23(i))
+      i += 1
+    end while
+    val temp = acc * 5
+
   }
 
   @Benchmark
@@ -363,17 +455,29 @@ class MutableLongMapBenchmarkBig {
   @OutputTimeUnit(TimeUnit.MICROSECONDS)
   def lookupN_Original(): Unit = {
     val m: LongMap[Long] = originalMapFilledWith2to22Values
-    for k <- getKeysList(keysListName) do m(k)
-    end for
+    var i = 0
+    val n = nKeys.toInt
+    var acc: Long = 1
+    while (i < n) do
+      acc *= m(randomArrayOfKeysSize2to23(i))
+      i += 1
+    end while
+    val temp = acc * 5
   }
 
   @Benchmark
   @BenchmarkMode(Array(Mode.AverageTime))
   @OutputTimeUnit(TimeUnit.MICROSECONDS)
   def lookupN_Opti(): Unit = {
-    val m: MutableLongMapOpti.LongMapOpti[Long]  = verifiedOptiMapFilledWith2to22Values
-    for k <- getKeysList(keysListName) do m(k)
-    end for
+    val m: MutableLongMapOpti.LongMapOpti[Long] = verifiedOptiMapFilledWith2to22Values
+    var i = 0
+    val n = nKeys.toInt
+    var acc: Long = 1
+    while (i < n) do
+      acc *= m(randomArrayOfKeysSize2to23(i))
+      i += 1
+    end while
+    val temp = acc * 5
   }
 
   // ------------------------------------------------ UPDATE 2^^22 KEYS THEN LOOKUPS IN MAPS WITH 16 INITIAL BUFFER ----------------------------------------------------------
@@ -385,8 +489,14 @@ class MutableLongMapBenchmarkBig {
     for (k, v) <- random2to22Pairs do m.update(k, v)
     end for
 
-    for k <- getKeysList(keysListName) do m(k)
-    end for
+    var i = 0
+    val n = nKeys.toInt
+    var acc: Long = 1
+    while (i < n) do
+      acc *= m(randomArrayOfKeysSize2to23(i))
+      i += 1
+    end while
+    val temp = acc * 5
   }
 
   @Benchmark
@@ -397,8 +507,14 @@ class MutableLongMapBenchmarkBig {
     for (k, v) <- random2to22Pairs do m.update(k, v)
     end for
 
-    for k <- getKeysList(keysListName) do m(k)
-    end for
+    var i = 0
+    val n = nKeys.toInt
+    var acc: Long = 1
+    while (i < n) do
+      acc *= m(randomArrayOfKeysSize2to23(i))
+      i += 1
+    end while
+    val temp = acc * 5
   }
 
   @Benchmark
@@ -409,8 +525,14 @@ class MutableLongMapBenchmarkBig {
     for (k, v) <- random2to22Pairs do m.update(k, v)
     end for
 
-    for k <- getKeysList(keysListName) do m(k)
-    end for
+    var i = 0
+    val n = nKeys.toInt
+    var acc: Long = 1
+    while (i < n) do
+      acc *= m(randomArrayOfKeysSize2to23(i))
+      i += 1
+    end while
+    val temp = acc * 5
   }
 
   // ------------------------------------------------ UPDATE 2^^22 KEYS THEN LOOKUPS IN MAPS WITH 2^^23 INITIAL BUFFER ----------------------------------------------------------
@@ -422,8 +544,14 @@ class MutableLongMapBenchmarkBig {
     for (k, v) <- random2to22Pairs do m.update(k, v)
     end for
 
-    for k <- getKeysList(keysListName) do m(k)
-    end for
+    var i = 0
+    val n = nKeys.toInt
+    var acc: Long = 1
+    while (i < n) do
+      acc *= m(randomArrayOfKeysSize2to23(i))
+      i += 1
+    end while
+    val temp = acc * 5
   }
 
   @Benchmark
@@ -434,8 +562,14 @@ class MutableLongMapBenchmarkBig {
     for (k, v) <- random2to22Pairs do m.update(k, v)
     end for
 
-    for k <- getKeysList(keysListName) do m(k)
-    end for
+    var i = 0
+    val n = nKeys.toInt
+    var acc: Long = 1
+    while (i < n) do
+      acc *= m(randomArrayOfKeysSize2to23(i))
+      i += 1
+    end while
+    val temp = acc * 5
   }
 
   @Benchmark
@@ -446,8 +580,14 @@ class MutableLongMapBenchmarkBig {
     for (k, v) <- random2to22Pairs do m.update(k, v)
     end for
 
-    for k <- getKeysList(keysListName) do m(k)
-    end for
+    var i = 0
+    val n = nKeys.toInt
+    var acc: Long = 1
+    while (i < n) do
+      acc *= m(randomArrayOfKeysSize2to23(i))
+      i += 1
+    end while
+    val temp = acc * 5
   }
 
   // ------------------------------------------------ UPDATE 2^^22 KEYS THEN REMOVE 2097152 (=2^^21) THEN UPDATE AGAIN THEN LOOKUPS, BUFFER 16 ----------------------------------------------------------
@@ -460,14 +600,24 @@ class MutableLongMapBenchmarkBig {
     for (k, v) <- random2to22Pairs do m.update(k, v)
     end for
 
-    for k <- getKeysList("24576") do m.remove(k)
-    end for
+    var i1 = 0
+    val n1 = 24576
+    while (i1 < n1) do
+      m.remove(randomArrayOfKeysSize2to23(i1))
+      i1 += 1
+    end while
 
     for (k, v) <- random2to22Pairs do m.update(k, v)
     end for
 
-    for k <- getKeysList(keysListName) do m(k)
-    end for
+    var i = 0
+    val n = nKeys.toInt
+    var acc: Long = 1
+    while (i < n) do
+      acc *= m(randomArrayOfKeysSize2to23(i))
+      i += 1
+    end while
+    val temp = acc * 5
   }
 
   @Benchmark
@@ -478,14 +628,24 @@ class MutableLongMapBenchmarkBig {
     for (k, v) <- random2to22Pairs do m.update(k, v)
     end for
 
-    for k <- getKeysList("24576") do m.remove(k)
-    end for
+    var i1 = 0
+    val n1 = 24576
+    while (i1 < n1) do
+      m.remove(randomArrayOfKeysSize2to23(i1))
+      i1 += 1
+    end while
 
     for (k, v) <- random2to22Pairs do m.update(k, v)
     end for
 
-    for k <- getKeysList(keysListName) do m(k)
-    end for
+    var i = 0
+    val n = nKeys.toInt
+    var acc: Long = 1
+    while (i < n) do
+      acc *= m(randomArrayOfKeysSize2to23(i))
+      i += 1
+    end while
+    val temp = acc * 5
   }
 
   @Benchmark
@@ -496,14 +656,24 @@ class MutableLongMapBenchmarkBig {
     for (k, v) <- random2to22Pairs do m.update(k, v)
     end for
 
-    for k <- getKeysList("24576") do m.remove(k)
-    end for
+    var i1 = 0
+    val n1 = 24576
+    while (i1 < n1) do
+      m.remove(randomArrayOfKeysSize2to23(i1))
+      i1 += 1
+    end while
 
     for (k, v) <- random2to22Pairs do m.update(k, v)
     end for
 
-    for k <- getKeysList(keysListName) do m(k)
-    end for
+    var i = 0
+    val n = nKeys.toInt
+    var acc: Long = 1
+    while (i < n) do
+      acc *= m(randomArrayOfKeysSize2to23(i))
+      i += 1
+    end while
+    val temp = acc * 5
   }
 
 }
@@ -516,15 +686,7 @@ object BenchmarkUtil {
 
   val random2to15Pairs = Random.shuffle((0L until long2to15).map(i => (i.toLong, Random.nextLong())).toList)
 
-  val randomKeysListsUpTo2to16: Map[String, Array[Long]] =
-    (1 to 32)
-      .map(_ * 2048)
-      .map(n => (n.toString(), random2to15Pairs.take(n).map(_._1)))
-      .map((t: (String, List[Long])) => (t._1, Random.shuffle(t._2)))
-      .toMap[String, List[Long]]
-      .map(t => (t._1, t._2.toArray))
-
-  def getKeysList(n: String): Array[Long] = randomKeysListsUpTo2to16.getOrElse(n, Array.fill(1)(0L))
+  val randomArrayOfKeysSize2to16: Array[Long] = Random.shuffle((0L until long2to15) ++ (0L until long2to15)).toArray
 
   def getVerifiedMapEmptyBuffer(n: Int) = MutableLongMap.getEmptyLongMap[Long](k => 0L, n)
   def getOriginalMapEmptyBuffer(n: Int) = new LongMap[Long](k => 0L, n)
@@ -561,19 +723,11 @@ object BenchmarkUtilBig {
 
   val random2to22Pairs = Random.shuffle((0L until long2to22).map(i => (i.toLong, Random.nextLong())).toList)
 
-  val randomKeysListsUpTo2to23: Map[String, Array[Long]] =
-    (1 to 32)
-      .map(_ * (long2to23 / 32).toInt)
-      .map(n => (n.toString(), random2to22Pairs.take(n).map(_._1)))
-      .map((t: (String, List[Long])) => (t._1, Random.shuffle(t._2)))
-      .toMap[String, List[Long]]
-      .map(t => (t._1, t._2.toArray))
+  val randomArrayOfKeysSize2to23: Array[Long] = Random.shuffle((0L until long2to22) ++ (0L until long2to22)).toArray
 
   def getVerifiedMapEmptyBuffer(n: Int) = MutableLongMap.getEmptyLongMap[Long](k => 0L, n)
   def getOriginalMapEmptyBuffer(n: Int) = new LongMap[Long](k => 0L, n)
   def getVerifiedOptiMapEmptyBuffer(n: Int) = MutableLongMapOpti.getEmptyLongMap[Long](k => 0L, n)
-
-  def getKeysList(n: String): Array[Long] = randomKeysListsUpTo2to23.getOrElse(n, Array.fill(1)(0L))
 
   val verifiedMapFilledWith2to22Values = {
     val mutableMap = getVerifiedMapEmptyBuffer(16)
