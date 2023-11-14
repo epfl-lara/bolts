@@ -25,7 +25,7 @@ object MutableLongMap {
     * @return
     */
   def getEmptyLongMap[V](defaultEntry: Long => V): LongMap[V] = {
-    val m = 127
+    val m = 15
     assert(validMask(m))
     LongMap(Cell(LongMapFixedSize.getNewLongMapFixedSize(m, defaultEntry)))
   } ensuring (res => res.valid && res.size == 0)
