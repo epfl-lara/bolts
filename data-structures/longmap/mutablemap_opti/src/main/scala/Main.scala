@@ -5,9 +5,9 @@ import benchmark.BenchmarkUtil.*
 
 object Main extends App{
   def main(): Unit = {
-      // val mTest = MutableLongMap.getEmptyLongMap[Long](k => 0L)
+      val mTest = MutableLongMap.getEmptyLongMap[Long](k => 0L)
 
-      var mTest = ListMapLongKey[Long](List[(Long, Long)]())
+    //   var mTest = ListMapLongKey[Long](List[(Long, Long)]())
 
 
       val keysListName = (2048*8).toString()
@@ -30,11 +30,13 @@ object Main extends App{
           map(k)
       end for
       val t2 = System.nanoTime()
-      // val res = keys.map(k => (mTest(k) == k)).reduce(_ && _)
+      for (k, v) <- random2to15Pairs do
+        println(f"value in map for k = $k is ${map(k)} and should be $v")
+        assert(map(k) == v)
+      end for
+      val res = random2to15Pairs.map((k, v) => (mTest(k) == v)).reduce(_ && _)
       println(f"Time to run ${(t2 - t1) / 1e6}%.2f ms")
-      // println(f"Result valiity: $res")
-
-      
+      println(f"Result validity: $res") 
     }
   main()
 }

@@ -16,17 +16,17 @@ import stainless.lang.Cell
 // import stainless.lang.StaticChecks.* // Comment out when using the OptimisedEnsuring object below
 import OptimisedChecks.* // Import to remove `ensuring` and `require` from the code for the benchmarks
 
-object MutableLongMap {
-  import LongMapFixedSize.validMask
+object MutableLongMapOpti {
+  import LongMapFixedSizeOpti.validMask
 
   /** Helper method to create a new empty LongMap
     *
     * @param defaultEntry
     * @return
     */
-  def getEmptyLongMap[V](defaultEntry: Long => V): LongMap[V] = {
+  def getEmptyLongMap[V](defaultEntry: Long => V): LongMapOpti[V] = {
     val m = 15
-    LongMap(Cell(LongMapFixedSize.getNewLongMapFixedSize(m, defaultEntry)))
+    LongMapOpti(Cell(LongMapFixedSizeOpti.getNewLongMapFixedSize(m, defaultEntry)))
   }
 
   /** Helper method to create a new empty LongMap with a given initial array size WARNING: UNSOUND!!! The given size must be a power of 2 <= 2^30
@@ -34,14 +34,14 @@ object MutableLongMap {
     * @param defaultEntry
     * @return
     */
-  def getEmptyLongMap[V](defaultEntry: Long => V, initialSize: Int): LongMap[V] = {
+  def getEmptyLongMap[V](defaultEntry: Long => V, initialSize: Int): LongMapOpti[V] = {
     val m = initialSize - 1
-    LongMap(Cell(LongMapFixedSize.getNewLongMapFixedSize(m, defaultEntry)))
+    LongMapOpti(Cell(LongMapFixedSizeOpti.getNewLongMapFixedSize(m, defaultEntry)))
   }
 
   @mutable
-  final case class LongMap[V](
-      val underlying: Cell[LongMapFixedSize[V]]
+  final case class LongMapOpti[V](
+      val underlying: Cell[LongMapFixedSizeOpti[V]]
   ) {
 
     @pure
@@ -121,7 +121,7 @@ object MutableLongMap {
     def repack(): Boolean = {
 
       val newMask: Int = completeComputeNewMask(underlying.v.mask, underlying.v._vacant, underlying.v._size)
-      val newMapCell: Cell[LongMapFixedSize[V]] = Cell(LongMapFixedSize.getNewLongMapFixedSize(newMask, underlying.v.defaultEntry))
+      val newMapCell: Cell[LongMapFixedSizeOpti[V]] = Cell(LongMapFixedSizeOpti.getNewLongMapFixedSize(newMask, underlying.v.defaultEntry))
       val resExtraKeys = if ((underlying.v.extraKeys & 1) != 0 && (underlying.v.extraKeys & 2) != 0) {
         // it means there is a mapping for the key 0 and the Long.MIN_VALUE
         val u1 = newMapCell.v.update(0L, underlying.v.zeroValue)
@@ -152,7 +152,7 @@ object MutableLongMap {
     }
 
     @tailrec
-    def repackFrom(newMap: LongMapFixedSize[V], from: Int): Boolean = {
+    def repackFrom(newMap: LongMapFixedSizeOpti[V], from: Int): Boolean = {
       val currentKey = underlying.v._keys(from)
 
       val currentValue = underlying.v._values(from).asInstanceOf[V]
@@ -224,7 +224,7 @@ object MutableLongMap {
     * @param _values
     */
   @mutable
-  final case class LongMapFixedSize[V](
+  final case class LongMapFixedSizeOpti[V](
       val defaultEntry: Long => V,
       val mask: Int,
       var extraKeys: Int,
@@ -235,10 +235,10 @@ object MutableLongMap {
       val _values: Array[AnyRef],
       var _vacant: Int
   ) {
-    import LongMapFixedSize.seekEntryOrOpen
-    import LongMapFixedSize.toIndex
-    import LongMapFixedSize.seekEntry
-    import LongMapFixedSize.inRange
+    import LongMapFixedSizeOpti.seekEntryOrOpen
+    import LongMapFixedSizeOpti.toIndex
+    import LongMapFixedSizeOpti.seekEntry
+    import LongMapFixedSizeOpti.inRange
 
     @pure
     def size: Int = {
@@ -387,10 +387,10 @@ object MutableLongMap {
   case class Intermediate(undefined: Boolean, index: Int, x: Int) extends SeekEntryResult
   case class Undefined() extends SeekEntryResult
 
-  object LongMapFixedSize {
+  object LongMapFixedSizeOpti {
 
-    def getNewLongMapFixedSize[V](mask: Int, defaultEntry: Long => V): LongMapFixedSize[V] = {
-      val res = LongMapFixedSize[V](defaultEntry = defaultEntry, mask = mask, extraKeys = 0, zeroValue = defaultEntry(0L), minValue = defaultEntry(0L), _size = 0, _keys = new Array[Long](mask + 1), _values =new Array[AnyRef](mask + 1), _vacant = 0)
+    def getNewLongMapFixedSize[V](mask: Int, defaultEntry: Long => V): LongMapFixedSizeOpti[V] = {
+      val res = LongMapFixedSizeOpti[V](defaultEntry = defaultEntry, mask = mask, extraKeys = 0, zeroValue = defaultEntry(0L), minValue = defaultEntry(0L), _size = 0, _keys = new Array[Long](mask + 1), _values =new Array[AnyRef](mask + 1), _vacant = 0)
       res
     }
 
@@ -554,3 +554,4 @@ object MutableLongMap {
     } 
   }
 }
+
