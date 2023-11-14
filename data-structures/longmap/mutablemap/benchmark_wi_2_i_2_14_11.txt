@@ -149,3 +149,26 @@ Writing out Java source to /localhome/chassot/bolts/data-structures/longmap/muta
 [info] # Warmup Iteration   1: 79961421.729 us/op
 [info] # Warmup Iteration   2: 28458.340 us/op
 [info] Iteration   1: 31556.784 us/op
+[info] Iteration   2: 26255.516 us/op
+[info] Result "benchmark.MutableLongMapBenchmarkBig.lookupN_Opti":
+[info]   28906.150 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1-Ubuntu-0ubuntu120.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 2 iterations, 10 s each
+[info] # Measurement: 2 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: benchmark.MutableLongMapBenchmarkBig.lookupN_Opti
+[info] # Parameters: (keysListName = 524288)
+[info] # Run progress: 1.04% complete, ETA 02:55:52
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 80271677.407 us/op
+
+[warn] Canceling execution...
+[error] Cancelled: Jmh/run -i 2 -wi 2 -f1 -t1 MutableLongMapBenchmarkBig.lookupN_*
+[error] Use 'last' for the full log.
+[warn] Run canceled.
