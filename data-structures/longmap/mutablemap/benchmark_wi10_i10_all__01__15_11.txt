@@ -1,0 +1,3690 @@
+[info] welcome to sbt 1.9.6 (Eclipse Adoptium Java 17.0.8.1)
+[info] loading settings for project mutablemap-build from plugins.sbt ...
+[info] loading project definition from /localhome/chassot/bolts/data-structures/longmap/mutablemap/project
+[info] loading settings for project mutablemap from build.sbt ...
+[info] set current project to MutableMap (in build file:/localhome/chassot/bolts/data-structures/longmap/mutablemap/)
+[info] compiling 48 Scala sources to /localhome/chassot/bolts/data-structures/longmap/mutablemap/target/scala-3.3.0/classes ...
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/data-structures/longmap/mutablemap/src/main/scala/ch/epfl/chassot/MutableLongMap.scala:366:4 
+[warn] 366 |    c match {
+[warn]     |    ^
+[warn]     |    match may not be exhaustive.
+[warn]     |
+[warn]     |    It would fail on pattern case: EmptyCell()
+[warn]     |
+[warn]     | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/data-structures/longmap/mutablemap/src/main/scala/ch/epfl/chassot/MutableLongMap.scala:615:8 
+[warn] 615 |        seekEntryRes match {
+[warn]     |        ^^^^^^^^^^^^
+[warn]     |   match may not be exhaustive.
+[warn]     |
+[warn]     |   It would fail on pattern case: MutableLongMap.Intermediate(_, _, _)
+[warn]     |
+[warn]     | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/data-structures/longmap/mutablemap/src/main/scala/ch/epfl/chassot/MutableLongMap.scala:1142:6 
+[warn] 1142 |      intermediate match {
+[warn]      |      ^^^^^^^^^^^^
+[warn]      |    match may not be exhaustive.
+[warn]      |
+[warn]      |    It would fail on pattern case: _: MutableLongMap.SeekEntryResult
+[warn]      |
+[warn]      | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/data-structures/longmap/mutablemap/src/main/scala/ch/epfl/chassot/MutableLongMap.scala:1192:6 
+[warn] 1192 |      intermediate match {
+[warn]      |      ^^^^^^^^^^^^
+[warn]      |    match may not be exhaustive.
+[warn]      |
+[warn]      |    It would fail on pattern case: _: MutableLongMap.SeekEntryResult
+[warn]      |
+[warn]      | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/data-structures/longmap/mutablemap/src/main/scala/ch/epfl/chassot/MutableLongMapOpti.scala.scala:207:4 
+[warn] 207 |    c match {
+[warn]     |    ^
+[warn]     |    match may not be exhaustive.
+[warn]     |
+[warn]     |    It would fail on pattern case: EmptyCell()
+[warn]     |
+[warn]     | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/data-structures/longmap/mutablemap/src/main/scala/ch/epfl/chassot/MutableLongMapOpti.scala.scala:316:8 
+[warn] 316 |        seekEntryRes match {
+[warn]     |        ^^^^^^^^^^^^
+[warn]     |match may not be exhaustive.
+[warn]     |
+[warn]     |It would fail on pattern case: MutableLongMapOpti.Intermediate(_, _, _)
+[warn]     |
+[warn]     | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/data-structures/longmap/mutablemap/src/main/scala/ch/epfl/chassot/MutableLongMapOpti.scala.scala:474:6 
+[warn] 474 |      intermediate match {
+[warn]     |      ^^^^^^^^^^^^
+[warn]     |  match may not be exhaustive.
+[warn]     |
+[warn]     |  It would fail on pattern case: _: MutableLongMapOpti.SeekEntryResult
+[warn]     |
+[warn]     | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/data-structures/longmap/mutablemap/src/main/scala/ch/epfl/chassot/MutableLongMapOpti.scala.scala:511:6 
+[warn] 511 |      intermediate match {
+[warn]     |      ^^^^^^^^^^^^
+[warn]     |  match may not be exhaustive.
+[warn]     |
+[warn]     |  It would fail on pattern case: _: MutableLongMapOpti.SeekEntryResult
+[warn]     |
+[warn]     | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/data-structures/longmap/mutablemap/src/main/scala/ch/epfl/chassot/StrictlyOrderedLongListMap.scala:164:4 
+[warn] 164 |    l match {
+[warn]     |    ^
+[warn]     |    match may not be exhaustive.
+[warn]     |
+[warn]     |    It would fail on pattern case: collection.Cons(_, _)
+[warn]     |
+[warn]     | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/data-structures/longmap/mutablemap/src/main/scala/ch/epfl/chassot/StrictlyOrderedLongListMap.scala:198:4 
+[warn] 198 |    l match {
+[warn]     |    ^
+[warn]     |    match may not be exhaustive.
+[warn]     |
+[warn]     |    It would fail on pattern case: collection.Cons(_, _)
+[warn]     |
+[warn]     | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/data-structures/longmap/mutablemap/src/main/scala/ch/epfl/chassot/StrictlyOrderedLongListMap.scala:213:4 
+[warn] 213 |    l match {
+[warn]     |    ^
+[warn]     |    match may not be exhaustive.
+[warn]     |
+[warn]     |    It would fail on pattern case: collection.Cons(_, _)
+[warn]     |
+[warn]     | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/data-structures/longmap/mutablemap/src/main/scala/ch/epfl/chassot/StrictlyOrderedLongListMap.scala:229:4 
+[warn] 229 |    l match {
+[warn]     |    ^
+[warn]     |    match may not be exhaustive.
+[warn]     |
+[warn]     |    It would fail on pattern case: collection.Cons(_, _)
+[warn]     |
+[warn]     | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/data-structures/longmap/mutablemap/src/main/scala/ch/epfl/chassot/StrictlyOrderedLongListMap.scala:250:4 
+[warn] 250 |    l match {
+[warn]     |    ^
+[warn]     |    match may not be exhaustive.
+[warn]     |
+[warn]     |    It would fail on pattern case: collection.Cons(_, _)
+[warn]     |
+[warn]     | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/data-structures/longmap/mutablemap/src/main/scala/ch/epfl/chassot/StrictlyOrderedLongListMap.scala:281:4 
+[warn] 281 |    l match {
+[warn]     |    ^
+[warn]     |    match may not be exhaustive.
+[warn]     |
+[warn]     |    It would fail on pattern case: collection.Cons(_, _)
+[warn]     |
+[warn]     | longer explanation available when compiling with `-explain`
+[warn] 14 warnings found
+[info] done compiling
+[info] compiling 42 Scala sources to /localhome/chassot/bolts/data-structures/longmap/mutablemap/target/scala-3.3.0/test-classes ...
+[info] running org.openjdk.jmh.generators.bytecode.JmhBytecodeGenerator /localhome/chassot/bolts/data-structures/longmap/mutablemap/target/scala-3.3.0/classes /localhome/chassot/bolts/data-structures/longmap/mutablemap/target/scala-3.3.0/src_managed/jmh /localhome/chassot/bolts/data-structures/longmap/mutablemap/target/scala-3.3.0/resource_managed/jmh default
+Processing 784 classes from /localhome/chassot/bolts/data-structures/longmap/mutablemap/target/scala-3.3.0/classes with "reflection" generator
+Writing out Java source to /localhome/chassot/bolts/data-structures/longmap/mutablemap/target/scala-3.3.0/src_managed/jmh and resources to /localhome/chassot/bolts/data-structures/longmap/mutablemap/target/scala-3.3.0/resource_managed/jmh
+[info] compiling 42 Java sources to /localhome/chassot/bolts/data-structures/longmap/mutablemap/target/scala-3.3.0/classes ...
+[info] done compiling
+[info] done compiling
+[info] running (fork) org.openjdk.jmh.Main -i 10 -wi 10 -f1 -t1
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1
+[info] # VM invoker: /usr/lib/jvm/temurin-17-jdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 10 iterations, 10 s each
+[info] # Measurement: 10 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: benchmark.LongListMapBenchmark.createUpdateLookup_ListMap
+[info] # Parameters: (n = 1)
+[info] # Run progress: 0.00% complete, ETA 2 days, 05:40:00
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 0.152 us/op
+[info] # Warmup Iteration   2: 0.121 us/op
+[info] # Warmup Iteration   3: 0.118 us/op
+[info] # Warmup Iteration   4: 0.116 us/op
+[info] # Warmup Iteration   5: 0.118 us/op
+[info] # Warmup Iteration   6: 0.117 us/op
+[info] # Warmup Iteration   7: 0.118 us/op
+[info] # Warmup Iteration   8: 0.119 us/op
+[info] # Warmup Iteration   9: 0.117 us/op
+[info] # Warmup Iteration  10: 0.118 us/op
+[info] Iteration   1: 0.118 us/op
+[info] Iteration   2: 0.119 us/op
+[info] Iteration   3: 0.117 us/op
+[info] Iteration   4: 0.117 us/op
+[info] Iteration   5: 0.117 us/op
+[info] Iteration   6: 0.118 us/op
+[info] Iteration   7: 0.118 us/op
+[info] Iteration   8: 0.118 us/op
+[info] Iteration   9: 0.117 us/op
+[info] Iteration  10: 0.117 us/op
+[info] Result "benchmark.LongListMapBenchmark.createUpdateLookup_ListMap":
+[info]   0.118 ±(99.9%) 0.001 us/op [Average]
+[info]   (min, avg, max) = (0.117, 0.118, 0.119), stdev = 0.001
+[info]   CI (99.9%): [0.117, 0.119] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1
+[info] # VM invoker: /usr/lib/jvm/temurin-17-jdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 10 iterations, 10 s each
+[info] # Measurement: 10 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: benchmark.LongListMapBenchmark.createUpdateLookup_ListMap
+[info] # Parameters: (n = 2)
+[info] # Run progress: 0.10% complete, ETA 2 days, 05:43:29
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 0.322 us/op
+[info] # Warmup Iteration   2: 0.266 us/op
+[info] # Warmup Iteration   3: 0.261 us/op
+[info] # Warmup Iteration   4: 0.265 us/op
+[info] # Warmup Iteration   5: 0.261 us/op
+[info] # Warmup Iteration   6: 0.261 us/op
+[info] # Warmup Iteration   7: 0.261 us/op
+[info] # Warmup Iteration   8: 0.263 us/op
+[info] # Warmup Iteration   9: 0.260 us/op
+[info] # Warmup Iteration  10: 0.260 us/op
+[info] Iteration   1: 0.260 us/op
+[info] Iteration   2: 0.260 us/op
+[info] Iteration   3: 0.262 us/op
+[info] Iteration   4: 0.262 us/op
+[info] Iteration   5: 0.261 us/op
+[info] Iteration   6: 0.260 us/op
+[info] Iteration   7: 0.260 us/op
+[info] Iteration   8: 0.259 us/op
+[info] Iteration   9: 0.263 us/op
+[info] Iteration  10: 0.260 us/op
+[info] Result "benchmark.LongListMapBenchmark.createUpdateLookup_ListMap":
+[info]   0.261 ±(99.9%) 0.002 us/op [Average]
+[info]   (min, avg, max) = (0.259, 0.261, 0.263), stdev = 0.001
+[info]   CI (99.9%): [0.259, 0.262] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1
+[info] # VM invoker: /usr/lib/jvm/temurin-17-jdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 10 iterations, 10 s each
+[info] # Measurement: 10 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: benchmark.LongListMapBenchmark.createUpdateLookup_ListMap
+[info] # Parameters: (n = 3)
+[info] # Run progress: 0.21% complete, ETA 2 days, 05:40:14
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 0.774 us/op
+[info] # Warmup Iteration   2: 0.633 us/op
+[info] # Warmup Iteration   3: 0.643 us/op
+[info] # Warmup Iteration   4: 0.644 us/op
+[info] # Warmup Iteration   5: 0.632 us/op
+[info] # Warmup Iteration   6: 0.638 us/op
+[info] # Warmup Iteration   7: 0.635 us/op
+[info] # Warmup Iteration   8: 0.633 us/op
+[info] # Warmup Iteration   9: 0.630 us/op
+[info] # Warmup Iteration  10: 0.631 us/op
+[info] Iteration   1: 0.636 us/op
+[info] Iteration   2: 0.635 us/op
+[info] Iteration   3: 0.634 us/op
+[info] Iteration   4: 0.632 us/op
+[info] Iteration   5: 0.631 us/op
+[info] Iteration   6: 0.630 us/op
+[info] Iteration   7: 0.632 us/op
+[info] Iteration   8: 0.636 us/op
+[info] Iteration   9: 0.630 us/op
+[info] Iteration  10: 0.631 us/op
+[info] Result "benchmark.LongListMapBenchmark.createUpdateLookup_ListMap":
+[info]   0.633 ±(99.9%) 0.004 us/op [Average]
+[info]   (min, avg, max) = (0.630, 0.633, 0.636), stdev = 0.002
+[info]   CI (99.9%): [0.629, 0.636] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1
+[info] # VM invoker: /usr/lib/jvm/temurin-17-jdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 10 iterations, 10 s each
+[info] # Measurement: 10 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: benchmark.LongListMapBenchmark.createUpdateLookup_ListMap
+[info] # Parameters: (n = 4)
+[info] # Run progress: 0.31% complete, ETA 2 days, 05:36:43
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 2.118 us/op
+[info] # Warmup Iteration   2: 1.803 us/op
+[info] # Warmup Iteration   3: 1.785 us/op
+[info] # Warmup Iteration   4: 1.792 us/op
+[info] # Warmup Iteration   5: 1.764 us/op
+[info] # Warmup Iteration   6: 1.774 us/op
+[info] # Warmup Iteration   7: 1.776 us/op
+[info] # Warmup Iteration   8: 1.775 us/op
+[info] # Warmup Iteration   9: 1.764 us/op
+[info] # Warmup Iteration  10: 1.759 us/op
+[info] Iteration   1: 1.760 us/op
+[info] Iteration   2: 1.765 us/op
+[info] Iteration   3: 1.758 us/op
+[info] Iteration   4: 1.774 us/op
+[info] Iteration   5: 1.769 us/op
+[info] Iteration   6: 1.764 us/op
+[info] Iteration   7: 1.761 us/op
+[info] Iteration   8: 1.757 us/op
+[info] Iteration   9: 1.757 us/op
+[info] Iteration  10: 1.760 us/op
+[info] Result "benchmark.LongListMapBenchmark.createUpdateLookup_ListMap":
+[info]   1.762 ±(99.9%) 0.008 us/op [Average]
+[info]   (min, avg, max) = (1.757, 1.762, 1.774), stdev = 0.005
+[info]   CI (99.9%): [1.754, 1.771] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1
+[info] # VM invoker: /usr/lib/jvm/temurin-17-jdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 10 iterations, 10 s each
+[info] # Measurement: 10 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: benchmark.LongListMapBenchmark.createUpdateLookup_ListMap
+[info] # Parameters: (n = 5)
+[info] # Run progress: 0.41% complete, ETA 2 days, 05:33:20
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 6.014 us/op
+[info] # Warmup Iteration   2: 5.083 us/op
+[info] # Warmup Iteration   3: 5.018 us/op
+[info] # Warmup Iteration   4: 4.993 us/op
+[info] # Warmup Iteration   5: 4.966 us/op
+[info] # Warmup Iteration   6: 5.027 us/op
+[info] # Warmup Iteration   7: 4.969 us/op
+[info] # Warmup Iteration   8: 4.961 us/op
+[info] # Warmup Iteration   9: 4.985 us/op
+[info] # Warmup Iteration  10: 5.012 us/op
+[info] Iteration   1: 4.979 us/op
+[info] Iteration   2: 5.012 us/op
+[info] Iteration   3: 4.987 us/op
+[info] Iteration   4: 4.972 us/op
+[info] Iteration   5: 4.962 us/op
+[info] Iteration   6: 4.957 us/op
+[info] Iteration   7: 5.008 us/op
+[info] Iteration   8: 4.990 us/op
+[info] Iteration   9: 5.024 us/op
+[info] Iteration  10: 4.996 us/op
+[info] Result "benchmark.LongListMapBenchmark.createUpdateLookup_ListMap":
+[info]   4.989 ±(99.9%) 0.033 us/op [Average]
+[info]   (min, avg, max) = (4.957, 4.989, 5.024), stdev = 0.022
+[info]   CI (99.9%): [4.956, 5.022] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1
+[info] # VM invoker: /usr/lib/jvm/temurin-17-jdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 10 iterations, 10 s each
+[info] # Measurement: 10 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: benchmark.LongListMapBenchmark.createUpdateLookup_ListMap
+[info] # Parameters: (n = 6)
+[info] # Run progress: 0.52% complete, ETA 2 days, 05:29:56
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 22.387 us/op
+[info] # Warmup Iteration   2: 18.365 us/op
+[info] # Warmup Iteration   3: 18.128 us/op
+[info] # Warmup Iteration   4: 18.116 us/op
+[info] # Warmup Iteration   5: 18.215 us/op
+[info] # Warmup Iteration   6: 18.100 us/op
+[info] # Warmup Iteration   7: 17.922 us/op
+[info] # Warmup Iteration   8: 17.919 us/op
+[info] # Warmup Iteration   9: 17.992 us/op
+[info] # Warmup Iteration  10: 18.071 us/op
+[info] Iteration   1: 18.070 us/op
+[info] Iteration   2: 17.939 us/op
+[info] Iteration   3: 17.944 us/op
+[info] Iteration   4: 17.906 us/op
+[info] Iteration   5: 17.933 us/op
+[info] Iteration   6: 18.006 us/op
+[info] Iteration   7: 18.084 us/op
+[info] Iteration   8: 18.234 us/op
+[info] Iteration   9: 18.115 us/op
+[info] Iteration  10: 18.234 us/op
+[info] Result "benchmark.LongListMapBenchmark.createUpdateLookup_ListMap":
+[info]   18.047 ±(99.9%) 0.184 us/op [Average]
+[info]   (min, avg, max) = (17.906, 18.047, 18.234), stdev = 0.122
+[info]   CI (99.9%): [17.863, 18.231] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1
+[info] # VM invoker: /usr/lib/jvm/temurin-17-jdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 10 iterations, 10 s each
+[info] # Measurement: 10 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: benchmark.LongListMapBenchmark.createUpdateLookup_ListMap
+[info] # Parameters: (n = 7)
+[info] # Run progress: 0.62% complete, ETA 2 days, 05:26:32
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 87.019 us/op
+[info] # Warmup Iteration   2: 71.532 us/op
+[info] # Warmup Iteration   3: 69.767 us/op
+[info] # Warmup Iteration   4: 70.119 us/op
+[info] # Warmup Iteration   5: 70.891 us/op
+[info] # Warmup Iteration   6: 71.228 us/op
+[info] # Warmup Iteration   7: 71.038 us/op
+[info] # Warmup Iteration   8: 70.786 us/op
+[info] # Warmup Iteration   9: 70.103 us/op
+[info] # Warmup Iteration  10: 69.817 us/op
+[info] Iteration   1: 69.455 us/op
+[info] Iteration   2: 69.952 us/op
+[info] Iteration   3: 69.971 us/op
+[info] Iteration   4: 69.785 us/op
+[info] Iteration   5: 69.413 us/op
+[info] Iteration   6: 69.273 us/op
+[info] Iteration   7: 69.366 us/op
+[info] Iteration   8: 69.448 us/op
+[info] Iteration   9: 70.024 us/op
+[info] Iteration  10: 69.472 us/op
+[info] Result "benchmark.LongListMapBenchmark.createUpdateLookup_ListMap":
+[info]   69.616 ±(99.9%) 0.431 us/op [Average]
+[info]   (min, avg, max) = (69.273, 69.616, 70.024), stdev = 0.285
+[info]   CI (99.9%): [69.185, 70.047] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1
+[info] # VM invoker: /usr/lib/jvm/temurin-17-jdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 10 iterations, 10 s each
+[info] # Measurement: 10 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: benchmark.LongListMapBenchmark.createUpdateLookup_ListMap
+[info] # Parameters: (n = 8)
+[info] # Run progress: 0.72% complete, ETA 2 days, 05:23:10
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 386.971 us/op
+[info] # Warmup Iteration   2: 323.350 us/op
+[info] # Warmup Iteration   3: 318.296 us/op
+[info] # Warmup Iteration   4: 323.014 us/op
+[info] # Warmup Iteration   5: 316.349 us/op
+[info] # Warmup Iteration   6: 319.782 us/op
+[info] # Warmup Iteration   7: 318.508 us/op
+[info] # Warmup Iteration   8: 316.421 us/op
+[info] # Warmup Iteration   9: 316.383 us/op
+[info] # Warmup Iteration  10: 316.107 us/op
+[info] Iteration   1: 316.732 us/op
+[info] Iteration   2: 317.658 us/op
+[info] Iteration   3: 318.408 us/op
+[info] Iteration   4: 315.666 us/op
+[info] Iteration   5: 317.278 us/op
+[info] Iteration   6: 317.441 us/op
+[info] Iteration   7: 316.462 us/op
+[info] Iteration   8: 318.277 us/op
+[info] Iteration   9: 316.041 us/op
+[info] Iteration  10: 317.512 us/op
+[info] Result "benchmark.LongListMapBenchmark.createUpdateLookup_ListMap":
+[info]   317.148 ±(99.9%) 1.373 us/op [Average]
+[info]   (min, avg, max) = (315.666, 317.148, 318.408), stdev = 0.908
+[info]   CI (99.9%): [315.775, 318.520] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1
+[info] # VM invoker: /usr/lib/jvm/temurin-17-jdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 10 iterations, 10 s each
+[info] # Measurement: 10 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: benchmark.LongListMapBenchmark.createUpdateLookup_ListMap
+[info] # Parameters: (n = 9)
+[info] # Run progress: 0.83% complete, ETA 2 days, 05:19:48
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 1607.982 us/op
+[info] # Warmup Iteration   2: 1345.145 us/op
+[info] # Warmup Iteration   3: 1320.501 us/op
+[info] # Warmup Iteration   4: 1338.679 us/op
+[info] # Warmup Iteration   5: 1319.600 us/op
+[info] # Warmup Iteration   6: 1326.360 us/op
+[info] # Warmup Iteration   7: 1331.093 us/op
+[info] # Warmup Iteration   8: 1330.961 us/op
+[info] # Warmup Iteration   9: 1322.357 us/op
+[info] # Warmup Iteration  10: 1317.983 us/op
+[info] Iteration   1: 1319.167 us/op
+[info] Iteration   2: 1319.556 us/op
+[info] Iteration   3: 1320.756 us/op
+[info] Iteration   4: 1329.697 us/op
+[info] Iteration   5: 1330.369 us/op
+[info] Iteration   6: 1316.366 us/op
+[info] Iteration   7: 1315.767 us/op
+[info] Iteration   8: 1317.462 us/op
+[info] Iteration   9: 1315.008 us/op
+[info] Iteration  10: 1314.969 us/op
+[info] Result "benchmark.LongListMapBenchmark.createUpdateLookup_ListMap":
+[info]   1319.912 ±(99.9%) 8.593 us/op [Average]
+[info]   (min, avg, max) = (1314.969, 1319.912, 1330.369), stdev = 5.684
+[info]   CI (99.9%): [1311.319, 1328.505] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1
+[info] # VM invoker: /usr/lib/jvm/temurin-17-jdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 10 iterations, 10 s each
+[info] # Measurement: 10 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: benchmark.LongListMapBenchmark.createUpdateLookup_Original
+[info] # Parameters: (n = 1)
+[info] # Run progress: 0.93% complete, ETA 2 days, 05:16:28
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 0.102 us/op
+[info] # Warmup Iteration   2: 0.094 us/op
+[info] # Warmup Iteration   3: 0.093 us/op
+[info] # Warmup Iteration   4: 0.091 us/op
+[info] # Warmup Iteration   5: 0.093 us/op
+[info] # Warmup Iteration   6: 0.091 us/op
+[info] # Warmup Iteration   7: 0.093 us/op
+[info] # Warmup Iteration   8: 0.091 us/op
+[info] # Warmup Iteration   9: 0.091 us/op
+[info] # Warmup Iteration  10: 0.092 us/op
+[info] Iteration   1: 0.092 us/op
+[info] Iteration   2: 0.091 us/op
+[info] Iteration   3: 0.091 us/op
+[info] Iteration   4: 0.091 us/op
+[info] Iteration   5: 0.092 us/op
+[info] Iteration   6: 0.092 us/op
+[info] Iteration   7: 0.091 us/op
+[info] Iteration   8: 0.091 us/op
+[info] Iteration   9: 0.091 us/op
+[info] Iteration  10: 0.092 us/op
+[info] Result "benchmark.LongListMapBenchmark.createUpdateLookup_Original":
+[info]   0.091 ±(99.9%) 0.001 us/op [Average]
+[info]   (min, avg, max) = (0.091, 0.091, 0.092), stdev = 0.001
+[info]   CI (99.9%): [0.091, 0.092] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1
+[info] # VM invoker: /usr/lib/jvm/temurin-17-jdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 10 iterations, 10 s each
+[info] # Measurement: 10 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: benchmark.LongListMapBenchmark.createUpdateLookup_Original
+[info] # Parameters: (n = 2)
+[info] # Run progress: 1.04% complete, ETA 2 days, 05:13:06
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 0.155 us/op
+[info] # Warmup Iteration   2: 0.132 us/op
+[info] # Warmup Iteration   3: 0.128 us/op
+[info] # Warmup Iteration   4: 0.128 us/op
+[info] # Warmup Iteration   5: 0.127 us/op
+[info] # Warmup Iteration   6: 0.128 us/op
+[info] # Warmup Iteration   7: 0.127 us/op
+[info] # Warmup Iteration   8: 0.127 us/op
+[info] # Warmup Iteration   9: 0.127 us/op
+[info] # Warmup Iteration  10: 0.126 us/op
+[info] Iteration   1: 0.127 us/op
+[info] Iteration   2: 0.128 us/op
+[info] Iteration   3: 0.128 us/op
+[info] Iteration   4: 0.129 us/op
+[info] Iteration   5: 0.129 us/op
+[info] Iteration   6: 0.130 us/op
+[info] Iteration   7: 0.132 us/op
+[info] Iteration   8: 0.131 us/op
+[info] Iteration   9: 0.130 us/op
+[info] Iteration  10: 0.129 us/op
+[info] Result "benchmark.LongListMapBenchmark.createUpdateLookup_Original":
+[info]   0.129 ±(99.9%) 0.002 us/op [Average]
+[info]   (min, avg, max) = (0.127, 0.129, 0.132), stdev = 0.002
+[info]   CI (99.9%): [0.127, 0.132] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1
+[info] # VM invoker: /usr/lib/jvm/temurin-17-jdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 10 iterations, 10 s each
+[info] # Measurement: 10 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: benchmark.LongListMapBenchmark.createUpdateLookup_Original
+[info] # Parameters: (n = 3)
+[info] # Run progress: 1.14% complete, ETA 2 days, 05:09:45
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 0.332 us/op
+[info] # Warmup Iteration   2: 0.307 us/op
+[info] # Warmup Iteration   3: 0.307 us/op
+[info] # Warmup Iteration   4: 0.306 us/op
+[info] # Warmup Iteration   5: 0.303 us/op
+[info] # Warmup Iteration   6: 0.304 us/op
+[info] # Warmup Iteration   7: 0.302 us/op
+[info] # Warmup Iteration   8: 0.305 us/op
+[info] # Warmup Iteration   9: 0.302 us/op
+[info] # Warmup Iteration  10: 0.303 us/op
+[info] Iteration   1: 0.302 us/op
+[info] Iteration   2: 0.305 us/op
+[info] Iteration   3: 0.299 us/op
+[info] Iteration   4: 0.302 us/op
+[info] Iteration   5: 0.303 us/op
+[info] Iteration   6: 0.300 us/op
+[info] Iteration   7: 0.303 us/op
+[info] Iteration   8: 0.302 us/op
+[info] Iteration   9: 0.301 us/op
+[info] Iteration  10: 0.301 us/op
+[info] Result "benchmark.LongListMapBenchmark.createUpdateLookup_Original":
+[info]   0.302 ±(99.9%) 0.003 us/op [Average]
+[info]   (min, avg, max) = (0.299, 0.302, 0.305), stdev = 0.002
+[info]   CI (99.9%): [0.299, 0.304] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1
+[info] # VM invoker: /usr/lib/jvm/temurin-17-jdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 10 iterations, 10 s each
+[info] # Measurement: 10 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: benchmark.LongListMapBenchmark.createUpdateLookup_Original
+[info] # Parameters: (n = 4)
+[info] # Run progress: 1.24% complete, ETA 2 days, 05:06:22
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 0.774 us/op
+[info] # Warmup Iteration   2: 0.697 us/op
+[info] # Warmup Iteration   3: 0.696 us/op
+[info] # Warmup Iteration   4: 0.711 us/op
+[info] # Warmup Iteration   5: 0.708 us/op
+[info] # Warmup Iteration   6: 0.710 us/op
+[info] # Warmup Iteration   7: 0.705 us/op
+[info] # Warmup Iteration   8: 0.711 us/op
+[info] # Warmup Iteration   9: 0.702 us/op
+[info] # Warmup Iteration  10: 0.696 us/op
+[info] Iteration   1: 0.694 us/op
+[info] Iteration   2: 0.695 us/op
+[info] Iteration   3: 0.698 us/op
+[info] Iteration   4: 0.693 us/op
+[info] Iteration   5: 0.698 us/op
+[info] Iteration   6: 0.693 us/op
+[info] Iteration   7: 0.700 us/op
+[info] Iteration   8: 0.700 us/op
+[info] Iteration   9: 0.701 us/op
+[info] Iteration  10: 0.701 us/op
+[info] Result "benchmark.LongListMapBenchmark.createUpdateLookup_Original":
+[info]   0.697 ±(99.9%) 0.005 us/op [Average]
+[info]   (min, avg, max) = (0.693, 0.697, 0.701), stdev = 0.003
+[info]   CI (99.9%): [0.692, 0.702] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1
+[info] # VM invoker: /usr/lib/jvm/temurin-17-jdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 10 iterations, 10 s each
+[info] # Measurement: 10 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: benchmark.LongListMapBenchmark.createUpdateLookup_Original
+[info] # Parameters: (n = 5)
+[info] # Run progress: 1.35% complete, ETA 2 days, 05:02:59
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 1.492 us/op
+[info] # Warmup Iteration   2: 1.373 us/op
+[info] # Warmup Iteration   3: 1.362 us/op
+[info] # Warmup Iteration   4: 1.360 us/op
+[info] # Warmup Iteration   5: 1.353 us/op
+[info] # Warmup Iteration   6: 1.356 us/op
+[info] # Warmup Iteration   7: 1.338 us/op
+[info] # Warmup Iteration   8: 1.351 us/op
+[info] # Warmup Iteration   9: 1.340 us/op
+[info] # Warmup Iteration  10: 1.355 us/op
+[info] Iteration   1: 1.343 us/op
+[info] Iteration   2: 1.355 us/op
+[info] Iteration   3: 1.356 us/op
+[info] Iteration   4: 1.383 us/op
+[info] Iteration   5: 1.375 us/op
+[info] Iteration   6: 1.363 us/op
+[info] Iteration   7: 1.377 us/op
+[info] Iteration   8: 1.357 us/op
+[info] Iteration   9: 1.335 us/op
+[info] Iteration  10: 1.332 us/op
+[info] Result "benchmark.LongListMapBenchmark.createUpdateLookup_Original":
+[info]   1.358 ±(99.9%) 0.026 us/op [Average]
+[info]   (min, avg, max) = (1.332, 1.358, 1.383), stdev = 0.017
+[info]   CI (99.9%): [1.332, 1.384] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1
+[info] # VM invoker: /usr/lib/jvm/temurin-17-jdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 10 iterations, 10 s each
+[info] # Measurement: 10 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: benchmark.LongListMapBenchmark.createUpdateLookup_Original
+[info] # Parameters: (n = 6)
+[info] # Run progress: 1.45% complete, ETA 2 days, 04:59:37
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 3.175 us/op
+[info] # Warmup Iteration   2: 2.950 us/op
+[info] # Warmup Iteration   3: 2.902 us/op
+[info] # Warmup Iteration   4: 2.931 us/op
+[info] # Warmup Iteration   5: 2.896 us/op
+[info] # Warmup Iteration   6: 2.900 us/op
+[info] # Warmup Iteration   7: 2.908 us/op
+[info] # Warmup Iteration   8: 2.908 us/op
+[info] # Warmup Iteration   9: 2.891 us/op
+[info] # Warmup Iteration  10: 2.897 us/op
+[info] Iteration   1: 2.903 us/op
+[info] Iteration   2: 2.906 us/op
+[info] Iteration   3: 2.914 us/op
+[info] Iteration   4: 2.890 us/op
+[info] Iteration   5: 2.904 us/op
+[info] Iteration   6: 2.878 us/op
+[info] Iteration   7: 2.879 us/op
+[info] Iteration   8: 2.869 us/op
+[info] Iteration   9: 2.870 us/op
+[info] Iteration  10: 2.874 us/op
+[info] Result "benchmark.LongListMapBenchmark.createUpdateLookup_Original":
+[info]   2.889 ±(99.9%) 0.025 us/op [Average]
+[info]   (min, avg, max) = (2.869, 2.889, 2.914), stdev = 0.017
+[info]   CI (99.9%): [2.864, 2.914] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1
+[info] # VM invoker: /usr/lib/jvm/temurin-17-jdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 10 iterations, 10 s each
+[info] # Measurement: 10 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: benchmark.LongListMapBenchmark.createUpdateLookup_Original
+[info] # Parameters: (n = 7)
+[info] # Run progress: 1.55% complete, ETA 2 days, 04:56:15
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 6.363 us/op
+[info] # Warmup Iteration   2: 5.905 us/op
+[info] # Warmup Iteration   3: 5.917 us/op
+[info] # Warmup Iteration   4: 5.909 us/op
+[info] # Warmup Iteration   5: 6.001 us/op
+[info] # Warmup Iteration   6: 6.028 us/op
+[info] # Warmup Iteration   7: 5.952 us/op
+[info] # Warmup Iteration   8: 6.035 us/op
+[info] # Warmup Iteration   9: 5.946 us/op
+[info] # Warmup Iteration  10: 5.897 us/op
+[info] Iteration   1: 5.834 us/op
+[info] Iteration   2: 5.890 us/op
+[info] Iteration   3: 5.825 us/op
+[info] Iteration   4: 5.877 us/op
+[info] Iteration   5: 5.878 us/op
+[info] Iteration   6: 5.831 us/op
+[info] Iteration   7: 5.851 us/op
+[info] Iteration   8: 5.910 us/op
+[info] Iteration   9: 5.841 us/op
+[info] Iteration  10: 5.825 us/op
+[info] Result "benchmark.LongListMapBenchmark.createUpdateLookup_Original":
+[info]   5.856 ±(99.9%) 0.046 us/op [Average]
+[info]   (min, avg, max) = (5.825, 5.856, 5.910), stdev = 0.031
+[info]   CI (99.9%): [5.810, 5.902] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1
+[info] # VM invoker: /usr/lib/jvm/temurin-17-jdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 10 iterations, 10 s each
+[info] # Measurement: 10 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: benchmark.LongListMapBenchmark.createUpdateLookup_Original
+[info] # Parameters: (n = 8)
+[info] # Run progress: 1.66% complete, ETA 2 days, 04:52:53
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 14.328 us/op
+[info] # Warmup Iteration   2: 12.152 us/op
+[info] # Warmup Iteration   3: 11.922 us/op
+[info] # Warmup Iteration   4: 12.107 us/op
+[info] # Warmup Iteration   5: 11.939 us/op
+[info] # Warmup Iteration   6: 12.031 us/op
+[info] # Warmup Iteration   7: 12.003 us/op
+[info] # Warmup Iteration   8: 11.906 us/op
+[info] # Warmup Iteration   9: 11.948 us/op
+[info] # Warmup Iteration  10: 11.967 us/op
+[info] Iteration   1: 11.995 us/op
+[info] Iteration   2: 12.056 us/op
+[info] Iteration   3: 12.069 us/op
+[info] Iteration   4: 11.987 us/op
+[info] Iteration   5: 12.150 us/op
+[info] Iteration   6: 12.156 us/op
+[info] Iteration   7: 12.097 us/op
+[info] Iteration   8: 12.144 us/op
+[info] Iteration   9: 12.143 us/op
+[info] Iteration  10: 12.124 us/op
+[info] Result "benchmark.LongListMapBenchmark.createUpdateLookup_Original":
+[info]   12.092 ±(99.9%) 0.096 us/op [Average]
+[info]   (min, avg, max) = (11.987, 12.092, 12.156), stdev = 0.063
+[info]   CI (99.9%): [11.996, 12.188] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1
+[info] # VM invoker: /usr/lib/jvm/temurin-17-jdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 10 iterations, 10 s each
+[info] # Measurement: 10 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: benchmark.LongListMapBenchmark.createUpdateLookup_Original
+[info] # Parameters: (n = 9)
+[info] # Run progress: 1.76% complete, ETA 2 days, 04:49:31
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 30.590 us/op
+[info] # Warmup Iteration   2: 25.719 us/op
+[info] # Warmup Iteration   3: 25.442 us/op
+[info] # Warmup Iteration   4: 25.233 us/op
+[info] # Warmup Iteration   5: 25.328 us/op
+[info] # Warmup Iteration   6: 25.423 us/op
+[info] # Warmup Iteration   7: 25.218 us/op
+[info] # Warmup Iteration   8: 25.210 us/op
+[info] # Warmup Iteration   9: 25.158 us/op
+[info] # Warmup Iteration  10: 25.187 us/op
+[info] Iteration   1: 25.123 us/op
+[info] Iteration   2: 25.327 us/op
+[info] Iteration   3: 25.219 us/op
+[info] Iteration   4: 25.273 us/op
+[info] Iteration   5: 25.193 us/op
+[info] Iteration   6: 25.309 us/op
+[info] Iteration   7: 25.239 us/op
+[info] Iteration   8: 25.168 us/op
+[info] Iteration   9: 25.288 us/op
+[info] Iteration  10: 25.130 us/op
+[info] Result "benchmark.LongListMapBenchmark.createUpdateLookup_Original":
+[info]   25.227 ±(99.9%) 0.110 us/op [Average]
+[info]   (min, avg, max) = (25.123, 25.227, 25.327), stdev = 0.073
+[info]   CI (99.9%): [25.117, 25.337] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1
+[info] # VM invoker: /usr/lib/jvm/temurin-17-jdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 10 iterations, 10 s each
+[info] # Measurement: 10 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: benchmark.LongListMapBenchmark.createUpdateLookup_Verified
+[info] # Parameters: (n = 1)
+[info] # Run progress: 1.86% complete, ETA 2 days, 04:46:09
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 0.208 us/op
+[info] # Warmup Iteration   2: 0.190 us/op
+[info] # Warmup Iteration   3: 0.189 us/op
+[info] # Warmup Iteration   4: 0.186 us/op
+[info] # Warmup Iteration   5: 0.192 us/op
+[info] # Warmup Iteration   6: 0.189 us/op
+[info] # Warmup Iteration   7: 0.189 us/op
+[info] # Warmup Iteration   8: 0.189 us/op
+[info] # Warmup Iteration   9: 0.189 us/op
+[info] # Warmup Iteration  10: 0.187 us/op
+[info] Iteration   1: 0.185 us/op
+[info] Iteration   2: 0.185 us/op
+[info] Iteration   3: 0.185 us/op
+[info] Iteration   4: 0.185 us/op
+[info] Iteration   5: 0.185 us/op
+[info] Iteration   6: 0.185 us/op
+[info] Iteration   7: 0.187 us/op
+[info] Iteration   8: 0.186 us/op
+[info] Iteration   9: 0.187 us/op
+[info] Iteration  10: 0.186 us/op
+[info] Result "benchmark.LongListMapBenchmark.createUpdateLookup_Verified":
+[info]   0.186 ±(99.9%) 0.001 us/op [Average]
+[info]   (min, avg, max) = (0.185, 0.186, 0.187), stdev = 0.001
+[info]   CI (99.9%): [0.184, 0.187] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1
+[info] # VM invoker: /usr/lib/jvm/temurin-17-jdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 10 iterations, 10 s each
+[info] # Measurement: 10 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: benchmark.LongListMapBenchmark.createUpdateLookup_Verified
+[info] # Parameters: (n = 2)
+[info] # Run progress: 1.97% complete, ETA 2 days, 04:42:47
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 0.261 us/op
+[info] # Warmup Iteration   2: 0.238 us/op
+[info] # Warmup Iteration   3: 0.240 us/op
+[info] # Warmup Iteration   4: 0.236 us/op
+[info] # Warmup Iteration   5: 0.238 us/op
+[info] # Warmup Iteration   6: 0.235 us/op
+[info] # Warmup Iteration   7: 0.237 us/op
+[info] # Warmup Iteration   8: 0.234 us/op
+[info] # Warmup Iteration   9: 0.236 us/op
+[info] # Warmup Iteration  10: 0.235 us/op
+[info] Iteration   1: 0.233 us/op
+[info] Iteration   2: 0.233 us/op
+[info] Iteration   3: 0.233 us/op
+[info] Iteration   4: 0.238 us/op
+[info] Iteration   5: 0.240 us/op
+[info] Iteration   6: 0.239 us/op
+[info] Iteration   7: 0.242 us/op
+[info] Iteration   8: 0.239 us/op
+[info] Iteration   9: 0.236 us/op
+[info] Iteration  10: 0.234 us/op
+[info] Result "benchmark.LongListMapBenchmark.createUpdateLookup_Verified":
+[info]   0.237 ±(99.9%) 0.005 us/op [Average]
+[info]   (min, avg, max) = (0.233, 0.237, 0.242), stdev = 0.003
+[info]   CI (99.9%): [0.232, 0.242] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1
+[info] # VM invoker: /usr/lib/jvm/temurin-17-jdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 10 iterations, 10 s each
+[info] # Measurement: 10 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: benchmark.LongListMapBenchmark.createUpdateLookup_Verified
+[info] # Parameters: (n = 3)
+[info] # Run progress: 2.07% complete, ETA 2 days, 04:39:26
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 0.409 us/op
+[info] # Warmup Iteration   2: 0.362 us/op
+[info] # Warmup Iteration   3: 0.357 us/op
+[info] # Warmup Iteration   4: 0.352 us/op
+[info] # Warmup Iteration   5: 0.357 us/op
+[info] # Warmup Iteration   6: 0.352 us/op
+[info] # Warmup Iteration   7: 0.351 us/op
+[info] # Warmup Iteration   8: 0.352 us/op
+[info] # Warmup Iteration   9: 0.354 us/op
+[info] # Warmup Iteration  10: 0.354 us/op
+[info] Iteration   1: 0.351 us/op
+[info] Iteration   2: 0.352 us/op
+[info] Iteration   3: 0.351 us/op
+[info] Iteration   4: 0.352 us/op
+[info] Iteration   5: 0.352 us/op
+[info] Iteration   6: 0.355 us/op
+[info] Iteration   7: 0.354 us/op
+[info] Iteration   8: 0.352 us/op
+[info] Iteration   9: 0.352 us/op
+[info] Iteration  10: 0.352 us/op
+[info] Result "benchmark.LongListMapBenchmark.createUpdateLookup_Verified":
+[info]   0.352 ±(99.9%) 0.002 us/op [Average]
+[info]   (min, avg, max) = (0.351, 0.352, 0.355), stdev = 0.001
+[info]   CI (99.9%): [0.351, 0.354] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1
+[info] # VM invoker: /usr/lib/jvm/temurin-17-jdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 10 iterations, 10 s each
+[info] # Measurement: 10 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: benchmark.LongListMapBenchmark.createUpdateLookup_Verified
+[info] # Parameters: (n = 4)
+[info] # Run progress: 2.17% complete, ETA 2 days, 04:36:05
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 1.036 us/op
+[info] # Warmup Iteration   2: 0.914 us/op
+[info] # Warmup Iteration   3: 0.924 us/op
+[info] # Warmup Iteration   4: 0.938 us/op
+[info] # Warmup Iteration   5: 0.923 us/op
+[info] # Warmup Iteration   6: 0.929 us/op
+[info] # Warmup Iteration   7: 0.917 us/op
+[info] # Warmup Iteration   8: 0.900 us/op
+[info] # Warmup Iteration   9: 0.899 us/op
+[info] # Warmup Iteration  10: 0.900 us/op
+[info] Iteration   1: 0.903 us/op
+[info] Iteration   2: 0.903 us/op
+[info] Iteration   3: 0.897 us/op
+[info] Iteration   4: 0.897 us/op
+[info] Iteration   5: 0.897 us/op
+[info] Iteration   6: 0.895 us/op
+[info] Iteration   7: 0.900 us/op
+[info] Iteration   8: 0.898 us/op
+[info] Iteration   9: 0.906 us/op
+[info] Iteration  10: 0.898 us/op
+[info] Result "benchmark.LongListMapBenchmark.createUpdateLookup_Verified":
+[info]   0.899 ±(99.9%) 0.005 us/op [Average]
+[info]   (min, avg, max) = (0.895, 0.899, 0.906), stdev = 0.003
+[info]   CI (99.9%): [0.894, 0.905] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1
+[info] # VM invoker: /usr/lib/jvm/temurin-17-jdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 10 iterations, 10 s each
+[info] # Measurement: 10 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: benchmark.LongListMapBenchmark.createUpdateLookup_Verified
+[info] # Parameters: (n = 5)
+[info] # Run progress: 2.28% complete, ETA 2 days, 04:32:43
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 2.119 us/op
+[info] # Warmup Iteration   2: 1.936 us/op
+[info] # Warmup Iteration   3: 1.934 us/op
+[info] # Warmup Iteration   4: 1.937 us/op
+[info] # Warmup Iteration   5: 1.904 us/op
+[info] # Warmup Iteration   6: 1.933 us/op
+[info] # Warmup Iteration   7: 1.899 us/op
+[info] # Warmup Iteration   8: 1.904 us/op
+[info] # Warmup Iteration   9: 1.918 us/op
+[info] # Warmup Iteration  10: 1.918 us/op
+[info] Iteration   1: 1.902 us/op
+[info] Iteration   2: 1.899 us/op
+[info] Iteration   3: 1.905 us/op
+[info] Iteration   4: 1.916 us/op
+[info] Iteration   5: 1.942 us/op
+[info] Iteration   6: 1.947 us/op
+[info] Iteration   7: 1.955 us/op
+[info] Iteration   8: 1.917 us/op
+[info] Iteration   9: 1.978 us/op
+[info] Iteration  10: 1.921 us/op
+[info] Result "benchmark.LongListMapBenchmark.createUpdateLookup_Verified":
+[info]   1.928 ±(99.9%) 0.040 us/op [Average]
+[info]   (min, avg, max) = (1.899, 1.928, 1.978), stdev = 0.026
+[info]   CI (99.9%): [1.888, 1.968] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1
+[info] # VM invoker: /usr/lib/jvm/temurin-17-jdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 10 iterations, 10 s each
+[info] # Measurement: 10 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: benchmark.LongListMapBenchmark.createUpdateLookup_Verified
+[info] # Parameters: (n = 6)
+[info] # Run progress: 2.38% complete, ETA 2 days, 04:29:23
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 4.393 us/op
+[info] # Warmup Iteration   2: 4.021 us/op
+[info] # Warmup Iteration   3: 3.954 us/op
+[info] # Warmup Iteration   4: 3.975 us/op
+[info] # Warmup Iteration   5: 3.951 us/op
+[info] # Warmup Iteration   6: 3.937 us/op
+[info] # Warmup Iteration   7: 3.991 us/op
+[info] # Warmup Iteration   8: 3.966 us/op
+[info] # Warmup Iteration   9: 3.929 us/op
+[info] # Warmup Iteration  10: 3.954 us/op
+[info] Iteration   1: 3.930 us/op
+[info] Iteration   2: 3.961 us/op
+[info] Iteration   3: 3.994 us/op
+[info] Iteration   4: 3.918 us/op
+[info] Iteration   5: 3.971 us/op
+[info] Iteration   6: 3.951 us/op
+[info] Iteration   7: 3.917 us/op
+[info] Iteration   8: 3.917 us/op
+[info] Iteration   9: 3.905 us/op
+[info] Iteration  10: 3.901 us/op
+[info] Result "benchmark.LongListMapBenchmark.createUpdateLookup_Verified":
+[info]   3.936 ±(99.9%) 0.047 us/op [Average]
+[info]   (min, avg, max) = (3.901, 3.936, 3.994), stdev = 0.031
+[info]   CI (99.9%): [3.890, 3.983] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1
+[info] # VM invoker: /usr/lib/jvm/temurin-17-jdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 10 iterations, 10 s each
+[info] # Measurement: 10 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: benchmark.LongListMapBenchmark.createUpdateLookup_Verified
+[info] # Parameters: (n = 7)
+[info] # Run progress: 2.48% complete, ETA 2 days, 04:26:02
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 9.640 us/op
+[info] # Warmup Iteration   2: 8.175 us/op
+[info] # Warmup Iteration   3: 8.241 us/op
+[info] # Warmup Iteration   4: 8.233 us/op
+[info] # Warmup Iteration   5: 8.239 us/op
+[info] # Warmup Iteration   6: 8.155 us/op
+[info] # Warmup Iteration   7: 8.235 us/op
+[info] # Warmup Iteration   8: 8.130 us/op
+[info] # Warmup Iteration   9: 8.052 us/op
+[info] # Warmup Iteration  10: 8.045 us/op
+[info] Iteration   1: 8.030 us/op
+[info] Iteration   2: 8.038 us/op
+[info] Iteration   3: 8.025 us/op
+[info] Iteration   4: 8.073 us/op
+[info] Iteration   5: 8.085 us/op
+[info] Iteration   6: 8.037 us/op
+[info] Iteration   7: 8.033 us/op
+[info] Iteration   8: 8.046 us/op
+[info] Iteration   9: 8.025 us/op
+[info] Iteration  10: 8.022 us/op
+[info] Result "benchmark.LongListMapBenchmark.createUpdateLookup_Verified":
+[info]   8.041 ±(99.9%) 0.032 us/op [Average]
+[info]   (min, avg, max) = (8.022, 8.041, 8.085), stdev = 0.021
+[info]   CI (99.9%): [8.009, 8.074] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1
+[info] # VM invoker: /usr/lib/jvm/temurin-17-jdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 10 iterations, 10 s each
+[info] # Measurement: 10 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: benchmark.LongListMapBenchmark.createUpdateLookup_Verified
+[info] # Parameters: (n = 8)
+[info] # Run progress: 2.59% complete, ETA 2 days, 04:22:41
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 17.718 us/op
+[info] # Warmup Iteration   2: 16.159 us/op
+[info] # Warmup Iteration   3: 16.076 us/op
+[info] # Warmup Iteration   4: 16.093 us/op
+[info] # Warmup Iteration   5: 16.071 us/op
+[info] # Warmup Iteration   6: 15.766 us/op
+[info] # Warmup Iteration   7: 15.975 us/op
+[info] # Warmup Iteration   8: 15.930 us/op
+[info] # Warmup Iteration   9: 15.831 us/op
+[info] # Warmup Iteration  10: 16.045 us/op
+[info] Iteration   1: 15.901 us/op
+[info] Iteration   2: 15.875 us/op
+[info] Iteration   3: 15.882 us/op
+[info] Iteration   4: 15.993 us/op
+[info] Iteration   5: 15.952 us/op
+[info] Iteration   6: 16.070 us/op
+[info] Iteration   7: 16.139 us/op
+[info] Iteration   8: 16.141 us/op
+[info] Iteration   9: 16.317 us/op
+[info] Iteration  10: 16.092 us/op
+[info] Result "benchmark.LongListMapBenchmark.createUpdateLookup_Verified":
+[info]   16.036 ±(99.9%) 0.215 us/op [Average]
+[info]   (min, avg, max) = (15.875, 16.036, 16.317), stdev = 0.142
+[info]   CI (99.9%): [15.821, 16.251] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1
+[info] # VM invoker: /usr/lib/jvm/temurin-17-jdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 10 iterations, 10 s each
+[info] # Measurement: 10 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: benchmark.LongListMapBenchmark.createUpdateLookup_Verified
+[info] # Parameters: (n = 9)
+[info] # Run progress: 2.69% complete, ETA 2 days, 04:19:20
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 38.502 us/op
+[info] # Warmup Iteration   2: 34.719 us/op
+[info] # Warmup Iteration   3: 34.775 us/op
+[info] # Warmup Iteration   4: 34.760 us/op
+[info] # Warmup Iteration   5: 34.623 us/op
+[info] # Warmup Iteration   6: 34.686 us/op
+[info] # Warmup Iteration   7: 34.176 us/op
+[info] # Warmup Iteration   8: 34.673 us/op
+[info] # Warmup Iteration   9: 34.221 us/op
+[info] # Warmup Iteration  10: 34.629 us/op
+[info] Iteration   1: 34.227 us/op
+[info] Iteration   2: 34.637 us/op
+[info] Iteration   3: 34.227 us/op
+[info] Iteration   4: 34.545 us/op
+[info] Iteration   5: 34.408 us/op
+[info] Iteration   6: 34.140 us/op
+[info] Iteration   7: 34.558 us/op
+[info] Iteration   8: 34.388 us/op
+[info] Iteration   9: 34.170 us/op
+[info] Iteration  10: 34.237 us/op
+[info] Result "benchmark.LongListMapBenchmark.createUpdateLookup_Verified":
+[info]   34.354 ±(99.9%) 0.271 us/op [Average]
+[info]   (min, avg, max) = (34.140, 34.354, 34.637), stdev = 0.179
+[info]   CI (99.9%): [34.083, 34.624] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1
+[info] # VM invoker: /usr/lib/jvm/temurin-17-jdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 10 iterations, 10 s each
+[info] # Measurement: 10 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: benchmark.LongListMapBenchmark.lookup_ListMap
+[info] # Parameters: (n = 1)
+[info] # Run progress: 2.80% complete, ETA 2 days, 04:16:00
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: <failure>
+[info] scala.MatchError: None() (of class stainless.lang.None)
+[info] 	at stainless.lang.Option.get(Option.scala:15)
+[info] 	at ch.epfl.chassot.ListMapLongKey.apply(StrictlyOrderedLongListMap.scala:70)
+[info] 	at benchmark.LongListMapBenchmark.lookup_ListMap$$anonfun$2(VerifiedMapBenchmark.scala:86)
+[info] 	at scala.collection.ArrayOps$WithFilter.foreach(ArrayOps.scala:73)
+[info] 	at benchmark.LongListMapBenchmark.lookup_ListMap(VerifiedMapBenchmark.scala:86)
+[info] 	at benchmark.jmh_generated.LongListMapBenchmark_lookup_ListMap_jmhTest.lookup_ListMap_avgt_jmhStub(LongListMapBenchmark_lookup_ListMap_jmhTest.java:190)
+[info] 	at benchmark.jmh_generated.LongListMapBenchmark_lookup_ListMap_jmhTest.lookup_ListMap_AverageTime(LongListMapBenchmark_lookup_ListMap_jmhTest.java:152)
+[info] 	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+[info] 	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77)
+[info] 	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+[info] 	at java.base/java.lang.reflect.Method.invoke(Method.java:568)
+[info] 	at org.openjdk.jmh.runner.BenchmarkHandler$BenchmarkTask.call(BenchmarkHandler.java:470)
+[info] 	at org.openjdk.jmh.runner.BenchmarkHandler$BenchmarkTask.call(BenchmarkHandler.java:453)
+[info] 	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:264)
+[info] 	at java.base/java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:539)
+[info] 	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:264)
+[info] 	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1136)
+[info] 	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:635)
+[info] 	at java.base/java.lang.Thread.run(Thread.java:833)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1
+[info] # VM invoker: /usr/lib/jvm/temurin-17-jdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 10 iterations, 10 s each
+[info] # Measurement: 10 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: benchmark.LongListMapBenchmark.lookup_ListMap
+[info] # Parameters: (n = 2)
+[info] # Run progress: 2.90% complete, ETA 2 days, 02:21:12
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: <failure>
+[info] scala.MatchError: None() (of class stainless.lang.None)
+[info] 	at stainless.lang.Option.get(Option.scala:15)
+[info] 	at ch.epfl.chassot.ListMapLongKey.apply(StrictlyOrderedLongListMap.scala:70)
+[info] 	at benchmark.LongListMapBenchmark.lookup_ListMap$$anonfun$2(VerifiedMapBenchmark.scala:86)
+[info] 	at scala.collection.ArrayOps$WithFilter.foreach(ArrayOps.scala:73)
+[info] 	at benchmark.LongListMapBenchmark.lookup_ListMap(VerifiedMapBenchmark.scala:86)
+[info] 	at benchmark.jmh_generated.LongListMapBenchmark_lookup_ListMap_jmhTest.lookup_ListMap_avgt_jmhStub(LongListMapBenchmark_lookup_ListMap_jmhTest.java:190)
+[info] 	at benchmark.jmh_generated.LongListMapBenchmark_lookup_ListMap_jmhTest.lookup_ListMap_AverageTime(LongListMapBenchmark_lookup_ListMap_jmhTest.java:152)
+[info] 	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+[info] 	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77)
+[info] 	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+[info] 	at java.base/java.lang.reflect.Method.invoke(Method.java:568)
+[info] 	at org.openjdk.jmh.runner.BenchmarkHandler$BenchmarkTask.call(BenchmarkHandler.java:470)
+[info] 	at org.openjdk.jmh.runner.BenchmarkHandler$BenchmarkTask.call(BenchmarkHandler.java:453)
+[info] 	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:264)
+[info] 	at java.base/java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:539)
+[info] 	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:264)
+[info] 	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1136)
+[info] 	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:635)
+[info] 	at java.base/java.lang.Thread.run(Thread.java:833)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1
+[info] # VM invoker: /usr/lib/jvm/temurin-17-jdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 10 iterations, 10 s each
+[info] # Measurement: 10 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: benchmark.LongListMapBenchmark.lookup_ListMap
+[info] # Parameters: (n = 3)
+[info] # Run progress: 3.00% complete, ETA 2 days, 00:34:19
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 0.113 us/op
+[info] # Warmup Iteration   2: 0.102 us/op
+[info] # Warmup Iteration   3: 0.104 us/op
+[info] # Warmup Iteration   4: 0.103 us/op
+[info] # Warmup Iteration   5: 0.104 us/op
+[info] # Warmup Iteration   6: 0.104 us/op
+[info] # Warmup Iteration   7: 0.102 us/op
+[info] # Warmup Iteration   8: 0.101 us/op
+[info] # Warmup Iteration   9: 0.101 us/op
+[info] # Warmup Iteration  10: 0.101 us/op
+[info] Iteration   1: 0.101 us/op
+[info] Iteration   2: 0.101 us/op
+[info] Iteration   3: 0.101 us/op
+[info] Iteration   4: 0.101 us/op
+[info] Iteration   5: 0.101 us/op
+[info] Iteration   6: 0.101 us/op
+[info] Iteration   7: 0.101 us/op
+[info] Iteration   8: 0.101 us/op
+[info] Iteration   9: 0.102 us/op
+[info] Iteration  10: 0.102 us/op
+[info] Result "benchmark.LongListMapBenchmark.lookup_ListMap":
+[info]   0.101 ±(99.9%) 0.001 us/op [Average]
+[info]   (min, avg, max) = (0.101, 0.101, 0.102), stdev = 0.001
+[info]   CI (99.9%): [0.101, 0.102] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1
+[info] # VM invoker: /usr/lib/jvm/temurin-17-jdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 10 iterations, 10 s each
+[info] # Measurement: 10 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: benchmark.LongListMapBenchmark.lookup_ListMap
+[info] # Parameters: (n = 4)
+[info] # Run progress: 3.11% complete, ETA 2 days, 00:38:21
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 0.328 us/op
+[info] # Warmup Iteration   2: 0.314 us/op
+[info] # Warmup Iteration   3: 0.312 us/op
+[info] # Warmup Iteration   4: 0.312 us/op
+[info] # Warmup Iteration   5: 0.312 us/op
+[info] # Warmup Iteration   6: 0.313 us/op
+[info] # Warmup Iteration   7: 0.312 us/op
+[info] # Warmup Iteration   8: 0.312 us/op
+[info] # Warmup Iteration   9: 0.312 us/op
+[info] # Warmup Iteration  10: 0.311 us/op
+[info] Iteration   1: 0.312 us/op
+[info] Iteration   2: 0.312 us/op
+[info] Iteration   3: 0.313 us/op
+[info] Iteration   4: 0.313 us/op
+[info] Iteration   5: 0.312 us/op
+[info] Iteration   6: 0.318 us/op
+[info] Iteration   7: 0.319 us/op
+[info] Iteration   8: 0.322 us/op
+[info] Iteration   9: 0.315 us/op
+[info] Iteration  10: 0.322 us/op
+[info] Result "benchmark.LongListMapBenchmark.lookup_ListMap":
+[info]   0.316 ±(99.9%) 0.006 us/op [Average]
+[info]   (min, avg, max) = (0.312, 0.316, 0.322), stdev = 0.004
+[info]   CI (99.9%): [0.310, 0.322] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1
+[info] # VM invoker: /usr/lib/jvm/temurin-17-jdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 10 iterations, 10 s each
+[info] # Measurement: 10 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: benchmark.LongListMapBenchmark.lookup_ListMap
+[info] # Parameters: (n = 5)
+[info] # Run progress: 3.21% complete, ETA 2 days, 00:41:55
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 1.291 us/op
+[info] # Warmup Iteration   2: 1.171 us/op
+[info] # Warmup Iteration   3: 1.165 us/op
+[info] # Warmup Iteration   4: 1.161 us/op
+[info] # Warmup Iteration   5: 1.161 us/op
+[info] # Warmup Iteration   6: 1.162 us/op
+[info] # Warmup Iteration   7: 1.162 us/op
+[info] # Warmup Iteration   8: 1.163 us/op
+[info] # Warmup Iteration   9: 1.162 us/op
+[info] # Warmup Iteration  10: 1.164 us/op
+[info] Iteration   1: 1.163 us/op
+[info] Iteration   2: 1.165 us/op
+[info] Iteration   3: 1.163 us/op
+[info] Iteration   4: 1.166 us/op
+[info] Iteration   5: 1.165 us/op
+[info] Iteration   6: 1.166 us/op
+[info] Iteration   7: 1.166 us/op
+[info] Iteration   8: 1.167 us/op
+[info] Iteration   9: 1.163 us/op
+[info] Iteration  10: 1.163 us/op
+[info] Result "benchmark.LongListMapBenchmark.lookup_ListMap":
+[info]   1.165 ±(99.9%) 0.003 us/op [Average]
+[info]   (min, avg, max) = (1.163, 1.165, 1.167), stdev = 0.002
+[info]   CI (99.9%): [1.162, 1.167] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1
+[info] # VM invoker: /usr/lib/jvm/temurin-17-jdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 10 iterations, 10 s each
+[info] # Measurement: 10 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: benchmark.LongListMapBenchmark.lookup_ListMap
+[info] # Parameters: (n = 6)
+[info] # Run progress: 3.31% complete, ETA 2 days, 00:45:02
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 5.039 us/op
+[info] # Warmup Iteration   2: 4.818 us/op
+[info] # Warmup Iteration   3: 4.980 us/op
+[info] # Warmup Iteration   4: 5.114 us/op
+[info] # Warmup Iteration   5: 5.094 us/op
+[info] # Warmup Iteration   6: 5.108 us/op
+[info] # Warmup Iteration   7: 5.124 us/op
+[info] # Warmup Iteration   8: 5.035 us/op
+[info] # Warmup Iteration   9: 4.968 us/op
+[info] # Warmup Iteration  10: 4.968 us/op
+[info] Iteration   1: 4.962 us/op
+[info] Iteration   2: 4.984 us/op
+[info] Iteration   3: 4.992 us/op
+[info] Iteration   4: 4.988 us/op
+[info] Iteration   5: 4.987 us/op
+[info] Iteration   6: 4.995 us/op
+[info] Iteration   7: 4.987 us/op
+[info] Iteration   8: 4.987 us/op
+[info] Iteration   9: 4.974 us/op
+[info] Iteration  10: 4.980 us/op
+[info] Result "benchmark.LongListMapBenchmark.lookup_ListMap":
+[info]   4.984 ±(99.9%) 0.014 us/op [Average]
+[info]   (min, avg, max) = (4.962, 4.984, 4.995), stdev = 0.010
+[info]   CI (99.9%): [4.969, 4.998] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1
+[info] # VM invoker: /usr/lib/jvm/temurin-17-jdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 10 iterations, 10 s each
+[info] # Measurement: 10 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: benchmark.LongListMapBenchmark.lookup_ListMap
+[info] # Parameters: (n = 7)
+[info] # Run progress: 3.42% complete, ETA 2 days, 00:47:47
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 20.390 us/op
+[info] # Warmup Iteration   2: 19.053 us/op
+[info] # Warmup Iteration   3: 18.946 us/op
+[info] # Warmup Iteration   4: 18.987 us/op
+[info] # Warmup Iteration   5: 18.957 us/op
+[info] # Warmup Iteration   6: 18.970 us/op
+[info] # Warmup Iteration   7: 18.953 us/op
+[info] # Warmup Iteration   8: 18.942 us/op
+[info] # Warmup Iteration   9: 18.955 us/op
+[info] # Warmup Iteration  10: 18.923 us/op
+[info] Iteration   1: 18.933 us/op
+[info] Iteration   2: 18.954 us/op
+[info] Iteration   3: 18.980 us/op
+[info] Iteration   4: 18.926 us/op
+[info] Iteration   5: 18.866 us/op
+[info] Iteration   6: 19.383 us/op
+[info] Iteration   7: 19.238 us/op
+[info] Iteration   8: 19.270 us/op
+[info] Iteration   9: 19.355 us/op
+[info] Iteration  10: 19.239 us/op
+[info] Result "benchmark.LongListMapBenchmark.lookup_ListMap":
+[info]   19.115 ±(99.9%) 0.302 us/op [Average]
+[info]   (min, avg, max) = (18.866, 19.115, 19.383), stdev = 0.200
+[info]   CI (99.9%): [18.813, 19.416] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1
+[info] # VM invoker: /usr/lib/jvm/temurin-17-jdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 10 iterations, 10 s each
+[info] # Measurement: 10 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: benchmark.LongListMapBenchmark.lookup_ListMap
+[info] # Parameters: (n = 8)
+[info] # Run progress: 3.52% complete, ETA 2 days, 00:50:09
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 90.596 us/op
+[info] # Warmup Iteration   2: 86.078 us/op
+[info] # Warmup Iteration   3: 85.972 us/op
+[info] # Warmup Iteration   4: 86.093 us/op
+[info] # Warmup Iteration   5: 85.994 us/op
+[info] # Warmup Iteration   6: 86.078 us/op
+[info] # Warmup Iteration   7: 86.001 us/op
+[info] # Warmup Iteration   8: 86.009 us/op
+[info] # Warmup Iteration   9: 85.954 us/op
+[info] # Warmup Iteration  10: 86.033 us/op
+[info] Iteration   1: 85.843 us/op
+[info] Iteration   2: 85.950 us/op
+[info] Iteration   3: 85.911 us/op
+[info] Iteration   4: 85.821 us/op
+[info] Iteration   5: 85.929 us/op
+[info] Iteration   6: 85.860 us/op
+[info] Iteration   7: 85.913 us/op
+[info] Iteration   8: 85.906 us/op
+[info] Iteration   9: 86.012 us/op
+[info] Iteration  10: 86.118 us/op
+[info] Result "benchmark.LongListMapBenchmark.lookup_ListMap":
+[info]   85.926 ±(99.9%) 0.131 us/op [Average]
+[info]   (min, avg, max) = (85.821, 85.926, 86.118), stdev = 0.087
+[info]   CI (99.9%): [85.795, 86.057] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1
+[info] # VM invoker: /usr/lib/jvm/temurin-17-jdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 10 iterations, 10 s each
+[info] # Measurement: 10 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: benchmark.LongListMapBenchmark.lookup_ListMap
+[info] # Parameters: (n = 9)
+[info] # Run progress: 3.62% complete, ETA 2 days, 00:52:13
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 433.037 us/op
+[info] # Warmup Iteration   2: 413.036 us/op
+[info] # Warmup Iteration   3: 418.058 us/op
+[info] # Warmup Iteration   4: 422.291 us/op
+[info] # Warmup Iteration   5: 424.649 us/op
+[info] # Warmup Iteration   6: 426.298 us/op
+[info] # Warmup Iteration   7: 426.313 us/op
+[info] # Warmup Iteration   8: 418.463 us/op
+[info] # Warmup Iteration   9: 417.020 us/op
+[info] # Warmup Iteration  10: 416.273 us/op
+[info] Iteration   1: 416.546 us/op
+[info] Iteration   2: 417.049 us/op
+[info] Iteration   3: 416.723 us/op
+[info] Iteration   4: 416.738 us/op
+[info] Iteration   5: 417.824 us/op
+[info] Iteration   6: 416.526 us/op
+[info] Iteration   7: 416.029 us/op
+[info] Iteration   8: 415.531 us/op
+[info] Iteration   9: 415.791 us/op
+[info] Iteration  10: 416.405 us/op
+[info] Result "benchmark.LongListMapBenchmark.lookup_ListMap":
+[info]   416.516 ±(99.9%) 0.987 us/op [Average]
+[info]   (min, avg, max) = (415.531, 416.516, 417.824), stdev = 0.653
+[info]   CI (99.9%): [415.530, 417.503] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1
+[info] # VM invoker: /usr/lib/jvm/temurin-17-jdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 10 iterations, 10 s each
+[info] # Measurement: 10 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: benchmark.LongListMapBenchmark.lookup_Original
+[info] # Parameters: (n = 1)
+[info] # Run progress: 3.73% complete, ETA 2 days, 00:53:58
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 0.042 us/op
+[info] # Warmup Iteration   2: 0.038 us/op
+[info] # Warmup Iteration   3: 0.037 us/op
+[info] # Warmup Iteration   4: 0.036 us/op
+[info] # Warmup Iteration   5: 0.037 us/op
+[info] # Warmup Iteration   6: 0.036 us/op
+[info] # Warmup Iteration   7: 0.036 us/op
+[info] # Warmup Iteration   8: 0.036 us/op
+[info] # Warmup Iteration   9: 0.036 us/op
+[info] # Warmup Iteration  10: 0.036 us/op
+[info] Iteration   1: 0.036 us/op
+[info] Iteration   2: 0.037 us/op
+[info] Iteration   3: 0.037 us/op
+[info] Iteration   4: 0.037 us/op
+[info] Iteration   5: 0.037 us/op
+[info] Iteration   6: 0.037 us/op
+[info] Iteration   7: 0.037 us/op
+[info] Iteration   8: 0.036 us/op
+[info] Iteration   9: 0.036 us/op
+[info] Iteration  10: 0.036 us/op
+[info] Result "benchmark.LongListMapBenchmark.lookup_Original":
+[info]   0.037 ±(99.9%) 0.001 us/op [Average]
+[info]   (min, avg, max) = (0.036, 0.037, 0.037), stdev = 0.001
+[info]   CI (99.9%): [0.036, 0.037] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1
+[info] # VM invoker: /usr/lib/jvm/temurin-17-jdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 10 iterations, 10 s each
+[info] # Measurement: 10 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: benchmark.LongListMapBenchmark.lookup_Original
+[info] # Parameters: (n = 2)
+[info] # Run progress: 3.83% complete, ETA 2 days, 00:55:27
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 0.054 us/op
+[info] # Warmup Iteration   2: 0.051 us/op
+[info] # Warmup Iteration   3: 0.049 us/op
+[info] # Warmup Iteration   4: 0.049 us/op
+[info] # Warmup Iteration   5: 0.049 us/op
+[info] # Warmup Iteration   6: 0.049 us/op
+[info] # Warmup Iteration   7: 0.048 us/op
+[info] # Warmup Iteration   8: 0.049 us/op
+[info] # Warmup Iteration   9: 0.049 us/op
+[info] # Warmup Iteration  10: 0.049 us/op
+[info] Iteration   1: 0.049 us/op
+[info] Iteration   2: 0.049 us/op
+[info] Iteration   3: 0.048 us/op
+[info] Iteration   4: 0.049 us/op
+[info] Iteration   5: 0.049 us/op
+[info] Iteration   6: 0.048 us/op
+[info] Iteration   7: 0.049 us/op
+[info] Iteration   8: 0.049 us/op
+[info] Iteration   9: 0.049 us/op
+[info] Iteration  10: 0.049 us/op
+[info] Result "benchmark.LongListMapBenchmark.lookup_Original":
+[info]   0.049 ±(99.9%) 0.001 us/op [Average]
+[info]   (min, avg, max) = (0.048, 0.049, 0.049), stdev = 0.001
+[info]   CI (99.9%): [0.048, 0.049] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1
+[info] # VM invoker: /usr/lib/jvm/temurin-17-jdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 10 iterations, 10 s each
+[info] # Measurement: 10 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: benchmark.LongListMapBenchmark.lookup_Original
+[info] # Parameters: (n = 3)
+[info] # Run progress: 3.93% complete, ETA 2 days, 00:56:41
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 0.056 us/op
+[info] # Warmup Iteration   2: 0.054 us/op
+[info] # Warmup Iteration   3: 0.053 us/op
+[info] # Warmup Iteration   4: 0.054 us/op
+[info] # Warmup Iteration   5: 0.055 us/op
+[info] # Warmup Iteration   6: 0.054 us/op
+[info] # Warmup Iteration   7: 0.054 us/op
+[info] # Warmup Iteration   8: 0.054 us/op
+[info] # Warmup Iteration   9: 0.053 us/op
+[info] # Warmup Iteration  10: 0.053 us/op
+[info] Iteration   1: 0.053 us/op
+[info] Iteration   2: 0.053 us/op
+[info] Iteration   3: 0.053 us/op
+[info] Iteration   4: 0.053 us/op
+[info] Iteration   5: 0.053 us/op
+[info] Iteration   6: 0.053 us/op
+[info] Iteration   7: 0.053 us/op
+[info] Iteration   8: 0.053 us/op
+[info] Iteration   9: 0.053 us/op
+[info] Iteration  10: 0.053 us/op
+[info] Result "benchmark.LongListMapBenchmark.lookup_Original":
+[info]   0.053 ±(99.9%) 0.001 us/op [Average]
+[info]   (min, avg, max) = (0.053, 0.053, 0.053), stdev = 0.001
+[info]   CI (99.9%): [0.053, 0.053] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1
+[info] # VM invoker: /usr/lib/jvm/temurin-17-jdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 10 iterations, 10 s each
+[info] # Measurement: 10 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: benchmark.LongListMapBenchmark.lookup_Original
+[info] # Parameters: (n = 4)
+[info] # Run progress: 4.04% complete, ETA 2 days, 00:57:41
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 0.096 us/op
+[info] # Warmup Iteration   2: 0.092 us/op
+[info] # Warmup Iteration   3: 0.092 us/op
+[info] # Warmup Iteration   4: 0.092 us/op
+[info] # Warmup Iteration   5: 0.092 us/op
+[info] # Warmup Iteration   6: 0.092 us/op
+[info] # Warmup Iteration   7: 0.092 us/op
+[info] # Warmup Iteration   8: 0.092 us/op
+[info] # Warmup Iteration   9: 0.092 us/op
+[info] # Warmup Iteration  10: 0.092 us/op
+[info] Iteration   1: 0.092 us/op
+[info] Iteration   2: 0.092 us/op
+[info] Iteration   3: 0.092 us/op
+[info] Iteration   4: 0.094 us/op
+[info] Iteration   5: 0.094 us/op
+[info] Iteration   6: 0.094 us/op
+[info] Iteration   7: 0.094 us/op
+[info] Iteration   8: 0.093 us/op
+[info] Iteration   9: 0.092 us/op
+[info] Iteration  10: 0.091 us/op
+[info] Result "benchmark.LongListMapBenchmark.lookup_Original":
+[info]   0.093 ±(99.9%) 0.002 us/op [Average]
+[info]   (min, avg, max) = (0.091, 0.093, 0.094), stdev = 0.001
+[info]   CI (99.9%): [0.091, 0.094] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1
+[info] # VM invoker: /usr/lib/jvm/temurin-17-jdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 10 iterations, 10 s each
+[info] # Measurement: 10 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: benchmark.LongListMapBenchmark.lookup_Original
+[info] # Parameters: (n = 5)
+[info] # Run progress: 4.14% complete, ETA 2 days, 00:58:28
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 0.171 us/op
+[info] # Warmup Iteration   2: 0.165 us/op
+[info] # Warmup Iteration   3: 0.164 us/op
+[info] # Warmup Iteration   4: 0.164 us/op
+[info] # Warmup Iteration   5: 0.164 us/op
+[info] # Warmup Iteration   6: 0.164 us/op
+[info] # Warmup Iteration   7: 0.164 us/op
+[info] # Warmup Iteration   8: 0.164 us/op
+[info] # Warmup Iteration   9: 0.164 us/op
+[info] # Warmup Iteration  10: 0.164 us/op
+[info] Iteration   1: 0.164 us/op
+[info] Iteration   2: 0.164 us/op
+[info] Iteration   3: 0.164 us/op
+[info] Iteration   4: 0.164 us/op
+[info] Iteration   5: 0.164 us/op
+[info] Iteration   6: 0.164 us/op
+[info] Iteration   7: 0.164 us/op
+[info] Iteration   8: 0.164 us/op
+[info] Iteration   9: 0.164 us/op
+[info] Iteration  10: 0.164 us/op
+[info] Result "benchmark.LongListMapBenchmark.lookup_Original":
+[info]   0.164 ±(99.9%) 0.001 us/op [Average]
+[info]   (min, avg, max) = (0.164, 0.164, 0.164), stdev = 0.001
+[info]   CI (99.9%): [0.164, 0.164] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1
+[info] # VM invoker: /usr/lib/jvm/temurin-17-jdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 10 iterations, 10 s each
+[info] # Measurement: 10 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: benchmark.LongListMapBenchmark.lookup_Original
+[info] # Parameters: (n = 6)
+[info] # Run progress: 4.24% complete, ETA 2 days, 00:59:02
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 0.340 us/op
+[info] # Warmup Iteration   2: 0.320 us/op
+[info] # Warmup Iteration   3: 0.321 us/op
+[info] # Warmup Iteration   4: 0.323 us/op
+[info] # Warmup Iteration   5: 0.320 us/op
+[info] # Warmup Iteration   6: 0.319 us/op
+[info] # Warmup Iteration   7: 0.314 us/op
+[info] # Warmup Iteration   8: 0.313 us/op
+[info] # Warmup Iteration   9: 0.313 us/op
+[info] # Warmup Iteration  10: 0.313 us/op
+[info] Iteration   1: 0.313 us/op
+[info] Iteration   2: 0.313 us/op
+[info] Iteration   3: 0.313 us/op
+[info] Iteration   4: 0.313 us/op
+[info] Iteration   5: 0.312 us/op
+[info] Iteration   6: 0.313 us/op
+[info] Iteration   7: 0.313 us/op
+[info] Iteration   8: 0.313 us/op
+[info] Iteration   9: 0.313 us/op
+[info] Iteration  10: 0.314 us/op
+[info] Result "benchmark.LongListMapBenchmark.lookup_Original":
+[info]   0.313 ±(99.9%) 0.001 us/op [Average]
+[info]   (min, avg, max) = (0.312, 0.313, 0.314), stdev = 0.001
+[info]   CI (99.9%): [0.312, 0.313] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1
+[info] # VM invoker: /usr/lib/jvm/temurin-17-jdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 10 iterations, 10 s each
+[info] # Measurement: 10 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: benchmark.LongListMapBenchmark.lookup_Original
+[info] # Parameters: (n = 7)
+[info] # Run progress: 4.35% complete, ETA 2 days, 00:59:25
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 0.653 us/op
+[info] # Warmup Iteration   2: 0.597 us/op
+[info] # Warmup Iteration   3: 0.603 us/op
+[info] # Warmup Iteration   4: 0.603 us/op
+[info] # Warmup Iteration   5: 0.605 us/op
+[info] # Warmup Iteration   6: 0.604 us/op
+[info] # Warmup Iteration   7: 0.603 us/op
+[info] # Warmup Iteration   8: 0.603 us/op
+[info] # Warmup Iteration   9: 0.602 us/op
+[info] # Warmup Iteration  10: 0.603 us/op
+[info] Iteration   1: 0.604 us/op
+[info] Iteration   2: 0.610 us/op
+[info] Iteration   3: 0.615 us/op
+[info] Iteration   4: 0.619 us/op
+[info] Iteration   5: 0.617 us/op
+[info] Iteration   6: 0.615 us/op
+[info] Iteration   7: 0.607 us/op
+[info] Iteration   8: 0.604 us/op
+[info] Iteration   9: 0.603 us/op
+[info] Iteration  10: 0.604 us/op
+[info] Result "benchmark.LongListMapBenchmark.lookup_Original":
+[info]   0.610 ±(99.9%) 0.009 us/op [Average]
+[info]   (min, avg, max) = (0.603, 0.610, 0.619), stdev = 0.006
+[info]   CI (99.9%): [0.601, 0.619] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1
+[info] # VM invoker: /usr/lib/jvm/temurin-17-jdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 10 iterations, 10 s each
+[info] # Measurement: 10 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: benchmark.LongListMapBenchmark.lookup_Original
+[info] # Parameters: (n = 8)
+[info] # Run progress: 4.45% complete, ETA 2 days, 00:59:37
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 1.392 us/op
+[info] # Warmup Iteration   2: 1.340 us/op
+[info] # Warmup Iteration   3: 1.323 us/op
+[info] # Warmup Iteration   4: 1.323 us/op
+[info] # Warmup Iteration   5: 1.321 us/op
+[info] # Warmup Iteration   6: 1.323 us/op
+[info] # Warmup Iteration   7: 1.326 us/op
+[info] # Warmup Iteration   8: 1.323 us/op
+[info] # Warmup Iteration   9: 1.331 us/op
+[info] # Warmup Iteration  10: 1.325 us/op
+[info] Iteration   1: 1.325 us/op
+[info] Iteration   2: 1.323 us/op
+[info] Iteration   3: 1.322 us/op
+[info] Iteration   4: 1.322 us/op
+[info] Iteration   5: 1.323 us/op
+[info] Iteration   6: 1.325 us/op
+[info] Iteration   7: 1.323 us/op
+[info] Iteration   8: 1.323 us/op
+[info] Iteration   9: 1.323 us/op
+[info] Iteration  10: 1.323 us/op
+[info] Result "benchmark.LongListMapBenchmark.lookup_Original":
+[info]   1.323 ±(99.9%) 0.002 us/op [Average]
+[info]   (min, avg, max) = (1.322, 1.323, 1.325), stdev = 0.001
+[info]   CI (99.9%): [1.321, 1.325] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1
+[info] # VM invoker: /usr/lib/jvm/temurin-17-jdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 10 iterations, 10 s each
+[info] # Measurement: 10 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: benchmark.LongListMapBenchmark.lookup_Original
+[info] # Parameters: (n = 9)
+[info] # Run progress: 4.55% complete, ETA 2 days, 00:59:41
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 3.324 us/op
+[info] # Warmup Iteration   2: 3.172 us/op
+[info] # Warmup Iteration   3: 3.152 us/op
+[info] # Warmup Iteration   4: 3.199 us/op
+[info] # Warmup Iteration   5: 3.225 us/op
+[info] # Warmup Iteration   6: 3.238 us/op
+[info] # Warmup Iteration   7: 3.213 us/op
+[info] # Warmup Iteration   8: 3.213 us/op
+[info] # Warmup Iteration   9: 3.169 us/op
+[info] # Warmup Iteration  10: 3.153 us/op
+[info] Iteration   1: 3.158 us/op
+[info] Iteration   2: 3.146 us/op
+[info] Iteration   3: 3.146 us/op
+[info] Iteration   4: 3.148 us/op
+[info] Iteration   5: 3.150 us/op
+[info] Iteration   6: 3.147 us/op
+[info] Iteration   7: 3.142 us/op
+[info] Iteration   8: 3.154 us/op
+[info] Iteration   9: 3.152 us/op
+[info] Iteration  10: 3.148 us/op
+[info] Result "benchmark.LongListMapBenchmark.lookup_Original":
+[info]   3.149 ±(99.9%) 0.007 us/op [Average]
+[info]   (min, avg, max) = (3.142, 3.149, 3.158), stdev = 0.004
+[info]   CI (99.9%): [3.142, 3.156] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1
+[info] # VM invoker: /usr/lib/jvm/temurin-17-jdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 10 iterations, 10 s each
+[info] # Measurement: 10 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: benchmark.LongListMapBenchmark.lookup_Verified
+[info] # Parameters: (n = 1)
+[info] # Run progress: 4.66% complete, ETA 2 days, 00:59:35
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 0.044 us/op
+[info] # Warmup Iteration   2: 0.039 us/op
+[info] # Warmup Iteration   3: 0.039 us/op
+[info] # Warmup Iteration   4: 0.038 us/op
+[info] # Warmup Iteration   5: 0.038 us/op
+[info] # Warmup Iteration   6: 0.038 us/op
+[info] # Warmup Iteration   7: 0.038 us/op
+[info] # Warmup Iteration   8: 0.038 us/op
+[info] # Warmup Iteration   9: 0.038 us/op
+[info] # Warmup Iteration  10: 0.038 us/op
+[info] Iteration   1: 0.038 us/op
+[info] Iteration   2: 0.039 us/op
+[info] Iteration   3: 0.039 us/op
+[info] Iteration   4: 0.039 us/op
+[info] Iteration   5: 0.039 us/op
+[info] Iteration   6: 0.039 us/op
+[info] Iteration   7: 0.038 us/op
+[info] Iteration   8: 0.038 us/op
+[info] Iteration   9: 0.038 us/op
+[info] Iteration  10: 0.038 us/op
+[info] Result "benchmark.LongListMapBenchmark.lookup_Verified":
+[info]   0.038 ±(99.9%) 0.001 us/op [Average]
+[info]   (min, avg, max) = (0.038, 0.038, 0.039), stdev = 0.001
+[info]   CI (99.9%): [0.038, 0.039] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1
+[info] # VM invoker: /usr/lib/jvm/temurin-17-jdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 10 iterations, 10 s each
+[info] # Measurement: 10 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: benchmark.LongListMapBenchmark.lookup_Verified
+[info] # Parameters: (n = 2)
+[info] # Run progress: 4.76% complete, ETA 2 days, 00:59:20
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 0.060 us/op
+[info] # Warmup Iteration   2: 0.055 us/op
+[info] # Warmup Iteration   3: 0.054 us/op
+[info] # Warmup Iteration   4: 0.053 us/op
+[info] # Warmup Iteration   5: 0.053 us/op
+[info] # Warmup Iteration   6: 0.054 us/op
+[info] # Warmup Iteration   7: 0.053 us/op
+[info] # Warmup Iteration   8: 0.054 us/op
+[info] # Warmup Iteration   9: 0.054 us/op
+[info] # Warmup Iteration  10: 0.053 us/op
+[info] Iteration   1: 0.053 us/op
+[info] Iteration   2: 0.054 us/op
+[info] Iteration   3: 0.053 us/op
+[info] Iteration   4: 0.054 us/op
+[info] Iteration   5: 0.054 us/op
+[info] Iteration   6: 0.053 us/op
+[info] Iteration   7: 0.055 us/op
+[info] Iteration   8: 0.054 us/op
+[info] Iteration   9: 0.054 us/op
+[info] Iteration  10: 0.054 us/op
+[info] Result "benchmark.LongListMapBenchmark.lookup_Verified":
+[info]   0.054 ±(99.9%) 0.001 us/op [Average]
+[info]   (min, avg, max) = (0.053, 0.054, 0.055), stdev = 0.001
+[info]   CI (99.9%): [0.053, 0.055] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1
+[info] # VM invoker: /usr/lib/jvm/temurin-17-jdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 10 iterations, 10 s each
+[info] # Measurement: 10 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: benchmark.LongListMapBenchmark.lookup_Verified
+[info] # Parameters: (n = 3)
+[info] # Run progress: 4.87% complete, ETA 2 days, 00:58:58
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 0.070 us/op
+[info] # Warmup Iteration   2: 0.065 us/op
+[info] # Warmup Iteration   3: 0.065 us/op
+[info] # Warmup Iteration   4: 0.065 us/op
+[info] # Warmup Iteration   5: 0.065 us/op
+[info] # Warmup Iteration   6: 0.065 us/op
+[info] # Warmup Iteration   7: 0.064 us/op
+[info] # Warmup Iteration   8: 0.064 us/op
+[info] # Warmup Iteration   9: 0.064 us/op
+[info] # Warmup Iteration  10: 0.064 us/op
+[info] Iteration   1: 0.063 us/op
+[info] Iteration   2: 0.064 us/op
+[info] Iteration   3: 0.064 us/op
+[info] Iteration   4: 0.064 us/op
+[info] Iteration   5: 0.064 us/op
+[info] Iteration   6: 0.064 us/op
+[info] Iteration   7: 0.064 us/op
+[info] Iteration   8: 0.064 us/op
+[info] Iteration   9: 0.064 us/op
+[info] Iteration  10: 0.064 us/op
+[info] Result "benchmark.LongListMapBenchmark.lookup_Verified":
+[info]   0.064 ±(99.9%) 0.001 us/op [Average]
+[info]   (min, avg, max) = (0.063, 0.064, 0.064), stdev = 0.001
+[info]   CI (99.9%): [0.063, 0.064] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1
+[info] # VM invoker: /usr/lib/jvm/temurin-17-jdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 10 iterations, 10 s each
+[info] # Measurement: 10 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: benchmark.LongListMapBenchmark.lookup_Verified
+[info] # Parameters: (n = 4)
+[info] # Run progress: 4.97% complete, ETA 2 days, 00:58:29
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 0.125 us/op
+[info] # Warmup Iteration   2: 0.120 us/op
+[info] # Warmup Iteration   3: 0.117 us/op
+[info] # Warmup Iteration   4: 0.117 us/op
+[info] # Warmup Iteration   5: 0.117 us/op
+[info] # Warmup Iteration   6: 0.117 us/op
+[info] # Warmup Iteration   7: 0.117 us/op
+[info] # Warmup Iteration   8: 0.117 us/op
+[info] # Warmup Iteration   9: 0.116 us/op
+[info] # Warmup Iteration  10: 0.117 us/op
+[info] Iteration   1: 0.117 us/op
+[info] Iteration   2: 0.119 us/op
+[info] Iteration   3: 0.120 us/op
+[info] Iteration   4: 0.119 us/op
+[info] Iteration   5: 0.120 us/op
+[info] Iteration   6: 0.118 us/op
+[info] Iteration   7: 0.116 us/op
+[info] Iteration   8: 0.117 us/op
+[info] Iteration   9: 0.117 us/op
+[info] Iteration  10: 0.117 us/op
+[info] Result "benchmark.LongListMapBenchmark.lookup_Verified":
+[info]   0.118 ±(99.9%) 0.002 us/op [Average]
+[info]   (min, avg, max) = (0.116, 0.118, 0.120), stdev = 0.001
+[info]   CI (99.9%): [0.116, 0.120] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1
+[info] # VM invoker: /usr/lib/jvm/temurin-17-jdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 10 iterations, 10 s each
+[info] # Measurement: 10 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: benchmark.LongListMapBenchmark.lookup_Verified
+[info] # Parameters: (n = 5)
+[info] # Run progress: 5.07% complete, ETA 2 days, 00:57:52
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 0.247 us/op
+[info] # Warmup Iteration   2: 0.249 us/op
+[info] # Warmup Iteration   3: 0.241 us/op
+[info] # Warmup Iteration   4: 0.241 us/op
+[info] # Warmup Iteration   5: 0.241 us/op
+[info] # Warmup Iteration   6: 0.242 us/op
+[info] # Warmup Iteration   7: 0.241 us/op
+[info] # Warmup Iteration   8: 0.241 us/op
+[info] # Warmup Iteration   9: 0.241 us/op
+[info] # Warmup Iteration  10: 0.242 us/op
+[info] Iteration   1: 0.241 us/op
+[info] Iteration   2: 0.241 us/op
+[info] Iteration   3: 0.241 us/op
+[info] Iteration   4: 0.241 us/op
+[info] Iteration   5: 0.241 us/op
+[info] Iteration   6: 0.241 us/op
+[info] Iteration   7: 0.241 us/op
+[info] Iteration   8: 0.241 us/op
+[info] Iteration   9: 0.241 us/op
+[info] Iteration  10: 0.241 us/op
+[info] Result "benchmark.LongListMapBenchmark.lookup_Verified":
+[info]   0.241 ±(99.9%) 0.001 us/op [Average]
+[info]   (min, avg, max) = (0.241, 0.241, 0.241), stdev = 0.001
+[info]   CI (99.9%): [0.241, 0.241] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1
+[info] # VM invoker: /usr/lib/jvm/temurin-17-jdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 10 iterations, 10 s each
+[info] # Measurement: 10 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: benchmark.LongListMapBenchmark.lookup_Verified
+[info] # Parameters: (n = 6)
+[info] # Run progress: 5.18% complete, ETA 2 days, 00:57:08
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 0.484 us/op
+[info] # Warmup Iteration   2: 0.451 us/op
+[info] # Warmup Iteration   3: 0.464 us/op
+[info] # Warmup Iteration   4: 0.475 us/op
+[info] # Warmup Iteration   5: 0.472 us/op
+[info] # Warmup Iteration   6: 0.473 us/op
+[info] # Warmup Iteration   7: 0.471 us/op
+[info] # Warmup Iteration   8: 0.472 us/op
+[info] # Warmup Iteration   9: 0.465 us/op
+[info] # Warmup Iteration  10: 0.463 us/op
+[info] Iteration   1: 0.463 us/op
+[info] Iteration   2: 0.462 us/op
+[info] Iteration   3: 0.462 us/op
+[info] Iteration   4: 0.463 us/op
+[info] Iteration   5: 0.463 us/op
+[info] Iteration   6: 0.463 us/op
+[info] Iteration   7: 0.460 us/op
+[info] Iteration   8: 0.460 us/op
+[info] Iteration   9: 0.460 us/op
+[info] Iteration  10: 0.461 us/op
+[info] Result "benchmark.LongListMapBenchmark.lookup_Verified":
+[info]   0.462 ±(99.9%) 0.002 us/op [Average]
+[info]   (min, avg, max) = (0.460, 0.462, 0.463), stdev = 0.001
+[info]   CI (99.9%): [0.460, 0.464] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1
+[info] # VM invoker: /usr/lib/jvm/temurin-17-jdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 10 iterations, 10 s each
+[info] # Measurement: 10 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: benchmark.LongListMapBenchmark.lookup_Verified
+[info] # Parameters: (n = 7)
+[info] # Run progress: 5.28% complete, ETA 2 days, 00:56:19
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 0.942 us/op
+[info] # Warmup Iteration   2: 0.863 us/op
+[info] # Warmup Iteration   3: 0.887 us/op
+[info] # Warmup Iteration   4: 0.887 us/op
+[info] # Warmup Iteration   5: 0.888 us/op
+[info] # Warmup Iteration   6: 0.887 us/op
+[info] # Warmup Iteration   7: 0.885 us/op
+[info] # Warmup Iteration   8: 0.885 us/op
+[info] # Warmup Iteration   9: 0.886 us/op
+[info] # Warmup Iteration  10: 0.888 us/op
+[info] Iteration   1: 0.886 us/op
+[info] Iteration   2: 0.888 us/op
+[info] Iteration   3: 0.912 us/op
+[info] Iteration   4: 0.908 us/op
+[info] Iteration   5: 0.907 us/op
+[info] Iteration   6: 0.909 us/op
+[info] Iteration   7: 0.901 us/op
+[info] Iteration   8: 0.891 us/op
+[info] Iteration   9: 0.890 us/op
+[info] Iteration  10: 0.887 us/op
+[info] Result "benchmark.LongListMapBenchmark.lookup_Verified":
+[info]   0.898 ±(99.9%) 0.016 us/op [Average]
+[info]   (min, avg, max) = (0.886, 0.898, 0.912), stdev = 0.010
+[info]   CI (99.9%): [0.882, 0.914] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1
+[info] # VM invoker: /usr/lib/jvm/temurin-17-jdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 10 iterations, 10 s each
+[info] # Measurement: 10 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: benchmark.LongListMapBenchmark.lookup_Verified
+[info] # Parameters: (n = 8)
+[info] # Run progress: 5.38% complete, ETA 2 days, 00:55:24
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 2.159 us/op
+[info] # Warmup Iteration   2: 2.043 us/op
+[info] # Warmup Iteration   3: 2.050 us/op
+[info] # Warmup Iteration   4: 2.049 us/op
+[info] # Warmup Iteration   5: 2.045 us/op
+[info] # Warmup Iteration   6: 2.051 us/op
+[info] # Warmup Iteration   7: 2.050 us/op
+[info] # Warmup Iteration   8: 2.053 us/op
+[info] # Warmup Iteration   9: 2.054 us/op
+[info] # Warmup Iteration  10: 2.057 us/op
+[info] Iteration   1: 2.052 us/op
+[info] Iteration   2: 2.052 us/op
+[info] Iteration   3: 2.055 us/op
+[info] Iteration   4: 2.053 us/op
+[info] Iteration   5: 2.049 us/op
+[info] Iteration   6: 2.051 us/op
+[info] Iteration   7: 2.048 us/op
+[info] Iteration   8: 2.051 us/op
+[info] Iteration   9: 2.048 us/op
+[info] Iteration  10: 2.043 us/op
+[info] Result "benchmark.LongListMapBenchmark.lookup_Verified":
+[info]   2.050 ±(99.9%) 0.005 us/op [Average]
+[info]   (min, avg, max) = (2.043, 2.050, 2.055), stdev = 0.004
+[info]   CI (99.9%): [2.045, 2.056] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1
+[info] # VM invoker: /usr/lib/jvm/temurin-17-jdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 10 iterations, 10 s each
+[info] # Measurement: 10 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: benchmark.LongListMapBenchmark.lookup_Verified
+[info] # Parameters: (n = 9)
+[info] # Run progress: 5.49% complete, ETA 2 days, 00:54:23
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 4.530 us/op
+[info] # Warmup Iteration   2: 4.385 us/op
+[info] # Warmup Iteration   3: 4.400 us/op
+[info] # Warmup Iteration   4: 4.352 us/op
+[info] # Warmup Iteration   5: 4.371 us/op
+[info] # Warmup Iteration   6: 4.368 us/op
+[info] # Warmup Iteration   7: 4.344 us/op
+[info] # Warmup Iteration   8: 4.352 us/op
+[info] # Warmup Iteration   9: 4.355 us/op
+[info] # Warmup Iteration  10: 4.354 us/op
+[info] Iteration   1: 4.355 us/op
+[info] Iteration   2: 4.349 us/op
+[info] Iteration   3: 4.364 us/op
+[info] Iteration   4: 4.351 us/op
+[info] Iteration   5: 4.359 us/op
+[info] Iteration   6: 4.349 us/op
+[info] Iteration   7: 4.342 us/op
+[info] Iteration   8: 4.330 us/op
+[info] Iteration   9: 4.353 us/op
+[info] Iteration  10: 4.340 us/op
+[info] Result "benchmark.LongListMapBenchmark.lookup_Verified":
+[info]   4.349 ±(99.9%) 0.015 us/op [Average]
+[info]   (min, avg, max) = (4.330, 4.349, 4.364), stdev = 0.010
+[info]   CI (99.9%): [4.334, 4.364] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1
+[info] # VM invoker: /usr/lib/jvm/temurin-17-jdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 10 iterations, 10 s each
+[info] # Measurement: 10 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: benchmark.MutableLongMapBenchmark.createUpdateLookup_16Buffer_Opti
+[info] # Parameters: (nKeys = 0)
+[info] # Run progress: 5.59% complete, ETA 2 days, 00:53:17
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 2743.626 us/op
+[info] # Warmup Iteration   2: 2566.044 us/op
+[info] # Warmup Iteration   3: 2575.313 us/op
+[info] # Warmup Iteration   4: 2553.381 us/op
+[info] # Warmup Iteration   5: 2560.094 us/op
+[info] # Warmup Iteration   6: 2556.572 us/op
+[info] # Warmup Iteration   7: 2539.541 us/op
+[info] # Warmup Iteration   8: 2572.395 us/op
+[info] # Warmup Iteration   9: 2559.727 us/op
+[info] # Warmup Iteration  10: 2557.413 us/op
+[info] Iteration   1: 2550.683 us/op
+[info] Iteration   2: 2559.301 us/op
+[info] Iteration   3: 2535.058 us/op
+[info] Iteration   4: 2553.909 us/op
+[info] Iteration   5: 2551.279 us/op
+[info] Iteration   6: 2542.342 us/op
+[info] Iteration   7: 2545.293 us/op
+[info] Iteration   8: 2537.095 us/op
+[info] Iteration   9: 2525.828 us/op
+[info] Iteration  10: 2532.521 us/op
+[info] Result "benchmark.MutableLongMapBenchmark.createUpdateLookup_16Buffer_Opti":
+[info]   2543.331 ±(99.9%) 16.091 us/op [Average]
+[info]   (min, avg, max) = (2525.828, 2543.331, 2559.301), stdev = 10.643
+[info]   CI (99.9%): [2527.240, 2559.422] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1
+[info] # VM invoker: /usr/lib/jvm/temurin-17-jdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 10 iterations, 10 s each
+[info] # Measurement: 10 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: benchmark.MutableLongMapBenchmark.createUpdateLookup_16Buffer_Opti
+[info] # Parameters: (nKeys = 1598)
+[info] # Run progress: 5.69% complete, ETA 2 days, 00:52:07
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 2797.461 us/op
+[info] # Warmup Iteration   2: 2626.823 us/op
+[info] # Warmup Iteration   3: 2624.755 us/op
+[info] # Warmup Iteration   4: 2617.437 us/op
+[info] # Warmup Iteration   5: 2615.976 us/op
+[info] # Warmup Iteration   6: 2620.641 us/op
+[info] # Warmup Iteration   7: 2588.926 us/op
+[info] # Warmup Iteration   8: 2612.266 us/op
+[info] # Warmup Iteration   9: 2590.475 us/op
+[info] # Warmup Iteration  10: 2609.657 us/op
+[info] Iteration   1: 2580.056 us/op
+[info] Iteration   2: 2601.159 us/op
+[info] Iteration   3: 2583.685 us/op
+[info] Iteration   4: 2615.663 us/op
+[info] Iteration   5: 2609.911 us/op
+[info] Iteration   6: 2602.059 us/op
+[info] Iteration   7: 2610.040 us/op
+[info] Iteration   8: 2614.449 us/op
+[info] Iteration   9: 2592.996 us/op
+[info] Iteration  10: 2599.799 us/op
+[info] Result "benchmark.MutableLongMapBenchmark.createUpdateLookup_16Buffer_Opti":
+[info]   2600.982 ±(99.9%) 18.600 us/op [Average]
+[info]   (min, avg, max) = (2580.056, 2600.982, 2615.663), stdev = 12.302
+[info]   CI (99.9%): [2582.382, 2619.581] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1
+[info] # VM invoker: /usr/lib/jvm/temurin-17-jdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 10 iterations, 10 s each
+[info] # Measurement: 10 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: benchmark.MutableLongMapBenchmark.createUpdateLookup_16Buffer_Opti
+[info] # Parameters: (nKeys = 3196)
+[info] # Run progress: 5.80% complete, ETA 2 days, 00:50:52
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 2865.395 us/op
+[info] # Warmup Iteration   2: 2686.224 us/op
+[info] # Warmup Iteration   3: 2643.190 us/op
+[info] # Warmup Iteration   4: 2676.879 us/op
+[info] # Warmup Iteration   5: 2643.496 us/op
+[info] # Warmup Iteration   6: 2653.890 us/op
+[info] # Warmup Iteration   7: 2668.324 us/op
+[info] # Warmup Iteration   8: 2659.932 us/op
+[info] # Warmup Iteration   9: 2644.595 us/op
+[info] # Warmup Iteration  10: 2650.390 us/op
+[info] Iteration   1: 2639.023 us/op
+[info] Iteration   2: 2645.705 us/op
+[info] Iteration   3: 2644.471 us/op
+[info] Iteration   4: 2631.272 us/op
+[info] Iteration   5: 2652.953 us/op
+[info] Iteration   6: 2637.467 us/op
+[info] Iteration   7: 2657.310 us/op
+[info] Iteration   8: 2663.044 us/op
+[info] Iteration   9: 2662.250 us/op
+[info] Iteration  10: 2663.702 us/op
+[info] Result "benchmark.MutableLongMapBenchmark.createUpdateLookup_16Buffer_Opti":
+[info]   2649.720 ±(99.9%) 17.793 us/op [Average]
+[info]   (min, avg, max) = (2631.272, 2649.720, 2663.702), stdev = 11.769
+[info]   CI (99.9%): [2631.926, 2667.513] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1
+[info] # VM invoker: /usr/lib/jvm/temurin-17-jdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 10 iterations, 10 s each
+[info] # Measurement: 10 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: benchmark.MutableLongMapBenchmark.createUpdateLookup_16Buffer_Opti
+[info] # Parameters: (nKeys = 4794)
+[info] # Run progress: 5.90% complete, ETA 2 days, 00:49:33
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 2879.229 us/op
+[info] # Warmup Iteration   2: 2681.903 us/op
+[info] # Warmup Iteration   3: 2679.216 us/op
+[info] # Warmup Iteration   4: 2700.203 us/op
+[info] # Warmup Iteration   5: 2661.332 us/op
+[info] # Warmup Iteration   6: 2665.512 us/op
+[info] # Warmup Iteration   7: 2677.001 us/op
+[info] # Warmup Iteration   8: 2678.711 us/op
+[info] # Warmup Iteration   9: 2659.911 us/op
+[info] # Warmup Iteration  10: 2660.503 us/op
+[info] Iteration   1: 2660.910 us/op
+[info] Iteration   2: 2669.708 us/op
+[info] Iteration   3: 2723.909 us/op
+[info] Iteration   4: 2728.117 us/op
+[info] Iteration   5: 2731.180 us/op
+[info] Iteration   6: 2718.869 us/op
+[info] Iteration   7: 2690.879 us/op
+[info] Iteration   8: 2655.292 us/op
+[info] Iteration   9: 2646.049 us/op
+[info] Iteration  10: 2638.555 us/op
+[info] Result "benchmark.MutableLongMapBenchmark.createUpdateLookup_16Buffer_Opti":
+[info]   2686.347 ±(99.9%) 55.298 us/op [Average]
+[info]   (min, avg, max) = (2638.555, 2686.347, 2731.180), stdev = 36.576
+[info]   CI (99.9%): [2631.049, 2741.644] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1
+[info] # VM invoker: /usr/lib/jvm/temurin-17-jdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 10 iterations, 10 s each
+[info] # Measurement: 10 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: benchmark.MutableLongMapBenchmark.createUpdateLookup_16Buffer_Opti
+[info] # Parameters: (nKeys = 6392)
+[info] # Run progress: 6.00% complete, ETA 2 days, 00:48:10
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 2878.545 us/op
+[info] # Warmup Iteration   2: 2702.263 us/op
+[info] # Warmup Iteration   3: 2701.293 us/op
+[info] # Warmup Iteration   4: 2691.556 us/op
+[info] # Warmup Iteration   5: 2686.985 us/op
+[info] # Warmup Iteration   6: 2680.450 us/op
+[info] # Warmup Iteration   7: 2644.190 us/op
+[info] # Warmup Iteration   8: 2678.211 us/op
+[info] # Warmup Iteration   9: 2649.560 us/op
+[info] # Warmup Iteration  10: 2680.395 us/op
+[info] Iteration   1: 2657.818 us/op
+[info] Iteration   2: 2688.944 us/op
+[info] Iteration   3: 2656.971 us/op
+[info] Iteration   4: 2678.346 us/op
+[info] Iteration   5: 2675.575 us/op
+[info] Iteration   6: 2649.419 us/op
+[info] Iteration   7: 2672.268 us/op
+[info] Iteration   8: 2668.686 us/op
+[info] Iteration   9: 2647.160 us/op
+[info] Iteration  10: 2650.703 us/op
+[info] Result "benchmark.MutableLongMapBenchmark.createUpdateLookup_16Buffer_Opti":
+[info]   2664.589 ±(99.9%) 21.437 us/op [Average]
+[info]   (min, avg, max) = (2647.160, 2664.589, 2688.944), stdev = 14.179
+[info]   CI (99.9%): [2643.152, 2686.026] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1
+[info] # VM invoker: /usr/lib/jvm/temurin-17-jdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 10 iterations, 10 s each
+[info] # Measurement: 10 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: benchmark.MutableLongMapBenchmark.createUpdateLookup_16Buffer_Opti
+[info] # Parameters: (nKeys = 7990)
+[info] # Run progress: 6.11% complete, ETA 2 days, 00:46:42
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 2935.463 us/op
+[info] # Warmup Iteration   2: 2752.098 us/op
+[info] # Warmup Iteration   3: 2749.013 us/op
+[info] # Warmup Iteration   4: 2748.742 us/op
+[info] # Warmup Iteration   5: 2737.537 us/op
+[info] # Warmup Iteration   6: 2712.931 us/op
+[info] # Warmup Iteration   7: 2722.390 us/op
+[info] # Warmup Iteration   8: 2693.617 us/op
+[info] # Warmup Iteration   9: 2701.123 us/op
+[info] # Warmup Iteration  10: 2690.423 us/op
+[info] Iteration   1: 2728.074 us/op
+[info] Iteration   2: 2703.034 us/op
+[info] Iteration   3: 2703.221 us/op
+[info] Iteration   4: 2704.970 us/op
+[info] Iteration   5: 2737.731 us/op
+[info] Iteration   6: 2698.352 us/op
+[info] Iteration   7: 2708.997 us/op
+[info] Iteration   8: 2718.743 us/op
+[info] Iteration   9: 2740.403 us/op
+[info] Iteration  10: 2708.173 us/op
+[info] Result "benchmark.MutableLongMapBenchmark.createUpdateLookup_16Buffer_Opti":
+[info]   2715.170 ±(99.9%) 23.033 us/op [Average]
+[info]   (min, avg, max) = (2698.352, 2715.170, 2740.403), stdev = 15.235
+[info]   CI (99.9%): [2692.136, 2738.203] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1
+[info] # VM invoker: /usr/lib/jvm/temurin-17-jdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 10 iterations, 10 s each
+[info] # Measurement: 10 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: benchmark.MutableLongMapBenchmark.createUpdateLookup_16Buffer_Opti
+[info] # Parameters: (nKeys = 9588)
+[info] # Run progress: 6.21% complete, ETA 2 days, 00:45:11
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 2896.847 us/op
+[info] # Warmup Iteration   2: 2701.454 us/op
+[info] # Warmup Iteration   3: 2700.181 us/op
+[info] # Warmup Iteration   4: 2657.376 us/op
+[info] # Warmup Iteration   5: 2683.750 us/op
+[info] # Warmup Iteration   6: 2676.765 us/op
+[info] # Warmup Iteration   7: 2662.854 us/op
+[info] # Warmup Iteration   8: 2666.340 us/op
+[info] # Warmup Iteration   9: 2681.567 us/op
+[info] # Warmup Iteration  10: 2684.966 us/op
+[info] Iteration   1: 2676.773 us/op
+[info] Iteration   2: 2667.300 us/op
+[info] Iteration   3: 2684.512 us/op
+[info] Iteration   4: 2678.375 us/op
+[info] Iteration   5: 2694.865 us/op
+[info] Iteration   6: 2690.436 us/op
+[info] Iteration   7: 2718.563 us/op
+[info] Iteration   8: 2688.877 us/op
+[info] Iteration   9: 2695.021 us/op
+[info] Iteration  10: 2681.789 us/op
+[info] Result "benchmark.MutableLongMapBenchmark.createUpdateLookup_16Buffer_Opti":
+[info]   2687.651 ±(99.9%) 20.985 us/op [Average]
+[info]   (min, avg, max) = (2667.300, 2687.651, 2718.563), stdev = 13.880
+[info]   CI (99.9%): [2666.666, 2708.636] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1
+[info] # VM invoker: /usr/lib/jvm/temurin-17-jdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 10 iterations, 10 s each
+[info] # Measurement: 10 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: benchmark.MutableLongMapBenchmark.createUpdateLookup_16Buffer_Opti
+[info] # Parameters: (nKeys = 11186)
+[info] # Run progress: 6.31% complete, ETA 2 days, 00:43:37
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 2979.357 us/op
+[info] # Warmup Iteration   2: 2797.849 us/op
+[info] # Warmup Iteration   3: 2795.627 us/op
+[info] # Warmup Iteration   4: 2783.320 us/op
+[info] # Warmup Iteration   5: 2780.899 us/op
+[info] # Warmup Iteration   6: 2782.111 us/op
+[info] # Warmup Iteration   7: 2754.818 us/op
+[info] # Warmup Iteration   8: 2769.815 us/op
+[info] # Warmup Iteration   9: 2766.133 us/op
+[info] # Warmup Iteration  10: 2749.312 us/op
+[info] Iteration   1: 2792.765 us/op
+[info] Iteration   2: 2770.282 us/op
+[info] Iteration   3: 2770.661 us/op
+[info] Iteration   4: 2769.527 us/op
+[info] Iteration   5: 2778.020 us/op
+[info] Iteration   6: 2773.769 us/op
+[info] Iteration   7: 2771.298 us/op
+[info] Iteration   8: 2774.251 us/op
+[info] Iteration   9: 2766.599 us/op
+[info] Iteration  10: 2763.614 us/op
+[info] Result "benchmark.MutableLongMapBenchmark.createUpdateLookup_16Buffer_Opti":
+[info]   2773.079 ±(99.9%) 12.083 us/op [Average]
+[info]   (min, avg, max) = (2763.614, 2773.079, 2792.765), stdev = 7.992
+[info]   CI (99.9%): [2760.996, 2785.161] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1
+[info] # VM invoker: /usr/lib/jvm/temurin-17-jdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 10 iterations, 10 s each
+[info] # Measurement: 10 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: benchmark.MutableLongMapBenchmark.createUpdateLookup_16Buffer_Opti
+[info] # Parameters: (nKeys = 12784)
+[info] # Run progress: 6.42% complete, ETA 2 days, 00:41:59
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 3027.133 us/op
+[info] # Warmup Iteration   2: 2820.124 us/op
+[info] # Warmup Iteration   3: 2839.228 us/op
+[info] # Warmup Iteration   4: 2839.249 us/op
+[info] # Warmup Iteration   5: 2830.248 us/op
+[info] # Warmup Iteration   6: 2835.053 us/op
+[info] # Warmup Iteration   7: 2814.292 us/op
+[info] # Warmup Iteration   8: 2818.832 us/op
+[info] # Warmup Iteration   9: 2802.703 us/op
+[info] # Warmup Iteration  10: 2795.122 us/op
+[info] Iteration   1: 2801.844 us/op
+[info] Iteration   2: 2797.364 us/op
+[info] Iteration   3: 2782.262 us/op
+[info] Iteration   4: 2803.941 us/op
+[info] Iteration   5: 2799.406 us/op
+[info] Iteration   6: 2779.242 us/op
+[info] Iteration   7: 2800.056 us/op
+[info] Iteration   8: 2792.391 us/op
+[info] Iteration   9: 2781.145 us/op
+[info] Iteration  10: 2784.414 us/op
+[info] Result "benchmark.MutableLongMapBenchmark.createUpdateLookup_16Buffer_Opti":
+[info]   2792.207 ±(99.9%) 14.437 us/op [Average]
+[info]   (min, avg, max) = (2779.242, 2792.207, 2803.941), stdev = 9.549
+[info]   CI (99.9%): [2777.769, 2806.644] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1
+[info] # VM invoker: /usr/lib/jvm/temurin-17-jdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 10 iterations, 10 s each
+[info] # Measurement: 10 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: benchmark.MutableLongMapBenchmark.createUpdateLookup_16Buffer_Opti
+[info] # Parameters: (nKeys = 14382)
+[info] # Run progress: 6.52% complete, ETA 2 days, 00:40:18
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 3054.476 us/op
+[info] # Warmup Iteration   2: 2855.400 us/op
+[info] # Warmup Iteration   3: 2864.317 us/op
+[info] # Warmup Iteration   4: 2855.906 us/op
+[info] # Warmup Iteration   5: 2838.294 us/op
+[info] # Warmup Iteration   6: 2836.804 us/op
+[info] # Warmup Iteration   7: 2819.248 us/op
+[info] # Warmup Iteration   8: 2814.910 us/op
+[info] # Warmup Iteration   9: 2832.605 us/op
+[info] # Warmup Iteration  10: 2834.764 us/op
+[info] Iteration   1: 2825.804 us/op
+[info] Iteration   2: 2817.694 us/op
+[info] Iteration   3: 2812.846 us/op
+[info] Iteration   4: 2832.569 us/op
+[info] Iteration   5: 2835.265 us/op
+[info] Iteration   6: 2833.037 us/op
+[info] Iteration   7: 2839.700 us/op
+[info] Iteration   8: 2838.048 us/op
+[info] Iteration   9: 2823.870 us/op
+[info] Iteration  10: 2827.810 us/op
+[info] Result "benchmark.MutableLongMapBenchmark.createUpdateLookup_16Buffer_Opti":
+[info]   2828.664 ±(99.9%) 13.240 us/op [Average]
+[info]   (min, avg, max) = (2812.846, 2828.664, 2839.700), stdev = 8.757
+[info]   CI (99.9%): [2815.424, 2841.904] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1
+[info] # VM invoker: /usr/lib/jvm/temurin-17-jdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 10 iterations, 10 s each
+[info] # Measurement: 10 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: benchmark.MutableLongMapBenchmark.createUpdateLookup_16Buffer_Opti
+[info] # Parameters: (nKeys = 15980)
+[info] # Run progress: 6.63% complete, ETA 2 days, 00:38:33
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 3070.651 us/op
+[info] # Warmup Iteration   2: 2856.985 us/op
+[info] # Warmup Iteration   3: 2862.365 us/op
+[info] # Warmup Iteration   4: 2859.957 us/op
+[info] # Warmup Iteration   5: 2855.421 us/op
+[info] # Warmup Iteration   6: 2860.427 us/op
+[info] # Warmup Iteration   7: 2853.790 us/op
+[info] # Warmup Iteration   8: 2846.732 us/op
+[info] # Warmup Iteration   9: 2852.230 us/op
+[info] # Warmup Iteration  10: 2842.555 us/op
+[info] Iteration   1: 2846.853 us/op
+[info] Iteration   2: 2841.967 us/op
+[info] Iteration   3: 2827.898 us/op
+[info] Iteration   4: 2849.985 us/op
+[info] Iteration   5: 2847.553 us/op
+[info] Iteration   6: 2825.447 us/op
+[info] Iteration   7: 2852.209 us/op
+[info] Iteration   8: 2846.076 us/op
+[info] Iteration   9: 2831.441 us/op
+[info] Iteration  10: 2837.766 us/op
+[info] Result "benchmark.MutableLongMapBenchmark.createUpdateLookup_16Buffer_Opti":
+[info]   2840.720 ±(99.9%) 14.474 us/op [Average]
+[info]   (min, avg, max) = (2825.447, 2840.720, 2852.209), stdev = 9.574
+[info]   CI (99.9%): [2826.246, 2855.194] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1
+[info] # VM invoker: /usr/lib/jvm/temurin-17-jdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 10 iterations, 10 s each
+[info] # Measurement: 10 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: benchmark.MutableLongMapBenchmark.createUpdateLookup_16Buffer_Opti
+[info] # Parameters: (nKeys = 17578)
+[info] # Run progress: 6.73% complete, ETA 2 days, 00:36:46
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 3228.759 us/op
+[info] # Warmup Iteration   2: 2882.830 us/op
+[info] # Warmup Iteration   3: 2905.725 us/op
+[info] # Warmup Iteration   4: 2903.527 us/op
+[info] # Warmup Iteration   5: 2878.251 us/op
+[info] # Warmup Iteration   6: 2868.710 us/op
+[info] # Warmup Iteration   7: 2866.073 us/op
+[info] # Warmup Iteration   8: 2863.873 us/op
+[info] # Warmup Iteration   9: 2831.967 us/op
+[info] # Warmup Iteration  10: 2856.964 us/op
+[info] Iteration   1: 2835.704 us/op
+[info] Iteration   2: 2854.817 us/op
+[info] Iteration   3: 2834.400 us/op
+[info] Iteration   4: 2859.256 us/op
+[info] Iteration   5: 2826.233 us/op
+[info] Iteration   6: 2829.488 us/op
+[info] Iteration   7: 2857.372 us/op
+[info] Iteration   8: 2828.637 us/op
+[info] Iteration   9: 2832.028 us/op
+[info] Iteration  10: 2861.338 us/op
+[info] Result "benchmark.MutableLongMapBenchmark.createUpdateLookup_16Buffer_Opti":
+[info]   2841.927 ±(99.9%) 21.692 us/op [Average]
+[info]   (min, avg, max) = (2826.233, 2841.927, 2861.338), stdev = 14.348
+[info]   CI (99.9%): [2820.235, 2863.619] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1
+[info] # VM invoker: /usr/lib/jvm/temurin-17-jdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 10 iterations, 10 s each
+[info] # Measurement: 10 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: benchmark.MutableLongMapBenchmark.createUpdateLookup_16Buffer_Opti
+[info] # Parameters: (nKeys = 19176)
+[info] # Run progress: 6.83% complete, ETA 2 days, 00:34:56
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 3294.058 us/op
+[info] # Warmup Iteration   2: 2908.984 us/op
+[info] # Warmup Iteration   3: 2930.966 us/op
+[info] # Warmup Iteration   4: 2915.519 us/op
+[info] # Warmup Iteration   5: 2916.444 us/op
+[info] # Warmup Iteration   6: 2899.367 us/op
+[info] # Warmup Iteration   7: 2906.618 us/op
+[info] # Warmup Iteration   8: 2915.248 us/op
+[info] # Warmup Iteration   9: 2915.086 us/op
+[info] # Warmup Iteration  10: 2892.066 us/op
+[info] Iteration   1: 2897.150 us/op
+[info] Iteration   2: 2896.921 us/op
+[info] Iteration   3: 2908.167 us/op
+[info] Iteration   4: 2901.898 us/op
+[info] Iteration   5: 2931.054 us/op
+[info] Iteration   6: 2923.064 us/op
+[info] Iteration   7: 2900.870 us/op
+[info] Iteration   8: 2913.083 us/op
+[info] Iteration   9: 2893.149 us/op
+[info] Iteration  10: 2878.598 us/op
+[info] Result "benchmark.MutableLongMapBenchmark.createUpdateLookup_16Buffer_Opti":
+[info]   2904.395 ±(99.9%) 22.917 us/op [Average]
+[info]   (min, avg, max) = (2878.598, 2904.395, 2931.054), stdev = 15.158
+[info]   CI (99.9%): [2881.478, 2927.312] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1
+[info] # VM invoker: /usr/lib/jvm/temurin-17-jdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 10 iterations, 10 s each
+[info] # Measurement: 10 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: benchmark.MutableLongMapBenchmark.createUpdateLookup_16Buffer_Opti
+[info] # Parameters: (nKeys = 20774)
+[info] # Run progress: 6.94% complete, ETA 2 days, 00:33:03
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 3115.901 us/op
+[info] # Warmup Iteration   2: 2909.368 us/op
+[info] # Warmup Iteration   3: 2872.210 us/op
+[info] # Warmup Iteration   4: 2903.658 us/op
+[info] # Warmup Iteration   5: 2866.866 us/op
+[info] # Warmup Iteration   6: 2875.581 us/op
+[info] # Warmup Iteration   7: 2888.295 us/op
+[info] # Warmup Iteration   8: 2885.726 us/op
+[info] # Warmup Iteration   9: 2864.650 us/op
+[info] # Warmup Iteration  10: 2864.271 us/op
+[info] Iteration   1: 2866.364 us/op
+[info] Iteration   2: 2876.750 us/op
+[info] Iteration   3: 2878.821 us/op
+[info] Iteration   4: 2866.045 us/op
+[info] Iteration   5: 2881.120 us/op
+[info] Iteration   6: 2867.085 us/op
+[info] Iteration   7: 2862.255 us/op
+[info] Iteration   8: 2858.722 us/op
+[info] Iteration   9: 2863.323 us/op
+[info] Iteration  10: 2863.858 us/op
+[info] Result "benchmark.MutableLongMapBenchmark.createUpdateLookup_16Buffer_Opti":
+[info]   2868.434 ±(99.9%) 11.595 us/op [Average]
+[info]   (min, avg, max) = (2858.722, 2868.434, 2881.120), stdev = 7.669
+[info]   CI (99.9%): [2856.839, 2880.029] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1
+[info] # VM invoker: /usr/lib/jvm/temurin-17-jdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 10 iterations, 10 s each
+[info] # Measurement: 10 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: benchmark.MutableLongMapBenchmark.createUpdateLookup_16Buffer_Opti
+[info] # Parameters: (nKeys = 22372)
+[info] # Run progress: 7.04% complete, ETA 2 days, 00:31:08
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 3176.197 us/op
+[info] # Warmup Iteration   2: 2960.802 us/op
+[info] # Warmup Iteration   3: 2965.710 us/op
+[info] # Warmup Iteration   4: 2971.534 us/op
+[info] # Warmup Iteration   5: 2985.843 us/op
+[info] # Warmup Iteration   6: 2994.304 us/op
+[info] # Warmup Iteration   7: 2956.958 us/op
+[info] # Warmup Iteration   8: 2953.521 us/op
+[info] # Warmup Iteration   9: 2965.753 us/op
+[info] # Warmup Iteration  10: 2960.641 us/op
+[info] Iteration   1: 2964.051 us/op
+[info] Iteration   2: 2960.906 us/op
+[info] Iteration   3: 2946.196 us/op
+[info] Iteration   4: 2964.853 us/op
+[info] Iteration   5: 2962.949 us/op
+[info] Iteration   6: 2943.168 us/op
+[info] Iteration   7: 2963.429 us/op
+[info] Iteration   8: 2955.207 us/op
+[info] Iteration   9: 2934.116 us/op
+[info] Iteration  10: 2942.132 us/op
+[info] Result "benchmark.MutableLongMapBenchmark.createUpdateLookup_16Buffer_Opti":
+[info]   2953.701 ±(99.9%) 17.094 us/op [Average]
+[info]   (min, avg, max) = (2934.116, 2953.701, 2964.853), stdev = 11.306
+[info]   CI (99.9%): [2936.607, 2970.794] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1
+[info] # VM invoker: /usr/lib/jvm/temurin-17-jdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 10 iterations, 10 s each
+[info] # Measurement: 10 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: benchmark.MutableLongMapBenchmark.createUpdateLookup_16Buffer_Opti
+[info] # Parameters: (nKeys = 23970)
+[info] # Run progress: 7.14% complete, ETA 2 days, 00:29:10
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 3203.570 us/op
+[info] # Warmup Iteration   2: 2988.414 us/op
+[info] # Warmup Iteration   3: 2990.634 us/op
+[info] # Warmup Iteration   4: 2991.732 us/op
+[info] # Warmup Iteration   5: 2994.631 us/op
+[info] # Warmup Iteration   6: 2992.618 us/op
+[info] # Warmup Iteration   7: 2945.838 us/op
+[info] # Warmup Iteration   8: 2991.449 us/op
+[info] # Warmup Iteration   9: 2951.131 us/op
+[info] # Warmup Iteration  10: 2987.084 us/op
+[info] Iteration   1: 2964.127 us/op
+[info] Iteration   2: 3049.433 us/op
+[info] Iteration   3: 2992.360 us/op
+[info] Iteration   4: 3028.095 us/op
+[info] Iteration   5: 3066.482 us/op
+[info] Iteration   6: 2992.690 us/op
+[info] Iteration   7: 2954.962 us/op
+[info] Iteration   8: 2985.043 us/op
+[info] Iteration   9: 2932.579 us/op
+[info] Iteration  10: 2920.289 us/op
+[info] Result "benchmark.MutableLongMapBenchmark.createUpdateLookup_16Buffer_Opti":
+[info]   2988.606 ±(99.9%) 72.864 us/op [Average]
+[info]   (min, avg, max) = (2920.289, 2988.606, 3066.482), stdev = 48.195
+[info]   CI (99.9%): [2915.742, 3061.470] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1
+[info] # VM invoker: /usr/lib/jvm/temurin-17-jdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 10 iterations, 10 s each
+[info] # Measurement: 10 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: benchmark.MutableLongMapBenchmark.createUpdateLookup_16Buffer_Opti
+[info] # Parameters: (nKeys = 25568)
+[info] # Run progress: 7.25% complete, ETA 2 days, 00:27:10
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 3239.851 us/op
+[info] # Warmup Iteration   2: 3006.244 us/op
+[info] # Warmup Iteration   3: 2997.471 us/op
+[info] # Warmup Iteration   4: 3017.975 us/op
+[info] # Warmup Iteration   5: 2959.069 us/op
+[info] # Warmup Iteration   6: 2957.886 us/op
+[info] # Warmup Iteration   7: 2967.156 us/op
+[info] # Warmup Iteration   8: 2960.417 us/op
+[info] # Warmup Iteration   9: 2939.745 us/op
+[info] # Warmup Iteration  10: 2941.238 us/op
+[info] Iteration   1: 2937.383 us/op
+[info] Iteration   2: 2961.446 us/op
+[info] Iteration   3: 2969.508 us/op
+[info] Iteration   4: 2988.089 us/op
+[info] Iteration   5: 2988.859 us/op
+[info] Iteration   6: 2973.275 us/op
+[info] Iteration   7: 2976.986 us/op
+[info] Iteration   8: 2979.625 us/op
+[info] Iteration   9: 2984.329 us/op
+[info] Iteration  10: 2980.704 us/op
+[info] Result "benchmark.MutableLongMapBenchmark.createUpdateLookup_16Buffer_Opti":
+[info]   2974.020 ±(99.9%) 23.261 us/op [Average]
+[info]   (min, avg, max) = (2937.383, 2974.020, 2988.859), stdev = 15.386
+[info]   CI (99.9%): [2950.759, 2997.282] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1
+[info] # VM invoker: /usr/lib/jvm/temurin-17-jdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 10 iterations, 10 s each
+[info] # Measurement: 10 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: benchmark.MutableLongMapBenchmark.createUpdateLookup_16Buffer_Opti
+[info] # Parameters: (nKeys = 27166)
+[info] # Run progress: 7.35% complete, ETA 2 days, 00:25:07
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 3340.395 us/op
+[info] # Warmup Iteration   2: 3144.665 us/op
+[info] # Warmup Iteration   3: 3118.955 us/op
+[info] # Warmup Iteration   4: 3109.593 us/op
+[info] # Warmup Iteration   5: 3109.986 us/op
+[info] # Warmup Iteration   6: 3079.236 us/op
+[info] # Warmup Iteration   7: 3035.401 us/op
+[info] # Warmup Iteration   8: 3024.577 us/op
+[info] # Warmup Iteration   9: 3030.668 us/op
+[info] # Warmup Iteration  10: 3027.111 us/op
+[info] Iteration   1: 3035.161 us/op
+[info] Iteration   2: 3030.933 us/op
+[info] Iteration   3: 3007.413 us/op
+[info] Iteration   4: 3007.348 us/op
+[info] Iteration   5: 3024.674 us/op
+[info] Iteration   6: 3017.607 us/op
+[info] Iteration   7: 3041.145 us/op
+[info] Iteration   8: 3025.537 us/op
+[info] Iteration   9: 3010.945 us/op
+[info] Iteration  10: 3010.144 us/op
+[info] Result "benchmark.MutableLongMapBenchmark.createUpdateLookup_16Buffer_Opti":
+[info]   3021.091 ±(99.9%) 18.451 us/op [Average]
+[info]   (min, avg, max) = (3007.348, 3021.091, 3041.145), stdev = 12.204
+[info]   CI (99.9%): [3002.640, 3039.542] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1
+[info] # VM invoker: /usr/lib/jvm/temurin-17-jdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 10 iterations, 10 s each
+[info] # Measurement: 10 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: benchmark.MutableLongMapBenchmark.createUpdateLookup_16Buffer_Opti
+[info] # Parameters: (nKeys = 28764)
+[info] # Run progress: 7.45% complete, ETA 2 days, 00:23:02
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 3278.211 us/op
+[info] # Warmup Iteration   2: 3054.262 us/op
+[info] # Warmup Iteration   3: 3023.760 us/op
+[info] # Warmup Iteration   4: 3050.120 us/op
+[info] # Warmup Iteration   5: 3047.485 us/op
+[info] # Warmup Iteration   6: 3057.442 us/op
+[info] # Warmup Iteration   7: 3066.873 us/op
+[info] # Warmup Iteration   8: 3056.155 us/op
+[info] # Warmup Iteration   9: 3029.209 us/op
+[info] # Warmup Iteration  10: 3033.947 us/op
+[info] Iteration   1: 3053.161 us/op
+[info] Iteration   2: 3114.369 us/op
+[info] Iteration   3: 3131.419 us/op
+[info] Iteration   4: 3095.240 us/op
+[info] Iteration   5: 3101.756 us/op
+[info] Iteration   6: 3051.133 us/op
+[info] Iteration   7: 3037.788 us/op
+[info] Iteration   8: 3046.110 us/op
+[info] Iteration   9: 3058.148 us/op
+[info] Iteration  10: 3051.951 us/op
+[info] Result "benchmark.MutableLongMapBenchmark.createUpdateLookup_16Buffer_Opti":
+[info]   3074.107 ±(99.9%) 50.223 us/op [Average]
+[info]   (min, avg, max) = (3037.788, 3074.107, 3131.419), stdev = 33.219
+[info]   CI (99.9%): [3023.885, 3124.330] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1
+[info] # VM invoker: /usr/lib/jvm/temurin-17-jdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 10 iterations, 10 s each
+[info] # Measurement: 10 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: benchmark.MutableLongMapBenchmark.createUpdateLookup_16Buffer_Opti
+[info] # Parameters: (nKeys = 30362)
+[info] # Run progress: 7.56% complete, ETA 2 days, 00:20:56
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 3299.994 us/op
+[info] # Warmup Iteration   2: 3071.105 us/op
+[info] # Warmup Iteration   3: 3035.516 us/op
+[info] # Warmup Iteration   4: 3057.219 us/op
+[info] # Warmup Iteration   5: 3030.731 us/op
+[info] # Warmup Iteration   6: 3032.412 us/op
+[info] # Warmup Iteration   7: 3038.808 us/op
+[info] # Warmup Iteration   8: 3042.983 us/op
+[info] # Warmup Iteration   9: 3028.916 us/op
+[info] # Warmup Iteration  10: 3028.411 us/op
+[info] Iteration   1: 3026.997 us/op
+[info] Iteration   2: 3057.688 us/op
+[info] Iteration   3: 3075.468 us/op
+[info] Iteration   4: 3053.717 us/op
+[info] Iteration   5: 3074.707 us/op
+[info] Iteration   6: 3049.975 us/op
+[info] Iteration   7: 3056.144 us/op
+[info] Iteration   8: 3055.340 us/op
+[info] Iteration   9: 3063.923 us/op
+[info] Iteration  10: 3056.276 us/op
+[info] Result "benchmark.MutableLongMapBenchmark.createUpdateLookup_16Buffer_Opti":
+[info]   3057.024 ±(99.9%) 20.578 us/op [Average]
+[info]   (min, avg, max) = (3026.997, 3057.024, 3075.468), stdev = 13.611
+[info]   CI (99.9%): [3036.446, 3077.602] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1
+[info] # VM invoker: /usr/lib/jvm/temurin-17-jdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 10 iterations, 10 s each
+[info] # Measurement: 10 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: benchmark.MutableLongMapBenchmark.createUpdateLookup_16Buffer_Opti
+[info] # Parameters: (nKeys = 31960)
+[info] # Run progress: 7.66% complete, ETA 2 days, 00:18:47
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 3516.455 us/op
+[info] # Warmup Iteration   2: 3127.579 us/op
+[info] # Warmup Iteration   3: 3173.838 us/op
+[info] # Warmup Iteration   4: 3119.644 us/op
+[info] # Warmup Iteration   5: 3159.472 us/op
+[info] # Warmup Iteration   6: 3154.382 us/op
+[info] # Warmup Iteration   7: 3120.858 us/op
+[info] # Warmup Iteration   8: 3124.841 us/op
+[info] # Warmup Iteration   9: 3157.243 us/op
+[info] # Warmup Iteration  10: 3116.420 us/op
+[info] Iteration   1: 3117.102 us/op
+[info] Iteration   2: 3102.257 us/op
+[info] Iteration   3: 3100.507 us/op
+[info] Iteration   4: 3088.609 us/op
+[info] Iteration   5: 3114.569 us/op
+[info] Iteration   6: 3095.777 us/op
+[info] Iteration   7: 3121.783 us/op
+[info] Iteration   8: 3109.243 us/op
+[info] Iteration   9: 3113.440 us/op
+[info] Iteration  10: 3109.254 us/op
+[info] Result "benchmark.MutableLongMapBenchmark.createUpdateLookup_16Buffer_Opti":
+[info]   3107.254 ±(99.9%) 15.595 us/op [Average]
+[info]   (min, avg, max) = (3088.609, 3107.254, 3121.783), stdev = 10.315
+[info]   CI (99.9%): [3091.659, 3122.850] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1
+[info] # VM invoker: /usr/lib/jvm/temurin-17-jdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 10 iterations, 10 s each
+[info] # Measurement: 10 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: benchmark.MutableLongMapBenchmark.createUpdateLookup_16Buffer_Opti
+[info] # Parameters: (nKeys = 33558)
+[info] # Run progress: 7.76% complete, ETA 2 days, 00:16:36
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 3358.734 us/op
+[info] # Warmup Iteration   2: 3132.878 us/op
+[info] # Warmup Iteration   3: 3148.771 us/op
+[info] # Warmup Iteration   4: 3111.578 us/op
+[info] # Warmup Iteration   5: 3108.226 us/op
+[info] # Warmup Iteration   6: 3113.102 us/op
+[info] # Warmup Iteration   7: 3078.291 us/op
+[info] # Warmup Iteration   8: 3113.791 us/op
+[info] # Warmup Iteration   9: 3100.719 us/op
+[info] # Warmup Iteration  10: 3095.556 us/op
+[info] Iteration   1: 3084.585 us/op
+[info] Iteration   2: 3115.255 us/op
+[info] Iteration   3: 3084.716 us/op
+[info] Iteration   4: 3115.637 us/op
+[info] Iteration   5: 3105.535 us/op
+[info] Iteration   6: 3089.173 us/op
+[info] Iteration   7: 3116.021 us/op
+[info] Iteration   8: 3116.081 us/op
+[info] Iteration   9: 3077.679 us/op
+[info] Iteration  10: 3092.804 us/op
+[info] Result "benchmark.MutableLongMapBenchmark.createUpdateLookup_16Buffer_Opti":
+[info]   3099.749 ±(99.9%) 23.427 us/op [Average]
+[info]   (min, avg, max) = (3077.679, 3099.749, 3116.081), stdev = 15.495
+[info]   CI (99.9%): [3076.322, 3123.175] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1
+[info] # VM invoker: /usr/lib/jvm/temurin-17-jdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 10 iterations, 10 s each
+[info] # Measurement: 10 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: benchmark.MutableLongMapBenchmark.createUpdateLookup_16Buffer_Opti
+[info] # Parameters: (nKeys = 35156)
+[info] # Run progress: 7.87% complete, ETA 2 days, 00:14:24
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 3395.426 us/op
+[info] # Warmup Iteration   2: 3156.596 us/op
+[info] # Warmup Iteration   3: 3169.429 us/op
+[info] # Warmup Iteration   4: 3121.274 us/op
+[info] # Warmup Iteration   5: 3146.015 us/op
+[info] # Warmup Iteration   6: 3141.485 us/op
+[info] # Warmup Iteration   7: 3119.820 us/op
+[info] # Warmup Iteration   8: 3125.764 us/op
+[info] # Warmup Iteration   9: 3136.988 us/op
+[info] # Warmup Iteration  10: 3113.418 us/op
+[info] Iteration   1: 3102.527 us/op
+[info] Iteration   2: 3101.984 us/op
+[info] Iteration   3: 3104.512 us/op
+[info] Iteration   4: 3104.488 us/op
+[info] Iteration   5: 3113.573 us/op
+[info] Iteration   6: 3110.536 us/op
+[info] Iteration   7: 3117.880 us/op
+[info] Iteration   8: 3110.171 us/op
+[info] Iteration   9: 3121.358 us/op
+[info] Iteration  10: 3105.948 us/op
+[info] Result "benchmark.MutableLongMapBenchmark.createUpdateLookup_16Buffer_Opti":
+[info]   3109.298 ±(99.9%) 10.032 us/op [Average]
+[info]   (min, avg, max) = (3101.984, 3109.298, 3121.358), stdev = 6.635
+[info]   CI (99.9%): [3099.266, 3119.329] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1
+[info] # VM invoker: /usr/lib/jvm/temurin-17-jdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 10 iterations, 10 s each
+[info] # Measurement: 10 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: benchmark.MutableLongMapBenchmark.createUpdateLookup_16Buffer_Opti
+[info] # Parameters: (nKeys = 36754)
+[info] # Run progress: 7.97% complete, ETA 2 days, 00:12:10
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 3419.249 us/op
+[info] # Warmup Iteration   2: 3209.052 us/op
+[info] # Warmup Iteration   3: 3159.073 us/op
+[info] # Warmup Iteration   4: 3186.419 us/op
+[info] # Warmup Iteration   5: 3157.281 us/op
+[info] # Warmup Iteration   6: 3138.172 us/op
+[info] # Warmup Iteration   7: 3151.834 us/op
+[info] # Warmup Iteration   8: 3150.756 us/op
+[info] # Warmup Iteration   9: 3130.698 us/op
+[info] # Warmup Iteration  10: 3127.715 us/op
+[info] Iteration   1: 3124.044 us/op
+[info] Iteration   2: 3130.810 us/op
+[info] Iteration   3: 3145.082 us/op
+[info] Iteration   4: 3122.862 us/op
+[info] Iteration   5: 3144.748 us/op
+[info] Iteration   6: 3134.929 us/op
+[info] Iteration   7: 3134.627 us/op
+[info] Iteration   8: 3131.487 us/op
+[info] Iteration   9: 3135.976 us/op
+[info] Iteration  10: 3167.358 us/op
+[info] Result "benchmark.MutableLongMapBenchmark.createUpdateLookup_16Buffer_Opti":
+[info]   3137.192 ±(99.9%) 19.479 us/op [Average]
+[info]   (min, avg, max) = (3122.862, 3137.192, 3167.358), stdev = 12.884
+[info]   CI (99.9%): [3117.713, 3156.671] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1
+[info] # VM invoker: /usr/lib/jvm/temurin-17-jdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 10 iterations, 10 s each
+[info] # Measurement: 10 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: benchmark.MutableLongMapBenchmark.createUpdateLookup_16Buffer_Opti
+[info] # Parameters: (nKeys = 38352)
+[info] # Run progress: 8.07% complete, ETA 2 days, 00:09:54
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 3447.718 us/op
+[info] # Warmup Iteration   2: 3214.273 us/op
+[info] # Warmup Iteration   3: 3225.214 us/op
+[info] # Warmup Iteration   4: 3215.103 us/op
+[info] # Warmup Iteration   5: 3208.715 us/op
+[info] # Warmup Iteration   6: 3213.279 us/op
+[info] # Warmup Iteration   7: 3192.263 us/op
+[info] # Warmup Iteration   8: 3185.833 us/op
+[info] # Warmup Iteration   9: 3191.880 us/op
+[info] # Warmup Iteration  10: 3184.350 us/op
+[info] Iteration   1: 3192.545 us/op
+[info] Iteration   2: 3197.397 us/op
+[info] Iteration   3: 3182.954 us/op
+[info] Iteration   4: 3189.935 us/op
+[info] Iteration   5: 3197.001 us/op
+[info] Iteration   6: 3190.392 us/op
+[info] Iteration   7: 3191.332 us/op
+[info] Iteration   8: 3182.268 us/op
+[info] Iteration   9: 3162.467 us/op
+[info] Iteration  10: 3174.086 us/op
+[info] Result "benchmark.MutableLongMapBenchmark.createUpdateLookup_16Buffer_Opti":
+[info]   3186.038 ±(99.9%) 16.530 us/op [Average]
+[info]   (min, avg, max) = (3162.467, 3186.038, 3197.397), stdev = 10.934
+[info]   CI (99.9%): [3169.507, 3202.568] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1
+[info] # VM invoker: /usr/lib/jvm/temurin-17-jdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 10 iterations, 10 s each
+[info] # Measurement: 10 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: benchmark.MutableLongMapBenchmark.createUpdateLookup_16Buffer_Opti
+[info] # Parameters: (nKeys = 39950)
+[info] # Run progress: 8.18% complete, ETA 2 days, 00:07:37
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 3630.803 us/op
+[info] # Warmup Iteration   2: 3246.876 us/op
+[info] # Warmup Iteration   3: 3234.312 us/op
+[info] # Warmup Iteration   4: 3181.852 us/op
+[info] # Warmup Iteration   5: 3181.463 us/op
+[info] # Warmup Iteration   6: 3209.054 us/op
+[info] # Warmup Iteration   7: 3167.740 us/op
+[info] # Warmup Iteration   8: 3171.348 us/op
+[info] # Warmup Iteration   9: 3181.045 us/op
+[info] # Warmup Iteration  10: 3196.388 us/op
+[info] Iteration   1: 3202.524 us/op
+[info] Iteration   2: 3196.837 us/op
+[info] Iteration   3: 3215.406 us/op
+[info] Iteration   4: 3204.281 us/op
+[info] Iteration   5: 3203.544 us/op
+[info] Iteration   6: 3203.696 us/op
+[info] Iteration   7: 3205.866 us/op
+[info] Iteration   8: 3211.417 us/op
+[info] Iteration   9: 3221.762 us/op
+[info] Iteration  10: 3222.672 us/op
+[info] Result "benchmark.MutableLongMapBenchmark.createUpdateLookup_16Buffer_Opti":
+[info]   3208.801 ±(99.9%) 13.104 us/op [Average]
+[info]   (min, avg, max) = (3196.837, 3208.801, 3222.672), stdev = 8.668
+[info]   CI (99.9%): [3195.697, 3221.905] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1
+[info] # VM invoker: /usr/lib/jvm/temurin-17-jdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 10 iterations, 10 s each
+[info] # Measurement: 10 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: benchmark.MutableLongMapBenchmark.createUpdateLookup_16Buffer_Opti
+[info] # Parameters: (nKeys = 41548)
+[info] # Run progress: 8.28% complete, ETA 2 days, 00:05:18
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 3552.783 us/op
+[info] # Warmup Iteration   2: 3323.634 us/op
+[info] # Warmup Iteration   3: 3329.462 us/op
+[info] # Warmup Iteration   4: 3311.035 us/op
+[info] # Warmup Iteration   5: 3327.684 us/op
+[info] # Warmup Iteration   6: 3300.428 us/op
+[info] # Warmup Iteration   7: 3255.403 us/op
+[info] # Warmup Iteration   8: 3302.573 us/op
+[info] # Warmup Iteration   9: 3256.129 us/op
+[info] # Warmup Iteration  10: 3288.296 us/op
+[info] Iteration   1: 3253.570 us/op
+[info] Iteration   2: 3286.470 us/op
+[info] Iteration   3: 3240.362 us/op
+[info] Iteration   4: 3266.803 us/op
+[info] Iteration   5: 3269.966 us/op
+[info] Iteration   6: 3247.414 us/op
+[info] Iteration   7: 3257.475 us/op
+[info] Iteration   8: 3288.588 us/op
+[info] Iteration   9: 3254.118 us/op
+[info] Iteration  10: 3261.937 us/op
+[info] Result "benchmark.MutableLongMapBenchmark.createUpdateLookup_16Buffer_Opti":
+[info]   3262.670 ±(99.9%) 23.757 us/op [Average]
+[info]   (min, avg, max) = (3240.362, 3262.670, 3288.588), stdev = 15.714
+[info]   CI (99.9%): [3238.913, 3286.428] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1
+[info] # VM invoker: /usr/lib/jvm/temurin-17-jdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 10 iterations, 10 s each
+[info] # Measurement: 10 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: benchmark.MutableLongMapBenchmark.createUpdateLookup_16Buffer_Opti
+[info] # Parameters: (nKeys = 43146)
+[info] # Run progress: 8.39% complete, ETA 2 days, 00:02:57
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 3576.835 us/op
+[info] # Warmup Iteration   2: 3346.576 us/op
+[info] # Warmup Iteration   3: 3290.770 us/op
+[info] # Warmup Iteration   4: 3327.106 us/op
+[info] # Warmup Iteration   5: 3287.858 us/op
+[info] # Warmup Iteration   6: 3295.572 us/op
+[info] # Warmup Iteration   7: 3309.733 us/op
+[info] # Warmup Iteration   8: 3309.156 us/op
+[info] # Warmup Iteration   9: 3293.803 us/op
+[info] # Warmup Iteration  10: 3299.243 us/op
+[info] Iteration   1: 3298.412 us/op
+[info] Iteration   2: 3320.451 us/op
+[info] Iteration   3: 3372.035 us/op
+[info] Iteration   4: 3376.760 us/op
+[info] Iteration   5: 3351.857 us/op
+[info] Iteration   6: 3293.758 us/op
+[info] Iteration   7: 3292.481 us/op
+[info] Iteration   8: 3289.680 us/op
+[info] Iteration   9: 3272.926 us/op
+[info] Iteration  10: 3252.383 us/op
+[info] Result "benchmark.MutableLongMapBenchmark.createUpdateLookup_16Buffer_Opti":
+[info]   3312.074 ±(99.9%) 63.617 us/op [Average]
+[info]   (min, avg, max) = (3252.383, 3312.074, 3376.760), stdev = 42.079
+[info]   CI (99.9%): [3248.457, 3375.691] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1
+[info] # VM invoker: /usr/lib/jvm/temurin-17-jdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 10 iterations, 10 s each
+[info] # Measurement: 10 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: benchmark.MutableLongMapBenchmark.createUpdateLookup_16Buffer_Opti
+[info] # Parameters: (nKeys = 44744)
+[info] # Run progress: 8.49% complete, ETA 2 days, 00:00:35
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 3581.036 us/op
+[info] # Warmup Iteration   2: 3339.056 us/op
+[info] # Warmup Iteration   3: 3364.325 us/op
+[info] # Warmup Iteration   4: 3370.885 us/op
+[info] # Warmup Iteration   5: 3366.994 us/op
+[info] # Warmup Iteration   6: 3369.258 us/op
+[info] # Warmup Iteration   7: 3321.609 us/op
+[info] # Warmup Iteration   8: 3374.068 us/op
+[info] # Warmup Iteration   9: 3330.304 us/op
+[info] # Warmup Iteration  10: 3363.572 us/op
+[info] Iteration   1: 3324.564 us/op
+[info] Iteration   2: 3366.236 us/op
+[info] Iteration   3: 3311.744 us/op
+[info] Iteration   4: 3335.474 us/op
+[info] Iteration   5: 3354.341 us/op
+[info] Iteration   6: 3319.647 us/op
+[info] Iteration   7: 3330.232 us/op
+[info] Iteration   8: 3361.642 us/op
+[info] Iteration   9: 3322.141 us/op
+[info] Iteration  10: 3322.976 us/op
+[info] Result "benchmark.MutableLongMapBenchmark.createUpdateLookup_16Buffer_Opti":
+[info]   3334.900 ±(99.9%) 28.852 us/op [Average]
+[info]   (min, avg, max) = (3311.744, 3334.900, 3366.236), stdev = 19.084
+[info]   CI (99.9%): [3306.047, 3363.752] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1
+[info] # VM invoker: /usr/lib/jvm/temurin-17-jdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 10 iterations, 10 s each
+[info] # Measurement: 10 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: benchmark.MutableLongMapBenchmark.createUpdateLookup_16Buffer_Opti
+[info] # Parameters: (nKeys = 46342)
+[info] # Run progress: 8.59% complete, ETA 1 days, 23:58:11
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 3655.489 us/op
+[info] # Warmup Iteration   2: 3434.911 us/op
+[info] # Warmup Iteration   3: 3388.008 us/op
+[info] # Warmup Iteration   4: 3410.149 us/op
+[info] # Warmup Iteration   5: 3379.103 us/op
+[info] # Warmup Iteration   6: 3362.155 us/op
+[info] # Warmup Iteration   7: 3370.987 us/op
+[info] # Warmup Iteration   8: 3368.277 us/op
+[info] # Warmup Iteration   9: 3369.243 us/op
+[info] # Warmup Iteration  10: 3383.402 us/op
+[info] Iteration   1: 3395.678 us/op
+[info] Iteration   2: 3405.306 us/op
+[info] Iteration   3: 3415.961 us/op
+[info] Iteration   4: 3397.718 us/op
+[info] Iteration   5: 3416.627 us/op
+[info] Iteration   6: 3395.730 us/op
+[info] Iteration   7: 3387.677 us/op
+[info] Iteration   8: 3391.765 us/op
+[info] Iteration   9: 3395.007 us/op
+[info] Iteration  10: 3392.302 us/op
+[info] Result "benchmark.MutableLongMapBenchmark.createUpdateLookup_16Buffer_Opti":
+[info]   3399.377 ±(99.9%) 15.131 us/op [Average]
+[info]   (min, avg, max) = (3387.677, 3399.377, 3416.627), stdev = 10.008
+[info]   CI (99.9%): [3384.246, 3414.508] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1
+[info] # VM invoker: /usr/lib/jvm/temurin-17-jdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 10 iterations, 10 s each
+[info] # Measurement: 10 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: benchmark.MutableLongMapBenchmark.createUpdateLookup_16Buffer_Opti
+[info] # Parameters: (nKeys = 47940)
+[info] # Run progress: 8.70% complete, ETA 1 days, 23:55:46
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 3743.906 us/op
+[info] # Warmup Iteration   2: 3398.325 us/op
+[info] # Warmup Iteration   3: 3392.105 us/op
+[info] # Warmup Iteration   4: 3391.167 us/op
+[info] # Warmup Iteration   5: 3372.676 us/op
+[info] # Warmup Iteration   6: 3379.336 us/op
+[info] # Warmup Iteration   7: 3360.339 us/op
+[info] # Warmup Iteration   8: 3353.461 us/op
+[info] # Warmup Iteration   9: 3374.842 us/op
+[info] # Warmup Iteration  10: 3365.407 us/op
+[info] Iteration   1: 3359.411 us/op
+[info] Iteration   2: 3356.813 us/op
+[info] Iteration   3: 3332.380 us/op
+[info] Iteration   4: 3360.967 us/op
+[info] Iteration   5: 3365.232 us/op
+[info] Iteration   6: 3338.461 us/op
+[info] Iteration   7: 3480.582 us/op
+[info] Iteration   8: 3380.207 us/op
+[info] Iteration   9: 3335.060 us/op
+[info] Iteration  10: 3341.207 us/op
+[info] Result "benchmark.MutableLongMapBenchmark.createUpdateLookup_16Buffer_Opti":
+[info]   3365.032 ±(99.9%) 65.583 us/op [Average]
+[info]   (min, avg, max) = (3332.380, 3365.032, 3480.582), stdev = 43.379
+[info]   CI (99.9%): [3299.449, 3430.615] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1
+[info] # VM invoker: /usr/lib/jvm/temurin-17-jdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 10 iterations, 10 s each
+[info] # Measurement: 10 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: benchmark.MutableLongMapBenchmark.createUpdateLookup_16Buffer_Opti
+[info] # Parameters: (nKeys = 49538)
+[info] # Run progress: 8.80% complete, ETA 1 days, 23:53:20
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 3641.558 us/op
+[info] # Warmup Iteration   2: 3557.037 us/op
+[info] # Warmup Iteration   3: 3714.235 us/op
+[info] # Warmup Iteration   4: 3555.879 us/op
+[info] # Warmup Iteration   5: 3418.565 us/op
+[info] # Warmup Iteration   6: 3431.618 us/op
+[info] # Warmup Iteration   7: 3383.811 us/op
+[info] # Warmup Iteration   8: 3413.019 us/op
+[info] # Warmup Iteration   9: 3384.564 us/op
+[info] # Warmup Iteration  10: 3426.311 us/op
+[info] Iteration   1: 3398.568 us/op
+[info] Iteration   2: 3431.188 us/op
+[info] Iteration   3: 3388.264 us/op
+[info] Iteration   4: 3415.596 us/op
+[info] Iteration   5: 3411.082 us/op
+[info] Iteration   6: 3392.309 us/op
+[info] Iteration   7: 3393.940 us/op
+[info] Iteration   8: 3435.917 us/op
+[info] Iteration   9: 3390.591 us/op
+[info] Iteration  10: 3394.864 us/op
+[info] Result "benchmark.MutableLongMapBenchmark.createUpdateLookup_16Buffer_Opti":
+[info]   3405.232 ±(99.9%) 26.213 us/op [Average]
+[info]   (min, avg, max) = (3388.264, 3405.232, 3435.917), stdev = 17.338
+[info]   CI (99.9%): [3379.018, 3431.445] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1
+[info] # VM invoker: /usr/lib/jvm/temurin-17-jdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 10 iterations, 10 s each
+[info] # Measurement: 10 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: benchmark.MutableLongMapBenchmark.createUpdateLookup_16Buffer_Opti
+[info] # Parameters: (nKeys = 51136)
+[info] # Run progress: 8.90% complete, ETA 1 days, 23:50:53
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 3765.730 us/op
+[info] # Warmup Iteration   2: 3512.576 us/op
+[info] # Warmup Iteration   3: 3493.139 us/op
+[info] # Warmup Iteration   4: 3469.118 us/op
+[info] # Warmup Iteration   5: 3473.880 us/op
+[info] # Warmup Iteration   6: 3465.337 us/op
+[info] # Warmup Iteration   7: 3426.626 us/op
+[info] # Warmup Iteration   8: 3455.000 us/op
+[info] # Warmup Iteration   9: 3416.540 us/op
+[info] # Warmup Iteration  10: 3458.292 us/op
+[info] Iteration   1: 3415.863 us/op
+[info] Iteration   2: 3455.183 us/op
+[info] Iteration   3: 3416.474 us/op
+[info] Iteration   4: 3441.060 us/op
+[info] Iteration   5: 3432.577 us/op
+[info] Iteration   6: 3407.362 us/op
+[info] Iteration   7: 3431.792 us/op
+[info] Iteration   8: 3448.052 us/op
+[info] Iteration   9: 3407.621 us/op
+[info] Iteration  10: 3406.372 us/op
+[info] Result "benchmark.MutableLongMapBenchmark.createUpdateLookup_16Buffer_Opti":
+[info]   3426.236 ±(99.9%) 27.161 us/op [Average]
+[info]   (min, avg, max) = (3406.372, 3426.236, 3455.183), stdev = 17.966
+[info]   CI (99.9%): [3399.074, 3453.397] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1
+[info] # VM invoker: /usr/lib/jvm/temurin-17-jdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 10 iterations, 10 s each
+[info] # Measurement: 10 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: benchmark.MutableLongMapBenchmark.createUpdateLookup_16Buffer_Opti
+[info] # Parameters: (nKeys = 52734)
+[info] # Run progress: 9.01% complete, ETA 1 days, 23:48:24
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 3852.943 us/op
+[info] # Warmup Iteration   2: 3481.012 us/op
+[info] # Warmup Iteration   3: 3447.984 us/op
+[info] # Warmup Iteration   4: 3484.108 us/op
+[info] # Warmup Iteration   5: 3437.961 us/op
+[info] # Warmup Iteration   6: 3446.698 us/op
+[info] # Warmup Iteration   7: 3462.817 us/op
+[info] # Warmup Iteration   8: 3464.006 us/op
+[info] # Warmup Iteration   9: 3438.296 us/op
+[info] # Warmup Iteration  10: 3446.600 us/op
+[info] Iteration   1: 3463.375 us/op
+[info] Iteration   2: 3503.445 us/op
+[info] Iteration   3: 3464.596 us/op
+[info] Iteration   4: 3443.987 us/op
+[info] Iteration   5: 3476.194 us/op
+[info] Iteration   6: 3448.026 us/op
+[info] Iteration   7: 3453.528 us/op
+[info] Iteration   8: 3450.771 us/op
+[info] Iteration   9: 3456.387 us/op
+[info] Iteration  10: 3456.591 us/op
+[info] Result "benchmark.MutableLongMapBenchmark.createUpdateLookup_16Buffer_Opti":
+[info]   3461.690 ±(99.9%) 26.212 us/op [Average]
+[info]   (min, avg, max) = (3443.987, 3461.690, 3503.445), stdev = 17.337
+[info]   CI (99.9%): [3435.478, 3487.902] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1
+[info] # VM invoker: /usr/lib/jvm/temurin-17-jdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 10 iterations, 10 s each
+[info] # Measurement: 10 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: benchmark.MutableLongMapBenchmark.createUpdateLookup_16Buffer_Opti
+[info] # Parameters: (nKeys = 54332)
+[info] # Run progress: 9.11% complete, ETA 1 days, 23:45:55
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 3914.814 us/op
+[info] # Warmup Iteration   2: 3557.607 us/op
+[info] # Warmup Iteration   3: 3502.408 us/op
+[info] # Warmup Iteration   4: 3537.234 us/op
+[info] # Warmup Iteration   5: 3488.981 us/op
+[info] # Warmup Iteration   6: 3523.176 us/op
+[info] # Warmup Iteration   7: 3507.029 us/op
+[info] # Warmup Iteration   8: 3509.216 us/op
+[info] # Warmup Iteration   9: 3489.883 us/op
+[info] # Warmup Iteration  10: 3492.841 us/op
+[info] Iteration   1: 3493.239 us/op
+[info] Iteration   2: 3513.348 us/op
+[info] Iteration   3: 3547.989 us/op
+[info] Iteration   4: 3534.505 us/op
+[info] Iteration   5: 3547.842 us/op
+[info] Iteration   6: 3526.741 us/op
+[info] Iteration   7: 3533.740 us/op
+[info] Iteration   8: 3526.608 us/op
+[info] Iteration   9: 3527.358 us/op
+[info] Iteration  10: 3538.306 us/op
+[info] Result "benchmark.MutableLongMapBenchmark.createUpdateLookup_16Buffer_Opti":
+[info]   3528.967 ±(99.9%) 24.649 us/op [Average]
+[info]   (min, avg, max) = (3493.239, 3528.967, 3547.989), stdev = 16.304
+[info]   CI (99.9%): [3504.318, 3553.617] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1
+[info] # VM invoker: /usr/lib/jvm/temurin-17-jdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 10 iterations, 10 s each
+[info] # Measurement: 10 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: benchmark.MutableLongMapBenchmark.createUpdateLookup_16Buffer_Opti
+[info] # Parameters: (nKeys = 55930)
+[info] # Run progress: 9.21% complete, ETA 1 days, 23:43:24
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 3791.099 us/op
+[info] # Warmup Iteration   2: 3540.124 us/op
+[info] # Warmup Iteration   3: 3500.793 us/op
+[info] # Warmup Iteration   4: 3546.241 us/op
+[info] # Warmup Iteration   5: 3505.180 us/op
+[info] # Warmup Iteration   6: 3507.650 us/op
+[info] # Warmup Iteration   7: 3529.497 us/op
+[info] # Warmup Iteration   8: 3504.489 us/op
+[info] # Warmup Iteration   9: 3485.229 us/op
+[info] # Warmup Iteration  10: 3479.378 us/op
+[info] Iteration   1: 3480.683 us/op
+[info] Iteration   2: 3496.137 us/op
+[info] Iteration   3: 3496.016 us/op
+[info] Iteration   4: 3495.476 us/op
+[info] Iteration   5: 3504.427 us/op
+[info] Iteration   6: 3480.616 us/op
+[info] Iteration   7: 3475.627 us/op
+[info] Iteration   8: 3467.166 us/op
+[info] Iteration   9: 3477.306 us/op
+[info] Iteration  10: 3467.891 us/op
+[info] Result "benchmark.MutableLongMapBenchmark.createUpdateLookup_16Buffer_Opti":
+[info]   3484.135 ±(99.9%) 19.652 us/op [Average]
+[info]   (min, avg, max) = (3467.166, 3484.135, 3504.427), stdev = 12.999
+[info]   CI (99.9%): [3464.482, 3503.787] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1
+[info] # VM invoker: /usr/lib/jvm/temurin-17-jdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 10 iterations, 10 s each
+[info] # Measurement: 10 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: benchmark.MutableLongMapBenchmark.createUpdateLookup_16Buffer_Opti
+[info] # Parameters: (nKeys = 57528)
+[info] # Run progress: 9.32% complete, ETA 1 days, 23:40:52
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 3800.213 us/op
+[info] # Warmup Iteration   2: 3526.380 us/op
+[info] # Warmup Iteration   3: 3524.330 us/op
+[info] # Warmup Iteration   4: 3532.155 us/op
+[info] # Warmup Iteration   5: 3516.977 us/op
+[info] # Warmup Iteration   6: 3526.103 us/op
+[info] # Warmup Iteration   7: 3477.824 us/op
+[info] # Warmup Iteration   8: 3516.970 us/op
+[info] # Warmup Iteration   9: 3481.749 us/op
+[info] # Warmup Iteration  10: 3528.503 us/op
+[info] Iteration   1: 3493.606 us/op
+[info] Iteration   2: 3541.571 us/op
+[info] Iteration   3: 3498.245 us/op
+[info] Iteration   4: 3514.242 us/op
+[info] Iteration   5: 3523.731 us/op
+[info] Iteration   6: 3482.167 us/op
+[info] Iteration   7: 3492.078 us/op
+[info] Iteration   8: 3524.950 us/op
+[info] Iteration   9: 3480.981 us/op
+[info] Iteration  10: 3486.303 us/op
+[info] Result "benchmark.MutableLongMapBenchmark.createUpdateLookup_16Buffer_Opti":
+[info]   3503.787 ±(99.9%) 31.662 us/op [Average]
+[info]   (min, avg, max) = (3480.981, 3503.787, 3541.571), stdev = 20.942
+[info]   CI (99.9%): [3472.125, 3535.449] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1
+[info] # VM invoker: /usr/lib/jvm/temurin-17-jdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 10 iterations, 10 s each
+[info] # Measurement: 10 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: benchmark.MutableLongMapBenchmark.createUpdateLookup_16Buffer_Opti
+[info] # Parameters: (nKeys = 59126)
+[info] # Run progress: 9.42% complete, ETA 1 days, 23:38:18
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 3829.185 us/op
+[info] # Warmup Iteration   2: 3567.960 us/op
+[info] # Warmup Iteration   3: 3558.572 us/op
+[info] # Warmup Iteration   4: 3598.941 us/op
+[info] # Warmup Iteration   5: 3554.813 us/op
+[info] # Warmup Iteration   6: 3560.238 us/op
+[info] # Warmup Iteration   7: 3573.285 us/op
+[info] # Warmup Iteration   8: 3577.571 us/op
+[info] # Warmup Iteration   9: 3552.404 us/op
+[info] # Warmup Iteration  10: 3548.610 us/op
+[info] Iteration   1: 3548.725 us/op
+[info] Iteration   2: 3552.964 us/op
+[info] Iteration   3: 3561.649 us/op
+[info] Iteration   4: 3549.390 us/op
+[info] Iteration   5: 3565.550 us/op
+[info] Iteration   6: 3544.753 us/op
+[info] Iteration   7: 3551.319 us/op
+[info] Iteration   8: 3541.214 us/op
+[info] Iteration   9: 3537.915 us/op
+[info] Iteration  10: 3542.944 us/op
+[info] Result "benchmark.MutableLongMapBenchmark.createUpdateLookup_16Buffer_Opti":
+[info]   3549.642 ±(99.9%) 13.231 us/op [Average]
+[info]   (min, avg, max) = (3537.915, 3549.642, 3565.550), stdev = 8.752
+[info]   CI (99.9%): [3536.411, 3562.874] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1
+[info] # VM invoker: /usr/lib/jvm/temurin-17-jdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 10 iterations, 10 s each
+[info] # Measurement: 10 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: benchmark.MutableLongMapBenchmark.createUpdateLookup_16Buffer_Opti
+[info] # Parameters: (nKeys = 60724)
+[info] # Run progress: 9.52% complete, ETA 1 days, 23:35:44
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 3973.637 us/op
+[info] # Warmup Iteration   2: 3606.822 us/op
+[info] # Warmup Iteration   3: 3571.299 us/op
+[info] # Warmup Iteration   4: 3606.882 us/op
+[info] # Warmup Iteration   5: 3578.864 us/op
+[info] # Warmup Iteration   6: 3560.721 us/op
+[info] # Warmup Iteration   7: 3576.773 us/op
+[info] # Warmup Iteration   8: 3569.368 us/op
+[info] # Warmup Iteration   9: 3538.071 us/op
+[info] # Warmup Iteration  10: 3545.291 us/op
+[info] Iteration   1: 3562.545 us/op
+[info] Iteration   2: 3576.956 us/op
+[info] Iteration   3: 3576.864 us/op
+[info] Iteration   4: 3577.307 us/op
+[info] Iteration   5: 3590.195 us/op
+[info] Iteration   6: 3569.956 us/op
+[info] Iteration   7: 3573.139 us/op
+[info] Iteration   8: 3563.682 us/op
+[info] Iteration   9: 3573.686 us/op
+[info] Iteration  10: 3561.071 us/op
+[info] Result "benchmark.MutableLongMapBenchmark.createUpdateLookup_16Buffer_Opti":
+[info]   3572.540 ±(99.9%) 13.246 us/op [Average]
+[info]   (min, avg, max) = (3561.071, 3572.540, 3590.195), stdev = 8.761
+[info]   CI (99.9%): [3559.294, 3585.786] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1
+[info] # VM invoker: /usr/lib/jvm/temurin-17-jdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 10 iterations, 10 s each
+[info] # Measurement: 10 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: benchmark.MutableLongMapBenchmark.createUpdateLookup_16Buffer_Opti
+[info] # Parameters: (nKeys = 62322)
+[info] # Run progress: 9.63% complete, ETA 1 days, 23:33:09
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 3895.134 us/op
+[info] # Warmup Iteration   2: 3648.273 us/op
+[info] # Warmup Iteration   3: 3637.781 us/op
+[info] # Warmup Iteration   4: 3588.616 us/op
+[info] # Warmup Iteration   5: 3639.355 us/op
+[info] # Warmup Iteration   6: 3578.823 us/op
+[info] # Warmup Iteration   7: 3604.738 us/op
+[info] # Warmup Iteration   8: 3602.218 us/op
+[info] # Warmup Iteration   9: 3712.419 us/op
+[info] # Warmup Iteration  10: 4003.553 us/op
+[info] Iteration   1: 3608.383 us/op
+[info] Iteration   2: 3664.956 us/op
+[info] Iteration   3: 3596.202 us/op
+[info] Iteration   4: 3616.540 us/op
+[info] Iteration   5: 3625.893 us/op
+
+[warn] Canceling execution...
+[error] Cancelled: Jmh/run -i 10 -wi 10 -f1 -t1
+[error] Use 'last' for the full log.
+[info] Iteration   6: 
