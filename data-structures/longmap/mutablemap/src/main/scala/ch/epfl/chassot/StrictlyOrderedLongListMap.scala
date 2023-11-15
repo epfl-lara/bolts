@@ -335,9 +335,7 @@ object TupleListOps {
       case _ => ()
     }
 
-  }.ensuring(_ =>
-    removeStrictlySorted(insertStrictlySorted(l, key1, v1), key1) == l
-  )
+  }.ensuring(_ => removeStrictlySorted(insertStrictlySorted(l, key1, v1), key1) == l)
 
   @opaque
   def lemmaInsertStrictlySortedCommutative[B](
@@ -540,9 +538,7 @@ object TupleListOps {
       case _ => ()
     }
 
-  }.ensuring(_ =>
-    keys.forall(k => getValueByKey(Cons(newHead, l), k) == Some[B](value))
-  )
+  }.ensuring(_ => keys.forall(k => getValueByKey(Cons(newHead, l), k) == Some[B](value)))
 
   @opaque
   def lemmaInsertStrictlySortedDoesNotModifyOtherKeyValues[B](
@@ -599,9 +595,7 @@ object TupleListOps {
         )
       case _ => ()
     }
-  }.ensuring(_ =>
-    !containsKey(insertStrictlySorted(l, newKey, newValue), otherKey)
-  )
+  }.ensuring(_ => !containsKey(insertStrictlySorted(l, newKey, newValue), otherKey))
 
   @opaque
   def lemmaInsertStrictlySortedDoesNotModifyOtherKeysContained[B](
@@ -623,9 +617,7 @@ object TupleListOps {
         )
       case _ => ()
     }
-  }.ensuring(_ =>
-    containsKey(insertStrictlySorted(l, newKey, newValue), otherKey)
-  )
+  }.ensuring(_ => containsKey(insertStrictlySorted(l, newKey, newValue), otherKey))
 
   @opaque
   def lemmaInsertStrictlySortedNotContainedContent[B](
@@ -636,11 +628,13 @@ object TupleListOps {
     require(invariantList(l))
     require(!containsKey(l, newKey))
 
-  } ensuring (_ => l.content ++ Set((newKey, newValue)) == insertStrictlySorted(
-    l,
-    newKey,
-    newValue
-  ).content)
+  } ensuring (_ =>
+    l.content ++ Set((newKey, newValue)) == insertStrictlySorted(
+      l,
+      newKey,
+      newValue
+    ).content
+  )
 
   @opaque
   def lemmaNotContainsKeyThenNotContainsTuple[B](
@@ -754,9 +748,7 @@ object ListMapLongKeyLemmas {
   }.ensuring(_ => lm + (a1, b1) + (a2, b2) == lm + (a2, b2) + (a1, b1))
 
   @opaque
-  def emptyContainsNothing[B](k: Long): Unit = {}.ensuring(_ =>
-    !ListMapLongKey.empty[B].contains(k)
-  )
+  def emptyContainsNothing[B](k: Long): Unit = {}.ensuring(_ => !ListMapLongKey.empty[B].contains(k))
 
   @opaque
   def addValidProp[B](
@@ -942,7 +934,9 @@ object ListMapLongKeyLemmas {
       key,
       value
     )
-  } ensuring (_ => lm.toList.content ++ Set(
-    (key, value)
-  ) == (lm + (key, value)).toList.content)
+  } ensuring (_ =>
+    lm.toList.content ++ Set(
+      (key, value)
+    ) == (lm + (key, value)).toList.content
+  )
 }

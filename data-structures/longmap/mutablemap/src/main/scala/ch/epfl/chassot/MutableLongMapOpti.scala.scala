@@ -54,7 +54,7 @@ object MutableLongMapOpti {
     def isEmpty: Boolean = {
       underlying.v.isEmpty
     }
-    
+
     @pure
     def contains(key: Long): Boolean = {
       underlying.v.contains(key)
@@ -63,7 +63,7 @@ object MutableLongMapOpti {
     @pure
     def apply(key: Long): V = {
       underlying.v.apply(key)
-    } 
+    }
 
     def update(key: Long, v: V): Boolean = {
       val repacked = if (imbalanced()) {
@@ -76,11 +76,11 @@ object MutableLongMapOpti {
       } else {
         false
       }
-    } 
+    }
 
     def remove(key: Long): Boolean = {
       underlying.v.remove(key)
-    } 
+    }
 
     @pure
     def computeNewMask(oldMask: Int, s: Int): Int = {
@@ -99,24 +99,24 @@ object MutableLongMapOpti {
         m
       }
       newMask
-    } 
+    }
 
     @pure
     def completeComputeNewMask(oldMask: Int, _vacant: Int, _size: Int): Int = {
       if (_size > (MAX_MASK >> 3)) {
         ((oldMask << 1) + 1) & MAX_MASK
       } else {
-      var m = oldMask
-      if (2 * (_size + _vacant) >= oldMask && !(5 * _vacant > oldMask)) {
-        m = ((m << 1) + 1) & MAX_MASK
+        var m = oldMask
+        if (2 * (_size + _vacant) >= oldMask && !(5 * _vacant > oldMask)) {
+          m = ((m << 1) + 1) & MAX_MASK
+        }
+        while (m > 8 && 8 * _size < m) {
+          decreases(m)
+          m = m >>> 1
+        }
+        m
       }
-      while (m > 8 && 8 * _size < m) {
-        decreases(m)
-        m = m >>> 1
-      }
-      m
     }
-    } 
 
     def repack(): Boolean = {
 
@@ -180,7 +180,7 @@ object MutableLongMapOpti {
         }
       }
 
-    } 
+    }
 
   }
 
@@ -213,7 +213,8 @@ object MutableLongMapOpti {
 
   private final val MAX_ITER = 4096 // arbitrary
 
-  /** A Map with keys of type Long and values of type Long mask must be a valid mask, i.e., 2^n - 1. The smallest possible mask is 0 and the biggest is 0x3fffffff _keys and _values must be initialized to an array of length mask + 1, containing all 0 values, i.e., Array.fill(mask + 1)(0) extraKeys must be initialized to 0 _size must be initialized to 0
+  /** A Map with keys of type Long and values of type Long mask must be a valid mask, i.e., 2^n - 1. The smallest possible mask is 0 and the biggest is 0x3fffffff _keys and _values must be initialized
+    * to an array of length mask + 1, containing all 0 values, i.e., Array.fill(mask + 1)(0) extraKeys must be initialized to 0 _size must be initialized to 0
     *
     * @param mask
     * @param extraKeys
@@ -252,7 +253,7 @@ object MutableLongMapOpti {
     @pure
     def isEmpty: Boolean = {
       size == 0
-    } 
+    }
 
     @pure
     def contains(key: Long): Boolean = {
@@ -354,7 +355,7 @@ object MutableLongMapOpti {
             _values(index) = null
             val tempVac = _vacant + 1
             if (tempVac > 0) {
-              _vacant = tempVac 
+              _vacant = tempVac
             }
 
             true
@@ -376,8 +377,6 @@ object MutableLongMapOpti {
 
     }
 
-
-
   }
 
   abstract sealed class SeekEntryResult
@@ -390,7 +389,17 @@ object MutableLongMapOpti {
   object LongMapFixedSizeOpti {
 
     def getNewLongMapFixedSize[V](mask: Int, defaultEntry: Long => V): LongMapFixedSizeOpti[V] = {
-      val res = LongMapFixedSizeOpti[V](defaultEntry = defaultEntry, mask = mask, extraKeys = 0, zeroValue = defaultEntry(0L), minValue = defaultEntry(0L), _size = 0, _keys = new Array[Long](mask + 1), _values =new Array[AnyRef](mask + 1), _vacant = 0)
+      val res = LongMapFixedSizeOpti[V](
+        defaultEntry = defaultEntry,
+        mask = mask,
+        extraKeys = 0,
+        zeroValue = defaultEntry(0L),
+        minValue = defaultEntry(0L),
+        _size = 0,
+        _keys = new Array[Long](mask + 1),
+        _values = new Array[AnyRef](mask + 1),
+        _vacant = 0
+      )
       res
     }
 
@@ -451,7 +460,7 @@ object MutableLongMapOpti {
       i >= 0 && i < mask + 1
     }
 
-        /** Given a key, seek for its index into the array returns a corresponding instance of SeekEntryResult with the index if found
+    /** Given a key, seek for its index into the array returns a corresponding instance of SeekEntryResult with the index if found
       *
       * @param k
       *   the key
@@ -551,7 +560,6 @@ object MutableLongMapOpti {
           vacantSpotIndex
         )
 
-    } 
+    }
   }
 }
-

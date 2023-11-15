@@ -1,0 +1,1111 @@
+[info] welcome to sbt 1.9.6 (Private Build Java 17.0.8.1)
+[info] loading settings for project mutablemap-build-build-build from metals.sbt ...
+[info] loading project definition from /localhome/chassot/bolts/data-structures/longmap/mutablemap/project/project/project
+[info] loading settings for project mutablemap-build-build from metals.sbt ...
+[info] loading project definition from /localhome/chassot/bolts/data-structures/longmap/mutablemap/project/project
+[success] Generated .bloop/mutablemap-build-build.json
+[success] Total time: 2 s, completed Nov 14, 2023, 9:27:50 AM
+[info] loading settings for project mutablemap-build from metals.sbt,plugins.sbt ...
+[info] loading project definition from /localhome/chassot/bolts/data-structures/longmap/mutablemap/project
+[success] Generated .bloop/mutablemap-build.json
+[success] Total time: 1 s, completed Nov 14, 2023, 9:27:51 AM
+[info] loading settings for project mutablemap from build.sbt ...
+[info] set current project to MutableMap (in build file:/localhome/chassot/bolts/data-structures/longmap/mutablemap/)
+[info] compiling 48 Scala sources to /localhome/chassot/bolts/data-structures/longmap/mutablemap/target/scala-3.3.0/classes ...
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/data-structures/longmap/mutablemap/src/main/scala/ch/epfl/chassot/MutableLongMap.scala:366:4 
+[warn] 366 |    c match {
+[warn]     |    ^
+[warn]     |    match may not be exhaustive.
+[warn]     |
+[warn]     |    It would fail on pattern case: EmptyCell()
+[warn]     |
+[warn]     | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/data-structures/longmap/mutablemap/src/main/scala/ch/epfl/chassot/MutableLongMap.scala:614:8 
+[warn] 614 |        seekEntryRes match {
+[warn]     |        ^^^^^^^^^^^^
+[warn]     |   match may not be exhaustive.
+[warn]     |
+[warn]     |   It would fail on pattern case: MutableLongMap.Intermediate(_, _, _)
+[warn]     |
+[warn]     | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/data-structures/longmap/mutablemap/src/main/scala/ch/epfl/chassot/MutableLongMap.scala:1131:6 
+[warn] 1131 |      intermediate match {
+[warn]      |      ^^^^^^^^^^^^
+[warn]      |    match may not be exhaustive.
+[warn]      |
+[warn]      |    It would fail on pattern case: _: MutableLongMap.SeekEntryResult
+[warn]      |
+[warn]      | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/data-structures/longmap/mutablemap/src/main/scala/ch/epfl/chassot/MutableLongMap.scala:1181:6 
+[warn] 1181 |      intermediate match {
+[warn]      |      ^^^^^^^^^^^^
+[warn]      |    match may not be exhaustive.
+[warn]      |
+[warn]      |    It would fail on pattern case: _: MutableLongMap.SeekEntryResult
+[warn]      |
+[warn]      | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/data-structures/longmap/mutablemap/src/main/scala/ch/epfl/chassot/MutableLongMapOpti.scala.scala:207:4 
+[warn] 207 |    c match {
+[warn]     |    ^
+[warn]     |    match may not be exhaustive.
+[warn]     |
+[warn]     |    It would fail on pattern case: EmptyCell()
+[warn]     |
+[warn]     | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/data-structures/longmap/mutablemap/src/main/scala/ch/epfl/chassot/MutableLongMapOpti.scala.scala:315:8 
+[warn] 315 |        seekEntryRes match {
+[warn]     |        ^^^^^^^^^^^^
+[warn]     |match may not be exhaustive.
+[warn]     |
+[warn]     |It would fail on pattern case: MutableLongMapOpti.Intermediate(_, _, _)
+[warn]     |
+[warn]     | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/data-structures/longmap/mutablemap/src/main/scala/ch/epfl/chassot/MutableLongMapOpti.scala.scala:465:6 
+[warn] 465 |      intermediate match {
+[warn]     |      ^^^^^^^^^^^^
+[warn]     |  match may not be exhaustive.
+[warn]     |
+[warn]     |  It would fail on pattern case: _: MutableLongMapOpti.SeekEntryResult
+[warn]     |
+[warn]     | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/data-structures/longmap/mutablemap/src/main/scala/ch/epfl/chassot/MutableLongMapOpti.scala.scala:502:6 
+[warn] 502 |      intermediate match {
+[warn]     |      ^^^^^^^^^^^^
+[warn]     |  match may not be exhaustive.
+[warn]     |
+[warn]     |  It would fail on pattern case: _: MutableLongMapOpti.SeekEntryResult
+[warn]     |
+[warn]     | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/data-structures/longmap/mutablemap/src/main/scala/ch/epfl/chassot/StrictlyOrderedLongListMap.scala:164:4 
+[warn] 164 |    l match {
+[warn]     |    ^
+[warn]     |    match may not be exhaustive.
+[warn]     |
+[warn]     |    It would fail on pattern case: collection.Cons(_, _)
+[warn]     |
+[warn]     | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/data-structures/longmap/mutablemap/src/main/scala/ch/epfl/chassot/StrictlyOrderedLongListMap.scala:198:4 
+[warn] 198 |    l match {
+[warn]     |    ^
+[warn]     |    match may not be exhaustive.
+[warn]     |
+[warn]     |    It would fail on pattern case: collection.Cons(_, _)
+[warn]     |
+[warn]     | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/data-structures/longmap/mutablemap/src/main/scala/ch/epfl/chassot/StrictlyOrderedLongListMap.scala:213:4 
+[warn] 213 |    l match {
+[warn]     |    ^
+[warn]     |    match may not be exhaustive.
+[warn]     |
+[warn]     |    It would fail on pattern case: collection.Cons(_, _)
+[warn]     |
+[warn]     | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/data-structures/longmap/mutablemap/src/main/scala/ch/epfl/chassot/StrictlyOrderedLongListMap.scala:229:4 
+[warn] 229 |    l match {
+[warn]     |    ^
+[warn]     |    match may not be exhaustive.
+[warn]     |
+[warn]     |    It would fail on pattern case: collection.Cons(_, _)
+[warn]     |
+[warn]     | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/data-structures/longmap/mutablemap/src/main/scala/ch/epfl/chassot/StrictlyOrderedLongListMap.scala:250:4 
+[warn] 250 |    l match {
+[warn]     |    ^
+[warn]     |    match may not be exhaustive.
+[warn]     |
+[warn]     |    It would fail on pattern case: collection.Cons(_, _)
+[warn]     |
+[warn]     | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/data-structures/longmap/mutablemap/src/main/scala/ch/epfl/chassot/StrictlyOrderedLongListMap.scala:281:4 
+[warn] 281 |    l match {
+[warn]     |    ^
+[warn]     |    match may not be exhaustive.
+[warn]     |
+[warn]     |    It would fail on pattern case: collection.Cons(_, _)
+[warn]     |
+[warn]     | longer explanation available when compiling with `-explain`
+[warn] 14 warnings found
+[info] done compiling
+[info] running org.openjdk.jmh.generators.bytecode.JmhBytecodeGenerator /localhome/chassot/bolts/data-structures/longmap/mutablemap/target/scala-3.3.0/classes /localhome/chassot/bolts/data-structures/longmap/mutablemap/target/scala-3.3.0/src_managed/jmh /localhome/chassot/bolts/data-structures/longmap/mutablemap/target/scala-3.3.0/resource_managed/jmh default
+Processing 848 classes from /localhome/chassot/bolts/data-structures/longmap/mutablemap/target/scala-3.3.0/classes with "reflection" generator
+Writing out Java source to /localhome/chassot/bolts/data-structures/longmap/mutablemap/target/scala-3.3.0/src_managed/jmh and resources to /localhome/chassot/bolts/data-structures/longmap/mutablemap/target/scala-3.3.0/resource_managed/jmh
+[info] compiling 42 Java sources to /localhome/chassot/bolts/data-structures/longmap/mutablemap/target/scala-3.3.0/classes ...
+[info] done compiling
+[info] running (fork) org.openjdk.jmh.Main -i 1 -wi 1 -f1 -t1 MutableLongMapBenchmarkBig.lookupN_*
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1-Ubuntu-0ubuntu120.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 1 iterations, 10 s each
+[info] # Measurement: 1 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: benchmark.MutableLongMapBenchmarkBig.lookupN_Opti
+[info] # Parameters: (keysListName = 262144)
+[info] # Run progress: 0.00% complete, ETA 00:17:00
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 78055676.022 us/op
+[info] Iteration   1: 28040.923 us/op
+[info] Result "benchmark.MutableLongMapBenchmarkBig.lookupN_Opti":
+[info]   28040.923 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1-Ubuntu-0ubuntu120.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 1 iterations, 10 s each
+[info] # Measurement: 1 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: benchmark.MutableLongMapBenchmarkBig.lookupN_Opti
+[info] # Parameters: (keysListName = 786432)
+[info] # Run progress: 1.96% complete, ETA 01:15:22
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 80791240.111 us/op
+[info] Iteration   1: 98895.032 us/op
+[info] Result "benchmark.MutableLongMapBenchmarkBig.lookupN_Opti":
+[info]   98895.032 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1-Ubuntu-0ubuntu120.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 1 iterations, 10 s each
+[info] # Measurement: 1 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: benchmark.MutableLongMapBenchmarkBig.lookupN_Opti
+[info] # Parameters: (keysListName = 1310720)
+[info] # Run progress: 3.92% complete, ETA 01:14:32
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 80270454.985 us/op
+[info] Iteration   1: 123735.808 us/op
+[info] Result "benchmark.MutableLongMapBenchmarkBig.lookupN_Opti":
+[info]   123735.808 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1-Ubuntu-0ubuntu120.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 1 iterations, 10 s each
+[info] # Measurement: 1 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: benchmark.MutableLongMapBenchmarkBig.lookupN_Opti
+[info] # Parameters: (keysListName = 1835008)
+[info] # Run progress: 5.88% complete, ETA 01:13:03
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 78901810.567 us/op
+[info] Iteration   1: 196303.091 us/op
+[info] Result "benchmark.MutableLongMapBenchmarkBig.lookupN_Opti":
+[info]   196303.091 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1-Ubuntu-0ubuntu120.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 1 iterations, 10 s each
+[info] # Measurement: 1 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: benchmark.MutableLongMapBenchmarkBig.lookupN_Opti
+[info] # Parameters: (keysListName = 2359296)
+[info] # Run progress: 7.84% complete, ETA 01:11:16
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 79598144.767 us/op
+[info] Iteration   1: 265249.173 us/op
+[info] Result "benchmark.MutableLongMapBenchmarkBig.lookupN_Opti":
+[info]   265249.173 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1-Ubuntu-0ubuntu120.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 1 iterations, 10 s each
+[info] # Measurement: 1 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: benchmark.MutableLongMapBenchmarkBig.lookupN_Opti
+[info] # Parameters: (keysListName = 2883584)
+[info] # Run progress: 9.80% complete, ETA 01:09:55
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 78781035.735 us/op
+[info] Iteration   1: 380871.776 us/op
+[info] Result "benchmark.MutableLongMapBenchmarkBig.lookupN_Opti":
+[info]   380871.776 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1-Ubuntu-0ubuntu120.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 1 iterations, 10 s each
+[info] # Measurement: 1 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: benchmark.MutableLongMapBenchmarkBig.lookupN_Opti
+[info] # Parameters: (keysListName = 3407872)
+[info] # Run progress: 11.76% complete, ETA 01:08:17
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 81500430.535 us/op
+[info] Iteration   1: 481856.009 us/op
+[info] Result "benchmark.MutableLongMapBenchmarkBig.lookupN_Opti":
+[info]   481856.009 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1-Ubuntu-0ubuntu120.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 1 iterations, 10 s each
+[info] # Measurement: 1 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: benchmark.MutableLongMapBenchmarkBig.lookupN_Opti
+[info] # Parameters: (keysListName = 3932160)
+[info] # Run progress: 13.73% complete, ETA 01:06:57
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 80822967.345 us/op
+[info] Iteration   1: 484298.425 us/op
+[info] Result "benchmark.MutableLongMapBenchmarkBig.lookupN_Opti":
+[info]   484298.425 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1-Ubuntu-0ubuntu120.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 1 iterations, 10 s each
+[info] # Measurement: 1 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: benchmark.MutableLongMapBenchmarkBig.lookupN_Opti
+[info] # Parameters: (keysListName = 4456448)
+[info] # Run progress: 15.69% complete, ETA 01:05:30
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 81828185.078 us/op
+[info] Iteration   1: 539467.578 us/op
+[info] Result "benchmark.MutableLongMapBenchmarkBig.lookupN_Opti":
+[info]   539467.578 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1-Ubuntu-0ubuntu120.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 1 iterations, 10 s each
+[info] # Measurement: 1 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: benchmark.MutableLongMapBenchmarkBig.lookupN_Opti
+[info] # Parameters: (keysListName = 4980736)
+[info] # Run progress: 17.65% complete, ETA 01:04:08
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 81196848.354 us/op
+[info] Iteration   1: 527530.769 us/op
+[info] Result "benchmark.MutableLongMapBenchmarkBig.lookupN_Opti":
+[info]   527530.769 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1-Ubuntu-0ubuntu120.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 1 iterations, 10 s each
+[info] # Measurement: 1 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: benchmark.MutableLongMapBenchmarkBig.lookupN_Opti
+[info] # Parameters: (keysListName = 5505024)
+[info] # Run progress: 19.61% complete, ETA 01:02:41
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 82155528.216 us/op
+[info] Iteration   1: 579929.627 us/op
+[info] Result "benchmark.MutableLongMapBenchmarkBig.lookupN_Opti":
+[info]   579929.627 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1-Ubuntu-0ubuntu120.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 1 iterations, 10 s each
+[info] # Measurement: 1 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: benchmark.MutableLongMapBenchmarkBig.lookupN_Opti
+[info] # Parameters: (keysListName = 6029312)
+[info] # Run progress: 21.57% complete, ETA 01:01:17
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 83056262.399 us/op
+[info] Iteration   1: 667009.389 us/op
+[info] Result "benchmark.MutableLongMapBenchmarkBig.lookupN_Opti":
+[info]   667009.389 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1-Ubuntu-0ubuntu120.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 1 iterations, 10 s each
+[info] # Measurement: 1 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: benchmark.MutableLongMapBenchmarkBig.lookupN_Opti
+[info] # Parameters: (keysListName = 6553600)
+[info] # Run progress: 23.53% complete, ETA 00:59:53
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 79847936.559 us/op
+[info] Iteration   1: 589549.537 us/op
+[info] Result "benchmark.MutableLongMapBenchmarkBig.lookupN_Opti":
+[info]   589549.537 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1-Ubuntu-0ubuntu120.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 1 iterations, 10 s each
+[info] # Measurement: 1 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: benchmark.MutableLongMapBenchmarkBig.lookupN_Opti
+[info] # Parameters: (keysListName = 7077888)
+[info] # Run progress: 25.49% complete, ETA 00:58:17
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 84744480.092 us/op
+[info] Iteration   1: 583147.883 us/op
+[info] Result "benchmark.MutableLongMapBenchmarkBig.lookupN_Opti":
+[info]   583147.883 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1-Ubuntu-0ubuntu120.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 1 iterations, 10 s each
+[info] # Measurement: 1 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: benchmark.MutableLongMapBenchmarkBig.lookupN_Opti
+[info] # Parameters: (keysListName = 7602176)
+[info] # Run progress: 27.45% complete, ETA 00:56:56
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 79006112.888 us/op
+[info] Iteration   1: 575035.888 us/op
+[info] Result "benchmark.MutableLongMapBenchmarkBig.lookupN_Opti":
+[info]   575035.888 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1-Ubuntu-0ubuntu120.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 1 iterations, 10 s each
+[info] # Measurement: 1 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: benchmark.MutableLongMapBenchmarkBig.lookupN_Opti
+[info] # Parameters: (keysListName = 8126464)
+[info] # Run progress: 29.41% complete, ETA 00:55:20
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 80054396.661 us/op
+[info] Iteration   1: 493237.584 us/op
+[info] Result "benchmark.MutableLongMapBenchmarkBig.lookupN_Opti":
+[info]   493237.584 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1-Ubuntu-0ubuntu120.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 1 iterations, 10 s each
+[info] # Measurement: 1 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: benchmark.MutableLongMapBenchmarkBig.lookupN_Opti
+[info] # Parameters: (keysListName = 8388608)
+[info] # Run progress: 31.37% complete, ETA 00:53:46
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 81044882.257 us/op
+[info] Iteration   1: 572203.502 us/op
+[info] Result "benchmark.MutableLongMapBenchmarkBig.lookupN_Opti":
+[info]   572203.502 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1-Ubuntu-0ubuntu120.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 1 iterations, 10 s each
+[info] # Measurement: 1 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: benchmark.MutableLongMapBenchmarkBig.lookupN_Original
+[info] # Parameters: (keysListName = 262144)
+[info] # Run progress: 33.33% complete, ETA 00:52:15
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 81873760.275 us/op
+[info] Iteration   1: 22562.732 us/op
+[info] Result "benchmark.MutableLongMapBenchmarkBig.lookupN_Original":
+[info]   22562.732 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1-Ubuntu-0ubuntu120.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 1 iterations, 10 s each
+[info] # Measurement: 1 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: benchmark.MutableLongMapBenchmarkBig.lookupN_Original
+[info] # Parameters: (keysListName = 786432)
+[info] # Run progress: 35.29% complete, ETA 00:50:44
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 82277159.929 us/op
+[info] Iteration   1: 70081.367 us/op
+[info] Result "benchmark.MutableLongMapBenchmarkBig.lookupN_Original":
+[info]   70081.367 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1-Ubuntu-0ubuntu120.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 1 iterations, 10 s each
+[info] # Measurement: 1 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: benchmark.MutableLongMapBenchmarkBig.lookupN_Original
+[info] # Parameters: (keysListName = 1310720)
+[info] # Run progress: 37.25% complete, ETA 00:49:14
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 80410089.417 us/op
+[info] Iteration   1: 127622.524 us/op
+[info] Result "benchmark.MutableLongMapBenchmarkBig.lookupN_Original":
+[info]   127622.524 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1-Ubuntu-0ubuntu120.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 1 iterations, 10 s each
+[info] # Measurement: 1 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: benchmark.MutableLongMapBenchmarkBig.lookupN_Original
+[info] # Parameters: (keysListName = 1835008)
+[info] # Run progress: 39.22% complete, ETA 00:47:40
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 81260231.824 us/op
+[info] Iteration   1: 171372.335 us/op
+[info] Result "benchmark.MutableLongMapBenchmarkBig.lookupN_Original":
+[info]   171372.335 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1-Ubuntu-0ubuntu120.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 1 iterations, 10 s each
+[info] # Measurement: 1 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: benchmark.MutableLongMapBenchmarkBig.lookupN_Original
+[info] # Parameters: (keysListName = 2359296)
+[info] # Run progress: 41.18% complete, ETA 00:46:08
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 77799128.918 us/op
+[info] Iteration   1: 245572.773 us/op
+[info] Result "benchmark.MutableLongMapBenchmarkBig.lookupN_Original":
+[info]   245572.773 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1-Ubuntu-0ubuntu120.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 1 iterations, 10 s each
+[info] # Measurement: 1 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: benchmark.MutableLongMapBenchmarkBig.lookupN_Original
+[info] # Parameters: (keysListName = 2883584)
+[info] # Run progress: 43.14% complete, ETA 00:44:33
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 80959310.643 us/op
+[info] Iteration   1: 290983.915 us/op
+[info] Result "benchmark.MutableLongMapBenchmarkBig.lookupN_Original":
+[info]   290983.915 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1-Ubuntu-0ubuntu120.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 1 iterations, 10 s each
+[info] # Measurement: 1 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: benchmark.MutableLongMapBenchmarkBig.lookupN_Original
+[info] # Parameters: (keysListName = 3407872)
+[info] # Run progress: 45.10% complete, ETA 00:43:02
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 82837034.349 us/op
+[info] Iteration   1: 353043.927 us/op
+[info] Result "benchmark.MutableLongMapBenchmarkBig.lookupN_Original":
+[info]   353043.927 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1-Ubuntu-0ubuntu120.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 1 iterations, 10 s each
+[info] # Measurement: 1 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: benchmark.MutableLongMapBenchmarkBig.lookupN_Original
+[info] # Parameters: (keysListName = 3932160)
+[info] # Run progress: 47.06% complete, ETA 00:41:32
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 80061656.339 us/op
+[info] Iteration   1: 396511.920 us/op
+[info] Result "benchmark.MutableLongMapBenchmarkBig.lookupN_Original":
+[info]   396511.920 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1-Ubuntu-0ubuntu120.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 1 iterations, 10 s each
+[info] # Measurement: 1 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: benchmark.MutableLongMapBenchmarkBig.lookupN_Original
+[info] # Parameters: (keysListName = 4456448)
+[info] # Run progress: 49.02% complete, ETA 00:39:59
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 77883526.917 us/op
+[info] Iteration   1: 373930.281 us/op
+[info] Result "benchmark.MutableLongMapBenchmarkBig.lookupN_Original":
+[info]   373930.281 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1-Ubuntu-0ubuntu120.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 1 iterations, 10 s each
+[info] # Measurement: 1 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: benchmark.MutableLongMapBenchmarkBig.lookupN_Original
+[info] # Parameters: (keysListName = 4980736)
+[info] # Run progress: 50.98% complete, ETA 00:38:24
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 79336356.184 us/op
+[info] Iteration   1: 508209.739 us/op
+[info] Result "benchmark.MutableLongMapBenchmarkBig.lookupN_Original":
+[info]   508209.739 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1-Ubuntu-0ubuntu120.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 1 iterations, 10 s each
+[info] # Measurement: 1 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: benchmark.MutableLongMapBenchmarkBig.lookupN_Original
+[info] # Parameters: (keysListName = 5505024)
+[info] # Run progress: 52.94% complete, ETA 00:36:50
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 81114649.266 us/op
+[info] Iteration   1: 480896.370 us/op
+[info] Result "benchmark.MutableLongMapBenchmarkBig.lookupN_Original":
+[info]   480896.370 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1-Ubuntu-0ubuntu120.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 1 iterations, 10 s each
+[info] # Measurement: 1 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: benchmark.MutableLongMapBenchmarkBig.lookupN_Original
+[info] # Parameters: (keysListName = 6029312)
+[info] # Run progress: 54.90% complete, ETA 00:35:18
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 79323902.075 us/op
+[info] Iteration   1: 376915.477 us/op
+[info] Result "benchmark.MutableLongMapBenchmarkBig.lookupN_Original":
+[info]   376915.477 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1-Ubuntu-0ubuntu120.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 1 iterations, 10 s each
+[info] # Measurement: 1 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: benchmark.MutableLongMapBenchmarkBig.lookupN_Original
+[info] # Parameters: (keysListName = 6553600)
+[info] # Run progress: 56.86% complete, ETA 00:33:45
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 82003997.601 us/op
+[info] Iteration   1: 517153.718 us/op
+[info] Result "benchmark.MutableLongMapBenchmarkBig.lookupN_Original":
+[info]   517153.718 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1-Ubuntu-0ubuntu120.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 1 iterations, 10 s each
+[info] # Measurement: 1 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: benchmark.MutableLongMapBenchmarkBig.lookupN_Original
+[info] # Parameters: (keysListName = 7077888)
+[info] # Run progress: 58.82% complete, ETA 00:32:16
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 82795026.894 us/op
+[info] Iteration   1: 450363.024 us/op
+[info] Result "benchmark.MutableLongMapBenchmarkBig.lookupN_Original":
+[info]   450363.024 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1-Ubuntu-0ubuntu120.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 1 iterations, 10 s each
+[info] # Measurement: 1 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: benchmark.MutableLongMapBenchmarkBig.lookupN_Original
+[info] # Parameters: (keysListName = 7602176)
+[info] # Run progress: 60.78% complete, ETA 00:30:45
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 81398449.437 us/op
+[info] Iteration   1: 440937.276 us/op
+[info] Result "benchmark.MutableLongMapBenchmarkBig.lookupN_Original":
+[info]   440937.276 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1-Ubuntu-0ubuntu120.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 1 iterations, 10 s each
+[info] # Measurement: 1 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: benchmark.MutableLongMapBenchmarkBig.lookupN_Original
+[info] # Parameters: (keysListName = 8126464)
+[info] # Run progress: 62.75% complete, ETA 00:29:13
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 79223850.965 us/op
+[info] Iteration   1: 443872.116 us/op
+[info] Result "benchmark.MutableLongMapBenchmarkBig.lookupN_Original":
+[info]   443872.116 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1-Ubuntu-0ubuntu120.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 1 iterations, 10 s each
+[info] # Measurement: 1 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: benchmark.MutableLongMapBenchmarkBig.lookupN_Original
+[info] # Parameters: (keysListName = 8388608)
+[info] # Run progress: 64.71% complete, ETA 00:27:40
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 82603469.232 us/op
+[info] Iteration   1: 415811.764 us/op
+[info] Result "benchmark.MutableLongMapBenchmarkBig.lookupN_Original":
+[info]   415811.764 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1-Ubuntu-0ubuntu120.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 1 iterations, 10 s each
+[info] # Measurement: 1 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: benchmark.MutableLongMapBenchmarkBig.lookupN_Verified
+[info] # Parameters: (keysListName = 262144)
+[info] # Run progress: 66.67% complete, ETA 00:26:08
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 82364348.262 us/op
+[info] Iteration   1: 37513.231 us/op
+[info] Result "benchmark.MutableLongMapBenchmarkBig.lookupN_Verified":
+[info]   37513.231 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1-Ubuntu-0ubuntu120.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 1 iterations, 10 s each
+[info] # Measurement: 1 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: benchmark.MutableLongMapBenchmarkBig.lookupN_Verified
+[info] # Parameters: (keysListName = 786432)
+[info] # Run progress: 68.63% complete, ETA 00:24:37
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 81522696.112 us/op
+[info] Iteration   1: 120628.703 us/op
+[info] Result "benchmark.MutableLongMapBenchmarkBig.lookupN_Verified":
+[info]   120628.703 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1-Ubuntu-0ubuntu120.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 1 iterations, 10 s each
+[info] # Measurement: 1 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: benchmark.MutableLongMapBenchmarkBig.lookupN_Verified
+[info] # Parameters: (keysListName = 1310720)
+[info] # Run progress: 70.59% complete, ETA 00:23:04
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 83573090.712 us/op
+[info] Iteration   1: 211821.367 us/op
+[info] Result "benchmark.MutableLongMapBenchmarkBig.lookupN_Verified":
+[info]   211821.367 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1-Ubuntu-0ubuntu120.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 1 iterations, 10 s each
+[info] # Measurement: 1 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: benchmark.MutableLongMapBenchmarkBig.lookupN_Verified
+[info] # Parameters: (keysListName = 1835008)
+[info] # Run progress: 72.55% complete, ETA 00:21:33
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 80180293.935 us/op
+[info] Iteration   1: 286492.766 us/op
+[info] Result "benchmark.MutableLongMapBenchmarkBig.lookupN_Verified":
+[info]   286492.766 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1-Ubuntu-0ubuntu120.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 1 iterations, 10 s each
+[info] # Measurement: 1 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: benchmark.MutableLongMapBenchmarkBig.lookupN_Verified
+[info] # Parameters: (keysListName = 2359296)
+[info] # Run progress: 74.51% complete, ETA 00:20:00
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 80715755.578 us/op
+[info] Iteration   1: 398230.052 us/op
+[info] Result "benchmark.MutableLongMapBenchmarkBig.lookupN_Verified":
+[info]   398230.052 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1-Ubuntu-0ubuntu120.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 1 iterations, 10 s each
+[info] # Measurement: 1 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: benchmark.MutableLongMapBenchmarkBig.lookupN_Verified
+[info] # Parameters: (keysListName = 2883584)
+[info] # Run progress: 76.47% complete, ETA 00:18:28
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 82065257.637 us/op
+[info] Iteration   1: 402625.779 us/op
+[info] Result "benchmark.MutableLongMapBenchmarkBig.lookupN_Verified":
+[info]   402625.779 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1-Ubuntu-0ubuntu120.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 1 iterations, 10 s each
+[info] # Measurement: 1 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: benchmark.MutableLongMapBenchmarkBig.lookupN_Verified
+[info] # Parameters: (keysListName = 3407872)
+[info] # Run progress: 78.43% complete, ETA 00:16:56
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 83452346.833 us/op
+[info] Iteration   1: 527800.456 us/op
+[info] Result "benchmark.MutableLongMapBenchmarkBig.lookupN_Verified":
+[info]   527800.456 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1-Ubuntu-0ubuntu120.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 1 iterations, 10 s each
+[info] # Measurement: 1 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: benchmark.MutableLongMapBenchmarkBig.lookupN_Verified
+[info] # Parameters: (keysListName = 3932160)
+[info] # Run progress: 80.39% complete, ETA 00:15:24
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 84935596.847 us/op
+[info] Iteration   1: 618262.868 us/op
+[info] Result "benchmark.MutableLongMapBenchmarkBig.lookupN_Verified":
+[info]   618262.868 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1-Ubuntu-0ubuntu120.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 1 iterations, 10 s each
+[info] # Measurement: 1 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: benchmark.MutableLongMapBenchmarkBig.lookupN_Verified
+[info] # Parameters: (keysListName = 4456448)
+[info] # Run progress: 82.35% complete, ETA 00:13:52
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 81697187.887 us/op
+[info] Iteration   1: 685668.624 us/op
+[info] Result "benchmark.MutableLongMapBenchmarkBig.lookupN_Verified":
+[info]   685668.624 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1-Ubuntu-0ubuntu120.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 1 iterations, 10 s each
+[info] # Measurement: 1 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: benchmark.MutableLongMapBenchmarkBig.lookupN_Verified
+[info] # Parameters: (keysListName = 4980736)
+[info] # Run progress: 84.31% complete, ETA 00:12:20
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 80896973.914 us/op
+[info] Iteration   1: 589561.211 us/op
+[info] Result "benchmark.MutableLongMapBenchmarkBig.lookupN_Verified":
+[info]   589561.211 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1-Ubuntu-0ubuntu120.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 1 iterations, 10 s each
+[info] # Measurement: 1 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: benchmark.MutableLongMapBenchmarkBig.lookupN_Verified
+[info] # Parameters: (keysListName = 5505024)
+[info] # Run progress: 86.27% complete, ETA 00:10:47
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 80679395.351 us/op
+[info] Iteration   1: 732042.140 us/op
+[info] Result "benchmark.MutableLongMapBenchmarkBig.lookupN_Verified":
+[info]   732042.140 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1-Ubuntu-0ubuntu120.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 1 iterations, 10 s each
+[info] # Measurement: 1 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: benchmark.MutableLongMapBenchmarkBig.lookupN_Verified
+[info] # Parameters: (keysListName = 6029312)
+[info] # Run progress: 88.24% complete, ETA 00:09:15
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 80323635.008 us/op
+[info] Iteration   1: 648285.327 us/op
+[info] Result "benchmark.MutableLongMapBenchmarkBig.lookupN_Verified":
+[info]   648285.327 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1-Ubuntu-0ubuntu120.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 1 iterations, 10 s each
+[info] # Measurement: 1 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: benchmark.MutableLongMapBenchmarkBig.lookupN_Verified
+[info] # Parameters: (keysListName = 6553600)
+[info] # Run progress: 90.20% complete, ETA 00:07:42
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 83633830.839 us/op
+[info] Iteration   1: 775550.694 us/op
+[info] Result "benchmark.MutableLongMapBenchmarkBig.lookupN_Verified":
+[info]   775550.694 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1-Ubuntu-0ubuntu120.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 1 iterations, 10 s each
+[info] # Measurement: 1 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: benchmark.MutableLongMapBenchmarkBig.lookupN_Verified
+[info] # Parameters: (keysListName = 7077888)
+[info] # Run progress: 92.16% complete, ETA 00:06:10
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 82461277.348 us/op
+[info] Iteration   1: 779646.543 us/op
+[info] Result "benchmark.MutableLongMapBenchmarkBig.lookupN_Verified":
+[info]   779646.543 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1-Ubuntu-0ubuntu120.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 1 iterations, 10 s each
+[info] # Measurement: 1 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: benchmark.MutableLongMapBenchmarkBig.lookupN_Verified
+[info] # Parameters: (keysListName = 7602176)
+[info] # Run progress: 94.12% complete, ETA 00:04:37
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 82100344.988 us/op
+[info] Iteration   1: 755626.045 us/op
+[info] Result "benchmark.MutableLongMapBenchmarkBig.lookupN_Verified":
+[info]   755626.045 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1-Ubuntu-0ubuntu120.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 1 iterations, 10 s each
+[info] # Measurement: 1 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: benchmark.MutableLongMapBenchmarkBig.lookupN_Verified
+[info] # Parameters: (keysListName = 8126464)
+[info] # Run progress: 96.08% complete, ETA 00:03:05
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 79963752.860 us/op
+[info] Iteration   1: 733684.554 us/op
+[info] Result "benchmark.MutableLongMapBenchmarkBig.lookupN_Verified":
+[info]   733684.554 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.8.1, OpenJDK 64-Bit Server VM, 17.0.8.1+1-Ubuntu-0ubuntu120.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 1 iterations, 10 s each
+[info] # Measurement: 1 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: benchmark.MutableLongMapBenchmarkBig.lookupN_Verified
+[info] # Parameters: (keysListName = 8388608)
+[info] # Run progress: 98.04% complete, ETA 00:01:32
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 80763845.159 us/op
+[info] Iteration   1: 627016.148 us/op
+[info] Result "benchmark.MutableLongMapBenchmarkBig.lookupN_Verified":
+[info]   627016.148 us/op
+[info] # Run complete. Total time: 01:18:41
+[info] REMEMBER: The numbers below are just data. To gain reusable insights, you need to follow up on
+[info] why the numbers are the way they are. Use profilers (see -prof, -lprof), design factorial
+[info] experiments, perform baseline and negative tests that provide experimental control, make sure
+[info] the benchmarking environment is safe on JVM/OS/HW level, ask for reviews from the domain experts.
+[info] Do not assume the numbers tell you what you want them to tell.
+[info] Benchmark                                    (keysListName)  Mode  Cnt       Score   Error  Units
+[info] MutableLongMapBenchmarkBig.lookupN_Opti              262144  avgt   1     28040.923  ± 0.0001       us/op
+[info] MutableLongMapBenchmarkBig.lookupN_Opti              786432  avgt   1     98895.032  ± 0.0001       us/op
+[info] MutableLongMapBenchmarkBig.lookupN_Opti             1310720  avgt   1    123735.808  ± 0.0001       us/op
+[info] MutableLongMapBenchmarkBig.lookupN_Opti             1835008  avgt   1    196303.091  ± 0.0001       us/op
+[info] MutableLongMapBenchmarkBig.lookupN_Opti             2359296  avgt   1    265249.173  ± 0.0001       us/op
+[info] MutableLongMapBenchmarkBig.lookupN_Opti             2883584  avgt   1    380871.776  ± 0.0001       us/op
+[info] MutableLongMapBenchmarkBig.lookupN_Opti             3407872  avgt   1    481856.009  ± 0.0001       us/op
+[info] MutableLongMapBenchmarkBig.lookupN_Opti             3932160  avgt   1    484298.425  ± 0.0001       us/op
+[info] MutableLongMapBenchmarkBig.lookupN_Opti             4456448  avgt   1    539467.578  ± 0.0001       us/op
+[info] MutableLongMapBenchmarkBig.lookupN_Opti             4980736  avgt   1    527530.769  ± 0.0001       us/op
+[info] MutableLongMapBenchmarkBig.lookupN_Opti             5505024  avgt   1    579929.627  ± 0.0001       us/op
+[info] MutableLongMapBenchmarkBig.lookupN_Opti             6029312  avgt   1    667009.389  ± 0.0001       us/op
+[info] MutableLongMapBenchmarkBig.lookupN_Opti             6553600  avgt   1    589549.537  ± 0.0001       us/op
+[info] MutableLongMapBenchmarkBig.lookupN_Opti             7077888  avgt   1    583147.883  ± 0.0001       us/op
+[info] MutableLongMapBenchmarkBig.lookupN_Opti             7602176  avgt   1    575035.888  ± 0.0001       us/op
+[info] MutableLongMapBenchmarkBig.lookupN_Opti             8126464  avgt   1    493237.584  ± 0.0001       us/op
+[info] MutableLongMapBenchmarkBig.lookupN_Opti             8388608  avgt   1    572203.502  ± 0.0001       us/op
+[info] MutableLongMapBenchmarkBig.lookupN_Original          262144  avgt   1     22562.732  ± 0.0001       us/op
+[info] MutableLongMapBenchmarkBig.lookupN_Original          786432  avgt   1     70081.367  ± 0.0001       us/op
+[info] MutableLongMapBenchmarkBig.lookupN_Original         1310720  avgt   1    127622.524  ± 0.0001       us/op
+[info] MutableLongMapBenchmarkBig.lookupN_Original         1835008  avgt   1    171372.335  ± 0.0001       us/op
+[info] MutableLongMapBenchmarkBig.lookupN_Original         2359296  avgt   1    245572.773  ± 0.0001       us/op
+[info] MutableLongMapBenchmarkBig.lookupN_Original         2883584  avgt   1    290983.915  ± 0.0001       us/op
+[info] MutableLongMapBenchmarkBig.lookupN_Original         3407872  avgt   1    353043.927  ± 0.0001       us/op
+[info] MutableLongMapBenchmarkBig.lookupN_Original         3932160  avgt   1    396511.920  ± 0.0001       us/op
+[info] MutableLongMapBenchmarkBig.lookupN_Original         4456448  avgt   1    373930.281  ± 0.0001       us/op
+[info] MutableLongMapBenchmarkBig.lookupN_Original         4980736  avgt   1    508209.739  ± 0.0001       us/op
+[info] MutableLongMapBenchmarkBig.lookupN_Original         5505024  avgt   1    480896.370  ± 0.0001       us/op
+[info] MutableLongMapBenchmarkBig.lookupN_Original         6029312  avgt   1    376915.477  ± 0.0001       us/op
+[info] MutableLongMapBenchmarkBig.lookupN_Original         6553600  avgt   1    517153.718  ± 0.0001       us/op
+[info] MutableLongMapBenchmarkBig.lookupN_Original         7077888  avgt   1    450363.024  ± 0.0001       us/op
+[info] MutableLongMapBenchmarkBig.lookupN_Original         7602176  avgt   1    440937.276  ± 0.0001       us/op
+[info] MutableLongMapBenchmarkBig.lookupN_Original         8126464  avgt   1    443872.116  ± 0.0001       us/op
+[info] MutableLongMapBenchmarkBig.lookupN_Original         8388608  avgt   1    415811.764  ± 0.0001       us/op
+[info] MutableLongMapBenchmarkBig.lookupN_Verified          262144  avgt   1     37513.231  ± 0.0001       us/op
+[info] MutableLongMapBenchmarkBig.lookupN_Verified          786432  avgt   1    120628.703  ± 0.0001       us/op
+[info] MutableLongMapBenchmarkBig.lookupN_Verified         1310720  avgt   1    211821.367  ± 0.0001       us/op
+[info] MutableLongMapBenchmarkBig.lookupN_Verified         1835008  avgt   1    286492.766  ± 0.0001       us/op
+[info] MutableLongMapBenchmarkBig.lookupN_Verified         2359296  avgt   1    398230.052  ± 0.0001       us/op
+[info] MutableLongMapBenchmarkBig.lookupN_Verified         2883584  avgt   1    402625.779  ± 0.0001       us/op
+[info] MutableLongMapBenchmarkBig.lookupN_Verified         3407872  avgt   1    527800.456  ± 0.0001       us/op
+[info] MutableLongMapBenchmarkBig.lookupN_Verified         3932160  avgt   1    618262.868  ± 0.0001       us/op
+[info] MutableLongMapBenchmarkBig.lookupN_Verified         4456448  avgt   1    685668.624  ± 0.0001       us/op
+[info] MutableLongMapBenchmarkBig.lookupN_Verified         4980736  avgt   1    589561.211  ± 0.0001       us/op
+[info] MutableLongMapBenchmarkBig.lookupN_Verified         5505024  avgt   1    732042.140  ± 0.0001       us/op
+[info] MutableLongMapBenchmarkBig.lookupN_Verified         6029312  avgt   1    648285.327  ± 0.0001       us/op
+[info] MutableLongMapBenchmarkBig.lookupN_Verified         6553600  avgt   1    775550.694  ± 0.0001       us/op
+[info] MutableLongMapBenchmarkBig.lookupN_Verified         7077888  avgt   1    779646.543  ± 0.0001       us/op
+[info] MutableLongMapBenchmarkBig.lookupN_Verified         7602176  avgt   1    755626.045  ± 0.0001       us/op
+[info] MutableLongMapBenchmarkBig.lookupN_Verified         8126464  avgt   1    733684.554  ± 0.0001       us/op
+[info] MutableLongMapBenchmarkBig.lookupN_Verified         8388608  avgt   1    627016.148  ± 0.0001       us/op
+[success] Total time: 4745 s (01:19:05), completed Nov 14, 2023, 10:46:57 AM
