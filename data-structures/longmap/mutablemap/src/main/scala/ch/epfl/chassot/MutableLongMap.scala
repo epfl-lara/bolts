@@ -58,7 +58,7 @@ object MutableLongMap {
       require(valid)
       underlying.v.isEmpty
     } ensuring (_ => valid)
-    
+
     @pure
     def contains(key: Long): Boolean = {
       require(valid)
@@ -126,16 +126,16 @@ object MutableLongMap {
       if (_size > (MAX_MASK >> 3)) {
         ((oldMask << 1) + 1) & MAX_MASK
       } else {
-      var m = oldMask
-      if (2 * (_size + _vacant) >= oldMask && !(5 * _vacant > oldMask)) {
-        m = ((m << 1) + 1) & MAX_MASK
+        var m = oldMask
+        if (2 * (_size + _vacant) >= oldMask && !(5 * _vacant > oldMask)) {
+          m = ((m << 1) + 1) & MAX_MASK
+        }
+        while (m > 8 && 8 * _size < m) {
+          decreases(m)
+          m = m >>> 1
+        }
+        m
       }
-      while (m > 8 && 8 * _size < m) {
-        decreases(m)
-        m = m >>> 1
-      }
-      m
-    }
     } ensuring (res => validMask(res) && _size <= res + 1)
 
     def repack(): Boolean = {
@@ -372,7 +372,8 @@ object MutableLongMap {
 
   private final val MAX_ITER = 4096 // arbitrary
 
-  /** A Map with keys of type Long and values of type Long mask must be a valid mask, i.e., 2^n - 1. The smallest possible mask is 0 and the biggest is 0x3fffffff _keys and _values must be initialized to an array of length mask + 1, containing all 0 values, i.e., Array.fill(mask + 1)(0) extraKeys must be initialized to 0 _size must be initialized to 0
+  /** A Map with keys of type Long and values of type Long mask must be a valid mask, i.e., 2^n - 1. The smallest possible mask is 0 and the biggest is 0x3fffffff _keys and _values must be initialized
+    * to an array of length mask + 1, containing all 0 values, i.e., Array.fill(mask + 1)(0) extraKeys must be initialized to 0 _size must be initialized to 0
     *
     * @param mask
     * @param extraKeys
@@ -806,7 +807,7 @@ object MutableLongMap {
             _values(index) = ValueCellFull(defaultEntry(0L))
             val tempVac = _vacant + 1
             if (tempVac > 0) {
-              _vacant = tempVac 
+              _vacant = tempVac
             }
 
             ghostExpr(
@@ -975,7 +976,7 @@ object MutableLongMap {
       size >= _size &&
       size == _size + (extraKeys + 1) / 2 &&
       extraKeys >= 0 &&
-      extraKeys <= 3 && 
+      extraKeys <= 3 &&
       _vacant >= 0
     }
 
@@ -1001,7 +1002,17 @@ object MutableLongMap {
       require(validMask(mask))
       @ghost val _keys: Array[Long] = Array.fill(mask + 1)(0)
 
-      val res = LongMapFixedSize[V](defaultEntry = defaultEntry, mask = mask, extraKeys = 0, zeroValue = defaultEntry(0L), minValue = defaultEntry(0L), _size = 0, _keys = Array.fill(mask + 1)(0L), _values = Array.fill(mask + 1)(EmptyCell[V]()), _vacant = 0)
+      val res = LongMapFixedSize[V](
+        defaultEntry = defaultEntry,
+        mask = mask,
+        extraKeys = 0,
+        zeroValue = defaultEntry(0L),
+        minValue = defaultEntry(0L),
+        _size = 0,
+        _keys = Array.fill(mask + 1)(0L),
+        _values = Array.fill(mask + 1)(EmptyCell[V]()),
+        _vacant = 0
+      )
 
       assert(res.simpleValid)
       assert(res._keys == Array.fill(mask + 1)(0L))
@@ -1363,7 +1374,12 @@ object MutableLongMap {
       if (from >= _keys.length) {
         ListMapLongKey.empty[V]
       } else if (validKeyInArray(_keys(from))) {
-        ListMapLongKeyLemmas.addStillNotContains(getCurrentListMapNoExtraKeys(_keys, _values, mask, extraKeys, zeroValue, minValue, from + 1, defaultEntry), _keys(from), _values(from).get(defaultEntry(0L)), 0)
+        ListMapLongKeyLemmas.addStillNotContains(
+          getCurrentListMapNoExtraKeys(_keys, _values, mask, extraKeys, zeroValue, minValue, from + 1, defaultEntry),
+          _keys(from),
+          _values(from).get(defaultEntry(0L)),
+          0
+        )
 
         getCurrentListMapNoExtraKeys(_keys, _values, mask, extraKeys, zeroValue, minValue, from + 1, defaultEntry) + (_keys(from), _values(from).get(defaultEntry(0L)))
       } else {
@@ -6721,7 +6737,7 @@ object MutableLongMap {
             val nextIndex = (index + 2 * (x + 1) * x - 3) & mask
             val nextX = x + 1
 
-            if(nextX <= resIntermediateX){
+            if (nextX <= resIntermediateX) {
               check(
                 if (nextX <= resIntermediateX)
                   seekKeyOrZeroOrLongMinValue(nextX, nextIndex)(a(j), a, mask) == Intermediate(
@@ -6735,37 +6751,39 @@ object MutableLongMap {
                     a,
                     mask
                   ) == Found(j)
-              ) 
+              )
             } else {
-               if(seekKeyOrZeroReturnVacant(x, index, resIntermediateIndex)(
-                          a(j),
-                          a,
-                          mask
-                        ) == Found(j)){
-                  check(
-                    seekKeyOrZeroReturnVacant(
-                      nextX, 
-                      nextIndex, 
-                      resIntermediateIndex
-                    )(
-                      a(j),
-                      a,
-                      mask
-                    ) == Found(j)
-                  ) 
-                }else{
-                  check(
-                      seekKeyOrZeroReturnVacant(
-                        nextX, 
-                        nextIndex, 
-                        resIntermediateIndex
-                      )(
-                        a(j),
-                        a,
-                        mask
-                      ) == Found(j)
-                    ) 
-                }
+              if (
+                seekKeyOrZeroReturnVacant(x, index, resIntermediateIndex)(
+                  a(j),
+                  a,
+                  mask
+                ) == Found(j)
+              ) {
+                check(
+                  seekKeyOrZeroReturnVacant(
+                    nextX,
+                    nextIndex,
+                    resIntermediateIndex
+                  )(
+                    a(j),
+                    a,
+                    mask
+                  ) == Found(j)
+                )
+              } else {
+                check(
+                  seekKeyOrZeroReturnVacant(
+                    nextX,
+                    nextIndex,
+                    resIntermediateIndex
+                  )(
+                    a(j),
+                    a,
+                    mask
+                  ) == Found(j)
+                )
+              }
             }
             lemmaPutValidKeyPreservesVacantIsAtI(
               a,
