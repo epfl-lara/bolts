@@ -1,16 +1,22 @@
 #!/usr/bin/env bash
 
-STAINLESS="stainless"
+STAINLESS="$1"
 
 function run_tests {
   project=$1
+  # One shift for stainless executable, the other for the project folder
+  shift
   shift
 
+  conf="$project/stainless.conf"
+  if [ ! -f $conf ]; then
+    conf=stainless.conf.nightly
+  fi
   echo ""
   echo "------------------------------------------------------------------------------------------"
-  echo "Running '$STAINLESS $@' on bolts project: $project..."
-  echo "$ find $project -name '*.scala' -exec $STAINLESS $@ {} +"
-  find "$project" -name '*.scala' -exec $STAINLESS "$@" {} +
+  echo "Running '$STAINLESS --config-file=$conf $@' on bolts project: $project..."
+  echo "$ find $project -name '*.scala' -exec $STAINLESS --config-file=$conf $@ {} +"
+  find "$project" -name '*.scala' -exec $STAINLESS "--config-file=$conf" "$@" {} +
 
   status=$?
 
@@ -26,6 +32,4 @@ function run_tests {
   echo ""
 }
 
-# Tests that use the usual --type-checker=true verification condition generator:
-
-run_tests "$1" "--config-file=stainless.conf.nightly"
+run_tests "${@:2}"
