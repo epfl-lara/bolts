@@ -14,8 +14,6 @@ fp-principles/functional-sets
 fp-principles/object-oriented-sets
 fp-principles/huffman-coding
 fp-principles/recursion
-lexers/dfa
-lexers/regex
 software-foundations
 system-f
 tutorials/add-digits
