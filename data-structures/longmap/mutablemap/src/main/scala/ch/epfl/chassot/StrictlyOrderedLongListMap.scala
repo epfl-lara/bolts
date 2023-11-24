@@ -11,7 +11,7 @@ import stainless.proof.check
 import scala.annotation.tailrec
 import scala.collection.immutable
 
-import OptimisedChecks.*
+// import OptimisedChecks.*
 
 case class ListMapLongKey[B](toList: List[(Long, B)]) {
   require(TupleListOps.isStrictlySorted(toList))
