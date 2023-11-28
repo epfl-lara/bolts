@@ -84,7 +84,6 @@ case class ListLongMap[B](toList: List[(Long, B)]) {
     ) && res.toList.contains(keyValue)
   )
 
-  // @inlineOnce
   def ++(keyValues: List[(Long, B)]): ListLongMap[B] = {
     decreases(keyValues)
     keyValues match {
@@ -92,12 +91,10 @@ case class ListLongMap[B](toList: List[(Long, B)]) {
       case Cons(keyValue, rest) => (this + keyValue) ++ rest
     }
   }
-  // @inlineOnce
   def -(key: Long): ListLongMap[B] = {
     ListLongMap(TupleListOps.removeStrictlySorted(toList, key))
   }.ensuring(res => !res.contains(key))
 
-  // @inlineOnce
   def --(keys: List[Long]): ListLongMap[B] = {
     decreases(keys)
     keys match {
@@ -698,7 +695,7 @@ object ListLongMap {
   def empty[B]: ListLongMap[B] = ListLongMap[B](List.empty[(Long, B)])
 }
 
-object ListMapLongKeyLemmas {
+object ListLongMapLemmas {
   import ListSpecs._
 
   @opaque

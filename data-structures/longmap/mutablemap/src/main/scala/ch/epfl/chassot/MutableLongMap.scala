@@ -13,10 +13,8 @@ import stainless.proof.check
 import scala.annotation.tailrec
 import stainless.lang.Cell
 
-// import stainless.lang.StaticChecks.* // Comment out when using the OptimisedEnsuring object below
-import OptimisedChecks.* // Import to remove `ensuring` and `require` from the code for the benchmarks
-import {ListMapLongKeyLemmas, LongListMap}
-import LongListMap
+import stainless.lang.StaticChecks.* // Comment out when using the OptimisedEnsuring object below
+// import OptimisedChecks.* // Import to remove `ensuring` and `require` from the code for the benchmarks
 
 object MutableLongMap {
   import LongMapFixedSize.validMask
@@ -177,7 +175,7 @@ object MutableLongMap {
       }
     } ensuring (res => res == false || map == old(this).map)
 
-    @tailrec
+    // @tailrec
     def repackFrom(newMap: LongMapFixedSize[V], from: Int): Boolean = {
       require(valid)
       require(from >= 0 && from < underlying.v._keys.length)
@@ -230,7 +228,7 @@ object MutableLongMap {
 
             // val underlyingMapFromPOneNXtra = LongMapFixedSize.getCurrentListMapNoExtraKeys(underlying.v._keys,underlying.v._values,underlying.v.mask,underlying.v.extraKeys,underlying.v.zeroValue,underlying.v.minValue,from + 1,underlying.v.defaultEntry)
             ghostExpr(
-              ListMapLongKeyLemmas.addCommutativeForDiffKeys(
+              ListLongMapLemmas.addCommutativeForDiffKeys(
                 LongMapFixedSize.getCurrentListMapNoExtraKeys(
                   underlying.v._keys,
                   underlying.v._values,
@@ -248,7 +246,7 @@ object MutableLongMap {
               )
             )
             ghostExpr(
-              ListMapLongKeyLemmas.addCommutativeForDiffKeys(
+              ListLongMapLemmas.addCommutativeForDiffKeys(
                 LongMapFixedSize.getCurrentListMapNoExtraKeys(
                   underlying.v._keys,
                   underlying.v._values,
@@ -281,7 +279,7 @@ object MutableLongMap {
           } else {
 
             ghostExpr(
-              ListMapLongKeyLemmas.addCommutativeForDiffKeys(
+              ListLongMapLemmas.addCommutativeForDiffKeys(
                 LongMapFixedSize.getCurrentListMapNoExtraKeys(
                   underlying.v._keys,
                   underlying.v._values,
@@ -299,7 +297,7 @@ object MutableLongMap {
               )
             )
             ghostExpr(
-              ListMapLongKeyLemmas.addCommutativeForDiffKeys(
+              ListLongMapLemmas.addCommutativeForDiffKeys(
                 LongMapFixedSize.getCurrentListMapNoExtraKeys(
                   underlying.v._keys,
                   underlying.v._values,
@@ -1233,7 +1231,7 @@ object MutableLongMap {
       (ee + 2 * (x + 1) * x - 3) & mask
     } ensuring(res => res >= 0 && res < mask + 1)
 
-    @tailrec
+    // @tailrec
     @pure
     private def seekKeyOrZeroOrLongMinValue(x: Int, ee: Int)(implicit
         k: Long,
@@ -1267,7 +1265,7 @@ object MutableLongMap {
       })
     )
 
-    @tailrec
+    // @tailrec
     @pure
     private def seekKeyOrZeroReturnVacant(x: Int, ee: Int, vacantSpotIndex: Int)(implicit
         k: Long,
@@ -1341,10 +1339,10 @@ object MutableLongMap {
         getCurrentListMapNoExtraKeys(_keys, _values, mask, extraKeys, zeroValue, minValue, from, defaultEntry)
       }
       if (from < _keys.length && validKeyInArray(_keys(from))) {
-        ListMapLongKeyLemmas.addStillContains(getCurrentListMapNoExtraKeys(_keys, _values, mask, extraKeys, zeroValue, minValue, from, defaultEntry), 0, zeroValue, _keys(from))
-        ListMapLongKeyLemmas.addApplyDifferentgetCurrentListMapNoExtraKeys(_keys, _values, mask, extraKeys, zeroValue, minValue, from, defaultEntry), Long.MinValue, minValue, _keys(from))
-        ListMapLongKeyLemmas.addApplyDifferent(getCurrentListMapNoExtraKeys(_keys, _values, mask, extraKeys, zeroValue, minValue, from, defaultEntry), 0, zeroValue, _keys(from))
-        ListMapLongKeyLemmas.addApplyDifferent(getCurrentListMapNoExtraKeys(_keys, _values, mask, extraKeys, zeroValue, minValue, from, defaultEntry), Long.MinValue, minValue, _keys(from))
+        ListLongMapLemmas.addStillContains(getCurrentListMapNoExtraKeys(_keys, _values, mask, extraKeys, zeroValue, minValue, from, defaultEntry), 0, zeroValue, _keys(from))
+        ListLongMapLemmas.addApplyDifferent(getCurrentListMapNoExtraKeys(_keys, _values, mask, extraKeys, zeroValue, minValue, from, defaultEntry), Long.MinValue, minValue, _keys(from))
+        ListLongMapLemmas.addApplyDifferent(getCurrentListMapNoExtraKeys(_keys, _values, mask, extraKeys, zeroValue, minValue, from, defaultEntry), 0, zeroValue, _keys(from))
+        ListLongMapLemmas.addApplyDifferent(getCurrentListMapNoExtraKeys(_keys, _values, mask, extraKeys, zeroValue, minValue, from, defaultEntry), Long.MinValue, minValue, _keys(from))
       }
 
       res
@@ -1387,7 +1385,7 @@ object MutableLongMap {
       if (from >= _keys.length) {
         ListLongMap.empty[V]
       } else if (validKeyInArray(_keys(from))) {
-        ListMapLongKeyLemmas.addStillNotContains(
+        ListLongMapLemmas.addStillNotContains(
           getCurrentListMapNoExtraKeys(_keys, _values, mask, extraKeys, zeroValue, minValue, from + 1, defaultEntry),
           _keys(from),
           _values(from).get(defaultEntry(0L)),
@@ -1499,8 +1497,8 @@ object MutableLongMap {
         check(
           mapAfter == ((mapNoExtraKeysBefore + (k, v)) + (0L, zeroValue)) + (Long.MinValue, minValue)
         )
-        ListMapLongKeyLemmas.addCommutativeForDiffKeys(mapNoExtraKeysBefore, k, v, 0L, zeroValue)
-        ListMapLongKeyLemmas.addCommutativeForDiffKeys(
+        ListLongMapLemmas.addCommutativeForDiffKeys(mapNoExtraKeysBefore, k, v, 0L, zeroValue)
+        ListLongMapLemmas.addCommutativeForDiffKeys(
           mapNoExtraKeysBefore + (0L, zeroValue),
           k,
           v,
@@ -1512,13 +1510,13 @@ object MutableLongMap {
         check(mapAfter == mapNoExtraKeysAfter + (0L, zeroValue))
         check(mapBefore == (mapNoExtraKeysBefore + (0L, zeroValue)))
         check(mapAfter == (mapNoExtraKeysBefore + (k, v)) + (0L, zeroValue))
-        ListMapLongKeyLemmas.addCommutativeForDiffKeys(mapNoExtraKeysBefore, k, v, 0L, zeroValue)
+        ListLongMapLemmas.addCommutativeForDiffKeys(mapNoExtraKeysBefore, k, v, 0L, zeroValue)
       } else if ((extraKeys & 2) != 0 && (extraKeys & 1) == 0) {
         // it means there is a mapping for the key Long.MIN_VALUE
         check(mapAfter == mapNoExtraKeysAfter + (Long.MinValue, minValue))
         check(mapAfter == (mapNoExtraKeysBefore + (k, v)) + (Long.MinValue, minValue))
         check(mapBefore == (mapNoExtraKeysBefore + (Long.MinValue, minValue)))
-        ListMapLongKeyLemmas.addCommutativeForDiffKeys(
+        ListLongMapLemmas.addCommutativeForDiffKeys(
           mapNoExtraKeysBefore,
           k,
           v,
@@ -1684,7 +1682,7 @@ object MutableLongMap {
                 .get(defaultEntry(0L)))
           )
 
-          ListMapLongKeyLemmas.addSameAsAddTwiceSameKeyDiffValues(
+          ListLongMapLemmas.addSameAsAddTwiceSameKeyDiffValues(
             getCurrentListMapNoExtraKeys(
               _keys.updated(i, k),
               _values.updated(i, ValueCellFull(v)),
@@ -1746,7 +1744,7 @@ object MutableLongMap {
 
             check(_keys(from) != k)
 
-            ListMapLongKeyLemmas.addCommutativeForDiffKeys(
+            ListLongMapLemmas.addCommutativeForDiffKeys(
               getCurrentListMapNoExtraKeys(
                 _keys,
                 _values,
@@ -1899,8 +1897,8 @@ object MutableLongMap {
         check(
           mapAfter == ((mapNoExtraKeysBefore + (k, v)) + (0L, zeroValue)) + (Long.MinValue, minValue)
         )
-        ListMapLongKeyLemmas.addCommutativeForDiffKeys(mapNoExtraKeysBefore, k, v, 0L, zeroValue)
-        ListMapLongKeyLemmas.addCommutativeForDiffKeys(
+        ListLongMapLemmas.addCommutativeForDiffKeys(mapNoExtraKeysBefore, k, v, 0L, zeroValue)
+        ListLongMapLemmas.addCommutativeForDiffKeys(
           mapNoExtraKeysBefore + (0L, zeroValue),
           k,
           v,
@@ -1912,13 +1910,13 @@ object MutableLongMap {
         check(mapAfter == mapNoExtraKeysAfter + (0L, zeroValue))
         check(mapBefore == (mapNoExtraKeysBefore + (0L, zeroValue)))
         check(mapAfter == (mapNoExtraKeysBefore + (k, v)) + (0L, zeroValue))
-        ListMapLongKeyLemmas.addCommutativeForDiffKeys(mapNoExtraKeysBefore, k, v, 0L, zeroValue)
+        ListLongMapLemmas.addCommutativeForDiffKeys(mapNoExtraKeysBefore, k, v, 0L, zeroValue)
       } else if ((extraKeys & 2) != 0 && (extraKeys & 1) == 0) {
         // it means there is a mapping for the key Long.MIN_VALUE
         check(mapAfter == mapNoExtraKeysAfter + (Long.MinValue, minValue))
         check(mapAfter == (mapNoExtraKeysBefore + (k, v)) + (Long.MinValue, minValue))
         check(mapBefore == (mapNoExtraKeysBefore + (Long.MinValue, minValue)))
-        ListMapLongKeyLemmas.addCommutativeForDiffKeys(
+        ListLongMapLemmas.addCommutativeForDiffKeys(
           mapNoExtraKeysBefore,
           k,
           v,
@@ -2056,7 +2054,7 @@ object MutableLongMap {
                 .get(defaultEntry(0L)))
           )
 
-          ListMapLongKeyLemmas.addSameAsAddTwiceSameKeyDiffValues(
+          ListLongMapLemmas.addSameAsAddTwiceSameKeyDiffValues(
             getCurrentListMapNoExtraKeys(
               _keys,
               _values.updated(i, ValueCellFull(v)),
@@ -2120,7 +2118,7 @@ object MutableLongMap {
             }
             check(_keys(from) != k)
 
-            ListMapLongKeyLemmas.addCommutativeForDiffKeys(
+            ListLongMapLemmas.addCommutativeForDiffKeys(
               getCurrentListMapNoExtraKeys(
                 _keys,
                 _values,
@@ -2302,7 +2300,7 @@ object MutableLongMap {
           check(mapBefore == (mapNoExtraKeysBefore + (0L, zeroValueBefore)))
           check(mapAfter == (mapNoExtraKeysAfter + (0L, zeroValueAfter)))
 
-          ListMapLongKeyLemmas.addSameAsAddTwiceSameKeyDiffValues(
+          ListLongMapLemmas.addSameAsAddTwiceSameKeyDiffValues(
             mapNoExtraKeysBefore,
             0L,
             zeroValueBefore,
@@ -2341,7 +2339,7 @@ object MutableLongMap {
           check(
             mapAfter == ((mapNoExtraKeysBefore + (0L, zeroValueAfter)) + (Long.MinValue, minValue))
           )
-          ListMapLongKeyLemmas.addCommutativeForDiffKeys(
+          ListLongMapLemmas.addCommutativeForDiffKeys(
             mapNoExtraKeysBefore,
             0L,
             zeroValueAfter,
@@ -2385,7 +2383,7 @@ object MutableLongMap {
           check(
             mapAfter == (mapNoExtraKeysAfter + (Long.MinValue, minValue)) + (0L, zeroValueAfter)
           )
-          ListMapLongKeyLemmas.addSameAsAddTwiceSameKeyDiffValues(
+          ListLongMapLemmas.addSameAsAddTwiceSameKeyDiffValues(
             (mapNoExtraKeysBefore + (Long.MinValue, minValue)),
             0L,
             zeroValueBefore,
@@ -2540,7 +2538,7 @@ object MutableLongMap {
               defaultEntry
             )
 
-          ListMapLongKeyLemmas.addSameAsAddTwiceSameKeyDiffValues(
+          ListLongMapLemmas.addSameAsAddTwiceSameKeyDiffValues(
             mapNoExtraKeysBefore,
             Long.MinValue,
             minValueBefore,
@@ -2576,7 +2574,7 @@ object MutableLongMap {
               defaultEntry
             )
 
-          ListMapLongKeyLemmas.addSameAsAddTwiceSameKeyDiffValues(
+          ListLongMapLemmas.addSameAsAddTwiceSameKeyDiffValues(
             mapNoExtraKeysBefore + (0L, zeroValue),
             Long.MinValue,
             minValueBefore,
@@ -2698,8 +2696,8 @@ object MutableLongMap {
           mapAfter == ((mapNoExtraKeysBefore - k) + (0L, zeroValue)) + (Long.MinValue, minValue)
         )
 
-        ListMapLongKeyLemmas.addRemoveCommutativeForDiffKeys(mapNoExtraKeysBefore, 0L, zeroValue, k)
-        ListMapLongKeyLemmas.addRemoveCommutativeForDiffKeys(
+        ListLongMapLemmas.addRemoveCommutativeForDiffKeys(mapNoExtraKeysBefore, 0L, zeroValue, k)
+        ListLongMapLemmas.addRemoveCommutativeForDiffKeys(
           mapNoExtraKeysBefore + (0L, zeroValue),
           Long.MinValue,
           minValue,
@@ -2711,7 +2709,7 @@ object MutableLongMap {
         check(mapBefore == (mapNoExtraKeysBefore + (0L, zeroValue)))
         check(mapAfter == (mapNoExtraKeysBefore - k) + (0L, zeroValue))
 
-        ListMapLongKeyLemmas.addRemoveCommutativeForDiffKeys(mapNoExtraKeysBefore, 0L, zeroValue, k)
+        ListLongMapLemmas.addRemoveCommutativeForDiffKeys(mapNoExtraKeysBefore, 0L, zeroValue, k)
 
       } else if ((extraKeys & 2) != 0 && (extraKeys & 1) == 0) {
         // it means there is a mapping for the key Long.MIN_VALUE
@@ -2719,7 +2717,7 @@ object MutableLongMap {
         check(mapAfter == (mapNoExtraKeysBefore - k) + (Long.MinValue, minValue))
         check(mapBefore == (mapNoExtraKeysBefore + (Long.MinValue, minValue)))
 
-        ListMapLongKeyLemmas.addRemoveCommutativeForDiffKeys(
+        ListLongMapLemmas.addRemoveCommutativeForDiffKeys(
           mapNoExtraKeysBefore,
           Long.MinValue,
           minValue,
@@ -2822,7 +2820,7 @@ object MutableLongMap {
       if ((extraKeysBefore & 1) == 0) {
         // key 0 not defined
         if ((extraKeysBefore & 2) == 0) {
-          ListMapLongKeyLemmas.removeNotPresentStillSame(
+          ListLongMapLemmas.removeNotPresentStillSame(
             getCurrentListMap(
               _keys,
               _values,
@@ -2861,7 +2859,7 @@ object MutableLongMap {
 
           check(mapBefore == mapNoExtraKeysBefore + (Long.MinValue, minValueBefore))
           check(mapAfter == mapNoExtraKeysAfter)
-          ListMapLongKeyLemmas.addThenRemoveForNewKeyIsSame(
+          ListLongMapLemmas.addThenRemoveForNewKeyIsSame(
             mapNoExtraKeysBefore,
             Long.MinValue,
             minValueBefore
@@ -2872,7 +2870,7 @@ object MutableLongMap {
       } else {
         // key 0 defined
         if ((extraKeysBefore & 2) == 0) {
-          ListMapLongKeyLemmas.removeNotPresentStillSame(
+          ListLongMapLemmas.removeNotPresentStillSame(
             getCurrentListMap(
               _keys,
               _values,
@@ -2913,7 +2911,7 @@ object MutableLongMap {
             mapBefore == (mapNoExtraKeysBefore + (0L, zeroValue)) + (Long.MinValue, minValueBefore)
           )
           check(mapAfter == (mapNoExtraKeysAfter + (0L, zeroValue)))
-          ListMapLongKeyLemmas.addThenRemoveForNewKeyIsSame(
+          ListLongMapLemmas.addThenRemoveForNewKeyIsSame(
             mapNoExtraKeysBefore + (0L, zeroValue),
             Long.MinValue,
             minValueBefore
@@ -3014,7 +3012,7 @@ object MutableLongMap {
       if ((extraKeysBefore & 2) == 0) {
         // MinValue not defined
         if ((extraKeysBefore & 1) == 0) {
-          ListMapLongKeyLemmas.removeNotPresentStillSame(
+          ListLongMapLemmas.removeNotPresentStillSame(
             getCurrentListMap(
               _keys,
               _values,
@@ -3053,7 +3051,7 @@ object MutableLongMap {
 
           check(mapBefore == mapNoExtraKeysBefore + (0L, zeroValueBefore))
           check(mapAfter == mapNoExtraKeysAfter)
-          ListMapLongKeyLemmas.addThenRemoveForNewKeyIsSame(
+          ListLongMapLemmas.addThenRemoveForNewKeyIsSame(
             mapNoExtraKeysBefore,
             0L,
             zeroValueBefore
@@ -3064,7 +3062,7 @@ object MutableLongMap {
       } else {
         // MinValue defined
         if ((extraKeysBefore & 1) == 0) {
-          ListMapLongKeyLemmas.removeNotPresentStillSame(
+          ListLongMapLemmas.removeNotPresentStillSame(
             getCurrentListMap(
               _keys,
               _values,
@@ -3105,12 +3103,12 @@ object MutableLongMap {
             mapBefore == (mapNoExtraKeysBefore + (0L, zeroValueBefore)) + (Long.MinValue, minValue)
           )
           check(mapAfter == (mapNoExtraKeysAfter + (Long.MinValue, minValue)))
-          ListMapLongKeyLemmas.addThenRemoveForNewKeyIsSame(
+          ListLongMapLemmas.addThenRemoveForNewKeyIsSame(
             mapNoExtraKeysBefore + (Long.MinValue, minValue),
             0L,
             zeroValueBefore
           )
-          ListMapLongKeyLemmas.addCommutativeForDiffKeys(
+          ListLongMapLemmas.addCommutativeForDiffKeys(
             mapNoExtraKeysBefore,
             0L,
             zeroValueBefore,
@@ -3252,7 +3250,7 @@ object MutableLongMap {
             ).contains(k)
           ) {
             if ((extraKeys & 1) != 0 && (extraKeys & 2) != 0) {
-              ListMapLongKeyLemmas.addStillContains(
+              ListLongMapLemmas.addStillContains(
                 getCurrentListMapNoExtraKeys(
                   _keys,
                   _values,
@@ -3267,7 +3265,7 @@ object MutableLongMap {
                 zeroValue,
                 k
               )
-              ListMapLongKeyLemmas.addStillContains(
+              ListLongMapLemmas.addStillContains(
                 getCurrentListMapNoExtraKeys(
                   _keys,
                   _values,
@@ -3283,7 +3281,7 @@ object MutableLongMap {
                 k
               )
             } else if ((extraKeys & 1) != 0 && (extraKeys & 2) == 0) {
-              ListMapLongKeyLemmas.addStillContains(
+              ListLongMapLemmas.addStillContains(
                 getCurrentListMapNoExtraKeys(
                   _keys,
                   _values,
@@ -3299,7 +3297,7 @@ object MutableLongMap {
                 k
               )
             } else if ((extraKeys & 2) != 0 && (extraKeys & 1) == 0) {
-              ListMapLongKeyLemmas.addStillContains(
+              ListLongMapLemmas.addStillContains(
                 getCurrentListMapNoExtraKeys(
                   _keys,
                   _values,
@@ -3331,7 +3329,7 @@ object MutableLongMap {
             lemmaArrayNoDuplicateThenKeysContainedNotEqual(_keys, k, from, Nil())
             check(false)
           }
-          ListMapLongKeyLemmas.addThenRemoveForNewKeyIsSame(
+          ListLongMapLemmas.addThenRemoveForNewKeyIsSame(
             getCurrentListMapNoExtraKeys(
               _keys,
               _values,
@@ -3505,7 +3503,7 @@ object MutableLongMap {
                 )
             )
 
-            ListMapLongKeyLemmas.addRemoveCommutativeForDiffKeys(
+            ListLongMapLemmas.addRemoveCommutativeForDiffKeys(
               getCurrentListMapNoExtraKeys(
                 _keys,
                 _values,
@@ -3949,7 +3947,7 @@ object MutableLongMap {
               from - 1,
               defaultEntry
             )
-            ListMapLongKeyLemmas.addStillContains(
+            ListLongMapLemmas.addStillContains(
               getCurrentListMap(
                 _keys,
                 _values,
@@ -3977,7 +3975,7 @@ object MutableLongMap {
               defaultEntry
             )
             lemmaArrayNoDuplicateThenKeysContainedNotEqual(_keys, k, from - 1, Nil())
-            ListMapLongKeyLemmas.addApplyDifferent(
+            ListLongMapLemmas.addApplyDifferent(
               getCurrentListMap(
                 _keys,
                 _values,
@@ -4081,7 +4079,7 @@ object MutableLongMap {
       require(validKeyInArray(_keys(from)))
 
       if ((extraKeys & 1) != 0 && (extraKeys & 2) != 0) {
-        ListMapLongKeyLemmas.addCommutativeForDiffKeys(
+        ListLongMapLemmas.addCommutativeForDiffKeys(
           getCurrentListMapNoExtraKeys(
             _keys,
             _values,
@@ -4097,7 +4095,7 @@ object MutableLongMap {
           _keys(from),
           _values(from).get(defaultEntry(0L))
         )
-        ListMapLongKeyLemmas.addCommutativeForDiffKeys(
+        ListLongMapLemmas.addCommutativeForDiffKeys(
           getCurrentListMapNoExtraKeys(
             _keys,
             _values,
@@ -4114,7 +4112,7 @@ object MutableLongMap {
           _values(from).get(defaultEntry(0L))
         )
       } else if ((extraKeys & 1) != 0 && (extraKeys & 2) == 0) {
-        ListMapLongKeyLemmas.addCommutativeForDiffKeys(
+        ListLongMapLemmas.addCommutativeForDiffKeys(
           getCurrentListMapNoExtraKeys(
             _keys,
             _values,
@@ -4131,7 +4129,7 @@ object MutableLongMap {
           _values(from).get(defaultEntry(0L))
         )
       } else if ((extraKeys & 2) != 0 && (extraKeys & 1) == 0) {
-        ListMapLongKeyLemmas.addCommutativeForDiffKeys(
+        ListLongMapLemmas.addCommutativeForDiffKeys(
           getCurrentListMapNoExtraKeys(
             _keys,
             _values,
@@ -4184,7 +4182,7 @@ object MutableLongMap {
       require((lm + (otherKey, value)).contains(k))
       require(k != otherKey)
       if (!lm.contains(k)) {
-        ListMapLongKeyLemmas.addStillNotContains(lm, otherKey, value, k)
+        ListLongMapLemmas.addStillNotContains(lm, otherKey, value, k)
       }
 
     } ensuring (_ => lm.contains(k))
@@ -4259,7 +4257,7 @@ object MutableLongMap {
             )
           )
 
-          ListMapLongKeyLemmas.addStillContains(
+          ListLongMapLemmas.addStillContains(
             getCurrentListMapNoExtraKeys(
               _keys,
               _values,
@@ -4379,7 +4377,7 @@ object MutableLongMap {
             )
           )
 
-          ListMapLongKeyLemmas.addStillContains(
+          ListLongMapLemmas.addStillContains(
             getCurrentListMapNoExtraKeys(
               _keys,
               _values,
@@ -4513,7 +4511,7 @@ object MutableLongMap {
           )
         )
 
-        ListMapLongKeyLemmas.addStillContains(
+        ListLongMapLemmas.addStillContains(
           getCurrentListMapNoExtraKeys(
             _keys,
             _values,
@@ -4528,7 +4526,7 @@ object MutableLongMap {
           zeroValue,
           k
         )
-        ListMapLongKeyLemmas.addStillContains(
+        ListLongMapLemmas.addStillContains(
           getCurrentListMapNoExtraKeys(
             _keys,
             _values,
@@ -4838,7 +4836,7 @@ object MutableLongMap {
           from - 1,
           defaultEntry
         )
-        ListMapLongKeyLemmas.addStillContains(
+        ListLongMapLemmas.addStillContains(
           getCurrentListMap(
             _keys,
             _values,
@@ -4995,9 +4993,9 @@ object MutableLongMap {
                 )
               )
             }
-            ListMapLongKeyLemmas.emptyContainsNothing[V](k)
+            ListLongMapLemmas.emptyContainsNothing[V](k)
             if (k != _keys(from)) {
-              ListMapLongKeyLemmas.addStillNotContains(
+              ListLongMapLemmas.addStillNotContains(
                 ListLongMap.empty[V],
                 _keys(from),
                 _values(from).get(defaultEntry(0L)),
@@ -5006,9 +5004,9 @@ object MutableLongMap {
               check(false)
             }
           } else {
-            ListMapLongKeyLemmas.emptyContainsNothing[V](k)
+            ListLongMapLemmas.emptyContainsNothing[V](k)
             if ((extraKeys & 1) != 0 && (extraKeys & 2) != 0) {
-              ListMapLongKeyLemmas.addStillNotContains(
+              ListLongMapLemmas.addStillNotContains(
                 getCurrentListMapNoExtraKeys(
                   _keys,
                   _values,
@@ -5023,7 +5021,7 @@ object MutableLongMap {
                 zeroValue,
                 k
               )
-              ListMapLongKeyLemmas.addStillNotContains(
+              ListLongMapLemmas.addStillNotContains(
                 getCurrentListMapNoExtraKeys(
                   _keys,
                   _values,
@@ -5069,7 +5067,7 @@ object MutableLongMap {
                 )
               )
             } else if ((extraKeys & 1) != 0 && (extraKeys & 2) == 0) {
-              ListMapLongKeyLemmas.addStillNotContains(
+              ListLongMapLemmas.addStillNotContains(
                 getCurrentListMapNoExtraKeys(
                   _keys,
                   _values,
@@ -5100,7 +5098,7 @@ object MutableLongMap {
                 )
               )
             } else if ((extraKeys & 2) != 0 && (extraKeys & 1) == 0) {
-              ListMapLongKeyLemmas.addStillNotContains(
+              ListLongMapLemmas.addStillNotContains(
                 getCurrentListMapNoExtraKeys(
                   _keys,
                   _values,
