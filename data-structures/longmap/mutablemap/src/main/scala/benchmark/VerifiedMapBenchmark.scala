@@ -7,7 +7,7 @@ import scala.collection.mutable.HashMap
 import scala.util.Random
 import ch.epfl.chassot.MutableLongMap
 import ch.epfl.chassot.MutableLongMapOpti
-import ch.epfl.chassot.ListMapLongKey
+import ch.epfl.chassot.ListLongMap
 import stainless.collection.{List => StainlessList}
 import scala.collection.immutable
 import ch.epfl.chassot.MutableLongMapOpti.LongMapOpti
@@ -1008,7 +1008,7 @@ object BenchmarkUtilListMap {
 
   def getSmallKeyValuePairsList(n: String): Array[(Long, Long)] = smallRandomKeyValuePairsList.getOrElse(n, Array.fill(1)((0L, 0L)))
 
-  val emptyListMap = ListMapLongKey[Long](StainlessList[(Long, Long)]())
+  val emptyListMap = ListLongMap[Long](StainlessList[(Long, Long)]())
 
   // To benchmark the ListMap
   val verifiedMapFilledWith2to1Values = {

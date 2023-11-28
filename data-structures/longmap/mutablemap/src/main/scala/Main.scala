@@ -1,5 +1,5 @@
 import ch.epfl.chassot.MutableLongMap
-import ch.epfl.chassot.ListMapLongKey
+import ch.epfl.chassot.ListLongMap
 import stainless.collection.List
 import benchmark.BenchmarkUtil.*
 
@@ -7,7 +7,7 @@ object Main extends App {
   def main(): Unit = {
     // val mTest = MutableLongMap.getEmptyLongMap[Long](k => 0L)
 
-    var mTest = ListMapLongKey[Long](List[(Long, Long)]())
+    var mTest = ListLongMap[Long](List[(Long, Long)]())
 
     val nKeys = (2048 * 8).toString()
     val t1 = System.nanoTime()

@@ -11,21 +11,18 @@ import stainless.proof.check
 import scala.annotation.tailrec
 import scala.collection.immutable
 
-import OptimisedChecks.*
+// import OptimisedChecks.*
 
-case class ListMapLongKey[B](toList: List[(Long, B)]) {
+case class ListLongMap[B](toList: List[(Long, B)]) {
   require(TupleListOps.isStrictlySorted(toList))
 
-  @inline
   def isEmpty: Boolean = toList.isEmpty
 
-  @inline
   def head: (Long, B) = {
     require(!isEmpty)
     toList.head
   }
 
-  @inline
   def size: Int = {
     require(toList.size < Integer.MAX_VALUE)
     TupleListOps.intSize(toList)
@@ -36,10 +33,9 @@ case class ListMapLongKey[B](toList: List[(Long, B)]) {
     TupleListOps.intSizeKeys(TupleListOps.getKeysList(toList))
   }
 
-  @inline
-  def tail: ListMapLongKey[B] = {
+  def tail: ListLongMap[B] = {
     require(!isEmpty)
-    ListMapLongKey(toList.tail)
+    ListLongMap(toList.tail)
   }
 
   def contains(key: Long): Boolean = {
@@ -70,7 +66,7 @@ case class ListMapLongKey[B](toList: List[(Long, B)]) {
     get(key).get
   }
 
-  def +(keyValue: (Long, B)): ListMapLongKey[B] = {
+  def +(keyValue: (Long, B)): ListLongMap[B] = {
 
     val newList =
       TupleListOps.insertStrictlySorted(toList, keyValue._1, keyValue._2)
@@ -80,7 +76,7 @@ case class ListMapLongKey[B](toList: List[(Long, B)]) {
       keyValue._1,
       keyValue._2
     )
-    ListMapLongKey(newList)
+    ListLongMap(newList)
 
   }.ensuring(res =>
     res.contains(keyValue._1) && res.get(keyValue._1) == Some[B](
@@ -89,7 +85,7 @@ case class ListMapLongKey[B](toList: List[(Long, B)]) {
   )
 
   // @inlineOnce
-  def ++(keyValues: List[(Long, B)]): ListMapLongKey[B] = {
+  def ++(keyValues: List[(Long, B)]): ListLongMap[B] = {
     decreases(keyValues)
     keyValues match {
       case Nil()                => this
@@ -97,12 +93,12 @@ case class ListMapLongKey[B](toList: List[(Long, B)]) {
     }
   }
   // @inlineOnce
-  def -(key: Long): ListMapLongKey[B] = {
-    ListMapLongKey(TupleListOps.removeStrictlySorted(toList, key))
+  def -(key: Long): ListLongMap[B] = {
+    ListLongMap(TupleListOps.removeStrictlySorted(toList, key))
   }.ensuring(res => !res.contains(key))
 
   // @inlineOnce
-  def --(keys: List[Long]): ListMapLongKey[B] = {
+  def --(keys: List[Long]): ListLongMap[B] = {
     decreases(keys)
     keys match {
       case Nil()           => this
@@ -290,6 +286,7 @@ object TupleListOps {
   // ----------- LEMMAS -----------------------------------------------------
 
   @opaque
+  @inlineOnce
   def lemmaInsertAndRemoveStrictlySortedCommutative[B](
       l: List[(Long, B)],
       key1: Long,
@@ -319,6 +316,7 @@ object TupleListOps {
   )
 
   @opaque
+  @inlineOnce
   def lemmaInsertStrictlySortedThenRemoveIsSame[B](
       l: List[(Long, B)],
       key1: Long,
@@ -338,6 +336,7 @@ object TupleListOps {
   }.ensuring(_ => removeStrictlySorted(insertStrictlySorted(l, key1, v1), key1) == l)
 
   @opaque
+  @inlineOnce
   def lemmaInsertStrictlySortedCommutative[B](
       l: List[(Long, B)],
       key1: Long,
@@ -369,6 +368,7 @@ object TupleListOps {
   )
 
   @opaque
+  @inlineOnce
   def lemmaRemoveStrictlySortedCommutative[B](
       l: List[(Long, B)],
       key1: Long,
@@ -395,6 +395,7 @@ object TupleListOps {
   )
 
   @opaque
+  @inlineOnce
   def lemmaRemoveStrictlySortedNotPresentPreserves[B](
       l: List[(Long, B)],
       key: Long
@@ -413,6 +414,7 @@ object TupleListOps {
   }.ensuring(_ => removeStrictlySorted(l, key) == l)
 
   @opaque
+  @inlineOnce
   def lemmaInsertStrictlySortedErasesIfSameKey[B](
       l: List[(Long, B)],
       key1: Long,
@@ -442,6 +444,7 @@ object TupleListOps {
   )
 
   @opaque
+  @inlineOnce
   def lemmaAddNewKeyIncrementSize[B](
       l: List[(Long, B)],
       key: Long,
@@ -464,6 +467,7 @@ object TupleListOps {
   }.ensuring(_ => insertStrictlySorted(l, key, value).length == l.length + 1)
 
   @opaque
+  @inlineOnce
   def lemmaAddExistingKeyPreservesSize[B](
       l: List[(Long, B)],
       key: Long,
@@ -487,6 +491,7 @@ object TupleListOps {
   }.ensuring(_ => insertStrictlySorted(l, key, value).length == l.length)
 
   @opaque
+  @inlineOnce
   def lemmaGetValueByKeyIsDefinedImpliesContainsKey[B](
       l: List[(Long, B)],
       key: Long
@@ -501,6 +506,7 @@ object TupleListOps {
   }.ensuring(_ => containsKey(l, key))
 
   @opaque
+  @inlineOnce
   def lemmaContainsKeyImpliesGetValueByKeyDefined[B](
       l: List[(Long, B)],
       key: Long
@@ -541,6 +547,7 @@ object TupleListOps {
   }.ensuring(_ => keys.forall(k => getValueByKey(Cons(newHead, l), k) == Some[B](value)))
 
   @opaque
+  @inlineOnce
   def lemmaInsertStrictlySortedDoesNotModifyOtherKeyValues[B](
       l: List[(Long, B)],
       newKey: Long,
@@ -576,6 +583,7 @@ object TupleListOps {
   )
 
   @opaque
+  @inlineOnce
   def lemmaInsertStrictlySortedDoesNotModifyOtherKeysNotContained[B](
       l: List[(Long, B)],
       newKey: Long,
@@ -598,6 +606,7 @@ object TupleListOps {
   }.ensuring(_ => !containsKey(insertStrictlySorted(l, newKey, newValue), otherKey))
 
   @opaque
+  @inlineOnce
   def lemmaInsertStrictlySortedDoesNotModifyOtherKeysContained[B](
       l: List[(Long, B)],
       newKey: Long,
@@ -620,6 +629,7 @@ object TupleListOps {
   }.ensuring(_ => containsKey(insertStrictlySorted(l, newKey, newValue), otherKey))
 
   @opaque
+  @inlineOnce
   def lemmaInsertStrictlySortedNotContainedContent[B](
       @induct l: List[(Long, B)],
       newKey: Long,
@@ -637,6 +647,7 @@ object TupleListOps {
   )
 
   @opaque
+  @inlineOnce
   def lemmaNotContainsKeyThenNotContainsTuple[B](
       @induct l: List[(Long, B)],
       key: Long,
@@ -647,6 +658,7 @@ object TupleListOps {
   }.ensuring(_ => !l.contains((key, value)))
 
   @opaque
+  @inlineOnce
   def lemmaContainsTupleThenContainsKey[B](
       l: List[(Long, B)],
       key: Long,
@@ -663,6 +675,7 @@ object TupleListOps {
   }.ensuring(_ => containsKey(l, key))
 
   @opaque
+  @inlineOnce
   def lemmaContainsTupThenGetReturnValue[B](
       l: List[(Long, B)],
       key: Long,
@@ -681,22 +694,24 @@ object TupleListOps {
   }.ensuring(_ => getValueByKey(l, key) == Some[B](value))
 }
 
-object ListMapLongKey {
-  def empty[B]: ListMapLongKey[B] = ListMapLongKey[B](List.empty[(Long, B)])
+object ListLongMap {
+  def empty[B]: ListLongMap[B] = ListLongMap[B](List.empty[(Long, B)])
 }
 
 object ListMapLongKeyLemmas {
   import ListSpecs._
 
   @opaque
-  def removeNotPresentStillSame[B](lm: ListMapLongKey[B], a: Long): Unit = {
+  @inlineOnce
+  def removeNotPresentStillSame[B](lm: ListLongMap[B], a: Long): Unit = {
     require(!lm.contains(a))
     TupleListOps.lemmaRemoveStrictlySortedNotPresentPreserves(lm.toList, a)
   }.ensuring(_ => lm - a == lm)
 
   @opaque
+  @inlineOnce
   def addSameAsAddTwiceSameKeyDiffValues[B](
-      lm: ListMapLongKey[B],
+      lm: ListLongMap[B],
       a: Long,
       b1: B,
       b2: B
@@ -705,8 +720,9 @@ object ListMapLongKeyLemmas {
   }.ensuring(_ => lm + (a, b2) == (lm + (a, b1) + (a, b2)))
 
   @opaque
+  @inlineOnce
   def addRemoveCommutativeForDiffKeys[B](
-      lm: ListMapLongKey[B],
+      lm: ListLongMap[B],
       a1: Long,
       b1: B,
       a2: Long
@@ -721,8 +737,9 @@ object ListMapLongKeyLemmas {
   }.ensuring(_ => lm + (a1, b1) - a2 == lm - a2 + (a1, b1))
 
   @opaque
+  @inlineOnce
   def addThenRemoveForNewKeyIsSame[B](
-      lm: ListMapLongKey[B],
+      lm: ListLongMap[B],
       a1: Long,
       b1: B
   ): Unit = {
@@ -731,13 +748,15 @@ object ListMapLongKeyLemmas {
   }.ensuring(_ => lm + (a1, b1) - a1 == lm)
 
   @opaque
-  def removeCommutative[B](lm: ListMapLongKey[B], a1: Long, a2: Long): Unit = {
+  @inlineOnce
+  def removeCommutative[B](lm: ListLongMap[B], a1: Long, a2: Long): Unit = {
     TupleListOps.lemmaRemoveStrictlySortedCommutative(lm.toList, a1, a2)
   }.ensuring(_ => lm - a1 - a2 == lm - a2 - a1)
 
   @opaque
+  @inlineOnce
   def addCommutativeForDiffKeys[B](
-      lm: ListMapLongKey[B],
+      lm: ListLongMap[B],
       a1: Long,
       b1: B,
       a2: Long,
@@ -748,11 +767,13 @@ object ListMapLongKeyLemmas {
   }.ensuring(_ => lm + (a1, b1) + (a2, b2) == lm + (a2, b2) + (a1, b1))
 
   @opaque
-  def emptyContainsNothing[B](k: Long): Unit = {}.ensuring(_ => !ListMapLongKey.empty[B].contains(k))
+  @inlineOnce
+  def emptyContainsNothing[B](k: Long): Unit = {}.ensuring(_ => !ListLongMap.empty[B].contains(k))
 
   @opaque
+  @inlineOnce
   def addValidProp[B](
-      lm: ListMapLongKey[B],
+      lm: ListLongMap[B],
       p: ((Long, B)) => Boolean,
       a: Long,
       b: B
@@ -769,8 +790,9 @@ object ListMapLongKeyLemmas {
   }
 
   @opaque
+  @inlineOnce
   def removeValidProp[B](
-      lm: ListMapLongKey[B],
+      lm: ListLongMap[B],
       p: ((Long, B)) => Boolean,
       a: Long
   ): Unit = {
@@ -785,8 +807,9 @@ object ListMapLongKeyLemmas {
   }
 
   @opaque
+  @inlineOnce
   def insertAllValidProp[B](
-      lm: ListMapLongKey[B],
+      lm: ListLongMap[B],
       kvs: List[(Long, B)],
       p: ((Long, B)) => Boolean
   ): Unit = {
@@ -804,8 +827,9 @@ object ListMapLongKeyLemmas {
   }
 
   @opaque
+  @inlineOnce
   def removeAllValidProp[B](
-      lm: ListMapLongKey[B],
+      lm: ListLongMap[B],
       l: List[Long],
       p: ((Long, B)) => Boolean
   ): Unit = {
@@ -823,8 +847,9 @@ object ListMapLongKeyLemmas {
   }
 
   @opaque
+  @inlineOnce
   def addApplyDifferent[B](
-      lm: ListMapLongKey[B],
+      lm: ListLongMap[B],
       a: Long,
       b: B,
       a0: Long
@@ -844,7 +869,7 @@ object ListMapLongKeyLemmas {
   @opaque
   @inlineOnce
   def addStillContains[B](
-      lm: ListMapLongKey[B],
+      lm: ListLongMap[B],
       a: Long,
       b: B,
       a0: Long
@@ -864,7 +889,7 @@ object ListMapLongKeyLemmas {
   @opaque
   @inlineOnce
   def addStillNotContains[B](
-      lm: ListMapLongKey[B],
+      lm: ListLongMap[B],
       a: Long,
       b: B,
       a0: Long
@@ -881,8 +906,9 @@ object ListMapLongKeyLemmas {
   }.ensuring(_ => !(lm + (a, b)).contains(a0))
 
   @opaque
+  @inlineOnce
   def applyForall[B](
-      lm: ListMapLongKey[B],
+      lm: ListLongMap[B],
       p: ((Long, B)) => Boolean,
       k: Long
   ): Unit = {
@@ -895,8 +921,9 @@ object ListMapLongKeyLemmas {
   }.ensuring(_ => p(k, lm(k)))
 
   @opaque
+  @inlineOnce
   def getForall[B](
-      lm: ListMapLongKey[B],
+      lm: ListLongMap[B],
       p: ((Long, B)) => Boolean,
       k: Long
   ): Unit = {
@@ -909,7 +936,8 @@ object ListMapLongKeyLemmas {
   }.ensuring(_ => lm.get(k).forall(v => p(k, v)))
 
   @opaque
-  def uniqueImage[B](lm: ListMapLongKey[B], a: Long, b: B): Unit = {
+  @inlineOnce
+  def uniqueImage[B](lm: ListLongMap[B], a: Long, b: B): Unit = {
     require(lm.toList.contains((a, b)))
 
     TupleListOps.lemmaContainsTupleThenContainsKey(lm.toList, a, b)
@@ -918,13 +946,15 @@ object ListMapLongKeyLemmas {
   }.ensuring(_ => lm.get(a) == Some[B](b))
 
   @opaque
-  def keysOfSound[B](lm: ListMapLongKey[B], value: B): Unit = {
+  def keysOfSound[B](@induct lm: ListLongMap[B], value: B): Unit = {
     // trivial by postcondition of getKeysOf
+    assert(TupleListOps.getKeysOf(lm.toList, value).forall(k => lm.get(k) == Some[B](value)))
   }.ensuring(_ => lm.keysOf(value).forall(key => lm.get(key) == Some[B](value)))
 
   @opaque
+  @inlineOnce
   def addNotContainedContent[B](
-      lm: ListMapLongKey[B],
+      lm: ListLongMap[B],
       key: Long,
       value: B
   ): Unit = {
