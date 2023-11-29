@@ -1,3 +1,7 @@
+package ch.epfl.chassot
+
+import MutableLongMap.*
+
 object EfficientFill {
   def fillByValueLong(size: Int)(v: Long): Array[Long] = {
     val a = new Array[Long](size)
