@@ -14,6 +14,52 @@ import ch.epfl.chassot.MutableLongMapOpti.LongMapOpti
 import benchmark.BenchmarkUtil.getHashMapEmptyBuffer
 
 @State(Scope.Benchmark)
+class ArrayFillBenchmark {
+  import EfficientFill.*
+  import MutableLongMap.ValueCell
+  import MutableLongMap.EmptyCell
+  import MutableLongMap.ValueCellFull
+  @Param(
+    Array(
+      "0","2", "4", "8", "16", "32", "64", "128", "256", "512", "1024", "2048", "4096", "8192", "16384", "32768", "65536", "131072", "262144", "524288", "1048576", "2097152", "4194304", "8388608", "16777216", "33554432"
+    )
+  )
+  var size: String = _
+
+  @Benchmark
+  @BenchmarkMode(Array(Mode.AverageTime))
+  @OutputTimeUnit(TimeUnit.MICROSECONDS)
+  def fillLong_ArrayFill(): Unit = {
+    val a = Array.fill(size.toInt)(0L)
+    val x = a(0) + 1L
+  }
+
+  @Benchmark
+  @BenchmarkMode(Array(Mode.AverageTime))
+  @OutputTimeUnit(TimeUnit.MICROSECONDS)
+  def fillLong_EfficientFill(): Unit = {
+    val a = fillByValueLong(size.toInt)(0L)
+    val x = a(0) + 1L
+  }
+
+  @Benchmark
+  @BenchmarkMode(Array(Mode.AverageTime))
+  @OutputTimeUnit(TimeUnit.MICROSECONDS)
+  def fillValueCell_ArrayFill(): Unit = {
+    val a = Array.fill(size.toInt)(EmptyCell[Long]())
+    val x = a(0).get(0L) + 1L
+  }
+
+  @Benchmark
+  @BenchmarkMode(Array(Mode.AverageTime))
+  @OutputTimeUnit(TimeUnit.MICROSECONDS)
+  def fillValueCell_EfficientFill(): Unit = {
+    val a = fillByValueLong(size.toInt)(EmptyCell[Long]())
+    val x = a(0).get(0L) + 1L
+  }
+}
+
+@State(Scope.Benchmark)
 class LongListMapBenchmark {
   import BenchmarkUtilListMap.*
   import BenchmarkUtil.*
