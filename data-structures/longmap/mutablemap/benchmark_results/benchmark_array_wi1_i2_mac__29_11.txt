@@ -1,0 +1,1174 @@
+[info] welcome to sbt 1.9.6 (Oracle Corporation Java 17)
+[info] loading settings for project mutablemap-build from plugins.sbt ...
+[info] loading project definition from /Users/samuel/EPFL/bolts/data-structures/longmap/mutablemap/project
+[info] loading settings for project mutablemap from build.sbt ...
+[info] set current project to MutableMap (in build file:/Users/samuel/EPFL/bolts/data-structures/longmap/mutablemap/)
+[info] compiling 49 Scala sources to /Users/samuel/EPFL/bolts/data-structures/longmap/mutablemap/target/scala-3.3.0/classes ...
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /Users/samuel/EPFL/bolts/data-structures/longmap/mutablemap/src/main/scala/ch/epfl/chassot/ListLongMap.scala:157:4 
+[warn] 157 |    l match {
+[warn]     |    ^
+[warn]     |    match may not be exhaustive.
+[warn]     |
+[warn]     |    It would fail on pattern case: collection.Cons(_, _)
+[warn]     |
+[warn]     | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /Users/samuel/EPFL/bolts/data-structures/longmap/mutablemap/src/main/scala/ch/epfl/chassot/ListLongMap.scala:191:4 
+[warn] 191 |    l match {
+[warn]     |    ^
+[warn]     |    match may not be exhaustive.
+[warn]     |
+[warn]     |    It would fail on pattern case: collection.Cons(_, _)
+[warn]     |
+[warn]     | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /Users/samuel/EPFL/bolts/data-structures/longmap/mutablemap/src/main/scala/ch/epfl/chassot/ListLongMap.scala:206:4 
+[warn] 206 |    l match {
+[warn]     |    ^
+[warn]     |    match may not be exhaustive.
+[warn]     |
+[warn]     |    It would fail on pattern case: collection.Cons(_, _)
+[warn]     |
+[warn]     | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /Users/samuel/EPFL/bolts/data-structures/longmap/mutablemap/src/main/scala/ch/epfl/chassot/ListLongMap.scala:222:4 
+[warn] 222 |    l match {
+[warn]     |    ^
+[warn]     |    match may not be exhaustive.
+[warn]     |
+[warn]     |    It would fail on pattern case: collection.Cons(_, _)
+[warn]     |
+[warn]     | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /Users/samuel/EPFL/bolts/data-structures/longmap/mutablemap/src/main/scala/ch/epfl/chassot/ListLongMap.scala:243:4 
+[warn] 243 |    l match {
+[warn]     |    ^
+[warn]     |    match may not be exhaustive.
+[warn]     |
+[warn]     |    It would fail on pattern case: collection.Cons(_, _)
+[warn]     |
+[warn]     | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /Users/samuel/EPFL/bolts/data-structures/longmap/mutablemap/src/main/scala/ch/epfl/chassot/ListLongMap.scala:274:4 
+[warn] 274 |    l match {
+[warn]     |    ^
+[warn]     |    match may not be exhaustive.
+[warn]     |
+[warn]     |    It would fail on pattern case: collection.Cons(_, _)
+[warn]     |
+[warn]     | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /Users/samuel/EPFL/bolts/data-structures/longmap/mutablemap/src/main/scala/ch/epfl/chassot/MutableLongMap.scala:366:4 
+[warn] 366 |    c match {
+[warn]     |    ^
+[warn]     |    match may not be exhaustive.
+[warn]     |
+[warn]     |    It would fail on pattern case: EmptyCell()
+[warn]     |
+[warn]     | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /Users/samuel/EPFL/bolts/data-structures/longmap/mutablemap/src/main/scala/ch/epfl/chassot/MutableLongMap.scala:615:8 
+[warn] 615 |        seekEntryRes match {
+[warn]     |        ^^^^^^^^^^^^
+[warn]     |   match may not be exhaustive.
+[warn]     |
+[warn]     |   It would fail on pattern case: MutableLongMap.Intermediate(_, _, _)
+[warn]     |
+[warn]     | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /Users/samuel/EPFL/bolts/data-structures/longmap/mutablemap/src/main/scala/ch/epfl/chassot/MutableLongMap.scala:1142:6 
+[warn] 1142 |      intermediate match {
+[warn]      |      ^^^^^^^^^^^^
+[warn]      |    match may not be exhaustive.
+[warn]      |
+[warn]      |    It would fail on pattern case: _: MutableLongMap.SeekEntryResult
+[warn]      |
+[warn]      | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /Users/samuel/EPFL/bolts/data-structures/longmap/mutablemap/src/main/scala/ch/epfl/chassot/MutableLongMap.scala:1192:6 
+[warn] 1192 |      intermediate match {
+[warn]      |      ^^^^^^^^^^^^
+[warn]      |    match may not be exhaustive.
+[warn]      |
+[warn]      |    It would fail on pattern case: _: MutableLongMap.SeekEntryResult
+[warn]      |
+[warn]      | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /Users/samuel/EPFL/bolts/data-structures/longmap/mutablemap/src/main/scala/ch/epfl/chassot/MutableLongMapOpti.scala.scala:207:4 
+[warn] 207 |    c match {
+[warn]     |    ^
+[warn]     |    match may not be exhaustive.
+[warn]     |
+[warn]     |    It would fail on pattern case: EmptyCell()
+[warn]     |
+[warn]     | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /Users/samuel/EPFL/bolts/data-structures/longmap/mutablemap/src/main/scala/ch/epfl/chassot/MutableLongMapOpti.scala.scala:316:8 
+[warn] 316 |        seekEntryRes match {
+[warn]     |        ^^^^^^^^^^^^
+[warn]     |match may not be exhaustive.
+[warn]     |
+[warn]     |It would fail on pattern case: MutableLongMapOpti.Intermediate(_, _, _)
+[warn]     |
+[warn]     | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /Users/samuel/EPFL/bolts/data-structures/longmap/mutablemap/src/main/scala/ch/epfl/chassot/MutableLongMapOpti.scala.scala:474:6 
+[warn] 474 |      intermediate match {
+[warn]     |      ^^^^^^^^^^^^
+[warn]     |  match may not be exhaustive.
+[warn]     |
+[warn]     |  It would fail on pattern case: _: MutableLongMapOpti.SeekEntryResult
+[warn]     |
+[warn]     | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /Users/samuel/EPFL/bolts/data-structures/longmap/mutablemap/src/main/scala/ch/epfl/chassot/MutableLongMapOpti.scala.scala:511:6 
+[warn] 511 |      intermediate match {
+[warn]     |      ^^^^^^^^^^^^
+[warn]     |  match may not be exhaustive.
+[warn]     |
+[warn]     |  It would fail on pattern case: _: MutableLongMapOpti.SeekEntryResult
+[warn]     |
+[warn]     | longer explanation available when compiling with `-explain`
+[warn] 14 warnings found
+[info] done compiling
+[info] running org.openjdk.jmh.generators.bytecode.JmhBytecodeGenerator /Users/samuel/EPFL/bolts/data-structures/longmap/mutablemap/target/scala-3.3.0/classes /Users/samuel/EPFL/bolts/data-structures/longmap/mutablemap/target/scala-3.3.0/src_managed/jmh /Users/samuel/EPFL/bolts/data-structures/longmap/mutablemap/target/scala-3.3.0/resource_managed/jmh default
+Processing 845 classes from /Users/samuel/EPFL/bolts/data-structures/longmap/mutablemap/target/scala-3.3.0/classes with "reflection" generator
+Writing out Java source to /Users/samuel/EPFL/bolts/data-structures/longmap/mutablemap/target/scala-3.3.0/src_managed/jmh and resources to /Users/samuel/EPFL/bolts/data-structures/longmap/mutablemap/target/scala-3.3.0/resource_managed/jmh
+[info] compiling 58 Java sources to /Users/samuel/EPFL/bolts/data-structures/longmap/mutablemap/target/scala-3.3.0/classes ...
+[info] done compiling
+[info] running (fork) org.openjdk.jmh.Main -i 2 -wi 1 -f1 -t1 ArrayFillBenchmark.*
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17, OpenJDK 64-Bit Server VM, 17+35-2724
+[info] # VM invoker: /Users/samuel/.sdkman/candidates/java/17-open/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 1 iterations, 10 s each
+[info] # Measurement: 2 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: benchmark.ArrayFillBenchmark.fillLong_ArrayFill
+[info] # Parameters: (size = 2)
+[info] # Run progress: 0.00% complete, ETA 00:26:00
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 0.013 us/op
+[info] Iteration   1: 0.009 us/op
+[info] Iteration   2: 0.010 us/op
+[info] Result "benchmark.ArrayFillBenchmark.fillLong_ArrayFill":
+[info]   0.010 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17, OpenJDK 64-Bit Server VM, 17+35-2724
+[info] # VM invoker: /Users/samuel/.sdkman/candidates/java/17-open/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 1 iterations, 10 s each
+[info] # Measurement: 2 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: benchmark.ArrayFillBenchmark.fillLong_ArrayFill
+[info] # Parameters: (size = 8)
+[info] # Run progress: 1.92% complete, ETA 00:25:51
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 0.014 us/op
+[info] Iteration   1: 0.013 us/op
+[info] Iteration   2: 0.012 us/op
+[info] Result "benchmark.ArrayFillBenchmark.fillLong_ArrayFill":
+[info]   0.012 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17, OpenJDK 64-Bit Server VM, 17+35-2724
+[info] # VM invoker: /Users/samuel/.sdkman/candidates/java/17-open/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 1 iterations, 10 s each
+[info] # Measurement: 2 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: benchmark.ArrayFillBenchmark.fillLong_ArrayFill
+[info] # Parameters: (size = 32)
+[info] # Run progress: 3.85% complete, ETA 00:25:20
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 0.025 us/op
+[info] Iteration   1: 0.023 us/op
+[info] Iteration   2: 0.022 us/op
+[info] Result "benchmark.ArrayFillBenchmark.fillLong_ArrayFill":
+[info]   0.023 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17, OpenJDK 64-Bit Server VM, 17+35-2724
+[info] # VM invoker: /Users/samuel/.sdkman/candidates/java/17-open/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 1 iterations, 10 s each
+[info] # Measurement: 2 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: benchmark.ArrayFillBenchmark.fillLong_ArrayFill
+[info] # Parameters: (size = 128)
+[info] # Run progress: 5.77% complete, ETA 00:24:49
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 0.073 us/op
+[info] Iteration   1: 0.069 us/op
+[info] Iteration   2: 0.068 us/op
+[info] Result "benchmark.ArrayFillBenchmark.fillLong_ArrayFill":
+[info]   0.069 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17, OpenJDK 64-Bit Server VM, 17+35-2724
+[info] # VM invoker: /Users/samuel/.sdkman/candidates/java/17-open/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 1 iterations, 10 s each
+[info] # Measurement: 2 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: benchmark.ArrayFillBenchmark.fillLong_ArrayFill
+[info] # Parameters: (size = 1024)
+[info] # Run progress: 7.69% complete, ETA 00:24:18
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 0.471 us/op
+[info] Iteration   1: 0.460 us/op
+[info] Iteration   2: 0.450 us/op
+[info] Result "benchmark.ArrayFillBenchmark.fillLong_ArrayFill":
+[info]   0.455 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17, OpenJDK 64-Bit Server VM, 17+35-2724
+[info] # VM invoker: /Users/samuel/.sdkman/candidates/java/17-open/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 1 iterations, 10 s each
+[info] # Measurement: 2 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: benchmark.ArrayFillBenchmark.fillLong_ArrayFill
+[info] # Parameters: (size = 2048)
+[info] # Run progress: 9.62% complete, ETA 00:23:48
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 0.931 us/op
+[info] Iteration   1: 0.895 us/op
+[info] Iteration   2: 0.896 us/op
+[info] Result "benchmark.ArrayFillBenchmark.fillLong_ArrayFill":
+[info]   0.896 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17, OpenJDK 64-Bit Server VM, 17+35-2724
+[info] # VM invoker: /Users/samuel/.sdkman/candidates/java/17-open/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 1 iterations, 10 s each
+[info] # Measurement: 2 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: benchmark.ArrayFillBenchmark.fillLong_ArrayFill
+[info] # Parameters: (size = 8192)
+[info] # Run progress: 11.54% complete, ETA 00:23:18
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 3.175 us/op
+[info] Iteration   1: 3.040 us/op
+[info] Iteration   2: 3.017 us/op
+[info] Result "benchmark.ArrayFillBenchmark.fillLong_ArrayFill":
+[info]   3.029 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17, OpenJDK 64-Bit Server VM, 17+35-2724
+[info] # VM invoker: /Users/samuel/.sdkman/candidates/java/17-open/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 1 iterations, 10 s each
+[info] # Measurement: 2 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: benchmark.ArrayFillBenchmark.fillLong_ArrayFill
+[info] # Parameters: (size = 32768)
+[info] # Run progress: 13.46% complete, ETA 00:22:47
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 12.013 us/op
+[info] Iteration   1: 11.466 us/op
+[info] Iteration   2: 11.352 us/op
+[info] Result "benchmark.ArrayFillBenchmark.fillLong_ArrayFill":
+[info]   11.409 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17, OpenJDK 64-Bit Server VM, 17+35-2724
+[info] # VM invoker: /Users/samuel/.sdkman/candidates/java/17-open/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 1 iterations, 10 s each
+[info] # Measurement: 2 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: benchmark.ArrayFillBenchmark.fillLong_ArrayFill
+[info] # Parameters: (size = 131072)
+[info] # Run progress: 15.38% complete, ETA 00:22:17
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 46.926 us/op
+[info] Iteration   1: 44.666 us/op
+[info] Iteration   2: 44.559 us/op
+[info] Result "benchmark.ArrayFillBenchmark.fillLong_ArrayFill":
+[info]   44.612 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17, OpenJDK 64-Bit Server VM, 17+35-2724
+[info] # VM invoker: /Users/samuel/.sdkman/candidates/java/17-open/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 1 iterations, 10 s each
+[info] # Measurement: 2 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: benchmark.ArrayFillBenchmark.fillLong_ArrayFill
+[info] # Parameters: (size = 524288)
+[info] # Run progress: 17.31% complete, ETA 00:21:46
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 186.591 us/op
+[info] Iteration   1: 182.189 us/op
+[info] Iteration   2: 181.977 us/op
+[info] Result "benchmark.ArrayFillBenchmark.fillLong_ArrayFill":
+[info]   182.083 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17, OpenJDK 64-Bit Server VM, 17+35-2724
+[info] # VM invoker: /Users/samuel/.sdkman/candidates/java/17-open/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 1 iterations, 10 s each
+[info] # Measurement: 2 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: benchmark.ArrayFillBenchmark.fillLong_ArrayFill
+[info] # Parameters: (size = 2097152)
+[info] # Run progress: 19.23% complete, ETA 00:21:16
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 772.443 us/op
+[info] Iteration   1: 750.938 us/op
+[info] Iteration   2: 751.266 us/op
+[info] Result "benchmark.ArrayFillBenchmark.fillLong_ArrayFill":
+[info]   751.102 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17, OpenJDK 64-Bit Server VM, 17+35-2724
+[info] # VM invoker: /Users/samuel/.sdkman/candidates/java/17-open/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 1 iterations, 10 s each
+[info] # Measurement: 2 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: benchmark.ArrayFillBenchmark.fillLong_ArrayFill
+[info] # Parameters: (size = 16777216)
+[info] # Run progress: 21.15% complete, ETA 00:20:45
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 7061.597 us/op
+[info] Iteration   1: 6859.459 us/op
+[info] Iteration   2: 6887.787 us/op
+[info] Result "benchmark.ArrayFillBenchmark.fillLong_ArrayFill":
+[info]   6873.623 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17, OpenJDK 64-Bit Server VM, 17+35-2724
+[info] # VM invoker: /Users/samuel/.sdkman/candidates/java/17-open/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 1 iterations, 10 s each
+[info] # Measurement: 2 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: benchmark.ArrayFillBenchmark.fillLong_ArrayFill
+[info] # Parameters: (size = 33554432)
+[info] # Run progress: 23.08% complete, ETA 00:20:15
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 14178.387 us/op
+[info] Iteration   1: 13744.934 us/op
+[info] Iteration   2: 13755.658 us/op
+[info] Result "benchmark.ArrayFillBenchmark.fillLong_ArrayFill":
+[info]   13750.296 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17, OpenJDK 64-Bit Server VM, 17+35-2724
+[info] # VM invoker: /Users/samuel/.sdkman/candidates/java/17-open/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 1 iterations, 10 s each
+[info] # Measurement: 2 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: benchmark.ArrayFillBenchmark.fillLong_EfficientFill
+[info] # Parameters: (size = 2)
+[info] # Run progress: 25.00% complete, ETA 00:19:44
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 0.010 us/op
+[info] Iteration   1: 0.007 us/op
+[info] Iteration   2: 0.006 us/op
+[info] Result "benchmark.ArrayFillBenchmark.fillLong_EfficientFill":
+[info]   0.006 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17, OpenJDK 64-Bit Server VM, 17+35-2724
+[info] # VM invoker: /Users/samuel/.sdkman/candidates/java/17-open/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 1 iterations, 10 s each
+[info] # Measurement: 2 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: benchmark.ArrayFillBenchmark.fillLong_EfficientFill
+[info] # Parameters: (size = 8)
+[info] # Run progress: 26.92% complete, ETA 00:19:14
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 0.012 us/op
+[info] Iteration   1: 0.009 us/op
+[info] Iteration   2: 0.009 us/op
+[info] Result "benchmark.ArrayFillBenchmark.fillLong_EfficientFill":
+[info]   0.009 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17, OpenJDK 64-Bit Server VM, 17+35-2724
+[info] # VM invoker: /Users/samuel/.sdkman/candidates/java/17-open/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 1 iterations, 10 s each
+[info] # Measurement: 2 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: benchmark.ArrayFillBenchmark.fillLong_EfficientFill
+[info] # Parameters: (size = 32)
+[info] # Run progress: 28.85% complete, ETA 00:18:44
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 0.021 us/op
+[info] Iteration   1: 0.020 us/op
+[info] Iteration   2: 0.020 us/op
+[info] Result "benchmark.ArrayFillBenchmark.fillLong_EfficientFill":
+[info]   0.020 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17, OpenJDK 64-Bit Server VM, 17+35-2724
+[info] # VM invoker: /Users/samuel/.sdkman/candidates/java/17-open/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 1 iterations, 10 s each
+[info] # Measurement: 2 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: benchmark.ArrayFillBenchmark.fillLong_EfficientFill
+[info] # Parameters: (size = 128)
+[info] # Run progress: 30.77% complete, ETA 00:18:13
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 0.069 us/op
+[info] Iteration   1: 0.066 us/op
+[info] Iteration   2: 0.067 us/op
+[info] Result "benchmark.ArrayFillBenchmark.fillLong_EfficientFill":
+[info]   0.067 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17, OpenJDK 64-Bit Server VM, 17+35-2724
+[info] # VM invoker: /Users/samuel/.sdkman/candidates/java/17-open/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 1 iterations, 10 s each
+[info] # Measurement: 2 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: benchmark.ArrayFillBenchmark.fillLong_EfficientFill
+[info] # Parameters: (size = 1024)
+[info] # Run progress: 32.69% complete, ETA 00:17:43
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 0.469 us/op
+[info] Iteration   1: 0.455 us/op
+[info] Iteration   2: 0.457 us/op
+[info] Result "benchmark.ArrayFillBenchmark.fillLong_EfficientFill":
+[info]   0.456 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17, OpenJDK 64-Bit Server VM, 17+35-2724
+[info] # VM invoker: /Users/samuel/.sdkman/candidates/java/17-open/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 1 iterations, 10 s each
+[info] # Measurement: 2 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: benchmark.ArrayFillBenchmark.fillLong_EfficientFill
+[info] # Parameters: (size = 2048)
+[info] # Run progress: 34.62% complete, ETA 00:17:13
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 0.937 us/op
+[info] Iteration   1: 0.906 us/op
+[info] Iteration   2: 0.894 us/op
+[info] Result "benchmark.ArrayFillBenchmark.fillLong_EfficientFill":
+[info]   0.900 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17, OpenJDK 64-Bit Server VM, 17+35-2724
+[info] # VM invoker: /Users/samuel/.sdkman/candidates/java/17-open/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 1 iterations, 10 s each
+[info] # Measurement: 2 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: benchmark.ArrayFillBenchmark.fillLong_EfficientFill
+[info] # Parameters: (size = 8192)
+[info] # Run progress: 36.54% complete, ETA 00:16:42
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 3.247 us/op
+[info] Iteration   1: 3.170 us/op
+[info] Iteration   2: 3.119 us/op
+[info] Result "benchmark.ArrayFillBenchmark.fillLong_EfficientFill":
+[info]   3.144 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17, OpenJDK 64-Bit Server VM, 17+35-2724
+[info] # VM invoker: /Users/samuel/.sdkman/candidates/java/17-open/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 1 iterations, 10 s each
+[info] # Measurement: 2 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: benchmark.ArrayFillBenchmark.fillLong_EfficientFill
+[info] # Parameters: (size = 32768)
+[info] # Run progress: 38.46% complete, ETA 00:16:12
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 12.108 us/op
+[info] Iteration   1: 11.469 us/op
+[info] Iteration   2: 11.453 us/op
+[info] Result "benchmark.ArrayFillBenchmark.fillLong_EfficientFill":
+[info]   11.461 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17, OpenJDK 64-Bit Server VM, 17+35-2724
+[info] # VM invoker: /Users/samuel/.sdkman/candidates/java/17-open/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 1 iterations, 10 s each
+[info] # Measurement: 2 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: benchmark.ArrayFillBenchmark.fillLong_EfficientFill
+[info] # Parameters: (size = 131072)
+[info] # Run progress: 40.38% complete, ETA 00:15:42
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 46.632 us/op
+[info] Iteration   1: 44.971 us/op
+[info] Iteration   2: 45.215 us/op
+[info] Result "benchmark.ArrayFillBenchmark.fillLong_EfficientFill":
+[info]   45.093 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17, OpenJDK 64-Bit Server VM, 17+35-2724
+[info] # VM invoker: /Users/samuel/.sdkman/candidates/java/17-open/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 1 iterations, 10 s each
+[info] # Measurement: 2 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: benchmark.ArrayFillBenchmark.fillLong_EfficientFill
+[info] # Parameters: (size = 524288)
+[info] # Run progress: 42.31% complete, ETA 00:15:11
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 186.237 us/op
+[info] Iteration   1: 182.769 us/op
+[info] Iteration   2: 179.020 us/op
+[info] Result "benchmark.ArrayFillBenchmark.fillLong_EfficientFill":
+[info]   180.894 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17, OpenJDK 64-Bit Server VM, 17+35-2724
+[info] # VM invoker: /Users/samuel/.sdkman/candidates/java/17-open/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 1 iterations, 10 s each
+[info] # Measurement: 2 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: benchmark.ArrayFillBenchmark.fillLong_EfficientFill
+[info] # Parameters: (size = 2097152)
+[info] # Run progress: 44.23% complete, ETA 00:14:41
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 763.681 us/op
+[info] Iteration   1: 744.506 us/op
+[info] Iteration   2: 790.621 us/op
+[info] Result "benchmark.ArrayFillBenchmark.fillLong_EfficientFill":
+[info]   767.564 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17, OpenJDK 64-Bit Server VM, 17+35-2724
+[info] # VM invoker: /Users/samuel/.sdkman/candidates/java/17-open/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 1 iterations, 10 s each
+[info] # Measurement: 2 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: benchmark.ArrayFillBenchmark.fillLong_EfficientFill
+[info] # Parameters: (size = 16777216)
+[info] # Run progress: 46.15% complete, ETA 00:14:10
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 7203.552 us/op
+[info] Iteration   1: 7226.390 us/op
+[info] Iteration   2: 6734.224 us/op
+[info] Result "benchmark.ArrayFillBenchmark.fillLong_EfficientFill":
+[info]   6980.307 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17, OpenJDK 64-Bit Server VM, 17+35-2724
+[info] # VM invoker: /Users/samuel/.sdkman/candidates/java/17-open/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 1 iterations, 10 s each
+[info] # Measurement: 2 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: benchmark.ArrayFillBenchmark.fillLong_EfficientFill
+[info] # Parameters: (size = 33554432)
+[info] # Run progress: 48.08% complete, ETA 00:13:40
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 14210.904 us/op
+[info] Iteration   1: 13750.584 us/op
+[info] Iteration   2: 13726.382 us/op
+[info] Result "benchmark.ArrayFillBenchmark.fillLong_EfficientFill":
+[info]   13738.483 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17, OpenJDK 64-Bit Server VM, 17+35-2724
+[info] # VM invoker: /Users/samuel/.sdkman/candidates/java/17-open/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 1 iterations, 10 s each
+[info] # Measurement: 2 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: benchmark.ArrayFillBenchmark.fillValueCell_ArrayFill
+[info] # Parameters: (size = 2)
+[info] # Run progress: 50.00% complete, ETA 00:13:10
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 0.014 us/op
+[info] Iteration   1: 0.013 us/op
+[info] Iteration   2: 0.012 us/op
+[info] Result "benchmark.ArrayFillBenchmark.fillValueCell_ArrayFill":
+[info]   0.013 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17, OpenJDK 64-Bit Server VM, 17+35-2724
+[info] # VM invoker: /Users/samuel/.sdkman/candidates/java/17-open/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 1 iterations, 10 s each
+[info] # Measurement: 2 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: benchmark.ArrayFillBenchmark.fillValueCell_ArrayFill
+[info] # Parameters: (size = 8)
+[info] # Run progress: 51.92% complete, ETA 00:12:39
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 0.024 us/op
+[info] Iteration   1: 0.022 us/op
+[info] Iteration   2: 0.022 us/op
+[info] Result "benchmark.ArrayFillBenchmark.fillValueCell_ArrayFill":
+[info]   0.022 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17, OpenJDK 64-Bit Server VM, 17+35-2724
+[info] # VM invoker: /Users/samuel/.sdkman/candidates/java/17-open/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 1 iterations, 10 s each
+[info] # Measurement: 2 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: benchmark.ArrayFillBenchmark.fillValueCell_ArrayFill
+[info] # Parameters: (size = 32)
+[info] # Run progress: 53.85% complete, ETA 00:12:09
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 0.077 us/op
+[info] Iteration   1: 0.090 us/op
+[info] Iteration   2: 0.065 us/op
+[info] Result "benchmark.ArrayFillBenchmark.fillValueCell_ArrayFill":
+[info]   0.077 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17, OpenJDK 64-Bit Server VM, 17+35-2724
+[info] # VM invoker: /Users/samuel/.sdkman/candidates/java/17-open/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 1 iterations, 10 s each
+[info] # Measurement: 2 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: benchmark.ArrayFillBenchmark.fillValueCell_ArrayFill
+[info] # Parameters: (size = 128)
+[info] # Run progress: 55.77% complete, ETA 00:11:38
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 0.217 us/op
+[info] Iteration   1: 0.210 us/op
+[info] Iteration   2: 0.215 us/op
+[info] Result "benchmark.ArrayFillBenchmark.fillValueCell_ArrayFill":
+[info]   0.212 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17, OpenJDK 64-Bit Server VM, 17+35-2724
+[info] # VM invoker: /Users/samuel/.sdkman/candidates/java/17-open/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 1 iterations, 10 s each
+[info] # Measurement: 2 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: benchmark.ArrayFillBenchmark.fillValueCell_ArrayFill
+[info] # Parameters: (size = 1024)
+[info] # Run progress: 57.69% complete, ETA 00:11:08
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 2.078 us/op
+[info] Iteration   1: 1.957 us/op
+[info] Iteration   2: 2.003 us/op
+[info] Result "benchmark.ArrayFillBenchmark.fillValueCell_ArrayFill":
+[info]   1.980 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17, OpenJDK 64-Bit Server VM, 17+35-2724
+[info] # VM invoker: /Users/samuel/.sdkman/candidates/java/17-open/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 1 iterations, 10 s each
+[info] # Measurement: 2 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: benchmark.ArrayFillBenchmark.fillValueCell_ArrayFill
+[info] # Parameters: (size = 2048)
+[info] # Run progress: 59.62% complete, ETA 00:10:38
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 4.050 us/op
+[info] Iteration   1: 3.904 us/op
+[info] Iteration   2: 4.091 us/op
+[info] Result "benchmark.ArrayFillBenchmark.fillValueCell_ArrayFill":
+[info]   3.997 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17, OpenJDK 64-Bit Server VM, 17+35-2724
+[info] # VM invoker: /Users/samuel/.sdkman/candidates/java/17-open/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 1 iterations, 10 s each
+[info] # Measurement: 2 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: benchmark.ArrayFillBenchmark.fillValueCell_ArrayFill
+[info] # Parameters: (size = 8192)
+[info] # Run progress: 61.54% complete, ETA 00:10:07
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 14.940 us/op
+[info] Iteration   1: 13.318 us/op
+[info] Iteration   2: 13.539 us/op
+[info] Result "benchmark.ArrayFillBenchmark.fillValueCell_ArrayFill":
+[info]   13.428 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17, OpenJDK 64-Bit Server VM, 17+35-2724
+[info] # VM invoker: /Users/samuel/.sdkman/candidates/java/17-open/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 1 iterations, 10 s each
+[info] # Measurement: 2 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: benchmark.ArrayFillBenchmark.fillValueCell_ArrayFill
+[info] # Parameters: (size = 32768)
+[info] # Run progress: 63.46% complete, ETA 00:09:37
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 50.964 us/op
+[info] Iteration   1: 49.266 us/op
+[info] Iteration   2: 54.617 us/op
+[info] Result "benchmark.ArrayFillBenchmark.fillValueCell_ArrayFill":
+[info]   51.941 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17, OpenJDK 64-Bit Server VM, 17+35-2724
+[info] # VM invoker: /Users/samuel/.sdkman/candidates/java/17-open/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 1 iterations, 10 s each
+[info] # Measurement: 2 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: benchmark.ArrayFillBenchmark.fillValueCell_ArrayFill
+[info] # Parameters: (size = 131072)
+[info] # Run progress: 65.38% complete, ETA 00:09:07
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 212.305 us/op
+[info] Iteration   1: 190.690 us/op
+[info] Iteration   2: 202.467 us/op
+[info] Result "benchmark.ArrayFillBenchmark.fillValueCell_ArrayFill":
+[info]   196.579 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17, OpenJDK 64-Bit Server VM, 17+35-2724
+[info] # VM invoker: /Users/samuel/.sdkman/candidates/java/17-open/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 1 iterations, 10 s each
+[info] # Measurement: 2 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: benchmark.ArrayFillBenchmark.fillValueCell_ArrayFill
+[info] # Parameters: (size = 524288)
+[info] # Run progress: 67.31% complete, ETA 00:08:36
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 11034.793 us/op
+[info] Iteration   1: 10066.958 us/op
+[info] Iteration   2: 10533.145 us/op
+[info] Result "benchmark.ArrayFillBenchmark.fillValueCell_ArrayFill":
+[info]   10300.052 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17, OpenJDK 64-Bit Server VM, 17+35-2724
+[info] # VM invoker: /Users/samuel/.sdkman/candidates/java/17-open/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 1 iterations, 10 s each
+[info] # Measurement: 2 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: benchmark.ArrayFillBenchmark.fillValueCell_ArrayFill
+[info] # Parameters: (size = 2097152)
+[info] # Run progress: 69.23% complete, ETA 00:08:06
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 37299.128 us/op
+[info] Iteration   1: 35369.316 us/op
+[info] Iteration   2: 37565.813 us/op
+[info] Result "benchmark.ArrayFillBenchmark.fillValueCell_ArrayFill":
+[info]   36467.565 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17, OpenJDK 64-Bit Server VM, 17+35-2724
+[info] # VM invoker: /Users/samuel/.sdkman/candidates/java/17-open/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 1 iterations, 10 s each
+[info] # Measurement: 2 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: benchmark.ArrayFillBenchmark.fillValueCell_ArrayFill
+[info] # Parameters: (size = 16777216)
+[info] # Run progress: 71.15% complete, ETA 00:07:35
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 327812.845 us/op
+[info] Iteration   1: 281399.446 us/op
+[info] Iteration   2: 303583.142 us/op
+[info] Result "benchmark.ArrayFillBenchmark.fillValueCell_ArrayFill":
+[info]   292491.294 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17, OpenJDK 64-Bit Server VM, 17+35-2724
+[info] # VM invoker: /Users/samuel/.sdkman/candidates/java/17-open/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 1 iterations, 10 s each
+[info] # Measurement: 2 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: benchmark.ArrayFillBenchmark.fillValueCell_ArrayFill
+[info] # Parameters: (size = 33554432)
+[info] # Run progress: 73.08% complete, ETA 00:07:05
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 556155.523 us/op
+[info] Iteration   1: 574966.551 us/op
+[info] Iteration   2: 530914.844 us/op
+[info] Result "benchmark.ArrayFillBenchmark.fillValueCell_ArrayFill":
+[info]   552940.697 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17, OpenJDK 64-Bit Server VM, 17+35-2724
+[info] # VM invoker: /Users/samuel/.sdkman/candidates/java/17-open/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 1 iterations, 10 s each
+[info] # Measurement: 2 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: benchmark.ArrayFillBenchmark.fillValueCell_EfficientFill
+[info] # Parameters: (size = 2)
+[info] # Run progress: 75.00% complete, ETA 00:06:35
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 0.012 us/op
+[info] Iteration   1: 0.010 us/op
+[info] Iteration   2: 0.010 us/op
+[info] Result "benchmark.ArrayFillBenchmark.fillValueCell_EfficientFill":
+[info]   0.010 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17, OpenJDK 64-Bit Server VM, 17+35-2724
+[info] # VM invoker: /Users/samuel/.sdkman/candidates/java/17-open/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 1 iterations, 10 s each
+[info] # Measurement: 2 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: benchmark.ArrayFillBenchmark.fillValueCell_EfficientFill
+[info] # Parameters: (size = 8)
+[info] # Run progress: 76.92% complete, ETA 00:06:05
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 0.016 us/op
+[info] Iteration   1: 0.013 us/op
+[info] Iteration   2: 0.014 us/op
+[info] Result "benchmark.ArrayFillBenchmark.fillValueCell_EfficientFill":
+[info]   0.014 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17, OpenJDK 64-Bit Server VM, 17+35-2724
+[info] # VM invoker: /Users/samuel/.sdkman/candidates/java/17-open/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 1 iterations, 10 s each
+[info] # Measurement: 2 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: benchmark.ArrayFillBenchmark.fillValueCell_EfficientFill
+[info] # Parameters: (size = 32)
+[info] # Run progress: 78.85% complete, ETA 00:05:34
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 0.033 us/op
+[info] Iteration   1: 0.045 us/op
+[info] Iteration   2: 0.046 us/op
+[info] Result "benchmark.ArrayFillBenchmark.fillValueCell_EfficientFill":
+[info]   0.046 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17, OpenJDK 64-Bit Server VM, 17+35-2724
+[info] # VM invoker: /Users/samuel/.sdkman/candidates/java/17-open/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 1 iterations, 10 s each
+[info] # Measurement: 2 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: benchmark.ArrayFillBenchmark.fillValueCell_EfficientFill
+[info] # Parameters: (size = 128)
+[info] # Run progress: 80.77% complete, ETA 00:05:04
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 0.119 us/op
+[info] Iteration   1: 0.119 us/op
+[info] Iteration   2: 0.119 us/op
+[info] Result "benchmark.ArrayFillBenchmark.fillValueCell_EfficientFill":
+[info]   0.119 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17, OpenJDK 64-Bit Server VM, 17+35-2724
+[info] # VM invoker: /Users/samuel/.sdkman/candidates/java/17-open/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 1 iterations, 10 s each
+[info] # Measurement: 2 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: benchmark.ArrayFillBenchmark.fillValueCell_EfficientFill
+[info] # Parameters: (size = 1024)
+[info] # Run progress: 82.69% complete, ETA 00:04:33
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 0.829 us/op
+[info] Iteration   1: 0.814 us/op
+[info] Iteration   2: 0.859 us/op
+[info] Result "benchmark.ArrayFillBenchmark.fillValueCell_EfficientFill":
+[info]   0.837 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17, OpenJDK 64-Bit Server VM, 17+35-2724
+[info] # VM invoker: /Users/samuel/.sdkman/candidates/java/17-open/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 1 iterations, 10 s each
+[info] # Measurement: 2 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: benchmark.ArrayFillBenchmark.fillValueCell_EfficientFill
+[info] # Parameters: (size = 2048)
+[info] # Run progress: 84.62% complete, ETA 00:04:03
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 1.663 us/op
+[info] Iteration   1: 1.642 us/op
+[info] Iteration   2: 1.677 us/op
+[info] Result "benchmark.ArrayFillBenchmark.fillValueCell_EfficientFill":
+[info]   1.660 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17, OpenJDK 64-Bit Server VM, 17+35-2724
+[info] # VM invoker: /Users/samuel/.sdkman/candidates/java/17-open/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 1 iterations, 10 s each
+[info] # Measurement: 2 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: benchmark.ArrayFillBenchmark.fillValueCell_EfficientFill
+[info] # Parameters: (size = 8192)
+[info] # Run progress: 86.54% complete, ETA 00:03:33
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 6.735 us/op
+[info] Iteration   1: 6.633 us/op
+[info] Iteration   2: 7.086 us/op
+[info] Result "benchmark.ArrayFillBenchmark.fillValueCell_EfficientFill":
+[info]   6.859 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17, OpenJDK 64-Bit Server VM, 17+35-2724
+[info] # VM invoker: /Users/samuel/.sdkman/candidates/java/17-open/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 1 iterations, 10 s each
+[info] # Measurement: 2 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: benchmark.ArrayFillBenchmark.fillValueCell_EfficientFill
+[info] # Parameters: (size = 32768)
+[info] # Run progress: 88.46% complete, ETA 00:03:02
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 32.820 us/op
+[info] Iteration   1: 32.452 us/op
+[info] Iteration   2: 51.752 us/op
+[info] Result "benchmark.ArrayFillBenchmark.fillValueCell_EfficientFill":
+[info]   42.102 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17, OpenJDK 64-Bit Server VM, 17+35-2724
+[info] # VM invoker: /Users/samuel/.sdkman/candidates/java/17-open/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 1 iterations, 10 s each
+[info] # Measurement: 2 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: benchmark.ArrayFillBenchmark.fillValueCell_EfficientFill
+[info] # Parameters: (size = 131072)
+[info] # Run progress: 90.38% complete, ETA 00:02:32
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 132.721 us/op
+[info] Iteration   1: 132.287 us/op
+[info] Iteration   2: 172.964 us/op
+[info] Result "benchmark.ArrayFillBenchmark.fillValueCell_EfficientFill":
+[info]   152.626 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17, OpenJDK 64-Bit Server VM, 17+35-2724
+[info] # VM invoker: /Users/samuel/.sdkman/candidates/java/17-open/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 1 iterations, 10 s each
+[info] # Measurement: 2 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: benchmark.ArrayFillBenchmark.fillValueCell_EfficientFill
+[info] # Parameters: (size = 524288)
+[info] # Run progress: 92.31% complete, ETA 00:02:01
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 5215.401 us/op
+[info] Iteration   1: 4949.125 us/op
+[info] Iteration   2: 4956.110 us/op
+[info] Result "benchmark.ArrayFillBenchmark.fillValueCell_EfficientFill":
+[info]   4952.618 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17, OpenJDK 64-Bit Server VM, 17+35-2724
+[info] # VM invoker: /Users/samuel/.sdkman/candidates/java/17-open/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 1 iterations, 10 s each
+[info] # Measurement: 2 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: benchmark.ArrayFillBenchmark.fillValueCell_EfficientFill
+[info] # Parameters: (size = 2097152)
+[info] # Run progress: 94.23% complete, ETA 00:01:31
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 19628.902 us/op
+[info] Iteration   1: 20472.530 us/op
+[info] Iteration   2: 14680.834 us/op
+[info] Result "benchmark.ArrayFillBenchmark.fillValueCell_EfficientFill":
+[info]   17576.682 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17, OpenJDK 64-Bit Server VM, 17+35-2724
+[info] # VM invoker: /Users/samuel/.sdkman/candidates/java/17-open/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 1 iterations, 10 s each
+[info] # Measurement: 2 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: benchmark.ArrayFillBenchmark.fillValueCell_EfficientFill
+[info] # Parameters: (size = 16777216)
+[info] # Run progress: 96.15% complete, ETA 00:01:01
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 102992.698 us/op
+[info] Iteration   1: 208584.242 us/op
+[info] Iteration   2: 134003.319 us/op
+[info] Result "benchmark.ArrayFillBenchmark.fillValueCell_EfficientFill":
+[info]   171293.781 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17, OpenJDK 64-Bit Server VM, 17+35-2724
+[info] # VM invoker: /Users/samuel/.sdkman/candidates/java/17-open/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 1 iterations, 10 s each
+[info] # Measurement: 2 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: benchmark.ArrayFillBenchmark.fillValueCell_EfficientFill
+[info] # Parameters: (size = 33554432)
+[info] # Run progress: 98.08% complete, ETA 00:00:30
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 202637.473 us/op
+[info] Iteration   1: 419312.019 us/op
+[info] Iteration   2: 274032.426 us/op
+[info] Result "benchmark.ArrayFillBenchmark.fillValueCell_EfficientFill":
+[info]   346672.222 us/op
+[info] # Run complete. Total time: 00:26:26
+[info] REMEMBER: The numbers below are just data. To gain reusable insights, you need to follow up on
+[info] why the numbers are the way they are. Use profilers (see -prof, -lprof), design factorial
+[info] experiments, perform baseline and negative tests that provide experimental control, make sure
+[info] the benchmarking environment is safe on JVM/OS/HW level, ask for reviews from the domain experts.
+[info] Do not assume the numbers tell you what you want them to tell.
+[info] Benchmark                                         (size)  Mode  Cnt       Score   Error  Units
+[info] ArrayFillBenchmark.fillLong_ArrayFill                  2  avgt    2       0.010          us/op
+[info] ArrayFillBenchmark.fillLong_ArrayFill                  8  avgt    2       0.012          us/op
+[info] ArrayFillBenchmark.fillLong_ArrayFill                 32  avgt    2       0.023          us/op
+[info] ArrayFillBenchmark.fillLong_ArrayFill                128  avgt    2       0.069          us/op
+[info] ArrayFillBenchmark.fillLong_ArrayFill               1024  avgt    2       0.455          us/op
+[info] ArrayFillBenchmark.fillLong_ArrayFill               2048  avgt    2       0.896          us/op
+[info] ArrayFillBenchmark.fillLong_ArrayFill               8192  avgt    2       3.029          us/op
+[info] ArrayFillBenchmark.fillLong_ArrayFill              32768  avgt    2      11.409          us/op
+[info] ArrayFillBenchmark.fillLong_ArrayFill             131072  avgt    2      44.612          us/op
+[info] ArrayFillBenchmark.fillLong_ArrayFill             524288  avgt    2     182.083          us/op
+[info] ArrayFillBenchmark.fillLong_ArrayFill            2097152  avgt    2     751.102          us/op
+[info] ArrayFillBenchmark.fillLong_ArrayFill           16777216  avgt    2    6873.623          us/op
+[info] ArrayFillBenchmark.fillLong_ArrayFill           33554432  avgt    2   13750.296          us/op
+[info] ArrayFillBenchmark.fillLong_EfficientFill              2  avgt    2       0.006          us/op
+[info] ArrayFillBenchmark.fillLong_EfficientFill              8  avgt    2       0.009          us/op
+[info] ArrayFillBenchmark.fillLong_EfficientFill             32  avgt    2       0.020          us/op
+[info] ArrayFillBenchmark.fillLong_EfficientFill            128  avgt    2       0.067          us/op
+[info] ArrayFillBenchmark.fillLong_EfficientFill           1024  avgt    2       0.456          us/op
+[info] ArrayFillBenchmark.fillLong_EfficientFill           2048  avgt    2       0.900          us/op
+[info] ArrayFillBenchmark.fillLong_EfficientFill           8192  avgt    2       3.144          us/op
+[info] ArrayFillBenchmark.fillLong_EfficientFill          32768  avgt    2      11.461          us/op
+[info] ArrayFillBenchmark.fillLong_EfficientFill         131072  avgt    2      45.093          us/op
+[info] ArrayFillBenchmark.fillLong_EfficientFill         524288  avgt    2     180.894          us/op
+[info] ArrayFillBenchmark.fillLong_EfficientFill        2097152  avgt    2     767.564          us/op
+[info] ArrayFillBenchmark.fillLong_EfficientFill       16777216  avgt    2    6980.307          us/op
+[info] ArrayFillBenchmark.fillLong_EfficientFill       33554432  avgt    2   13738.483          us/op
+[info] ArrayFillBenchmark.fillValueCell_ArrayFill             2  avgt    2       0.013          us/op
+[info] ArrayFillBenchmark.fillValueCell_ArrayFill             8  avgt    2       0.022          us/op
+[info] ArrayFillBenchmark.fillValueCell_ArrayFill            32  avgt    2       0.077          us/op
+[info] ArrayFillBenchmark.fillValueCell_ArrayFill           128  avgt    2       0.212          us/op
+[info] ArrayFillBenchmark.fillValueCell_ArrayFill          1024  avgt    2       1.980          us/op
+[info] ArrayFillBenchmark.fillValueCell_ArrayFill          2048  avgt    2       3.997          us/op
+[info] ArrayFillBenchmark.fillValueCell_ArrayFill          8192  avgt    2      13.428          us/op
+[info] ArrayFillBenchmark.fillValueCell_ArrayFill         32768  avgt    2      51.941          us/op
+[info] ArrayFillBenchmark.fillValueCell_ArrayFill        131072  avgt    2     196.579          us/op
+[info] ArrayFillBenchmark.fillValueCell_ArrayFill        524288  avgt    2   10300.052          us/op
+[info] ArrayFillBenchmark.fillValueCell_ArrayFill       2097152  avgt    2   36467.565          us/op
+[info] ArrayFillBenchmark.fillValueCell_ArrayFill      16777216  avgt    2  292491.294          us/op
+[info] ArrayFillBenchmark.fillValueCell_ArrayFill      33554432  avgt    2  552940.697          us/op
+[info] ArrayFillBenchmark.fillValueCell_EfficientFill         2  avgt    2       0.010          us/op
+[info] ArrayFillBenchmark.fillValueCell_EfficientFill         8  avgt    2       0.014          us/op
+[info] ArrayFillBenchmark.fillValueCell_EfficientFill        32  avgt    2       0.046          us/op
+[info] ArrayFillBenchmark.fillValueCell_EfficientFill       128  avgt    2       0.119          us/op
+[info] ArrayFillBenchmark.fillValueCell_EfficientFill      1024  avgt    2       0.837          us/op
+[info] ArrayFillBenchmark.fillValueCell_EfficientFill      2048  avgt    2       1.660          us/op
+[info] ArrayFillBenchmark.fillValueCell_EfficientFill      8192  avgt    2       6.859          us/op
+[info] ArrayFillBenchmark.fillValueCell_EfficientFill     32768  avgt    2      42.102          us/op
+[info] ArrayFillBenchmark.fillValueCell_EfficientFill    131072  avgt    2     152.626          us/op
+[info] ArrayFillBenchmark.fillValueCell_EfficientFill    524288  avgt    2    4952.618          us/op
+[info] ArrayFillBenchmark.fillValueCell_EfficientFill   2097152  avgt    2   17576.682          us/op
+[info] ArrayFillBenchmark.fillValueCell_EfficientFill  16777216  avgt    2  171293.781          us/op
+[info] ArrayFillBenchmark.fillValueCell_EfficientFill  33554432  avgt    2  346672.222          us/op
+[success] Total time: 1631 s (27:11), completed 29 Nov 2023, 14:18:10
