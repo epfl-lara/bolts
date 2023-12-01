@@ -94,54 +94,27 @@ object MutableLongMap {
       underlying.v.remove(key)
     } ensuring (res => valid && (if (res) map == old(this).map - key else map == old(this).map))
 
+    // require(_size < 268435456) // Smallest size that can trigger a problem with a certain mask
     @pure
-    def computeNewMask(oldMask: Int, s: Int): Int = {
-      require(validMask(oldMask))
-      require(s >= 0 && s <= oldMask + 1)
-
-      val newMask = if (s > (MAX_MASK >> 3)) {
-        ((oldMask << 1) + 1) & MAX_MASK
-      } else {
-
-        var m = oldMask
-        if (2 * s >= oldMask) m = ((m << 1) + 1) & MAX_MASK
-        while (m > 8 && 8 * s < m) {
-          decreases(m)
-          m = m >>> 1
-        }
-
-        assert(validMask(m))
-        assert(s <= m + 1)
-        m
-      }
-      newMask
-    } ensuring (res => validMask(res) && (res == MAX_MASK || (2 * s <= res + 1)))
-
-    @pure
-    def completeComputeNewMask(oldMask: Int, _vacant: Int, _size: Int): Int = {
+    def computeNewMask(oldMask: Int, _vacant: Int, _size: Int): Int = {
       require(validMask(oldMask))
       require(_size >= 0 && _size <= oldMask + 1)
       require(_vacant >= 0)
-      // require(_size < 268435456) // Smallest size that can trigger a problem with a certain mask
-      if (_size > (MAX_MASK >> 3)) {
-        ((oldMask << 1) + 1) & MAX_MASK
-      } else {
-        var m = oldMask
-        if (2 * (_size + _vacant) >= oldMask && !(5 * _vacant > oldMask)) {
-          m = ((m << 1) + 1) & MAX_MASK
-        }
-        while (m > 8 && 8 * _size < m) {
-          decreases(m)
-          m = m >>> 1
-        }
-        m
+      var m = oldMask
+      if (2 * (_size + _vacant) >= oldMask && !(5 * _vacant > oldMask)) {
+        m = ((m << 1) + 1) & MAX_MASK
       }
+      while (m > 8 && 8 * _size < m && ((m >> 1) & MAX_MASK) + 1 >= _size) {
+        decreases(m)
+        m = m >>> 1
+      }
+      m
     } ensuring (res => validMask(res) && _size <= res + 1)
 
     def repack(): Boolean = {
       require(valid)
 
-      val newMask: Int = completeComputeNewMask(underlying.v.mask, underlying.v._vacant, underlying.v._size)
+      val newMask: Int = computeNewMask(underlying.v.mask, underlying.v._vacant, underlying.v._size)
       val newMapCell: Cell[LongMapFixedSize[V]] = Cell(LongMapFixedSize.getNewLongMapFixedSize(newMask, underlying.v.defaultEntry))
       val resExtraKeys = if ((underlying.v.extraKeys & 1) != 0 && (underlying.v.extraKeys & 2) != 0) {
         // it means there is a mapping for the key 0 and the Long.MIN_VALUE
@@ -372,8 +345,7 @@ object MutableLongMap {
 
   private final val MAX_ITER = 4096 // arbitrary
 
-  /** A Map with keys of type Long and values of type Long mask must be a valid mask, i.e., 2^n - 1. The smallest possible mask is 0 and the biggest is 0x3fffffff _keys and _values must be initialized
-    * to an array of length mask + 1, containing all 0 values, i.e., Array.fill(mask + 1)(0) extraKeys must be initialized to 0 _size must be initialized to 0
+  /** A Map with keys of type Long and values of type Long mask must be a valid mask, i.e., 2^n - 1. The smallest possible mask is 0 and the biggest is 0x3fffffff _keys and _values must be initialized to an array of length mask + 1, containing all 0 values, i.e., Array.fill(mask + 1)(0) extraKeys must be initialized to 0 _size must be initialized to 0
     *
     * @param mask
     * @param extraKeys
@@ -1229,7 +1201,7 @@ object MutableLongMap {
       require(x <= MAX_ITER && x >= 0)
 
       (ee + 2 * (x + 1) * x - 3) & mask
-    } ensuring(res => res >= 0 && res < mask + 1)
+    } ensuring (res => res >= 0 && res < mask + 1)
 
     // @tailrec
     @pure

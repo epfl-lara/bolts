@@ -70,6 +70,14 @@ class ArrayFillBenchmark {
   @Benchmark
   @BenchmarkMode(Array(Mode.AverageTime))
   @OutputTimeUnit(TimeUnit.MICROSECONDS)
+  def fillLong_Constructor(): Unit = {
+    val a = new Array[Long](size.toInt)
+    val x = a(0) + 1L
+  }
+
+  @Benchmark
+  @BenchmarkMode(Array(Mode.AverageTime))
+  @OutputTimeUnit(TimeUnit.MICROSECONDS)
   def fillValueCell_ArrayFill(): Unit = {
     val a = Array.fill(size.toInt)(EmptyCell[Long]())
     val x = a(0).get(0L) + 1L
@@ -81,6 +89,16 @@ class ArrayFillBenchmark {
   def fillValueCell_EfficientFill(): Unit = {
     val a = fillByValueValueCell(size.toInt)(EmptyCell[Long]())
     val x = a(0).get(0L) + 1L
+  }
+
+  @Benchmark
+  @BenchmarkMode(Array(Mode.AverageTime))
+  @OutputTimeUnit(TimeUnit.MICROSECONDS)
+  def fillValueCell_Constructor(): Unit = {
+    val a = new Array[ValueCell[Long]](size.toInt)
+    if(a(0) == null){
+      val x = 1L
+    }
   }
 }
 
