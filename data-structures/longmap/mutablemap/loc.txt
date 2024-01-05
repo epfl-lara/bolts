@@ -1,0 +1,10 @@
+-----------------------------------------------------------File---Code---Comments---Raw Lines
+         ./src/main/scala/ch/epfl/chassot/OptimisedChecks.scala      6          0           7
+            ./src/main/scala/ch/epfl/chassot/EfficientFill.scala     22          0          25
+      ./src/main/scala/ch/epfl/chassot/MutableLongMapOpti.scala    409         91         565
+          ./src/main/scala/benchmark/VerifiedMapBenchmark.scala   1149         23        1312
+ ./src/main/scala/ch/epfl/chassot/BuggyNewMaskComputation.scala     63          6          74
+          ./src/main/scala/ch/epfl/chassot/MutableLongMap.scala   7767        154        8426
+                                   ./src/main/scala/Main.scala     31          4          42
+             ./src/main/scala/ch/epfl/chassot/ListLongMap.scala    834          5         969
+--------------------------------------------------------------------------------
