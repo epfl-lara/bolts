@@ -1,5 +1,6 @@
 -----------------------------------------------------------File---Code---Comments---Raw Lines
          ./src/main/scala/ch/epfl/chassot/OptimisedChecks.scala      6          0           7
+    ./src/main/scala/ch/epfl/chassot/ListLongMap-onlyCode.scala    156          3         194
             ./src/main/scala/ch/epfl/chassot/EfficientFill.scala     22          0          25
       ./src/main/scala/ch/epfl/chassot/MutableLongMapOpti.scala    409         91         565
           ./src/main/scala/benchmark/VerifiedMapBenchmark.scala   1149         23        1312
