@@ -13,3 +13,10 @@ smt-sessions
 # VSCode and scala-metals plugin files
 .vscode
 .metals
+
+# emacs backup
+*~
+
+# bloop etc
+.bsp
+.scala-build
