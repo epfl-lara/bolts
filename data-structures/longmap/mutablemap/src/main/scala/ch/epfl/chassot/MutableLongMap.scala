@@ -1,6 +1,3 @@
-//> using jar /localhome/chassot/stainless/frontends/library/target/scala-2.13/classes
-//> using sourceJar /localhome/chassot/stainless/frontends/dotty/target/scala-3.2.0/classes
-
 /** Author: Samuel Chassot
   */
 package ch.epfl.chassot
@@ -345,7 +342,8 @@ object MutableLongMap {
 
   private final val MAX_ITER = 4096 // arbitrary
 
-  /** A Map with keys of type Long and values of type Long mask must be a valid mask, i.e., 2^n - 1. The smallest possible mask is 0 and the biggest is 0x3fffffff _keys and _values must be initialized to an array of length mask + 1, containing all 0 values, i.e., Array.fill(mask + 1)(0) extraKeys must be initialized to 0 _size must be initialized to 0
+  /** A Map with keys of type Long and values of type Long mask must be a valid mask, i.e., 2^n - 1. The smallest possible mask is 0 and the biggest is 0x3fffffff _keys and _values must be initialized
+    * to an array of length mask + 1, containing all 0 values, i.e., Array.fill(mask + 1)(0) extraKeys must be initialized to 0 _size must be initialized to 0
     *
     * @param mask
     * @param extraKeys

@@ -1,3 +1,6 @@
+/** Author: Samuel Chassot
+  */
+
 package ch.epfl.chassot
 
 object OptimisedChecks {
