@@ -1,3 +1,10 @@
+/** This file contains the implementation of the computation for the new mask in the LongMap implementation in the standard library and the fixed one.
+  *
+  * The purpose is the show that Stainless finds a counter example for the previous implementation, and proves the correctness of the fixed one.
+  *
+  * To run Stainless, run `stainless-dotty BugyNewMaskComputation.scala`
+  */
+
 import stainless.lang._
 import stainless.annotation._
 
@@ -69,6 +76,6 @@ object BuggyNewMaskComputation {
   } ensuring (res => validMask(res) && _size <= res + 1) // Stainless finds a counterexample
   // [Warning ] Found counter-example:
   // [Warning ]   _vacant: Int -> 10256777
-  // [Warning ]   mask: Int    -> 1073741823 
+  // [Warning ]   mask: Int    -> 1073741823
   // [Warning ]   _size: Int   -> 603979777
 }

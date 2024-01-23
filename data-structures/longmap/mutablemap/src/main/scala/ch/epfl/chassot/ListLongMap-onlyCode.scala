@@ -1,4 +1,4 @@
-/** Author: Samuel Chassot
+/** Author: Samuel Chassot Contains only the code of the ListLongMap, without specification nor proof, for line counting purposes.
   */
 
 package ch.epfl.chassot
@@ -10,7 +10,6 @@ import stainless.lang._
 import stainless.proof.check
 import scala.annotation.tailrec
 import scala.collection.immutable
-
 
 // import OptimisedChecks.*
 

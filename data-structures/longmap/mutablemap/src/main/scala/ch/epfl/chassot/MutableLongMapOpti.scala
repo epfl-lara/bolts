@@ -1,7 +1,8 @@
-//> using jar /localhome/chassot/stainless/frontends/library/target/scala-2.13/classes
-//> using sourceJar /localhome/chassot/stainless/frontends/dotty/target/scala-3.2.0/classes
-
 /** Author: Samuel Chassot
+  *
+  * This is an optimised version, using Array[AnyRef] for better performance.
+  *
+  * It comes without proof or specification, and is used for benchmarking purposes.
   */
 package ch.epfl.chassot
 

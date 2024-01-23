@@ -5,38 +5,16 @@ import benchmark.BenchmarkUtil.*
 
 object Main extends App {
   def main(): Unit = {
-    // val mTest = MutableLongMap.getEmptyLongMap[Long](k => 0L)
+    var listLongMap = ListLongMap.empty[Long]
+    val mutableLongMap = MutableLongMap.getEmptyLongMap(_ => 0L)
 
-    var mTest = ListLongMap[Long](List[(Long, Long)]())
+    listLongMap = listLongMap + (12, 42)
+    mutableLongMap.update(12, 42)
 
-    val nKeys = (2048 * 8).toString()
-    val t1 = System.nanoTime()
-    // val map = getOriginalMapEmptyBuffer(16)
-    val map = getVerifiedMapEmptyBuffer(16)
-    for (k, v) <- random2to15Pairs do map.update(k, v)
-    end for
+    assert(listLongMap(12) == mutableLongMap(12))
+    assert(mutableLongMap(12) == 42)
 
-    var i1 = 0
-    val n1 = 24576
-    while (i1 < n1) do
-      map.remove(randomArrayOfKeysSize2to16(i1))
-      i1 += 1
-    end while
-
-    for (k, v) <- random2to15Pairs do map.update(k, v)
-    end for
-
-    var i = 0
-    val n = nKeys.toInt
-    while (i < n) do
-      map(randomArrayOfKeysSize2to16(i))
-      i += 1
-    end while
-    val t2 = System.nanoTime()
-    // val res = keys.map(k => (mTest(k) == k)).reduce(_ && _)
-    println(f"Time to run ${(t2 - t1) / 1e6}%.2f ms")
-    // println(f"Result valiity: $res")
-
+    println(f"mutableLongMap(12) = ${mutableLongMap(12)}")
   }
   main()
 }

@@ -1,3 +1,6 @@
+/** This file contains implementations of a "fill" function for Array, used as benchmark.
+  */
+
 package ch.epfl.chassot
 
 import MutableLongMap.*
