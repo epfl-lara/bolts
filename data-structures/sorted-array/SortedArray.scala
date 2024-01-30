@@ -145,6 +145,7 @@ object SortedArray {
       arrayGetSameIndex2(array, i, l)
       assert(array(i+1) == array(l+1))
       assert(order.leq(array(i)._1, array(i+1)._1))
+      assert(i == l)
       check(order.leq(array(l)._1, array(l+1)._1))
       ()
     }
@@ -407,7 +408,6 @@ case class SortedArray[K, @mutable T](array: Array[(K, T)], order: TotalOrder[K]
     assert((i > h ==> order.leq(elem._1, array(h)._1)))
 
     assert(i >= h)
-
     (while (i > h) {
       decreases(i)
       @ghostAnnot val swppd = swapped(array, i, i-1)
