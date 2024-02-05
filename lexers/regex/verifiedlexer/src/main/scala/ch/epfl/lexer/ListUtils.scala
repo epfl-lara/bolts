@@ -20,6 +20,7 @@ object ListUtils {
 
   def removeLast[B](l: List[B]): List[B] = {
     require(!l.isEmpty)
+    decreases(l)
     val res: List[B] = l match {
       case Cons(hd, Nil()) => Nil()
       case Cons(hd, tl)    => Cons(hd, removeLast(tl))
@@ -64,7 +65,7 @@ object ListUtils {
   }
 
   def consecutiveSubseqAtHead[B](l1: List[B], lTot: List[B]): Boolean = {
-    decreases(l1)
+    decreases(lTot)
     (l1, lTot) match {
       case (Nil(), _)                                           => true
       case (Cons(hd1, tl1), Cons(hdTot, tlTot)) if hd1 == hdTot => consecutiveSubseqAtHead(tl1, tlTot)
@@ -271,7 +272,7 @@ object ListUtils {
     require(isPrefix(p1, l))
     require(isPrefix(p2, l))
     require(p1.size == p2.size)
-    decreases(p1)
+
     p1 match {
       case Cons(hd, tl) => lemmaIsPrefixSameLengthThenSameList(tl, p2.tail, l.tail)
       case Nil()        => ()
@@ -384,6 +385,7 @@ object ListUtils {
   def concatWithoutDuplicates[B](baseList: List[B], newList: List[B]): List[B] = {
     require(ListOps.noDuplicate(baseList))
     decreases(newList)
+
     newList match {
       case Cons(hd, tl) if baseList.contains(hd)  => concatWithoutDuplicates(baseList, tl)
       case Cons(hd, tl) if !baseList.contains(hd) => concatWithoutDuplicates(Cons(hd, baseList), tl)
