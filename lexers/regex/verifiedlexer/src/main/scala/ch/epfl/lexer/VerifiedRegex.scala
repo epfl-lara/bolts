@@ -10,6 +10,10 @@ import scala.runtime.Statics
 
 object VerifiedRegex {
   abstract sealed class Regex[C] {}
+  val INT_MAX_VALUE: BigInt = 2147483647
+  val INT_MAX_VALUE_L: Long = 2147483647L
+  // val LONG_MAX_VALUE: BigInt = 9223372036854775807L
+
   def validRegex[C](r: Regex[C]): Boolean = r match {
     case ElementMatch(c)    => true
     case Star(r)            => !nullable(r) && !isEmptyLang(r) && validRegex(r)
@@ -19,17 +23,17 @@ object VerifiedRegex {
     case EmptyLang()        => true
   }
 
-  def regexDepth[C](r: Regex[C]): BigInt ={
+  def regexDepth[C](r: Regex[C]): BigInt = {
     decreases(r)
-     r match {
-    case ElementMatch(c)    => BigInt(1)
-    case Star(r)            => BigInt(1) + regexDepth(r)
-    case Union(rOne, rTwo)  => BigInt(1) + Utils.maxBigInt(regexDepth(rOne), regexDepth(rTwo))
-    case Concat(rOne, rTwo) => BigInt(1) + Utils.maxBigInt(regexDepth(rOne), regexDepth(rTwo))
-    case EmptyExpr()        => BigInt(1)
-    case EmptyLang()        => BigInt(1)
-  }
-} ensuring (res =>
+    r match {
+      case ElementMatch(c)    => BigInt(1)
+      case Star(r)            => BigInt(1) + regexDepth(r)
+      case Union(rOne, rTwo)  => BigInt(1) + Utils.maxBigInt(regexDepth(rOne), regexDepth(rTwo))
+      case Concat(rOne, rTwo) => BigInt(1) + Utils.maxBigInt(regexDepth(rOne), regexDepth(rTwo))
+      case EmptyExpr()        => BigInt(1)
+      case EmptyLang()        => BigInt(1)
+    }
+  } ensuring (res =>
     res > 0 && (r match {
       case Union(rOne, rTwo)  => res > regexDepth(rOne) && res > regexDepth(rTwo)
       case Concat(rOne, rTwo) => res > regexDepth(rOne) && res > regexDepth(rTwo)
@@ -37,6 +41,40 @@ object VerifiedRegex {
       case _                  => res == BigInt(1)
     })
   )
+  def regexDepthLong[C](r: Regex[C]): Long = {
+    require(regexDepthLong(r) <= Long.MaxValue)
+    decreases(r)
+    r match {
+      case ElementMatch(c)    => 1L
+      case Star(r)            => 1L + regexDepthLong(r)
+      case Union(rOne, rTwo)  => 1L + Utils.maxLong(regexDepthLong(rOne), regexDepthLong(rTwo))
+      case Concat(rOne, rTwo) => 1L + Utils.maxLong(regexDepthLong(rOne), regexDepthLong(rTwo))
+      case EmptyExpr()        => 1L
+      case EmptyLang()        => 1L
+    }
+  } ensuring (res =>
+    res > 0 && (r match {
+      case Union(rOne, rTwo)  => res > regexDepthLong(rOne) && res > regexDepthLong(rTwo)
+      case Concat(rOne, rTwo) => res > regexDepthLong(rOne) && res > regexDepthLong(rTwo)
+      case Star(r)            => res > regexDepthLong(r)
+      case _                  => res == 1L
+    })
+  )
+
+  def getUniqueId[C](r: Regex[C])(implicit idC: IDGiver[C]): Long = {
+    require(regexDepth(r) <= 30)
+    decreases(r)
+    r match {
+      case ElementMatch(c) =>
+        assert(idC.smallEnough(c))
+        2L * idC.id(c)
+      case Star(r)            => 3L * getUniqueId(r)
+      case Union(rOne, rTwo)  => 5L * (getUniqueId(rOne) + getUniqueId(rTwo))
+      case Concat(rOne, rTwo) => 7L * (getUniqueId(rOne) + getUniqueId(rTwo))
+      case EmptyExpr()        => 11L
+      case EmptyLang()        => 13L
+    }
+  } ensuring (res => res >= 0 && res <= Utils.power(7L, regexDepthLong(r)) * 26L * INT_MAX_VALUE_L * 4L)
 
   case class ElementMatch[C](c: C) extends Regex[C]
   case class Star[C](reg: Regex[C]) extends Regex[C]
@@ -134,7 +172,7 @@ object VerifiedRegex {
       case Union(rOne, rTwo) => r1 == rOne && r2 == rTwo
     }
   }
-  
+
   @inline
   def isConcat[C](r: Regex[C]): Boolean = {
     r match {
@@ -263,7 +301,8 @@ object VerifiedRegexMatcher {
     }
   } ensuring (matchR(r, s) == matchRSpec(r, s))
 
-  /** Enumerate all cuts in s and returns one that works, i.e., r1 matches s1 and r2 matches s2 Specifically, it is the right most one, i.e., s2 is the largest, if multiple exists Returns None is no valid cut exists
+  /** Enumerate all cuts in s and returns one that works, i.e., r1 matches s1 and r2 matches s2 Specifically, it is the right most one, i.e., s2 is the largest, if multiple exists Returns None is no valid cut
+    * exists
     *
     * @param r1
     * @param r2
@@ -1116,4 +1155,19 @@ object VerifiedRegexMatcher {
 
 object Utils {
   def maxBigInt(a: BigInt, b: BigInt): BigInt = if (a >= b) a else b
+  def maxLong(a: Long, b: Long): Long = if (a >= b) a else b
+  def power(a: Long, exp: Long): Long = {
+    require(exp >= 0)
+    require(a >= 0)
+    decreases(exp)
+    if (exp == 0) 1
+    else a * power(a, exp - 1)
+  } ensuring (res => res >= 0)
+
+  def lemmaPowerMinusOne(a: Long, exp: Long, res: Long): Unit = {
+    require(exp > 0)
+    require(a >= 0)
+    require(res == power(a, exp))
+  } ensuring (_ => power(a, exp - 1) < res)
+    >>>>>>> Stashed changes
 }
