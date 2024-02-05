@@ -8,11 +8,17 @@ import stainless.annotation._
 import stainless.proof._
 import scala.runtime.Statics
 
+trait IDGiver[C] {
+  def id(c: C): Long
+  val MAX_ID = Int.MaxValue
+  @law def smallEnough(c: C): Boolean = id(c) >= 0 && id(c) <= MAX_ID
+  @law def uniqueness(c1: C, c2: C): Boolean = if(id(c1) == id(c2)) then c1 == c2 else true
+}
+
 object VerifiedRegex {
   abstract sealed class Regex[C] {}
   val INT_MAX_VALUE: BigInt = 2147483647
   val INT_MAX_VALUE_L: Long = 2147483647L
-  // val LONG_MAX_VALUE: BigInt = 9223372036854775807L
 
   def validRegex[C](r: Regex[C]): Boolean = r match {
     case ElementMatch(c)    => true
@@ -41,8 +47,9 @@ object VerifiedRegex {
       case _                  => res == BigInt(1)
     })
   )
+
   def regexDepthLong[C](r: Regex[C]): Long = {
-    require(regexDepthLong(r) <= Long.MaxValue)
+    require(regexDepth(r) < INT_MAX_VALUE)
     decreases(r)
     r match {
       case ElementMatch(c)    => 1L
@@ -74,7 +81,7 @@ object VerifiedRegex {
       case EmptyExpr()        => 11L
       case EmptyLang()        => 13L
     }
-  } ensuring (res => res >= 0 && res <= Utils.power(7L, regexDepthLong(r)) * 26L * INT_MAX_VALUE_L * 4L)
+  } ensuring (res => res >= 0 && res < 12L)
 
   case class ElementMatch[C](c: C) extends Regex[C]
   case class Star[C](reg: Regex[C]) extends Regex[C]
@@ -1156,18 +1163,4 @@ object VerifiedRegexMatcher {
 object Utils {
   def maxBigInt(a: BigInt, b: BigInt): BigInt = if (a >= b) a else b
   def maxLong(a: Long, b: Long): Long = if (a >= b) a else b
-  def power(a: Long, exp: Long): Long = {
-    require(exp >= 0)
-    require(a >= 0)
-    decreases(exp)
-    if (exp == 0) 1
-    else a * power(a, exp - 1)
-  } ensuring (res => res >= 0)
-
-  def lemmaPowerMinusOne(a: Long, exp: Long, res: Long): Unit = {
-    require(exp > 0)
-    require(a >= 0)
-    require(res == power(a, exp))
-  } ensuring (_ => power(a, exp - 1) < res)
-    >>>>>>> Stashed changes
 }
