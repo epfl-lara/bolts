@@ -1,1 +1,1 @@
-stainless-dotty --config-file=stainless.conf --watch src/main/scala/ch/epfl/lexer/VerifiedRegex.scala src/main/scala/ch/epfl/lexer/ListUtils.scala $1
+stainless-dotty --config-file=stainless.conf --watch src/main/scala/ch/epfl/lexer/VerifiedRegex.scala src/main/scala/ch/epfl/lexer/ListUtils.scala src/main/scala/ch/epfl/chassot/* $1

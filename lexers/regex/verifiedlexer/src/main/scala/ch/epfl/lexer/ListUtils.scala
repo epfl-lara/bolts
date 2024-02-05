@@ -1,5 +1,6 @@
 /** Author: Samuel Chassot
   */
+package ch.epfl.lexer
 
 import stainless.annotation._
 import stainless.collection._
