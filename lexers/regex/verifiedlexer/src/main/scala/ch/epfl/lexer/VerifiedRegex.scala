@@ -21,16 +21,24 @@ trait IDGiver[C] {
 object Memoisation {
   import VerifiedRegex._
   import VerifiedRegexMatcher._
-  final case class Cache[C](@ghost ids: List[Long], idToRegexes: LongMap[List[Regex[C]]], idToDerivatives: LongMap[List[(C, Regex[C])]]) {
-    @ghost def validContains: Boolean = ids.forall(idToRegexes.contains) && ids.forall(idToDerivatives.contains)
-    @ghost def validContent: Boolean = ids.forall(id => {
-      idToRegexes.apply(id) match {
+  @ghost 
+  @pure
+  def validIdToDerivatives[C](_idToRegexes: LongMap[List[Regex[C]]], _idToDerivatives: LongMap[List[(C, Regex[C])]], id: Long): Boolean = _idToRegexes.apply(id) match {
         case Nil()           => false
-        case Cons(hd, Nil()) => idToDerivatives.apply(id).forall((c, reg) => derivativeStep(hd, c) == reg)
+        case Cons(hd, Nil()) => _idToDerivatives.apply(id).forall((c, reg) => derivativeStep(hd, c) == reg)
         case Cons(hd, tl)    => true
       }
-    })
-    @ghost def valid: Boolean = validContains && validContent
+  final case class Cache[C](@ghost var ids: List[Long], idToRegexes: LongMap[List[Regex[C]]], idToDerivatives: LongMap[List[(C, Regex[C])]]) {
+    @ghost
+    @pure
+    def validContains: Boolean = ids.forall(idToRegexes.contains) && ids.forall(idToDerivatives.contains)
+    @ghost 
+    @pure
+    def validContent: Boolean = ids.forall(id => validIdToDerivatives(idToRegexes, idToDerivatives, id))
+   
+    @ghost 
+    @pure
+    def valid: Boolean = validContains && validContent
 
     private def getDerivativeFromList(l: List[(C, Regex[C])], a: C) : Option[Regex[C]]  = l match
       case Cons(h, t) if h._1 == a => Some(h._2)
@@ -38,7 +46,7 @@ object Memoisation {
       case Nil() => None()
     
 
-    def getDerivativeAndUpdate(r: Regex[C], a: C)(implicit idGiver: IDGiver[C]): Option[Regex[C]] = {
+    def getDerivative(r: Regex[C], a: C)(implicit idGiver: IDGiver[C]): Option[Regex[C]] = {
       require(validRegex(r))
       require(valid)
       val id = hashId(r)
