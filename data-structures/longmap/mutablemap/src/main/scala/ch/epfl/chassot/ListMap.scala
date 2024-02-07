@@ -21,10 +21,13 @@ trait Ordering[T]:
     sign(compare(x, y)) == -sign(compare(y, x))
 
   @law def transitive(x: T, y: T, z: T): Boolean =
-    if (compare(x, y) > 0 && compare(y, z) > 0) then compare(x, z) > 0 else true
+    if (compare(x, y) > 0 && compare(y, z) > 0) then compare(x, z) > 0 else if (compare(x, y) < 0 && compare(y, z) < 0) then compare(x, z) < 0 else true
 
   @law def consistent(x: T, y: T, z: T): Boolean =
     if compare(x, y) == 0 then sign(compare(x, z)) == sign(compare(y, z)) else true
+
+  @law def equalsMeansEquals(x: T, y: T): Boolean =
+    compare(x, y) == 0 == (x == y)
 
   final def sign(x: Int): BigInt =
     if x < 0 then -1 else if x > 0 then 1 else 0
@@ -32,61 +35,61 @@ trait Ordering[T]:
 end Ordering
 
 case class ListMap[K, B](toList: List[(K, B)], ordd: Ordering[K]) {
+  // given ord: Ordering[K] = ordd
   require(TupleListOps.isStrictlySorted(toList)(ordd))
-  given ord: Ordering[K] = ordd
 
-  def isEmpty(implicit ord: Ordering[K]): Boolean = toList.isEmpty
+  def isEmpty: Boolean = toList.isEmpty
 
-  def head(implicit ord: Ordering[K]): (K, B) = {
+  def head: (K, B) = {
     require(!isEmpty)
     toList.head
   }
 
-  def size(implicit ord: Ordering[K]): Int = {
+  def size: Int = {
     require(toList.size < Integer.MAX_VALUE)
-    TupleListOps.intSize(toList)
+    TupleListOps.intSize(toList)(ordd)
   }
 
   @pure
-  def nKeys(implicit ord: Ordering[K]): Int = {
+  def nKeys: Int = {
     require(toList.size < Integer.MAX_VALUE)
-    TupleListOps.intSizeKeys(TupleListOps.getKeysList(toList))
+    TupleListOps.intSizeKeys(TupleListOps.getKeysList(toList)(ordd))(ordd)
   }
 
-  def tail(implicit ord: Ordering[K]): ListMap[K, B] = {
+  def tail: ListMap[K, B] = {
     require(!isEmpty)
-    ListMap(toList.tail, ord)
+    ListMap(toList.tail, ordd)
   }
 
-  def contains(key: K)(implicit ord: Ordering[K]): Boolean = {
-    val res = TupleListOps.containsKey(toList, key)
+  def contains(key: K): Boolean = {
+    val res = TupleListOps.containsKey(toList, key)(ordd)
     if (res) {
-      TupleListOps.lemmaContainsKeyImpliesGetValueByKeyDefined(toList, key)
+      TupleListOps.lemmaContainsKeyImpliesGetValueByKeyDefined(toList, key)(ordd)
     }
     res
 
   }.ensuring(res => !res || this.get(key).isDefined)
 
   @inline
-  def get(key: K)(implicit ord: Ordering[K]): Option[B] = {
-    TupleListOps.getValueByKey(toList, key)
+  def get(key: K): Option[B] = {
+    TupleListOps.getValueByKey(toList, key)(ordd)
   }
 
   @inline
-  def keysOf(value: B)(implicit ord: Ordering[K]): List[K] = {
-    TupleListOps.getKeysOf(toList, value)
+  def keysOf(value: B): List[K] = {
+    TupleListOps.getKeysOf(toList, value)(ordd)
   }
 
-  def keys()(implicit ord: Ordering[K]): List[K] = {
-    TupleListOps.getKeysList(toList)
+  def keys(): List[K] = {
+    TupleListOps.getKeysList(toList)(ordd)
   }
 
-  def apply(key: K)(implicit ord: Ordering[K]): B = {
+  def apply(key: K): B = {
     require(contains(key))
     get(key).get
   }
 
-  def +(keyValue: (K, B))(implicit ord: Ordering[K]): ListMap[K, B] = { 
+  def +(keyValue: (K, B)): ListMap[K, B] = {
     val newList =
       TupleListOps.insertStrictlySorted(toList, keyValue._1, keyValue._2)(ordd)
 
@@ -103,18 +106,18 @@ case class ListMap[K, B](toList: List[(K, B)], ordd: Ordering[K]) {
     ) && res.toList.contains(keyValue)
   )
 
-  def ++(keyValues: List[(K, B)])(implicit ord: Ordering[K]): ListMap[K, B] = {
+  def ++(keyValues: List[(K, B)]): ListMap[K, B] = {
     decreases(keyValues)
     keyValues match {
       case Nil()                => this
       case Cons(keyValue, rest) => (this + keyValue) ++ rest
     }
   }
-  def -(key: K)(implicit ord: Ordering[K]): ListMap[K, B] = {
-    ListMap(TupleListOps.removeStrictlySorted(toList, key), ord)
+  def -(key: K): ListMap[K, B] = {
+    ListMap(TupleListOps.removeStrictlySorted(toList, key)(ordd), ordd)
   }.ensuring(res => !res.contains(key))
 
-  def --(keys: List[K])(implicit ord: Ordering[K]): ListMap[K, B] = {
+  def --(keys: List[K]): ListMap[K, B] = {
     decreases(keys)
     keys match {
       case Nil()           => this
@@ -122,24 +125,24 @@ case class ListMap[K, B](toList: List[(K, B)], ordd: Ordering[K]) {
     }
   }
   @inline
-  def forall(p: ((K, B)) => Boolean)(implicit ord: Ordering[K]): Boolean = {
+  def forall(p: ((K, B)) => Boolean): Boolean = {
     toList.forall(p)
   }
 }
 
 object TupleListOps {
 
-  extension [K] (k: K) def >(other: K)(implicit ord: Ordering[K]): Boolean = ord.compare(k, other) > 0
-  extension [K] (k: K) def <(other: K)(implicit ord: Ordering[K]): Boolean = ord.compare(k, other) < 0
-  extension [K] (k: K) def >=(other: K)(implicit ord: Ordering[K]): Boolean = ord.compare(k, other) >= 0
-  extension [K] (k: K) def <=(other: K)(implicit ord: Ordering[K]): Boolean = ord.compare(k, other) <= 0
+  extension [K](k: K) def >(other: K)(implicit ord: Ordering[K]): Boolean = ord.compare(k, other) > 0
+  extension [K](k: K) def <(other: K)(implicit ord: Ordering[K]): Boolean = ord.compare(k, other) < 0
+  extension [K](k: K) def >=(other: K)(implicit ord: Ordering[K]): Boolean = ord.compare(k, other) >= 0
+  extension [K](k: K) def <=(other: K)(implicit ord: Ordering[K]): Boolean = ord.compare(k, other) <= 0
 
   @inline
-  def invariantList[K,  B](l: List[(K, B)])(implicit ord: Ordering[K]): Boolean = {
+  def invariantList[K, B](l: List[(K, B)])(implicit ord: Ordering[K]): Boolean = {
     isStrictlySorted(l)
   }
 
-  def getKeysList[K,  B](l: List[(K, B)])(implicit ord: Ordering[K]): List[K] = {
+  def getKeysList[K, B](l: List[(K, B)])(implicit ord: Ordering[K]): List[K] = {
     require(invariantList(l))
     decreases(l)
     l match {
@@ -159,7 +162,7 @@ object TupleListOps {
     }
   }
 
-  def intSize[K,  B](l: List[(K, B)])(implicit ord: Ordering[K]): Int = {
+  def intSize[K, B](l: List[(K, B)])(implicit ord: Ordering[K]): Int = {
     decreases(l)
     l match {
       case Cons(head, tl) => {
@@ -175,7 +178,7 @@ object TupleListOps {
     }
   }.ensuring(res => res >= 0)
 
-  def getKeysOf[K,  B](l: List[(K, B)], value: B)(implicit ord: Ordering[K]): List[K] = {
+  def getKeysOf[K, B](l: List[(K, B)], value: B)(implicit ord: Ordering[K]): List[K] = {
     require(invariantList(l))
     decreases(l)
 
@@ -209,22 +212,37 @@ object TupleListOps {
 
   }.ensuring(res => res.forall(getValueByKey(l, _) == Some[B](value)))
 
-  def filterByValue[K,  B](l: List[(K, B)], value: B)(implicit ord: Ordering[K]): List[(K, B)] = {
+  def filterByValue[K, B](l: List[(K, B)], value: B)(implicit ord: Ordering[K]): List[(K, B)] = {
     require(invariantList(l))
     decreases(l)
 
     l match {
       case Cons(head, tl) if (head._2 == value) =>
-        head :: filterByValue(tl, value)
-      case Cons(head, tl) if (head._2 != value) => filterByValue(tl, value)
-      case Nil()                                => Nil[(K, B)]()
+        check(ord.equalsMeansEquals(head._1, head._1))
+        val res = head :: filterByValue(tl, value)
+        filterByValue(tl, value) match {
+          case Cons(a, _) => 
+            lemmaInTailThenBigger(head, tl, a)
+          case _ => ()
+        }
+        res
+      case Cons(head, tl) if (head._2 != value) =>
+        val res = filterByValue(tl, value)
+        filterByValue(tl, value) match {
+          case Cons(a, _) => 
+            lemmaInTailThenBigger(head, tl, a)
+            check(ord.inverse(head._1, a._1))
+          case _ => ()
+        }
+        res
+      case Nil() => Nil[(K, B)]()
     }
   }.ensuring(res =>
     invariantList(res) && res.forall(_._2 == value) &&
-      (if (l.isEmpty) res.isEmpty else res.isEmpty || res.head._1 >= l.head._1)
+      (if (l.isEmpty) res.isEmpty else res.isEmpty || res.head._1 >= l.head._1 && l.contains(res.head))
   )
 
-  def getValueByKey[K,  B](l: List[(K, B)], key: K)(implicit ord: Ordering[K]): Option[B] = {
+  def getValueByKey[K, B](l: List[(K, B)], key: K)(implicit ord: Ordering[K]): Option[B] = {
     require(invariantList(l))
     decreases(l)
 
@@ -236,7 +254,7 @@ object TupleListOps {
 
   }
 
-  def insertStrictlySorted[K,  B](
+  def insertStrictlySorted[K, B](
       l: List[(K, B)],
       newKey: K,
       newValue: B
@@ -258,7 +276,7 @@ object TupleListOps {
     )
   )
 
-  def removeStrictlySorted[K,  B](
+  def removeStrictlySorted[K, B](
       l: List[(K, B)],
       key: K
   )(implicit ord: Ordering[K]): List[(K, B)] = {
@@ -266,14 +284,35 @@ object TupleListOps {
     decreases(l)
 
     l match {
+      case Cons(a, Cons(b, Nil())) => {
+        check(ord.inverse(a._1, b._1))
+      }
+      case Cons(a, Cons(b, Cons(c, _))) => {
+        check(ord.inverse(a._1, b._1))
+        check(ord.inverse(b._1, c._1))
+        check(ord.inverse(a._1, c._1))
+
+        check(ord.transitive(c._1, b._1, a._1))
+        check(ord.transitive(a._1, b._1, c._1))
+        check(ord.consistent(c._1, b._1, a._1))
+        check(ord.consistent(c._1, a._1, b._1))
+        check(ord.consistent(a._1, b._1, c._1))
+        check(ord.consistent(a._1, c._1, b._1))
+        check(ord.consistent(b._1, c._1, a._1))
+        check(ord.consistent(b._1, a._1, c._1))
+      }
+      case _ => ()
+    }
+
+    l match {
       case Cons(head, tl) if (head._1 == key) => tl
       case Cons(head, tl) if (head._1 != key) =>
-        head :: removeStrictlySorted(tl, key)
+        head :: removeStrictlySorted(tl, key)(ord)
       case Nil() => Nil[(K, B)]()
     }
   }.ensuring(res => invariantList(res) && !containsKey(res, key))
 
-  def isStrictlySorted[K,  B](l: List[(K, B)])(implicit ord: Ordering[K]): Boolean = {
+  def isStrictlySorted[K, B](l: List[(K, B)])(implicit ord: Ordering[K]): Boolean = {
     decreases(l)
     l match {
       case Nil()                                     => true
@@ -293,9 +332,40 @@ object TupleListOps {
     }
   }
 
-  def containsKey[K,  B](l: List[(K, B)], key: K)(implicit ord: Ordering[K]): Boolean = {
+  def containsKey[K, B](l: List[(K, B)], key: K)(implicit ord: Ordering[K]): Boolean = {
     require(invariantList(l))
     decreases(l)
+    l match {
+      case Cons(a, Cons(b, Nil())) => {
+        check(ord.equalsMeansEquals(a._1, key))
+        check(ord.inverse(a._1, b._1))
+        check(ord.inverse(a._1, key))
+        check(ord.transitive(a._1, b._1, key))
+        check(ord.transitive(a._1, key, b._1))
+        check(ord.transitive(key, a._1, b._1))
+      }
+      case Cons(a, Cons(b, Cons(c, _))) => {
+        check(ord.equalsMeansEquals(a._1, key))
+        check(ord.inverse(a._1, b._1))
+        check(ord.inverse(b._1, c._1))
+        check(ord.inverse(a._1, c._1))
+
+        check(ord.transitive(c._1, b._1, a._1))
+        check(ord.transitive(a._1, b._1, c._1))
+        check(ord.consistent(c._1, b._1, a._1))
+        check(ord.consistent(c._1, a._1, b._1))
+        check(ord.consistent(a._1, b._1, c._1))
+        check(ord.consistent(a._1, c._1, b._1))
+        check(ord.consistent(b._1, c._1, a._1))
+        check(ord.consistent(b._1, a._1, c._1))
+      }
+      case Cons(a, _) => {
+        check(ord.inverse(a._1, key))
+        check(ord.equalsMeansEquals(a._1, key))
+      }
+      case _ => ()
+    }
+
     l match {
       case Cons(head, tl) if (head._1 == key) => true
       case Cons(head, tl) if (head._1 > key)  => false
@@ -309,7 +379,26 @@ object TupleListOps {
 
   @opaque
   @inlineOnce
-  def lemmaInsertAndRemoveStrictlySortedCommutative[K,  B](
+  def lemmaInTailThenBigger[K, B](
+      head: (K, B),
+      tail: List[(K, B)],
+      test: (K, B)
+  )(implicit ord: Ordering[K]): Unit = {
+    require(invariantList(Cons(head, tail)))
+    require(tail.contains(test))
+    decreases(tail)
+
+    tail match {
+      case Cons(hd, tl) if (hd._1 != test._1) =>
+        check(ord.transitive(head._1, hd._1, tl.head._1))
+        lemmaInTailThenBigger(head, tl, test)
+      case _ => ()
+    }
+  }.ensuring(_ => head._1 < test._1)
+
+  @opaque
+  @inlineOnce
+  def lemmaInsertAndRemoveStrictlySortedCommutative[K, B](
       l: List[(K, B)],
       key1: K,
       v1: B,
@@ -339,7 +428,7 @@ object TupleListOps {
 
   @opaque
   @inlineOnce
-  def lemmaInsertStrictlySortedThenRemoveIsSame[K,  B](
+  def lemmaInsertStrictlySortedThenRemoveIsSame[K, B](
       l: List[(K, B)],
       key1: K,
       v1: B
@@ -359,7 +448,7 @@ object TupleListOps {
 
   @opaque
   @inlineOnce
-  def lemmaInsertStrictlySortedCommutative[K,  B](
+  def lemmaInsertStrictlySortedCommutative[K, B](
       l: List[(K, B)],
       key1: K,
       v1: B,
@@ -391,7 +480,7 @@ object TupleListOps {
 
   @opaque
   @inlineOnce
-  def lemmaRemoveStrictlySortedCommutative[K,  B](
+  def lemmaRemoveStrictlySortedCommutative[K, B](
       l: List[(K, B)],
       key1: K,
       key2: K
@@ -418,7 +507,7 @@ object TupleListOps {
 
   @opaque
   @inlineOnce
-  def lemmaRemoveStrictlySortedNotPresentPreserves[K,  B](
+  def lemmaRemoveStrictlySortedNotPresentPreserves[K, B](
       l: List[(K, B)],
       key: K
   )(implicit ord: Ordering[K]): Unit = {
@@ -437,7 +526,7 @@ object TupleListOps {
 
   @opaque
   @inlineOnce
-  def lemmaInsertStrictlySortedErasesIfSameKey[K,  B](
+  def lemmaInsertStrictlySortedErasesIfSameKey[K, B](
       l: List[(K, B)],
       key1: K,
       v1: B,
@@ -467,7 +556,7 @@ object TupleListOps {
 
   @opaque
   @inlineOnce
-  def lemmaAddNewKeyIncrementSize[K,  B](
+  def lemmaAddNewKeyIncrementSize[K, B](
       l: List[(K, B)],
       key: K,
       value: B
@@ -490,7 +579,7 @@ object TupleListOps {
 
   @opaque
   @inlineOnce
-  def lemmaAddExistingKeyPreservesSize[K,  B](
+  def lemmaAddExistingKeyPreservesSize[K, B](
       l: List[(K, B)],
       key: K,
       value: B
@@ -514,7 +603,7 @@ object TupleListOps {
 
   @opaque
   @inlineOnce
-  def lemmaGetValueByKeyIsDefinedImpliesContainsKey[K,  B](
+  def lemmaGetValueByKeyIsDefinedImpliesContainsKey[K, B](
       l: List[(K, B)],
       key: K
   )(implicit ord: Ordering[K]): Unit = {
@@ -529,7 +618,7 @@ object TupleListOps {
 
   @opaque
   @inlineOnce
-  def lemmaContainsKeyImpliesGetValueByKeyDefined[K,  B](
+  def lemmaContainsKeyImpliesGetValueByKeyDefined[K, B](
       l: List[(K, B)],
       key: K
   )(implicit ord: Ordering[K]): Unit = {
@@ -544,7 +633,7 @@ object TupleListOps {
 
   @opaque
   @inlineOnce
-  def lemmaForallGetValueByKeySameWithASmallerHead[K,  B](
+  def lemmaForallGetValueByKeySameWithASmallerHead[K, B](
       l: List[(K, B)],
       keys: List[K],
       value: B,
@@ -570,7 +659,7 @@ object TupleListOps {
 
   @opaque
   @inlineOnce
-  def lemmaInsertStrictlySortedDoesNotModifyOtherKeyValues[K,  B](
+  def lemmaInsertStrictlySortedDoesNotModifyOtherKeyValues[K, B](
       l: List[(K, B)],
       newKey: K,
       newValue: B,
@@ -606,7 +695,7 @@ object TupleListOps {
 
   @opaque
   @inlineOnce
-  def lemmaInsertStrictlySortedDoesNotModifyOtherKeysNotContained[K,  B](
+  def lemmaInsertStrictlySortedDoesNotModifyOtherKeysNotContained[K, B](
       l: List[(K, B)],
       newKey: K,
       newValue: B,
@@ -629,7 +718,7 @@ object TupleListOps {
 
   @opaque
   @inlineOnce
-  def lemmaInsertStrictlySortedDoesNotModifyOtherKeysContained[K,  B](
+  def lemmaInsertStrictlySortedDoesNotModifyOtherKeysContained[K, B](
       l: List[(K, B)],
       newKey: K,
       newValue: B,
@@ -652,7 +741,7 @@ object TupleListOps {
 
   @opaque
   @inlineOnce
-  def lemmaInsertStrictlySortedNotContainedContent[K,  B](
+  def lemmaInsertStrictlySortedNotContainedContent[K, B](
       @induct l: List[(K, B)],
       newKey: K,
       newValue: B
@@ -670,7 +759,7 @@ object TupleListOps {
 
   @opaque
   @inlineOnce
-  def lemmaNotContainsKeyThenNotContainsTuple[K,  B](
+  def lemmaNotContainsKeyThenNotContainsTuple[K, B](
       @induct l: List[(K, B)],
       key: K,
       value: B
@@ -681,7 +770,7 @@ object TupleListOps {
 
   @opaque
   @inlineOnce
-  def lemmaContainsTupleThenContainsKey[K,  B](
+  def lemmaContainsTupleThenContainsKey[K, B](
       l: List[(K, B)],
       key: K,
       value: B
@@ -698,7 +787,7 @@ object TupleListOps {
 
   @opaque
   @inlineOnce
-  def lemmaContainsTupThenGetReturnValue[K,  B](
+  def lemmaContainsTupThenGetReturnValue[K, B](
       l: List[(K, B)],
       key: K,
       value: B
@@ -726,81 +815,77 @@ object ListMapLemmas {
 
   @opaque
   @inlineOnce
-  def removeNotPresentStillSame[K,  B](lm: ListMap[K, B], a: K)(implicit ord: Ordering[K]): Unit = {
+  def removeNotPresentStillSame[K, B](lm: ListMap[K, B], a: K): Unit = {
     require(!lm.contains(a))
-    TupleListOps.lemmaRemoveStrictlySortedNotPresentPreserves(lm.toList, a)
+    TupleListOps.lemmaRemoveStrictlySortedNotPresentPreserves(lm.toList, a)(lm.ordd)
   }.ensuring(_ => lm - a == lm)
 
   @opaque
   @inlineOnce
-  def addSameAsAddTwiceSameKeyDiffValues[K,  B](
+  def addSameAsAddTwiceSameKeyDiffValues[K, B](
       lm: ListMap[K, B],
       a: K,
       b1: B,
       b2: B
-  )(implicit ord: Ordering[K]): Unit = {
-    TupleListOps.lemmaInsertStrictlySortedErasesIfSameKey(lm.toList, a, b1, b2)
+  ): Unit = {
+    TupleListOps.lemmaInsertStrictlySortedErasesIfSameKey(lm.toList, a, b1, b2)(lm.ordd)
   }.ensuring(_ => lm + (a, b2) == (lm + (a, b1) + (a, b2)))
 
   @opaque
   @inlineOnce
-  def addRemoveCommutativeForDiffKeys[K,  B](
+  def addRemoveCommutativeForDiffKeys[K, B](
       lm: ListMap[K, B],
       a1: K,
       b1: B,
       a2: K
-  )(implicit ord: Ordering[K]): Unit = {
+  ): Unit = {
     require(a1 != a2)
     TupleListOps.lemmaInsertAndRemoveStrictlySortedCommutative(
       lm.toList,
       a1,
       b1,
       a2
-    )
+    )(lm.ordd)
   }.ensuring(_ => lm + (a1, b1) - a2 == lm - a2 + (a1, b1))
 
   @opaque
   @inlineOnce
-  def addThenRemoveForNewKeyIsSame[K,  B](
+  def addThenRemoveForNewKeyIsSame[K, B](
       lm: ListMap[K, B],
       a1: K,
       b1: B
-  )(implicit ord: Ordering[K]): Unit = {
+  ): Unit = {
     require(!lm.contains(a1))
-    TupleListOps.lemmaInsertStrictlySortedThenRemoveIsSame(lm.toList, a1, b1)
+    TupleListOps.lemmaInsertStrictlySortedThenRemoveIsSame(lm.toList, a1, b1)(lm.ordd)
   }.ensuring(_ => lm + (a1, b1) - a1 == lm)
 
   @opaque
   @inlineOnce
-  def removeCommutative[K,  B](lm: ListMap[K, B], a1: K, a2: K)(implicit ord: Ordering[K]): Unit = {
-    TupleListOps.lemmaRemoveStrictlySortedCommutative(lm.toList, a1, a2)
+  def removeCommutative[K, B](lm: ListMap[K, B], a1: K, a2: K): Unit = {
+    TupleListOps.lemmaRemoveStrictlySortedCommutative(lm.toList, a1, a2)(lm.ordd)
   }.ensuring(_ => lm - a1 - a2 == lm - a2 - a1)
 
   @opaque
   @inlineOnce
-  def addCommutativeForDiffKeys[K,  B](
+  def addCommutativeForDiffKeys[K, B](
       lm: ListMap[K, B],
       a1: K,
       b1: B,
       a2: K,
       b2: B
-  )(implicit ord: Ordering[K]): Unit = {
+  ): Unit = {
     require(a1 != a2)
-    TupleListOps.lemmaInsertStrictlySortedCommutative(lm.toList, a1, b1, a2, b2)
+    TupleListOps.lemmaInsertStrictlySortedCommutative(lm.toList, a1, b1, a2, b2)(lm.ordd)
   }.ensuring(_ => lm + (a1, b1) + (a2, b2) == lm + (a2, b2) + (a1, b1))
 
   @opaque
   @inlineOnce
-  def emptyContainsNothing[K,  B](k: K)(implicit ord: Ordering[K]): Unit = {}.ensuring(_ => !ListMap.empty[K, B].contains(k))
-
-  @opaque
-  @inlineOnce
-  def addValidProp[K,  B](
+  def addValidProp[K, B](
       lm: ListMap[K, B],
       p: ((K, B)) => Boolean,
       a: K,
       b: B
-  )(implicit ord: Ordering[K]): Unit = {
+  ): Unit = {
     require(lm.forall(p) && p(a, b))
     decreases(lm.toList.size)
 
@@ -814,11 +899,11 @@ object ListMapLemmas {
 
   @opaque
   @inlineOnce
-  def removeValidProp[K,  B](
+  def removeValidProp[K, B](
       lm: ListMap[K, B],
       p: ((K, B)) => Boolean,
       a: K
-  )(implicit ord: Ordering[K]): Unit = {
+  ): Unit = {
     require(lm.forall(p))
     decreases(lm.toList.size)
     if (!lm.isEmpty)
@@ -831,11 +916,11 @@ object ListMapLemmas {
 
   @opaque
   @inlineOnce
-  def insertAllValidProp[K,  B](
+  def insertAllValidProp[K, B](
       lm: ListMap[K, B],
       kvs: List[(K, B)],
       p: ((K, B)) => Boolean
-  )(implicit ord: Ordering[K]): Unit = {
+  ): Unit = {
     require(lm.forall(p) && kvs.forall(p))
     decreases(kvs)
 
@@ -851,11 +936,11 @@ object ListMapLemmas {
 
   @opaque
   @inlineOnce
-  def removeAllValidProp[K,  B](
+  def removeAllValidProp[K, B](
       lm: ListMap[K, B],
       l: List[K],
       p: ((K, B)) => Boolean
-  )(implicit ord: Ordering[K]): Unit = {
+  ): Unit = {
     require(lm.forall(p))
     decreases(l)
 
@@ -871,32 +956,32 @@ object ListMapLemmas {
 
   @opaque
   @inlineOnce
-  def addApplyDifferent[K,  B](
+  def addApplyDifferent[K, B](
       lm: ListMap[K, B],
       a: K,
       b: B,
       a0: K
-  )(implicit ord: Ordering[K]): Unit = {
+  ): Unit = {
     require(lm.contains(a0) && a0 != a)
-    assert(TupleListOps.containsKey(lm.toList, a0))
+    assert(TupleListOps.containsKey(lm.toList, a0)(lm.ordd))
     TupleListOps.lemmaInsertStrictlySortedDoesNotModifyOtherKeyValues(
       lm.toList,
       a,
       b,
       a0
-    )
-    TupleListOps.lemmaContainsKeyImpliesGetValueByKeyDefined(lm.toList, a0)
+    )(lm.ordd)
+    TupleListOps.lemmaContainsKeyImpliesGetValueByKeyDefined(lm.toList, a0)(lm.ordd)
 
   }.ensuring(_ => (lm + (a -> b)).apply(a0) == lm(a0))
 
   @opaque
   @inlineOnce
-  def addStillContains[K,  B](
+  def addStillContains[K, B](
       lm: ListMap[K, B],
       a: K,
       b: B,
       a0: K
-  )(implicit ord: Ordering[K]): Unit = {
+  ): Unit = {
     require(lm.contains(a0))
 
     if (a != a0)
@@ -905,18 +990,18 @@ object ListMapLemmas {
         a,
         b,
         a0
-      )
+      )(lm.ordd)
 
   }.ensuring(_ => (lm + (a, b)).contains(a0))
 
   @opaque
   @inlineOnce
-  def addStillNotContains[K,  B](
+  def addStillNotContains[K, B](
       lm: ListMap[K, B],
       a: K,
       b: B,
       a0: K
-  )(implicit ord: Ordering[K]): Unit = {
+  ): Unit = {
     require(!lm.contains(a0) && a != a0)
 
     TupleListOps.lemmaInsertStrictlySortedDoesNotModifyOtherKeysNotContained(
@@ -924,17 +1009,17 @@ object ListMapLemmas {
       a,
       b,
       a0
-    )
+    )(lm.ordd)
 
   }.ensuring(_ => !(lm + (a, b)).contains(a0))
 
   @opaque
   @inlineOnce
-  def applyForall[K,  B](
+  def applyForall[K, B](
       lm: ListMap[K, B],
       p: ((K, B)) => Boolean,
       k: K
-  )(implicit ord: Ordering[K]): Unit = {
+  ): Unit = {
     require(lm.forall(p) && lm.contains(k))
     decreases(lm.toList.size)
 
@@ -945,11 +1030,11 @@ object ListMapLemmas {
 
   @opaque
   @inlineOnce
-  def getForall[K,  B](
+  def getForall[K, B](
       lm: ListMap[K, B],
       p: ((K, B)) => Boolean,
       k: K
-  )(implicit ord: Ordering[K]): Unit = {
+  ): Unit = {
     require(lm.forall(p))
     decreases(lm.toList.size)
 
@@ -960,33 +1045,33 @@ object ListMapLemmas {
 
   @opaque
   @inlineOnce
-  def uniqueImage[K,  B](lm: ListMap[K, B], a: K, b: B)(implicit ord: Ordering[K]): Unit = {
+  def uniqueImage[K, B](lm: ListMap[K, B], a: K, b: B): Unit = {
     require(lm.toList.contains((a, b)))
 
-    TupleListOps.lemmaContainsTupleThenContainsKey(lm.toList, a, b)
-    TupleListOps.lemmaContainsTupThenGetReturnValue(lm.toList, a, b)
+    TupleListOps.lemmaContainsTupleThenContainsKey(lm.toList, a, b)(lm.ordd)
+    TupleListOps.lemmaContainsTupThenGetReturnValue(lm.toList, a, b)(lm.ordd)
 
   }.ensuring(_ => lm.get(a) == Some[B](b))
 
   @opaque
-  def keysOfSound[K,  B](@induct lm: ListMap[K, B], value: B)(implicit ord: Ordering[K]): Unit = {
+  def keysOfSound[K, B](@induct lm: ListMap[K, B], value: B): Unit = {
     // trivial by postcondition of getKeysOf
-    assert(TupleListOps.getKeysOf(lm.toList, value).forall(k => lm.get(k) == Some[B](value)))
+    assert(TupleListOps.getKeysOf(lm.toList, value)(lm.ordd).forall(k => lm.get(k) == Some[B](value)))
   }.ensuring(_ => lm.keysOf(value).forall((key: K) => lm.get(key) == Some[B](value)))
 
   @opaque
   @inlineOnce
-  def addNotContainedContent[K,  B](
+  def addNotContainedContent[K, B](
       lm: ListMap[K, B],
       key: K,
       value: B
-  )(implicit ord: Ordering[K]): Unit = {
+  ): Unit = {
     require(!lm.contains(key))
     TupleListOps.lemmaInsertStrictlySortedNotContainedContent(
       lm.toList,
       key,
       value
-    )
+    )(lm.ordd)
   } ensuring (_ =>
     lm.toList.content ++ Set(
       (key, value)
