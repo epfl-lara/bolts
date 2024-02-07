@@ -1,0 +1,1 @@
+stainless-dotty ./src/main/scala/ch/epfl/chassot/ListMap.scala --config-file=stainless.conf -Dparallel=8 $1
