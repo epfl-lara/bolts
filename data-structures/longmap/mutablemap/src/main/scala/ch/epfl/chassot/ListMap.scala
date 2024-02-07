@@ -86,8 +86,8 @@ case class ListMap[K, B](toList: List[(K, B)], ordd: Ordering[K], dummy: Unit) {
     get(key).get
   }
 
-  def +(keyValue: (K, B))(implicit ord: Ordering[K]): ListMap[K, B] = {
-    
+  def +(keyValue: (K, B))(implicit ord: Ordering[K]): ListMap[K, B] = { 
+    assert(inverse(keyValue._1, keyValue._2))
     val newList =
       TupleListOps.insertStrictlySorted(toList, keyValue._1, keyValue._2)
 
