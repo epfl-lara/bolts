@@ -31,7 +31,7 @@ trait Ordering[T]:
 
 end Ordering
 
-case class ListMap[K, B](toList: List[(K, B)], ordd: Ordering[K], dummy: Unit) {
+case class ListMap[K, B](toList: List[(K, B)], ordd: Ordering[K]) {
   require(TupleListOps.isStrictlySorted(toList)(ordd))
   given ord: Ordering[K] = ordd
 
@@ -55,7 +55,7 @@ case class ListMap[K, B](toList: List[(K, B)], ordd: Ordering[K], dummy: Unit) {
 
   def tail(implicit ord: Ordering[K]): ListMap[K, B] = {
     require(!isEmpty)
-    ListMap(toList.tail)
+    ListMap(toList.tail, ord)
   }
 
   def contains(key: K)(implicit ord: Ordering[K]): Boolean = {
@@ -87,16 +87,15 @@ case class ListMap[K, B](toList: List[(K, B)], ordd: Ordering[K], dummy: Unit) {
   }
 
   def +(keyValue: (K, B))(implicit ord: Ordering[K]): ListMap[K, B] = { 
-    assert(inverse(keyValue._1, keyValue._2))
     val newList =
-      TupleListOps.insertStrictlySorted(toList, keyValue._1, keyValue._2)
+      TupleListOps.insertStrictlySorted(toList, keyValue._1, keyValue._2)(ordd)
 
     TupleListOps.lemmaContainsTupThenGetReturnValue(
       newList,
       keyValue._1,
       keyValue._2
-    )
-    ListMap(newList)
+    )(ordd)
+    ListMap(newList, ordd)
 
   }.ensuring(res =>
     res.contains(keyValue._1) && res.get(keyValue._1) == Some[B](
@@ -112,7 +111,7 @@ case class ListMap[K, B](toList: List[(K, B)], ordd: Ordering[K], dummy: Unit) {
     }
   }
   def -(key: K)(implicit ord: Ordering[K]): ListMap[K, B] = {
-    ListMap(TupleListOps.removeStrictlySorted(toList, key))
+    ListMap(TupleListOps.removeStrictlySorted(toList, key), ord)
   }.ensuring(res => !res.contains(key))
 
   def --(keys: List[K])(implicit ord: Ordering[K]): ListMap[K, B] = {
@@ -718,8 +717,8 @@ object TupleListOps {
 }
 
 object ListMap {
-  def apply[K, B](l: List[(K, B)])(using ord: Ordering[K]): ListMap[K, B] = ListMap(l, ord, ())
-  def empty[K, B](implicit ord: Ordering[K]): ListMap[K, B] = ListMap[K, B](List.empty[(K, B)])
+  // def apply[K, B](l: List[(K, B)])(using ord: Ordering[K]): ListMap[K, B] = ListMap(l, ord, ())
+  def empty[K, B](implicit ord: Ordering[K]): ListMap[K, B] = ListMap[K, B](List.empty[(K, B)], ord)
 }
 
 object ListMapLemmas {
