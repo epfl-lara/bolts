@@ -221,7 +221,7 @@ object TupleListOps {
         check(ord.equalsMeansEquals(head._1, head._1))
         val res = head :: filterByValue(tl, value)
         filterByValue(tl, value) match {
-          case Cons(a, _) => 
+          case Cons(a, _) =>
             lemmaInTailThenBigger(head, tl, a)
           case _ => ()
         }
@@ -229,7 +229,7 @@ object TupleListOps {
       case Cons(head, tl) if (head._2 != value) =>
         val res = filterByValue(tl, value)
         filterByValue(tl, value) match {
-          case Cons(a, _) => 
+          case Cons(a, _) =>
             lemmaInTailThenBigger(head, tl, a)
             check(ord.inverse(head._1, a._1))
           case _ => ()
@@ -261,6 +261,14 @@ object TupleListOps {
   )(implicit ord: Ordering[K]): List[(K, B)] = {
     require(invariantList(l))
     decreases(l)
+
+    l match {
+      case Cons(a, _) => {
+        check(ord.equalsMeansEquals(a._1, newKey))
+        check(ord.inverse(a._1, newKey))
+      }
+      case _ => ()
+    }
 
     l match {
       case Cons(head, tl) if (head._1 < newKey) =>
@@ -439,6 +447,7 @@ object TupleListOps {
 
     l match {
       case Cons(head, tl) => {
+        lemmaTailStillNotContainsKey(l, key1)
         lemmaInsertStrictlySortedThenRemoveIsSame(tl, key1, v1)
       }
       case _ => ()
@@ -517,6 +526,8 @@ object TupleListOps {
 
     l match {
       case Cons(head, tl) => {
+        lemmaTailStillNotContainsKey(l, key)
+        assert(!containsKey(tl, key))
         lemmaRemoveStrictlySortedNotPresentPreserves(tl, key)
       }
       case _ => ()
@@ -612,6 +623,7 @@ object TupleListOps {
     l match {
       case Cons(head, tl) if (head._1 != key) =>
         lemmaGetValueByKeyIsDefinedImpliesContainsKey(tl, key)
+        lemmaAddHeadStillContainsKey(tl, head._1, head._2, key)
       case _ => ()
     }
   }.ensuring(_ => containsKey(l, key))
@@ -622,7 +634,8 @@ object TupleListOps {
       l: List[(K, B)],
       key: K
   )(implicit ord: Ordering[K]): Unit = {
-    require(invariantList(l) && containsKey(l, key))
+    require(invariantList(l))
+    require(containsKey(l, key))
     decreases(l)
     l match {
       case Cons(head, tl) if (head._1 != key) =>
@@ -639,16 +652,16 @@ object TupleListOps {
       value: B,
       newHead: (K, B)
   )(implicit ord: Ordering[K]): Unit = {
-    require(
-      invariantList(l) && !l.isEmpty &&
-        keys.forall(getValueByKey(l, _) == Some[B](value)) &&
-        newHead._1 < l.head._1
-    )
+    require(invariantList(l))
+    require(!l.isEmpty)
+    require(keys.forall(getValueByKey(l, _) == Some[B](value)))
+    require(newHead._1 < l.head._1)
     decreases(keys)
 
     keys match {
       case Cons(head, tl) => {
         lemmaGetValueByKeyIsDefinedImpliesContainsKey(l, head)
+        lemmaAddHeadStillContainsKey(l, newHead._1, newHead._2, head)
         lemmaContainsKeyImpliesGetValueByKeyDefined(Cons(newHead, l), head)
         lemmaForallGetValueByKeySameWithASmallerHead(l, tl, value, newHead)
       }
@@ -656,6 +669,52 @@ object TupleListOps {
     }
 
   }.ensuring(_ => keys.forall(k => getValueByKey(Cons(newHead, l), k) == Some[B](value)))
+
+  @opaque
+  @inlineOnce
+  def lemmaAddHeadStillContainsKey[K, B](
+      l: List[(K, B)],
+      key: K,
+      value: B,
+      test: K
+  )(implicit ord: Ordering[K]): Unit = {
+    require(invariantList(l))
+    require(containsKey(l, test))
+    require(key < l.head._1)
+    decreases(l)
+
+    l match {
+      case Cons(head, tl) if (head._1 < test) =>
+        check(ord.transitive(key, head._1, tl.head._1))
+        lemmaAddHeadStillContainsKey(tl, key, value, test)
+      case _ => ()
+    }
+
+  }.ensuring(_ => containsKey(Cons((key, value), l), test))
+
+  @opaque
+  @inlineOnce
+  def lemmaTailStillNotContainsKey[K, B](
+      l: List[(K, B)],
+      test: K
+  )(implicit ord: Ordering[K]): Unit = {
+    require(invariantList(l))
+    require(!containsKey(l, test))
+    require(!l.isEmpty)
+    decreases(l)
+
+    l match {
+      case Cons(head, Nil()) => ()
+      case Cons(head, tl) if (head._1 != test) =>
+        if (containsKey(tl, test)) {
+          lemmaAddHeadStillContainsKey(tl, head._1, head._2, test)
+          check(false)
+        }
+        lemmaTailStillNotContainsKey(tl, test)
+      case _ => ()
+    }
+
+  }.ensuring(_ => !containsKey(l.tail, test))
 
   @opaque
   @inlineOnce
@@ -701,11 +760,15 @@ object TupleListOps {
       newValue: B,
       otherKey: K
   )(implicit ord: Ordering[K]): Unit = {
-    require(invariantList(l) && !containsKey(l, otherKey) && otherKey != newKey)
+    require(invariantList(l))
+    require(!containsKey(l, otherKey))
+    require(otherKey != newKey)
     decreases(l)
 
     l match {
       case Cons(head, tl) =>
+        lemmaTailStillNotContainsKey(l, otherKey)
+        assert(!containsKey(tl, otherKey))
         lemmaInsertStrictlySortedDoesNotModifyOtherKeysNotContained(
           tl,
           newKey,
@@ -742,12 +805,20 @@ object TupleListOps {
   @opaque
   @inlineOnce
   def lemmaInsertStrictlySortedNotContainedContent[K, B](
-      @induct l: List[(K, B)],
+      l: List[(K, B)],
       newKey: K,
       newValue: B
   )(implicit ord: Ordering[K]): Unit = {
     require(invariantList(l))
     require(!containsKey(l, newKey))
+
+    l match {
+      case Cons(head, tl) => {
+        lemmaTailStillNotContainsKey(l, newKey)
+        lemmaInsertStrictlySortedNotContainedContent(tl, newKey, newValue)
+      }
+      case _ => ()
+    }
 
   } ensuring (_ =>
     l.content ++ Set((newKey, newValue)) == insertStrictlySorted(
@@ -760,11 +831,19 @@ object TupleListOps {
   @opaque
   @inlineOnce
   def lemmaNotContainsKeyThenNotContainsTuple[K, B](
-      @induct l: List[(K, B)],
+      l: List[(K, B)],
       key: K,
       value: B
   )(implicit ord: Ordering[K]): Unit = {
-    require(invariantList(l) && !containsKey(l, key))
+    require(invariantList(l))
+    require(!containsKey(l, key))
+    decreases(l)
+    l match {
+      case Cons(head, tl)  =>
+        lemmaTailStillNotContainsKey(l, key)
+        lemmaNotContainsKeyThenNotContainsTuple(tl, key, value)
+      case _ => ()
+    }
 
   }.ensuring(_ => !l.contains((key, value)))
 
@@ -775,8 +854,15 @@ object TupleListOps {
       key: K,
       value: B
   )(implicit ord: Ordering[K]): Unit = {
-    require(invariantList(l) && l.contains((key, value)))
+    require(invariantList(l))
+    require(l.contains((key, value)))
     decreases(l)
+
+    l match {
+      case Cons(a, Cons(b, _)) =>
+        check(ord.transitive(a._1, b._1, key))
+      case _ => ()
+    }
 
     l match {
       case Cons(head, tl) if (head != (key, value)) =>
