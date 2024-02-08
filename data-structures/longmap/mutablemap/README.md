@@ -42,3 +42,10 @@ To verify using Stainless, first install Stainless following the instructions [h
 Then, run `$ ./verify.sh`.
 
 Then, run `sbt` and run `stainlessVerify` to verify the implementation.
+
+
+## Run Main
+
+To run the main class, run in `sbt`
+
+```$ runMain ch.epfl.chassot.Main```

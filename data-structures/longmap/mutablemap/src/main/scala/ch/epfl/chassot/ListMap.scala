@@ -36,7 +36,7 @@ end Ordering
 
 case class ListMap[K, B](toList: List[(K, B)], ordd: Ordering[K]) {
   // given ord: Ordering[K] = ordd
-  require(TupleListOps.isStrictlySorted(toList)(ordd))
+  require(TupleListOpsGenK.isStrictlySorted(toList)(ordd))
 
   def isEmpty: Boolean = toList.isEmpty
 
@@ -47,13 +47,13 @@ case class ListMap[K, B](toList: List[(K, B)], ordd: Ordering[K]) {
 
   def size: Int = {
     require(toList.size < Integer.MAX_VALUE)
-    TupleListOps.intSize(toList)(ordd)
+    TupleListOpsGenK.intSize(toList)(ordd)
   }
 
   @pure
   def nKeys: Int = {
     require(toList.size < Integer.MAX_VALUE)
-    TupleListOps.intSizeKeys(TupleListOps.getKeysList(toList)(ordd))(ordd)
+    TupleListOpsGenK.intSizeKeys(TupleListOpsGenK.getKeysList(toList)(ordd))(ordd)
   }
 
   def tail: ListMap[K, B] = {
@@ -62,9 +62,9 @@ case class ListMap[K, B](toList: List[(K, B)], ordd: Ordering[K]) {
   }
 
   def contains(key: K): Boolean = {
-    val res = TupleListOps.containsKey(toList, key)(ordd)
+    val res = TupleListOpsGenK.containsKey(toList, key)(ordd)
     if (res) {
-      TupleListOps.lemmaContainsKeyImpliesGetValueByKeyDefined(toList, key)(ordd)
+      TupleListOpsGenK.lemmaContainsKeyImpliesGetValueByKeyDefined(toList, key)(ordd)
     }
     res
 
@@ -72,16 +72,16 @@ case class ListMap[K, B](toList: List[(K, B)], ordd: Ordering[K]) {
 
   @inline
   def get(key: K): Option[B] = {
-    TupleListOps.getValueByKey(toList, key)(ordd)
+    TupleListOpsGenK.getValueByKey(toList, key)(ordd)
   }
 
   @inline
   def keysOf(value: B): List[K] = {
-    TupleListOps.getKeysOf(toList, value)(ordd)
+    TupleListOpsGenK.getKeysOf(toList, value)(ordd)
   }
 
   def keys(): List[K] = {
-    TupleListOps.getKeysList(toList)(ordd)
+    TupleListOpsGenK.getKeysList(toList)(ordd)
   }
 
   def apply(key: K): B = {
@@ -91,9 +91,9 @@ case class ListMap[K, B](toList: List[(K, B)], ordd: Ordering[K]) {
 
   def +(keyValue: (K, B)): ListMap[K, B] = {
     val newList =
-      TupleListOps.insertStrictlySorted(toList, keyValue._1, keyValue._2)(ordd)
+      TupleListOpsGenK.insertStrictlySorted(toList, keyValue._1, keyValue._2)(ordd)
 
-    TupleListOps.lemmaContainsTupThenGetReturnValue(
+    TupleListOpsGenK.lemmaContainsTupThenGetReturnValue(
       newList,
       keyValue._1,
       keyValue._2
@@ -114,7 +114,7 @@ case class ListMap[K, B](toList: List[(K, B)], ordd: Ordering[K]) {
     }
   }
   def -(key: K): ListMap[K, B] = {
-    ListMap(TupleListOps.removeStrictlySorted(toList, key)(ordd), ordd)
+    ListMap(TupleListOpsGenK.removeStrictlySorted(toList, key)(ordd), ordd)
   }.ensuring(res => !res.contains(key))
 
   def --(keys: List[K]): ListMap[K, B] = {
@@ -130,7 +130,7 @@ case class ListMap[K, B](toList: List[(K, B)], ordd: Ordering[K]) {
   }
 }
 
-object TupleListOps {
+object TupleListOpsGenK {
 
   extension [K](k: K) def >(other: K)(implicit ord: Ordering[K]): Boolean = ord.compare(k, other) > 0
   extension [K](k: K) def <(other: K)(implicit ord: Ordering[K]): Boolean = ord.compare(k, other) < 0
@@ -903,7 +903,7 @@ object ListMapLemmas {
   @inlineOnce
   def removeNotPresentStillSame[K, B](lm: ListMap[K, B], a: K): Unit = {
     require(!lm.contains(a))
-    TupleListOps.lemmaRemoveStrictlySortedNotPresentPreserves(lm.toList, a)(lm.ordd)
+    TupleListOpsGenK.lemmaRemoveStrictlySortedNotPresentPreserves(lm.toList, a)(lm.ordd)
   }.ensuring(_ => lm - a == lm)
 
   @opaque
@@ -914,7 +914,7 @@ object ListMapLemmas {
       b1: B,
       b2: B
   ): Unit = {
-    TupleListOps.lemmaInsertStrictlySortedErasesIfSameKey(lm.toList, a, b1, b2)(lm.ordd)
+    TupleListOpsGenK.lemmaInsertStrictlySortedErasesIfSameKey(lm.toList, a, b1, b2)(lm.ordd)
   }.ensuring(_ => lm + (a, b2) == (lm + (a, b1) + (a, b2)))
 
   @opaque
@@ -926,7 +926,7 @@ object ListMapLemmas {
       a2: K
   ): Unit = {
     require(a1 != a2)
-    TupleListOps.lemmaInsertAndRemoveStrictlySortedCommutative(
+    TupleListOpsGenK.lemmaInsertAndRemoveStrictlySortedCommutative(
       lm.toList,
       a1,
       b1,
@@ -942,13 +942,13 @@ object ListMapLemmas {
       b1: B
   ): Unit = {
     require(!lm.contains(a1))
-    TupleListOps.lemmaInsertStrictlySortedThenRemoveIsSame(lm.toList, a1, b1)(lm.ordd)
+    TupleListOpsGenK.lemmaInsertStrictlySortedThenRemoveIsSame(lm.toList, a1, b1)(lm.ordd)
   }.ensuring(_ => lm + (a1, b1) - a1 == lm)
 
   @opaque
   @inlineOnce
   def removeCommutative[K, B](lm: ListMap[K, B], a1: K, a2: K): Unit = {
-    TupleListOps.lemmaRemoveStrictlySortedCommutative(lm.toList, a1, a2)(lm.ordd)
+    TupleListOpsGenK.lemmaRemoveStrictlySortedCommutative(lm.toList, a1, a2)(lm.ordd)
   }.ensuring(_ => lm - a1 - a2 == lm - a2 - a1)
 
   @opaque
@@ -961,7 +961,7 @@ object ListMapLemmas {
       b2: B
   ): Unit = {
     require(a1 != a2)
-    TupleListOps.lemmaInsertStrictlySortedCommutative(lm.toList, a1, b1, a2, b2)(lm.ordd)
+    TupleListOpsGenK.lemmaInsertStrictlySortedCommutative(lm.toList, a1, b1, a2, b2)(lm.ordd)
   }.ensuring(_ => lm + (a1, b1) + (a2, b2) == lm + (a2, b2) + (a1, b1))
 
   @opaque
@@ -1049,14 +1049,14 @@ object ListMapLemmas {
       a0: K
   ): Unit = {
     require(lm.contains(a0) && a0 != a)
-    assert(TupleListOps.containsKey(lm.toList, a0)(lm.ordd))
-    TupleListOps.lemmaInsertStrictlySortedDoesNotModifyOtherKeyValues(
+    assert(TupleListOpsGenK.containsKey(lm.toList, a0)(lm.ordd))
+    TupleListOpsGenK.lemmaInsertStrictlySortedDoesNotModifyOtherKeyValues(
       lm.toList,
       a,
       b,
       a0
     )(lm.ordd)
-    TupleListOps.lemmaContainsKeyImpliesGetValueByKeyDefined(lm.toList, a0)(lm.ordd)
+    TupleListOpsGenK.lemmaContainsKeyImpliesGetValueByKeyDefined(lm.toList, a0)(lm.ordd)
 
   }.ensuring(_ => (lm + (a -> b)).apply(a0) == lm(a0))
 
@@ -1071,7 +1071,7 @@ object ListMapLemmas {
     require(lm.contains(a0))
 
     if (a != a0)
-      TupleListOps.lemmaInsertStrictlySortedDoesNotModifyOtherKeysContained(
+      TupleListOpsGenK.lemmaInsertStrictlySortedDoesNotModifyOtherKeysContained(
         lm.toList,
         a,
         b,
@@ -1090,7 +1090,7 @@ object ListMapLemmas {
   ): Unit = {
     require(!lm.contains(a0) && a != a0)
 
-    TupleListOps.lemmaInsertStrictlySortedDoesNotModifyOtherKeysNotContained(
+    TupleListOpsGenK.lemmaInsertStrictlySortedDoesNotModifyOtherKeysNotContained(
       lm.toList,
       a,
       b,
@@ -1134,15 +1134,15 @@ object ListMapLemmas {
   def uniqueImage[K, B](lm: ListMap[K, B], a: K, b: B): Unit = {
     require(lm.toList.contains((a, b)))
 
-    TupleListOps.lemmaContainsTupleThenContainsKey(lm.toList, a, b)(lm.ordd)
-    TupleListOps.lemmaContainsTupThenGetReturnValue(lm.toList, a, b)(lm.ordd)
+    TupleListOpsGenK.lemmaContainsTupleThenContainsKey(lm.toList, a, b)(lm.ordd)
+    TupleListOpsGenK.lemmaContainsTupThenGetReturnValue(lm.toList, a, b)(lm.ordd)
 
   }.ensuring(_ => lm.get(a) == Some[B](b))
 
   @opaque
   def keysOfSound[K, B](@induct lm: ListMap[K, B], value: B): Unit = {
     // trivial by postcondition of getKeysOf
-    assert(TupleListOps.getKeysOf(lm.toList, value)(lm.ordd).forall(k => lm.get(k) == Some[B](value)))
+    assert(TupleListOpsGenK.getKeysOf(lm.toList, value)(lm.ordd).forall(k => lm.get(k) == Some[B](value)))
   }.ensuring(_ => lm.keysOf(value).forall((key: K) => lm.get(key) == Some[B](value)))
 
   @opaque
@@ -1153,7 +1153,7 @@ object ListMapLemmas {
       value: B
   ): Unit = {
     require(!lm.contains(key))
-    TupleListOps.lemmaInsertStrictlySortedNotContainedContent(
+    TupleListOpsGenK.lemmaInsertStrictlySortedNotContainedContent(
       lm.toList,
       key,
       value
