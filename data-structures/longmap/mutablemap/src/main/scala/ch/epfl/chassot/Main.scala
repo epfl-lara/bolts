@@ -23,7 +23,6 @@ object Main {
 
   //   println(f"mutableLongMap(12) = ${mutableLongMap(12)}")
 
-
   val hashmap = MutableHashMap.getEmptyHashMap[Long, Long](new HashLong())
   for i <- 0 until 1000 do
     hashmap.update(i, i)
@@ -32,6 +31,8 @@ object Main {
   for i <- 0 until 1000 do
     println(f"hashmap($i) = ${hashmap(i)}")
   end for
+
+  println(f"Size of hashmap: ${hashmap.size}")
 
   }
 

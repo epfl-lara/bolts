@@ -811,6 +811,7 @@ object TupleListOpsGenK {
   )(implicit ord: Ordering[K]): Unit = {
     require(invariantList(l))
     require(!containsKey(l, newKey))
+    decreases(l)
 
     l match {
       case Cons(head, tl) => {
