@@ -3,7 +3,7 @@
 package ch.epfl.chassot
 
 import stainless.annotation._
-import stainless.collection._
+import stainless.collection.{ListMap => ListMapStainless, ListMapLemmas => ListMapLemmasStainless, _}
 import stainless.equations._
 import stainless.lang.{ghost => ghostExpr, _}
 import stainless.proof.check
@@ -28,9 +28,9 @@ object MutableHashMap {
     * @param defaultEntry
     * @return
     */
-  def getEmptyHashMap[K, V](defaultValue: K => V, hashF: Hashable[K]): HashMap[K, V] = {
+  def getEmptyHashMap[K, V](defaultValue: K => V, hashF: Hashable[K], ordering: Ordering[K]): HashMap[K, V] = {
     val initialSize = 16
-    HashMap(Cell(MutableLongMap.getEmptyLongMap[List[(K, V)]]((l: Long) => Nil[(K, V)](), initialSize)), hashF, 0, defaultValue)
+    HashMap(Cell(MutableLongMap.getEmptyLongMap[List[(K, V)]]((l: Long) => Nil[(K, V)](), initialSize)), hashF, 0, defaultValue, ordering)
   } ensuring (res => res.valid && res.size == 0)
 
   // /** Helper method to create a new empty LongMap with a given initial array size WARNING: UNSOUND!!! The given size must be a power of 2 <= 2^30
@@ -50,7 +50,8 @@ object MutableHashMap {
       val underlying: Cell[LongMap[List[(K, V)]]],
       val hashF: Hashable[K],
       var _size: Int,
-      val defaultValue: K => V
+      val defaultValue: K => V,
+      val ordering: Ordering[K]
   ) {
 
     @pure
@@ -82,7 +83,14 @@ object MutableHashMap {
         }
       })
       ghostExpr({
-        lemmaContainsEquivalentToMapContains(underlying.v.map, key, hashF)
+        if (extractMap(underlying.v.map.toList, ordering).contains(key)) {
+          lemmaInGenericMapThenInLongMap(underlying.v.map, key, hashF, ordering)
+        } else {
+          if (((underlying.v.map.contains(hashF.hash(key)) && getPair(underlying.v.map.apply(hashF.hash(key)), key).isDefined))) {
+            lemmaInLongMapThenInGenericMap(underlying.v.map, key, hashF, ordering)
+            check(false)
+          }
+        }
       })
       underlying.v.contains(hash) && getPair(underlying.v.apply(hash), key).isDefined
     } ensuring (res => valid && (res == map.contains(key)))
@@ -145,26 +153,53 @@ object MutableHashMap {
     @ghost
     private def map: ListMap[K, V] = {
       require(valid)
-      extractMap(underlying.v.map.toList)
+      extractMap(underlying.v.map.toList, ordering)
     }
 
   }
-  def extractMap[K, V](l: List[(Long, List[(K, V)])]): ListMap[K, V] = {
+  @ghost
+  def extractMap[K, V](l: List[(Long, List[(K, V)])], ordering: Ordering[K]): ListMap[K, V] = {
     require(l.forall((k, v) => noDuplicateKeys(v)))
+    decreases(l)
     l match {
-      case Cons((k, v), tl) => addToMapMapFromBucket(v, extractMap(tl))
-      case Nil()            => ListMap.empty[K, V]
+      case Cons((k, v), tl) => addToMapMapFromBucket(v, extractMap(tl, ordering))
+      case Nil()            => ListMap.empty[K, V](ordering)
     }
   } ensuring (res => true)
 
+  @ghost
   def addToMapMapFromBucket[K, V](l: List[(K, V)], acc: ListMap[K, V]): ListMap[K, V] = {
     require(noDuplicateKeys(l))
+    decreases(l)
     l match {
-      case Nil()            => acc
-      case Cons((k, v), tl) => addToMapMapFromBucket(tl, acc + (k, v))
-    }
-  } ensuring (res => true)
+      case Nil() => {
+        ListMapLemmas.lemmaContainsAllItsOwnKeys(acc)
+        check(acc.toList.forall(p => acc.contains(p._1)))
+        acc
+      }
+      case Cons((k, v), tl) => {
+        val newAcc = acc + (k, v)
+        val res = addToMapMapFromBucket(tl, acc + (k, v))
+        ListMapLemmas.lemmaContainsAllItsOwnKeys(acc)
+        check(newAcc.toList.forall(p => res.contains(p._1)))
+        check(tl.forall(p => res.contains(p._1)))
+        check(l == Cons((k, v), tl))
+        ListSpecs.forallContained(newAcc.toList, (k, v) => res.contains(k), (k, v))
+        check(newAcc.contains(k))
+        check(res.contains(k))
+        check(l.forall(p => res.contains(p._1)))
+        check(newAcc.toList.forall(p => res.contains(p._1)))
+        check(newAcc == acc + (k, v))
+        ListMapLemmas.addForallContainsKeyThenBeforeAdding(acc, res, k, v)
 
+        check(acc.toList.forall(p => res.contains(p._1))) // TODO
+        check(l.forall(p => res.contains(p._1)) && acc.toList.forall(p => res.contains(p._1)))
+        res
+      }
+    }
+  } ensuring (res => l.forall(p => res.contains(p._1)) && acc.toList.forall(p => res.contains(p._1)))
+
+  @ghost
   def noDuplicateKeys[K, V](l: List[(K, V)]): Boolean = {
     l match {
       case Cons(hd, tl) => !containsKey(tl, hd._1) && noDuplicateKeys(tl)
@@ -173,21 +208,28 @@ object MutableHashMap {
   }
 
   @pure
+  @ghost
   def allKeysSameHashInMap[K, V](lm: ListLongMap[List[(K, V)]], hashF: Hashable[K]): Boolean = {
     lm.toList.forall((k, v) => allKeysSameHash(v, k, hashF))
   }
-  def allKeysSameHash[K, V](l: List[(K, V)], h: Long, hashF: Hashable[K]): Boolean = {
-    l match {
-      case Cons(hd, tl) => hashF.hash(hd._1) == h && allKeysSameHash(tl, h, hashF)
-      case Nil()        => true
-    }
-  }
 
+  @ghost
+  def allKeysSameHash[K, V](l: List[(K, V)], h: Long, hashF: Hashable[K]): Boolean = {
+    l.forall(p => hashF.hash(p._1) == h)
+  }
+  @ghost
   def containsKey[K, V](l: List[(K, V)], key: K): Boolean = {
     l match
       case Cons(hd, tl) if hd._1 == key => true
       case Cons(_, tl)                  => containsKey(tl, key)
       case Nil()                        => false
+  }
+  @ghost
+  def containsKeyBiggerList[K, V](l: List[(Long, List[(K, V)])], key: K): Boolean = {
+    l match
+      case Cons(h, t) if containsKey(h._2, key) => true
+      case Cons(h, t)                           => containsKeyBiggerList(t, key)
+      case Nil()                                => false
   }
 
   def getPair[K, V](l: List[(K, V)], key: K): Option[(K, V)] = {
@@ -196,7 +238,7 @@ object MutableHashMap {
       case Cons(hd, tl) if hd._1 == key => Some(hd)
       case Cons(_, tl)                  => getPair(tl, key)
       case Nil()                        => None()
-  } ensuring (res => res.isEmpty && !containsKey(l, key) || res.isDefined && res.get._1 == key)
+  } ensuring (res => res.isEmpty && !containsKey(l, key) || res.isDefined && res.get._1 == key && l.contains(res.get))
 
   def removePairForKey[K, V](l: List[(K, V)], key: K): List[(K, V)] = {
     require(noDuplicateKeys(l))
@@ -206,48 +248,213 @@ object MutableHashMap {
       case Nil()                        => Nil()
   } ensuring (res => !containsKey(res, key))
 
+  @ghost
+  def getValue[K, V](l: List[(Long, List[(K, V)])], k: K): V = {
+    require(containsKeyBiggerList(l, k))
+    require(l.forall((k, v) => noDuplicateKeys(v)))
+    l match {
+      case Cons(hd, tl) if containsKey(hd._2, k) => getPair(hd._2, k).get._2
+      case Cons(hd, tl)                          => getValue(tl, k)
+    }
+  }
+
   // ----------------- Lemmas ------------------------------------------------------------------------
   @opaque
   @inlineOnce
-  def lemmaContainsEquivalentToMapContains[K, V](lm: ListLongMap[List[(K, V)]], key: K, hashF: Hashable[K]): Unit = {
+  @ghost
+  def lemmaInGenericMapThenInLongMap[K, V](lm: ListLongMap[List[(K, V)]], key: K, hashF: Hashable[K], ordering: Ordering[K]): Unit = {
     require(lm.toList.forall((k, v) => noDuplicateKeys(v)))
     require(allKeysSameHashInMap(lm, hashF))
-    assert(hashF.equalMeansSameHash(key, key))
-    val map = extractMap(lm.toList)
-    if(extractMap(lm.toList).contains(key)){
-      assert(lm.contains(hashF.hash(key)))
-      assert(getPair(lm.apply(hashF.hash(key)), key).isDefined)
-    } else{
-      if(lm.contains(hashF.hash(key))){
-        assert(getPair(lm.apply(hashF.hash(key)), key).isEmpty)
-      } else {
-        assert(lm.contains(hashF.hash(key)) == false)
-      }
-    }
-  } ensuring (_ => lm.contains(hashF.hash(key)) && getPair(lm.apply(hashF.hash(key)), key).isDefined == extractMap(lm.toList).contains(key))
+    require(extractMap(lm.toList, ordering).contains(key))
 
-  @opaque
-  @inlineOnce
-  def lemmaInGenericMapThenInLongMap[K, V](lm: ListLongMap[List[(K, V)]], key: K, hashF: Hashable[K]): Unit = {
-    require(lm.toList.forall((k, v) => noDuplicateKeys(v)))
-    require(allKeysSameHashInMap(lm, hashF))
-    require(extractMap(lm.toList).contains(key))
-
-    val map = extractMap(lm.toList)
-    assert(lm.contains(hashF.hash(key))) // TODO
-     ghostExpr({
+    val map = extractMap(lm.toList, ordering)
+    lemmaInGenMapThenLongMapContainsHash(lm, key, hashF, ordering)
+    assert(lm.contains(hashF.hash(key)))
+    ghostExpr({
       val hash = hashF.hash(key)
-          if (!lm.toList.contains((hash, lm.apply(hash)))) {
-            TupleListOps.lemmaGetValueByKeyIsDefinedImpliesContainsKey(lm.toList, hash)
-            TupleListOps.lemmaContainsKeyImpliesGetValueByKeyDefined(lm.toList, hash)
-            TupleListOps.lemmaGetValueByKeyImpliesContainsTuple(lm.toList, hash, lm.apply(hash))
-            check(false)
-          }
-          ListSpecs.forallContained(lm.toList, (k, v) => noDuplicateKeys(v), (hash, lm.apply(hash)))
+      if (!lm.toList.contains((hash, lm.apply(hash)))) {
+        TupleListOps.lemmaGetValueByKeyIsDefinedImpliesContainsKey(lm.toList, hash)
+        TupleListOps.lemmaContainsKeyImpliesGetValueByKeyDefined(lm.toList, hash)
+        TupleListOps.lemmaGetValueByKeyImpliesContainsTuple(lm.toList, hash, lm.apply(hash))
+        check(false)
+      }
+      ListSpecs.forallContained(lm.toList, (k, v) => noDuplicateKeys(v), (hash, lm.apply(hash)))
 
-      })
+    })
     ListSpecs.forallContained(lm.toList, (k, v) => noDuplicateKeys(v), (hashF.hash(key), lm.apply(hashF.hash(key))))
     assert(getPair(lm.apply(hashF.hash(key)), key).isDefined) // TODO
 
   } ensuring (_ => (lm.contains(hashF.hash(key)) && getPair(lm.apply(hashF.hash(key)), key).isDefined))
+
+  @opaque
+  @inlineOnce
+  @ghost
+  def lemmaInLongMapThenInGenericMap[K, V](lm: ListLongMap[List[(K, V)]], key: K, hashF: Hashable[K], ordering: Ordering[K]): Unit = {
+    require(lm.toList.forall((k, v) => noDuplicateKeys(v)))
+    require(allKeysSameHashInMap(lm, hashF))
+    require(lm.contains(hashF.hash(key)))
+    require({
+      ListLongMapLemmas.lemmaGetValueImpliesTupleContained(lm, hashF.hash(key), lm.apply(hashF.hash(key)))
+      ListSpecs.forallContained(lm.toList, (k, v) => noDuplicateKeys(v), (hashF.hash(key), lm.apply(hashF.hash(key))))
+      getPair(lm.apply(hashF.hash(key)), key).isDefined
+    })
+
+    lemmaInLongMapThenContainsKeyBiggerList(lm, key, hashF, ordering)
+    lemmaListContainsThenExtractedMapContains(lm, key, hashF, ordering)
+
+  } ensuring (_ => extractMap(lm.toList, ordering).contains(key))
+
+  @opaque
+  @inlineOnce
+  @ghost
+  def lemmaInGenMapThenLongMapContainsHash[K, V](lm: ListLongMap[List[(K, V)]], key: K, hashF: Hashable[K], ordering: Ordering[K]): Unit = {
+    require(lm.toList.forall((k, v) => noDuplicateKeys(v)))
+    require(allKeysSameHashInMap(lm, hashF))
+    require(extractMap(lm.toList, ordering).contains(key))
+    decreases(lm.toList.size)
+
+    val hash = hashF.hash(key)
+
+    lm.toList match
+      case Cons(h, t) if h._1 == hash => ()
+      case Cons(h, t) =>
+        lemmaHashNotHeadThenKeyInTail(lm, key, hashF, ordering)
+        assert(extractMap(t, ordering).contains(key))
+        lemmaInGenMapThenLongMapContainsHash(ListLongMap(t), key, hashF, ordering)
+      case Nil() => ()
+
+  } ensuring (_ => lm.contains(hashF.hash(key)))
+
+  @opaque
+  @inlineOnce
+  @ghost
+  def lemmaHashNotHeadThenKeyInTail[K, V](lm: ListLongMap[List[(K, V)]], key: K, hashF: Hashable[K], ordering: Ordering[K]): Unit = {
+    require(lm.toList.forall((k, v) => noDuplicateKeys(v)))
+    require(allKeysSameHashInMap(lm, hashF))
+    require(extractMap(lm.toList, ordering).contains(key))
+    require(!lm.toList.isEmpty && lm.toList.head._1 != hashF.hash(key))
+
+    // TODO
+  } ensuring (_ => extractMap(lm.toList.tail, ordering).contains(key))
+
+  @opaque 
+  @inlineOnce
+  @ghost
+  def lemmaInLongMapThenContainsKeyBiggerList[K, V](lm: ListLongMap[List[(K, V)]], key: K, hashF: Hashable[K], ordering: Ordering[K]): Unit = {
+    require(lm.toList.forall((k, v) => noDuplicateKeys(v)))
+    require(allKeysSameHashInMap(lm, hashF))
+    require(lm.contains(hashF.hash(key)))
+    require({
+      ListLongMapLemmas.lemmaGetValueImpliesTupleContained(lm, hashF.hash(key), lm.apply(hashF.hash(key)))
+      ListSpecs.forallContained(lm.toList, (k, v) => noDuplicateKeys(v), (hashF.hash(key), lm.apply(hashF.hash(key))))
+      getPair(lm.apply(hashF.hash(key)), key).isDefined
+    })
+    decreases(lm.toList.size)
+    lm.toList match
+      case Cons(hd, tl) if hd._1 == hashF.hash(key) => lemmaGetPairDefinedThenContainsKey(hd._2, key, hashF, ordering)
+      case Cons(hd, tl) => 
+        assert(hashF.hash(key) != hd._1)
+        lemmaNotSameHashThenCannotContainKey(lm, key, hd._1, hashF, ordering)
+        assert(!containsKey(hd._2, key))
+        lemmaInLongMapThenContainsKeyBiggerList(lm.tail, key, hashF, ordering)
+        check(containsKeyBiggerList(lm.toList, key))
+      case Nil() => check(containsKeyBiggerList(lm.toList, key))
+    
+    
+  } ensuring (_ => containsKeyBiggerList(lm.toList, key))
+
+  @opaque
+  @inlineOnce
+  @ghost
+  def lemmaListContainsThenExtractedMapContains[K, V](lm: ListLongMap[List[(K, V)]], key: K, hashF: Hashable[K], ordering: Ordering[K]): Unit = {
+    require(lm.toList.forall((k, v) => noDuplicateKeys(v)))
+    require(allKeysSameHashInMap(lm, hashF))
+    require(containsKeyBiggerList(lm.toList, key))
+    decreases(lm.toList.size)
+
+    lm.toList match
+      case Cons(hd, tl) if containsKey(hd._2, key) => {
+        val v = getValue(lm.toList, key)
+        lemmaInPairListHeadThenGetValueInTuple(lm, key, v, hashF, ordering)
+        check(hd._2.contains((key, v)))
+        check(extractMap(lm.toList, ordering) == addToMapMapFromBucket(hd._2, extractMap(tl, ordering)))
+        ListSpecs.forallContained(hd._2, p => addToMapMapFromBucket(hd._2, extractMap(tl, ordering)).contains(p._1), (key, v))
+      }
+      case Cons(hd, tl) => {
+        assert(extractMap(lm.toList, ordering) == addToMapMapFromBucket(hd._2, extractMap(tl, ordering)))
+        lemmaInBiggerListButNotHeadThenTail(lm, key, hashF, ordering)
+        assert(containsKeyBiggerList(tl, key))
+        lemmaListContainsThenExtractedMapContains(lm.tail, key, hashF, ordering)
+        assert(extractMap(tl, ordering).contains(key))
+        val v = extractMap(tl, ordering).get(key).get
+        val m = extractMap(tl, ordering)
+        ListMapLemmas.lemmaGetValueImpliesTupleContained(extractMap(tl, ordering), key, v)
+        // lemmaGetValueInExtractMapToList(tl, key, v, hashF, ordering)
+        check(extractMap(tl, ordering).toList.contains((key, v)))
+        ListSpecs.forallContained(extractMap(tl, ordering).toList, p => extractMap(lm.toList, ordering).contains(p._1), (key, v))
+      }
+      case Nil() => ()
+
+  } ensuring (_ => extractMap(lm.toList, ordering).contains(key))
+
+  @opaque
+  @inlineOnce
+  @ghost
+  def lemmaInPairListHeadThenGetValueInTuple[K, V](lm: ListLongMap[List[(K, V)]], key: K, v: V, hashF: Hashable[K], ordering: Ordering[K]): Unit = {
+    require(lm.toList.forall((k, v) => noDuplicateKeys(v)))
+    require(allKeysSameHashInMap(lm, hashF))
+    require(containsKeyBiggerList(lm.toList, key) && containsKey(lm.toList.head._2, key))
+    require(v == getValue(lm.toList, key))
+
+  } ensuring (_ => lm.toList.head._2.contains((key, v)))
+
+  @opaque
+  @inlineOnce
+  @ghost
+  def lemmaInBiggerListButNotHeadThenTail[K, V](lm: ListLongMap[List[(K, V)]], key: K, hashF: Hashable[K], ordering: Ordering[K]): Unit = {
+    require(lm.toList.forall((k, v) => noDuplicateKeys(v)))
+    require(allKeysSameHashInMap(lm, hashF))
+    require(containsKeyBiggerList(lm.toList, key))
+    require(!containsKey(lm.toList.head._2, key))
+    decreases(lm.toList.size)
+
+  } ensuring (_ => containsKeyBiggerList(lm.toList.tail, key))
+
+  @opaque
+  @inlineOnce
+  @ghost
+  def lemmaGetPairDefinedThenContainsKey[K, V](l: List[(K, V)], key: K, hashF: Hashable[K], ordering: Ordering[K]): Unit = {
+    require(noDuplicateKeys(l))
+    require(getPair(l, key).isDefined)
+    decreases(l)
+    l match
+      case Cons(hd, tl) if hd._1 == key => ()
+      case Cons(_, tl)                  => lemmaGetPairDefinedThenContainsKey(tl, key, hashF, ordering)
+      case Nil()                        => ()
+
+  } ensuring(_ => containsKey(l, key))
+
+
+  @opaque
+  @inlineOnce
+  @ghost
+  def lemmaNotSameHashThenCannotContainKey[K, V](lm: ListLongMap[List[(K, V)]], key: K, hash: Long, hashF: Hashable[K], ordering: Ordering[K]): Unit = {
+    require(lm.toList.forall((k, v) => noDuplicateKeys(v)))
+    require(allKeysSameHashInMap(lm, hashF))
+    require(lm.contains(hashF.hash(key)))
+    require(lm.contains(hash))
+    require(hash != hashF.hash(key))
+    
+    val listHash = lm.apply(hash)
+
+    ListLongMapLemmas.lemmaGetValueImpliesTupleContained(lm, hash, listHash)
+    ListSpecs.forallContained(lm.toList, (k, v) => allKeysSameHash(v, k, hashF), (hash, listHash))
+    assert(allKeysSameHash(listHash, hash, hashF))
+    if(containsKey(listHash, key)) {
+      ListSpecs.forallContained(lm.toList, (k, v) => noDuplicateKeys(v), (hash, listHash))
+      ListSpecs.forallContained(listHash, (k, v) => hashF.hash(k) == hash, (key, getPair(listHash, key).get._2))
+      check(false)
+    }
+  } ensuring(_ => !containsKey(lm.apply(hash), key))
+
 }

@@ -961,6 +961,15 @@ object ListLongMapLemmas {
   }.ensuring(_ => lm.get(a) == Some[B](b))
 
   @opaque
+  @inlineOnce
+  def lemmaGetValueImpliesTupleContained[B](lm: ListLongMap[B], a: Long, b: B): Unit = {
+    require(lm.contains(a))
+    require(lm.get(a) == Some[B](b))
+
+    TupleListOps.lemmaGetValueByKeyImpliesContainsTuple(lm.toList, a, b)
+  } ensuring (_ => lm.toList.contains((a, b)))
+
+  @opaque
   def keysOfSound[B](@induct lm: ListLongMap[B], value: B): Unit = {
     // trivial by postcondition of getKeysOf
     assert(TupleListOps.getKeysOf(lm.toList, value).forall(k => lm.get(k) == Some[B](value)))

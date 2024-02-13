@@ -35,7 +35,6 @@ trait Ordering[T]:
 end Ordering
 
 case class ListMap[K, B](toList: List[(K, B)], ordd: Ordering[K]) {
-  // given ord: Ordering[K] = ordd
   require(TupleListOpsGenK.isStrictlySorted(toList)(ordd))
 
   def isEmpty: Boolean = toList.isEmpty
@@ -137,7 +136,7 @@ object TupleListOpsGenK {
   extension [K](k: K) def >=(other: K)(implicit ord: Ordering[K]): Boolean = ord.compare(k, other) >= 0
   extension [K](k: K) def <=(other: K)(implicit ord: Ordering[K]): Boolean = ord.compare(k, other) <= 0
 
-  @inline
+  // @inline
   def invariantList[K, B](l: List[(K, B)])(implicit ord: Ordering[K]): Boolean = {
     isStrictlySorted(l)
   }
@@ -384,6 +383,19 @@ object TupleListOpsGenK {
   }
 
   // ----------- LEMMAS -----------------------------------------------------
+
+  @opaque
+  @inlineOnce
+  def lemmaGetValueByKeyImpliesContainsTuple[K, B](l: List[(K, B)], key: K, v: B)(implicit ord: Ordering[K]): Unit = {
+    require(invariantList(l))
+    require(getValueByKey(l, key) == Some[B](v))
+    decreases(l)
+    l match {
+      case Cons(head, tl) if (head._1 != key) =>
+        lemmaGetValueByKeyImpliesContainsTuple(tl, key, v)
+      case _ => ()
+    }
+  }.ensuring(_ => l.contains((key, v)))
 
   @opaque
   @inlineOnce
@@ -840,7 +852,7 @@ object TupleListOpsGenK {
     require(!containsKey(l, key))
     decreases(l)
     l match {
-      case Cons(head, tl)  =>
+      case Cons(head, tl) =>
         lemmaTailStillNotContainsKey(l, key)
         lemmaNotContainsKeyThenNotContainsTuple(tl, key, value)
       case _ => ()
@@ -1139,6 +1151,63 @@ object ListMapLemmas {
     TupleListOpsGenK.lemmaContainsTupThenGetReturnValue(lm.toList, a, b)(lm.ordd)
 
   }.ensuring(_ => lm.get(a) == Some[B](b))
+
+  @opaque
+  @inlineOnce
+  def lemmaContainsAllItsOwnKeys[K, B](lm: ListMap[K, B]): Unit = {
+    decreases(lm.toList.size)
+    lm.toList match
+      case Cons(h, t) => {
+        check(ListMap(t, lm.ordd) + (h._1, h._2) == lm) // Needed
+        lemmaContainsAllItsOwnKeys(ListMap(t, lm.ordd))
+        lemmaInsertPairStillContainsAll(ListMap(t, lm.ordd), t, h._1, h._2)
+      }
+      case Nil() =>
+
+  } ensuring (_ => lm.toList.forall(p => lm.contains(p._1)))
+
+  @opaque
+  @inlineOnce
+  def lemmaInsertPairStillContainsAll[K, B](lm: ListMap[K, B], l: List[(K, B)], k: K, v: B): Unit = {
+    require(l.forall(p => lm.contains(p._1)))
+    decreases(l)
+    l match {
+      case Cons(h, t) =>
+        if (h._1 != k) {
+          TupleListOpsGenK.lemmaInsertStrictlySortedDoesNotModifyOtherKeyValues(lm.toList, k, v, h._1)(lm.ordd)
+        }
+        lemmaInsertPairStillContainsAll(lm, t, k, v)
+      case Nil() => ()
+    }
+  } ensuring (_ => l.forall(p => (lm + (k, v)).contains(p._1)))
+
+  @opaque
+  @inlineOnce
+  def addForallContainsKeyThenBeforeAdding[K, B](
+      lm: ListMap[K, B],
+      other: ListMap[K, B],
+      a: K,
+      b: B
+  ): Unit = {
+    require((lm + (a, b)).toList.forall(p => other.contains(p._1)))
+    decreases(lm.toList.size)
+
+    if (!lm.isEmpty) {
+      addForallContainsKeyThenBeforeAdding(lm.tail, other, a, b)
+    }
+
+  }.ensuring { _ =>
+    lm.toList.forall(p => other.contains(p._1))
+  }
+
+  @opaque
+  @inlineOnce
+  def lemmaGetValueImpliesTupleContained[K, B](lm: ListMap[K, B], a: K, b: B): Unit = {
+    require(lm.contains(a))
+    require(lm.get(a) == Some[B](b))
+
+    TupleListOpsGenK.lemmaGetValueByKeyImpliesContainsTuple(lm.toList, a, b)(lm.ordd)
+  } ensuring (_ => lm.toList.contains((a, b)))
 
   @opaque
   def keysOfSound[K, B](@induct lm: ListMap[K, B], value: B): Unit = {
