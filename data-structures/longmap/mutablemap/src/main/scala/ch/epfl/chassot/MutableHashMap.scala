@@ -138,7 +138,7 @@ object MutableHashMap {
       val contained = contains(key)
       if (!contained) {        
         ghostExpr({
-          check(valid) // TODO
+          check(valid) 
           check(map == map - key ) // TODO
         })
         true
@@ -158,7 +158,7 @@ object MutableHashMap {
           if(res){
             check(map == oldMap - key )  // TODO
           } else {
-            check(map == oldMap) // TODO
+            check(map == oldMap)
           }
         })
         res
