@@ -136,15 +136,35 @@ object MutableHashMap {
     def remove(key: K): Boolean = {
       require(valid)
       val contained = contains(key)
-      val hash = hashF.hash(key)
-      val currentBucket = underlying.v.apply(hash)
-      val newBucket = removePairForKey(currentBucket, key)
-      val res = underlying.v.update(hash, newBucket)
-      if (res && contained) then _size -= 1
-      res
+      if (!contained) {        
+        ghostExpr({
+          check(valid) // TODO
+          check(map == map - key ) // TODO
+        })
+        true
+      } else {
+        val hash = hashF.hash(key)
+        val currentBucket = underlying.v.apply(hash)
 
-    }
-    // ensuring (res => valid && (if (res) map == old(this).map - key else map == old(this).map))
+        ghostExpr(ListSpecs.forallContained(underlying.v.map.toList, (k, v) => noDuplicateKeys(v), (hash, underlying.v.apply(hash))))
+
+        @ghost val oldMap = map
+        val newBucket = removePairForKey(currentBucket, key)
+        val res = underlying.v.update(hash, newBucket)
+        if (res && contained) then _size -= 1
+
+        ghostExpr({
+          check(valid) // TODO
+          if(res){
+            check(map == oldMap - key )  // TODO
+          } else {
+            check(map == oldMap) // TODO
+          }
+        })
+        res
+      }
+
+    } ensuring (res => valid && (if (res) map == old(this).map - key else map == old(this).map))
 
     @ghost
     def valid: Boolean = underlying.v.valid &&
@@ -245,10 +265,10 @@ object MutableHashMap {
   def removePairForKey[K, V](l: List[(K, V)], key: K): List[(K, V)] = {
     require(noDuplicateKeys(l))
     l match
-      case Cons(hd, tl) if hd._1 == key =>         tl
-      case Cons(hd, tl)                 =>   Cons(hd, removePairForKey(tl, key))
+      case Cons(hd, tl) if hd._1 == key => tl
+      case Cons(hd, tl)                 => Cons(hd, removePairForKey(tl, key))
       case Nil()                        => Nil()
-  } ensuring (res => !containsKey(res, key) )
+  } ensuring (res => !containsKey(res, key))
 
   @ghost
   def getValue[K, V](l: List[(Long, List[(K, V)])], k: K): V = {
@@ -475,10 +495,10 @@ object MutableHashMap {
           ListSpecs.forallContained(hd._2, p => hashF.hash(p._1) == hd._1, (key, value))
           lemmaHashNotInLongMapThenNotInGenerated(lm.tail, key, hashF, ordering)
           lemmaAddToMapFromBucketMaintainsMapping(hd._2, extractMap(tl, ordering), key, value)
-          
+
         } else {
           check(!containsKey(hd._2, key))
-          if(!lm.tail.contains(hashF.hash(key))) {
+          if (!lm.tail.contains(hashF.hash(key))) {
             lemmaHashNotInLongMapThenNotInGenerated(lm.tail, key, hashF, ordering)
           }
           lemmaInLongMapThenContainsKeyBiggerList(lm, key, hashF, ordering)
@@ -597,7 +617,6 @@ object MutableHashMap {
 
   } ensuring (_ => lm.toList.head._2.contains((key, v)))
 
-
   @opaque
   @inlineOnce
   @ghost
@@ -618,12 +637,12 @@ object MutableHashMap {
     lm.toList match {
       case Cons(hd, tl) if hd._1 == hashF.hash(key) =>
         ListSpecs.forallContained(lm.toList, (k, v) => allKeysSameHash(v, k, hashF), (hd._1, hd._2))
-        if(!containsKey(hd._2, key)) {
+        if (!containsKey(hd._2, key)) {
           lemmaNotInItsHashBucketThenNotInMap(lm, key, hashF, ordering)
           lemmaListContainsThenExtractedMapContains(lm, key, hashF, ordering)
           check(false)
         }
-      case Cons(hd, tl) => 
+      case Cons(hd, tl) =>
         lemmaNotSameHashThenCannotContainKey(lm, key, hd._1, hashF, ordering)
         assert(!containsKey(hd._2, key))
         lemmaInBiggerListButNotHeadThenTail(lm, key, hashF, ordering)
