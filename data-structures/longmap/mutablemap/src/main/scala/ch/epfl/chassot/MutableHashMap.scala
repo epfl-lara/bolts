@@ -136,10 +136,9 @@ object MutableHashMap {
     def remove(key: K): Boolean = {
       require(valid)
       val contained = contains(key)
-      if (!contained) {        
+      if (!contained) {
         ghostExpr({
-          check(valid) 
-          check(map == map - key ) // TODO
+          lemmaRemoveNotContainedDoesNotChange(underlying.v.map, key, hashF, ordering)
         })
         true
       } else {
@@ -149,15 +148,26 @@ object MutableHashMap {
         ghostExpr(ListSpecs.forallContained(underlying.v.map.toList, (k, v) => noDuplicateKeys(v), (hash, underlying.v.apply(hash))))
 
         @ghost val oldMap = map
+        @ghost val oldLongListMap = underlying.v.map
+
         val newBucket = removePairForKey(currentBucket, key)
         val res = underlying.v.update(hash, newBucket)
         if (res && contained) then _size -= 1
 
         ghostExpr({
-          check(valid) // TODO
-          if(res){
-            check(map == oldMap - key )  // TODO
+          lemmaRemovePairForKeyPreservesNoDuplicateKeys(currentBucket, key)
+          if (res) {
+            lemmaInLongMapAllKeySameHashThenForTuple(oldLongListMap.toList, hash, currentBucket, hashF)
+            lemmaRemovePairForKeyPreservesHash(currentBucket, key, hash, hashF)
+            lemmaChangeOneBucketByAValidOnePreservesForallNoDuplicatesAndHash(oldLongListMap, hash, newBucket, hashF, ordering)
+            check(underlying.v.map.toList.forall((k, v) => noDuplicateKeys(v))) 
+            check(allKeysSameHashInMap(underlying.v.map, hashF))
+            check(valid)
+            check(oldMap.contains(key))
+            lemmaChangeOneBucketToRemoveAKeyRemoveThisKeyInGenMap(oldLongListMap, hash, newBucket, key, hashF, ordering)
+            check(map == oldMap - key) // TODO
           } else {
+            check(valid)
             check(map == oldMap)
           }
         })
@@ -281,6 +291,7 @@ object MutableHashMap {
   }
 
   // ----------------- Lemmas ------------------------------------------------------------------------
+
   @opaque
   @inlineOnce
   @ghost
@@ -357,7 +368,128 @@ object MutableHashMap {
     getPair(lm.apply(hashF.hash(key)), key).get._2 == extractMap(lm.toList, ordering).get(key).get
   })
 
-  // ------------------------------------------------------
+  
+  // -----------------------------------------------------
+
+  @opaque
+  @inlineOnce
+  @ghost
+  def lemmaChangeOneBucketToRemoveAKeyRemoveThisKeyInGenMap[K, V](lm: ListLongMap[List[(K, V)]], hash: Long, newBucket: List[(K, V)], key: K, hashF: Hashable[K], ordering: Ordering[K]): Unit = {
+    require(lm.toList.forall((k, v) => noDuplicateKeys(v)))
+    require(allKeysSameHashInMap(lm, hashF))
+    require(extractMap(lm.toList, ordering).contains(key))
+    require(hashF.hash(key) == hash)
+    require(allKeysSameHash(newBucket, hash, hashF))
+    require({
+      lemmaInGenMapThenLongMapContainsHash(lm, key, hashF, ordering)
+      TupleListOps.lemmaGetValueByKeyImpliesContainsTuple(lm.toList, hash, lm.apply(hash))
+      ListSpecs.forallContained(lm.toList, (k, v) => noDuplicateKeys(v), (hash, lm.apply(hash)))
+      newBucket == removePairForKey(lm.apply(hash), key)
+    })
+    require(noDuplicateKeys(newBucket))
+    decreases(lm.toList.size)
+
+
+    // TODO
+    lm.toList match
+      case Cons(h, t) => {
+          lemmaChangeOneBucketToRemoveAKeyRemoveThisKeyInGenMap(ListLongMap(t), hash, newBucket, key, hashF, ordering)
+      }
+      case Nil() => ()
+    
+
+  } ensuring(_ => {
+    val newMap = old(lm) + (hash, newBucket)
+    extractMap(newMap.toList, ordering) == extractMap(old(lm).toList, ordering) - key
+  })
+
+  @opaque
+  @inlineOnce
+  @ghost
+  def lemmaInLongMapAllKeySameHashThenForTuple[K, V](lml: List[(Long, List[(K, V)])], hash: Long, bucket: List[(K, V)], hashF: Hashable[K]): Unit = {
+    require(lml.forall((k, v) => allKeysSameHash(v, k, hashF)))
+    require(lml.contains((hash, bucket)))
+    decreases(lml.size)
+    
+    ListSpecs.forallContained(lml, (k, v) => allKeysSameHash(v, k, hashF), (hash, bucket))
+
+  } ensuring (_ => allKeysSameHash(bucket, hash, hashF))
+
+
+  @opaque
+  @inlineOnce
+  @ghost
+  def  lemmaRemovePairForKeyPreservesHash[K, V](@induct l: List[(K, V)], key: K, hash: Long, hashF: Hashable[K]): Unit = {
+    require(noDuplicateKeys(l))
+    require(allKeysSameHash(l, hash, hashF))
+
+
+  } ensuring(_ => allKeysSameHash(removePairForKey(l, key), hash, hashF))
+
+
+  @opaque
+  @inlineOnce
+  @ghost
+  def lemmaChangeOneBucketByAValidOnePreservesForallNoDuplicatesAndHash[K, V](lm: ListLongMap[List[(K, V)]], hash: Long, newBucket: List[(K, V)], hashF: Hashable[K], ordering: Ordering[K]): Unit = {
+    require(lm.toList.forall((k, v) => noDuplicateKeys(v)))
+    require(allKeysSameHashInMap(lm, hashF))
+    require(noDuplicateKeys(newBucket))
+    require(allKeysSameHash(newBucket, hash, hashF))
+    decreases(lm.toList.size)
+    lm.toList match
+      case Cons(h, t) => {
+          lemmaChangeOneBucketByAValidOnePreservesForallNoDuplicatesAndHash(ListLongMap(t), hash, newBucket, hashF, ordering)
+      }
+      case Nil() => ()
+    
+
+  } ensuring(_ => {
+    val newMap = old(lm) + (hash, newBucket)
+    newMap.toList.forall((k, v) => noDuplicateKeys(v)) && allKeysSameHashInMap(newMap, hashF)
+  })
+
+
+  @opaque
+  @inlineOnce
+  @ghost
+  def lemmaRemoveNotContainedDoesNotChange[K, V](lm: ListLongMap[List[(K, V)]], key: K, hashF: Hashable[K], ordering: Ordering[K]): Unit = {
+    require(lm.toList.forall((k, v) => noDuplicateKeys(v)))
+    require(allKeysSameHashInMap(lm, hashF))
+    require(!extractMap(lm.toList, ordering).contains(key))
+
+    ListMapLemmas.removeNotPresentStillSame(extractMap(lm.toList, ordering), key)
+
+  } ensuring (_ => extractMap(lm.toList, ordering) == extractMap(lm.toList, ordering) - key)
+  
+  @opaque
+  @inlineOnce
+  @ghost
+  def lemmaRemovePairForKeyPreservesNoDuplicateKeys[K, V](l: List[(K, V)], key: K): Unit = {
+    require(noDuplicateKeys(l))
+    decreases(l)
+
+    l match {
+      case Cons(hd, tl) if hd._1 == key => ()
+      case Cons(hd, tl)                 => {
+        lemmaRemovePairForKeyPreservesNoDuplicateKeys(tl, key)
+        lemmaRemovePairForKeyPreservesNotContainsKey(tl, key, hd._1)
+        lemmaNotContainsKeyThenCannotContainPair(removePairForKey(tl, key), hd._1, hd._2)
+      }
+      case Nil()                        => ()
+    }
+
+  } ensuring(_ => noDuplicateKeys(removePairForKey(l, key)))
+
+  @opaque
+  @inlineOnce
+  @ghost
+  def lemmaRemovePairForKeyPreservesNotContainsKey[K, V](@induct l: List[(K, V)], key: K, otherK: K): Unit = {
+    require(noDuplicateKeys(l))
+    require(otherK != key)
+    require(!containsKey(l, otherK))
+    
+  } ensuring(_ => !containsKey(removePairForKey(l, key), otherK))
+
 
   @opaque
   @inlineOnce
