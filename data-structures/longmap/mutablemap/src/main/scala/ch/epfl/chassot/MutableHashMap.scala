@@ -391,11 +391,18 @@ object MutableHashMap {
 
 
     // TODO
-    lm.toList match
-      case Cons(h, t) => {
-          lemmaChangeOneBucketToRemoveAKeyRemoveThisKeyInGenMap(ListLongMap(t), hash, newBucket, key, hashF, ordering)
+    lm.toList match {
+      case Cons((k, v), tl) => {
+        if (k == hash) {
+          lemmaChangeOneBucketToRemoveAKeyRemoveThisKeyInGenMap(lm.tail, hash, newBucket, key, hashF, ordering)
+        } else {
+          lemmaChangeOneBucketToRemoveAKeyRemoveThisKeyInGenMap(lm.tail, hash, newBucket, key, hashF, ordering)
+        }
+        val extractedMap = addToMapMapFromBucket(v, extractMap(tl, ordering))
+        lemmaChangeOneBucketToRemoveAKeyRemoveThisKeyInGenMap(lm.tail, hash, newBucket, key, hashF, ordering)
       }
-      case Nil() => ()
+      case Nil()            => ()
+    }
     
 
   } ensuring(_ => {
