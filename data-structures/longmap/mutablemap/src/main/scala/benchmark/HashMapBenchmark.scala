@@ -145,7 +145,7 @@ class MutableHashMapBenchmarkBig {
   @OutputTimeUnit(TimeUnit.MICROSECONDS)
   def createUpdateLookup_16Buffer_VerifiedMutableLongMap(): Unit = {
     val m:MutableLongMap.LongMap[Long] = getVerifiedMapEmptyBuffer(16)
-    for (k, v) <- random2to22Pairs do m.update(k, v)
+    for (k, v) <- random2to22PairsLong do m.update(k, v)
     end for
 
     var i = 0
@@ -163,7 +163,7 @@ class MutableHashMapBenchmarkBig {
   @OutputTimeUnit(TimeUnit.MICROSECONDS)
   def createUpdateLookup_16Buffer_OriginalHashMap(): Unit = {
     val m:HashMap[Key, Long] = getHashMapEmptyBuffer(16)
-    for (k, v) <- random2to22Pairs do  m.update(Key(k, k.toString()), v)
+    for (k, v) <- random2to22Pairs do  m.update(k, v)
     end for
 
     var i = 0
@@ -181,7 +181,7 @@ class MutableHashMapBenchmarkBig {
   @OutputTimeUnit(TimeUnit.MICROSECONDS)
   def createUpdateLookup_16Buffer_VerifiedHashMap(): Unit = {
     val m: MutableHashMap.HashMap[Key, Long] = getVerifiedHashMapEmptyBuffer(16)
-    for (k, v) <- random2to22Pairs do  m.update(Key(k, k.toString()), v)
+    for (k, v) <- random2to22Pairs do  m.update(k, v)
     end for
 
     var i = 0
@@ -200,7 +200,7 @@ class MutableHashMapBenchmarkBig {
   @OutputTimeUnit(TimeUnit.MICROSECONDS)
   def createUpdateLookup_2to17Buffer_VerifiedMutableLongMap(): Unit = {
     val m:MutableLongMap.LongMap[Long] = getVerifiedMapEmptyBuffer(16)
-    for (k, v) <- random2to22Pairs do m.update(k, v)
+    for (k, v) <- random2to22PairsLong do m.update(k, v)
     end for
 
     var i = 0
@@ -218,7 +218,7 @@ class MutableHashMapBenchmarkBig {
   @OutputTimeUnit(TimeUnit.MICROSECONDS)
   def createUpdateLookup_2to17Buffer_OriginalHashMap(): Unit = {
     val m:HashMap[Key, Long] = getHashMapEmptyBuffer(16)
-    for (k, v) <- random2to22Pairs do  m.update(Key(k, k.toString()), v)
+    for (k, v) <- random2to22Pairs do  m.update(k, v)
     end for
 
     var i = 0
@@ -236,7 +236,7 @@ class MutableHashMapBenchmarkBig {
   @OutputTimeUnit(TimeUnit.MICROSECONDS)
   def createUpdateLookup_2to17Buffer_VerifiedHashMap(): Unit = {
     val m: MutableHashMap.HashMap[Key, Long] = getVerifiedHashMapEmptyBuffer(16)
-    for (k, v) <- random2to22Pairs do m.update(Key(k, k.toString()), v)
+    for (k, v) <- random2to22Pairs do m.update(k, v)
     end for
 
     var i = 0
@@ -256,7 +256,7 @@ class MutableHashMapBenchmarkBig {
   @OutputTimeUnit(TimeUnit.MICROSECONDS)
   def createUpdateRemoveUpdateLookup_16Buffer_VerifiedMutableLongMap(): Unit = {
     val m:MutableLongMap.LongMap[Long] = getVerifiedMapEmptyBuffer(16)
-    for (k, v) <- random2to22Pairs do m.update(k, v)
+    for (k, v) <- random2to22PairsLong do m.update(k, v)
     end for
 
     var i1 = 0
@@ -266,7 +266,7 @@ class MutableHashMapBenchmarkBig {
       i1 += 1
     end while
 
-    for (k, v) <- random2to22Pairs do m.update(k, v)
+    for (k, v) <- random2to22PairsLong do m.update(k, v)
     end for
 
     var i = 0
@@ -284,7 +284,7 @@ class MutableHashMapBenchmarkBig {
   @OutputTimeUnit(TimeUnit.MICROSECONDS)
   def createUpdateRemoveUpdateLookup_16Buffer_OriginalHashMap(): Unit = {
     val m:HashMap[Key, Long] = getHashMapEmptyBuffer(16)
-    for (k, v) <- random2to22Pairs do  m.update(Key(k, k.toString()), v)
+    for (k, v) <- random2to22Pairs do  m.update(k, v)
     end for
 
     var i1 = 0
@@ -312,7 +312,7 @@ class MutableHashMapBenchmarkBig {
   @OutputTimeUnit(TimeUnit.MICROSECONDS)
   def createUpdateRemoveUpdateLookup_16Buffer_VerifiedHashMap(): Unit = {
     val m: MutableHashMap.HashMap[Key, Long] = getVerifiedHashMapEmptyBuffer(16)
-    for (k, v) <- random2to22Pairs do m.update(Key(k, k.toString()), v)
+    for (k, v) <- random2to22Pairs do m.update(k, v)
     end for
 
     var i1 = 0
@@ -356,7 +356,8 @@ object HashMapBenchmarkUtilBig {
   val long2to22 = Math.pow(2, 22).toLong
   val long2to23 = Math.pow(2, 23).toLong
 
-  val random2to22Pairs = Random.shuffle((0L until long2to22).map(i => (i.toLong, Random.nextLong())).toList)
+  val random2to22PairsLong = Random.shuffle((0L until long2to22).map(i => (i.toLong, Random.nextLong())).toList)
+  val random2to22Pairs = Random.shuffle((0L until long2to22).map(i => (Key(i.toLong, i.toLong.toString()), Random.nextLong())).toList)
 
   val randomArrayOfLongSize2to23: Array[Long] = Random.shuffle((0L until long2to22) ++ (0L until long2to22)).toArray
   val randomArrayOfKeysSize2to23: Array[Key] = Random.shuffle((0L until long2to22) ++ (0L until long2to22)).map(l => Key(l, l.toString())).toArray
@@ -367,21 +368,21 @@ object HashMapBenchmarkUtilBig {
 
   val verifiedLongMapFilledWith2to22Values = {
     val mutableMap: MutableLongMap.LongMap[Long] = getVerifiedMapEmptyBuffer(16)
-    for (k, v) <- random2to22Pairs do mutableMap.update(k, v)
+    for (k, v) <- random2to22PairsLong do mutableMap.update(k, v)
     end for
     mutableMap
   }
 
   val verifiedHashMapFilledWith2to22Values = {
     val mutableMap: MutableHashMap.HashMap[Key, Long] = getVerifiedHashMapEmptyBuffer(16)
-    for (k, v) <- random2to22Pairs do mutableMap.update(Key(k, k.toString()), v)
+    for (k, v) <- random2to22Pairs do mutableMap.update(k, v)
     end for
     mutableMap
   }
 
   val hashMapFilledWith2to22Values = {
     val map: HashMap[Key, Long] = getHashMapEmptyBuffer(16)
-    for (k, v) <- random2to22Pairs do map.update(Key(k, k.toString()), v)
+    for (k, v) <- random2to22Pairs do map.update(k, v)
     end for
     map
   }
