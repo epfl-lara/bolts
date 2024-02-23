@@ -22,7 +22,7 @@ class MutableHashMapBenchmarkBig {
 
   @Param(
     Array(
-      "0",
+      // "0",
       "131072",
       // "262144",
       "393216",
