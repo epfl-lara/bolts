@@ -17,7 +17,7 @@ import ch.epfl.chassot.Ordering
 
 
 @State(Scope.Benchmark)
-class MutableMapBenchmarkBig {
+class MutableHashMapBenchmarkBig {
   import HashMapBenchmarkUtilBig.*
 
   @Param(
