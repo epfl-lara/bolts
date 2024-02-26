@@ -194,61 +194,6 @@ class MutableHashMapBenchmarkBig {
     val temp = acc * 5
   }
 
-  // ------------------------------------------------ UPDATE 2^^22 KEYS THEN LOOKUPS IN MAPS WITH 2^^23 INITIAL BUFFER ----------------------------------------------------------
-  @Benchmark
-  @BenchmarkMode(Array(Mode.AverageTime))
-  @OutputTimeUnit(TimeUnit.MICROSECONDS)
-  def createUpdateLookup_2to17Buffer_VerifiedMutableLongMap(): Unit = {
-    val m:MutableLongMap.LongMap[Long] = getVerifiedMapEmptyBuffer(16)
-    for (k, v) <- random2to22PairsLong do m.update(k, v)
-    end for
-
-    var i = 0
-    val n = nKeys.toInt
-    var acc: Long = 1
-    while (i < n) do
-      acc *= m(randomArrayOfLongSize2to23(i))
-      i += 1
-    end while
-    val temp = acc * 5
-  }
-
-  @Benchmark
-  @BenchmarkMode(Array(Mode.AverageTime))
-  @OutputTimeUnit(TimeUnit.MICROSECONDS)
-  def createUpdateLookup_2to17Buffer_OriginalHashMap(): Unit = {
-    val m:HashMap[Key, Long] = getHashMapEmptyBuffer(16)
-    for (k, v) <- random2to22Pairs do  m.update(k, v)
-    end for
-
-    var i = 0
-    val n = nKeys.toInt
-    var acc: Long = 1
-    while (i < n) do
-      acc *= m(randomArrayOfKeysSize2to23(i))
-      i += 1
-    end while
-    val temp = acc * 5
-  }
-
-  @Benchmark
-  @BenchmarkMode(Array(Mode.AverageTime))
-  @OutputTimeUnit(TimeUnit.MICROSECONDS)
-  def createUpdateLookup_2to17Buffer_VerifiedHashMap(): Unit = {
-    val m: MutableHashMap.HashMap[Key, Long] = getVerifiedHashMapEmptyBuffer(16)
-    for (k, v) <- random2to22Pairs do m.update(k, v)
-    end for
-
-    var i = 0
-    val n = nKeys.toInt
-    var acc: Long = 1
-    while (i < n) do
-      acc *= m(randomArrayOfKeysSize2to23(i))
-      i += 1
-    end while
-    val temp = acc * 5
-  }
-
   // ------------------------------------------------ UPDATE 2^^22 KEYS THEN REMOVE 2097152 (=2^^21) THEN UPDATE AGAIN THEN LOOKUPS, BUFFER 16 ----------------------------------------------------------
 
   @Benchmark
