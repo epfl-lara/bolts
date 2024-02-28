@@ -12,6 +12,14 @@ class HashLong extends Hashable[Long] {
 
 object Main {
   def main(args: Array[String]): Unit = {
+    import benchmark.HashMapBenchmarkUtilBig.* 
+    import benchmark.HashKey
+
+    val collisions = random2to22Pairs.groupBy(p => HashKey.hash(p._1)).toList.map((k, v) => (k, v.size))
+    
+    // collisions.filter(p => p._2 > 1).foreach { case (k, v) => println(f"hash: $k, size: $v") }
+
+    collisions.groupBy(p => p._2).toList.sortBy(p => p._1).foreach { case (k, v) => println(f"numbers of collisions: $k, number of times it happened: ${v.size}") }
   //   var listLongMap = ListLongMap.empty[Long]
   //   val mutableLongMap = MutableLongMap.getEmptyLongMap(_ => 0L)
 
