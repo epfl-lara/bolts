@@ -8,3 +8,8 @@
 stainless-stack-trace.txt
 **/target
 **/*.log
+**/.venv/*
+**/.jvmopts
+**/lib
+*.sc
+**/stainless/

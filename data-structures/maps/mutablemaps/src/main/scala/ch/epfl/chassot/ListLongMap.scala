@@ -503,6 +503,7 @@ object TupleListOps {
     }
   }.ensuring(_ => containsKey(l, key))
 
+
   @opaque
   @inlineOnce
   def lemmaContainsKeyImpliesGetValueByKeyDefined[B](
@@ -517,6 +518,22 @@ object TupleListOps {
       case _ => ()
     }
   }.ensuring(_ => getValueByKey(l, key).isDefined)
+
+  @opaque
+  @inlineOnce
+  def lemmaGetValueByKeyImpliesContainsTuple[B](
+      l: List[(Long, B)],
+      key: Long,
+      v: B
+  ): Unit = {
+    require(invariantList(l) && getValueByKey(l, key) == Some[B](v))
+    decreases(l)
+    l match {
+      case Cons(head, tl) if (head._1 != key) =>
+        lemmaGetValueByKeyImpliesContainsTuple(tl, key, v)
+      case _ => ()
+    }
+  }.ensuring(_ => l.contains((key, v)))
 
   @opaque
   @inlineOnce
@@ -942,6 +959,15 @@ object ListLongMapLemmas {
     TupleListOps.lemmaContainsTupThenGetReturnValue(lm.toList, a, b)
 
   }.ensuring(_ => lm.get(a) == Some[B](b))
+
+  @opaque
+  @inlineOnce
+  def lemmaGetValueImpliesTupleContained[B](lm: ListLongMap[B], a: Long, b: B): Unit = {
+    require(lm.contains(a))
+    require(lm.get(a) == Some[B](b))
+
+    TupleListOps.lemmaGetValueByKeyImpliesContainsTuple(lm.toList, a, b)
+  } ensuring (_ => lm.toList.contains((a, b)))
 
   @opaque
   def keysOfSound[B](@induct lm: ListLongMap[B], value: B): Unit = {

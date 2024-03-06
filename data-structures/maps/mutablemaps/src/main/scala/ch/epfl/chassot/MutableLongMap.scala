@@ -305,7 +305,7 @@ object MutableLongMap {
 
     @pure
     @ghost
-    private def map: ListLongMap[V] = {
+    def map: ListLongMap[V] = {
       require(valid)
       underlying.v.map
     }
