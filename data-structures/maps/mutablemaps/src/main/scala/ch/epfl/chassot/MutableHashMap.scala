@@ -22,9 +22,9 @@ trait Hashable[K] {
 
 object MutableHashMap {
 
-  /** Helper method to create a new empty LongMap
+  /** Helper method to create a new empty HashMap
     *
-    * @param defaultEntry
+    * @param defaultValue
     * @return
     */
   def getEmptyHashMap[K, V](defaultValue: K => V, hashF: Hashable[K], ordering: Ordering[K]): HashMap[K, V] = {
@@ -32,17 +32,6 @@ object MutableHashMap {
     HashMap(Cell(MutableLongMap.getEmptyLongMap[List[(K, V)]]((l: Long) => Nil[(K, V)](), initialSize)), hashF, 0, defaultValue, ordering)
   } ensuring (res => res.valid && res.size == 0)
 
-  // /** Helper method to create a new empty LongMap with a given initial array size WARNING: UNSOUND!!! The given size must be a power of 2 <= 2^30
-  //   *
-  //   * @param defaultEntry
-  //   * @return
-  //   */
-  // def getEmptyLongMap[V](defaultEntry: Long => V, initialSize: Int): LongMap[V] = {
-  //   require(validMask(initialSize - 1))
-  //   val m = initialSize - 1
-  //   assert(validMask(m))
-  //   LongMap(Cell(LongMapFixedSize.getNewLongMapFixedSize(m, defaultEntry)))
-  // } ensuring (res => res.valid && res.size == 0)
 
   @mutable
   final case class HashMap[K, V](
