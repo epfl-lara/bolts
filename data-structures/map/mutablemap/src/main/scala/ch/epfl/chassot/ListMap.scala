@@ -27,7 +27,7 @@ trait Ordering[T]:
     if compare(x, y) == 0 then sign(compare(x, z)) == sign(compare(y, z)) else true
 
   @law def equalsMeansEquals(x: T, y: T): Boolean =
-    compare(x, y) == 0 == (x == y)
+    (compare(x, y) == 0) == (x == y)
 
   final def sign(x: Int): BigInt =
     if x < 0 then -1 else if x > 0 then 1 else 0
@@ -466,6 +466,25 @@ object TupleListOpsGenK {
     }
 
   }.ensuring(_ => removeStrictlySorted(insertStrictlySorted(l, key1, v1), key1) == l)
+
+  @opaque
+  @inlineOnce
+  def lemmaRemoveThenInsertStrictlySortedIsSameAsInsert[K, B](
+      l: List[(K, B)],
+      key1: K,
+      v1: B
+  )(implicit ord: Ordering[K]): Unit = {
+    require(invariantList(l))
+    decreases(l)
+
+    l match {
+      case Cons(head, tl) => {
+        lemmaRemoveThenInsertStrictlySortedIsSameAsInsert(tl, key1, v1)
+      }
+      case _ => ()
+    }
+
+  }.ensuring(_ => insertStrictlySorted(removeStrictlySorted(l, key1), key1, v1) == insertStrictlySorted(l, key1, v1))
 
   @opaque
   @inlineOnce
@@ -957,6 +976,16 @@ object ListMapLemmas {
     require(!lm.contains(a1))
     TupleListOpsGenK.lemmaInsertStrictlySortedThenRemoveIsSame(lm.toList, a1, b1)(lm.ordd)
   }.ensuring(_ => lm + (a1, b1) - a1 == lm)
+
+  @opaque
+  @inlineOnce
+  def removeThenAddForSameKeyIsSameAsAdd[K, B](
+      lm: ListMap[K, B],
+      a1: K,
+      b1: B
+  ): Unit = {
+      TupleListOpsGenK.lemmaRemoveThenInsertStrictlySortedIsSameAsInsert(lm.toList, a1, b1)(lm.ordd)
+  }.ensuring(_ => lm - a1 + (a1, b1) == lm + (a1, b1))
 
   @opaque
   @inlineOnce

@@ -1,6 +1,6 @@
 # Verified Mutable Map in Scala
 
-This project contains a Verified implementation of the `LongMap` from the scala standard library.
+This project contains a verified implementation of the `LongMap` from the scala standard library, as well as a `HashMap` implementation that builds upon the `LongMap`, also verified.
 
 ## Setup
 
@@ -40,8 +40,6 @@ To run benchmarks, run in `sbt`
 To verify using Stainless, first install Stainless following the instructions [here]("github.com/epfl-lara/stainless"). Please note that the external solvers such as z3 and cvc5 must be installed separately and accessible in the `PATH`.
 
 Then, run `$ ./verify.sh`.
-
-Then, run `sbt` and run `stainlessVerify` to verify the implementation.
 
 
 ## Run Main

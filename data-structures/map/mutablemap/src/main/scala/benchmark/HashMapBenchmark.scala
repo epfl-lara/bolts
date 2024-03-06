@@ -284,6 +284,7 @@ class MutableHashMapBenchmarkBig {
 }
 
 case class Key(l: Long, s: String)
+
 object HashKey extends Hashable[Key]:
   override def hash(k: Key): Long = k.hashCode().toLong // to be more realistic, as we can have collisions
 end HashKey

@@ -18,7 +18,6 @@ import stainless.lang.StaticChecks.* // Comment out when using the OptimisedEnsu
 trait Hashable[K] {
   @pure
   def hash(k: K): Long
-  @law def equalMeansSameHash(k1: K, k2: K): Boolean = (k1 == k2) ==> (hash(k1) == hash(k2))
 }
 
 object MutableHashMap {
