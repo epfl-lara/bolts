@@ -11,14 +11,11 @@ import scala.annotation.tailrec
 import stainless.lang.Cell
 import MutableLongMap._
 import LongMapFixedSize.validMask
+import ch.epfl.chassot.Hashable
 
 import stainless.lang.StaticChecks.* // Comment out when using the OptimisedEnsuring object below
 // import OptimisedChecks.* // Import to remove `ensuring` and `require` from the code for the benchmarks
 
-trait Hashable[K] {
-  @pure
-  def hash(k: K): Long
-}
 
 object MutableHashMap {
 

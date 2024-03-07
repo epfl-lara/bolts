@@ -12,14 +12,53 @@ import ch.epfl.chassot.MutableLongMap._
 import ch.epfl.chassot.ListLongMap
 import ch.epfl.chassot.ListMap
 import ch.epfl.chassot.MutableHashMap._
+import ch.epfl.chassot.Ordering
+import ch.epfl.chassot.Hashable
 import stainless.lang.StaticChecks._
 
-trait IDGiver[C] {
-  def id(c: C): Long
-  val MAX_ID = Int.MaxValue
-  @law def smallEnough(c: C): Boolean = id(c) >= 0 && id(c) <= MAX_ID
-  @law def uniqueness(c1: C, c2: C): Boolean = if (id(c1) == id(c2)) then c1 == c2 else true
-}
+// object CharRegexUtils {
+//   import VerifiedRegex._
+//   case class CharOrdering() extends Ordering[Char] {
+//     override def compare(x: Char, y: Char): Int = {
+//       if (x < y) -1
+//       else if (x > y) 1
+//       else 0
+//     }
+//     override def inverse(x: Char, y: Char): Boolean = {
+//       sign(compare(x, y)) == -sign(compare(y, x))
+//     }
+//     override def transitive(x: Char, y: Char, z: Char): Boolean = {
+//       if (compare(x, y) > 0 && compare(y, z) > 0) compare(x, z) > 0
+//       else if (compare(x, y) < 0 && compare(y, z) < 0) compare(x, z) < 0
+//       else true
+//     }
+//     override def consistent(x: Char, y: Char, z: Char): Boolean = {
+//       if (compare(x, y) == 0) sign(compare(x, z)) == sign(compare(y, z))
+//       else true
+//     }
+//     override def equalsMeansEquals(x: Char, y: Char): Boolean = {
+//       (compare(x, y) == 0) == (x == y)
+//     }
+//   }
+
+//   case class CharRegexOrdering() extends Ordering[Regex[Char]] {
+//     override def compare(x: Regex[Char], y: Regex[Char]): Int = {
+//       0
+//     }
+//   }
+
+//   case class CharRegexTuplOrdering() extends Ordering[(Regex[Char], Char)] {
+//     override def compare(x: (Regex[Char], Char), y: (Regex[Char], Char)): Int = {
+//       val r1 = x._1
+//       val r2 = y._1
+//       val char1 = x._2
+//       val char2 = y._2
+//       0
+
+//     }
+//   }
+
+// }
 
 object Memoisation {
   import VerifiedRegex._
@@ -122,24 +161,6 @@ object VerifiedRegex {
     })
   )
 
-  def hashId[C](r: Regex[C])(implicit idC: IDGiver[C]): Long = {
-    decreases(r)
-    r match {
-      case ElementMatch(c) =>
-        2L * idC.id(c)
-      case Star(r) =>
-        3L * hashId(r)
-      case Union(rOne, rTwo) =>
-        5L * hashId(rOne) + 5L * hashId(rTwo)
-      case Concat(rOne, rTwo) =>
-        7L * hashId(rOne) + 7L * hashId(rTwo)
-      case EmptyExpr() =>
-        11L
-      case EmptyLang() =>
-        13L
-    }
-  }
-
   case class ElementMatch[C](c: C) extends Regex[C]
   case class Star[C](reg: Regex[C]) extends Regex[C]
   case class Union[C](regOne: Regex[C], regTwo: Regex[C]) extends Regex[C]
@@ -184,6 +205,24 @@ object VerifiedRegex {
       case Star(r)            => true
       case Union(rOne, rTwo)  => nullable(rOne) || nullable(rTwo)
       case Concat(rOne, rTwo) => nullable(rOne) && nullable(rTwo)
+    }
+  }
+
+  def hash[C](r: Regex[C])(implicit hashC: Hashable[C]): Long = {
+    // decreases(r)
+    r match {
+      case ElementMatch(c) =>
+        2L * hashC.hash(c)
+      case Star(r) =>
+        3L * hash(r)
+      case Union(rOne, rTwo) =>
+        5L * hash(rOne) + 5L * hash(rTwo)
+      case Concat(rOne, rTwo) =>
+        7L * hash(rOne) + 7L * hash(rTwo)
+      case EmptyExpr() =>
+        11L
+      case EmptyLang() =>
+        13L
     }
   }
 
@@ -302,6 +341,15 @@ object VerifiedRegexMatcher {
     }
   } ensuring (res => validRegex(res))
 
+  def derivativeMem[C](r: Regex[C], input: List[C])(cache: Cache[C]): Regex[C] = {
+    require(validRegex(r))
+    require(cache.valid)
+    input match {
+      case Cons(hd, tl) => derivative(derivativeStepMem(r, hd)(cache: Cache[C]), tl)
+      case Nil()        => r
+    }
+  } ensuring (res => validRegex(res) && res == derivative(r, input))
+
   def matchR[C](r: Regex[C], input: List[C]): Boolean = {
     require(validRegex(r))
     decreases(input.size)
@@ -315,6 +363,13 @@ object VerifiedRegexMatcher {
       case _ => true
     }
   )
+
+  def matchRCache[C](r: Regex[C], input: List[C])(cache: Cache[C]): Boolean = {
+    require(validRegex(r))
+    require(cache.valid)
+    decreases(input.size)
+    if (input.isEmpty) nullable(r) else matchR(derivativeStepMem(r, input.head)(cache: Cache[C]), input.tail)
+  } ensuring (res => res == matchR(r, input))
 
   def matchRSpec[C](r: Regex[C], s: List[C]): Boolean = {
     require(validRegex(r))
