@@ -62,7 +62,7 @@ object Memoisation {
       require(validCacheMap(cache))
 
       if (cache.contains((r, c))) {
-        // ghostExpr(lemmaIfInCacheThenValid(r, c))
+        ghostExpr(lemmaIfInCacheThenValid(r, c))
         Some(cache((r, c)))
       } else {
         None()
@@ -74,16 +74,16 @@ object Memoisation {
       require(validRegex(r))
       require(res == derivativeStep(r, c))
 
-      // ghostExpr(
-      //   lemmaUpdateValidPairMaintainsForall(
-      //     cache,
-      //     { case ((r, c), res) =>
-      //       validRegex(r) && res == derivativeStep(r, c)
-      //     },
-      //     (r, c),
-      //     res
-      //   )
-      // )
+      ghostExpr(
+        lemmaUpdateValidPairMaintainsForall(
+          cache,
+          { case ((r, c), res) =>
+            validRegex(r) && res == derivativeStep(r, c)
+          },
+          (r, c),
+          res
+        )
+      )
       val _ = cache.update((r, c), res)
 
     } ensuring (_ => validCacheMap(this.cache))

@@ -32,7 +32,6 @@ object MutableHashMap {
     HashMap(Cell(MutableLongMap.getEmptyLongMap[List[(K, V)]]((l: Long) => Nil[(K, V)](), initialSize)), hashF, 0, defaultValue, ordering)
   } ensuring (res => res.valid && res.size == 0)
 
-
   @mutable
   final case class HashMap[K, V](
       val underlying: Cell[LongMap[List[(K, V)]]],
@@ -224,9 +223,15 @@ object MutableHashMap {
 
     @pure
     @ghost
-    private def map: ListMap[K, V] = {
+    def map: ListMap[K, V] = {
       require(valid)
       extractMap(underlying.v.map.toList, ordering)
+    }
+
+    @ghost
+    def forall(p: ((K, V)) => Boolean): Boolean = {
+      require(valid)
+      map.forall(p)
     }
 
   }
@@ -538,10 +543,10 @@ object MutableHashMap {
     check((lm + (hash, newBucket)).toList.forall((k, v) => noDuplicateKeys(v)))
     lm.toList match {
       case Cons(hd, tl) if hd._1 == hash =>
-        assert(lm.contains(hash)) 
-        check((lm + (hash, newBucket)).toList.head == (hash, newBucket)) 
-        check((lm + (hash, newBucket)).toList.tail == tl) 
-        check(extractMap((lm + (hash, newBucket)).toList, ordering) == addToMapMapFromBucket(newBucket, extractMap(tl, ordering))) 
+        assert(lm.contains(hash))
+        check((lm + (hash, newBucket)).toList.head == (hash, newBucket))
+        check((lm + (hash, newBucket)).toList.tail == tl)
+        check(extractMap((lm + (hash, newBucket)).toList, ordering) == addToMapMapFromBucket(newBucket, extractMap(tl, ordering)))
 
         check(newBucket == Cons((key, newValue), lm.apply(hash)))
         val newAcc = extractMap(tl, ordering) + (key, newValue)
@@ -564,7 +569,7 @@ object MutableHashMap {
         check(!containsKey(hd._2, key))
         lemmaAddToMapFromBucketPlusKeyValueIsCommutative(extractMap(lm.tail.toList, ordering), key, newValue, hd._2)
 
-      case Nil() => () 
+      case Nil() => ()
     }
 
   } ensuring (_ => {
@@ -603,17 +608,27 @@ object MutableHashMap {
     check((lm + (hash, newBucket)).toList.forall((k, v) => noDuplicateKeys(v)))
 
     lm.toList match {
-      case Cons(hd, tl) if hd._1 == hash => 
+      case Cons(hd, tl) if hd._1 == hash =>
         check(lm + (hash, newBucket) == ListLongMap(Cons((hash, newBucket), tl)))
         check(extractMap((lm + (hash, newBucket)).toList, ordering) == addToMapMapFromBucket(newBucket, extractMap(tl, ordering)))
         check(extractMap((lm + (hash, newBucket)).toList, ordering) == addToMapMapFromBucket(Cons((key, newValue), removePairForKey(lm.apply(hash), key)), extractMap(tl, ordering)))
-        check(addToMapMapFromBucket(Cons((key, newValue), removePairForKey(lm.apply(hash), key)), extractMap(tl, ordering)) ==  addToMapMapFromBucket(removePairForKey(lm.apply(hash), key), extractMap(tl, ordering) + (key, newValue)))
+        check(
+          addToMapMapFromBucket(Cons((key, newValue), removePairForKey(lm.apply(hash), key)), extractMap(tl, ordering)) == addToMapMapFromBucket(
+            removePairForKey(lm.apply(hash), key),
+            extractMap(tl, ordering) + (key, newValue)
+          )
+        )
         lemmaAddToMapFromBucketPlusKeyValueIsCommutative(extractMap(tl, ordering), key, newValue, removePairForKey(lm.apply(hash), key))
-        check(addToMapMapFromBucket(Cons((key, newValue), removePairForKey(lm.apply(hash), key)), extractMap(tl, ordering)) ==  addToMapMapFromBucket(removePairForKey(lm.apply(hash), key), extractMap(tl, ordering)) + (key, newValue))
+        check(
+          addToMapMapFromBucket(Cons((key, newValue), removePairForKey(lm.apply(hash), key)), extractMap(tl, ordering)) == addToMapMapFromBucket(
+            removePairForKey(lm.apply(hash), key),
+            extractMap(tl, ordering)
+          ) + (key, newValue)
+        )
 
         val intermediateLm = lm + (hash, newBucket.tail)
         check(newBucket.tail == removePairForKey(lm.apply(hash), key))
-        check( addToMapMapFromBucket(removePairForKey(lm.apply(hash), key), extractMap(tl, ordering)) == extractMap(intermediateLm.toList, ordering))
+        check(addToMapMapFromBucket(removePairForKey(lm.apply(hash), key), extractMap(tl, ordering)) == extractMap(intermediateLm.toList, ordering))
         lemmaChangeOneBucketToRemoveAKeyRemoveThisKeyInGenMap(lm, hash, newBucket.tail, key, hashF, ordering)
         check(extractMap(intermediateLm.toList, ordering) == extractMap(lm.toList, ordering) - key)
 
@@ -625,7 +640,7 @@ object MutableHashMap {
         ListMapLemmas.removeThenAddForSameKeyIsSameAsAdd(extractMap(lm.toList, ordering), key, newValue)
 
         check(extractMap((lm + (hash, newBucket)).toList, ordering) == extractMap(lm.toList, ordering) + (key, newValue))
-      case Cons(hd, tl) if hd._1 != hash => 
+      case Cons(hd, tl) if hd._1 != hash =>
         lemmaNotSameHashThenCannotContainKey(lm, key, hd._1, hashF, ordering)
 
         check(!containsKey(hd._2, key))
@@ -648,11 +663,38 @@ object MutableHashMap {
     extractMap((lm + (hash, newBucket)).toList, ordering) == extractMap(lm.toList, ordering) + (key, newValue)
   })
 
+  @opaque
+  @inlineOnce
+  @ghost
+  def lemmaForallThenForAPair[K, V](hashMap: HashMap[K, V], p: ((K, V)) => Boolean, k: K, v: V): Unit = {
+    require(hashMap.valid)
+    require(hashMap.forall(p))
+    require(hashMap.contains(k))
+    require(hashMap.apply(k) == v)
+
+    ListMapLemmas.lemmaGetValueImpliesTupleContained(hashMap.map, k, v)
+
+    check(hashMap.map.toList.contains((k, v)))
+    ListSpecs.forallContained(hashMap.map.toList, p, (k, v))
+    check(p((k, v)))
+
+  } ensuring (_ => p((k, v)))
+
+  @opaque
+  @inlineOnce
+  @ghost
+  def lemmaUpdateValidPairMaintainsForall[K, V](hashMap: HashMap[K, V], p: ((K, V)) => Boolean, k: K, v: V): Unit = {
+    require(hashMap.valid)
+    require(hashMap.forall(p))
+    require(p((k, v)))
+
+  } ensuring (_ => (hashMap.map + (k, v)).forall(p))
+
   // -----------------------------------------------------
 
   @opaque
   @inlineOnce
-  @ghost 
+  @ghost
   def lemmaAddToMapContainsAndNotInListThenInAcc[K, V](l: List[(K, V)], key: K, value: V, acc: ListMap[K, V]): Unit = {
     require(noDuplicateKeys(l))
     require(!containsKey(l, key))
@@ -660,15 +702,15 @@ object MutableHashMap {
 
     decreases(l.size)
     l match {
-      case Cons((k, v), t) => 
-          val newAcc = acc + (k, v)
-          assert(k != key)
-          lemmaAddToMapContainsAndNotInListThenInAcc(t, key, value, newAcc)
-          check(newAcc.contains(k))
-          if(!acc.contains(key)){
-            ListMapLemmas.addStillNotContains(acc, k, v, key)
-            check(false)
-          }
+      case Cons((k, v), t) =>
+        val newAcc = acc + (k, v)
+        assert(k != key)
+        lemmaAddToMapContainsAndNotInListThenInAcc(t, key, value, newAcc)
+        check(newAcc.contains(k))
+        if (!acc.contains(key)) {
+          ListMapLemmas.addStillNotContains(acc, k, v, key)
+          check(false)
+        }
 
       case Nil() => ()
     }
