@@ -10,6 +10,8 @@ import stainless.annotation._
 import stainless.proof._
 import ch.epfl.chassot.MutableLongMap._
 import ch.epfl.chassot.ListLongMap
+import ch.epfl.chassot.ListMap
+import ch.epfl.chassot.MutableHashMap._
 import stainless.lang.StaticChecks._
 
 trait IDGiver[C] {
@@ -23,132 +25,72 @@ object Memoisation {
   import VerifiedRegex._
   import VerifiedRegexMatcher._
 
-  @ghost
-  @pure
-  def validIdToDerivatives[C](_idToRegexes: ListLongMap[List[Regex[C]]], _idToDerivatives: ListLongMap[List[(C, Regex[C])]], id: Long): Boolean = {
-    // require(_idToRegexes.contains(id))
-    // require(_idToDerivatives.contains(id))
-    if(!_idToRegexes.contains(id) || !_idToDerivatives.contains(id)){
-      false
-    } else {
-      _idToRegexes.apply(id) match {
-        case Nil()           => false
-        case Cons(hd, Nil()) => _idToDerivatives.apply(id).forall((c, reg) => validRegex(hd) && derivativeStep(hd, c) == reg)
-        case Cons(hd, tl)    => true
-      }
+  @ghost def validCacheMap[C](m: HashMap[(Regex[C], C), Regex[C]]): Boolean = {
+    m.valid && m.forall { case ((r, c), res) =>
+      validRegex(r) && res == derivativeStep(r, c)
     }
   }
 
-  final case class Cache[C](@ghost val ids: List[Long], idToRegexes: LongMap[List[Regex[C]]], idToDerivatives: LongMap[List[(C, Regex[C])]]) {
-    require(idToRegexes.valid)
-    require(idToDerivatives.valid)
+  @mutable
+  final case class Cache[C](private val cache: HashMap[(Regex[C], C), Regex[C]]) {
+    require(validCacheMap(cache))
 
-    @ghost
-    @pure
-    def validContains: Boolean =
-      val idToRegMap = idToRegexes.map
-      ids.forall(i => idToRegMap.contains(i) && !idToRegMap.apply(i).isEmpty) && ids.forall(idToDerivatives.map.contains)
-    @ghost
-    @pure
-    def validContent: Boolean =
-      val idToRegMap = idToRegexes.map
-      val idToDerivMap = idToDerivatives.map
-      ids.forall(id => validIdToDerivatives(idToRegMap, idToDerivMap, id))
+    @ghost def valid: Boolean = validCacheMap(cache)
 
-    @ghost
-    @pure
-    def valid: Boolean = validContains && validContent
-
-    private def getDerivativeFromList(l: List[(C, Regex[C])], a: C): Option[Regex[C]] = l match
-      case Cons(h, t) if h._1 == a => Some(h._2)
-      case Cons(_, t)              => getDerivativeFromList(t, a)
-      case Nil()                   => None()
-
-    /** Checks whether the regex is in the cache Meaning that it has been cached and no collision happened
-      *
-      * @param r
-      */
-    @pure
-    def cacheContains(r: Regex[C])(implicit idGiver: IDGiver[C]): Boolean = {
+    @ghost def lemmaIfInCacheThenValid(r: Regex[C], c: C): Unit = {
+      require(validCacheMap(cache))
       require(validRegex(r))
-      require(valid)
-      val id = hashId(r)
-      if (idToRegexes.contains(id)) {
-        idToRegexes.apply(id) match {
-          case Cons(hd, Nil()) =>
-            // Good case: the regex is in the ids list, and no collision happened
-            hd == r
-          case Cons(hd, tl) =>
-            // Collision happened, i.e., 2 different regexes got the same id, abort
-            false
-          case Nil() =>
-            // The regex was never cached
-            false
-        }
+      if (cache.contains((r, c))) {
+        lemmaForallThenForAPair(
+          cache,
+          { case ((r, c), res) =>
+            validRegex(r) && res == derivativeStep(r, c)
+          },
+          (r, c),
+          cache((r, c))
+        )
+      }
+    } ensuring (_ => cache.contains((r, c)) ==> (derivativeStep(r, c) == cache((r, c))))
+
+    def contains(r: Regex[C], c: C): Boolean = {
+      require(validCacheMap(cache))
+      cache.contains((r, c))
+    }
+
+    def get(r: Regex[C], c: C): Option[Regex[C]] = {
+      require(validRegex(r))
+      require(validCacheMap(cache))
+
+      if (cache.contains((r, c))) {
+        // ghostExpr(lemmaIfInCacheThenValid(r, c))
+        Some(cache((r, c)))
       } else {
-        // The regex was never cached
-        ghostExpr(if (ids.contains(id)) {
-          assert(validContent)
-          val idToRegMap = idToRegexes.map
-          ListSpecs.forallContained(ids, i => idToRegMap.contains(i) && !idToRegMap.apply(i).isEmpty, id)
-          assert(idToRegexes.map.contains(id))
-
-        })
-        assert(!ids.contains(id))
-        false
+        None()
       }
-    } ensuring(res => !res || ids.contains(hashId(r)))
+    } ensuring (res => res.isEmpty || res.get == derivativeStep(r, c))
 
-    @pure
-    def getDerivative(r: Regex[C], a: C)(implicit idGiver: IDGiver[C]): Option[Regex[C]] = {
+    def update(r: Regex[C], c: C, res: Regex[C]): Unit = {
+      require(validCacheMap(cache))
       require(validRegex(r))
-      require(valid)
-      require(cacheContains(r))
-      val id = hashId(r)
-      val res = getDerivativeFromList(idToDerivatives.apply(id), a)
-      assert(valid)
-      if(res.isEmpty){
-        ghostExpr({check(valid && (res.isEmpty || res.get == derivativeStep(r, a)))})
-      } else{
-        assert(valid)
-        ghostExpr({
-          assert(cacheContains(r))
-          assert(validContent)
-          val idToRegMap = idToRegexes.map
-          val idToDerivMap = idToDerivatives.map
-          ListSpecs.forallContained(ids, id => idToDerivMap.contains(id), id)
-          ListSpecs.forallContained(ids, i => idToRegMap.contains(i) && !idToRegMap.apply(i).isEmpty, id)
+      require(res == derivativeStep(r, c))
 
-          assert(idToRegMap.contains(id))
-          assert(idToDerivMap.contains(id))
-          assert(idToRegexes.contains(id))
-          assert(ids.forall(id => validIdToDerivatives(idToRegMap, idToDerivMap, id)))
-          ListSpecs.forallContained(ids, id => validIdToDerivatives(idToRegMap, idToDerivMap, id), id)
-          assert(ids.contains(id))
-          assert(valid)
-          check(validIdToDerivatives(idToRegexes.map, idToDerivatives.map, id))
-           idToRegexes.apply(id) match {
-            case Nil()           => check(false)
-            case Cons(hd, Nil()) => 
-              check(idToDerivMap.apply(id).forall((c, reg) => validRegex(hd) && derivativeStep(hd, c) == reg))
-              check(r == hd)
-              assert(r == hd)
-              check(idToDerivMap.apply(id).forall((c, reg) => validRegex(r) && derivativeStep(r, c) == reg))
-            case Cons(hd, tl)    => 
-              // cacheContains(r) is false in this case
-              check(false)
-          }
-          check(idToDerivMap.apply(id).forall((c, reg) => validRegex(r) && derivativeStep(r, c) == reg))
-          ListSpecs.forallContained(idToDerivMap.apply(id), (c, reg) => validRegex(r) && derivativeStep(r, c) == reg, (a, res.get))
-        })
-        assert(res.get == derivativeStep(r, a))
-        ghostExpr({check(valid && (res.isEmpty || res.get == derivativeStep(r, a)))})
-      }
-      res
+      // ghostExpr(
+      //   lemmaUpdateValidPairMaintainsForall(
+      //     cache,
+      //     { case ((r, c), res) =>
+      //       validRegex(r) && res == derivativeStep(r, c)
+      //     },
+      //     (r, c),
+      //     res
+      //   )
+      // )
+      val _ = cache.update((r, c), res)
 
-    } ensuring (res => valid && (res.isEmpty || res.get == derivativeStep(r, a)))
+    } ensuring (_ => validCacheMap(this.cache))
+
   }
 }
+
 object VerifiedRegex {
   abstract sealed class Regex[C] {}
 
@@ -326,14 +268,31 @@ object VerifiedRegexMatcher {
     res
   } ensuring (res => validRegex(res))
 
-  // def derivativeStepMem[C](r: Regex[C], a: C)(cache: Cache[C]): Regex[C] = {
-  //   require(validRegex(r))
-  //   require(cache.valid)
-  //   decreases(r)
-  //   val id = hashId(r)
+  def derivativeStepMem[C](r: Regex[C], a: C)(cache: Cache[C]): Regex[C] = {
+    require(validRegex(r))
+    require(cache.valid)
+    decreases(r)
 
-  //   res
-  // } ensuring (res => res == derivativeStep(r, a))
+    cache.get(r, a) match {
+      case Some(res) => res
+      case None() => {
+        val res: Regex[C] = r match {
+          case EmptyExpr()       => EmptyLang()
+          case EmptyLang()       => EmptyLang()
+          case ElementMatch(c)   => if (a == c) EmptyExpr() else EmptyLang()
+          case Union(rOne, rTwo) => Union(derivativeStepMem(rOne, a)(cache), derivativeStepMem(rTwo, a)(cache))
+          case Star(rInner)      => Concat(derivativeStepMem(rInner, a)(cache), Star(rInner))
+          case Concat(rOne, rTwo) => {
+            if (nullable(rOne)) Union(Concat(derivativeStepMem(rOne, a)(cache), rTwo), derivativeStepMem(rTwo, a)(cache))
+            else Union(Concat(derivativeStepMem(rOne, a)(cache), rTwo), EmptyLang())
+          }
+        }
+        cache.update(r, a, res)
+        res
+      }
+    }
+
+  } ensuring (res => res == derivativeStep(r, a))
 
   def derivative[C](r: Regex[C], input: List[C]): Regex[C] = {
     require(validRegex(r))
