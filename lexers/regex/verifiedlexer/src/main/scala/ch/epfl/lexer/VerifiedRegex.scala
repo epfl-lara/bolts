@@ -16,50 +16,6 @@ import ch.epfl.chassot.Ordering
 import ch.epfl.chassot.Hashable
 import stainless.lang.StaticChecks._
 
-// object CharRegexUtils {
-//   import VerifiedRegex._
-//   case class CharOrdering() extends Ordering[Char] {
-//     override def compare(x: Char, y: Char): Int = {
-//       if (x < y) -1
-//       else if (x > y) 1
-//       else 0
-//     }
-//     override def inverse(x: Char, y: Char): Boolean = {
-//       sign(compare(x, y)) == -sign(compare(y, x))
-//     }
-//     override def transitive(x: Char, y: Char, z: Char): Boolean = {
-//       if (compare(x, y) > 0 && compare(y, z) > 0) compare(x, z) > 0
-//       else if (compare(x, y) < 0 && compare(y, z) < 0) compare(x, z) < 0
-//       else true
-//     }
-//     override def consistent(x: Char, y: Char, z: Char): Boolean = {
-//       if (compare(x, y) == 0) sign(compare(x, z)) == sign(compare(y, z))
-//       else true
-//     }
-//     override def equalsMeansEquals(x: Char, y: Char): Boolean = {
-//       (compare(x, y) == 0) == (x == y)
-//     }
-//   }
-
-//   case class CharRegexOrdering() extends Ordering[Regex[Char]] {
-//     override def compare(x: Regex[Char], y: Regex[Char]): Int = {
-//       0
-//     }
-//   }
-
-//   case class CharRegexTuplOrdering() extends Ordering[(Regex[Char], Char)] {
-//     override def compare(x: (Regex[Char], Char), y: (Regex[Char], Char)): Int = {
-//       val r1 = x._1
-//       val r2 = y._1
-//       val char1 = x._2
-//       val char2 = y._2
-//       0
-
-//     }
-//   }
-
-// }
-
 object Memoisation {
   import VerifiedRegex._
   import VerifiedRegexMatcher._
@@ -76,7 +32,8 @@ object Memoisation {
 
     @ghost def valid: Boolean = validCacheMap(cache)
 
-    @ghost def lemmaIfInCacheThenValid(r: Regex[C], c: C): Unit = {
+    @ghost
+    def lemmaIfInCacheThenValid(r: Regex[C], c: C): Unit = {
       require(validCacheMap(cache))
       require(validRegex(r))
       if (cache.contains((r, c))) {
@@ -129,10 +86,10 @@ object Memoisation {
 
   }
 }
-
 object VerifiedRegex {
   abstract sealed class Regex[C] {}
 
+  @ghost
   def validRegex[C](r: Regex[C]): Boolean = r match {
     case ElementMatch(c)    => true
     case Star(r)            => !nullable(r) && !isEmptyLang(r) && validRegex(r)
@@ -142,6 +99,7 @@ object VerifiedRegex {
     case EmptyLang()        => true
   }
 
+  @ghost
   def regexDepth[C](r: Regex[C]): BigInt = {
     decreases(r)
     r match {
@@ -226,49 +184,62 @@ object VerifiedRegex {
     }
   }
 
-  @inline
+  // case class RegexHashable[C](cHashable: Hashable[C]) extends Hashable[Regex[C]] {
+  //   override def hash(r: Regex[C]): Long = {
+  //     r match {
+  //       case ElementMatch(c) => 2L * cHashable.hash(c)
+  //       case Star(rInner)    => 3L * hash(rInner)
+  //       case Union(r1, r2)   => 5L * hash(r1) + 5L * hash(r2)
+  //       case Concat(r1, r2)  => 7L * hash(r1) + 7L * hash(r2)
+  //       case EmptyExpr()     => 11L
+  //       case EmptyLang()     => 13L
+  //     }
+  //   }
+  // }
+
+  @ghost
   def isEmptyExpr[C](r: Regex[C]): Boolean = {
     r match {
       case EmptyExpr() => true
       case _           => false
     }
   }
-  @inline
+  @ghost
   def isEmptyLang[C](r: Regex[C]): Boolean = {
     r match {
       case EmptyLang() => true
       case _           => false
     }
   }
-  @inline
+  @ghost
   def isElementMatch[C](r: Regex[C]): Boolean = {
     r match {
       case ElementMatch(_) => true
       case _               => false
     }
   }
-  @inline
+  @ghost
   def elementMatchIsChar[C](r: Regex[C], c: C): Boolean = {
     require(isElementMatch(r))
     r match {
       case ElementMatch(cc) => c == cc
     }
   }
-  @inline
+  @ghost
   def isStar[C](r: Regex[C]): Boolean = {
     r match {
       case Star(_) => true
       case _       => false
     }
   }
-  @inline
+  @ghost
   def isUnion[C](r: Regex[C]): Boolean = {
     r match {
       case Union(_, _) => true
       case _           => false
     }
   }
-  @inline
+  @ghost
   def unionInnersEquals[C](r: Regex[C], r1: Regex[C], r2: Regex[C]): Boolean = {
     require(isUnion(r))
     r match {
@@ -276,7 +247,7 @@ object VerifiedRegex {
     }
   }
 
-  @inline
+  @ghost
   def isConcat[C](r: Regex[C]): Boolean = {
     r match {
       case Concat(_, _) => true
@@ -307,7 +278,7 @@ object VerifiedRegexMatcher {
     res
   } ensuring (res => validRegex(res))
 
-  def derivativeStepMem[C](r: Regex[C], a: C)(cache: Cache[C]): Regex[C] = {
+  def derivativeStepMem[C](r: Regex[C], a: C)(implicit cache: Cache[C]): Regex[C] = {
     require(validRegex(r))
     require(cache.valid)
     decreases(r)
@@ -341,7 +312,7 @@ object VerifiedRegexMatcher {
     }
   } ensuring (res => validRegex(res))
 
-  def derivativeMem[C](r: Regex[C], input: List[C])(cache: Cache[C]): Regex[C] = {
+  def derivativeMem[C](r: Regex[C], input: List[C])(implicit cache: Cache[C]): Regex[C] = {
     require(validRegex(r))
     require(cache.valid)
     input match {
@@ -364,13 +335,14 @@ object VerifiedRegexMatcher {
     }
   )
 
-  def matchRCache[C](r: Regex[C], input: List[C])(cache: Cache[C]): Boolean = {
+  def matchRMem[C](r: Regex[C], input: List[C])(implicit cache: Cache[C]): Boolean = {
     require(validRegex(r))
     require(cache.valid)
     decreases(input.size)
     if (input.isEmpty) nullable(r) else matchR(derivativeStepMem(r, input.head)(cache: Cache[C]), input.tail)
   } ensuring (res => res == matchR(r, input))
 
+  @ghost
   def matchRSpec[C](r: Regex[C], s: List[C]): Boolean = {
     require(validRegex(r))
     decreases(s.size + regexDepth(r))
@@ -384,6 +356,7 @@ object VerifiedRegexMatcher {
     }
   }
 
+  @ghost
   def mainMatchTheorem[C](r: Regex[C], s: List[C]): Unit = {
     require(validRegex(r))
     decreases(s.size + regexDepth(r))
@@ -456,6 +429,7 @@ object VerifiedRegexMatcher {
     * @param s2
     * @param s
     */
+  @ghost
   def findConcatSeparation[C](r1: Regex[C], r2: Regex[C], s1: List[C], s2: List[C], s: List[C]): Option[(List[C], List[C])] = {
     require(validRegex(r1))
     require(validRegex(r2))
@@ -515,13 +489,58 @@ object VerifiedRegexMatcher {
     }
   } ensuring (res => res._1 ++ res._2 == totalInput && (res._1.isEmpty || res._1.size >= testedP.size))
 
+  def findLongestMatchMem[C](r: Regex[C], input: List[C])(implicit cache: Cache[C]): (List[C], List[C]) = {
+    require(validRegex(r))
+    require(cache.valid)
+    findLongestMatchInnerMem(r, Nil(), input)(cache)
+  } ensuring (res => res == findLongestMatch(r, input) && cache.valid)
+
+  def findLongestMatchInnerMem[C](r: Regex[C], testedP: List[C], totalInput: List[C])(implicit cache: Cache[C]): (List[C], List[C]) = {
+    require(validRegex(r))
+    require(cache.valid)
+    require(ListUtils.isPrefix(testedP, totalInput))
+    decreases(totalInput.size - testedP.size)
+
+    if (testedP == totalInput) {
+      if (nullable(r)) {
+        (testedP, Nil[C]())
+      } else {
+        (Nil[C](), totalInput)
+      }
+    } else {
+      ListUtils.lemmaIsPrefixThenSmallerEqSize(testedP, totalInput)
+      if (testedP.size == totalInput.size) {
+        ListUtils.lemmaIsPrefixRefl(totalInput, totalInput)
+        ListUtils.lemmaIsPrefixSameLengthThenSameList(totalInput, testedP, totalInput)
+        check(false)
+      }
+      assert(testedP.size < totalInput.size)
+      val suffix = ListUtils.getSuffix(totalInput, testedP)
+      val newP = testedP ++ List(suffix.head)
+      lemmaAddHeadSuffixToPrefixStillPrefix(testedP, totalInput)
+      check(newP.size > testedP.size)
+      if (nullable(r)) {
+        val recursive = findLongestMatchInnerMem(derivativeStepMem(r, suffix.head), newP, totalInput)
+        if (recursive._1.isEmpty) {
+          (testedP, ListUtils.getSuffix(totalInput, testedP))
+        } else {
+          recursive
+        }
+      } else {
+        findLongestMatchInnerMem(derivativeStepMem(r, suffix.head), newP, totalInput)
+      }
+    }
+  } ensuring (res => res == findLongestMatchInner(r, testedP, totalInput) && cache.valid)
+
   // Longest match theorems
+  @ghost
   def longestMatchIsAcceptedByMatchOrIsEmpty[C](r: Regex[C], input: List[C]): Unit = {
     require(validRegex(r))
     longestMatchIsAcceptedByMatchOrIsEmptyRec(r, r, Nil(), input)
 
   } ensuring (_ => findLongestMatchInner(r, Nil(), input)._1.isEmpty || matchR(r, findLongestMatchInner(r, Nil(), input)._1))
 
+  @ghost
   def longestMatchNoBiggerStringMatch[C](baseR: Regex[C], input: List[C], returnP: List[C], bigger: List[C]): Unit = {
     require(validRegex(baseR))
     require(ListUtils.isPrefix(returnP, input))
@@ -540,6 +559,7 @@ object VerifiedRegexMatcher {
 
   } ensuring (_ => bigger == returnP || !matchR(baseR, bigger))
 
+  @ghost
   def lemmaIfMatchRThenLongestMatchFromThereReturnsAtLeastThis[C](baseR: Regex[C], r: Regex[C], input: List[C], testedP: List[C]): Unit = {
     require(validRegex(baseR))
     require(validRegex(r))
@@ -553,6 +573,7 @@ object VerifiedRegexMatcher {
 
   } ensuring (_ => findLongestMatchInner(r, testedP, input)._1.size >= testedP.size)
 
+  @ghost
   def lemmaKnownAcceptedStringThenFromSmallPAtLeastThat[C](baseR: Regex[C], r: Regex[C], input: List[C], testedP: List[C], knownP: List[C]): Unit = {
     require(validRegex(baseR))
     require(validRegex(r))
@@ -581,6 +602,7 @@ object VerifiedRegexMatcher {
 
   } ensuring (_ => findLongestMatchInner(r, testedP, input)._1.size >= knownP.size)
 
+  @ghost
   def longestMatchIsAcceptedByMatchOrIsEmptyRec[C](baseR: Regex[C], r: Regex[C], testedP: List[C], input: List[C]): Unit = {
     require(validRegex(baseR))
     require(ListUtils.isPrefix(testedP, input))
@@ -624,6 +646,7 @@ object VerifiedRegexMatcher {
 
   } ensuring (_ => findLongestMatchInner(r, testedP, input)._1.isEmpty || matchR(baseR, findLongestMatchInner(r, testedP, input)._1))
 
+  @ghost
   def lemmaMatchRIsSameAsWholeDerivativeAndNil[C](r: Regex[C], input: List[C]): Unit = {
     require(validRegex(r))
     input match {
@@ -632,6 +655,7 @@ object VerifiedRegexMatcher {
     }
   } ensuring (_ => matchR(r, input) == matchR(derivative(r, input), Nil()))
 
+  @ghost
   def lemmaDerivativeOnLWithANewCharIsANewDerivativeStep[C](baseR: Regex[C], r: Regex[C], input: List[C], c: C): Unit = {
     require(validRegex(baseR))
     require(derivative(baseR, input) == r)
@@ -644,12 +668,14 @@ object VerifiedRegexMatcher {
   } ensuring (_ => derivative(baseR, input ++ List(c)) == derivativeStep(r, c))
 
   // Basic lemmas
+  @ghost
   def lemmaIfAcceptEmptyStringThenNullable[C](r: Regex[C], s: List[C]): Unit = {
     require(validRegex(r))
     require(s.isEmpty)
     require(matchR(r, s))
   } ensuring (_ => nullable(r))
 
+  @ghost
   def lemmaRegexAcceptsStringThenDerivativeAcceptsTail[C](r: Regex[C], s: List[C]): Unit = {
     require(validRegex(r))
     require(matchR(r, s))
@@ -657,11 +683,13 @@ object VerifiedRegexMatcher {
   } ensuring (_ => if (s.isEmpty) nullable(r) else matchR(derivativeStep(r, s.head), s.tail))
 
   // EmptyString Lemma
+  @ghost
   def lemmaRegexEmptyStringAcceptsTheEmptyString[C](r: EmptyExpr[C]): Unit = {
     require(validRegex(r))
   } ensuring (_ => matchR(r, List()))
 
   // Single Character Lemma
+  @ghost
   def lemmaElementRegexAcceptsItsCharacterAndOnlyIt[C](
       r: ElementMatch[C],
       c: C,
@@ -671,6 +699,7 @@ object VerifiedRegexMatcher {
     require(c != d)
   } ensuring (_ => matchR(r, List(c)) && !matchR(r, List(d)))
 
+  @ghost
   def lemmaElementRegexDoesNotAcceptMultipleCharactersString[C](
       r: ElementMatch[C],
       c: C,
@@ -681,6 +710,7 @@ object VerifiedRegexMatcher {
   } ensuring (_ => !matchR(r, Cons(c, s)))
 
   // Union lemmas
+  @ghost
   def lemmaRegexAcceptsStringThenUnionWithAnotherAcceptsToo[C](
       r1: Regex[C],
       r2: Regex[C],
@@ -698,6 +728,7 @@ object VerifiedRegexMatcher {
     }
   } ensuring (_ => matchR(Union(r1, r2), s))
 
+  @ghost
   def lemmaRegexUnionAcceptsThenOneOfTheTwoAccepts[C](r1: Regex[C], r2: Regex[C], s: List[C]): Unit = {
     require(validRegex(r1) && validRegex(r2))
     require(matchR(Union(r1, r2), s))
@@ -710,6 +741,7 @@ object VerifiedRegexMatcher {
     }
   } ensuring (_ => matchR(r1, s) || matchR(r2, s))
 
+  @ghost
   def lemmaReversedUnionAcceptsSameString[C](
       r1: Regex[C],
       r2: Regex[C],
@@ -729,6 +761,7 @@ object VerifiedRegexMatcher {
 
   // Concat lemmas
 
+  @ghost
   def lemmaRegexConcatWithNullableAcceptsSameStr[C](
       r1: Regex[C],
       r2: Regex[C],
@@ -759,6 +792,7 @@ object VerifiedRegexMatcher {
     }
   } ensuring (_ => matchR(Concat(r2, r1), s))
 
+  @ghost
   def lemmaTwoRegexMatchThenConcatMatchesConcatString[C](
       r1: Regex[C],
       r2: Regex[C],
@@ -799,6 +833,7 @@ object VerifiedRegexMatcher {
     }
   } ensuring (_ => matchR(Concat(r1, r2), s1 ++ s2))
 
+  @ghost
   def lemmaFindSeparationIsDefinedThenConcatMatches[C](r1: Regex[C], r2: Regex[C], s1: List[C], s2: List[C], s: List[C]): Unit = {
     require(validRegex(r1))
     require(validRegex(r2))
@@ -810,6 +845,7 @@ object VerifiedRegexMatcher {
 
   } ensuring (_ => matchR(Concat(r1, r2), s1 ++ s2))
 
+  @ghost
   def lemmaR1MatchesS1AndR2MatchesS2ThenFindSeparationFindsAtLeastThem[C](
       r1: Regex[C],
       r2: Regex[C],
@@ -859,6 +895,7 @@ object VerifiedRegexMatcher {
 
   } ensuring (_ => findConcatSeparation(r1, r2, s1Rec, s2Rec, s).isDefined)
 
+  @ghost
   def lemmaConcatAcceptsStringThenFindSeparationIsDefined[C](r1: Regex[C], r2: Regex[C], s: List[C]): Unit = {
     require(validRegex(r1))
     require(validRegex(r2))
@@ -901,10 +938,12 @@ object VerifiedRegexMatcher {
   } ensuring (_ => findConcatSeparation(r1, r2, Nil(), s, s).isDefined)
 
   // Star lemmas
+  @ghost
   def lemmaStarAcceptsEmptyString[C](r: Star[C]): Unit = {
     require(validRegex(r))
   } ensuring (_ => matchR(r, List()))
 
+  @ghost
   def lemmaStarApp[C](r: Regex[C], s1: List[C], s2: List[C]): Unit = {
     require(validRegex(Star(r)))
     require(matchR(r, s1))
@@ -919,6 +958,7 @@ object VerifiedRegexMatcher {
     }
   } ensuring (_ => matchR(Star(r), s1 ++ s2))
 
+  @ghost
   def lemmaStarAppConcat[C](r: Regex[C], s: List[C]): Unit = {
     require(validRegex(Star(r)))
     require(matchR(Star(r), s))
@@ -938,6 +978,7 @@ object VerifiedRegexMatcher {
 
   // usedCharacters lemmas ---------------------------------------------------------------------------------------------------
 
+  @ghost
   def lemmaRegexCannotMatchAStringContainingACharItDoesNotContain[C](r: Regex[C], s: List[C], c: C): Unit = {
     require(validRegex(r))
     require(s.contains(c))
@@ -955,6 +996,7 @@ object VerifiedRegexMatcher {
 
   } ensuring (_ => !matchR(r, s))
 
+  @ghost
   def lemmaRegexCannotMatchAStringStartingWithACharItDoesNotContain[C](r: Regex[C], s: List[C], c: C): Unit = {
     require(validRegex(r))
     require(s.contains(c))
@@ -969,6 +1011,7 @@ object VerifiedRegexMatcher {
 
   } ensuring (_ => !matchR(r, s))
 
+  @ghost
   def lemmaRegexCannotMatchAStringStartingWithACharWhichIsNotInFirstChars[C](r: Regex[C], s: List[C], c: C): Unit = {
     require(validRegex(r))
     require(s.contains(c))
@@ -984,6 +1027,7 @@ object VerifiedRegexMatcher {
   } ensuring (_ => !matchR(r, s))
 
   // not used
+  @ghost
   def lemmaRIsNotNullableDerivativeStepIsThenUsedCharContainsC[C](r: Regex[C], c: C): Unit = {
     require(validRegex(r))
     require(!nullable(r))
@@ -1027,6 +1071,7 @@ object VerifiedRegexMatcher {
   } ensuring (_ => usedCharacters(r).contains(c))
 
   // DONE
+  @ghost
   def lemmaDerivativeAfterDerivativeStepIsNullableThenUsedCharsContainsHead[C](r: Regex[C], c: C, tl: List[C]): Unit = {
     require(validRegex(r))
     require(nullable(derivative(derivativeStep(r, c), tl)))
@@ -1131,6 +1176,7 @@ object VerifiedRegexMatcher {
 
   } ensuring (_ => usedCharacters(r).contains(c))
 
+  @ghost
   def lemmaDerivativeStepDoesNotAddCharToUsedCharacters[C](r: Regex[C], c: C, cNot: C): Unit = {
     decreases(r)
     require(validRegex(r))
@@ -1161,6 +1207,7 @@ object VerifiedRegexMatcher {
 
   } ensuring (_ => !usedCharacters(derivativeStep(r, c)).contains(cNot))
 
+  @ghost
   def lemmaEmptyLangDerivativeIsAFixPoint[C](r: Regex[C], s: List[C]): Unit = {
     require(r == EmptyLang[C]())
     s match {
@@ -1170,6 +1217,7 @@ object VerifiedRegexMatcher {
 
   } ensuring (_ => derivative(r, s) == r)
 
+  @ghost
   def lemmaUsedCharsContainsAllFirstChars[C](r: Regex[C], c: C): Unit = {
     require(validRegex(r))
     require(firstChars(r).contains(c))
@@ -1198,6 +1246,7 @@ object VerifiedRegexMatcher {
 
   } ensuring (_ => usedCharacters(r).contains(c))
 
+  @ghost
   def lemmaDerivAfterDerivStepIsNullableThenFirstCharsContainsHead[C](r: Regex[C], c: C, tl: List[C]): Unit = {
     require(validRegex(r))
     require(nullable(derivative(derivativeStep(r, c), tl)))
