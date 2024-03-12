@@ -12,6 +12,7 @@ import stainless.lang.StaticChecks._
 
 object ListUtils {
   def isPrefix[B](prefix: List[B], l: List[B]): Boolean = {
+    decreases(prefix)
     (prefix, l) match {
       case (Nil(), _) => true
       case (_, Nil()) => false
@@ -150,9 +151,9 @@ object ListUtils {
   @inlineOnce
   @opaque
   def lemmaNotHeadSoGetIndexTailIsMinusOne[B](l: List[B], e: B): Unit = {
-    decreases(l)
     require(l.contains(e))
-    require(l.head != e)
+    require(l.head != e)  
+    decreases(l)
 
     if (l.tail.head != e) {
       lemmaNotHeadSoGetIndexTailIsMinusOne(l.tail, e)
@@ -173,6 +174,7 @@ object ListUtils {
   @inlineOnce
   @opaque
   def lemmaConcatTwoListThenFirstIsPrefix[B](l1: List[B], l2: List[B]): Unit = {
+    decreases(l1.size)
     l1 match {
       case Cons(hd, tl) => lemmaConcatTwoListThenFirstIsPrefix(tl, l2)
       case Nil()        => ()
@@ -253,8 +255,8 @@ object ListUtils {
   @inlineOnce
   @opaque
   def lemmaPrefixStaysPrefixWhenAddingToSuffix[B](p: List[B], l: List[B], suffix: List[B]): Unit = {
-    decreases(p)
     require(isPrefix(p, l))
+    decreases(p)
     p match {
       case Cons(hd, tl) => lemmaPrefixStaysPrefixWhenAddingToSuffix(tl, l.tail, suffix)
       case Nil()        => ()
@@ -273,6 +275,7 @@ object ListUtils {
     require(isPrefix(p1, l))
     require(isPrefix(p2, l))
     require(p1.size == p2.size)
+    decreases(p1)
 
     p1 match {
       case Cons(hd, tl) => lemmaIsPrefixSameLengthThenSameList(tl, p2.tail, l.tail)
@@ -419,6 +422,7 @@ object ListUtils {
   @inlineOnce
   @opaque
   def lemmaTailIsSubseqOfList[B](elmt: B, l: List[B]): Unit = {
+
     l match {
       case Nil() => ()
       case Cons(hd, tl) if hd == elmt => {
@@ -495,6 +499,7 @@ object ListUtils {
   def lemmaConcatTwoListsWhichNotContainThenTotNotContain[B](l1: List[B], l2: List[B], b: B): Unit = {
     require(!l1.contains(b))
     require(!l2.contains(b))
+    decreases(l1)
 
     l1 match {
       case Cons(hd, tl) if hd == b => check(false)

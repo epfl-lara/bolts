@@ -11,7 +11,7 @@ import stainless.proof.check
 import scala.annotation.tailrec
 import stainless.lang.StaticChecks._
 
-object Main {
+object MainLexer {
   import VerifiedLexer._
   import VerifiedRegex._
   import VerifiedRegexMatcher._
