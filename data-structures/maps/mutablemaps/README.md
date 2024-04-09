@@ -1,6 +1,6 @@
 # Verified Mutable Map in Scala
 
-This project contains a verified implementation of the `LongMap` from the scala standard library, as well as a `HashMap` implementation that builds upon the `LongMap`, also verified.
+This project contains a verified implementation of the `LongMap` from the scala standard library.
 
 ## Setup
 
