@@ -1,0 +1,106 @@
+; Options: -q --produce-models --incremental --print-success --lang smt2.6
+(declare-fun start!29970 () Bool)
+
+(assert start!29970)
+
+(declare-fun res!158732 () Bool)
+
+(declare-fun e!189934 () Bool)
+
+(assert (=> start!29970 (=> (not res!158732) (not e!189934))))
+
+(declare-fun mask!3709 () (_ BitVec 32))
+
+(declare-fun validMask!0 ((_ BitVec 32)) Bool)
+
+(assert (=> start!29970 (= res!158732 (validMask!0 mask!3709))))
+
+(assert (=> start!29970 e!189934))
+
+(assert (=> start!29970 true))
+
+(declare-datatypes ((array!15206 0))(
+  ( (array!15207 (arr!7195 (Array (_ BitVec 32) (_ BitVec 64))) (size!7547 (_ BitVec 32))) )
+))
+(declare-fun a!3293 () array!15206)
+
+(declare-fun array_inv!5149 (array!15206) Bool)
+
+(assert (=> start!29970 (array_inv!5149 a!3293)))
+
+(declare-fun b!300823 () Bool)
+
+(declare-fun res!158731 () Bool)
+
+(assert (=> b!300823 (=> (not res!158731) (not e!189934))))
+
+(declare-fun i!1240 () (_ BitVec 32))
+
+(assert (=> b!300823 (= res!158731 (and (= (size!7547 a!3293) (bvadd #b00000000000000000000000000000001 mask!3709)) (bvsge i!1240 #b00000000000000000000000000000000) (bvslt i!1240 (size!7547 a!3293))))))
+
+(declare-fun b!300824 () Bool)
+
+(declare-fun res!158733 () Bool)
+
+(assert (=> b!300824 (=> (not res!158733) (not e!189934))))
+
+(declare-fun k!2441 () (_ BitVec 64))
+
+(declare-fun validKeyInArray!0 ((_ BitVec 64)) Bool)
+
+(assert (=> b!300824 (= res!158733 (validKeyInArray!0 k!2441))))
+
+(declare-fun b!300825 () Bool)
+
+(assert (=> b!300825 (= e!189934 (and (bvslt #b00000000000000000000000000000000 (size!7547 a!3293)) (bvsge (size!7547 a!3293) #b01111111111111111111111111111111)))))
+
+(assert (= (and start!29970 res!158732) b!300823))
+
+(assert (= (and b!300823 res!158731) b!300824))
+
+(assert (= (and b!300824 res!158733) b!300825))
+
+(declare-fun m!312757 () Bool)
+
+(assert (=> start!29970 m!312757))
+
+(declare-fun m!312759 () Bool)
+
+(assert (=> start!29970 m!312759))
+
+(declare-fun m!312761 () Bool)
+
+(assert (=> b!300824 m!312761))
+
+(push 1)
+
+(assert (not b!300824))
+
+(assert (not start!29970))
+
+(check-sat)
+
+(pop 1)
+
+(push 1)
+
+(check-sat)
+
+(get-model)
+
+(pop 1)
+
+(declare-fun d!67697 () Bool)
+
+(assert (=> d!67697 (= (validKeyInArray!0 k!2441) (and (not (= k!2441 #b0000000000000000000000000000000000000000000000000000000000000000)) (not (= k!2441 #b1000000000000000000000000000000000000000000000000000000000000000))))))
+
+(assert (=> b!300824 d!67697))
+
+(declare-fun d!67699 () Bool)
+
+(assert (=> d!67699 (= (validMask!0 mask!3709) (and (or (= mask!3709 #b00000000000000000000000000000111) (= mask!3709 #b00000000000000000000000000001111) (= mask!3709 #b00000000000000000000000000011111) (= mask!3709 #b00000000000000000000000000111111) (= mask!3709 #b00000000000000000000000001111111) (= mask!3709 #b00000000000000000000000011111111) (= mask!3709 #b00000000000000000000000111111111) (= mask!3709 #b00000000000000000000001111111111) (= mask!3709 #b00000000000000000000011111111111) (= mask!3709 #b00000000000000000000111111111111) (= mask!3709 #b00000000000000000001111111111111) (= mask!3709 #b00000000000000000011111111111111) (= mask!3709 #b00000000000000000111111111111111) (= mask!3709 #b00000000000000001111111111111111) (= mask!3709 #b00000000000000011111111111111111) (= mask!3709 #b00000000000000111111111111111111) (= mask!3709 #b00000000000001111111111111111111) (= mask!3709 #b00000000000011111111111111111111) (= mask!3709 #b00000000000111111111111111111111) (= mask!3709 #b00000000001111111111111111111111) (= mask!3709 #b00000000011111111111111111111111) (= mask!3709 #b00000000111111111111111111111111) (= mask!3709 #b00000001111111111111111111111111) (= mask!3709 #b00000011111111111111111111111111) (= mask!3709 #b00000111111111111111111111111111) (= mask!3709 #b00001111111111111111111111111111) (= mask!3709 #b00011111111111111111111111111111) (= mask!3709 #b00111111111111111111111111111111)) (bvsle mask!3709 #b00111111111111111111111111111111)))))
+
+(assert (=> start!29970 d!67699))
+
+(declare-fun d!67707 () Bool)
+
