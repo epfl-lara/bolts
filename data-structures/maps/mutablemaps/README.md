@@ -14,7 +14,7 @@ To run this project, you need to install the Stainless sbt plugin. To do so, fol
 You should obtain the following folder structure:
 
 ```
-mutablemap
+mutablemaps
 ├── build.sbt
 ├── project
 │   ├── build.properties
