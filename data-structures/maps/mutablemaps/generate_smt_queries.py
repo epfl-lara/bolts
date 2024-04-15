@@ -4,8 +4,9 @@
 import time
 import subprocess
 import os
+from typing import List, Dict
 
-def verify(file_paths: list[str]) -> list[str]:
+def verify(file_paths: List[str]) -> List[str]:
     files = " ".join(file_paths)
     cmd = f"stainless-dotty {files} --config-file=stainless.conf -Dparallel=12 --vc-cache=false --solvers=smt-z3,smt-cvc4,smt-cvc5 --debug=smt --no-colors=true --functions=repack"
     print("Running verification...")
@@ -14,7 +15,7 @@ def verify(file_paths: list[str]) -> list[str]:
     print("Verification done.")
     return res
 
-def extract_table_from_res(res: list[str]) -> list[str]:
+def extract_table_from_res(res: List[str]) -> List[str]:
     table_lines = []
     flag = False
     for line in res:
@@ -28,12 +29,12 @@ def extract_table_from_res(res: list[str]) -> list[str]:
     return table_lines
 
 
-def write_to_file(file_path: str, lines: list[str]):
+def write_to_file(file_path: str, lines: List[str]):
     with open(file_path, "w") as f:
         for line in lines:
             f.write(line + "\n")
 
-def parse_table_smt_q_solver_correspondance(table: list[str]) -> dict[int, str]:
+def parse_table_smt_q_solver_correspondance(table: List[str]) -> Dict[int, str]:
     query_to_solver = {}
     for l in table:
         # Format of the id in the line: "smt-lib-{id}"
@@ -49,7 +50,7 @@ def parse_table_smt_q_solver_correspondance(table: list[str]) -> dict[int, str]:
         
     return query_to_solver
 
-def delete_unwanted_smt_queries(q_id_to_solver: dict[int, str], smt_folder: str):
+def delete_unwanted_smt_queries(q_id_to_solver: Dict[int, str], smt_folder: str):
     # Go through all the files in the smt folder
     for file in os.listdir(smt_folder):
         if file.endswith(".smt2"):
