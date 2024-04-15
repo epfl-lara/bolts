@@ -8,7 +8,7 @@ from typing import List, Dict
 
 def verify(file_paths: List[str]) -> List[str]:
     files = " ".join(file_paths)
-    cmd = f"stainless-dotty {files} --config-file=stainless.conf -Dparallel=12 --vc-cache=false --solvers=smt-z3,smt-cvc4,smt-cvc5 --debug=smt --no-colors=true --functions=repack"
+    cmd = f"stainless-dotty {files} --config-file=stainless.conf -Dparallel=12 --vc-cache=false --solvers=smt-z3,smt-cvc4,smt-cvc5 --debug=smt --no-colors=true"
     print("Running verification...")
     print(f"Command: {cmd}")
     res = subprocess.getoutput(cmd).split("\n")
