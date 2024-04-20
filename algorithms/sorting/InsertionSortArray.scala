@@ -1,5 +1,6 @@
+// Based on the 2024 version of Ioana Jianu, 2nd year BSc student at EPFL
 import stainless.lang._
-object InsertionSort {
+object InsertionSortArray {
     def insertionSort(a: Array[BigInt]): Array[BigInt] = {
         val N = a.length
         var j = 1
