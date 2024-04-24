@@ -180,20 +180,6 @@ class LongListMapBenchmark {
 
 }
 
-// trait BenchMap[M, T]{
-//     def empty(buffer_size: Int): M
-//     def apply(k: Long): T
-//     def update(k: Long, v: T): Boolean
-//     def remove(k: Long): Boolean
-// }
-
-// implicit val MutableLongMapWrapper: BenchMap[MutableLongMap.LongMap[Long], Long] = new BenchMap[MutableLongMap.LongMap[Long], Long] {
-//     def empty(buffer_size: Int): MutableLongMap.LongMap[Long] = MutableLongMap.getEmptyLongMap[Long](k => 0L, buffer_size)
-//     def apply(m: MutableLongMap.LongMap[Long], k: Long): Long = m(k)
-//     def update(m: MutableLongMap.LongMap[Long], k: Long, v: Long): Boolean = m.update(k, v)
-//     def remove(m: MutableLongMap.LongMap[Long], k: Long): Boolean = m.remove(k)
-// }
-
 @State(Scope.Benchmark)
 class MutableLongMapBenchmark {
   import BenchmarkUtil.*
