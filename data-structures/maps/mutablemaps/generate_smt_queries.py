@@ -5,15 +5,20 @@ import time
 import subprocess
 import os
 from typing import List, Dict
+import shutil
 
 def verify(file_paths: List[str]) -> List[str]:
     files = " ".join(file_paths)
-    cmd = f"stainless-dotty {files} --config-file=stainless.conf -Dparallel=12 --vc-cache=false --solvers=smt-z3,smt-cvc4,smt-cvc5 --debug=smt --no-colors=true"
+    cmd = f"stainless-dotty {files} --config-file=stainless.conf -Dparallel=12 --vc-cache=false --solvers=smt-z3,smt-cvc4,smt-cvc5 --debug=smt --no-colors=true > temp.txt"
     print("Running verification...")
     print(f"Command: {cmd}")
     res = subprocess.getoutput(cmd).split("\n")
     print("Verification done.")
-    return res
+    with open("temp.txt", "r") as f:
+        lines = f.readlines()
+    # os.remove("temp.txt")
+    return lines
+
 
 def extract_table_from_res(res: List[str]) -> List[str]:
     table_lines = []
@@ -32,7 +37,7 @@ def extract_table_from_res(res: List[str]) -> List[str]:
 def write_to_file(file_path: str, lines: List[str]):
     with open(file_path, "w") as f:
         for line in lines:
-            f.write(line + "\n")
+            f.write(line)
 
 def parse_table_smt_q_solver_correspondance(table: List[str]) -> Dict[int, str]:
     query_to_solver = {}
@@ -63,10 +68,14 @@ def delete_unwanted_smt_queries(q_id_to_solver: Dict[int, str], smt_folder: str)
                 os.remove(os.path.join(smt_folder, file))
 
 def main():
+    try:
+        shutil.rmtree("./smt-sessions")
+    except OSError as e:
+        print("Error: %s - %s." % (e.filename, e.strerror))
     files = ["./src/main/scala/ch/epfl/chassot/ListLongMap.scala", "./src/main/scala/ch/epfl/chassot/MutableLongMap.scala"]
     res = verify(files)
     table = extract_table_from_res(res)
-    today_date = time.strftime("%Y-%m-%d-%H-%M-%S")
+    today_date = time.strftime("%Y-%m-%d--%H-%M-%S")
     table_file_name = f"verification_summary_{today_date}.txt"
     write_to_file(table_file_name, table)
     print(f"Summary written to file: {table_file_name}")
