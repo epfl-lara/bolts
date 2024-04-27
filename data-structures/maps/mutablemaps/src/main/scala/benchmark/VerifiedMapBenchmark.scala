@@ -896,7 +896,7 @@ class MutableLongMapBenchmarkBig {
     end for
 
     var i1 = 0
-    val n1 = 24576
+    val n1 = 2097152
     while (i1 < n1) do
       m.remove(randomArrayOfKeysSize2to23(i1))
       i1 += 1
