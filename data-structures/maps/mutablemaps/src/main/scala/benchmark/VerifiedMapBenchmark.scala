@@ -180,88 +180,43 @@ class LongListMapBenchmark {
 
 }
 
-// trait BenchMap[M, T]{
-//     def empty(buffer_size: Int): M
-//     def apply(k: Long): T
-//     def update(k: Long, v: T): Boolean
-//     def remove(k: Long): Boolean
-// }
-
-// implicit val MutableLongMapWrapper: BenchMap[MutableLongMap.LongMap[Long], Long] = new BenchMap[MutableLongMap.LongMap[Long], Long] {
-//     def empty(buffer_size: Int): MutableLongMap.LongMap[Long] = MutableLongMap.getEmptyLongMap[Long](k => 0L, buffer_size)
-//     def apply(m: MutableLongMap.LongMap[Long], k: Long): Long = m(k)
-//     def update(m: MutableLongMap.LongMap[Long], k: Long, v: Long): Boolean = m.update(k, v)
-//     def remove(m: MutableLongMap.LongMap[Long], k: Long): Boolean = m.remove(k)
-// }
-
 @State(Scope.Benchmark)
 class MutableLongMapBenchmark {
   import BenchmarkUtil.*
   @Param(
     Array(
-      "0",
+      "1",
       "1024",
-      "2048",
       "3072",
-      "4096",
       "5120",
-      "6144",
       "7168",
-      "8192",
       "9216",
-      "10240",
       "11264",
-      "12288",
       "13312",
-      "14336",
       "15360",
-      "16384",
       "17408",
-      "18432",
       "19456",
-      "20480",
       "21504",
-      "22528",
       "23552",
-      "24576",
       "25600",
-      "26624",
       "27648",
-      "28672",
       "29696",
-      "30720",
       "31744",
-      "32768",
       "33792",
-      "34816",
       "35840",
-      "36864",
       "37888",
-      "38912",
       "39936",
-      "40960",
       "41984",
-      "43008",
       "44032",
-      "45056",
       "46080",
-      "47104",
       "48128",
-      "49152",
       "50176",
-      "51200",
       "52224",
-      "53248",
       "54272",
-      "55296",
       "56320",
-      "57344",
       "58368",
-      "59392",
       "60416",
-      "61440",
       "62464",
-      "63488",
       "64512",
       "65536"
     )
@@ -600,70 +555,38 @@ class MutableLongMapBenchmarkBig {
 
   @Param(
     Array(
-      "0",
-      "131072",
+      "1",
       "262144",
-      "393216",
       "524288",
-      "655360",
       "786432",
-      "917504",
       "1048576",
-      "1179648",
       "1310720",
-      "1441792",
       "1572864",
-      "1703936",
       "1835008",
-      "1966080",
       "2097152",
-      "2228224",
       "2359296",
-      "2490368",
       "2621440",
-      "2752512",
       "2883584",
-      "3014656",
       "3145728",
-      "3276800",
       "3407872",
-      "3538944",
       "3670016",
-      "3801088",
       "3932160",
-      "4063232",
       "4194304",
-      "4325376",
       "4456448",
-      "4587520",
       "4718592",
-      "4849664",
       "4980736",
-      "5111808",
       "5242880",
-      "5373952",
       "5505024",
-      "5636096",
       "5767168",
-      "5898240",
       "6029312",
-      "6160384",
       "6291456",
-      "6422528",
       "6553600",
-      "6684672",
       "6815744",
-      "6946816",
       "7077888",
-      "7208960",
       "7340032",
-      "7471104",
       "7602176",
-      "7733248",
       "7864320",
-      "7995392",
       "8126464",
-      "8257536",
       "8388608"
     )
   )
@@ -889,7 +812,7 @@ class MutableLongMapBenchmarkBig {
     end for
 
     var i1 = 0
-    val n1 = 24576
+    val n1 = 2097152
     while (i1 < n1) do
       m.remove(randomArrayOfKeysSize2to23(i1))
       i1 += 1
@@ -917,7 +840,7 @@ class MutableLongMapBenchmarkBig {
     end for
 
     var i1 = 0
-    val n1 = 24576
+    val n1 = 2097152
     while (i1 < n1) do
       m.remove(randomArrayOfKeysSize2to23(i1))
       i1 += 1
@@ -945,7 +868,7 @@ class MutableLongMapBenchmarkBig {
     end for
 
     var i1 = 0
-    val n1 = 24576
+    val n1 = 2097152
     while (i1 < n1) do
       m.remove(randomArrayOfKeysSize2to23(i1))
       i1 += 1
@@ -973,7 +896,7 @@ class MutableLongMapBenchmarkBig {
     end for
 
     var i1 = 0
-    val n1 = 24576
+    val n1 = 2097152
     while (i1 < n1) do
       m.remove(randomArrayOfKeysSize2to23(i1))
       i1 += 1
