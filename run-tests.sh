@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-STAINLESS="stainless-scalac"
+STAINLESS="stainless-dotty"
 if [[ "$#" = 1 ]]; then
   STAINLESS="$1"
 fi
