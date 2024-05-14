@@ -1,5 +1,0 @@
-algorithms/aggregate-correct
-data-structures/trees/simple-conc
-data-structures/uarray
-tutorials/const-fold
-data-structures/maos/mutablemaps

@@ -1,3 +1,4 @@
+algorithms/aggregate-correct
 algorithms/sorting
 algorithms/fulcrum
 algorithms/leftpad
@@ -5,10 +6,13 @@ algorithms/extended-gcd
 algorithms/reachabilityChecker
 data-structures/amortized-queue1
 data-structures/amortized-queue2
+data-structures/maps/mutablemaps
 data-structures/lisp
 data-structures/sorted-array
 data-structures/trees/concrope
 data-structures/trees/redblack
+data-structures/trees/simple-conc
+data-structures/uarray
 expression-compiler
 fp-principles/example
 fp-principles/functional-sets
@@ -18,6 +22,7 @@ fp-principles/recursion
 software-foundations
 system-f
 tutorials/add-digits
+tutorials/const-fold
 tutorials/dispenser
 tutorials/krakow2020/working
 tutorials/memory
