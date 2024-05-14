@@ -115,11 +115,11 @@ object UArrayExample:
     else
       ua(from) = mk(from)
       fillWith(ua)(from + 1, until)(mk)
-  }.ensuring(_ => ua.initialized(until))
+  }.ensuring(_ => ua.initialized(until) && ua.size == old(ua).size)
 
   def fillWith[T: ClassTag](ua: UArray[T])(mk: Int => T): Unit = {
     fillWith(ua)(0, ua.size)(mk)
-  }.ensuring(_ => ua.initialized())
+  }.ensuring(_ => ua.initialized(ua.size))
 
 
 end UArrayExample
