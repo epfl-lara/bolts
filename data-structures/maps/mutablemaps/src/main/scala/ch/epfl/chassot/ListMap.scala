@@ -422,7 +422,7 @@ object TupleListOpsGenK {
       case Nil()        => ()
       case Cons(hd, tl) => lemmaSubseqRefl(tl)
     }
-  } ensuring (_ => ListSpecs.subseq(l, l))
+  }.ensuring (_ => ListSpecs.subseq(l, l))
 
   @opaque
   @inlineOnce
@@ -440,7 +440,7 @@ object TupleListOpsGenK {
       case _ => ()
     }
 
-  } ensuring (_ => keys.forall(k => containsKey(Cons(other, l), k)))
+  }.ensuring (_ => keys.forall(k => containsKey(Cons(other, l), k)))
 
   @opaque
   @inlineOnce
@@ -892,7 +892,7 @@ object TupleListOpsGenK {
       case _ => ()
     }
 
-  } ensuring (_ =>
+  }.ensuring (_ =>
     l.content ++ Set((newKey, newValue)) == insertNoDuplicatedKeys(
       l,
       newKey,
@@ -1232,7 +1232,7 @@ object ListMapLemmas {
       }
       case Nil() =>
 
-  } ensuring (_ => lm.toList.forall(p => lm.contains(p._1)))
+  }.ensuring (_ => lm.toList.forall(p => lm.contains(p._1)))
 
   @opaque
   @inlineOnce
@@ -1247,7 +1247,7 @@ object ListMapLemmas {
         lemmaInsertPairStillContainsAll(lm, t, k, v)
       case Nil() => ()
     }
-  } ensuring (_ => l.forall(p => (lm + (k, v)).contains(p._1)))
+  }.ensuring (_ => l.forall(p => (lm + (k, v)).contains(p._1)))
 
   @opaque
   @inlineOnce
@@ -1263,7 +1263,7 @@ object ListMapLemmas {
         lemmaInsertPairStillContainsAllEq(lm, lm2, t, k, v)
       case Nil() => ()
     }
-  } ensuring (_ => l.forall(p => (lm + (k, v)).contains(p._1)) && l.forall(p => (lm2).contains(p._1)))
+  }.ensuring (_ => l.forall(p => (lm + (k, v)).contains(p._1)) && l.forall(p => (lm2).contains(p._1)))
 
   @opaque
   @inlineOnce
@@ -1294,7 +1294,7 @@ object ListMapLemmas {
     require(lm.get(a) == Some[B](b))
 
     TupleListOpsGenK.lemmaGetValueByKeyImpliesContainsTuple(lm.toList, a, b)
-  } ensuring (_ => lm.toList.contains((a, b)))
+  }.ensuring (_ => lm.toList.contains((a, b)))
 
   @opaque
   def keysOfSound[K, B](@induct lm: ListMap[K, B], value: B): Unit = {
@@ -1315,7 +1315,7 @@ object ListMapLemmas {
       key,
       value
     )
-  } ensuring (_ =>
+  }.ensuring (_ =>
     lm.toList.content ++ Set(
       (key, value)
     ) == (lm + (key, value)).toList.content
