@@ -58,7 +58,7 @@ object BuggyNewMaskComputation {
       m = m >>> 1
     }
     m
-  } ensuring (res => validMask(res) && _size <= res + 1)
+  }.ensuring (res => validMask(res) && _size <= res + 1)
 
   val IndexMask: Int = MAX_MASK
 
@@ -73,7 +73,7 @@ object BuggyNewMaskComputation {
       m = m >>> 1
     }
     m
-  } ensuring (res => validMask(res) && _size <= res + 1) // Stainless finds a counterexample
+  }.ensuring (res => validMask(res) && _size <= res + 1) // Stainless finds a counterexample
   // [Warning ] Found counter-example:
   // [Warning ]   _vacant: Int -> 10256777
   // [Warning ]   mask: Int    -> 1073741823

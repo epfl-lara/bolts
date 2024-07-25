@@ -30,7 +30,7 @@ object MutableHashMap {
   def getEmptyHashMap[K, V](defaultValue: K => V, hashF: Hashable[K]): HashMap[K, V] = {
     val initialSize = 16
     HashMap(Cell(MutableLongMap.getEmptyLongMap[List[(K, V)]]((l: Long) => Nil[(K, V)](), initialSize)), hashF, 0, defaultValue)
-  } ensuring (res => res.valid && res.size == 0)
+  }.ensuring (res => res.valid && res.size == 0)
 
 
   @mutable
@@ -51,7 +51,7 @@ object MutableHashMap {
     def isEmpty: Boolean = {
       require(valid)
       underlying.v.isEmpty
-    } ensuring (_ => valid)
+    }.ensuring (_ => valid)
 
     @pure
     def contains(key: K): Boolean = {
@@ -80,7 +80,7 @@ object MutableHashMap {
         }
       })
       underlying.v.contains(hash) && getPair(underlying.v.apply(hash), key).isDefined
-    } ensuring (res => valid && (res == map.contains(key)))
+    }.ensuring (res => valid && (res == map.contains(key)))
 
     @pure
     def apply(key: K): V = {
@@ -102,7 +102,7 @@ object MutableHashMap {
         assert(getPair(underlying.v.apply(hash), key).get._2 == map.get(key).get)
         getPair(underlying.v.apply(hash), key).get._2
       }
-    } ensuring (res =>
+    }.ensuring (res =>
       valid
         && (if (contains(key)) res == map.get(key).get
             else res == defaultValue(key))
@@ -176,7 +176,7 @@ object MutableHashMap {
       }
       res
 
-    } ensuring (res => valid && (if (res) map.contains(key) && (map.eq(old(this).map + (key, v))) else map.eq(old(this).map)))
+    }.ensuring (res => valid && (if (res) map.contains(key) && (map.eq(old(this).map + (key, v))) else map.eq(old(this).map)))
 
     def remove(key: K): Boolean = {
       require(valid)
@@ -219,7 +219,7 @@ object MutableHashMap {
         res
       }
 
-    } ensuring (res => valid && (if (res) map.eq(old(this).map - key) else map.eq(old(this).map)))
+    }.ensuring (res => valid && (if (res) map.eq(old(this).map - key) else map.eq(old(this).map)))
 
     @ghost
     def valid: Boolean = underlying.v.valid &&
@@ -242,7 +242,7 @@ object MutableHashMap {
       case Cons((k, v), tl) => addToMapMapFromBucket(v, extractMap(tl))
       case Nil()            => ListMap.empty[K, V]
     }
-  } ensuring (res => true)
+  }.ensuring (res => true)
 
   @ghost
   def addToMapMapFromBucket[K, V](l: List[(K, V)], acc: ListMap[K, V]): ListMap[K, V] = {
@@ -274,7 +274,7 @@ object MutableHashMap {
         res
       }
     }
-  } ensuring (res => l.forall(p => res.contains(p._1)) && acc.toList.forall(p => res.contains(p._1)))
+  }.ensuring (res => l.forall(p => res.contains(p._1)) && acc.toList.forall(p => res.contains(p._1)))
 
   @ghost
   def noDuplicateKeys[K, V](l: List[(K, V)]): Boolean = {
@@ -315,7 +315,7 @@ object MutableHashMap {
       case Cons(hd, tl) if hd._1 == key => Some(hd)
       case Cons(_, tl)                  => getPair(tl, key)
       case Nil()                        => None()
-  } ensuring (res => res.isEmpty && !containsKey(l, key) || res.isDefined && res.get._1 == key && l.contains(res.get))
+  }.ensuring (res => res.isEmpty && !containsKey(l, key) || res.isDefined && res.get._1 == key && l.contains(res.get))
 
   def removePairForKey[K, V](l: List[(K, V)], key: K): List[(K, V)] = {
     require(noDuplicateKeys(l))
@@ -323,7 +323,7 @@ object MutableHashMap {
       case Cons(hd, tl) if hd._1 == key => tl
       case Cons(hd, tl)                 => Cons(hd, removePairForKey(tl, key))
       case Nil()                        => Nil()
-  } ensuring (res => !containsKey(res, key))
+  }.ensuring (res => !containsKey(res, key))
 
   @ghost
   def getValue[K, V](l: List[(Long, List[(K, V)])], k: K): V = {
@@ -364,7 +364,7 @@ object MutableHashMap {
     lemmaInGenMapThenGetPairDefined(lm, key, hashF)
     assert(getPair(lm.apply(hashF.hash(key)), key).isDefined)
 
-  } ensuring (_ => (lm.contains(hashF.hash(key)) && getPair(lm.apply(hashF.hash(key)), key).isDefined))
+  }.ensuring (_ => (lm.contains(hashF.hash(key)) && getPair(lm.apply(hashF.hash(key)), key).isDefined))
 
   @opaque
   @inlineOnce
@@ -382,7 +382,7 @@ object MutableHashMap {
     lemmaInLongMapThenContainsKeyBiggerList(lm, key, hashF)
     lemmaListContainsThenExtractedMapContains(lm, key, hashF)
 
-  } ensuring (_ => extractMap(lm.toList).contains(key))
+  }.ensuring (_ => extractMap(lm.toList).contains(key))
 
   @opaque
   @inlineOnce
@@ -405,7 +405,7 @@ object MutableHashMap {
     lemmaGetValueEquivToGetPair(lm, key, v, hashF)
     lemmaExtractMapPreservesMapping(lm, key, v, hashF)
 
-  } ensuring (_ => {
+  }.ensuring (_ => {
     lemmaInGenMapThenLongMapContainsHash(lm, key, hashF)
     ListLongMapLemmas.lemmaGetValueImpliesTupleContained(lm, hashF.hash(key), lm.apply(hashF.hash(key)))
     ListSpecs.forallContained(lm.toList, (k, v) => noDuplicateKeys(v), (hashF.hash(key), lm.apply(hashF.hash(key))))
@@ -512,7 +512,7 @@ object MutableHashMap {
       }
     }
 
-  } ensuring (_ => {
+  }.ensuring (_ => {
     extractMap((lm + (hash, newBucket)).toList).eq(extractMap(lm.toList) - key)
   })
 
@@ -614,7 +614,7 @@ object MutableHashMap {
       case Nil() => () 
     }
 
-  } ensuring (_ => {
+  }.ensuring (_ => {
     extractMap((lm + (hash, newBucket)).toList).eq(extractMap(lm.toList) + (key, newValue))
   })
 
@@ -702,7 +702,7 @@ object MutableHashMap {
       case Nil() => ()
     }
 
-  } ensuring (_ => {
+  }.ensuring (_ => {
     extractMap((lm + (hash, newBucket)).toList).eq(extractMap(lm.toList) + (key, newValue))
   })
 
@@ -731,7 +731,7 @@ object MutableHashMap {
       case Nil() => ()
     }
 
-  } ensuring (_ => acc.contains(key))
+  }.ensuring (_ => acc.contains(key))
 
   @opaque
   @inlineOnce
@@ -752,7 +752,7 @@ object MutableHashMap {
       case Nil() => ()
     }
 
-  } ensuring (_ => extractMap(lm.toList).contains(key))
+  }.ensuring (_ => extractMap(lm.toList).contains(key))
 
   @opaque
   @inlineOnce
@@ -784,7 +784,7 @@ object MutableHashMap {
       case Nil() => ()
     }
 
-  } ensuring (_ => addToMapMapFromBucket(l, extractMap(lm.toList)).contains(key))
+  }.ensuring (_ => addToMapMapFromBucket(l, extractMap(lm.toList)).contains(key))
 
   @opaque
   @inlineOnce
@@ -803,7 +803,7 @@ object MutableHashMap {
         check(addToMapMapFromBucket(l, (lhm - key)) == addToMapMapFromBucket(l, lhm) - key)
     }
 
-  } ensuring (_ => addToMapMapFromBucket(l, (lhm - key)) == addToMapMapFromBucket(l, lhm) - key)
+  }.ensuring (_ => addToMapMapFromBucket(l, (lhm - key)) == addToMapMapFromBucket(l, lhm) - key)
 
   @opaque
   @inlineOnce
@@ -831,7 +831,7 @@ object MutableHashMap {
         check(addToMapMapFromBucket(l, (lhm + (key, value))) == addToMapMapFromBucket(l, lhm) + (key, value))
     }
 
-  } ensuring (_ => addToMapMapFromBucket(l, (lhm + (key, value))).eq(addToMapMapFromBucket(l, lhm) + (key, value)))
+  }.ensuring (_ => addToMapMapFromBucket(l, (lhm + (key, value))).eq(addToMapMapFromBucket(l, lhm) + (key, value)))
 
   @opaque
   @inlineOnce
@@ -850,7 +850,7 @@ object MutableHashMap {
       case Nil() =>
         check(lhm1.eq(lhm2))
     }
-  } ensuring (_ => addToMapMapFromBucket(l, lhm1).eq(addToMapMapFromBucket(l, lhm2)))
+  }.ensuring (_ => addToMapMapFromBucket(l, lhm1).eq(addToMapMapFromBucket(l, lhm2)))
 
   @opaque
   @inlineOnce
@@ -951,7 +951,7 @@ object MutableHashMap {
 
       case Nil() => check(false)
 
-  } ensuring (_ => {
+  }.ensuring (_ => {
     extractMap(Cons((hash, newBucket), lm.toList.tail)).eq(extractMap(Cons((hash, oldBucket), lm.toList.tail)) - key)
   })
 
@@ -1032,7 +1032,7 @@ object MutableHashMap {
 
       case Nil() => check(false)
 
-  } ensuring (_ => {
+  }.ensuring (_ => {
     extractMap(List((hash, newBucket))).eq(extractMap(List((hash, oldBucket))) - key)
   })
 
@@ -1046,7 +1046,7 @@ object MutableHashMap {
 
     ListSpecs.forallContained(lml, (k, v) => allKeysSameHash(v, k, hashF), (hash, bucket))
 
-  } ensuring (_ => allKeysSameHash(bucket, hash, hashF))
+  }.ensuring (_ => allKeysSameHash(bucket, hash, hashF))
 
   @opaque
   @inlineOnce
@@ -1055,7 +1055,7 @@ object MutableHashMap {
     require(noDuplicateKeys(l))
     require(allKeysSameHash(l, hash, hashF))
 
-  } ensuring (_ => allKeysSameHash(removePairForKey(l, key), hash, hashF))
+  }.ensuring (_ => allKeysSameHash(removePairForKey(l, key), hash, hashF))
 
   @opaque
   @inlineOnce
@@ -1072,7 +1072,7 @@ object MutableHashMap {
       }
       case Nil() => ()
 
-  } ensuring (_ => {
+  }.ensuring (_ => {
     val newMap = old(lm) + (hash, newBucket)
     newMap.toList.forall((k, v) => noDuplicateKeys(v)) && allKeysSameHashInMap(newMap, hashF)
   })
@@ -1087,7 +1087,7 @@ object MutableHashMap {
 
     ListMapLemmas.removeNotPresentStillSame(extractMap(lm.toList), key)
 
-  } ensuring (_ => extractMap(lm.toList) == extractMap(lm.toList) - key)
+  }.ensuring (_ => extractMap(lm.toList) == extractMap(lm.toList) - key)
 
   @opaque
   @inlineOnce
@@ -1106,7 +1106,7 @@ object MutableHashMap {
       case Nil() => ()
     }
 
-  } ensuring (_ => noDuplicateKeys(removePairForKey(l, key)))
+  }.ensuring (_ => noDuplicateKeys(removePairForKey(l, key)))
 
   @opaque
   @inlineOnce
@@ -1116,7 +1116,7 @@ object MutableHashMap {
     require(otherK != key)
     require(!containsKey(l, otherK))
 
-  } ensuring (_ => !containsKey(removePairForKey(l, key), otherK))
+  }.ensuring (_ => !containsKey(removePairForKey(l, key), otherK))
 
   @opaque
   @inlineOnce
@@ -1138,7 +1138,7 @@ object MutableHashMap {
     }
     check(getPair(lm.apply(hashF.hash(key)), key).isDefined)
 
-  } ensuring (_ => {
+  }.ensuring (_ => {
     lemmaInGenMapThenLongMapContainsHash(lm, key, hashF)
     ListLongMapLemmas.lemmaGetValueImpliesTupleContained(lm, hashF.hash(key), lm.apply(hashF.hash(key)))
     ListSpecs.forallContained(lm.toList, (k, v) => noDuplicateKeys(v), (hashF.hash(key), lm.apply(hashF.hash(key))))
@@ -1167,7 +1167,7 @@ object MutableHashMap {
       case Nil() => ()
     }
 
-  } ensuring (_ => !extractMap(lm.toList).contains(key))
+  }.ensuring (_ => !extractMap(lm.toList).contains(key))
 
   @opaque
   @inlineOnce
@@ -1186,7 +1186,7 @@ object MutableHashMap {
       check(false)
     }
 
-  } ensuring (_ => lm.contains(hashF.hash(key)))
+  }.ensuring (_ => lm.contains(hashF.hash(key)))
 
   @opaque
   @inlineOnce
@@ -1205,7 +1205,7 @@ object MutableHashMap {
       case Nil() => ()
     }
 
-  } ensuring (_ => !extractMap(lm.toList).contains(key))
+  }.ensuring (_ => !extractMap(lm.toList).contains(key))
 
   @opaque
   @inlineOnce
@@ -1231,7 +1231,7 @@ object MutableHashMap {
 
         }
     }
-  } ensuring (_ => (addToMapMapFromBucket(l, acc).contains(key) == (containsKey(l, key) || acc.contains(key))))
+  }.ensuring (_ => (addToMapMapFromBucket(l, acc).contains(key) == (containsKey(l, key) || acc.contains(key))))
 
   @opaque
   @inlineOnce
@@ -1261,7 +1261,7 @@ object MutableHashMap {
         check(addToMapMapFromBucket(Cons(t, l), acc).eq(addToMapMapFromBucket(l, acc) + t))
     }
 
-  } ensuring (_ => addToMapMapFromBucket(Cons(t, l), acc).eq(addToMapMapFromBucket(l, acc) + t))
+  }.ensuring (_ => addToMapMapFromBucket(Cons(t, l), acc).eq(addToMapMapFromBucket(l, acc) + t))
 
 
 
@@ -1301,7 +1301,7 @@ object MutableHashMap {
       case Nil() => ()
     }
 
-  } ensuring (_ => extractMap(lm.toList).apply(key) == value)
+  }.ensuring (_ => extractMap(lm.toList).apply(key) == value)
 
   @opaque
   @inlineOnce
@@ -1336,7 +1336,7 @@ object MutableHashMap {
 
         }
     }
-  } ensuring (_ => addToMapMapFromBucket(l, acc).apply(key) == value)
+  }.ensuring (_ => addToMapMapFromBucket(l, acc).apply(key) == value)
 
   @opaque
   @inlineOnce
@@ -1361,7 +1361,7 @@ object MutableHashMap {
         check(containsKeyBiggerList(lm.toList, key))
       case Nil() => check(containsKeyBiggerList(lm.toList, key))
 
-  } ensuring (_ => containsKeyBiggerList(lm.toList, key))
+  }.ensuring (_ => containsKeyBiggerList(lm.toList, key))
 
   @opaque
   @inlineOnce
@@ -1395,7 +1395,7 @@ object MutableHashMap {
       }
       case Nil() => ()
 
-  } ensuring (_ => extractMap(lm.toList).contains(key))
+  }.ensuring (_ => extractMap(lm.toList).contains(key))
 
   @opaque
   @inlineOnce
@@ -1406,7 +1406,7 @@ object MutableHashMap {
     require(containsKeyBiggerList(lm.toList, key) && containsKey(lm.toList.head._2, key))
     require(v == getValue(lm.toList, key))
 
-  } ensuring (_ => lm.toList.head._2.contains((key, v)))
+  }.ensuring (_ => lm.toList.head._2.contains((key, v)))
 
   @opaque
   @inlineOnce
@@ -1441,7 +1441,7 @@ object MutableHashMap {
       case Nil() => ()
     }
 
-  } ensuring (_ => getValue(lm.toList, key) == v)
+  }.ensuring (_ => getValue(lm.toList, key) == v)
   @opaque
   @inlineOnce
   @ghost
@@ -1452,7 +1452,7 @@ object MutableHashMap {
     require(!containsKey(lm.toList.head._2, key))
     decreases(lm.toList.size)
 
-  } ensuring (_ => containsKeyBiggerList(lm.toList.tail, key))
+  }.ensuring (_ => containsKeyBiggerList(lm.toList.tail, key))
 
   @opaque
   @inlineOnce
@@ -1466,7 +1466,7 @@ object MutableHashMap {
       case Cons(_, tl)                  => lemmaGetPairDefinedThenContainsKey(tl, key, hashF)
       case Nil()                        => ()
 
-  } ensuring (_ => containsKey(l, key))
+  }.ensuring (_ => containsKey(l, key))
 
   @opaque
   @inlineOnce
@@ -1488,7 +1488,7 @@ object MutableHashMap {
       ListSpecs.forallContained(listHash, (k, v) => hashF.hash(k) == hash, (key, getPair(listHash, key).get._2))
       check(false)
     }
-  } ensuring (_ => !containsKey(lm.apply(hash), key))
+  }.ensuring (_ => !containsKey(lm.apply(hash), key))
 
   @opaque
   @inlineOnce
@@ -1501,6 +1501,6 @@ object MutableHashMap {
       case Cons(_, tl)                  => lemmaNotContainsKeyThenCannotContainPair(tl, key, v)
       case Nil()                        => ()
 
-  } ensuring (_ => !l.contains((key, v)))
+  }.ensuring (_ => !l.contains((key, v)))
 }
 
