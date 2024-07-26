@@ -529,6 +529,10 @@ object MutableLongMapOpti {
       }
     }
 
+    private def nextIndex(ee: Int, x: Int, mask: Int): Int = {
+      (ee + 2 * (x + 1) * x - 3) & mask
+    } 
+
     @tailrec
     @pure
     private def seekKeyOrZeroOrLongMinValue(x: Int, ee: Int)(implicit
@@ -540,7 +544,7 @@ object MutableLongMapOpti {
       if (x >= MAX_ITER) Intermediate(true, ee, x)
       else if (q == k || q + q == 0) Intermediate(false, ee, x)
       else
-        seekKeyOrZeroOrLongMinValue(x + 1, (ee + 2 * (x + 1) * x - 3) & mask)
+        seekKeyOrZeroOrLongMinValue(x + 1, nextIndex(ee, x + 1, mask))
     }
 
     @tailrec
@@ -557,7 +561,7 @@ object MutableLongMapOpti {
       else
         seekKeyOrZeroReturnVacant(
           x + 1,
-          (ee + 2 * (x + 1) * x - 3) & mask,
+          nextIndex(ee, x + 1, mask),
           vacantSpotIndex
         )
 

@@ -50,5 +50,5 @@ object Sorted:
     l match
       case Cons(x, xs) => insert(sort(xs), x)
       case Nil()       => Nil()
-  } ensuring (res => isSorted(res))
+  } ensuring (res => isSorted(res) && res.size == l.size)
 end Sorted

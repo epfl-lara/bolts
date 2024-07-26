@@ -1,6 +1,6 @@
 name := "MutableMaps"
 version := "0.1.0-SNAPSHOT"
-scalaVersion :="3.3.0" 
+scalaVersion :="3.3.3" 
 
 run / fork := true
 

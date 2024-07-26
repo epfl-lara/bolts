@@ -22,69 +22,37 @@ class MutableHashMapBenchmarkBig {
 
   @Param(
     Array(
-      // "0",
       "131072",
-      // "262144",
       "393216",
-      // "524288",
       "655360",
-      // "786432",
       "917504",
-      // "1048576",
       "1179648",
-      // "1310720",
       "1441792",
-      // "1572864",
       "1703936",
-      // "1835008",
       "1966080",
-      // "2097152",
       "2228224",
-      // "2359296",
       "2490368",
-      // "2621440",
       "2752512",
-      // "2883584",
       "3014656",
-      // "3145728",
       "3276800",
-      // "3407872",
       "3538944",
-      // "3670016",
       "3801088",
-      // "3932160",
       "4063232",
-      // "4194304",
       "4325376",
-      // "4456448",
       "4587520",
-      // "4718592",
       "4849664",
-      // "4980736",
       "5111808",
-      // "5242880",
       "5373952",
-      // "5505024",
       "5636096",
-      // "5767168",
       "5898240",
-      // "6029312",
       "6160384",
-      // "6291456",
       "6422528",
-      // "6553600",
       "6684672",
-      // "6815744",
       "6946816",
-      // "7077888",
       "7208960",
-      // "7340032",
       "7471104",
-      // "7602176",
       "7733248",
-      // "7864320",
       "7995392",
-      // "8126464",
       "8257536",
       "8388608"
     )
@@ -205,7 +173,7 @@ class MutableHashMapBenchmarkBig {
     end for
 
     var i1 = 0
-    val n1 = 24576
+    val n1 = 2097152
     while (i1 < n1) do
       m.remove(randomArrayOfLongSize2to23(i1))
       i1 += 1
@@ -233,7 +201,7 @@ class MutableHashMapBenchmarkBig {
     end for
 
     var i1 = 0
-    val n1 = 24576
+    val n1 = 2097152
     while (i1 < n1) do
       m.remove(randomArrayOfKeysSize2to23(i1))
       i1 += 1
@@ -261,7 +229,7 @@ class MutableHashMapBenchmarkBig {
     end for
 
     var i1 = 0
-    val n1 = 24576
+    val n1 = 2097152
     while (i1 < n1) do
       m.remove(randomArrayOfKeysSize2to23(i1))
       i1 += 1
@@ -289,11 +257,6 @@ object HashKey extends Hashable[Key]:
   override def hash(k: Key): Long = k.hashCode().toLong // to be more realistic, as we can have collisions
 end HashKey
 
-object KeyOrdering extends Ordering[Key]:
-  override def compare(x: Key, y: Key): Int = 
-    val lComp = x.l.compareTo(y.l)
-    if lComp != 0 then lComp else x.s.compareTo(y.s)
-end KeyOrdering
 
 object HashMapBenchmarkUtilBig {
   val seed = 0x0ddba11
@@ -309,7 +272,7 @@ object HashMapBenchmarkUtilBig {
   val randomArrayOfKeysSize2to23: Array[Key] = Random.shuffle((0L until long2to22) ++ (0L until long2to22)).map(l => Key(l, l.toString())).toArray
 
   def getVerifiedMapEmptyBuffer(n: Int) = MutableLongMap.getEmptyLongMap[Long](k => 0L, n)
-  def getVerifiedHashMapEmptyBuffer(n: Int) = MutableHashMap.getEmptyHashMap[Key, Long](k => 0L, hashF = HashKey, ordering = KeyOrdering)
+  def getVerifiedHashMapEmptyBuffer(n: Int) = MutableHashMap.getEmptyHashMap[Key, Long](k => 0L, hashF = HashKey)
   def getHashMapEmptyBuffer(n: Int): HashMap[Key, Long] = HashMap.newBuilder(n).result()
 
   val verifiedLongMapFilledWith2to22Values = {

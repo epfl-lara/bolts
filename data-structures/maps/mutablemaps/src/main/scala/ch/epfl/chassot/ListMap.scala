@@ -10,34 +10,18 @@ import stainless.lang._
 import stainless.proof.check
 import scala.annotation.tailrec
 import scala.collection.immutable
+import stainless.collection.ListOps.noDuplicate
+import scala.collection.mutable
 
 // Uncomment the following import to run benchmarks
 // import OptimisedChecks.*
 
-trait Ordering[T]:
-  def compare(x: T, y: T): Int
-
-  @law def inverse(x: T, y: T): Boolean =
-    sign(compare(x, y)) == -sign(compare(y, x))
-
-  @law def transitive(x: T, y: T, z: T): Boolean =
-    if (compare(x, y) > 0 && compare(y, z) > 0) then compare(x, z) > 0 else if (compare(x, y) < 0 && compare(y, z) < 0) then compare(x, z) < 0 else true
-
-  @law def consistent(x: T, y: T, z: T): Boolean =
-    if compare(x, y) == 0 then sign(compare(x, z)) == sign(compare(y, z)) else true
-
-  @law def equalsMeansEquals(x: T, y: T): Boolean =
-    (compare(x, y) == 0) == (x == y)
-
-  final def sign(x: Int): BigInt =
-    if x < 0 then -1 else if x > 0 then 1 else 0
-
-end Ordering
-
-case class ListMap[K, B](toList: List[(K, B)], ordd: Ordering[K]) {
-  require(TupleListOpsGenK.isStrictlySorted(toList)(ordd))
+case class ListMap[K, B](toList: List[(K, B)]) {
+  require(TupleListOpsGenK.noDuplicatedKeys(toList))
 
   def isEmpty: Boolean = toList.isEmpty
+
+  def eq(other: ListMap[K, B]): Boolean = toList.content == other.toList.content
 
   def head: (K, B) = {
     require(!isEmpty)
@@ -46,24 +30,24 @@ case class ListMap[K, B](toList: List[(K, B)], ordd: Ordering[K]) {
 
   def size: Int = {
     require(toList.size < Integer.MAX_VALUE)
-    TupleListOpsGenK.intSize(toList)(ordd)
+    TupleListOpsGenK.intSize(toList)
   }
 
   @pure
   def nKeys: Int = {
     require(toList.size < Integer.MAX_VALUE)
-    TupleListOpsGenK.intSizeKeys(TupleListOpsGenK.getKeysList(toList)(ordd))(ordd)
+    TupleListOpsGenK.intSizeKeys(TupleListOpsGenK.getKeysList(toList))
   }
 
   def tail: ListMap[K, B] = {
     require(!isEmpty)
-    ListMap(toList.tail, ordd)
+    ListMap(toList.tail)
   }
 
   def contains(key: K): Boolean = {
-    val res = TupleListOpsGenK.containsKey(toList, key)(ordd)
+    val res = TupleListOpsGenK.containsKey(toList, key)
     if (res) {
-      TupleListOpsGenK.lemmaContainsKeyImpliesGetValueByKeyDefined(toList, key)(ordd)
+      TupleListOpsGenK.lemmaContainsKeyImpliesGetValueByKeyDefined(toList, key)
     }
     res
 
@@ -71,16 +55,16 @@ case class ListMap[K, B](toList: List[(K, B)], ordd: Ordering[K]) {
 
   @inline
   def get(key: K): Option[B] = {
-    TupleListOpsGenK.getValueByKey(toList, key)(ordd)
+    TupleListOpsGenK.getValueByKey(toList, key)
   }
 
   @inline
   def keysOf(value: B): List[K] = {
-    TupleListOpsGenK.getKeysOf(toList, value)(ordd)
+    TupleListOpsGenK.getKeysOf(toList, value)
   }
 
   def keys(): List[K] = {
-    TupleListOpsGenK.getKeysList(toList)(ordd)
+    TupleListOpsGenK.getKeysList(toList)
   }
 
   def apply(key: K): B = {
@@ -90,14 +74,14 @@ case class ListMap[K, B](toList: List[(K, B)], ordd: Ordering[K]) {
 
   def +(keyValue: (K, B)): ListMap[K, B] = {
     val newList =
-      TupleListOpsGenK.insertStrictlySorted(toList, keyValue._1, keyValue._2)(ordd)
+      TupleListOpsGenK.insertNoDuplicatedKeys(toList, keyValue._1, keyValue._2)
 
     TupleListOpsGenK.lemmaContainsTupThenGetReturnValue(
       newList,
       keyValue._1,
       keyValue._2
-    )(ordd)
-    ListMap(newList, ordd)
+    )
+    ListMap(newList)
 
   }.ensuring(res =>
     res.contains(keyValue._1) && res.get(keyValue._1) == Some[B](
@@ -113,7 +97,7 @@ case class ListMap[K, B](toList: List[(K, B)], ordd: Ordering[K]) {
     }
   }
   def -(key: K): ListMap[K, B] = {
-    ListMap(TupleListOpsGenK.removeStrictlySorted(toList, key)(ordd), ordd)
+    ListMap(TupleListOpsGenK.removePresrvNoDuplicatedKeys(toList, key))
   }.ensuring(res => !res.contains(key))
 
   def --(keys: List[K]): ListMap[K, B] = {
@@ -131,27 +115,36 @@ case class ListMap[K, B](toList: List[(K, B)], ordd: Ordering[K]) {
 
 object TupleListOpsGenK {
 
-  extension [K](k: K) def >(other: K)(implicit ord: Ordering[K]): Boolean = ord.compare(k, other) > 0
-  extension [K](k: K) def <(other: K)(implicit ord: Ordering[K]): Boolean = ord.compare(k, other) < 0
-  extension [K](k: K) def >=(other: K)(implicit ord: Ordering[K]): Boolean = ord.compare(k, other) >= 0
-  extension [K](k: K) def <=(other: K)(implicit ord: Ordering[K]): Boolean = ord.compare(k, other) <= 0
-
   // @inline
-  def invariantList[K, B](l: List[(K, B)])(implicit ord: Ordering[K]): Boolean = {
-    isStrictlySorted(l)
+  def invariantList[K, B](l: List[(K, B)]): Boolean = {
+    noDuplicatedKeys(l)
   }
 
-  def getKeysList[K, B](l: List[(K, B)])(implicit ord: Ordering[K]): List[K] = {
+  def getKeysList[K, B](l: List[(K, B)]): List[K] = {
     require(invariantList(l))
     decreases(l)
     l match {
-      case Cons(head, tl) => Cons(head._1, getKeysList(tl))
-      case Nil()          => Nil[K]()
+      case Cons(head, tl) =>
+        if (containsKey(tl, head._1)) {
+          check(false)
+        }
+        if (getKeysList(tl).contains(head._1)) {
+          ListSpecs.forallContained(getKeysList(tl), k => containsKey(tl, k), head._1)
+          check(false)
+        }
+        assert(noDuplicate(getKeysList(tl)) && getKeysList(tl).forall(k => containsKey(tl, k)))
+        assert(noDuplicate(Cons(head._1, getKeysList(tl))))
+        assert(getKeysList(tl).forall(k => containsKey(tl, k)))
+        lemmaForallContainsAddHeadPreserves(tl, getKeysList(tl), head)
+        assert(getKeysList(tl).forall(k => containsKey(Cons(head, tl), k)))
+        assert(Cons(head._1, getKeysList(tl)).forall(k => containsKey(Cons(head, tl), k)))
+        Cons(head._1, getKeysList(tl))
+      case Nil() => Nil[K]()
     }
-  }.ensuring(res => isStrictlySortedK(res) && res.length == l.length)
+  }.ensuring(res => noDuplicate(res) && res.length == l.length && res.forall(k => containsKey(l, k)))
 
   @pure
-  def intSizeKeys[K](l: List[K])(implicit ord: Ordering[K]): Int = {
+  def intSizeKeys[K](l: List[K]): Int = {
     require(l.length < Integer.MAX_VALUE)
     decreases(l)
 
@@ -161,7 +154,7 @@ object TupleListOpsGenK {
     }
   }
 
-  def intSize[K, B](l: List[(K, B)])(implicit ord: Ordering[K]): Int = {
+  def intSize[K, B](l: List[(K, B)]): Int = {
     decreases(l)
     l match {
       case Cons(head, tl) => {
@@ -177,14 +170,14 @@ object TupleListOpsGenK {
     }
   }.ensuring(res => res >= 0)
 
-  def getKeysOf[K, B](l: List[(K, B)], value: B)(implicit ord: Ordering[K]): List[K] = {
+  def getKeysOf[K, B](l: List[(K, B)], value: B): List[K] = {
     require(invariantList(l))
     decreases(l)
 
     l match {
       case Cons(head, tl) if (head._2 == value) => {
         if (!getKeysOf(tl, value).isEmpty) {
-          lemmaForallGetValueByKeySameWithASmallerHead(
+          lemmaForallGetValueByKeySameWithADiffHead(
             tl,
             getKeysOf(tl, value),
             value,
@@ -197,7 +190,7 @@ object TupleListOpsGenK {
       case Cons(head, tl) if (head._2 != value) => {
         val r = getKeysOf(tl, value)
         if (!getKeysOf(tl, value).isEmpty) {
-          lemmaForallGetValueByKeySameWithASmallerHead(
+          lemmaForallGetValueByKeySameWithADiffHead(
             tl,
             getKeysOf(tl, value),
             value,
@@ -211,37 +204,34 @@ object TupleListOpsGenK {
 
   }.ensuring(res => res.forall(getValueByKey(l, _) == Some[B](value)))
 
-  def filterByValue[K, B](l: List[(K, B)], value: B)(implicit ord: Ordering[K]): List[(K, B)] = {
+  def filterByValue[K, B](l: List[(K, B)], value: B): List[(K, B)] = {
     require(invariantList(l))
     decreases(l)
 
     l match {
       case Cons(head, tl) if (head._2 == value) =>
-        check(ord.equalsMeansEquals(head._1, head._1))
         val res = head :: filterByValue(tl, value)
-        filterByValue(tl, value) match {
-          case Cons(a, _) =>
-            lemmaInTailThenBigger(head, tl, a)
-          case _ => ()
+        if (containsKey(filterByValue(tl, value), head._1)) {
+          assert(ListSpecs.subseq(filterByValue(tl, value), tl))
+          lemmaContainsKeyImpliesGetValueByKeyDefined(filterByValue(tl, value), head._1)
+          val va = getValueByKey(filterByValue(tl, value), head._1).get
+          lemmaGetValueByKeyImpliesContainsTuple(filterByValue(tl, value), head._1, va)
+          ListSpecs.subseqContains(filterByValue(tl, value), tl, (head._1, va))
+          assert(tl.contains((head._1, va)))
+          lemmaContainsTupleThenContainsKey(tl, head._1, va)
+          assert(containsKey(tl, head._1))
+          check(false)
         }
+        assert(!containsKey(filterByValue(tl, value), head._1))
         res
       case Cons(head, tl) if (head._2 != value) =>
         val res = filterByValue(tl, value)
-        filterByValue(tl, value) match {
-          case Cons(a, _) =>
-            lemmaInTailThenBigger(head, tl, a)
-            check(ord.inverse(head._1, a._1))
-          case _ => ()
-        }
         res
       case Nil() => Nil[(K, B)]()
     }
-  }.ensuring(res =>
-    invariantList(res) && res.forall(_._2 == value) &&
-      (if (l.isEmpty) res.isEmpty else res.isEmpty || res.head._1 >= l.head._1 && l.contains(res.head))
-  )
+  }.ensuring(res => res.forall(_._2 == value) && ListSpecs.subseq(res, l) && invariantList(res))
 
-  def getValueByKey[K, B](l: List[(K, B)], key: K)(implicit ord: Ordering[K]): Option[B] = {
+  def getValueByKey[K, B](l: List[(K, B)], key: K): Option[B] = {
     require(invariantList(l))
     decreases(l)
 
@@ -253,140 +243,208 @@ object TupleListOpsGenK {
 
   }
 
-  def insertStrictlySorted[K, B](
+  def insertNoDuplicatedKeys[K, B](
       l: List[(K, B)],
       newKey: K,
       newValue: B
-  )(implicit ord: Ordering[K]): List[(K, B)] = {
+  ): List[(K, B)] = {
     require(invariantList(l))
     decreases(l)
 
     l match {
-      case Cons(a, _) => {
-        check(ord.equalsMeansEquals(a._1, newKey))
-        check(ord.inverse(a._1, newKey))
-      }
-      case _ => ()
-    }
-
-    l match {
-      case Cons(head, tl) if (head._1 < newKey) =>
-        head :: insertStrictlySorted(tl, newKey, newValue)
-      case Cons(head, tl) if (head._1 == newKey) => (newKey, newValue) :: tl
-      case Cons(head, tl) if (head._1 > newKey) =>
-        (newKey, newValue) :: Cons(head, tl)
+      case Cons(head, tl) if (head._1 == newKey) =>
+        lemmaSubseqRefl(getKeysList(l))
+        (newKey, newValue) :: tl
+      case Cons(head, tl) if (!containsKey(l, newKey)) => (newKey, newValue) :: l
+      case Cons(head, tl) =>
+        assert(containsKey(tl, newKey))
+        val res = head :: insertNoDuplicatedKeys(tl, newKey, newValue)
+        if (containsKey(insertNoDuplicatedKeys(tl, newKey, newValue), head._1)) {
+          assert(head._1 != newKey)
+          assert(getKeysList(tl).content ++ Set(newKey) == getKeysList(insertNoDuplicatedKeys(tl, newKey, newValue)).content)
+          lemmaInListThenGetKeysListContains(insertNoDuplicatedKeys(tl, newKey, newValue), head._1)
+          assert(getKeysList(insertNoDuplicatedKeys(tl, newKey, newValue)).contains(head._1))
+          assert(getKeysList(tl).contains(head._1))
+          lemmaInGetKeysListThenContainsKey(tl, head._1)
+          assert(containsKey(tl, head._1))
+          check(false)
+        }
+        assert(invariantList(res))
+        assert(containsKey(res, newKey))
+        assert(res.contains((newKey, newValue)))
+        res
       case Nil() => (newKey, newValue) :: Nil()
     }
   }.ensuring(res =>
-    invariantList(res) && containsKey(res, newKey) && res.contains(
-      (newKey, newValue)
-    )
+    invariantList(res) && containsKey(res, newKey) &&
+      res.contains((newKey, newValue)) &&  
+      getKeysList(res).content == getKeysList(l).content ++ Set(newKey)
   )
 
-  def removeStrictlySorted[K, B](
+  def removePresrvNoDuplicatedKeys[K, B](
       l: List[(K, B)],
       key: K
-  )(implicit ord: Ordering[K]): List[(K, B)] = {
+  ): List[(K, B)] = {
     require(invariantList(l))
     decreases(l)
-
     l match {
-      case Cons(a, Cons(b, Nil())) => {
-        check(ord.inverse(a._1, b._1))
-      }
-      case Cons(a, Cons(b, Cons(c, _))) => {
-        check(ord.inverse(a._1, b._1))
-        check(ord.inverse(b._1, c._1))
-        check(ord.inverse(a._1, c._1))
-
-        check(ord.transitive(c._1, b._1, a._1))
-        check(ord.transitive(a._1, b._1, c._1))
-        check(ord.consistent(c._1, b._1, a._1))
-        check(ord.consistent(c._1, a._1, b._1))
-        check(ord.consistent(a._1, b._1, c._1))
-        check(ord.consistent(a._1, c._1, b._1))
-        check(ord.consistent(b._1, c._1, a._1))
-        check(ord.consistent(b._1, a._1, c._1))
-      }
-      case _ => ()
-    }
-
-    l match {
-      case Cons(head, tl) if (head._1 == key) => tl
+      case Cons(head, tl) if (head._1 == key) => 
+        if(containsKey(l, key)){
+          val h = (key, getValueByKey(l, key).get)
+          assert(l.head == (key, getValueByKey(l, key).get))
+          if(tl.contains(h)){
+            lemmaContainsTupleThenContainsKey(tl, h._1, h._2)
+            check(false)
+          }
+          assert(!tl.contains(head))
+          check(tl.content == l.content - (key, getValueByKey(l, key).get))
+        } else {
+          check(tl.content == l.content)
+        }
+        tl
       case Cons(head, tl) if (head._1 != key) =>
-        head :: removeStrictlySorted(tl, key)(ord)
+        val res = head :: removePresrvNoDuplicatedKeys(tl, key)
+        if(getKeysList(tl).contains(head._1)){
+          lemmaInGetKeysListThenContainsKey(tl, head._1) 
+          check(false)
+        }
+        if(containsKey(removePresrvNoDuplicatedKeys(tl, key), head._1)){
+          lemmaInListThenGetKeysListContains(removePresrvNoDuplicatedKeys(tl, key), head._1)
+          check(false)
+        }
+        res
       case Nil() => Nil[(K, B)]()
     }
-  }.ensuring(res => invariantList(res) && !containsKey(res, key))
+  }.ensuring(res => 
+    invariantList(res) && 
+    !containsKey(res, key) &&
+    getKeysList(res).content == getKeysList(l).content -- Set(key) &&
+    (if(containsKey(l, key)) {
+      lemmaContainsKeyImpliesGetValueByKeyDefined(l, key)
+      res.content == l.content - (key, getValueByKey(l, key).get)
+    } else {
+      res.content == l.content
+    })
+  )
 
-  def isStrictlySorted[K, B](l: List[(K, B)])(implicit ord: Ordering[K]): Boolean = {
+  def noDuplicatedKeys[K, B](l: List[(K, B)]): Boolean = {
     decreases(l)
     l match {
-      case Nil()                                     => true
-      case Cons(_, Nil())                            => true
-      case Cons(h1, Cons(h2, _)) if (h1._1 >= h2._1) => false
-      case Cons(_, t)                                => isStrictlySorted(t)
+      case Nil()                                  => true
+      case Cons(_, Nil())                         => true
+      case Cons(h1, t) if (containsKey(t, h1._1)) => false
+      case Cons(_, t)                             => noDuplicatedKeys(t)
     }
   }
 
-  def isStrictlySortedK[K](l: List[K])(implicit ord: Ordering[K]): Boolean = {
+  def containsKey[K, B](l: List[(K, B)], key: K): Boolean = {
     decreases(l)
     l match {
-      case Nil()                               => true
-      case Cons(_, Nil())                      => true
-      case Cons(h1, Cons(h2, _)) if (h1 >= h2) => false
-      case Cons(_, t)                          => isStrictlySortedK(t)
-    }
-  }
-
-  def containsKey[K, B](l: List[(K, B)], key: K)(implicit ord: Ordering[K]): Boolean = {
-    require(invariantList(l))
-    decreases(l)
-    l match {
-      case Cons(a, Cons(b, Nil())) => {
-        check(ord.equalsMeansEquals(a._1, key))
-        check(ord.inverse(a._1, b._1))
-        check(ord.inverse(a._1, key))
-        check(ord.transitive(a._1, b._1, key))
-        check(ord.transitive(a._1, key, b._1))
-        check(ord.transitive(key, a._1, b._1))
-      }
-      case Cons(a, Cons(b, Cons(c, _))) => {
-        check(ord.equalsMeansEquals(a._1, key))
-        check(ord.inverse(a._1, b._1))
-        check(ord.inverse(b._1, c._1))
-        check(ord.inverse(a._1, c._1))
-
-        check(ord.transitive(c._1, b._1, a._1))
-        check(ord.transitive(a._1, b._1, c._1))
-        check(ord.consistent(c._1, b._1, a._1))
-        check(ord.consistent(c._1, a._1, b._1))
-        check(ord.consistent(a._1, b._1, c._1))
-        check(ord.consistent(a._1, c._1, b._1))
-        check(ord.consistent(b._1, c._1, a._1))
-        check(ord.consistent(b._1, a._1, c._1))
-      }
-      case Cons(a, _) => {
-        check(ord.inverse(a._1, key))
-        check(ord.equalsMeansEquals(a._1, key))
-      }
-      case _ => ()
-    }
-
-    l match {
-      case Cons(head, tl) if (head._1 == key) => true
-      case Cons(head, tl) if (head._1 > key)  => false
-      case Cons(head, tl) if (head._1 < key)  => containsKey(tl, key)
-      case Nil()                              => false
+      case Cons(head, _) if (head._1 == key) => true
+      case Cons(_, tl)                       => containsKey(tl, key)
+      case Nil()                             => false
 
     }
   }
 
   // ----------- LEMMAS -----------------------------------------------------
 
+  @opaque 
+  @inlineOnce
+  def lemmaContainsTwoDifferentTuplesSameKeyImpossible[K, B](
+      l: List[(K, B)],
+      key: K,
+      v1: B,
+      v2: B
+  ): Unit = {
+    require(l.contains((key, v1)) && l.contains((key, v2)))
+    require(invariantList(l))
+    decreases(l)
+
+    l match {
+      case Cons(head, tl) if (head._1 != key) =>
+        lemmaContainsTwoDifferentTuplesSameKeyImpossible(tl, key, v1, v2)
+      case Cons(head, tl) if (head._1 == key) =>
+        if (head._2 == v1) {
+          if(v1 != v2){
+            lemmaContainsTupleThenContainsKey(tl, key, v2)
+            check(false)
+          }
+        } else {
+          if(head._2 != v2){
+            lemmaContainsTupleThenContainsKey(tl, key, v2)
+            lemmaContainsTupleThenContainsKey(tl, key, v1)
+            check(false)
+          }
+          assert(head._2 == v2)
+          if (v1 != v2) {
+            lemmaContainsTupleThenContainsKey(tl, key, v1)
+            check(false)
+          }
+        }
+      case _ => ()
+    }
+  }.ensuring(_ => v1 == v2)
+
   @opaque
   @inlineOnce
-  def lemmaGetValueByKeyImpliesContainsTuple[K, B](l: List[(K, B)], key: K, v: B)(implicit ord: Ordering[K]): Unit = {
+  def lemmaInListThenGetKeysListContains[K, B](l: List[(K, B)], key: K): Unit = {
+    require(invariantList(l))
+    require(containsKey(l, key))
+    decreases(l)
+
+    l match {
+      case Cons(head, tl) if (head._1 != key) =>
+        lemmaInListThenGetKeysListContains(tl, key)
+      case _ => ()
+    }
+  }.ensuring(_ => getKeysList(l).contains(key))
+
+  @inlineOnce
+  @opaque
+  def lemmaInGetKeysListThenContainsKey[K, B](l: List[(K, B)], key: K): Unit = {
+    require(invariantList(l))
+    require(getKeysList(l).contains(key))
+    decreases(l)
+
+    l match {
+      case Cons(head, tl) if (head._1 != key) =>
+        lemmaInGetKeysListThenContainsKey(tl, key)
+      case _ => ()
+    }
+  }.ensuring(_ => containsKey(l, key))
+
+  @inlineOnce
+  @opaque
+  def lemmaSubseqRefl[B](l: List[B]): Unit = {
+    decreases(l.size)
+    l match {
+      case Nil()        => ()
+      case Cons(hd, tl) => lemmaSubseqRefl(tl)
+    }
+  }.ensuring (_ => ListSpecs.subseq(l, l))
+
+  @opaque
+  @inlineOnce
+  def lemmaForallContainsAddHeadPreserves[K, B](l: List[(K, B)], keys: List[K], other: (K, B)): Unit = {
+    require(invariantList(l))
+    require(keys.forall(k => containsKey(l, k)))
+    require(!containsKey(l, other._1))
+    decreases(keys)
+
+    keys match {
+      case Cons(head, tl) => {
+        lemmaAddHeadStillContainsKey(l, other._1, other._2, head)
+        lemmaForallContainsAddHeadPreserves(l, tl, other)
+      }
+      case _ => ()
+    }
+
+  }.ensuring (_ => keys.forall(k => containsKey(Cons(other, l), k)))
+
+  @opaque
+  @inlineOnce
+  def lemmaGetValueByKeyImpliesContainsTuple[K, B](l: List[(K, B)], key: K, v: B): Unit = {
     require(invariantList(l))
     require(getValueByKey(l, key) == Some[B](v))
     decreases(l)
@@ -399,60 +457,41 @@ object TupleListOpsGenK {
 
   @opaque
   @inlineOnce
-  def lemmaInTailThenBigger[K, B](
-      head: (K, B),
-      tail: List[(K, B)],
-      test: (K, B)
-  )(implicit ord: Ordering[K]): Unit = {
-    require(invariantList(Cons(head, tail)))
-    require(tail.contains(test))
-    decreases(tail)
-
-    tail match {
-      case Cons(hd, tl) if (hd._1 != test._1) =>
-        check(ord.transitive(head._1, hd._1, tl.head._1))
-        lemmaInTailThenBigger(head, tl, test)
-      case _ => ()
-    }
-  }.ensuring(_ => head._1 < test._1)
-
-  @opaque
-  @inlineOnce
-  def lemmaInsertAndRemoveStrictlySortedCommutative[K, B](
+  def lemmaInsertAndremovePresrvNoDuplicatedKeysCommutative[K, B](
       l: List[(K, B)],
       key1: K,
       v1: B,
       key2: K
-  )(implicit ord: Ordering[K]): Unit = {
+  ): Unit = {
     require(key1 != key2)
     require(invariantList(l))
     decreases(l)
 
     l match {
       case Cons(head, tl) => {
-        lemmaInsertAndRemoveStrictlySortedCommutative(tl, key1, v1, key2)
+        lemmaInsertAndremovePresrvNoDuplicatedKeysCommutative(tl, key1, v1, key2)
       }
       case _ => ()
     }
 
   }.ensuring(_ =>
-    insertStrictlySorted(
-      removeStrictlySorted(l, key2),
+    insertNoDuplicatedKeys(
+      removePresrvNoDuplicatedKeys(l, key2),
       key1,
       v1
-    ) == removeStrictlySorted(
-      insertStrictlySorted(l, key1, v1),
+    ) == removePresrvNoDuplicatedKeys(
+      insertNoDuplicatedKeys(l, key1, v1),
       key2
     )
   )
 
   @opaque
   @inlineOnce
-  def lemmaInsertStrictlySortedThenRemoveIsSame[K, B](
+  def lemmainsertNoDuplicatedKeysThenRemoveIsSame[K, B](
       l: List[(K, B)],
       key1: K,
       v1: B
-  )(implicit ord: Ordering[K]): Unit = {
+  ): Unit = {
     require(invariantList(l))
     require(!containsKey(l, key1))
     decreases(l)
@@ -460,97 +499,99 @@ object TupleListOpsGenK {
     l match {
       case Cons(head, tl) => {
         lemmaTailStillNotContainsKey(l, key1)
-        lemmaInsertStrictlySortedThenRemoveIsSame(tl, key1, v1)
+        lemmainsertNoDuplicatedKeysThenRemoveIsSame(tl, key1, v1)
       }
       case _ => ()
     }
 
-  }.ensuring(_ => removeStrictlySorted(insertStrictlySorted(l, key1, v1), key1) == l)
+  }.ensuring(_ => removePresrvNoDuplicatedKeys(insertNoDuplicatedKeys(l, key1, v1), key1) == l)
 
   @opaque
   @inlineOnce
-  def lemmaRemoveThenInsertStrictlySortedIsSameAsInsert[K, B](
+  def lemmaRemoveTheninsertNoDuplicatedKeysIsSameAsInsert[K, B](
       l: List[(K, B)],
       key1: K,
       v1: B
-  )(implicit ord: Ordering[K]): Unit = {
+  ): Unit = {
     require(invariantList(l))
     decreases(l)
 
     l match {
+      case Cons(head, tl) if (head._1 == key1) => ()
       case Cons(head, tl) => {
-        lemmaRemoveThenInsertStrictlySortedIsSameAsInsert(tl, key1, v1)
+        lemmaRemoveTheninsertNoDuplicatedKeysIsSameAsInsert(tl, key1, v1)
       }
       case _ => ()
     }
 
-  }.ensuring(_ => insertStrictlySorted(removeStrictlySorted(l, key1), key1, v1) == insertStrictlySorted(l, key1, v1))
+  }.ensuring(_ => insertNoDuplicatedKeys(removePresrvNoDuplicatedKeys(l, key1), key1, v1).content == insertNoDuplicatedKeys(l, key1, v1).content)
 
   @opaque
   @inlineOnce
-  def lemmaInsertStrictlySortedCommutative[K, B](
+  def lemmainsertNoDuplicatedKeysCommutative[K, B](
       l: List[(K, B)],
       key1: K,
       v1: B,
       key2: K,
       v2: B
-  )(implicit ord: Ordering[K]): Unit = {
+  ): Unit = {
     require(key1 != key2)
     require(invariantList(l))
     decreases(l)
 
     l match {
-      case Cons(head, tl) if (head._1 < key1 && head._1 < key2) => {
-        lemmaInsertStrictlySortedCommutative(tl, key1, v1, key2, v2)
+      case Cons(head, tl) if (head._1 == key1) => ()
+      case Cons(head, tl) => {
+        lemmainsertNoDuplicatedKeysCommutative(tl, key1, v1, key2, v2)
       }
       case _ => ()
     }
 
   }.ensuring(_ =>
-    insertStrictlySorted(
-      insertStrictlySorted(l, key1, v1),
+    insertNoDuplicatedKeys(
+      insertNoDuplicatedKeys(l, key1, v1),
       key2,
       v2
-    ) == insertStrictlySorted(
-      insertStrictlySorted(l, key2, v2),
+    ).content == insertNoDuplicatedKeys(
+      insertNoDuplicatedKeys(l, key2, v2),
       key1,
       v1
-    )
+    ).content
   )
 
   @opaque
   @inlineOnce
-  def lemmaRemoveStrictlySortedCommutative[K, B](
+  def lemmaremovePresrvNoDuplicatedKeysCommutative[K, B](
       l: List[(K, B)],
       key1: K,
       key2: K
-  )(implicit ord: Ordering[K]): Unit = {
+  ): Unit = {
     require(invariantList(l))
     decreases(l)
 
     l match {
       case Cons(head, tl) => {
-        lemmaRemoveStrictlySortedCommutative(tl, key1, key2)
+        lemmaremovePresrvNoDuplicatedKeysCommutative(tl, key1, key2)
       }
       case _ => ()
     }
 
   }.ensuring(_ =>
-    removeStrictlySorted(
-      removeStrictlySorted(l, key1),
+    removePresrvNoDuplicatedKeys(
+      removePresrvNoDuplicatedKeys(l, key1),
       key2
-    ) == removeStrictlySorted(
-      removeStrictlySorted(l, key2),
+    ) == removePresrvNoDuplicatedKeys(
+      removePresrvNoDuplicatedKeys(l, key2),
       key1
     )
   )
 
   @opaque
   @inlineOnce
-  def lemmaRemoveStrictlySortedNotPresentPreserves[K, B](
+  def lemmaremovePresrvNoDuplicatedKeysNotPresentPreserves[K, B](
       l: List[(K, B)],
       key: K
-  )(implicit ord: Ordering[K]): Unit = {
+  ): Unit = {
     require(invariantList(l))
     require(!containsKey(l, key))
     decreases(l)
@@ -559,37 +600,37 @@ object TupleListOpsGenK {
       case Cons(head, tl) => {
         lemmaTailStillNotContainsKey(l, key)
         assert(!containsKey(tl, key))
-        lemmaRemoveStrictlySortedNotPresentPreserves(tl, key)
+        lemmaremovePresrvNoDuplicatedKeysNotPresentPreserves(tl, key)
       }
       case _ => ()
     }
 
-  }.ensuring(_ => removeStrictlySorted(l, key) == l)
+  }.ensuring(_ => removePresrvNoDuplicatedKeys(l, key) == l)
 
   @opaque
   @inlineOnce
-  def lemmaInsertStrictlySortedErasesIfSameKey[K, B](
+  def lemmainsertNoDuplicatedKeysErasesIfSameKey[K, B](
       l: List[(K, B)],
       key1: K,
       v1: B,
       v2: B
-  )(implicit ord: Ordering[K]): Unit = {
+  ): Unit = {
     require(invariantList(l))
     decreases(l)
 
     l match {
-      case Cons(head, tl) if (head._1 < key1) => {
-        lemmaInsertStrictlySortedErasesIfSameKey(tl, key1, v1, v2)
+      case Cons(head, tl) => {
+        lemmainsertNoDuplicatedKeysErasesIfSameKey(tl, key1, v1, v2)
       }
       case _ => ()
     }
 
   }.ensuring(_ =>
-    insertStrictlySorted(
-      insertStrictlySorted(l, key1, v1),
+    insertNoDuplicatedKeys(
+      insertNoDuplicatedKeys(l, key1, v1),
       key1,
       v2
-    ) == insertStrictlySorted(
+    ) == insertNoDuplicatedKeys(
       l,
       key1,
       v2
@@ -602,14 +643,14 @@ object TupleListOpsGenK {
       l: List[(K, B)],
       key: K,
       value: B
-  )(implicit ord: Ordering[K]): Unit = {
+  ): Unit = {
     require(invariantList(l))
     require(!containsKey(l, key))
     decreases(l)
 
-    val inserted = insertStrictlySorted(l, key, value)
+    val inserted = insertNoDuplicatedKeys(l, key, value)
     l match {
-      case Cons(head, tl) if (head._1 < key) => {
+      case Cons(head, tl) if (head._1 != key) => {
         lemmaAddNewKeyIncrementSize(tl, key, value)
 
       }
@@ -617,7 +658,7 @@ object TupleListOpsGenK {
       case _                                  =>
     }
 
-  }.ensuring(_ => insertStrictlySorted(l, key, value).length == l.length + 1)
+  }.ensuring(_ => insertNoDuplicatedKeys(l, key, value).length == l.length + 1)
 
   @opaque
   @inlineOnce
@@ -625,14 +666,14 @@ object TupleListOpsGenK {
       l: List[(K, B)],
       key: K,
       value: B
-  )(implicit ord: Ordering[K]): Unit = {
+  ): Unit = {
     decreases(l)
     require(invariantList(l))
     require(containsKey(l, key))
 
-    val inserted = insertStrictlySorted(l, key, value)
+    val inserted = insertNoDuplicatedKeys(l, key, value)
     l match {
-      case Cons(head, tl) if (head._1 < key) => {
+      case Cons(head, tl) if (head._1 != key) => {
         lemmaAddExistingKeyPreservesSize(tl, key, value)
       }
       case Cons(head, tl) if (head._1 == key) => {
@@ -641,14 +682,14 @@ object TupleListOpsGenK {
       case _ =>
     }
 
-  }.ensuring(_ => insertStrictlySorted(l, key, value).length == l.length)
+  }.ensuring(_ => insertNoDuplicatedKeys(l, key, value).length == l.length)
 
   @opaque
   @inlineOnce
   def lemmaGetValueByKeyIsDefinedImpliesContainsKey[K, B](
       l: List[(K, B)],
       key: K
-  )(implicit ord: Ordering[K]): Unit = {
+  ): Unit = {
     require(invariantList(l) && getValueByKey(l, key).isDefined)
     decreases(l)
     l match {
@@ -664,7 +705,7 @@ object TupleListOpsGenK {
   def lemmaContainsKeyImpliesGetValueByKeyDefined[K, B](
       l: List[(K, B)],
       key: K
-  )(implicit ord: Ordering[K]): Unit = {
+  ): Unit = {
     require(invariantList(l))
     require(containsKey(l, key))
     decreases(l)
@@ -677,16 +718,16 @@ object TupleListOpsGenK {
 
   @opaque
   @inlineOnce
-  def lemmaForallGetValueByKeySameWithASmallerHead[K, B](
+  def lemmaForallGetValueByKeySameWithADiffHead[K, B](
       l: List[(K, B)],
       keys: List[K],
       value: B,
       newHead: (K, B)
-  )(implicit ord: Ordering[K]): Unit = {
+  ): Unit = {
     require(invariantList(l))
     require(!l.isEmpty)
     require(keys.forall(getValueByKey(l, _) == Some[B](value)))
-    require(newHead._1 < l.head._1)
+    require(!containsKey(l, newHead._1))
     decreases(keys)
 
     keys match {
@@ -694,7 +735,7 @@ object TupleListOpsGenK {
         lemmaGetValueByKeyIsDefinedImpliesContainsKey(l, head)
         lemmaAddHeadStillContainsKey(l, newHead._1, newHead._2, head)
         lemmaContainsKeyImpliesGetValueByKeyDefined(Cons(newHead, l), head)
-        lemmaForallGetValueByKeySameWithASmallerHead(l, tl, value, newHead)
+        lemmaForallGetValueByKeySameWithADiffHead(l, tl, value, newHead)
       }
       case _ => ()
     }
@@ -708,15 +749,14 @@ object TupleListOpsGenK {
       key: K,
       value: B,
       test: K
-  )(implicit ord: Ordering[K]): Unit = {
+  ): Unit = {
     require(invariantList(l))
     require(containsKey(l, test))
-    require(key < l.head._1)
+    require(!containsKey(l, key))
     decreases(l)
 
     l match {
-      case Cons(head, tl) if (head._1 < test) =>
-        check(ord.transitive(key, head._1, tl.head._1))
+      case Cons(head, tl) if (head._1 != test) =>
         lemmaAddHeadStillContainsKey(tl, key, value, test)
       case _ => ()
     }
@@ -728,7 +768,7 @@ object TupleListOpsGenK {
   def lemmaTailStillNotContainsKey[K, B](
       l: List[(K, B)],
       test: K
-  )(implicit ord: Ordering[K]): Unit = {
+  ): Unit = {
     require(invariantList(l))
     require(!containsKey(l, test))
     require(!l.isEmpty)
@@ -749,18 +789,18 @@ object TupleListOpsGenK {
 
   @opaque
   @inlineOnce
-  def lemmaInsertStrictlySortedDoesNotModifyOtherKeyValues[K, B](
+  def lemmainsertNoDuplicatedKeysDoesNotModifyOtherKeyValues[K, B](
       l: List[(K, B)],
       newKey: K,
       newValue: B,
       otherKey: K
-  )(implicit ord: Ordering[K]): Unit = {
+  ): Unit = {
     require(invariantList(l) && newKey != otherKey)
     decreases(l)
 
     l match {
       case Cons(head, tl) if (head._1 != otherKey) =>
-        lemmaInsertStrictlySortedDoesNotModifyOtherKeyValues(
+        lemmainsertNoDuplicatedKeysDoesNotModifyOtherKeyValues(
           tl,
           newKey,
           newValue,
@@ -771,11 +811,11 @@ object TupleListOpsGenK {
 
   }.ensuring(_ =>
     containsKey(
-      insertStrictlySorted(l, newKey, newValue),
+      insertNoDuplicatedKeys(l, newKey, newValue),
       otherKey
     ) == containsKey(l, otherKey) &&
       getValueByKey(
-        insertStrictlySorted(l, newKey, newValue),
+        insertNoDuplicatedKeys(l, newKey, newValue),
         otherKey
       ) == getValueByKey(
         l,
@@ -785,12 +825,12 @@ object TupleListOpsGenK {
 
   @opaque
   @inlineOnce
-  def lemmaInsertStrictlySortedDoesNotModifyOtherKeysNotContained[K, B](
+  def lemmainsertNoDuplicatedKeysDoesNotModifyOtherKeysNotContained[K, B](
       l: List[(K, B)],
       newKey: K,
       newValue: B,
       otherKey: K
-  )(implicit ord: Ordering[K]): Unit = {
+  ): Unit = {
     require(invariantList(l))
     require(!containsKey(l, otherKey))
     require(otherKey != newKey)
@@ -800,7 +840,7 @@ object TupleListOpsGenK {
       case Cons(head, tl) =>
         lemmaTailStillNotContainsKey(l, otherKey)
         assert(!containsKey(tl, otherKey))
-        lemmaInsertStrictlySortedDoesNotModifyOtherKeysNotContained(
+        lemmainsertNoDuplicatedKeysDoesNotModifyOtherKeysNotContained(
           tl,
           newKey,
           newValue,
@@ -808,22 +848,22 @@ object TupleListOpsGenK {
         )
       case _ => ()
     }
-  }.ensuring(_ => !containsKey(insertStrictlySorted(l, newKey, newValue), otherKey))
+  }.ensuring(_ => !containsKey(insertNoDuplicatedKeys(l, newKey, newValue), otherKey))
 
   @opaque
   @inlineOnce
-  def lemmaInsertStrictlySortedDoesNotModifyOtherKeysContained[K, B](
+  def lemmainsertNoDuplicatedKeysDoesNotModifyOtherKeysContained[K, B](
       l: List[(K, B)],
       newKey: K,
       newValue: B,
       otherKey: K
-  )(implicit ord: Ordering[K]): Unit = {
+  ): Unit = {
     require(invariantList(l) && containsKey(l, otherKey) && otherKey != newKey)
     decreases(l)
 
     l match {
       case Cons(head, tl) if (head._1 != otherKey) =>
-        lemmaInsertStrictlySortedDoesNotModifyOtherKeysContained(
+        lemmainsertNoDuplicatedKeysDoesNotModifyOtherKeysContained(
           tl,
           newKey,
           newValue,
@@ -831,15 +871,15 @@ object TupleListOpsGenK {
         )
       case _ => ()
     }
-  }.ensuring(_ => containsKey(insertStrictlySorted(l, newKey, newValue), otherKey))
+  }.ensuring(_ => containsKey(insertNoDuplicatedKeys(l, newKey, newValue), otherKey))
 
   @opaque
   @inlineOnce
-  def lemmaInsertStrictlySortedNotContainedContent[K, B](
+  def lemmainsertNoDuplicatedKeysNotContainedContent[K, B](
       l: List[(K, B)],
       newKey: K,
       newValue: B
-  )(implicit ord: Ordering[K]): Unit = {
+  ): Unit = {
     require(invariantList(l))
     require(!containsKey(l, newKey))
     decreases(l)
@@ -847,13 +887,13 @@ object TupleListOpsGenK {
     l match {
       case Cons(head, tl) => {
         lemmaTailStillNotContainsKey(l, newKey)
-        lemmaInsertStrictlySortedNotContainedContent(tl, newKey, newValue)
+        lemmainsertNoDuplicatedKeysNotContainedContent(tl, newKey, newValue)
       }
       case _ => ()
     }
 
-  } ensuring (_ =>
-    l.content ++ Set((newKey, newValue)) == insertStrictlySorted(
+  }.ensuring (_ =>
+    l.content ++ Set((newKey, newValue)) == insertNoDuplicatedKeys(
       l,
       newKey,
       newValue
@@ -866,7 +906,7 @@ object TupleListOpsGenK {
       l: List[(K, B)],
       key: K,
       value: B
-  )(implicit ord: Ordering[K]): Unit = {
+  ): Unit = {
     require(invariantList(l))
     require(!containsKey(l, key))
     decreases(l)
@@ -885,16 +925,10 @@ object TupleListOpsGenK {
       l: List[(K, B)],
       key: K,
       value: B
-  )(implicit ord: Ordering[K]): Unit = {
+  ): Unit = {
     require(invariantList(l))
     require(l.contains((key, value)))
     decreases(l)
-
-    l match {
-      case Cons(a, Cons(b, _)) =>
-        check(ord.transitive(a._1, b._1, key))
-      case _ => ()
-    }
 
     l match {
       case Cons(head, tl) if (head != (key, value)) =>
@@ -909,7 +943,7 @@ object TupleListOpsGenK {
       l: List[(K, B)],
       key: K,
       value: B
-  )(implicit ord: Ordering[K]): Unit = {
+  ): Unit = {
     require(invariantList(l) && containsKey(l, key) && l.contains((key, value)))
     decreases(l)
 
@@ -925,7 +959,7 @@ object TupleListOpsGenK {
 
 object ListMap {
   // def apply[K, B](l: List[(K, B)])(using ord: Ordering[K]): ListMap[K, B] = ListMap(l, ord, ())
-  def empty[K, B](implicit ord: Ordering[K]): ListMap[K, B] = ListMap[K, B](List.empty[(K, B)], ord)
+  def empty[K, B]: ListMap[K, B] = ListMap[K, B](List.empty[(K, B)])
 }
 
 object ListMapLemmas {
@@ -935,7 +969,7 @@ object ListMapLemmas {
   @inlineOnce
   def removeNotPresentStillSame[K, B](lm: ListMap[K, B], a: K): Unit = {
     require(!lm.contains(a))
-    TupleListOpsGenK.lemmaRemoveStrictlySortedNotPresentPreserves(lm.toList, a)(lm.ordd)
+    TupleListOpsGenK.lemmaremovePresrvNoDuplicatedKeysNotPresentPreserves(lm.toList, a)
   }.ensuring(_ => lm - a == lm)
 
   @opaque
@@ -946,7 +980,7 @@ object ListMapLemmas {
       b1: B,
       b2: B
   ): Unit = {
-    TupleListOpsGenK.lemmaInsertStrictlySortedErasesIfSameKey(lm.toList, a, b1, b2)(lm.ordd)
+    TupleListOpsGenK.lemmainsertNoDuplicatedKeysErasesIfSameKey(lm.toList, a, b1, b2)
   }.ensuring(_ => lm + (a, b2) == (lm + (a, b1) + (a, b2)))
 
   @opaque
@@ -958,12 +992,12 @@ object ListMapLemmas {
       a2: K
   ): Unit = {
     require(a1 != a2)
-    TupleListOpsGenK.lemmaInsertAndRemoveStrictlySortedCommutative(
+    TupleListOpsGenK.lemmaInsertAndremovePresrvNoDuplicatedKeysCommutative(
       lm.toList,
       a1,
       b1,
       a2
-    )(lm.ordd)
+    )
   }.ensuring(_ => lm + (a1, b1) - a2 == lm - a2 + (a1, b1))
 
   @opaque
@@ -974,7 +1008,7 @@ object ListMapLemmas {
       b1: B
   ): Unit = {
     require(!lm.contains(a1))
-    TupleListOpsGenK.lemmaInsertStrictlySortedThenRemoveIsSame(lm.toList, a1, b1)(lm.ordd)
+    TupleListOpsGenK.lemmainsertNoDuplicatedKeysThenRemoveIsSame(lm.toList, a1, b1)
   }.ensuring(_ => lm + (a1, b1) - a1 == lm)
 
   @opaque
@@ -984,13 +1018,13 @@ object ListMapLemmas {
       a1: K,
       b1: B
   ): Unit = {
-      TupleListOpsGenK.lemmaRemoveThenInsertStrictlySortedIsSameAsInsert(lm.toList, a1, b1)(lm.ordd)
-  }.ensuring(_ => lm - a1 + (a1, b1) == lm + (a1, b1))
+    TupleListOpsGenK.lemmaRemoveTheninsertNoDuplicatedKeysIsSameAsInsert(lm.toList, a1, b1)
+  }.ensuring(_ => (lm - a1 + (a1, b1)).eq(lm + (a1, b1)))
 
   @opaque
   @inlineOnce
   def removeCommutative[K, B](lm: ListMap[K, B], a1: K, a2: K): Unit = {
-    TupleListOpsGenK.lemmaRemoveStrictlySortedCommutative(lm.toList, a1, a2)(lm.ordd)
+    TupleListOpsGenK.lemmaremovePresrvNoDuplicatedKeysCommutative(lm.toList, a1, a2)
   }.ensuring(_ => lm - a1 - a2 == lm - a2 - a1)
 
   @opaque
@@ -1003,8 +1037,8 @@ object ListMapLemmas {
       b2: B
   ): Unit = {
     require(a1 != a2)
-    TupleListOpsGenK.lemmaInsertStrictlySortedCommutative(lm.toList, a1, b1, a2, b2)(lm.ordd)
-  }.ensuring(_ => lm + (a1, b1) + (a2, b2) == lm + (a2, b2) + (a1, b1))
+    TupleListOpsGenK.lemmainsertNoDuplicatedKeysCommutative(lm.toList, a1, b1, a2, b2)
+  }.ensuring(_ => (lm + (a1, b1) + (a2, b2)).eq(lm + (a2, b2) + (a1, b1)))
 
   @opaque
   @inlineOnce
@@ -1091,14 +1125,14 @@ object ListMapLemmas {
       a0: K
   ): Unit = {
     require(lm.contains(a0) && a0 != a)
-    assert(TupleListOpsGenK.containsKey(lm.toList, a0)(lm.ordd))
-    TupleListOpsGenK.lemmaInsertStrictlySortedDoesNotModifyOtherKeyValues(
+    assert(TupleListOpsGenK.containsKey(lm.toList, a0))
+    TupleListOpsGenK.lemmainsertNoDuplicatedKeysDoesNotModifyOtherKeyValues(
       lm.toList,
       a,
       b,
       a0
-    )(lm.ordd)
-    TupleListOpsGenK.lemmaContainsKeyImpliesGetValueByKeyDefined(lm.toList, a0)(lm.ordd)
+    )
+    TupleListOpsGenK.lemmaContainsKeyImpliesGetValueByKeyDefined(lm.toList, a0)
 
   }.ensuring(_ => (lm + (a -> b)).apply(a0) == lm(a0))
 
@@ -1113,12 +1147,12 @@ object ListMapLemmas {
     require(lm.contains(a0))
 
     if (a != a0)
-      TupleListOpsGenK.lemmaInsertStrictlySortedDoesNotModifyOtherKeysContained(
+      TupleListOpsGenK.lemmainsertNoDuplicatedKeysDoesNotModifyOtherKeysContained(
         lm.toList,
         a,
         b,
         a0
-      )(lm.ordd)
+      )
 
   }.ensuring(_ => (lm + (a, b)).contains(a0))
 
@@ -1132,12 +1166,12 @@ object ListMapLemmas {
   ): Unit = {
     require(!lm.contains(a0) && a != a0)
 
-    TupleListOpsGenK.lemmaInsertStrictlySortedDoesNotModifyOtherKeysNotContained(
+    TupleListOpsGenK.lemmainsertNoDuplicatedKeysDoesNotModifyOtherKeysNotContained(
       lm.toList,
       a,
       b,
       a0
-    )(lm.ordd)
+    )
 
   }.ensuring(_ => !(lm + (a, b)).contains(a0))
 
@@ -1176,8 +1210,8 @@ object ListMapLemmas {
   def uniqueImage[K, B](lm: ListMap[K, B], a: K, b: B): Unit = {
     require(lm.toList.contains((a, b)))
 
-    TupleListOpsGenK.lemmaContainsTupleThenContainsKey(lm.toList, a, b)(lm.ordd)
-    TupleListOpsGenK.lemmaContainsTupThenGetReturnValue(lm.toList, a, b)(lm.ordd)
+    TupleListOpsGenK.lemmaContainsTupleThenContainsKey(lm.toList, a, b)
+    TupleListOpsGenK.lemmaContainsTupThenGetReturnValue(lm.toList, a, b)
 
   }.ensuring(_ => lm.get(a) == Some[B](b))
 
@@ -1187,13 +1221,18 @@ object ListMapLemmas {
     decreases(lm.toList.size)
     lm.toList match
       case Cons(h, t) => {
-        check(ListMap(t, lm.ordd) + (h._1, h._2) == lm) // Needed
-        lemmaContainsAllItsOwnKeys(ListMap(t, lm.ordd))
-        lemmaInsertPairStillContainsAll(ListMap(t, lm.ordd), t, h._1, h._2)
+        lemmaContainsAllItsOwnKeys(ListMap(t))
+        assert(t.forall(p => ListMap(t).contains(p._1)))
+        assert(lm == ListMap(t) + h)
+        lemmaInsertPairStillContainsAll(ListMap(t), t, h._1, h._2)
+        lemmaInsertPairStillContainsAllEq(ListMap(t), lm, t, h._1, h._2)
+        assert(t.forall(p => (ListMap(t) + (h._1, h._2)).contains(p._1)))
+        assert(t.forall(p => lm.contains(p._1)))
+        assert(Cons(h, t).forall(p => lm.contains(p._1)))
       }
       case Nil() =>
 
-  } ensuring (_ => lm.toList.forall(p => lm.contains(p._1)))
+  }.ensuring (_ => lm.toList.forall(p => lm.contains(p._1)))
 
   @opaque
   @inlineOnce
@@ -1203,12 +1242,28 @@ object ListMapLemmas {
     l match {
       case Cons(h, t) =>
         if (h._1 != k) {
-          TupleListOpsGenK.lemmaInsertStrictlySortedDoesNotModifyOtherKeyValues(lm.toList, k, v, h._1)(lm.ordd)
+          TupleListOpsGenK.lemmainsertNoDuplicatedKeysDoesNotModifyOtherKeyValues(lm.toList, k, v, h._1)
         }
         lemmaInsertPairStillContainsAll(lm, t, k, v)
       case Nil() => ()
     }
-  } ensuring (_ => l.forall(p => (lm + (k, v)).contains(p._1)))
+  }.ensuring (_ => l.forall(p => (lm + (k, v)).contains(p._1)))
+
+  @opaque
+  @inlineOnce
+  def lemmaInsertPairStillContainsAllEq[K, B](lm: ListMap[K, B], lm2: ListMap[K, B], l: List[(K, B)], k: K, v: B): Unit = {
+    require(lm + (k, v) == lm2)
+    require(l.forall(p => lm.contains(p._1)))
+    decreases(l)
+    l match {
+      case Cons(h, t) =>
+        if (h._1 != k) {
+          TupleListOpsGenK.lemmainsertNoDuplicatedKeysDoesNotModifyOtherKeyValues(lm.toList, k, v, h._1)
+        }
+        lemmaInsertPairStillContainsAllEq(lm, lm2, t, k, v)
+      case Nil() => ()
+    }
+  }.ensuring (_ => l.forall(p => (lm + (k, v)).contains(p._1)) && l.forall(p => (lm2).contains(p._1)))
 
   @opaque
   @inlineOnce
@@ -1221,8 +1276,11 @@ object ListMapLemmas {
     require((lm + (a, b)).toList.forall(p => other.contains(p._1)))
     decreases(lm.toList.size)
 
-    if (!lm.isEmpty) {
-      addForallContainsKeyThenBeforeAdding(lm.tail, other, a, b)
+    lm.toList match {
+      case Cons(head, tl) if (head._1 == a) => ()
+      case Cons(head, tl) =>
+        addForallContainsKeyThenBeforeAdding(lm.tail, other, a, b)
+      case Nil() => ()
     }
 
   }.ensuring { _ =>
@@ -1235,13 +1293,13 @@ object ListMapLemmas {
     require(lm.contains(a))
     require(lm.get(a) == Some[B](b))
 
-    TupleListOpsGenK.lemmaGetValueByKeyImpliesContainsTuple(lm.toList, a, b)(lm.ordd)
-  } ensuring (_ => lm.toList.contains((a, b)))
+    TupleListOpsGenK.lemmaGetValueByKeyImpliesContainsTuple(lm.toList, a, b)
+  }.ensuring (_ => lm.toList.contains((a, b)))
 
   @opaque
   def keysOfSound[K, B](@induct lm: ListMap[K, B], value: B): Unit = {
     // trivial by postcondition of getKeysOf
-    assert(TupleListOpsGenK.getKeysOf(lm.toList, value)(lm.ordd).forall(k => lm.get(k) == Some[B](value)))
+    assert(TupleListOpsGenK.getKeysOf(lm.toList, value).forall(k => lm.get(k) == Some[B](value)))
   }.ensuring(_ => lm.keysOf(value).forall((key: K) => lm.get(key) == Some[B](value)))
 
   @opaque
@@ -1252,14 +1310,208 @@ object ListMapLemmas {
       value: B
   ): Unit = {
     require(!lm.contains(key))
-    TupleListOpsGenK.lemmaInsertStrictlySortedNotContainedContent(
+    TupleListOpsGenK.lemmainsertNoDuplicatedKeysNotContainedContent(
       lm.toList,
       key,
       value
-    )(lm.ordd)
-  } ensuring (_ =>
+    )
+  }.ensuring (_ =>
     lm.toList.content ++ Set(
       (key, value)
     ) == (lm + (key, value)).toList.content
   )
+
+  // Equivalence LEMMAS ----------------------------------------------------------------------------------------------------------------
+  @opaque
+  @inlineOnce
+  def lemmaAddToEqMapsPreservesEq[K, B](
+      lm1: ListMap[K, B],
+      lm2: ListMap[K, B],
+      key: K,
+      value: B
+  ): Unit = {
+    require(lm1.eq(lm2))
+    if(lm1.contains(key)) {
+      lemmaAddToEqMapsPreservesEqIfContainsKey(lm1, lm2, key, value)
+      check((lm1 + (key, value)).eq(lm2 + (key, value)))
+    } else {
+      lemmaAddToEqMapsPreservesEqIfDoesNotContainKey(lm1, lm2, key, value)
+      check((lm1 + (key, value)).eq(lm2 + (key, value)))
+    }
+
+  }.ensuring(_ => (lm1 + (key, value)).eq(lm2 + (key, value)))
+
+  @opaque
+  @inlineOnce
+  def lemmaAddToEqMapsPreservesEqIfDoesNotContainKey[K, B](
+      lm1: ListMap[K, B],
+      lm2: ListMap[K, B],
+      key: K,
+      value: B
+  ): Unit = {
+    require(lm1.eq(lm2))
+    require(!lm1.contains(key))
+    decreases(lm1.toList.size)
+
+    assert(!lm1.contains(key))
+    if(lm2.contains(key)){
+      TupleListOpsGenK.lemmaContainsKeyImpliesGetValueByKeyDefined(lm2.toList, key)
+      TupleListOpsGenK.lemmaGetValueByKeyImpliesContainsTuple(lm2.toList, key, lm2.apply(key))
+      assert(lm2.toList.contains((key, lm2.apply(key))))
+      assert(lm1.toList.contains((key, lm2.apply(key))))
+      TupleListOpsGenK.lemmaContainsTupleThenContainsKey(lm1.toList, key, lm2.apply(key))
+      check(false)
+    }
+    assert(!lm2.contains(key))
+    
+
+    
+    check((lm1 + (key, value)).eq(lm2 + (key, value)))
+    
+  }.ensuring(_ => (lm1 + (key, value)).eq(lm2 + (key, value)))
+
+  @opaque
+  @inlineOnce
+  def lemmaAddToEqMapsPreservesEqIfContainsKey[K, B](
+      lm1: ListMap[K, B],
+      lm2: ListMap[K, B],
+      key: K,
+      value: B
+  ): Unit = {
+    require(lm1.eq(lm2))
+    require(lm1.contains(key))
+    decreases(lm1.toList.size)
+
+    lemmaEquivalentThenSameContains(lm1, lm2, key)
+    lemmaEquivalentGetSameValue(lm1, lm2, key)
+
+    val v = lm1.apply(key)
+    val v2 = lm2.apply(key)
+    TupleListOpsGenK.lemmaGetValueByKeyImpliesContainsTuple(lm2.toList, key, v2)
+    assert(lm1.toList.contains((key, v)))
+    assert(lm2.toList.contains((key, v)))
+    assert(lm1.apply(key) == lm2.apply(key))
+    assert(lm1.apply(key) == v)
+
+    val lm1WithoutKey = lm1 - key
+    val lm2WithoutKey = lm2 - key
+    lemmaRemovePreservesEq(lm1, lm2, key)
+    check(lm1WithoutKey.eq(lm2WithoutKey))
+    check(lm1WithoutKey.contains(key) == false)
+    check(lm2WithoutKey.contains(key) == false)
+  
+    val lm1After = lm1WithoutKey + (key, value)
+    val lm2After = lm2WithoutKey + (key, value)
+    lemmaAddToEqMapsPreservesEqIfDoesNotContainKey(lm1WithoutKey, lm2WithoutKey, key, value)
+
+    check(lm1After.eq(lm2After))
+
+    removeThenAddForSameKeyIsSameAsAdd(lm1, key, value)
+    removeThenAddForSameKeyIsSameAsAdd(lm2, key, value)
+
+    check(lm1After.eq(lm1 + (key, value)))
+    check(lm2After.eq(lm2 + (key, value)))
+    
+    check((lm1 + (key, value)).eq(lm2 + (key, value)))
+    
+  }.ensuring(_ => (lm1 + (key, value)).eq(lm2 + (key, value)))
+
+  @opaque
+  @inlineOnce
+  def lemmaEquivalentThenSameContains[K, B](
+      lm1: ListMap[K, B],
+      lm2: ListMap[K, B],
+      key: K
+  ): Unit = {
+    require(lm1.eq(lm2))
+    if(lm1.contains(key)){
+      val v = lm1.apply(key)
+      TupleListOpsGenK.lemmaGetValueByKeyImpliesContainsTuple(lm1.toList, key, v)
+      assert(lm1.toList.contains((key, v)))
+      assert(lm2.toList.contains((key, v)))
+      TupleListOpsGenK.lemmaContainsTupleThenContainsKey(lm2.toList, key, v)
+      
+      assert(lm1.contains(key) == true)
+      assert(lm2.contains(key) == true)
+
+    } else {
+      if(lm2.contains(key)){
+          TupleListOpsGenK.lemmaContainsKeyImpliesGetValueByKeyDefined(lm2.toList, key)
+          TupleListOpsGenK.lemmaGetValueByKeyImpliesContainsTuple(lm2.toList, key, lm2.apply(key))
+          assert(lm2.toList.contains((key, lm2.apply(key))))
+          assert(lm1.toList.contains((key, lm2.apply(key))))
+          TupleListOpsGenK.lemmaContainsTupleThenContainsKey(lm1.toList, key, lm2.apply(key))
+          check(false)
+        }
+        assert(lm1.contains(key) == false)
+        assert(lm2.contains(key) == false)
+    }
+  }.ensuring(_ => lm1.contains(key) == lm2.contains(key))
+
+  @opaque
+  @inlineOnce
+  def lemmaEquivalentGetSameValue[K, B](
+      lm1: ListMap[K, B],
+      lm2: ListMap[K, B],
+      key: K
+  ): Unit = {
+    require(lm1.eq(lm2))
+    lemmaEquivalentThenSameContains(lm1, lm2, key)
+    if(lm1.contains(key)){
+      val v = lm1.apply(key)
+      TupleListOpsGenK.lemmaGetValueByKeyImpliesContainsTuple(lm1.toList, key, v)
+      assert(lm1.toList.contains((key, v)))
+      assert(lm2.toList.contains((key, v)))
+      TupleListOpsGenK.lemmaContainsTupleThenContainsKey(lm2.toList, key, v)
+      assert(lm2.contains(key))
+      val v2 = lm2.apply(key)
+      TupleListOpsGenK.lemmaGetValueByKeyImpliesContainsTuple(lm2.toList, key, v2)
+      if(v2 != v){
+        assert(lm2.toList.contains((key, v2)))
+        assert(lm2.toList.contains((key, v)))
+        TupleListOpsGenK.lemmaContainsTwoDifferentTuplesSameKeyImpossible(lm2.toList, key, v, v2)
+        check(false)
+      }
+      assert(lm1.get(key).get == v)
+      assert(lm2.get(key).get == v)
+    }
+    else{
+      if(lm1.get(key).isDefined){
+        TupleListOpsGenK.lemmaGetValueByKeyImpliesContainsTuple(lm1.toList, key, lm1.get(key).get)
+        TupleListOpsGenK.lemmaContainsTupleThenContainsKey(lm1.toList, key, lm1.get(key).get)
+        check(false)
+      }
+      if(lm2.get(key).isDefined){
+        TupleListOpsGenK.lemmaGetValueByKeyImpliesContainsTuple(lm2.toList, key, lm2.get(key).get)
+        TupleListOpsGenK.lemmaContainsTupleThenContainsKey(lm2.toList, key, lm2.get(key).get)
+        check(false)
+      }
+      assert(lm1.get(key).isEmpty)
+      assert(lm2.get(key).isEmpty)
+    }
+    
+  }.ensuring(_ => lm1.get(key) == lm2.get(key))
+
+  @opaque
+  @inlineOnce
+  def lemmaRemovePreservesEq[K, B](
+      lm1: ListMap[K, B],
+      lm2: ListMap[K, B],
+      key: K
+  ): Unit = {
+    require(lm1.eq(lm2))
+    lemmaEquivalentThenSameContains(lm1, lm2, key)
+    if(lm1.contains(key)) {
+      val v = lm1.apply(key)
+      val v2 = lm2.apply(key)
+      lemmaEquivalentGetSameValue(lm1, lm2, key)
+      check((lm1 - key).toList.content == lm1.toList.content -- Set((key, v)))
+      check((lm2 - key).toList.content == lm2.toList.content -- Set((key, v2)))
+    } else {
+      check((lm1 - key).toList.content == lm1.toList.content)
+      check((lm2 - key).toList.content == lm2.toList.content)
+    }
+
+  }.ensuring(_ => (lm1 - key).eq(lm2 - key))
 }
+
