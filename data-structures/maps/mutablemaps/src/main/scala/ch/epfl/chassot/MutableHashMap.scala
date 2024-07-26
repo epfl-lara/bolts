@@ -337,6 +337,28 @@ object MutableHashMap {
 
   // ----------------- Lemmas ------------------------------------------------------------------------
 
+  /**
+    * This lemma proves that a property `p` that holds for all pairs of the map, holds for a key and its value
+    *
+    * @param hm
+    * @param k
+    * @param p
+    */  
+  @opaque
+  @inlineOnce
+  @ghost
+  def lemmaForallElementsThenForGet[K, V](hm: HashMap[K, V], k: K, p: ((K, V)) => Boolean): Unit = {
+    require(hm.valid)
+    require(hm.map.forall(p))
+    require(hm.contains(k))
+
+    TupleListOpsGenK.lemmaGetValueByKeyImpliesContainsTuple(hm.map.toList, k, hm.apply(k))
+    assert(hm.map.toList.contains((k, hm.apply(k))))
+    assert(hm.map.toList.forall(p))
+    ListSpecs.forallContained(hm.map.toList, p, (k, hm.apply(k)))
+  }.ensuring(_ => p((k, hm.apply(k))))
+
+
   @opaque
   @inlineOnce
   @ghost
