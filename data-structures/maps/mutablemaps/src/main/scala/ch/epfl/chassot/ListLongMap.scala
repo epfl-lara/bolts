@@ -285,7 +285,7 @@ object TupleListOps {
 
   @opaque
   @inlineOnce
-  def lemmainsertStrictlySortedPreservesForall[B](
+  def lemmaInsertStrictlySortedPreservesForall[B](
       l: List[(Long, B)],
       key: Long,
       value: B,
@@ -298,7 +298,7 @@ object TupleListOps {
 
     l match {
       case Cons(head, tl) if (head._1 != key) =>
-        lemmainsertStrictlySortedPreservesForall(tl, key, value, p)
+        lemmaInsertStrictlySortedPreservesForall(tl, key, value, p)
       case _ => ()
     }
 

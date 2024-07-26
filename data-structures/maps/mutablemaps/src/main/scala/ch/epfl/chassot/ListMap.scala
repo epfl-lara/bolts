@@ -351,7 +351,7 @@ object TupleListOpsGenK {
 
   @opaque
   @inlineOnce
-  def lemmainsertNoDuplicatedKeysPreservesForall[K, B](
+  def lemmaInsertNoDuplicatedKeysPreservesForall[K, B](
       l: List[(K, B)],
       key: K,
       value: B,
@@ -364,7 +364,7 @@ object TupleListOpsGenK {
 
     l match {
       case Cons(head, tl) if (head._1 != key) =>
-        lemmainsertNoDuplicatedKeysPreservesForall(tl, key, value, p)
+        lemmaInsertNoDuplicatedKeysPreservesForall(tl, key, value, p)
       case _ => ()
     }
 
