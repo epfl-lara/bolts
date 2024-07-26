@@ -10,7 +10,6 @@ import stainless.lang.StaticChecks.*
 import stainless.collection._
 
 import ch.epfl.chassot.Hashable
-import ch.epfl.chassot.Ordering
 import ch.epfl.lexer.VerifiedRegex._
 
 

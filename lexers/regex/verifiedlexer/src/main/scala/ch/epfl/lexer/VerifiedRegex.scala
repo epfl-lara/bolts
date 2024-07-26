@@ -12,7 +12,6 @@ import ch.epfl.chassot.MutableLongMap._
 import ch.epfl.chassot.ListLongMap
 import ch.epfl.chassot.ListMap
 import ch.epfl.chassot.MutableHashMap._
-import ch.epfl.chassot.Ordering
 import ch.epfl.chassot.Hashable
 import stainless.lang.StaticChecks._
 
@@ -21,9 +20,11 @@ object Memoisation {
   import VerifiedRegexMatcher._
 
   @ghost def validCacheMap[C](m: HashMap[(Regex[C], C), Regex[C]]): Boolean = {
-    m.valid && m.forall { case ((r, c), res) =>
-      validRegex(r) && res == derivativeStep(r, c)
-    }
+    m.valid && m.map.forall(_ match {
+        case ((r, c), res) =>
+        validRegex(r) && res == derivativeStep(r, c)
+      }
+    )
   }
 
   @mutable
@@ -37,14 +38,20 @@ object Memoisation {
       require(validCacheMap(cache))
       require(validRegex(r))
       if (cache.contains((r, c))) {
-        lemmaForallThenForAPair(
-          cache,
-          { case ((r, c), res) =>
+        ListSpecs.forallContained(cache.map.toList, {
+          _ match {
+            case ((r, c), res) =>
             validRegex(r) && res == derivativeStep(r, c)
-          },
-          (r, c),
-          cache((r, c))
-        )
+          }
+        }, ((r, c), cache((r, c))))
+        // lemmaForallThenForAPair(
+        //   cache,
+        //   { case ((r, c), res) =>
+        //     validRegex(r) && res == derivativeStep(r, c)
+        //   },
+        //   (r, c),
+        //   cache((r, c))
+        // )
       }
     } ensuring (_ => cache.contains((r, c)) ==> (derivativeStep(r, c) == cache((r, c))))
 
@@ -70,22 +77,23 @@ object Memoisation {
       require(validRegex(r))
       require(res == derivativeStep(r, c))
 
-      ghostExpr(
-        lemmaUpdateValidPairMaintainsForall(
-          cache,
-          { case ((r, c), res) =>
-            validRegex(r) && res == derivativeStep(r, c)
-          },
-          (r, c),
-          res
-        )
-      )
+      // ghostExpr(
+      //   lemmaUpdateValidPairMaintainsForall(
+      //     cache,
+      //     { case ((r, c), res) =>
+      //       validRegex(r) && res == derivativeStep(r, c)
+      //     },
+      //     (r, c),
+      //     res
+      //   )
+      // )
       val _ = cache.update((r, c), res)
 
     } ensuring (_ => validCacheMap(this.cache))
 
   }
 }
+
 object VerifiedRegex {
   abstract sealed class Regex[C] {}
 
@@ -185,7 +193,7 @@ object VerifiedRegex {
   }
 
   // case class RegexHashable[C](cHashable: Hashable[C]) extends Hashable[Regex[C]] {
-  //   override def hash(r: Regex[C]): Long = {
+  //   def hash(r: Regex[C]): Long = {
   //     r match {
   //       case ElementMatch(c) => 2L * cHashable.hash(c)
   //       case Star(rInner)    => 3L * hash(rInner)

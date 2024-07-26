@@ -1204,7 +1204,7 @@ object MutableLongMap {
       if (x >= MAX_ITER) Intermediate(true, ee, x)
       else if (q == k || q + q == 0) Intermediate(false, ee, x)
       else
-        seekKeyOrZeroOrLongMinValue(x + 1, nextIndex(ee, x, mask))
+        seekKeyOrZeroOrLongMinValue(x + 1, nextIndex(ee, x + 1, mask))
     } ensuring (res =>
       (res match {
         case Intermediate(undefined, index, resx) if (undefined) => resx >= MAX_ITER
@@ -1243,7 +1243,7 @@ object MutableLongMap {
       else
         seekKeyOrZeroReturnVacant(
           x + 1,
-          nextIndex(ee, x, mask),
+          nextIndex(ee, x + 1, mask),
           vacantSpotIndex
         )
 
@@ -5493,7 +5493,7 @@ object MutableLongMap {
           i,
           j,
           x + 1,
-          nextIndex(index, x, mask),
+          nextIndex(index, x + 1, mask),
           vacantIndex
         )
       }
@@ -5613,7 +5613,7 @@ object MutableLongMap {
           i,
           j,
           x + 1,
-          nextIndex(index, x, mask),
+          nextIndex(index, x + 1, mask),
           resX,
           resIndex
         )
@@ -5731,7 +5731,7 @@ object MutableLongMap {
           i,
           j,
           x + 1,
-          nextIndex(index, x, mask),
+          nextIndex(index, x + 1, mask),
           intermediateBeforeX,
           intermediateBeforeIndex,
           intermediateAfterX,
@@ -5788,7 +5788,7 @@ object MutableLongMap {
           i,
           j,
           x + 1,
-          nextIndex(index, x, mask),
+          nextIndex(index, x + 1, mask),
           vacantBefore,
           vacantAfter
         )
@@ -5951,7 +5951,7 @@ object MutableLongMap {
           i,
           j,
           x + 1,
-          nextIndex(index, x, mask),
+          nextIndex(index, x + 1, mask),
           intermediateBeforeX,
           intermediateBeforeIndex,
           intermediateAfterX,
@@ -5963,7 +5963,7 @@ object MutableLongMap {
           i,
           j,
           x + 1,
-          nextIndex(index, x, mask),
+          nextIndex(index, x + 1, mask),
           intermediateBeforeX,
           intermediateBeforeIndex,
           intermediateAfterX,
@@ -6214,14 +6214,14 @@ object MutableLongMap {
           k,
           j,
           x + 1,
-          nextIndex(index, x, mask),
+          nextIndex(index, x + 1, mask),
           vacantSpotIndex
         )
         check(
           seekKeyOrZeroReturnVacant(x, index, vacantSpotIndex)(a(j), a, mask) ==
             seekKeyOrZeroReturnVacant(
               x + 1,
-              nextIndex(index, x, mask),
+              nextIndex(index, x + 1, mask),
               vacantSpotIndex
             )(
               a(j),
@@ -6467,7 +6467,7 @@ object MutableLongMap {
           i,
           k,
           j,
-          nextIndex(index, x, mask),
+          nextIndex(index, x + 1, mask),
           x + 1,
           resIndex,
           resX
@@ -6572,7 +6572,7 @@ object MutableLongMap {
           i,
           k,
           j,
-          nextIndex(index, x, mask),
+          nextIndex(index, x + 1, mask),
           x + 1,
           vacantBefore,
           vacantAfter
@@ -6698,7 +6698,7 @@ object MutableLongMap {
       intermediateAfter match {
         case Intermediate(undefined, indexIntermediateAfter, xIntermediateAfter) => {
           if (x < xIntermediateAfter) {
-            val nextIndexVal = nextIndex(index, x, mask)
+            val nextIndexVal = nextIndex(index, x + 1, mask)
             val nextX = x + 1
 
             if (nextX <= resIntermediateX) {
@@ -6939,7 +6939,7 @@ object MutableLongMap {
           i,
           k,
           j,
-          nextIndex(index, x, mask),
+          nextIndex(index, x + 1, mask),
           x + 1,
           resIndex,
           resX
@@ -7131,12 +7131,12 @@ object MutableLongMap {
               seekKeyOrZeroOrLongMinValue(x, index)(k, a, mask) ==
                 seekKeyOrZeroOrLongMinValue(
                   x + 1,
-                  nextIndex(index, x, mask)
+                  nextIndex(index, x + 1, mask)
                 )(k, a, mask)
             )
             seekKeyOrZeroOrLongMinValue(
               x + 1,
-              nextIndex(index, x, mask)
+              nextIndex(index, x + 1, mask)
             )(k, a, mask) match {
               case Intermediate(undefined, tempIndex, tempX) => assert(tempX >= x + 1)
               case _                                         => check(false)
@@ -7154,7 +7154,7 @@ object MutableLongMap {
             mask
           ) == seekKeyOrZeroOrLongMinValue(
             x + 1,
-            nextIndex(index, x, mask)
+            nextIndex(index, x + 1, mask)
           )(k, a, mask)
         )
         check(
@@ -7164,7 +7164,7 @@ object MutableLongMap {
             mask
           ) == seekKeyOrZeroOrLongMinValue(
             x + 1,
-            nextIndex(index, x, mask)
+            nextIndex(index, x + 1, mask)
           )(
             k,
             a.updated(i, k),
@@ -7176,7 +7176,7 @@ object MutableLongMap {
           i,
           k,
           x + 1,
-          nextIndex(index, x, mask),
+          nextIndex(index, x + 1, mask),
           resIndex,
           resX
         )
@@ -7247,7 +7247,7 @@ object MutableLongMap {
           } else {
             seekKeyOrZeroOrLongMinValue(
               x + 1,
-              nextIndex(index, x, mask)
+              nextIndex(index, x + 1, mask)
             )(k, a, mask) match {
               case Intermediate(undefined, tempIndex, tempX) => assert(tempX >= x + 1)
               case _                                         => check(false)
@@ -7263,7 +7263,7 @@ object MutableLongMap {
           i,
           k,
           x + 1,
-          nextIndex(index, x, mask),
+          nextIndex(index, x + 1, mask),
           resIndex,
           resX
         )

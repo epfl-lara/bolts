@@ -1,7 +1,5 @@
 package ch.epfl.lexer
 
-import ch.epfl.chassot.Ordering
-import ch.epfl.chassot.Hashable
 import ch.epfl.chassot.MutableHashMap
 import ch.epfl.lexer.VerifiedRegex._
 import ch.epfl.lexer.VerifiedRegexMatcher._
@@ -10,6 +8,7 @@ import ch.epfl.benchmark.RegexUtils._
 import stainless.annotation._
 import stainless.lang._
 import stainless.collection._
+import ch.epfl.chassot.Hashable
 
 object Main {
   def main(args: Array[String]): Unit = {
@@ -18,7 +17,7 @@ object Main {
 }
 
 def testRegex(): Unit = {
-  val cache: Cache[Char] = Cache(MutableHashMap.getEmptyHashMap(_ => EmptyLang(), KeyHashable, KeyOrdering))
+  val cache: Cache[Char] = Cache(MutableHashMap.getEmptyHashMap(_ => EmptyLang(), KeyHashable))
   val r1 = ("a".r + "b".r).*
   println(f"r1 = ${r1}")
   println(f"list = ${toStainlessList("ab".toCharArray().toList)}")
@@ -40,17 +39,6 @@ def toStainlessList(l: scala.collection.immutable.List[Char]): stainless.collect
 
 object KeyHashable extends Hashable[(Regex[Char], Char)] {
   override def hash(x: (Regex[Char], Char)): Long = CharHashable.hash(x._2) + RegexHashable(CharHashable).hash(x._1)
-}
-
-object KeyOrdering extends Ordering[(Regex[Char], Char)] {
-  override def compare(x: (Regex[Char], Char), y: (Regex[Char], Char)): Int = {
-    val c = CharOrdering.compare(x._2, y._2)
-    if (c == 0) {
-      RegexOrdering(CharOrdering).compare(x._1, y._1)
-    } else {
-      c
-    }
-  }
 }
 
 object CharHashable extends Hashable[Char] {

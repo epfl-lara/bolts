@@ -18,6 +18,7 @@ object MainLexer {
   import stainless.io.StdOut.println
   import stainless.io.State
   import VerifiedLexer._
+  
   @extern
   def main(args: Array[String]): Unit = {
 
