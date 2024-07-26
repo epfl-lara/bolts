@@ -338,7 +338,9 @@ object MutableHashMap {
   // ----------------- Lemmas ------------------------------------------------------------------------
 
   /**
-    * This lemma proves that a property `p` that holds for all pairs of the map, holds for a key and its value
+    * This lemma proves that a property `p` that holds for all pairs of the map, holds for a key and its value.
+    * 
+    * Useful to build caches using this map.
     *
     * @param hm
     * @param k
