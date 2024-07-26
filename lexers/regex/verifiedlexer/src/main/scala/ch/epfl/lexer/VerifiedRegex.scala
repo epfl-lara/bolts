@@ -68,7 +68,6 @@ object Memoisation {
 
       if (cache.contains((r, c))) {
         ghostExpr(lemmaIfInCacheThenValid(r, c))
-        println("HIT")
         Some(cache((r, c)))
       } else {
         None()
@@ -101,7 +100,7 @@ object VerifiedRegex {
   @ghost
   def validRegex[C](r: Regex[C]): Boolean = r match {
     case ElementMatch(c)    => true
-    case Star(r)            => !nullable(r) && !isEmptyLang(r) && validRegex(r)
+    case Star(r)            => !nullable(r) && validRegex(r) // && !isEmptyLang(r)
     case Union(rOne, rTwo)  => validRegex(rOne) && validRegex(rTwo)
     case Concat(rOne, rTwo) => validRegex(rOne) && validRegex(rTwo)
     case EmptyExpr()        => true
@@ -172,24 +171,6 @@ object VerifiedRegex {
       case Star(r)            => true
       case Union(rOne, rTwo)  => nullable(rOne) || nullable(rTwo)
       case Concat(rOne, rTwo) => nullable(rOne) && nullable(rTwo)
-    }
-  }
-
-  def hash[C](r: Regex[C])(implicit hashC: Hashable[C]): Long = {
-    // decreases(r)
-    r match {
-      case ElementMatch(c) =>
-        2L * hashC.hash(c)
-      case Star(r) =>
-        3L * hash(r)
-      case Union(rOne, rTwo) =>
-        5L * hash(rOne) + 5L * hash(rTwo)
-      case Concat(rOne, rTwo) =>
-        7L * hash(rOne) + 7L * hash(rTwo)
-      case EmptyExpr() =>
-        11L
-      case EmptyLang() =>
-        13L
     }
   }
 
@@ -353,6 +334,8 @@ object VerifiedRegexMatcher {
   }
 
   @ghost
+  @opaque
+  @inlineOnce
   def mainMatchTheorem[C](r: Regex[C], s: List[C]): Unit = {
     require(validRegex(r))
     decreases(s.size + regexDepth(r))
@@ -554,6 +537,202 @@ object VerifiedRegexMatcher {
     }
 
   } ensuring (_ => bigger == returnP || !matchR(baseR, bigger))
+
+  // ---------------------------------------------------- Regex normalisation ----------------------------------------------------
+  
+  def removeUselessConcat[C](r: Regex[C]): Regex[C] = {
+    require(validRegex(r))
+    decreases(regexDepth(r))
+    r match {
+      case Concat(EmptyExpr(), r2)  => removeUselessConcat(r2)
+      case Concat(r1, EmptyExpr())  => removeUselessConcat(r1)
+      case Concat(r1, r2) => Concat(removeUselessConcat(r1), removeUselessConcat(r2))
+      case Union(r1, r2) => Union(removeUselessConcat(r1), removeUselessConcat(r2))
+      case Star(rInner) => Star(removeUselessConcat(rInner))
+      case _ => r
+    }
+  } ensuring (res => validRegex(res) && nullable(res) == nullable(r))
+
+  @ghost
+  def lemmaRemoveUselessConcatSound[C](r: Regex[C], s: List[C]) : Unit = {
+    require(validRegex(r))
+    decreases(regexDepth(r) + s.size)
+    
+    mainMatchTheorem(r, s)
+
+    if(matchR(r, s)){
+      r match {
+        case Concat(EmptyExpr(), rr) => 
+        if(s.isEmpty) {
+          ()
+        } else {
+          val (s1, s2) = findConcatSeparation(EmptyExpr(), rr, Nil(), s, s).get
+          assert(s1.isEmpty)
+          assert(matchR(rr, s2))
+          mainMatchTheorem(rr, s2)
+          lemmaRemoveUselessConcatSound(rr, s2)
+        }
+      case Concat(rr, EmptyExpr()) => 
+        if(s.isEmpty) {
+          ()
+        } else {
+          val (s1, s2) = findConcatSeparation(rr, EmptyExpr(), Nil(), s, s).get
+          assert(s2.isEmpty)
+          assert(matchR(rr, s1))
+          mainMatchTheorem(rr, s1)
+          lemmaRemoveUselessConcatSound(rr, s1)
+        }
+        
+      case Concat(r1, r2) => 
+        if(s.isEmpty) {
+          ()
+        } else {
+          val (s1, s2) = findConcatSeparation(r1, r2, Nil(), s, s).get
+          assert(matchR(r1, s1))
+          assert(matchR(r2, s2))
+          lemmaRemoveUselessConcatSound(r1, s1)
+          lemmaRemoveUselessConcatSound(r2, s2)
+          assert(matchR(removeUselessConcat(r1), s1))
+          assert(matchR(removeUselessConcat(r2), s2))
+          lemmaTwoRegexMatchThenConcatMatchesConcatString(removeUselessConcat(r1), removeUselessConcat(r2), s1, s2)
+        }
+      case Union(r1, r2) => 
+        lemmaRegexUnionAcceptsThenOneOfTheTwoAccepts(r1, r2, s)
+        if(matchR(r1, s)) {
+          lemmaRemoveUselessConcatSound(r1, s)
+          assert(matchR(removeUselessConcat(r1), s))
+          lemmaRegexAcceptsStringThenUnionWithAnotherAcceptsToo(removeUselessConcat(r1), removeUselessConcat(r2), s)
+        } else {
+          lemmaRemoveUselessConcatSound(r2, s)
+          assert(matchR(removeUselessConcat(r2), s))
+          lemmaRegexAcceptsStringThenUnionWithAnotherAcceptsToo(removeUselessConcat(r2), removeUselessConcat(r1), s)
+          lemmaReversedUnionAcceptsSameString(removeUselessConcat(r2), removeUselessConcat(r1), s)
+        }
+      case Star(rInner) => 
+          if(s.isEmpty) {
+            ()
+          } else {
+            assert(findConcatSeparation(rInner, Star(rInner), Nil(), s, s).isDefined)
+            val r1 = rInner
+            val r2 = Star(rInner)
+            val (s1, s2) = findConcatSeparation(rInner, Star(rInner), Nil(), s, s).get
+            assert(matchR(rInner, s1))
+            assert(matchR(Star(rInner), s2))
+            lemmaRemoveUselessConcatSound(rInner, s1)
+            if(s2.size == s.size){
+              assert(s1 ++ s2 == s)
+              assert(s1.size + s2.size == s.size)
+              assert(s1.size == 0)
+              assert(s1.isEmpty)
+              assert(matchR(rInner, s1))
+              mainMatchTheorem(rInner, s1)
+              assert(nullable(rInner))
+              check(false)
+            }
+            lemmaRemoveUselessConcatSound(Star(rInner), s2)
+            assert(matchR(removeUselessConcat(rInner), s1)) 
+            assert(removeUselessConcat(Star(rInner)) == Star(removeUselessConcat(rInner)))
+            assert(matchR(Star(removeUselessConcat(rInner)), s2))
+            lemmaStarApp(removeUselessConcat(rInner), s1, s2)
+            }
+        case _ => ()
+      }
+    } else {
+      r match {
+        case Concat(EmptyExpr(), rr) => 
+        if(s.isEmpty) {
+          ()
+        } else {
+          assert(findConcatSeparation(EmptyExpr(), rr, Nil(), s, s).isEmpty)
+          lemmaRemoveUselessConcatSound(rr, s)
+          if(matchR(removeUselessConcat(rr), s)){
+            assert(matchR(rr, s))
+            lemmaR1MatchesS1AndR2MatchesS2ThenFindSeparationFindsAtLeastThem(EmptyExpr(), rr, Nil(), s, s, Nil(), s)
+            check(false)
+          }
+        }
+      case Concat(rr, EmptyExpr()) => 
+        if(s.isEmpty) {
+          ()
+        } else {
+          assert(findConcatSeparation(rr, EmptyExpr(), Nil(), s, s).isEmpty)
+          lemmaRemoveUselessConcatSound(rr, s)
+          if(matchR(removeUselessConcat(rr), s)){
+            assert(matchR(rr, s))
+            lemmaR1MatchesS1AndR2MatchesS2ThenFindSeparationFindsAtLeastThem(rr, EmptyExpr(), s, Nil(), s, Nil(), s)
+            check(false)
+          }
+        }
+        
+      case Concat(r1, r2) => 
+        if(s.isEmpty) {
+          ()
+        } else {
+          if(matchR(Concat(removeUselessConcat(r1), removeUselessConcat(r2)), s)){
+            mainMatchTheorem(Concat(removeUselessConcat(r1), removeUselessConcat(r2)), s)
+            assert(findConcatSeparation(removeUselessConcat(r1), removeUselessConcat(r2), Nil(), s, s).isDefined)
+            val (s1, s2) = findConcatSeparation(removeUselessConcat(r1), removeUselessConcat(r2), Nil(), s, s).get
+            lemmaRemoveUselessConcatSound(r1, s1)
+            lemmaRemoveUselessConcatSound(r2, s2)
+            lemmaTwoRegexMatchThenConcatMatchesConcatString(r1, r2, s1, s2)
+            check(false)
+          }
+        }
+      case Union(r1, r2) => 
+        if(matchR(Union(removeUselessConcat(r1), removeUselessConcat(r2)), s)) {
+          mainMatchTheorem(Union(removeUselessConcat(r1), removeUselessConcat(r2)), s)
+          lemmaRegexUnionAcceptsThenOneOfTheTwoAccepts(removeUselessConcat(r1), removeUselessConcat(r2), s)
+          if(matchR(removeUselessConcat(r1), s)) {
+            lemmaRemoveUselessConcatSound(r1, s)
+            assert(matchR(r1, s))
+            lemmaRegexAcceptsStringThenUnionWithAnotherAcceptsToo(r1, r2, s)
+          } else {
+            lemmaRemoveUselessConcatSound(r2, s)
+            assert(matchR(r2, s))
+            lemmaRegexAcceptsStringThenUnionWithAnotherAcceptsToo(r2, r1, s)
+            lemmaReversedUnionAcceptsSameString(r2, r1, s)
+          }
+          check(false)
+        } 
+      case Star(rInner) => 
+        if(matchR(Star(removeUselessConcat(rInner)), s)) {
+          mainMatchTheorem(Star(removeUselessConcat(rInner)), s)
+          if(s.isEmpty) {
+            ()
+          } else {
+            assert(findConcatSeparation(removeUselessConcat(rInner), Star(removeUselessConcat(rInner)), Nil(), s, s).isDefined)
+            val (s1, s2) = findConcatSeparation(removeUselessConcat(rInner), Star(removeUselessConcat(rInner)), Nil(), s, s).get
+            assert(matchR(removeUselessConcat(rInner), s1))
+            assert(matchR(Star(removeUselessConcat(rInner)), s2))
+            lemmaRemoveUselessConcatSound(rInner, s1)
+            assert(matchR(rInner, s1))
+            if(s2.size == s.size){
+              assert(s1 ++ s2 == s)
+              assert(s1.size + s2.size == s.size)
+              assert(s1.size == 0)
+              assert(s1.isEmpty)
+              assert(matchR(rInner, s1))
+              mainMatchTheorem(rInner, s1)
+              assert(nullable(rInner))
+              check(false)
+            }
+            lemmaRemoveUselessConcatSound(Star(rInner), s2)
+            assert(matchR(rInner, s1))
+            assert(matchR(Star(rInner), s2))
+            lemmaStarApp(rInner, s1, s2)
+            }
+        }
+        case _ => ()
+      }
+    }
+
+  }.ensuring(_ => matchR(r, s) == matchR(removeUselessConcat(r), s))
+    
+
+
+
+
+// ---------------------------------------------------- Lemmas ----------------------------------------------------
 
   @ghost
   def lemmaIfMatchRThenLongestMatchFromThereReturnsAtLeastThis[C](baseR: Regex[C], r: Regex[C], input: List[C], testedP: List[C]): Unit = {

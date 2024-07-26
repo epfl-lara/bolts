@@ -20,7 +20,7 @@ object Main {
 
 def testRegex(): Unit = {
   val cache: Cache[Char] = Cache(MutableHashMap.getEmptyHashMap(_ => EmptyLang(), KeyHashable))
-  val r1 = ("a".r + "b".r).*
+  val r1 = ("a".r | "b".r).*
   println(f"r1 = ${r1}")
   println(f"list = ${"ab".toStainless}")
   println(f"matching a with r1 without cache: ${matchR(r1, Cons('a', Nil()))}")
@@ -57,7 +57,7 @@ case class RegexHashable[C](hc: Hashable[C]) extends Hashable[Regex[C]] {
 object RegexBenchmark {
   val cache: Cache[Char] = Cache(MutableHashMap.getEmptyHashMap(_ => EmptyLang(), KeyHashable))
   def benchmark01(): Unit = {
-    val r = ("a".r + "b".r).*
+    val r = ("a".r | "b".r).*
     val s = "abababababababababbbababbababbbabab"
     val match11 = matchRMem(r, s.toStainless)(cache)
     println(s"Matching $s with r -> $match11")
@@ -83,7 +83,7 @@ object RegexBenchmark {
   }
 
   def benchmark03(): Unit = {
-    val r = ("a".r + "b".r).* 
+    val r = ("a".r | "b".r).* 
     println(s"r = $r")
     val s = "ababa"
     val match31 = matchRMem(r, s.toStainless)(cache)
