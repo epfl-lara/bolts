@@ -367,12 +367,13 @@ object MutableHashMap {
     *
     * @param hm
     * @param k
+    * @param v
     * @param p
     */
   @opaque
   @inlineOnce
   @ghost
-  def lemmaUpdatesPreservesForallPairs[K, V](hm: HashMap[K, V], k: K, v: V, p: ((K, V)) => Boolean): Unit = {
+  def lemmaUpdatePreservesForallPairs[K, V](hm: HashMap[K, V], k: K, v: V, p: ((K, V)) => Boolean): Unit = {
     require(hm.valid)
     require(hm.map.forall(p))
     require(p((k, v)))
@@ -385,7 +386,7 @@ object MutableHashMap {
     val mapAfter = oldMap + (k, v)
 
     val success = snap.update(k, v)
-
+    
     if(success) {
       assert(snap.map.eq(mapAfter))
       TupleListOpsGenK.lemmaInsertNoDuplicatedKeysPreservesForall(oldMap.toList, k, v, p)
@@ -402,6 +403,53 @@ object MutableHashMap {
     afterUpdate.update(k, v)
     afterUpdate.map.forall(p)
   })
+
+    /**
+    * This lemma proves that removing a pair preserves the property `p` that holds for all pairs of the map.
+    * 
+    * Useful to build caches using this map.
+    *
+    * @param hm
+    * @param k
+    * @param p
+    */
+  @opaque
+  @inlineOnce
+  @ghost
+  def lemmaRemovePreservesForallPairs[K, V](hm: HashMap[K, V], k: K, p: ((K, V)) => Boolean): Unit = {
+    require(hm.valid)
+    require(hm.map.forall(p))
+
+    val oldSnap = snapshot(hm)
+    val snap = snapshot(hm)
+    val oldMap = hm.map
+    val oldSize = hm.size
+
+    val mapAfter = oldMap - k
+
+    val success = snap.remove(k)
+
+    assert(snap.valid)
+    assert(TupleListOpsGenK.invariantList(snap.map.toList))
+
+    if(success) {
+      assert(snap.map.eq(mapAfter))
+      assert(oldMap.forall(p))
+      TupleListOpsGenK.lemmaForallSubset(mapAfter.toList, oldMap.toList, p)
+      TupleListOpsGenK.lemmaForallSubset(snap.map.toList, mapAfter.toList, p)
+    } else {
+      assert(snap.map.eq(oldMap))
+      TupleListOpsGenK.lemmaForallSubset(mapAfter.toList, oldMap.toList, p)
+    }
+
+    ()
+  } ensuring (_ => {
+    val oldMap = snapshot(hm)
+    val afterUpdate = snapshot(hm)
+    afterUpdate.remove(k)
+    afterUpdate.map.forall(p)
+  })
+
 
 
   @opaque
