@@ -17,7 +17,7 @@ import scala.collection.mutable
 // import OptimisedChecks.*
 
 case class ListMap[K, B](toList: List[(K, B)]) {
-  require(TupleListOpsGenK.noDuplicatedKeys(toList))
+  require(TupleListOpsGenK.invariantList(toList))
 
   def isEmpty: Boolean = toList.isEmpty
 
@@ -107,8 +107,8 @@ case class ListMap[K, B](toList: List[(K, B)]) {
       case Cons(key, rest) => (this - key) -- rest
     }
   }
-  @inline
-  def forall(p: ((K, B)) => Boolean): Boolean = {
+  
+  inline def forall(p: ((K, B)) => Boolean): Boolean = {
     toList.forall(p)
   }
 }
@@ -116,7 +116,7 @@ case class ListMap[K, B](toList: List[(K, B)]) {
 object TupleListOpsGenK {
 
   // @inline
-  def invariantList[K, B](l: List[(K, B)]): Boolean = {
+  inline def invariantList[K, B](l: List[(K, B)]): Boolean = {
     noDuplicatedKeys(l)
   }
 
@@ -349,6 +349,54 @@ object TupleListOpsGenK {
 
   // ----------- LEMMAS -----------------------------------------------------
 
+  @opaque
+  @inlineOnce
+  def lemmaForallSubset[K, B](
+      l1: List[(K, B)],
+      l2: List[(K, B)],
+      p: ((K, B)) => Boolean
+  ): Unit = {
+    require(invariantList(l1))
+    require(invariantList(l2))
+    require(l2.forall(p) && l1.content.subsetOf(l2.content))
+    decreases(l1)
+
+    l1 match {
+      case Cons(head, tl) =>
+        ListSpecs.subsetContains(l1, l2)
+        ListSpecs.forallContained(l1, l2.contains , head)
+        ListSpecs.forallContained(l2, p, head)
+        assert(l2.contains(head))
+        lemmaForallSubset(tl, l2, p)
+        assert(tl.forall(p))
+        assert(p(head))
+      case Nil() => ()
+    }
+  }.ensuring(_ => l1.forall(p))
+  
+
+  @opaque
+  @inlineOnce
+  def lemmaInsertNoDuplicatedKeysPreservesForall[K, B](
+      l: List[(K, B)],
+      key: K,
+      value: B,
+      p: ((K, B)) => Boolean
+  ): Unit = {
+    require(invariantList(l))
+    require(l.forall(p))
+    require(p((key, value)))
+    decreases(l)
+
+    l match {
+      case Cons(head, tl) if (head._1 != key) =>
+        lemmaInsertNoDuplicatedKeysPreservesForall(tl, key, value, p)
+      case _ => ()
+    }
+
+  }.ensuring(_ => insertNoDuplicatedKeys(l, key, value).forall(p))
+  
+
   @opaque 
   @inlineOnce
   def lemmaContainsTwoDifferentTuplesSameKeyImpossible[K, B](
@@ -422,7 +470,7 @@ object TupleListOpsGenK {
       case Nil()        => ()
       case Cons(hd, tl) => lemmaSubseqRefl(tl)
     }
-  } ensuring (_ => ListSpecs.subseq(l, l))
+  }.ensuring (_ => ListSpecs.subseq(l, l))
 
   @opaque
   @inlineOnce
@@ -440,7 +488,7 @@ object TupleListOpsGenK {
       case _ => ()
     }
 
-  } ensuring (_ => keys.forall(k => containsKey(Cons(other, l), k)))
+  }.ensuring (_ => keys.forall(k => containsKey(Cons(other, l), k)))
 
   @opaque
   @inlineOnce
@@ -892,7 +940,7 @@ object TupleListOpsGenK {
       case _ => ()
     }
 
-  } ensuring (_ =>
+  }.ensuring (_ =>
     l.content ++ Set((newKey, newValue)) == insertNoDuplicatedKeys(
       l,
       newKey,
@@ -1232,7 +1280,7 @@ object ListMapLemmas {
       }
       case Nil() =>
 
-  } ensuring (_ => lm.toList.forall(p => lm.contains(p._1)))
+  }.ensuring (_ => lm.toList.forall(p => lm.contains(p._1)))
 
   @opaque
   @inlineOnce
@@ -1247,7 +1295,7 @@ object ListMapLemmas {
         lemmaInsertPairStillContainsAll(lm, t, k, v)
       case Nil() => ()
     }
-  } ensuring (_ => l.forall(p => (lm + (k, v)).contains(p._1)))
+  }.ensuring (_ => l.forall(p => (lm + (k, v)).contains(p._1)))
 
   @opaque
   @inlineOnce
@@ -1263,7 +1311,7 @@ object ListMapLemmas {
         lemmaInsertPairStillContainsAllEq(lm, lm2, t, k, v)
       case Nil() => ()
     }
-  } ensuring (_ => l.forall(p => (lm + (k, v)).contains(p._1)) && l.forall(p => (lm2).contains(p._1)))
+  }.ensuring (_ => l.forall(p => (lm + (k, v)).contains(p._1)) && l.forall(p => (lm2).contains(p._1)))
 
   @opaque
   @inlineOnce
@@ -1294,7 +1342,7 @@ object ListMapLemmas {
     require(lm.get(a) == Some[B](b))
 
     TupleListOpsGenK.lemmaGetValueByKeyImpliesContainsTuple(lm.toList, a, b)
-  } ensuring (_ => lm.toList.contains((a, b)))
+  }.ensuring (_ => lm.toList.contains((a, b)))
 
   @opaque
   def keysOfSound[K, B](@induct lm: ListMap[K, B], value: B): Unit = {
@@ -1315,7 +1363,7 @@ object ListMapLemmas {
       key,
       value
     )
-  } ensuring (_ =>
+  }.ensuring (_ =>
     lm.toList.content ++ Set(
       (key, value)
     ) == (lm + (key, value)).toList.content

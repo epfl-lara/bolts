@@ -231,7 +231,7 @@ object MutableHashMap {
     def map: ListMap[K, V] = {
       require(valid)
       extractMap(underlying.v.map.toList)
-    }
+    }.ensuring(res => TupleListOpsGenK.invariantList(res.toList))
 
   }
   @ghost
@@ -336,6 +336,120 @@ object MutableHashMap {
   }
 
   // ----------------- Lemmas ------------------------------------------------------------------------
+
+  /**
+    * This lemma proves that a property `p` that holds for all pairs of the map, holds for a key and its value.
+    * 
+    * Useful to build caches using this map.
+    *
+    * @param hm
+    * @param k
+    * @param p
+    */
+  @opaque
+  @inlineOnce
+  @ghost
+  def lemmaForallPairsThenForLookup[K, V](hm: HashMap[K, V], k: K, p: ((K, V)) => Boolean): Unit = {
+    require(hm.valid)
+    require(hm.map.forall(p))
+    require(hm.contains(k))
+
+    TupleListOpsGenK.lemmaGetValueByKeyImpliesContainsTuple(hm.map.toList, k, hm.apply(k))
+    assert(hm.map.toList.contains((k, hm.apply(k))))
+    assert(hm.map.toList.forall(p))
+    ListSpecs.forallContained(hm.map.toList, p, (k, hm.apply(k)))
+  }.ensuring(_ => p((k, hm.apply(k))))
+
+
+  /**
+    * This lemma proves that inserting a new pair preserves the property `p` that holds for all pairs of the map.
+    * 
+    * Useful to build caches using this map.
+    *
+    * @param hm
+    * @param k
+    * @param v
+    * @param p
+    */
+  @opaque
+  @inlineOnce
+  @ghost
+  def lemmaUpdatePreservesForallPairs[K, V](hm: HashMap[K, V], k: K, v: V, p: ((K, V)) => Boolean): Unit = {
+    require(hm.valid)
+    require(hm.map.forall(p))
+    require(p((k, v)))
+
+    val oldSnap = snapshot(hm)
+    val snap = snapshot(hm)
+    val oldMap = hm.map
+    val oldSize = hm.size
+
+    val mapAfter = oldMap + (k, v)
+
+    val success = snap.update(k, v)
+    
+    if(success) {
+      assert(snap.map.eq(mapAfter))
+      TupleListOpsGenK.lemmaInsertNoDuplicatedKeysPreservesForall(oldMap.toList, k, v, p)
+      assert(mapAfter.forall(p))
+      TupleListOpsGenK.lemmaForallSubset(snap.map.toList, mapAfter.toList, p)
+    } else {
+      assert(snap.map.eq(oldMap))
+    }
+
+    ()
+  } ensuring (_ => {
+    val oldMap = snapshot(hm)
+    val afterUpdate = snapshot(hm)
+    afterUpdate.update(k, v)
+    afterUpdate.map.forall(p)
+  })
+
+    /**
+    * This lemma proves that removing a pair preserves the property `p` that holds for all pairs of the map.
+    * 
+    * Useful to build caches using this map.
+    *
+    * @param hm
+    * @param k
+    * @param p
+    */
+  @opaque
+  @inlineOnce
+  @ghost
+  def lemmaRemovePreservesForallPairs[K, V](hm: HashMap[K, V], k: K, p: ((K, V)) => Boolean): Unit = {
+    require(hm.valid)
+    require(hm.map.forall(p))
+
+    val oldSnap = snapshot(hm)
+    val snap = snapshot(hm)
+    val oldMap = hm.map
+    val oldSize = hm.size
+
+    val mapAfter = oldMap - k
+
+    val success = snap.remove(k)
+
+    assert(snap.valid)
+    assert(TupleListOpsGenK.invariantList(snap.map.toList))
+
+    if(success) {
+      assert(snap.map.eq(mapAfter))
+      assert(oldMap.forall(p))
+      TupleListOpsGenK.lemmaForallSubset(mapAfter.toList, oldMap.toList, p)
+      TupleListOpsGenK.lemmaForallSubset(snap.map.toList, mapAfter.toList, p)
+    } else {
+      assert(snap.map.eq(oldMap))
+      TupleListOpsGenK.lemmaForallSubset(mapAfter.toList, oldMap.toList, p)
+    }
+
+    ()
+  } ensuring (_ => {
+    val oldMap = snapshot(hm)
+    val afterUpdate = snapshot(hm)
+    afterUpdate.remove(k)
+    afterUpdate.map.forall(p)
+  })
 
   @opaque
   @inlineOnce

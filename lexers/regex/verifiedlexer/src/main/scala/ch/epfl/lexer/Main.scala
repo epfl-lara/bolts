@@ -12,7 +12,9 @@ import ch.epfl.chassot.Hashable
 
 object Main {
   def main(args: Array[String]): Unit = {
-    testRegex()
+    RegexBenchmark.benchmark01()
+    RegexBenchmark.benchmark02()
+    RegexBenchmark.benchmark03()
   }
 }
 
@@ -20,21 +22,17 @@ def testRegex(): Unit = {
   val cache: Cache[Char] = Cache(MutableHashMap.getEmptyHashMap(_ => EmptyLang(), KeyHashable))
   val r1 = ("a".r + "b".r).*
   println(f"r1 = ${r1}")
-  println(f"list = ${toStainlessList("ab".toCharArray().toList)}")
+  println(f"list = ${"ab".toStainless}")
   println(f"matching a with r1 without cache: ${matchR(r1, Cons('a', Nil()))}")
-  println(f"matching a with r1: ${matchRMem(r1, toStainlessList("a".toCharArray().toList))(cache)}")
-  println(f"matching abababababababababbbababbababbbabab with r1: ${matchRMem(r1, toStainlessList("abababababababababbbababbababbbabab".toCharArray().toList))(cache)}")
-  println(f"matching abchihihi with r1: ${matchRMem(r1, toStainlessList("abchihihi".toCharArray().toList))(cache)}")
+  println(f"matching a with r1: ${matchRMem(r1, "a".toStainless)(cache)}")
+  println(f"matching abababababababababbbababbababbbabab with r1: ${matchRMem(r1, "abababababababababbbababbababbbabab".toStainless)(cache)}")
+  println(f"matching abchihihi with r1: ${matchRMem(r1, "abchihihi".toStainless)(cache)}")
 
   val r2 = "abcdedfghijklmnopqrstuvwxyz.".anyOf.+ ~ "@".r ~ "abcdedfghijklmnopqrstuvwxyz".anyOf.+ ~ ".".r ~ "abcdedfghijklmnopqrstuvwxyz".anyOf.+
   println(f"r2 = ${r2}")
   val s21 = "samuel.chassot@gmail.com"
-  println(f"matching $s21 with r2: ${matchRMem(r2, toStainlessList(s21.toCharArray().toList))(cache)}")
-}
+  println(f"matching $s21 with r2: ${matchRMem(r2, s21.toStainless)(cache)}")
 
-def toStainlessList(l: scala.collection.immutable.List[Char]): stainless.collection.List[Char] = l match {
-  case l: scala.collection.immutable.List[Char] if l.isEmpty => stainless.collection.Nil[Char]()
-  case l: scala.collection.immutable.List[Char] => stainless.collection.Cons(l.head, toStainlessList(l.tail))
 }
 
 object KeyHashable extends Hashable[(Regex[Char], Char)] {
@@ -43,10 +41,6 @@ object KeyHashable extends Hashable[(Regex[Char], Char)] {
 
 object CharHashable extends Hashable[Char] {
   override def hash(x: Char): Long = x.toLong
-}
-
-object CharOrdering extends Ordering[Char] {
-  override def compare(x: Char, y: Char): Int = x - y
 }
 
 case class RegexHashable[C](hc: Hashable[C]) extends Hashable[Regex[C]] {
@@ -59,28 +53,47 @@ case class RegexHashable[C](hc: Hashable[C]) extends Hashable[Regex[C]] {
   }
 }
 
-case class RegexOrdering[C](oc: Ordering[C]) extends Ordering[Regex[C]] {
-  override def compare(x: Regex[C], y: Regex[C]): Int = (x, y) match {
-    case (_, _) if x == y                     => 0
-    case (ElementMatch(xc), ElementMatch(yc)) => oc.compare(xc, yc)
-    case (ElementMatch(_), _)                 => -1
-    case (_, ElementMatch(_))                 => 1
-    case (Concat(lx, rx), Concat(ly, ry)) =>
-      compare(lx, ly) match {
-        case 0 => compare(rx, ry)
-        case c => c
-      }
-    case (Concat(_, _), _) => -1
-    case (_, Concat(_, _)) => 1
-    case (Union(lx, rx), Union(ly, ry)) =>
-      compare(lx, ly) match {
-        case 0 => compare(rx, ry)
-        case c => c
-      }
-    case (Union(_, _), _)     => -1
-    case (_, Union(_, _))     => 1
-    case (Star(rx), Star(ry)) => compare(rx, ry)
-    case (Star(_), _)         => -1
-    case (_, Star(_))         => 1
+
+object RegexBenchmark {
+  val cache: Cache[Char] = Cache(MutableHashMap.getEmptyHashMap(_ => EmptyLang(), KeyHashable))
+  def benchmark01(): Unit = {
+    val r = ("a".r + "b".r).*
+    val s = "abababababababababbbababbababbbabab"
+    val match11 = matchRMem(r, s.toStainless)(cache)
+    println(s"Matching $s with r -> $match11")
+    assert(match11)
+
+    val s2 = "abchihihi"
+    val match12 = matchRMem(r, s2.toStainless)(cache)
+    println(s"Matching $s2 with r -> $match12")
+    assert(!match12)
   }
+
+  def benchmark02(): Unit = {
+    val r = "abcdedfghijklmnopqrstuvwxyz.".anyOf.+ ~ "@".r ~ "abcdedfghijklmnopqrstuvwxyz".anyOf.+ ~ ".".r ~ "abcdedfghijklmnopqrstuvwxyz".anyOf.+
+    val s = "example.example@domain.com"
+    val match21 = matchRMem(r, s.toStainless)(cache)
+    println(s"Matching $s with r -> $match21")
+    assert(match21)
+
+    val s2 = "example.example@domain"
+    val match22 = matchRMem(r, s2.toStainless)(cache)
+    println(s"Matching $s2 with r -> $match22")
+    assert(!match22)
+  }
+
+  def benchmark03(): Unit = {
+    val r = ("a".r + "b".r).* 
+    println(s"r = $r")
+    val s = "ababa"
+    val match31 = matchRMem(r, s.toStainless)(cache)
+    println(s"Matching $s with r -> $match31")
+    assert(match31)
+
+    val s2 = "abbbabbabbababaaaaaaaaaaabababababababa"
+    val match32 = matchRMem(r, s2.toStainless)(cache)
+    println(s"Matching $s2 with r -> $match32")
+    assert(match32)
+  }
+
 }

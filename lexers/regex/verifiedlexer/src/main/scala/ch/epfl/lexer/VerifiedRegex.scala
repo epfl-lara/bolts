@@ -11,16 +11,21 @@ import stainless.proof._
 import ch.epfl.chassot.MutableLongMap._
 import ch.epfl.chassot.ListLongMap
 import ch.epfl.chassot.ListMap
+import ch.epfl.chassot.TupleListOpsGenK
 import ch.epfl.chassot.MutableHashMap._
 import ch.epfl.chassot.Hashable
 import stainless.lang.StaticChecks._
+import ch.epfl.chassot.TupleListOpsGenK.invariantList
+import ch.epfl.chassot.MutableHashMap
 
 object Memoisation {
   import VerifiedRegex._
   import VerifiedRegexMatcher._
 
   @ghost def validCacheMap[C](m: HashMap[(Regex[C], C), Regex[C]]): Boolean = {
-    m.valid && m.map.forall(_ match {
+    m.valid && 
+    TupleListOpsGenK.invariantList(m.map.toList) && // Why is this needed? Without it does not verify in update...
+    m.map.forall(_ match {
         case ((r, c), res) =>
         validRegex(r) && res == derivativeStep(r, c)
       }
@@ -38,21 +43,18 @@ object Memoisation {
       require(validCacheMap(cache))
       require(validRegex(r))
       if (cache.contains((r, c))) {
-        ListSpecs.forallContained(cache.map.toList, {
-          _ match {
-            case ((r, c), res) =>
-            validRegex(r) && res == derivativeStep(r, c)
+        ghostExpr({
+      MutableHashMap.lemmaForallPairsThenForLookup(
+        cache, 
+        (r, c), {
+            _ match {
+              case ((r, c), res) =>
+              validRegex(r) && res == derivativeStep(r, c)
+            }
           }
-        }, ((r, c), cache((r, c))))
-        // lemmaForallThenForAPair(
-        //   cache,
-        //   { case ((r, c), res) =>
-        //     validRegex(r) && res == derivativeStep(r, c)
-        //   },
-        //   (r, c),
-        //   cache((r, c))
-        // )
-      }
+          )
+      })
+    }
     } ensuring (_ => cache.contains((r, c)) ==> (derivativeStep(r, c) == cache((r, c))))
 
     def contains(r: Regex[C], c: C): Boolean = {
@@ -66,6 +68,7 @@ object Memoisation {
 
       if (cache.contains((r, c))) {
         ghostExpr(lemmaIfInCacheThenValid(r, c))
+        println("HIT")
         Some(cache((r, c)))
       } else {
         None()
@@ -77,17 +80,15 @@ object Memoisation {
       require(validRegex(r))
       require(res == derivativeStep(r, c))
 
-      // ghostExpr(
-      //   lemmaUpdateValidPairMaintainsForall(
-      //     cache,
-      //     { case ((r, c), res) =>
-      //       validRegex(r) && res == derivativeStep(r, c)
-      //     },
-      //     (r, c),
-      //     res
-      //   )
-      // )
+      ghostExpr(MutableHashMap.lemmaUpdatePreservesForallPairs(cache, (r, c), res, {
+        _ match {
+          case ((r, c), res) =>
+          validRegex(r) && res == derivativeStep(r, c)
+        }
+      }))
+
       val _ = cache.update((r, c), res)
+      ()
 
     } ensuring (_ => validCacheMap(this.cache))
 
@@ -191,19 +192,6 @@ object VerifiedRegex {
         13L
     }
   }
-
-  // case class RegexHashable[C](cHashable: Hashable[C]) extends Hashable[Regex[C]] {
-  //   def hash(r: Regex[C]): Long = {
-  //     r match {
-  //       case ElementMatch(c) => 2L * cHashable.hash(c)
-  //       case Star(rInner)    => 3L * hash(rInner)
-  //       case Union(r1, r2)   => 5L * hash(r1) + 5L * hash(r2)
-  //       case Concat(r1, r2)  => 7L * hash(r1) + 7L * hash(r2)
-  //       case EmptyExpr()     => 11L
-  //       case EmptyLang()     => 13L
-  //     }
-  //   }
-  // }
 
   @ghost
   def isEmptyExpr[C](r: Regex[C]): Boolean = {
