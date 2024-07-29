@@ -9,12 +9,18 @@ import stainless.annotation._
 import stainless.lang._
 import stainless.collection._
 import ch.epfl.chassot.Hashable
+import ch.epfl.lexer.RegexBenchmark.testSimp
+import scala.collection.View.Empty
 
 object Main {
   def main(args: Array[String]): Unit = {
     RegexBenchmark.benchmark01()
     RegexBenchmark.benchmark02()
     RegexBenchmark.benchmark03()
+    RegexBenchmark.benchmark03Simp()
+    // testRegex()
+    // println("\n\n\n")
+    // testSimp()
   }
 }
 
@@ -32,6 +38,8 @@ def testRegex(): Unit = {
   println(f"r2 = ${r2}")
   val s21 = "samuel.chassot@gmail.com"
   println(f"matching $s21 with r2: ${matchRMem(r2, s21.toStainless)(cache)}")
+
+  println(s"r1 = $r1\nremoveUselessConcat(r1) = ${removeUselessConcat(r1)}")
 
 }
 
@@ -52,7 +60,6 @@ case class RegexHashable[C](hc: Hashable[C]) extends Hashable[Regex[C]] {
     case _               => 17L
   }
 }
-
 
 object RegexBenchmark {
   val cache: Cache[Char] = Cache(MutableHashMap.getEmptyHashMap(_ => EmptyLang(), KeyHashable))
@@ -83,17 +90,80 @@ object RegexBenchmark {
   }
 
   def benchmark03(): Unit = {
-    val r = ("a".r | "b".r).* 
+    val r = ("a".r | "b".r).*
     println(s"r = $r")
     val s = "ababa"
     val match31 = matchRMem(r, s.toStainless)(cache)
     println(s"Matching $s with r -> $match31")
     assert(match31)
 
-    val s2 = "abbbabbabbababaaaaaaaaaaabababababababa"
+    val s2 = "ababaabbabbababaaaabababbababbbababa"
+    println(s"Matching $s2 with r...")
     val match32 = matchRMem(r, s2.toStainless)(cache)
+    println(s"Done -> $match32")
+    assert(match32)
+  }
+
+  def benchmark03Simp(): Unit = {
+    val r = removeUselessConcat((("a".r | "b".r).* | "c".r).*)
+    println(s"r = $r")
+    val s = "ababa"
+    val match31 = matchRMem(r, s.toStainless)(cache)
+    println(s"Matching $s with r -> $match31")
+    assert(match31)
+
+    val s2 = "abbbabbabbababccaaaabababbababbbababa"
+    val match32 = matchRMemSimp(r, s2.toStainless)(cache)
     println(s"Matching $s2 with r -> $match32")
     assert(match32)
   }
 
+  def testSimp(): Unit = {
+    val r = Union(Union(Union(Union(Union(Union(Union(Union(Union(Union(Union(Union(Union(Union(Union(Union(Union(Union(Union(Union(Union(Union(Union(Union(Union(Concat(Union(Union(Union(Union(Union(Union(Union(Union(Union(Union(Union(Union(Union(Union(Union(Union(Union(Union(Union(Union(Union(Union(Union(Union(Union(Union(Union(Concat(EmptyLang(),EmptyExpr()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),Union(Union(Union(Union(Union(Union(Union(Union(Union(Union(Union(Union(Union(Union(Union(Union(Union(Union(Union(Union(Union(Union(Union(Union(Union(Union(Concat(EmptyLang(),EmptyExpr()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang())),Star(Union(Concat(ElementMatch('a'),EmptyExpr()),Concat(ElementMatch('b'),EmptyExpr())))),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),Union(Union(Union(Union(Union(Union(Union(Union(Union(Union(Union(Union(Union(Union(Union(Union(Union(Union(Union(Union(Union(Union(Union(Union(Concat(Union(Union(Union(Union(Union(Union(Union(Union(Union(Union(Union(Union(Union(Union(Union(Union(Union(Union(Union(Union(Union(Union(Union(Union(Union(Union(Concat(EmptyLang(),EmptyExpr()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),Union(Union(Union(Union(Union(Union(Union(Union(Union(Union(Union(Union(Union(Union(Union(Union(Union(Union(Union(Union(Union(Union(Union(Union(Union(Concat(EmptyLang(),EmptyExpr()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang())),Star(Union(Concat(ElementMatch('a'),EmptyExpr()),Concat(ElementMatch('b'),EmptyExpr())))),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),Union(Union(Union(Union(Union(Union(Union(Union(Union(Union(Union(Union(Union(Union(Union(Union(Union(Union(Union(Union(Union(Union(Union(Concat(Union(Union(Union(Union(Union(Union(Union(Union(Union(Union(Union(Union(Union(Union(Union(Union(Union(Union(Union(Union(Union(Union(Union(Union(Union(Concat(EmptyLang(),EmptyExpr()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),Union(Union(Union(Union(Union(Union(Union(Union(Union(Union(Union(Union(Union(Union(Union(Union(Union(Union(Union(Union(Union(Union(Union(Union(Concat(EmptyLang(),EmptyExpr()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang())),Star(Union(Concat(ElementMatch('a'),EmptyExpr()),Concat(ElementMatch('b'),EmptyExpr())))),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),Union(Union(Union(Union(Union(Union(Union(Union(Union(Union(Union(Union(Union(Union(Union(Union(Union(Union(Union(Union(Union(Union(Concat(Union(Union(Union(Union(Union(Union(Union(Union(Union(Union(Union(Union(Union(Union(Union(Union(Union(Union(Union(Union(Union(Union(Union(Union(Concat(EmptyLang(),EmptyExpr()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),Union(Union(Union(Union(Union(Union(Union(Union(Union(Union(Union(Union(Union(Union(Union(Union(Union(Union(Union(Union(Union(Union(Union(Concat(EmptyLang(),EmptyExpr()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang())),Star(Union(Concat(ElementMatch('a'),EmptyExpr()),Concat(ElementMatch('b'),EmptyExpr())))),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),Union(Union(Union(Union(Union(Union(Union(Union(Union(Union(Union(Union(Union(Union(Union(Union(Union(Union(Union(Union(Union(Concat(Union(Union(Union(Union(Union(Union(Union(Union(Union(Union(Union(Union(Union(Union(Union(Union(Union(Union(Union(Union(Union(Union(Union(Concat(EmptyLang(),EmptyExpr()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),Union(Union(Union(Union(Union(Union(Union(Union(Union(Union(Union(Union(Union(Union(Union(Union(Union(Union(Union(Union(Union(Union(Concat(EmptyLang(),EmptyExpr()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang())),Star(Union(Concat(ElementMatch('a'),EmptyExpr()),Concat(ElementMatch('b'),EmptyExpr())))),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),Union(Union(Union(Union(Union(Union(Union(Union(Union(Union(Union(Union(Union(Union(Union(Union(Union(Union(Union(Union(Concat(Union(Union(Union(Union(Union(Union(Union(Union(Union(Union(Union(Union(Union(Union(Union(Union(Union(Union(Union(Union(Union(Union(Concat(EmptyLang(),EmptyExpr()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),Union(Union(Union(Union(Union(Union(Union(Union(Union(Union(Union(Union(Union(Union(Union(Union(Union(Union(Union(Union(Union(Concat(EmptyLang(),EmptyExpr()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang())),Star(Union(Concat(ElementMatch('a'),EmptyExpr()),Concat(ElementMatch('b'),EmptyExpr())))),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),Union(Union(Union(Union(Union(Union(Union(Union(Union(Union(Union(Union(Union(Union(Union(Union(Union(Union(Union(Concat(Union(Union(Union(Union(Union(Union(Union(Union(Union(Union(Union(Union(Union(Union(Union(Union(Union(Union(Union(Union(Union(Concat(EmptyLang(),EmptyExpr()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),Union(Union(Union(Union(Union(Union(Union(Union(Union(Union(Union(Union(Union(Union(Union(Union(Union(Union(Union(Union(Concat(EmptyLang(),EmptyExpr()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang())),Star(Union(Concat(ElementMatch('a'),EmptyExpr()),Concat(ElementMatch('b'),EmptyExpr())))),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang()),EmptyLang())))))))
+
+    // val r =
+    //   Union(
+    //     ElementMatch('a'),
+    //     Concat(
+    //       EmptyExpr(),
+    //       Concat(
+    //         EmptyExpr(),
+    //         Concat(
+    //           EmptyExpr(),
+    //           Concat(
+    //             EmptyExpr(),
+    //             Concat(
+    //               EmptyExpr(),
+    //               Concat(
+    //                 EmptyExpr(),
+    //                 Concat(
+    //                   EmptyExpr(),
+    //                   EmptyLang()
+    //                 )
+    //               )
+    //             )
+    //           )
+    //         )
+    //       )
+    //     )
+    //   )
+    println(s"r = $r")
+    val rr = simplify(r)
+    println(s"rr = $rr")
+
+    println(s"depth before simplification = ${regexDepth(r)}")
+    println(s"depth after simplification = ${regexDepth(rr)}")
+  }
+
+  def regexDepth[C](r: Regex[C]): BigInt = {
+    decreases(r)
+    r match {
+      case ElementMatch(c)    => BigInt(1)
+      case Star(r)            => BigInt(1) + regexDepth(r)
+      case Union(rOne, rTwo)  => BigInt(1) + Utils.maxBigInt(regexDepth(rOne), regexDepth(rTwo))
+      case Concat(rOne, rTwo) => BigInt(1) + Utils.maxBigInt(regexDepth(rOne), regexDepth(rTwo))
+      case EmptyExpr()        => BigInt(1)
+      case EmptyLang()        => BigInt(1)
+    }
+  }
 }
