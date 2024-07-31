@@ -53,7 +53,7 @@ object BuggyNewMaskComputation {
     if (2 * (_size + _vacant) >= oldMask && !(5 * _vacant > oldMask)) {
       m = ((m << 1) + 1) & MAX_MASK
     }
-    while (m > 8 && 8 * _size < m && ((m >> 1) & MAX_MASK) >= _size) {
+    while (m > 8 && _size < (m >>> 3)) {
       decreases(m)
       m = m >>> 1
     }
