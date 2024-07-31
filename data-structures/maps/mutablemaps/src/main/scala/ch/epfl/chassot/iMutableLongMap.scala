@@ -36,13 +36,13 @@ object MutableMapInterface{
     def update(key: Long, v: V): Boolean 
     def remove(key: Long): Boolean
 
-    @law @ghost @pure 
-    def containsCorrect(key: Long): Boolean = 
+    @ghost @pure 
+    @law def containsCorrect(key: Long): Boolean = 
       val thiss = snapshot(this)
       thiss.contains(key) == thiss.abstractMap.contains(key)
     
-    @law @ghost @pure 
-    def applyCorrect(key: Long): Boolean = 
+    @ghost @pure 
+    @law def applyCorrect(key: Long): Boolean = 
       val res = apply(key)
       if (contains(key)) then 
         abstractMap.get(key).isDefined
@@ -50,8 +50,8 @@ object MutableMapInterface{
       else 
         res == defaultEntry(key)
     
-    @law @ghost @pure 
-    def updateCorrect(key: Long, v: V): Boolean = 
+    @ghost @pure 
+    @law def updateCorrect(key: Long, v: V): Boolean = 
       val thiss = snapshot(this)
       val oldMap = abstractMap
       val res = thiss.update(key, v)
@@ -61,8 +61,8 @@ object MutableMapInterface{
       else 
         thiss.abstractMap == oldMap
 
-    @law @ghost @pure 
-    def removeCorrect(key: Long): Boolean = 
+    @ghost @pure 
+    @law def removeCorrect(key: Long): Boolean = 
       val thiss = snapshot(this)
       val oldMap = thiss.abstractMap
       val res = thiss.remove(key)
