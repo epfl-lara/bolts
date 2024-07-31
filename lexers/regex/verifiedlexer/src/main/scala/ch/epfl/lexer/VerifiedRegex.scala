@@ -784,6 +784,7 @@ object VerifiedRegexMatcher {
 
   /** Simplifies the regex by 
    * - removing EmptyLang() recursively
+   * - removing EmptyExpr() in Concat
     *
     * @param r
     * @return
