@@ -10,7 +10,9 @@ object MutableSetObj:
   @mutable
   trait MutableSet[V]:
     @pure
-    def toSet: Set[V]
+    def toSet: Set[V] = {
+      ??? : Set[V]
+    }
 
     @pure
     def contains(v: V): Boolean = {
@@ -41,4 +43,9 @@ object MutableSetObj:
     } ensuring(_ >= 0)
 
   end MutableSet
+
+  def test =
+    val ms = new MutableSet[Int] {}
+    true
+
 end MutableSetObj
