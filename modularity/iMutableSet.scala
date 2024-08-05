@@ -36,7 +36,6 @@ object MutableSetObj:
       thisSnap.remove(v)
       if(v != other) then thisSnap.contains(other) == thisSnapBefore.contains(other) else true
     
-
     @law @pure @ghost def addIncreasesSizeByOneOrWasContained(v: V): Boolean =
       val thisSnap = snapshot(this)
       val thisSnapBefore = snapshot(this)
