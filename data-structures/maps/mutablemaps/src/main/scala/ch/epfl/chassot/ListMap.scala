@@ -351,6 +351,53 @@ object TupleListOpsGenK {
 
   @opaque 
   @inlineOnce
+  def lemmaForallSubset[K, B](
+      l1: List[(K, B)],
+      l2: List[(K, B)],
+      p: ((K, B)) => Boolean
+  ): Unit = {
+    require(invariantList(l1))
+    require(invariantList(l2))
+    require(l2.forall(p) && l1.content.subsetOf(l2.content))
+    decreases(l1)
+
+    l1 match {
+      case Cons(head, tl) =>
+        ListSpecs.subsetContains(l1, l2)
+        ListSpecs.forallContained(l1, l2.contains , head)
+        ListSpecs.forallContained(l2, p, head)
+        assert(l2.contains(head))
+        lemmaForallSubset(tl, l2, p)
+        assert(tl.forall(p))
+        assert(p(head))
+      case Nil() => ()
+    }
+  }.ensuring(_ => l1.forall(p))
+  
+  @opaque
+  @inlineOnce
+  def lemmaInsertNoDuplicatedKeysPreservesForall[K, B](
+      l: List[(K, B)],
+      key: K,
+      value: B,
+      p: ((K, B)) => Boolean
+  ): Unit = {
+    require(invariantList(l))
+    require(l.forall(p))
+    require(p((key, value)))
+    decreases(l)
+
+    l match {
+      case Cons(head, tl) if (head._1 != key) =>
+        lemmaInsertNoDuplicatedKeysPreservesForall(tl, key, value, p)
+      case _ => ()
+    }
+
+  }.ensuring(_ => insertNoDuplicatedKeys(l, key, value).forall(p))
+  
+
+  @opaque 
+  @inlineOnce
   def lemmaContainsTwoDifferentTuplesSameKeyImpossible[K, B](
       l: List[(K, B)],
       key: K,
