@@ -285,6 +285,27 @@ object TupleListOps {
 
   @opaque
   @inlineOnce
+  def lemmaInsertStrictlySortedPreservesForall[B](
+      l: List[(Long, B)],
+      key: Long,
+      value: B,
+      p: ((Long, B)) => Boolean
+  ): Unit = {
+    require(invariantList(l))
+    require(l.forall(p))
+    require(p((key, value)))
+    decreases(l)
+
+    l match {
+      case Cons(head, tl) if (head._1 != key) =>
+        lemmaInsertStrictlySortedPreservesForall(tl, key, value, p)
+      case _ => ()
+    }
+
+  }.ensuring(_ => insertStrictlySorted(l, key, value).forall(p))
+
+  @opaque
+  @inlineOnce
   def lemmaInsertAndRemoveStrictlySortedCommutative[B](
       l: List[(Long, B)],
       key1: Long,
