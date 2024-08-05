@@ -1,7 +1,8 @@
 import ch.epfl.chassot.*
-import stainless.annotation._
+import stainless.lang.StaticChecks.*
+import stainless.annotation.*
 import stainless.lang.{ghost => ghostExpr, _}
-import stainless.collection._
+import stainless.collection.*
 
 import stainless.lang.StaticChecks.* 
 
@@ -48,21 +49,28 @@ object CachedFunction {
 final case class CachedFunction[I, O](
     f: I => O,
     hashable: Hashable[I],
-    cache: MutableHashMap.HashMap[I, O]
+    private val cache: MutableHashMap.HashMap[I, O]
 ) {
-  require(cache.valid)
-  require(CachedFunction.allValuesAreFunctionOutputs(f, cache))
+
+  @ghost @opaque
+  def valid: Boolean =
+    cache.valid &&
+    CachedFunction.allValuesAreFunctionOutputs(f, cache)
 
   @opaque
   def apply(x: I): O = {
+    require(valid)
+    ghostExpr(unfold(valid))
     if cache.contains(x) then
       ghostExpr(CachedFunction.lemmaInMapThenCorrect(f, cache, x, cache(x)))
       cache(x)
     else
       val result = f(x)
       cache.update(x, result)
+      assert(cache.valid)
+      assert(CachedFunction.allValuesAreFunctionOutputs(f, cache), "cached value is still function output")
       result
-  }.ensuring { res => res == f(x) }
+  }.ensuring { res => res == f(x) && {unfold(valid);valid} }
 }
 
 // object IntHashable extends Hashable[Int] {
