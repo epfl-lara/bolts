@@ -52,10 +52,15 @@ final case class CachedFunction[I, O](
     hashable: Hashable[I],
     private val cache: MutableHashMap.HashMap[I, O]
 ) {
+  @pure
+  @ghost
+  @opaque
+  def valid: Boolean = cache.valid && CachedFunction.allValuesAreFunctionOutputs(f, cache)
+
   @opaque
   def apply(x: I): O = {
-    require(cache.valid)
-    require(CachedFunction.allValuesAreFunctionOutputs(f, cache))
+    require(this.valid)
+    ghostExpr(unfold(this.valid))
     if cache.contains(x) then
       ghostExpr(CachedFunction.lemmaInMapThenCorrect(f, cache, x, cache(x)))
       cache(x)
@@ -65,7 +70,10 @@ final case class CachedFunction[I, O](
       ghostExpr(MutableHashMap.lemmaUpdatePreservesForallPairs(cache, x, result, CachedFunction.isImageOf[I, O](f)))
       cache.update(x, result)
       result
-  }.ensuring { res => res == f(x) && cache.valid && CachedFunction.allValuesAreFunctionOutputs(f, cache)}
+  }.ensuring { res =>
+    unfold(this.valid)
+    res == f(x) && this.valid 
+  }
 }
 
 // object IntHashable extends Hashable[Int] {
