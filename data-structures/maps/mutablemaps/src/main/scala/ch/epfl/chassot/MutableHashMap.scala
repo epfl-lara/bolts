@@ -228,7 +228,7 @@ object MutableHashMap {
 
     @pure
     @ghost
-    private def map: ListMap[K, V] = {
+    def map: ListMap[K, V] = {
       require(valid)
       extractMap(underlying.v.map.toList)
     }
