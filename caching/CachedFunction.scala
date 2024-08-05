@@ -1,7 +1,8 @@
 import ch.epfl.chassot.*
-import stainless.annotation._
+import stainless.lang.StaticChecks.*
+import stainless.annotation.*
 import stainless.lang.{ghost => ghostExpr, _}
-import stainless.collection._
+import stainless.collection.*
 
 import stainless.lang.StaticChecks.* 
 
@@ -69,6 +70,8 @@ final case class CachedFunction[I, O](
       @ghost val thiss = snapshot(this)
       ghostExpr(MutableHashMap.lemmaUpdatePreservesForallPairs(cache, x, result, CachedFunction.isImageOf[I, O](f)))
       cache.update(x, result)
+      assert(cache.valid)
+      assert(CachedFunction.allValuesAreFunctionOutputs(f, cache), "cached value is still function output")
       result
   }.ensuring { res =>
     unfold(this.valid)
