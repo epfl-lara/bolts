@@ -13,6 +13,12 @@ object MiniMutableSetInterface:
     def add(v: V): Unit = {
       ??? : Unit
     }.ensuring(_ => contains(v))
+
+    @law @pure @ghost def addContains(v: V): Boolean = {
+      val snap = snapshot(this)
+      snap.add(v)
+      snap.contains(v)
+    }
   end MiniMutableSet
 end MiniMutableSetInterface
 
