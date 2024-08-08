@@ -58,12 +58,12 @@ object MutableMapInterface{
     def update(key: Long, v: V): Boolean = {
       require(valid)
       ??? : Boolean
-    }.ensuring(res => valid && (if (res) then abstractMap.contains(key) && (abstractMap.eq(old(this).abstractMap + (key, v))) else abstractMap.eq(old(this).abstractMap)))
+    }.ensuring(res => valid && (if (res) then abstractMap.contains(key) && (abstractMap == old(this).abstractMap + (key, v)) else abstractMap == old(this).abstractMap))
     
     def remove(key: Long): Boolean = {
       require(valid)
       ??? : Boolean
-    }.ensuring(res => valid && (if (res) then abstractMap.eq(old(this).abstractMap - key) else abstractMap.eq(old(this).abstractMap)))
+    }.ensuring(res => valid && (if (res) then abstractMap == old(this).abstractMap - key else abstractMap == old(this).abstractMap))
   }
 
   @mutable
@@ -112,11 +112,11 @@ object MutableMapInterface{
     def update(key: K, v: V): Boolean = {
       require(valid)
       ??? : Boolean
-    }.ensuring(res => valid && (if (res) then abstractMap.contains(key) && (abstractMap == old(this).abstractMap + (key, v)) else abstractMap == old(this).abstractMap))
+    }.ensuring(res => valid && (if (res) then abstractMap.contains(key) && (abstractMap.eq(old(this).abstractMap + (key, v))) else abstractMap.eq(old(this).abstractMap)))
     
     def remove(key: K): Boolean = {
       require(valid)
       ??? : Boolean
-    }.ensuring(res => valid && (if (res) then abstractMap == old(this).abstractMap - key else abstractMap == old(this).abstractMap))
+    }.ensuring(res => valid && (if (res) then abstractMap.eq(old(this).abstractMap - key) else abstractMap.eq(old(this).abstractMap)))
   }
 }
