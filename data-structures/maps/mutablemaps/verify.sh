@@ -2,5 +2,6 @@ stainless-dotty\
  ./src/main/scala/ch/epfl/chassot/ListMap.scala\
  ./src/main/scala/ch/epfl/chassot/ListLongMap.scala\
  ./src/main/scala/ch/epfl/chassot/MutableLongMap.scala\
+ ./src/main/scala/ch/epfl/chassot/iMutableLongMap.scala\
  ./src/main/scala/ch/epfl/chassot/MutableHashMap.scala\
   --config-file=stainless.conf -Dparallel=4 $1
