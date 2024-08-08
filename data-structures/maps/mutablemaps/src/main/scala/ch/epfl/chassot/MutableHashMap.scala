@@ -242,7 +242,7 @@ object MutableHashMap {
     def map: ListMap[K, V] = {
       require(valid)
       extractMap(underlying.v.map.toList)
-    }
+    }.ensuring(res => TupleListOpsGenK.invariantList(res))
 
   }
   @ghost
@@ -253,7 +253,7 @@ object MutableHashMap {
       case Cons((k, v), tl) => addToMapMapFromBucket(v, extractMap(tl))
       case Nil()            => ListMap.empty[K, V]
     }
-  }.ensuring (res => true)
+  }.ensuring (res => TupleListOpsGenK.invariantList(res))
 
   @ghost
   def addToMapMapFromBucket[K, V](l: List[(K, V)], acc: ListMap[K, V]): ListMap[K, V] = {
@@ -285,7 +285,7 @@ object MutableHashMap {
         res
       }
     }
-  }.ensuring (res => l.forall(p => res.contains(p._1)) && acc.toList.forall(p => res.contains(p._1)))
+  }.ensuring (res => l.forall(p => res.contains(p._1)) && acc.toList.forall(p => res.contains(p._1)) && TupleListOpsGenK.invariantList(res))
 
   @ghost
   def noDuplicateKeys[K, V](l: List[(K, V)]): Boolean = {
