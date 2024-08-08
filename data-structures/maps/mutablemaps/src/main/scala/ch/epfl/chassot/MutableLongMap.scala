@@ -9,7 +9,6 @@ import stainless.lang.{ghost => ghostExpr, *}
 import stainless.proof.check
 import scala.annotation.tailrec
 import stainless.lang.Cell
-import ch.epfl.chassot.MutableMapInterface.MLongMap
 
 import stainless.lang.StaticChecks.* // Comment out when using the OptimisedEnsuring object below
 // import OptimisedChecks.* // Import to remove `ensuring` and `require` from the code for the benchmarks
@@ -17,7 +16,7 @@ import stainless.lang.StaticChecks.* // Comment out when using the OptimisedEnsu
 
 object MutableMapInterface{
   @mutable
-  sealed trait MLongMap[V] {
+  trait iMLongMap[V] {
     @pure
     def defaultEntry: Long => V
     /**
@@ -79,6 +78,7 @@ object MutableMapInterface{
 
 object MutableLongMap {
   import LongMapFixedSize.validMask
+  import MutableMapInterface.iMLongMap
 
   /** Helper method to create a new empty LongMap
     *
@@ -106,7 +106,7 @@ object MutableLongMap {
   @mutable
   final case class LongMap[V](
       val underlying: Cell[LongMapFixedSize[V]]
-  ) extends MLongMap[V] {
+  ) extends iMLongMap[V] {
 
     @pure
     override def defaultEntry: Long => V = underlying.v.defaultEntry
