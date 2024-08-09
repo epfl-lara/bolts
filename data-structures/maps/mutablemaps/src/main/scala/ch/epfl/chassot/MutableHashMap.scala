@@ -15,6 +15,8 @@ import LongMapFixedSize.validMask
 import stainless.lang.StaticChecks.* // Comment out when using the OptimisedEnsuring object below
 // import OptimisedChecks.* // Import to remove `ensuring` and `require` from the code for the benchmarks
 
+import MutableMapInterface.iMHashMap
+
 trait Hashable[K] {
   @pure
   def hash(k: K): Long
@@ -39,22 +41,31 @@ object MutableHashMap {
       val hashF: Hashable[K],
       var _size: Int,
       val defaultValue: K => V
-  ) {
+  ) extends iMHashMap[K, V] {
+
+    @pure
+    override def defaultEntry: K => V = this.defaultValue
+
+    @ghost
+    override def abstractMap: ListMap[K, V] = {
+      require(valid)
+      this.map
+    }
 
     @pure
     def imbalanced(): Boolean = underlying.v.imbalanced()
 
     @pure
-    def size: Int = _size
+    override def size: Int = _size
 
     @pure
-    def isEmpty: Boolean = {
+    override def isEmpty: Boolean = {
       require(valid)
       underlying.v.isEmpty
     }.ensuring (_ => valid)
 
     @pure
-    def contains(key: K): Boolean = {
+    override def contains(key: K): Boolean = {
       require(valid)
       val hash = hashF.hash(key)
 
@@ -83,7 +94,7 @@ object MutableHashMap {
     }.ensuring (res => valid && (res == map.contains(key)))
 
     @pure
-    def apply(key: K): V = {
+    override def apply(key: K): V = {
       require(valid)
       if (!contains(key)) {
         defaultValue(key)
@@ -108,7 +119,7 @@ object MutableHashMap {
             else res == defaultValue(key))
     )
 
-    def update(key: K, v: V): Boolean = {
+    override def update(key: K, v: V): Boolean = {
       require(valid)
       @ghost val oldMap = map
       @ghost val oldLongListMap = underlying.v.map
@@ -178,7 +189,7 @@ object MutableHashMap {
 
     }.ensuring (res => valid && (if (res) map.contains(key) && (map.eq(old(this).map + (key, v))) else map.eq(old(this).map)))
 
-    def remove(key: K): Boolean = {
+    override def remove(key: K): Boolean = {
       require(valid)
       val contained = contains(key)
       if (!contained) {
@@ -222,16 +233,16 @@ object MutableHashMap {
     }.ensuring (res => valid && (if (res) map.eq(old(this).map - key) else map.eq(old(this).map)))
 
     @ghost
-    def valid: Boolean = underlying.v.valid &&
+    override  def valid: Boolean = underlying.v.valid &&
       underlying.v.map.toList.forall((k, v) => noDuplicateKeys(v)) &&
       allKeysSameHashInMap(underlying.v.map, hashF)
 
     @pure
     @ghost
-    private def map: ListMap[K, V] = {
+    def map: ListMap[K, V] = {
       require(valid)
       extractMap(underlying.v.map.toList)
-    }
+    }.ensuring(res => TupleListOpsGenK.invariantList(res.toList))
 
   }
   @ghost
@@ -242,7 +253,7 @@ object MutableHashMap {
       case Cons((k, v), tl) => addToMapMapFromBucket(v, extractMap(tl))
       case Nil()            => ListMap.empty[K, V]
     }
-  }.ensuring (res => true)
+  }.ensuring (res => TupleListOpsGenK.invariantList(res.toList))
 
   @ghost
   def addToMapMapFromBucket[K, V](l: List[(K, V)], acc: ListMap[K, V]): ListMap[K, V] = {
@@ -274,7 +285,7 @@ object MutableHashMap {
         res
       }
     }
-  }.ensuring (res => l.forall(p => res.contains(p._1)) && acc.toList.forall(p => res.contains(p._1)))
+  }.ensuring (res => l.forall(p => res.contains(p._1)) && acc.toList.forall(p => res.contains(p._1)) && TupleListOpsGenK.invariantList(res.toList))
 
   @ghost
   def noDuplicateKeys[K, V](l: List[(K, V)]): Boolean = {
@@ -336,6 +347,121 @@ object MutableHashMap {
   }
 
   // ----------------- Lemmas ------------------------------------------------------------------------
+  /**
+    * This lemma proves that a property `p` that holds for all pairs of the map, holds for a key and its value.
+    * 
+    * Useful to build caches using this map.
+    *
+    * @param hm
+    * @param k
+    * @param p
+    */
+  @opaque
+  @inlineOnce
+  @ghost
+  def lemmaForallPairsThenForLookup[K, V](hm: HashMap[K, V], k: K, p: ((K, V)) => Boolean): Unit = {
+    require(hm.valid)
+    require(hm.map.forall(p))
+    require(hm.contains(k))
+
+    TupleListOpsGenK.lemmaGetValueByKeyImpliesContainsTuple(hm.map.toList, k, hm.apply(k))
+    assert(hm.map.toList.contains((k, hm.apply(k))))
+    assert(hm.map.toList.forall(p))
+    ListSpecs.forallContained(hm.map.toList, p, (k, hm.apply(k)))
+  }.ensuring(_ => p((k, hm.apply(k))))
+
+
+  /**
+    * This lemma proves that inserting a new pair preserves the property `p` that holds for all pairs of the map.
+    * 
+    * Useful to build caches using this map.
+    *
+    * @param hm
+    * @param k
+    * @param v
+    * @param p
+    */
+  @opaque
+  @inlineOnce
+  @ghost
+  def lemmaUpdatePreservesForallPairs[K, V](hm: HashMap[K, V], k: K, v: V, p: ((K, V)) => Boolean): Unit = {
+    require(hm.valid)
+    require(hm.map.forall(p))
+    require(p((k, v)))
+
+    val oldSnap = snapshot(hm)
+    val snap = snapshot(hm)
+    val oldMap = hm.map
+    val oldSize = hm.size
+
+    val mapAfter = oldMap + (k, v)
+
+    val success = snap.update(k, v)
+    
+    if(success) {
+      assert(snap.map.eq(mapAfter))
+      TupleListOpsGenK.lemmaInsertNoDuplicatedKeysPreservesForall(oldMap.toList, k, v, p)
+      assert(mapAfter.forall(p))
+      TupleListOpsGenK.lemmaForallSubset(snap.map.toList, mapAfter.toList, p)
+    } else {
+      assert(snap.map.eq(oldMap))
+    }
+
+    ()
+  } ensuring (_ => {
+    val oldMap = snapshot(hm)
+    val afterUpdate = snapshot(hm)
+    afterUpdate.update(k, v)
+    afterUpdate.map.forall(p)
+  })
+
+    /**
+    * This lemma proves that removing a pair preserves the property `p` that holds for all pairs of the map.
+    * 
+    * Useful to build caches using this map.
+    *
+    * @param hm
+    * @param k
+    * @param p
+    */
+  @opaque
+  @inlineOnce
+  @ghost
+  def lemmaRemovePreservesForallPairs[K, V](hm: HashMap[K, V], k: K, p: ((K, V)) => Boolean): Unit = {
+    require(hm.valid)
+    require(hm.map.forall(p))
+
+    val oldSnap = snapshot(hm)
+    val snap = snapshot(hm)
+    val oldMap = hm.map
+    val oldSize = hm.size
+
+    val mapAfter = oldMap - k
+
+    val success = snap.remove(k)
+
+    assert(snap.valid)
+    assert(TupleListOpsGenK.invariantList(snap.map.toList))
+
+    if(success) {
+      assert(snap.map.eq(mapAfter))
+      assert(oldMap.forall(p))
+      TupleListOpsGenK.lemmaForallSubset(mapAfter.toList, oldMap.toList, p)
+      TupleListOpsGenK.lemmaForallSubset(snap.map.toList, mapAfter.toList, p)
+    } else {
+      assert(snap.map.eq(oldMap))
+      TupleListOpsGenK.lemmaForallSubset(mapAfter.toList, oldMap.toList, p)
+    }
+
+    ()
+  } ensuring (_ => {
+    val oldMap = snapshot(hm)
+    val afterUpdate = snapshot(hm)
+    afterUpdate.remove(k)
+    afterUpdate.map.forall(p)
+  })
+
+
 
   @opaque
   @inlineOnce
