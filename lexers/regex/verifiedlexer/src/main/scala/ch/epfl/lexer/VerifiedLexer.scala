@@ -1,6 +1,8 @@
 /** Author: Samuel Chassot
   */
 
+package ch.epfl.lexer
+
 import stainless.annotation._
 import stainless.collection._
 import stainless.equations._
@@ -9,13 +11,14 @@ import stainless.proof.check
 import scala.annotation.tailrec
 import stainless.lang.StaticChecks._
 
-object Main {
+object MainLexer {
   import VerifiedLexer._
   import VerifiedRegex._
   import VerifiedRegexMatcher._
   import stainless.io.StdOut.println
   import stainless.io.State
   import VerifiedLexer._
+  
   @extern
   def main(args: Array[String]): Unit = {
 
