@@ -17,7 +17,7 @@ import scala.collection.mutable
 // import OptimisedChecks.*
 
 case class ListMap[K, B](toList: List[(K, B)]) {
-  require(TupleListOpsGenK.noDuplicatedKeys(toList))
+  require(TupleListOpsGenK.invariantList(toList))
 
   def isEmpty: Boolean = toList.isEmpty
 

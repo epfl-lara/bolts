@@ -13,6 +13,8 @@ import stainless.lang.Cell
 import stainless.lang.StaticChecks.* // Comment out when using the OptimisedEnsuring object below
 // import OptimisedChecks.* // Import to remove `ensuring` and `require` from the code for the benchmarks
 
+import MutableMapInterface.iMLongMap
+
 object MutableLongMap {
   import LongMapFixedSize.validMask
 
@@ -42,28 +44,37 @@ object MutableLongMap {
   @mutable
   final case class LongMap[V](
       val underlying: Cell[LongMapFixedSize[V]]
-  ) {
+  ) extends iMLongMap[V] {
+
+    @pure
+    override def defaultEntry: Long => V = underlying.v.defaultEntry
+
+    @ghost
+    override def abstractMap: ListLongMap[V] = {
+      require(valid)
+      this.map
+    }
 
     @pure
     def imbalanced(): Boolean = (2 * (underlying.v._size + underlying.v._vacant)) > underlying.v.mask || underlying.v._vacant > underlying.v._size
 
     @pure
-    def size: Int = underlying.v.size
+    override def size: Int = underlying.v.size
 
     @pure
-    def isEmpty: Boolean = {
+    override def isEmpty: Boolean = {
       require(valid)
       underlying.v.isEmpty
     }.ensuring (_ => valid)
-
+      
     @pure
-    def contains(key: Long): Boolean = {
+    override def contains(key: Long): Boolean = {
       require(valid)
       underlying.v.contains(key)
     }.ensuring (res => valid && (res == map.contains(key)))
 
     @pure
-    def apply(key: Long): V = {
+    override def apply(key: Long): V = {
       require(valid)
       underlying.v.apply(key)
     }.ensuring (res =>
@@ -72,7 +83,7 @@ object MutableLongMap {
             else res == underlying.v.defaultEntry(key))
     )
 
-    def update(key: Long, v: V): Boolean = {
+    override def update(key: Long, v: V): Boolean = {
       require(valid)
       val repacked = if (imbalanced()) {
         repack()
@@ -86,7 +97,7 @@ object MutableLongMap {
       }
     }.ensuring (res => valid && (if (res) map.contains(key) && (map == old(this).map + (key, v)) else map == old(this).map))
 
-    def remove(key: Long): Boolean = {
+    override def remove(key: Long): Boolean = {
       require(valid)
       underlying.v.remove(key)
     }.ensuring (res => valid && (if (res) map == old(this).map - key else map == old(this).map))
