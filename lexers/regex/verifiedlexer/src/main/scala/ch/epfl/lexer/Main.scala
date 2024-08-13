@@ -4,6 +4,7 @@ import ch.epfl.chassot.MutableHashMap
 import ch.epfl.lexer.VerifiedRegex._
 import ch.epfl.lexer.VerifiedRegexMatcher._
 import ch.epfl.lexer.Memoisation._
+import ch.epfl.lexer.ZipperRegex._
 import ch.epfl.benchmark.RegexUtils._
 import stainless.annotation._
 import stainless.lang._
@@ -14,14 +15,53 @@ import scala.collection.View.Empty
 
 object Main {
   def main(args: Array[String]): Unit = {
-    RegexBenchmark.benchmark01()
-    RegexBenchmark.benchmark02()
-    RegexBenchmark.benchmark03()
-    RegexBenchmark.benchmark03Simp()
+    testZippers1()
+    testZippers2()
+    testZippers3()
+    // RegexBenchmark.benchmark01()
+    // RegexBenchmark.benchmark02()
+    // RegexBenchmark.benchmark03()
+    // RegexBenchmark.benchmark03Simp()
     // testRegex()
     // println("\n\n\n")
     // testSimp()
   }
+}
+
+def testZippers1(): Unit = {
+  val r = simplify(("a".r ~ "b".r))
+  println(s"R = ${r.asString()}")
+  val z = focus(r)
+  println(s"Zipper = ${z.asStringZipper()}")
+  val zAfterA = derivationStepZipper(z, 'a')
+  val derivativeAfterA = derivativeStep(r, 'a')
+  println(s"Zipper after 'a' = ${zAfterA.asStringZipper()}")
+  println(s"Derivative after 'a' = ${derivativeAfterA.asString()}")
+  println("\n\n-----------------------------------------------------------\n\n")
+}
+
+def testZippers2(): Unit = {
+  val r = simplify(("a".r ~ "b".r) | ("a".r ~ "c".r))
+  println(s"r = ${r.asString()}")
+  val z = focus(r)
+  println(s"Zipper = ${z.asStringZipper()}")
+  val zAfterA = derivationStepZipper(z, 'a')
+  val derivativeAfterA = derivativeStep(r, 'a')
+  println(s"Zipper after 'a' = ${zAfterA.asStringZipper()}")
+  println(s"Derivative after 'a' = ${derivativeAfterA.asString()}")
+  println("\n\n-----------------------------------------------------------\n\n")
+}
+
+def testZippers3(): Unit = {
+  val r = simplify((("a".r ~ "b".r) | ("a".r ~ "c".r)).*)
+  println(s"r = ${r.asString()}")
+  val z = focus(r)
+  println(s"Zipper = ${z.asStringZipper()}")
+  val zAfterA = derivationStepZipper(z, 'a')
+  val derivativeAfterA = derivativeStep(r, 'a')
+  println(s"Zipper after 'a' = ${zAfterA.asStringZipper()}")
+  println(s"Derivative after 'a' = ${derivativeAfterA.asString()}")
+  println("\n\n-----------------------------------------------------------\n\n")
 }
 
 def testRegex(): Unit = {

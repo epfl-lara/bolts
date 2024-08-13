@@ -235,6 +235,102 @@ object VerifiedRegex {
   }
 }
 
+object ZipperRegex {
+  import VerifiedRegex.*
+  import VerifiedRegexMatcher.*
+  /**
+    * Context[C] represent sequences of expressions
+    * Zipper[C] are sets of Context[C], and they represent disjunctions of expressions
+    */
+  type Context[C] = List[Regex[C]]
+  type Zipper[C] = List[Context[C]]
+
+  @ghost def validContext[C](c: Context[C]): Boolean = c.forall(validRegex)
+  @ghost def validZipper[C](z: Zipper[C]): Boolean = z.forall(c => c.forall(validRegex)) && ListSpecs.noDuplicate(z)
+
+  def unfocusContext[C](c: Context[C]): Regex[C] = {
+    require(validContext(c))
+    c match {
+      case Cons(hd, tl) if tl.isEmpty => hd
+      case Cons(hd, tl) => Concat(hd, unfocusContext(tl))
+      case Nil()        => EmptyExpr()
+    }
+  }.ensuring(res => validRegex(res))
+
+  def unfocusZipper[C](z: Zipper[C]): Regex[C] = {
+    require(validZipper(z))
+    z match {
+      case Cons(hd, tl) if tl.isEmpty => unfocusContext(hd)
+      case Cons(hd, tl) => Union(unfocusContext(hd), unfocusZipper(tl))
+      case Nil()        => EmptyLang()
+    }
+  }.ensuring(res => validRegex(res))
+
+  def focus[C](r: Regex[C]): Zipper[C] = {
+    require(validRegex(r))
+    List(List(r))
+  }.ensuring(res => validZipper(res) && unfocusZipper(res) == r)
+
+  def derivationStepZipperUp[C](context: Context[C], a: C): Zipper[C] = {
+    require(validContext(context))
+    context match {
+      case Cons(right, parent) if nullable(right) => derivationStepZipperDown(right, parent, a) ++ derivationStepZipperUp(parent, a)
+      case Cons(right, parent) => derivationStepZipperDown(right, parent, a)
+      case Nil() => Nil()
+    }
+  }.ensuring(res => validZipper(res)) 
+
+  def derivationStepZipperDown[C](expr: Regex[C], context: Context[C], a: C): Zipper[C] = {
+    require(validContext(context))
+    require(validRegex(expr))
+    expr match {
+      case ElementMatch(c) if c == a => List(context)
+      case Union(rOne, rTwo) => derivationStepZipperDown(rOne, context, a) ++ derivationStepZipperDown(rTwo, context, a)
+      case Concat(rOne, rTwo) if nullable(rOne) => derivationStepZipperDown(rOne, rTwo :: context, a) ++ derivationStepZipperDown(rTwo, context, a)
+      case Concat(rOne, rTwo) => derivationStepZipperDown(rOne, rTwo :: context, a)
+      case Star(rInner) => derivationStepZipperDown(rInner, Star(rInner) :: context, a)
+      case _ => Nil()
+    }
+  }.ensuring(res => validZipper(res))
+
+  def derivationStepZipper[C](z: Zipper[C], a: C): Zipper[C] = {
+    require(validZipper(z))
+    z match {
+      case Cons(hd, tl) => derivationStepZipperUp(hd, a) ++ derivationStepZipper(tl, a)
+      case Nil()        => Nil()
+    }
+  }.ensuring(res => validZipper(res))
+
+
+  // PROOFS -----------------------------------------------------------------------------------------------------
+
+  /**
+    * Corresponds to theorem 2.1 of Romain Edelmann's thesis
+    *
+    * @return
+    */
+  def theoremUnfocusFocus[C](r: Regex[C], s: List[C]): Boolean = {
+    require(validRegex(r))
+    matchR(unfocusZipper(focus(r)), s) == matchR(r, s)
+  }.holds
+
+  def theoremUnfocusDerivativeSameAsDerivative[C](r: Regex[C], z: Zipper[C], a: C, s: List[C]): Unit = {
+    require(validRegex(r))
+    require(validZipper(z))
+    require(unfocusZipper(z) == r)
+
+    z match
+      case Nil() => ()
+      case Cons(c1, tl) if tl.isEmpty => ()
+      case Cons(c1, tl) => ()
+
+    
+
+  }.ensuring(_ => matchR(unfocusZipper(derivationStepZipper(z, a)), s) == matchR(derivativeStep(r, a), s))
+
+
+}
+
 object VerifiedRegexMatcher {
   import VerifiedRegex._
   import ListUtils._
