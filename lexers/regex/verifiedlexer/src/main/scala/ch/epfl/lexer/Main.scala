@@ -18,6 +18,8 @@ object Main {
     testZippers1()
     testZippers2()
     testZippers3()
+    println("Running zipper match test...")
+    testZipperMatch()
     // RegexBenchmark.benchmark01()
     // RegexBenchmark.benchmark02()
     // RegexBenchmark.benchmark03()
@@ -62,6 +64,43 @@ def testZippers3(): Unit = {
   println(s"Zipper after 'a' = ${zAfterA.asStringZipper()}")
   println(s"Derivative after 'a' = ${derivativeAfterA.asString()}")
   println("\n\n-----------------------------------------------------------\n\n")
+}
+
+def testZipperMatch(): Unit = {
+  val r1 = ("a".r | "b".r).*
+  val z1 = focus(r1)
+  println(s"r1 = ${r1.asString()}")
+  println(s"z1 = ${z1.asStringZipper()}")
+  val s1 = "abababababababababbbababbababbbabab"
+  println(s"Matching against '$s1'")
+  val matchResR1 = matchR(r1, s1.toStainless)
+  val matchResZ1 = matchZipper(z1, s1.toStainless)
+  println(s"matchResR1 = $matchResR1")
+  println(s"matchResZ1 = $matchResZ1")
+  assert(matchResR1 == matchResZ1)
+  assert(matchResR1 == true)
+  println("\n\n-----------------------------------------------------------\n\n")
+  val r2 = "abcdedfghijklmnopqrstuvwxyz.".anyOf.+ ~ "@".r ~ "abcdedfghijklmnopqrstuvwxyz".anyOf.+ ~ ".".r ~ "abcdedfghijklmnopqrstuvwxyz".anyOf.+
+  val z2 = focus(r2)
+  println(s"r2 = ${r2.asString()}")
+  println(s"z2 = ${z2.asStringZipper()}")
+  val s2 = "samuel.chassot@epfl.ch"
+  println(s"Matching against '$s2'")
+  val matchResR2 = matchR(r2, s2.toStainless)
+  val matchResZ2 = matchZipper(z2, s2.toStainless)
+  println(s"matchResR2 = $matchResR2")
+  println(s"matchResZ2 = $matchResZ2")
+  assert(matchResR2 == matchResZ2)
+  assert(matchResR2 == true)
+  println("\n\n-----------------------------------------------------------\n\n")
+  val s22 = "samuel.chassot@epfl"
+  println(s"Matching against '$s22'")
+  val matchResR22 = matchR(r2, s22.toStainless)
+  val matchResZ22 = matchZipper(z2, s22.toStainless)
+  println(s"matchResR22 = $matchResR22")
+  println(s"matchResZ22 = $matchResZ22")
+  assert(matchResR22 == matchResZ22)
+  assert(matchResR22 == false)
 }
 
 def testRegex(): Unit = {

@@ -476,6 +476,37 @@ object ListUtils {
 
   @inlineOnce
   @opaque
+  @ghost
+  def lemmaConcatPreservesForall[B](l1: List[B], l2: List[B], p: B => Boolean): Unit = {
+    require(l1.forall(p))
+    require(l2.forall(p))
+    decreases(l1)
+    l1 match {
+      case Cons(hd, tl) => lemmaConcatPreservesForall(tl, l2, p)
+      case Nil()        => ()
+    }
+  } ensuring (_ => (l1 ++ l2).forall(p))
+
+  @inlineOnce 
+  @opaque
+  @ghost
+  def lemmaContentSubsetPreservesForall[B](l1: List[B], l2: List[B], p: B => Boolean): Unit = {
+    require(l1.forall(p))
+    require(l2.content.subsetOf(l1.content))
+    decreases(l2)
+    l2 match {
+      case Cons(hd, tl) => {
+        lemmaContentSubsetPreservesForall(l1, tl, p)
+        assert(l1.contains(hd))
+        ListSpecs.forallContained(l1, p, hd)
+        assert(p(hd))
+      }
+      case Nil() => ()
+    }
+  } ensuring (_ => l2.forall(p))
+
+  @inlineOnce
+  @opaque
   def lemmaConcatThenFirstSubseqOfTot[B](l1: List[B], l2: List[B]): Unit = {
     decreases(l1)
     l1 match {

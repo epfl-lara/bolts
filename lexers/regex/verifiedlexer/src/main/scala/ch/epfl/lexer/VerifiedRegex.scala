@@ -238,6 +238,7 @@ object VerifiedRegex {
 object ZipperRegex {
   import VerifiedRegex.*
   import VerifiedRegexMatcher.*
+  import ListUtils.*
   /**
     * Context[C] represent sequences of expressions
     * Zipper[C] are sets of Context[C], and they represent disjunctions of expressions
@@ -245,8 +246,8 @@ object ZipperRegex {
   type Context[C] = List[Regex[C]]
   type Zipper[C] = List[Context[C]]
 
-  @ghost def validContext[C](c: Context[C]): Boolean = c.forall(validRegex)
-  @ghost def validZipper[C](z: Zipper[C]): Boolean = z.forall(c => c.forall(validRegex)) && ListSpecs.noDuplicate(z)
+  @ghost inline def validContext[C](c: Context[C]): Boolean = c.forall(validRegex)
+  @ghost inline def validZipper[C](z: Zipper[C]): Boolean =  z.forall(c => c.forall(validRegex)) &&& ListSpecs.noDuplicate(z)
 
   def unfocusContext[C](c: Context[C]): Regex[C] = {
     require(validContext(c))
@@ -273,33 +274,106 @@ object ZipperRegex {
 
   def derivationStepZipperUp[C](context: Context[C], a: C): Zipper[C] = {
     require(validContext(context))
+    decreases(context)
     context match {
-      case Cons(right, parent) if nullable(right) => derivationStepZipperDown(right, parent, a) ++ derivationStepZipperUp(parent, a)
+      // case Cons(right, parent) if nullable(right) => derivationStepZipperDown(right, parent, a) ++ derivationStepZipperUp(parent, a)
+      case Cons(right, parent) if nullable(right) => {
+        ghostExpr({
+          lemmaConcatPreservesForall(derivationStepZipperDown(right, parent, a), derivationStepZipperUp(parent, a), c => c.forall(validRegex))
+          lemmaContentSubsetPreservesForall(
+            
+            derivationStepZipperDown(right, parent, a) ++ derivationStepZipperUp(parent, a),
+            concatWithoutDuplicates(derivationStepZipperDown(right, parent, a), derivationStepZipperUp(parent, a)),
+            c => c.forall(validRegex)
+          )
+        })
+        concatWithoutDuplicates(derivationStepZipperDown(right, parent, a), derivationStepZipperUp(parent, a))
+      }
       case Cons(right, parent) => derivationStepZipperDown(right, parent, a)
       case Nil() => Nil()
     }
   }.ensuring(res => validZipper(res)) 
 
+
   def derivationStepZipperDown[C](expr: Regex[C], context: Context[C], a: C): Zipper[C] = {
     require(validContext(context))
     require(validRegex(expr))
+    decreases(regexDepth(expr))
     expr match {
       case ElementMatch(c) if c == a => List(context)
-      case Union(rOne, rTwo) => derivationStepZipperDown(rOne, context, a) ++ derivationStepZipperDown(rTwo, context, a)
-      case Concat(rOne, rTwo) if nullable(rOne) => derivationStepZipperDown(rOne, rTwo :: context, a) ++ derivationStepZipperDown(rTwo, context, a)
+      case Union(rOne, rTwo) => {
+        ghostExpr({
+          lemmaConcatPreservesForall(derivationStepZipperDown(rOne, context, a), derivationStepZipperDown(rTwo, context, a), c => c.forall(validRegex))
+          lemmaContentSubsetPreservesForall(
+            
+            derivationStepZipperDown(rOne, context, a) ++ derivationStepZipperDown(rTwo, context, a),
+            concatWithoutDuplicates(derivationStepZipperDown(rOne, context, a), derivationStepZipperDown(rTwo, context, a)),
+            c => c.forall(validRegex)
+          )
+        })
+        concatWithoutDuplicates(derivationStepZipperDown(rOne, context, a), derivationStepZipperDown(rTwo, context, a))
+      }
+      // case Union(rOne, rTwo) => derivationStepZipperDown(rOne, context, a) ++ derivationStepZipperDown(rTwo, context, a)
+      case Concat(rOne, rTwo) if nullable(rOne) => {
+        ghostExpr({
+          lemmaConcatPreservesForall(derivationStepZipperDown(rOne, rTwo :: context, a), derivationStepZipperDown(rTwo, context, a), c => c.forall(validRegex))
+          lemmaContentSubsetPreservesForall(
+            
+            derivationStepZipperDown(rOne, rTwo :: context, a) ++ derivationStepZipperDown(rTwo, context, a),
+            concatWithoutDuplicates(derivationStepZipperDown(rOne, rTwo :: context, a), derivationStepZipperDown(rTwo, context, a)),
+            c => c.forall(validRegex)
+          )
+        })
+        concatWithoutDuplicates(derivationStepZipperDown(rOne, rTwo :: context, a), derivationStepZipperDown(rTwo, context, a))
+      }
+      // case Concat(rOne, rTwo) if nullable(rOne) => derivationStepZipperDown(rOne, rTwo :: context, a) ++ derivationStepZipperDown(rTwo, context, a)
       case Concat(rOne, rTwo) => derivationStepZipperDown(rOne, rTwo :: context, a)
       case Star(rInner) => derivationStepZipperDown(rInner, Star(rInner) :: context, a)
       case _ => Nil()
     }
   }.ensuring(res => validZipper(res))
 
+  @inlineOnce
   def derivationStepZipper[C](z: Zipper[C], a: C): Zipper[C] = {
     require(validZipper(z))
+    decreases(z)
     z match {
-      case Cons(hd, tl) => derivationStepZipperUp(hd, a) ++ derivationStepZipper(tl, a)
+      case Cons(hd, tl) => {
+        ghostExpr({
+          lemmaConcatPreservesForall(derivationStepZipperUp(hd, a), derivationStepZipper(tl, a), c => c.forall(validRegex))
+          lemmaContentSubsetPreservesForall(
+            
+            derivationStepZipperUp(hd, a) ++ derivationStepZipper(tl, a),
+            removeDuplicates(derivationStepZipperUp(hd, a) ++ derivationStepZipper(tl, a)),
+            c => c.forall(validRegex)
+          )
+        })
+        removeDuplicates(derivationStepZipperUp(hd, a) ++ derivationStepZipper(tl, a))
+      }
       case Nil()        => Nil()
     }
   }.ensuring(res => validZipper(res))
+
+  def nullableContext[C](c: Context[C]): Boolean = {
+    require(validContext(c))
+    c match {
+      case Cons(hd, tl) => nullable(hd) && nullableContext(tl)
+      case Nil()        => true
+    }
+  }
+  def nullableZipper[C](z: Zipper[C]): Boolean = {
+    require(validZipper(z))
+    z match {
+      case Cons(hd, tl) => nullableContext(hd) || nullableZipper(tl)
+      case Nil()        => false
+    }
+  }
+
+  def matchZipper[C](z: Zipper[C], input: List[C]): Boolean = {
+    require(validZipper(z))
+    decreases(input.size)
+    if (input.isEmpty) nullableZipper(z) else matchZipper(derivationStepZipper(z, input.head), input.tail)
+  }
 
 
   // PROOFS -----------------------------------------------------------------------------------------------------
@@ -314,6 +388,17 @@ object ZipperRegex {
     matchR(unfocusZipper(focus(r)), s) == matchR(r, s)
   }.holds
 
+  /**
+    * More or less the theorem 2.2 of Romain Edelmann's thesis
+    *
+    * @param r
+    * @param z
+    * @param a
+    * @param s
+    */
+  @inlineOnce
+  @ghost
+  @opaque
   def theoremUnfocusDerivativeSameAsDerivative[C](r: Regex[C], z: Zipper[C], a: C, s: List[C]): Unit = {
     require(validRegex(r))
     require(validZipper(z))
@@ -321,12 +406,25 @@ object ZipperRegex {
 
     z match
       case Nil() => ()
-      case Cons(c1, tl) if tl.isEmpty => ()
+      case Cons(c1, tl) if tl.isEmpty => 
+        assert(unfocusContext(c1) == r)
+        lemmaUnfocusDerivativesOfContextSameAsDerivative(r, c1, a, s)
+
       case Cons(c1, tl) => ()
-
-    
-
   }.ensuring(_ => matchR(unfocusZipper(derivationStepZipper(z, a)), s) == matchR(derivativeStep(r, a), s))
+
+
+  @inlineOnce
+  @opaque
+  @ghost
+  def lemmaUnfocusDerivativesOfContextSameAsDerivative[C](r: Regex[C], c: Context[C], a: C, s: List[C]): Unit = {
+    require(validContext(c))
+    require(c.forall(validRegex))
+    require(validRegex(r))
+    require(unfocusContext(c) == r)
+
+  }.ensuring(_ => matchR(unfocusZipper(derivationStepZipperUp(c, a)), s) == matchR(derivativeStep(r, a), s))
+
 
 
 }
