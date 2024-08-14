@@ -99,7 +99,7 @@ object Memoisation {
 object VerifiedRegex {
   abstract sealed class Regex[C] {}
 
-  @ghost
+  // @ghost
   def validRegex[C](r: Regex[C]): Boolean = r match {
     case ElementMatch(c)    => true
     case Star(r)            => !nullable(r) && validRegex(r) // && !isEmptyLang(r)
@@ -283,32 +283,34 @@ object VerifiedRegexMatcher {
 
   }.ensuring (res => res == derivativeStep(r, a))
 
-  def derivativeStepMemSimp[C](r: Regex[C], a: C)(implicit cache: Cache[C]): Regex[C] = {
-    require(validRegex(r))
-    require(cache.valid)
-    decreases(r)
 
-    val rr = simplify(r)
-    cache.get(rr, a) match {
-      case Some(res) => res
-      case None() => {
-        val res: Regex[C] = r match {
-          case EmptyExpr()       => EmptyLang()
-          case EmptyLang()       => EmptyLang()
-          case ElementMatch(c)   => if (a == c) EmptyExpr() else EmptyLang()
-          case Union(rOne, rTwo) => Union(derivativeStepMem(rOne, a)(cache), derivativeStepMem(rTwo, a)(cache))
-          case Star(rInner)      => Concat(derivativeStepMem(rInner, a)(cache), Star(rInner))
-          case Concat(rOne, rTwo) => {
-            if (nullable(rOne)) Union(Concat(derivativeStepMem(rOne, a)(cache), rTwo), derivativeStepMem(rTwo, a)(cache))
-            else Union(Concat(derivativeStepMem(rOne, a)(cache), rTwo), EmptyLang())
-          }
-        }
-        cache.update(rr, a, res)
-        res
-      }
-    }
+  // COMMENTED OUT BECAUSE NOT VERIFIED THROUGHOUT YET
+  // def derivativeStepMemSimp[C](r: Regex[C], a: C)(implicit cache: Cache[C]): Regex[C] = {
+  //   require(validRegex(r))
+  //   require(cache.valid)
+  //   decreases(r)
 
-  }.ensuring (res => res == derivativeStep(r, a))
+  //   val rr = simplify(r)
+  //   cache.get(rr, a) match {
+  //     case Some(res) => res
+  //     case None() => {
+  //       val res: Regex[C] = r match {
+  //         case EmptyExpr()       => EmptyLang()
+  //         case EmptyLang()       => EmptyLang()
+  //         case ElementMatch(c)   => if (a == c) EmptyExpr() else EmptyLang()
+  //         case Union(rOne, rTwo) => Union(derivativeStepMem(rOne, a)(cache), derivativeStepMem(rTwo, a)(cache))
+  //         case Star(rInner)      => Concat(derivativeStepMem(rInner, a)(cache), Star(rInner))
+  //         case Concat(rOne, rTwo) => {
+  //           if (nullable(rOne)) Union(Concat(derivativeStepMem(rOne, a)(cache), rTwo), derivativeStepMem(rTwo, a)(cache))
+  //           else Union(Concat(derivativeStepMem(rOne, a)(cache), rTwo), EmptyLang())
+  //         }
+  //       }
+  //       cache.update(rr, a, res)
+  //       res
+  //     }
+  //   }
+
+  // }.ensuring (res => res == derivativeStep(r, a))
 
   def derivative[C](r: Regex[C], input: List[C]): Regex[C] = {
     require(validRegex(r))
@@ -348,24 +350,25 @@ object VerifiedRegexMatcher {
     if (input.isEmpty) nullable(r) else matchRMem(derivativeStepMem(r, input.head)(cache: Cache[C]), input.tail)
   }.ensuring (res => res == matchR(r, input))
 
-  def matchRMemSimp[C](r: Regex[C], input: List[C])(implicit cache: Cache[C]): Boolean = {
-    require(validRegex(r))
-    require(cache.valid)
-    decreases(input.size)
-    val rr = simplify(r)
-    if(!input.isEmpty) {
-      // println(s"derivative wrt ${input.head}")
-      // println(s"r depth = ${regexDepth(r)}")
-      // println(s"rr depth = ${regexDepth(rr)}")
-      if(regexDepth(rr) >= 13) {
-        // println(s"r = $r")
-        // println("\n\n\n")
-        // println(s"rr = $rr")
-        return false
-      }
-    } 
-    if (input.isEmpty) nullable(rr) else matchRMemSimp(derivativeStepMem(rr, input.head)(cache: Cache[C]), input.tail)
-  }.ensuring (res => res == matchR(r, input))
+  // COMMENTED OUT BECAUSE NOT VERIFIED THROUGHOUT YET
+  // def matchRMemSimp[C](r: Regex[C], input: List[C])(implicit cache: Cache[C]): Boolean = {
+  //   require(validRegex(r))
+  //   require(cache.valid)
+  //   decreases(input.size)
+  //   val rr = simplify(r)
+  //   if(!input.isEmpty) {
+  //     // println(s"derivative wrt ${input.head}")
+  //     // println(s"r depth = ${regexDepth(r)}")
+  //     // println(s"rr depth = ${regexDepth(rr)}")
+  //     if(regexDepth(rr) >= 13) {
+  //       // println(s"r = $r")
+  //       // println("\n\n\n")
+  //       // println(s"rr = $rr")
+  //       return false
+  //     }
+  //   } 
+  //   if (input.isEmpty) nullable(rr) else matchRMemSimp(derivativeStepMem(rr, input.head)(cache: Cache[C]), input.tail)
+  // }.ensuring (res => res == matchR(r, input))
 
   @ghost
   def matchRSpec[C](r: Regex[C], s: List[C]): Boolean = {
