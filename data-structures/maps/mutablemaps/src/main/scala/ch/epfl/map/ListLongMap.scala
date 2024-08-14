@@ -1,7 +1,7 @@
 /** Author: Samuel Chassot
   */
 
-package ch.epfl.chassot
+package ch.epfl.map
 
 import stainless.annotation._
 import stainless.collection._

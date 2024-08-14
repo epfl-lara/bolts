@@ -1,13 +1,13 @@
-package ch.epfl.chassot
+package ch.epfl.map
 
-import ch.epfl.chassot.MutableLongMap
-import ch.epfl.chassot.ListLongMap
+import ch.epfl.map.MutableLongMap
+import ch.epfl.map.ListLongMap
 import stainless.collection.List
 import benchmark.BenchmarkUtil.*
 import benchmark.Key
-import ch.epfl.chassot.MutableHashMap.*
-import ch.epfl.chassot.MutableLongMap.ValueCellFull
-import ch.epfl.chassot.MutableLongMap.EmptyCell
+import ch.epfl.map.MutableHashMap.*
+import ch.epfl.map.MutableLongMap.ValueCellFull
+import ch.epfl.map.MutableLongMap.EmptyCell
 import scala.collection.mutable.HashMap
 object Main {
   def main(args: Array[String]): Unit = {

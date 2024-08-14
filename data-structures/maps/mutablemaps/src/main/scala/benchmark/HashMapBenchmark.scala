@@ -5,15 +5,15 @@ import org.openjdk.jmh.annotations.*
 import scala.collection.mutable.LongMap
 import scala.collection.mutable.HashMap
 import scala.util.Random
-import ch.epfl.chassot.MutableLongMap
+import ch.epfl.map.MutableLongMap
 import stainless.collection.{List => StainlessList}
 import scala.collection.immutable
-import ch.epfl.chassot.EfficientFill
-import ch.epfl.chassot.MutableHashMap
-import ch.epfl.chassot.MutableLongMap
-import ch.epfl.chassot.Hashable
-import ch.epfl.chassot.ListMap
-import ch.epfl.chassot.Ordering
+import ch.epfl.map.EfficientFill
+import ch.epfl.map.MutableHashMap
+import ch.epfl.map.MutableLongMap
+import ch.epfl.map.Hashable
+import ch.epfl.map.ListMap
+import ch.epfl.map.Ordering
 
 
 @State(Scope.Benchmark)

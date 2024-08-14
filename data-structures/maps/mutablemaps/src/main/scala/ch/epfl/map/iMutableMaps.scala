@@ -1,6 +1,6 @@
 /** Author: Samuel Chassot
   */
-package ch.epfl.chassot
+package ch.epfl.map
 
 import stainless.annotation._
 import stainless.collection._
@@ -68,7 +68,7 @@ object MutableMapInterface{
 
   @mutable
   trait iMHashMap[K, V] {
-    import ch.epfl.chassot.ListMap
+    import ch.epfl.map.ListMap
     /**
      * Invariant for the datastructure
      */
