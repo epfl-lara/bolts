@@ -5,7 +5,7 @@ package ch.epfl.lexer
 import stainless.annotation._
 import stainless.collection._
 import stainless.equations._
-import stainless.lang._
+import stainless.lang.{ghost => ghostExpr, _}
 import stainless.proof.check
 import scala.annotation.tailrec
 import stainless.lang.StaticChecks._
@@ -391,11 +391,104 @@ object ListUtils {
     decreases(newList)
 
     newList match {
-      case Cons(hd, tl) if baseList.contains(hd)  => concatWithoutDuplicates(baseList, tl)
-      case Cons(hd, tl) if !baseList.contains(hd) => concatWithoutDuplicates(Cons(hd, baseList), tl)
-      case Nil()                                  => baseList
+      case Cons(hd, tl) if baseList.contains(hd)  => {
+        ghostExpr({
+          lemmaSubseqRefl(baseList)
+          val res = concatWithoutDuplicates(baseList, tl)
+          assert(ListOps.noDuplicate(res) )
+          assert((baseList ++ tl).content == res.content )
+          assert(ListSpecs.subseq(res, baseList ++ tl))
+          lemmaBiggerSndListPreservesSubSeq(res, baseList, tl, List(hd))
+  
+          lemmaTwoListsConcatAssociativity(baseList, List(hd), tl)
+          assert( baseList ++ (List(hd) ++ tl) ==  baseList ++ List(hd) ++ tl)
+          assert(ListSpecs.subseq(res, baseList ++ (List(hd) ++ tl)))
+
+          assert(isPrefix(baseList, res))
+        })
+        
+        concatWithoutDuplicates(baseList, tl)
+      }
+      case Cons(hd, tl) if !baseList.contains(hd) => {
+        ghostExpr({
+          lemmaConcatTwoListThenFirstIsPrefix(baseList, List(hd))
+          lemmaAppendNewElementElementPreserves(baseList, hd)
+          val res = concatWithoutDuplicates(baseList ++ List(hd), tl)
+          assert( ListOps.noDuplicate(res) )
+          assert(((baseList ++ List(hd)) ++ newList).content == res.content)
+          assert(ListSpecs.subseq(res, (baseList ++ List(hd)) ++ tl))
+          lemmaTwoListsConcatAssociativity(baseList, List(hd), tl)
+          assert(ListSpecs.subseq(res, baseList ++ (List(hd) ++ tl)))
+
+          assert(isPrefix(baseList ++ List(hd), res))
+          lemmaRemoveLastConcatenatedPrefixStillPrefix(baseList, hd, res)
+          assert(isPrefix(baseList, res))
+        })
+        concatWithoutDuplicates(baseList ++ List(hd), tl)
+      }
+      case Nil()                                  => {
+        ghostExpr({
+          lemmaSubseqRefl(baseList)
+          lemmaIsPrefixRefl(baseList, baseList)
+        })
+        baseList
+      }
     }
-  } ensuring (res => ListOps.noDuplicate(res) && (baseList ++ newList).content == res.content)
+  } ensuring (res => 
+    ListOps.noDuplicate(res) 
+    && (baseList ++ newList).content == res.content 
+    && ListSpecs.subseq(res, baseList ++ newList)
+    && isPrefix(baseList, res)
+    )
+
+  @inlineOnce
+  @opaque
+  def lemmaAppendNewElementElementPreserves[B](l: List[B], elmt: B): Unit = {
+    require(ListSpecs.noDuplicate(l))
+    require(!l.contains(elmt))
+    decreases(l)
+    l match {
+      case Cons(hd, tl) => lemmaAppendNewElementElementPreserves(tl, elmt)
+      case Nil()        => ()
+    }
+  }.ensuring (_ => ListSpecs.noDuplicate(l ++ List(elmt)))
+
+  @inlineOnce
+  @opaque
+  def lemmaBiggerSndListPreservesSubSeq[B](sub: List[B], l1: List[B], l2: List[B], l3: List[B]): Unit = {
+    require(ListSpecs.subseq(sub, l1 ++ l2))
+    decreases((l1 ++ l2).size)
+    (sub, l1 ++ l2) match {
+      case (Nil(), _) => ()
+      case (Cons(x, xs), Cons(y, ys)) if l1.isEmpty => lemmaConcatNewListPreservesSubSeq(sub, l3, l2)
+      case (Cons(x, xs), Cons(y, ys)) if x == y && ListSpecs.subseq(xs, ys) => lemmaBiggerSndListPreservesSubSeq(xs, l1.tail, l2, l3)
+      case (Cons(x, xs), Cons(y, ys)) => lemmaBiggerSndListPreservesSubSeq(sub, l1.tail, l2, l3)
+      case _ => ()
+    }
+    
+  } ensuring (_ => ListSpecs.subseq(sub, l1 ++ l3 ++ l2))
+
+  @inlineOnce
+  @opaque
+  def lemmaConcatNewListPreservesSubSeq[B](l1: List[B], l2: List[B], l3: List[B]): Unit = {
+    require(ListSpecs.subseq(l1, l3))
+    decreases(l2)
+    l2 match {
+      case Cons(hd, tl) => lemmaConcatNewListPreservesSubSeq(l1, tl, l3)
+      case Nil()        => ()
+    }
+  } ensuring (_ => ListSpecs.subseq(l1, l2 ++ l3))
+
+  @inlineOnce
+  @opaque
+  def lemmaTailOfConcatIsTailConcat[B](l1: List[B], l2: List[B]): Unit = {
+    require(!l1.isEmpty)
+    decreases(l1)
+    l1 match {
+      case Cons(hd, tl) if !tl.isEmpty => lemmaTailOfConcatIsTailConcat(tl, l2)
+      case _        => ()
+    }
+  } ensuring (_ => (l1 ++ l2).tail == l1.tail ++ l2)
 
   @inlineOnce
   @opaque
@@ -474,7 +567,7 @@ object ListUtils {
 
   } ensuring (_ => ListSpecs.subseq(l1, l3))
 
-  @inlineOnce
+  // @inlineOnce
   @opaque
   @ghost
   def lemmaConcatPreservesForall[B](l1: List[B], l2: List[B], p: B => Boolean): Unit = {
@@ -487,7 +580,7 @@ object ListUtils {
     }
   } ensuring (_ => (l1 ++ l2).forall(p))
 
-  @inlineOnce 
+  // @inlineOnce 
   @opaque
   @ghost
   def lemmaContentSubsetPreservesForall[B](l1: List[B], l2: List[B], p: B => Boolean): Unit = {

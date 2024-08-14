@@ -333,7 +333,7 @@ object ZipperRegex {
     }
   }.ensuring(res => validZipper(res))
 
-  @inlineOnce
+  // @inlineOnce
   def derivationStepZipper[C](z: Zipper[C], a: C): Zipper[C] = {
     require(validZipper(z))
     decreases(z)
@@ -344,11 +344,11 @@ object ZipperRegex {
           lemmaContentSubsetPreservesForall(
             
             derivationStepZipperUp(hd, a) ++ derivationStepZipper(tl, a),
-            removeDuplicates(derivationStepZipperUp(hd, a) ++ derivationStepZipper(tl, a)),
+            concatWithoutDuplicates(derivationStepZipperUp(hd, a), derivationStepZipper(tl, a)),
             c => c.forall(validRegex)
           )
         })
-        removeDuplicates(derivationStepZipperUp(hd, a) ++ derivationStepZipper(tl, a))
+        concatWithoutDuplicates(derivationStepZipperUp(hd, a), derivationStepZipper(tl, a))
       }
       case Nil()        => Nil()
     }
@@ -408,7 +408,12 @@ object ZipperRegex {
       case Nil() => ()
       case Cons(c1, tl) if tl.isEmpty => 
         assert(unfocusContext(c1) == r)
+        assert(unfocusZipper(z) == unfocusContext(c1))
+        lemmaDerivativeOfZipperWithOneContextIsUpOnIt(c1, z, a)
+        assert(derivationStepZipperUp(c1, a) == derivationStepZipper(z, a))
         lemmaUnfocusDerivativesOfContextSameAsDerivative(r, c1, a, s)
+        assert(matchR(unfocusZipper(derivationStepZipperUp(c1, a)), s) == matchR(derivativeStep(r, a), s))
+        check(matchR(unfocusZipper(derivationStepZipper(z, a)), s) == matchR(derivativeStep(r, a), s))
 
       case Cons(c1, tl) => ()
   }.ensuring(_ => matchR(unfocusZipper(derivationStepZipper(z, a)), s) == matchR(derivativeStep(r, a), s))
@@ -425,6 +430,23 @@ object ZipperRegex {
 
   }.ensuring(_ => matchR(unfocusZipper(derivationStepZipperUp(c, a)), s) == matchR(derivativeStep(r, a), s))
 
+  @inlineOnce
+  @opaque
+  @ghost
+  def lemmaDerivativeOfZipperWithOneContextIsUpOnIt[C](c: Context[C], z: Zipper[C], a: C): Unit = {
+    require(validContext(c))
+    require(validZipper(z))
+    require(z == List(c))
+    z match {
+      case Cons(hd, tl) => {
+        val res = concatWithoutDuplicates(derivationStepZipperUp(hd, a), derivationStepZipper(tl, a))
+        assert(derivationStepZipper(z, a) == res)
+        assert(derivationStepZipper(tl, a).isEmpty)
+        assert(res == derivationStepZipperUp(c, a))
+      }
+      case Nil()        => check(false)
+    }
+  }.ensuring(_ => derivationStepZipper(z, a) == derivationStepZipperUp(c, a))
 
 
 }
