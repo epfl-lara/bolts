@@ -141,7 +141,12 @@ object TupleListOpsGenK {
         Cons(head._1, getKeysList(tl))
       case Nil() => Nil[K]()
     }
-  }.ensuring(res => noDuplicate(res) && res.length == l.length && res.forall(k => containsKey(l, k)))
+  }.ensuring(res => 
+    noDuplicate(res) 
+    && res.length == l.length 
+    && res.forall(k => containsKey(l, k)) 
+    && res.content == l.map(_._1).content
+    )
 
   @pure
   def intSizeKeys[K](l: List[K]): Int = {
@@ -348,6 +353,61 @@ object TupleListOpsGenK {
   }
 
   // ----------- LEMMAS -----------------------------------------------------
+
+  @opaque 
+  @inlineOnce
+  def lemmaEqMapSameKeysSet[K, B](lm1: ListMap[K, B], lm2: ListMap[K, B]): Unit = {
+    require(lm1.eq(lm2))
+    assert(lm1.toList.content == lm2.toList.content)
+    ListSpecs.subsetRefl(lm1.toList)
+    ListSpecs.subsetRefl(lm2.toList)
+    lemmaSubsetThenKeysSubset(lm1.toList, lm2.toList)
+    lemmaSubsetThenKeysSubset(lm2.toList, lm1.toList)
+    assert(lm1.keys().content.subsetOf(lm2.keys().content))
+    assert(lm2.keys().content.subsetOf(lm1.keys().content))
+
+
+
+  }.ensuring(_ => lm1.keys().content == lm2.keys().content)
+
+  @opaque
+  @inlineOnce
+  def lemmaSubsetThenKeysSubset[K, B](l1: List[(K, B)], l2: List[(K, B)]): Unit = {
+    require(invariantList(l1))
+    require(invariantList(l2))
+    require(l1.content.subsetOf(l2.content))
+    decreases(l1)
+    l1 match
+      case Cons(hd, tl) => 
+        lemmaSubsetThenKeysSubset(tl, l2)
+        assert(getKeysList(tl).content.subsetOf(getKeysList(l2).content))
+        assert(l2.contains(hd))
+        lemmaMapFirstElmtContains(l2, hd)
+        assert(l2.map(_._1).contains(hd._1))
+        assert(getKeysList(l2).contains(hd._1))
+        assert(!containsKey(tl, hd._1))
+        if(getKeysList(tl).contains(hd._1)){
+          lemmaInGetKeysListThenContainsKey(tl, hd._1)
+          check(false)
+        }
+        assert(!getKeysList(tl).contains(hd._1))
+      case Nil() => ()
+    
+
+  }.ensuring(_ => getKeysList(l1).content.subsetOf(getKeysList(l2).content))
+
+  @opaque
+  @inlineOnce
+  def lemmaMapFirstElmtContains[K, B](l: List[(K, B)], p: (K, B)): Unit = {
+      require(invariantList(l))
+      require(l.contains(p))
+      decreases(l)
+      l match {
+        case Cons(head, tl) if (head != p) =>
+          lemmaMapFirstElmtContains(tl, p)
+        case _ => ()
+      }
+    }.ensuring(_ => l.map(_._1).contains(p._1))
 
   @opaque
   @inlineOnce
