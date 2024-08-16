@@ -19,7 +19,9 @@ import scala.collection.mutable
 case class ListMap[K, B](toList: List[(K, B)]) {
   require(TupleListOpsGenK.invariantList(toList))
 
-  def isEmpty: Boolean = toList.isEmpty
+  def isEmpty: Boolean = {
+    toList.isEmpty
+  }.ensuring(res => toList.size >= Int.MaxValue || res == (size == 0))
 
   def eq(other: ListMap[K, B]): Boolean = toList.content == other.toList.content
 
@@ -180,13 +182,13 @@ object TupleListOpsGenK {
         if (s1 < Integer.MAX_VALUE) {
           1 + s1
         } else {
-          0
+          Integer.MAX_VALUE
         }
       }
 
       case Nil() => 0
     }
-  }.ensuring(res => res >= 0)
+  }.ensuring(res => res >= 0 && (l.isEmpty == (res == 0)))
 
   def getKeysOf[K, B](l: List[(K, B)], value: B): List[K] = {
     require(invariantList(l))
