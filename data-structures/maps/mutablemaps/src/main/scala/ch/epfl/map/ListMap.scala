@@ -404,6 +404,7 @@ object TupleListOpsGenK {
       case Nil() => ()
     }
   }.ensuring(_ => getKeysList(l).content - key == getKeysList(removePresrvNoDuplicatedKeys(l, key)).content)
+  
   @opaque 
   @inlineOnce
   def lemmaEqMapSameKeysSet[K, B](lm1: ListMap[K, B], lm2: ListMap[K, B]): Unit = {
