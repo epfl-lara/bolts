@@ -18,6 +18,6 @@ object Diffs {
                x3: BigInt, x4: BigInt): Boolean = {
     diffs(List(x1,x2,x3,x4)) ==
           List(x1, x2 - x1, x3 - x2, x4 - x3)
-  }..holds
+  }.holds
   // same as.ensuring(res => res==true)
 } 

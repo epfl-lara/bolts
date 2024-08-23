@@ -48,12 +48,12 @@ object Leftpad {
     val proof =
       if (s.length < n) {
         val b1 = leftPadLemma(c, n, c :: s)
-        val b2 = (res == List.fill(n - s.length - 1)(c) ++ (c :: s)) proveUsing b1 // from the recursive call
+        val b2 = (res == List.fill(n - s.length - 1)(c) ++ (c :: s)).proveUsing(b1) // from the recursive call
         val b3 = appendCons(List.fill(n - s.length - 1)(c), s, c) // invoking the appendCons lemma
-        val b4 = (res == (List.fill(n - s.length - 1)(c) :+ c) ++ s) proveUsing (b2 && b3) // thanks to the appendCons lemma
+        val b4 = (res == (List.fill(n - s.length - 1)(c) :+ c) ++ s).proveUsing(b2 && b3) // thanks to the appendCons lemma
         val b5 = fillMore(n - s.length - 1, c) // invoking the fillMore Lemma
         (res.length == max(n, s.length) &&
-        res == List.fill(n - s.length)(c) ++ s) proveUsing (b4 && b5)
+        res == List.fill(n - s.length)(c) ++ s).proveUsing(b4 && b5)
       } else {
         prove(
           res.length == max(n, s.length) &&

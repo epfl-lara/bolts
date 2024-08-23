@@ -195,8 +195,8 @@ object Bloxorz {
                                         '-' :: '-' :: 'o' :: 'o' :: '-' :: '-' :: '\n' :: Nil()
                                   */
 
-      // def checkStart(): Boolean = (terrainList.contains('S'))..holds // FIXME: re-enable when we have the simplifier
-      // def checkGoal(): Boolean = (terrainList.contains('T'))..holds // FIXME: ren-enable when we have the simplifier
+      // def checkStart(): Boolean = (terrainList.contains('S')).holds // FIXME: re-enable when we have the simplifier
+      // def checkGoal(): Boolean = (terrainList.contains('T')).holds // FIXME: ren-enable when we have the simplifier
     }
 
     def solve(lvl: Level): List[Move] = lvl.solution
