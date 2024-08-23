@@ -1010,7 +1010,7 @@ object TransformationsProperties {
       require(if(d < 0) !hasFreeVariablesIn(env, c, -d) else true)
       require(0 <= j && j < env.length)
 
-      val Cons(h, t) = env
+      val Cons(h, t) = env: @unchecked
 
       if(j == 0) {
       }

@@ -128,7 +128,7 @@ object encoder {
       }
 
       decoder.decodeLemma(outPos + Padding)
-      val SomeMut(decoder.DecodedResult(actuallyDecoded, ww, hh, cchan)) = decoder.decode(bytes, outPos + Padding)
+      val SomeMut(decoder.DecodedResult(actuallyDecoded, ww, hh, cchan)) = decoder.decode(bytes, outPos + Padding): @unchecked
       check(ww == w)
       check(hh == h)
       check(cchan == chan)
@@ -494,7 +494,7 @@ object encoder {
           assert(rhs2 == rhs1)
           assert(lhs2 <= rhs2)
           val lhs3 = chan * (outPos1 - HeaderSize + chan + 1)
-          assert((lhs3 <= lhs2) because (chan >= 3 && outPos1 <= outPos0 + 2))
+          assert((lhs3 <= lhs2) `because` (chan >= 3 && outPos1 <= outPos0 + 2))
           assert(lhs3 <= rhs2)
           check(positionsIneqInv(0, outPos1 + chan + 1, pxPos + chan))
         }
@@ -520,7 +520,7 @@ object encoder {
           } else trivial
         })
 
-        assert((outPos2 <= bytes.length - Padding) because (bytes.length == maxSize))
+        assert((outPos2 <= bytes.length - Padding).because(bytes.length == maxSize))
         check(positionsIneqInv(0, outPos1, pxPos))
         // Precond 6 slow (~40s)
         check(encodeNoRunProp(indexPre, index, bytes, outPos1, outPos2))
@@ -550,7 +550,7 @@ object encoder {
           val lhs3 = chan * (outPos0 - HeaderSize + run0 * chan + chan + 1)
           assert(lhs3 <= rhs2)
           val lhs4 = chan * (outPos1 - HeaderSize)
-          assert((lhs4 <= lhs3) because (chan >= 3 && outPos1 <= outPos0 + 2 && run0 >= 0))
+          assert((lhs4 <= lhs3).because(chan >= 3 && outPos1 <= outPos0 + 2 && run0 >= 0))
           assert(lhs4 <= rhs2)
           check(positionsIneqInv(run1, outPos1, pxPos + chan))
         } else {
@@ -573,7 +573,7 @@ object encoder {
           val lhs4 = chan * ((outPos1 - HeaderSize) + chan * (run0 + 1))
           assert(lhs4 == lhs3)
           assert(lhs4 <= rhs2)
-          check(positionsIneqInv(run1, outPos1, pxPos + chan) because (run1 == run0 + 1))
+          check(positionsIneqInv(run1, outPos1, pxPos + chan).because(run1 == run0 + 1))
         }
 
         check(rangesInv(index.length, bytes.length, run1, outPos1, pxPos))
@@ -583,7 +583,7 @@ object encoder {
     }
     assert(HeaderSize <= outPos2 && outPos2 <= maxSize - Padding)
     assert((px != pxPrev) ==> (outPos1 < outPos2))
-    assert((outPos2 <= bytes.length - Padding) because (bytes.length == maxSize))
+    assert((outPos2 <= bytes.length - Padding).because(bytes.length == maxSize))
     assert(runUpd.reset ==> updateRunProp(bytes, run0, outPos0, runUpd))
     assert((px != pxPrev) ==> encodeNoRunProp(indexPre, index, bytes, outPos1, outPos2))
 
@@ -1383,7 +1383,7 @@ object encoder {
     assert(b1Bytes1 == b1Bytes2)
     assert((b1Bytes1 & Mask2) == OpRun)
     check(res1 == res2)
-    check((outPos0 < bytes2.length - Padding) because (bytes.length == bytes2.length))
+    check((outPos0 < bytes2.length - Padding).because(bytes.length == bytes2.length))
   }.ensuring(_ => updateRunProp(bytes2, run0, outPos0, ru))
 
   @ghost
@@ -1434,7 +1434,7 @@ object encoder {
     assert(arraysEq(pixels, decPixels, pxPos, pxPos + chan))
     arraysEqCombinedLemma2(pixels, decPixels, 0, pxPos, pxPos + chan)
     assert(arraysEq(pixels, decPixels, 0, pxPos + chan))
-    check(arraysEq(pixels, decPixels, 0, decIter.pxPos) because (decIter.pxPos == pxPos + chan))
+    check(arraysEq(pixels, decPixels, 0, decIter.pxPos).because(decIter.pxPos == pxPos + chan))
 
     GhostDecoded(freshCopy(decIndex), freshCopy(decPixels), decIter.inPos, decIter.pxPos)
   }.ensuring { newDecoded =>
