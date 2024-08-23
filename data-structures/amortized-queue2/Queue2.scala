@@ -17,11 +17,11 @@ case class Queue2[A](front: List[A], rear: List[A]) {
   def tail: Queue2[A] = {
     require(isAmortized && !isEmpty)
     amortizedQueue(front.tail, rear)
-  } ensuring (_.isAmortized)
+  }.ensuring(_.isAmortized)
 
   def enqueue(elem: A): Queue2[A] = {
     amortizedQueue(front, Cons(elem, rear))
-  } ensuring(_.isAmortized)
+  }.ensuring(_.isAmortized)
 
   def head: A = {
     require(isAmortized && !isEmpty)
@@ -33,14 +33,14 @@ case class Queue2[A](front: List[A], rear: List[A]) {
 object Queue2 {
   def empty[A]: Queue2[A] = {
     Queue2[A](Nil(), Nil())
-  } ensuring (_.isEmpty)
+  }.ensuring(_.isEmpty)
 
   def amortizedQueue[A](front: List[A], rear: List[A]): Queue2[A] = {
     if (rear.size <= front.size)
       Queue2(front, rear)
     else
       Queue2(front ++ rear.reverse, Nil[A]())
-  } ensuring (_.isAmortized)
+  }.ensuring(_.isAmortized)
 }
 
 

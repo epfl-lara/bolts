@@ -137,7 +137,7 @@ object Fixpoint {
     }
 
 
-  } ensuring(res => f(res) == res)
+  }.ensuring(res => f(res) == res)
 
   def Monotonic(f): Pred = forall x: Nat, forall y: Nat, x <= y => f(x) <= f(y)
 

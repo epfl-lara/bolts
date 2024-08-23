@@ -8,14 +8,14 @@ case class Stack[T](private var data: List[T])
 
   def push(a: T): Unit = {
     data = a :: data
-  } ensuring(_ => list == a :: old(this).list)
+  }.ensuring(_ => list == a :: old(this).list)
 
   def pop: T = {
     require(!list.isEmpty)
     val a = data.head
     data = data.tail
     a
-  } ensuring (res =>
+  }.ensuring(res =>
     res == old(this).list.head &&
     list == old(this).list.tail)
 }
@@ -27,7 +27,7 @@ object TestStack {
     s.push(b)
     s.push(a)
     s.pop
-  } ensuring(res => res == a)
+  }.ensuring(res => res == a)
   
   def pushTwoPopTwo(s1: Stack[Int], s2: Stack[Int]): Unit = {
     s1.push(1)

@@ -24,7 +24,7 @@ object StringUtils {
   def getWordWithGoodPlural(word: String, number: BigInt): String = {   
     if (number <= 1 && number >= -1) word
     else word + "s"
-  } ensuring(res => res == word || res == word + "s")
+  }.ensuring(res => res == word || res == word + "s")
 
   /** Returns a string with the text split in multiple lines if it is too long.
     * @param text the text to split

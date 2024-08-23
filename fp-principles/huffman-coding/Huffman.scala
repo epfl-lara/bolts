@@ -28,7 +28,7 @@ object Huffman {
           case Fork(left, right) => left.chars ++ right.chars
           case Leaf(char, weight) => Set(char)
         }
-      } ensuring(res => res != Set.empty[Char])
+      }.ensuring(res => res != Set.empty[Char])
     }
     case class Fork(left: CodeTree, right: CodeTree) extends CodeTree
     case class Leaf(char: Char, weight: BigInt) extends CodeTree
@@ -50,22 +50,22 @@ object Huffman {
         case Fork(left, right) => chars(left) ++ chars(right)
         case Leaf(char, weight) => List(char)
       }
-    } ensuring(res => !res.isEmpty)
+    }.ensuring(res => !res.isEmpty)
 
     def chars(trees: List[CodeTree]): Set[Char] = {
       decreases(trees)
       if (trees.isEmpty) Set[Char]()
       else trees.head.chars ++ chars(trees.tail)
-    } ensuring(res => trees.isEmpty || res != Set.empty[Char])
+    }.ensuring(res => trees.isEmpty || res != Set.empty[Char])
 
     def makeCodeTree(left: CodeTree, right: CodeTree) = {
       Fork(left, right)
-    } ensuring(res => res.chars == chars(List[CodeTree](left, right)))
+    }.ensuring(res => res.chars == chars(List[CodeTree](left, right)))
 
     def makeCodeTree(left: Leaf, right: Leaf) = {
       require(left.char != right.char && consistent(List[CodeTree](left,right)))
       Fork(left, right)
-    } ensuring(res => consistent(res) && res.chars == chars(List[CodeTree](left, right)))
+    }.ensuring(res => consistent(res) && res.chars == chars(List[CodeTree](left, right)))
 
     def isLeaf(tree: CodeTree): Boolean = {
       tree match {
@@ -91,7 +91,7 @@ object Huffman {
       require(!chars.isEmpty)
       val distinctList = distinct(chars, List())
       distinctList zip distinctList.map(elem => chars.count(e => e == elem))
-    } ensuring(res => listEqu(distinct(chars, List()), distinct(chars, List()).map(elem => chars.count(e => e == elem)))
+    }.ensuring(res => listEqu(distinct(chars, List()), distinct(chars, List()).map(elem => chars.count(e => e == elem)))
                      && distinct(chars, List()).content == chars.content)
 
     def distinct(chars: List[Char], acc: List[Char]): List[Char] = {
@@ -104,7 +104,7 @@ object Huffman {
         }
         case _ => acc
       }
-    } ensuring(res => isDistinctList(res) && res.content == acc.content ++ chars.content)
+    }.ensuring(res => isDistinctList(res) && res.content == acc.content ++ chars.content)
 
     def listEqu(list: List[Char], zipWith: List[BigInt]): Boolean = {
       require(list.size == zipWith.size)
@@ -141,7 +141,7 @@ object Huffman {
                       else y::insert(l, ys)
         case _ => List(l)
       }
-    } ensuring(res => res.size == list.size+1 && sortedByWeight(res) &&
+    }.ensuring(res => res.size == list.size+1 && sortedByWeight(res) &&
                      (l::list).content == res.content && chars(res) == chars(list) ++ l.chars)
 
 
@@ -151,7 +151,7 @@ object Huffman {
         case l::ls => insert(l, sortLeafList(list.tail))
         case _ => List[CodeTree]()
       }
-    } ensuring(res => chars(res) == chars(list) && sortedByWeight(res)
+    }.ensuring(res => chars(res) == chars(list) && sortedByWeight(res)
                      && res.content == list.content && res.size == list.size)
 
 
@@ -169,9 +169,9 @@ object Huffman {
         decreases(freqs)
         if (freqs.isEmpty) List[CodeTree]()
         else new Leaf(freqs.head._1, freqs.head._2) ::foreach(freqs.tail)
-      } ensuring(res => chars(res) == freqs.map(elem => elem._1).content && res.size == freqs.size)
+      }.ensuring(res => chars(res) == freqs.map(elem => elem._1).content && res.size == freqs.size)
       sortLeafList(foreach(freqs))
-    } ensuring(res => sortedByWeight(res) &&
+    }.ensuring(res => sortedByWeight(res) &&
                      chars(res) == freqs.map(elem => elem._1).content && res.size == freqs.size)
 
 
@@ -198,7 +198,7 @@ object Huffman {
       require(sortedByWeight(trees))
       if (trees.size < 2) trees
       else insert(makeCodeTree(trees.head, trees.tail.head), trees.tail.tail)
-    } ensuring(res => sortedByWeight(res) &&
+    }.ensuring(res => sortedByWeight(res) &&
                      chars(res) == chars(trees) && (trees.size<2 || res.size == trees.size-1))
 
 
@@ -218,7 +218,7 @@ object Huffman {
       decreases(trees.size)
       if (singleton(trees)) trees
       else until(combine(trees))
-    } ensuring(res => res.size <= trees.size && singleton(res) && !res.isEmpty && chars(trees) == chars(res))
+    }.ensuring(res => res.size <= trees.size && singleton(res) && !res.isEmpty && chars(trees) == chars(res))
 
 
   /**
@@ -230,7 +230,7 @@ object Huffman {
     def createCodeTree(charsList: List[Char]): CodeTree = {
       require(!charsList.isEmpty && sortedByWeight(makeOrderedLeafList(times(charsList))))
       until(makeOrderedLeafList(times(charsList))).head
-    } ensuring(res => res.chars == charsList.content)
+    }.ensuring(res => res.chars == charsList.content)
 
 
   // Part 3: Decoding

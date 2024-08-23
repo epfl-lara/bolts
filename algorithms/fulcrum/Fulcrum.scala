@@ -116,12 +116,12 @@ object Fulcrum {
           aux(xs, i + 1, newI, newMinDiff, newlVal, newrVal, l)
         }
     }
-  } ensuring(res => res._1 >= 0 && res._1 <= l.size && isFulcrum(l, res._1, res._2))
+  }.ensuring(res => res._1 >= 0 && res._1 <= l.size && isFulcrum(l, res._1, res._2))
 
   def fulcrum(l: List[BigInt]) = {
     val s = sum(l)
     aux(l, 0, 0, abs(s), 0, s, l)
-  } ensuring(res => res._1 >= 0 && res._1 <= l.size && isFulcrum(l, res._1, res._2))
+  }.ensuring(res => res._1 >= 0 && res._1 <= l.size && isFulcrum(l, res._1, res._2))
 
   @ignore def main(args: Array[String]): Unit = {
     val l1: List[BigInt] = List(4, 2, -5, 0, 8)

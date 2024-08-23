@@ -26,7 +26,7 @@ object Invertible {
       case Cons(x, Nil()) => l
       case Cons(x1, Cons(x2, l1)) => Cons[Int](x1, undiff(inv)(Cons[Int](inv.plus(x1, x2), l1)))
     }
-  } ensuring(res => (l == Nil() && res == Nil()) || res.head == l.head)
+  }.ensuring(res => (l == Nil() && res == Nil()) || res.head == l.head)
 
   def diffs(inv: Invert)(l: List[Int]): List[Int] = {
     decreases(l)
@@ -42,7 +42,7 @@ object Invertible {
           }
         }
     }
-  } ensuring (res => undiff(inv)(res) == l)
+  }.ensuring(res => undiff(inv)(res) == l)
 
   def test00 = diffs(inv)(List(2, 2))
   def test0 = diffs(inv)(List(1, 1))

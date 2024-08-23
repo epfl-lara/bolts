@@ -876,7 +876,7 @@ object encoder {
     ghostExpr(check(arraysEq(bytesPre, bytes, 0, outPos0)))
 
     RunUpdate(runReset, run, outPos)
-  } ensuring { ru =>
+  }.ensuring({ ru =>
     old(bytes).length == bytes.length &&&
     arraysEq(old(bytes), bytes, 0, outPos0) &&&
     runInv(ru.run) &&&
@@ -886,7 +886,7 @@ object encoder {
     ((px != pxPrev && run0 == 0) ==> (ru.run == 0)) &&&
     ((px == pxPrev && !ru.reset) ==> (ru.run == run0 + 1)) &&&
     (ru.reset ==> updateRunProp(bytes, run0, outPos0, ru))
-  }
+  })
 
   @opaque
   @inlineOnce
@@ -1017,14 +1017,14 @@ object encoder {
       check(arraysEq(oldBytes, bytes, 0, outPos1))
     }
     newOutPos
-  } ensuring { newOutPos =>
+  }.ensuring({ newOutPos =>
     old(bytes).length == bytes.length &&&
     outPosInv(newOutPos) &&&
     outPos1 < newOutPos &&&
     positionsIneqInv(0, newOutPos, pxPos + chan) &&&
     encodeNoRunProp(old(index), index, bytes, outPos1, newOutPos) &&&
     arraysEq(old(bytes), bytes, 0, outPos1)
-  }
+  })
 
   /////////////////////////////////////////////////////////////////////////////////////////////////////
   /////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -216,7 +216,7 @@ case class NonEmpty(elem: Tweet, left: TweetSet, right: TweetSet) extends TweetS
       if (x.text < elem.text) new NonEmpty(elem, left.incl(x), right)
       else if (elem.text < x.text) new NonEmpty(elem, left, right.incl(x))
       else this
-    } ensuring(res => (res contains x))
+    }.ensuring(res => (res contains x))
 
     override def remove(tw: Tweet): TweetSet = {
       decreases((this, 0))
@@ -250,7 +250,7 @@ case class NonEmpty(elem: Tweet, left: TweetSet, right: TweetSet) extends TweetS
       decreases((this, 0))
 
       1 + left.size + right.size
-    } ensuring(_ >= 0)
+    }.ensuring(_ >= 0)
 
     override def isSearchTree: Boolean = {
       decreases((this, 0))

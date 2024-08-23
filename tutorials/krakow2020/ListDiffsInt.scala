@@ -12,5 +12,5 @@ object Diffs {
           case h1 :: t1 => h :: (h1 - h) :: t1
         }
     }
-  } ensuring (undiff(_) == l)
+  }.ensuring(undiff(_) == l)
 } 

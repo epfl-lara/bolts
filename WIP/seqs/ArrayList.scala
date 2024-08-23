@@ -23,7 +23,7 @@ object ArrayList {
             }
             case Nil() => 0
         }
-    } ensuring(0 <= _)
+    }.ensuring(0 <= _)
 
     def arrayPortionToList(arr: Array[T], from: Int, until: Int): List[T] = {
         require(0 <= from && from <= until && until <= arr.length)
@@ -36,7 +36,7 @@ object ArrayList {
             arr(from) :: tail
         }
         out
-    } ensuring(listLength(_) == (until - from))
+    }.ensuring(listLength(_) == (until - from))
 
     def arrayCopy(src: Array[T], dest: Array[T], from: Int, until: Int): Array[T] = {
         require(0 <= from && from < until && until <= src.length && until <= dest.length)
@@ -49,7 +49,7 @@ object ArrayList {
             assert(arrayEqual(src, dest.updated(from, src(from)), from, until))
             dest.updated(from, src(from))
         }
-    } ensuring(
+    }.ensuring(
         res => arrayEqual(src, res, from, until) && res.length == dest.length
     )
 
@@ -59,7 +59,7 @@ object ArrayList {
         from == until || (
             (dst(from) == src(from)) && arrayEqual(src, dst, from + 1, until)
         )
-    } ensuring(_ == (arrayPortionToList(src, from, until) == arrayPortionToList(dst, from, until)))
+    }.ensuring(_ == (arrayPortionToList(src, from, until) == arrayPortionToList(dst, from, until)))
 
     def arrayEqualLemma(src: Array[T], dst: Array[T], from: Int, until: Int, index: Int, elem: T): Boolean = {
         require(0 <= from && from <= until && until <= src.length && until <= dst.length)
@@ -81,7 +81,7 @@ object ArrayList {
 
         def toList: List[T] = {
             arrayPortionToList(arr, 0, length)
-        } ensuring(listLength(_) == length)
+        }.ensuring(listLength(_) == length)
 
         def pushBack(value: T): Unit = {
             require(length < Int.MaxValue)
@@ -103,7 +103,7 @@ object ArrayList {
                 arr = arr.updated(length, value)
             }
             length += 1
-        } ensuring(_ =>
+        }.ensuring(_ =>
             (old(this).length + 1 == this.length)
         )
     }

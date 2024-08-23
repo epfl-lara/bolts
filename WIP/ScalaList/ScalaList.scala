@@ -28,7 +28,7 @@ object ScalaList:
           val tLen = t.length
           if tLen == Int.MaxValue then tLen
           else 1 + tLen
-    } ensuring(res => 0 <= res && res <= Int.MaxValue)
+    }.ensuring(res => 0 <= res && res <= Int.MaxValue)
 
   end List
 

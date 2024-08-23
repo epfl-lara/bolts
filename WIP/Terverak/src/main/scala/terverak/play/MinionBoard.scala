@@ -26,7 +26,7 @@ final case class MinionBoard(minions: List[IdObject.MinionWithId], baseMinionId:
     require(minions.length + 1 < MinionBoard.MaxMinionBoardSize)
     
     copy(minions = IdObject.MinionWithId(minion, nextId()) :: minions)
-  } ensuring(_.minions.length == minions.length + 1)
+  }.ensuring(_.minions.length == minions.length + 1)
 
   /**
     * Damage a specific minion
@@ -42,7 +42,7 @@ final case class MinionBoard(minions: List[IdObject.MinionWithId], baseMinionId:
         minionWithId.copy(minion = minionWithId.minion.takeDamage(amount))
       else minionWithId)
     copy(minions = newMinionsList)
-  } ensuring(res => res.minions.length == minions.length)
+  }.ensuring(res => res.minions.length == minions.length)
 
   /**
     * Heal a specific minion
@@ -58,7 +58,7 @@ final case class MinionBoard(minions: List[IdObject.MinionWithId], baseMinionId:
         minionWithId.copy(minion = minionWithId.minion.heal(amount))
       else minionWithId)
     copy(minions = newMinionsList)
-  } ensuring(res => res.minions.length == minions.length)
+  }.ensuring(res => res.minions.length == minions.length)
 
   /**
     * Boost a specific minion attack
@@ -74,7 +74,7 @@ final case class MinionBoard(minions: List[IdObject.MinionWithId], baseMinionId:
         minionWithId.copy(minion = minionWithId.minion.boostAttack(amount))
       else minionWithId)
     copy(minions = newMinionsList)
-  } ensuring(res => res.minions.length == minions.length)
+  }.ensuring(res => res.minions.length == minions.length)
 
   /**
     * Boost a specific minion health
@@ -90,7 +90,7 @@ final case class MinionBoard(minions: List[IdObject.MinionWithId], baseMinionId:
         minionWithId.copy(minion = minionWithId.minion.boostHealth(amount))
       else minionWithId)
     copy(minions = newMinionsList)
-  } ensuring(res => res.minions.length == minions.length)
+  }.ensuring(res => res.minions.length == minions.length)
 
   /**
     * Destroy a specific minion
@@ -104,7 +104,7 @@ final case class MinionBoard(minions: List[IdObject.MinionWithId], baseMinionId:
       else minionWithId)
     
     copy(minions = newMinionsList)
-  } ensuring(res => res.minions.length == minions.length)
+  }.ensuring(res => res.minions.length == minions.length)
 
   /**
     * Damage all minions on the board.
@@ -117,7 +117,7 @@ final case class MinionBoard(minions: List[IdObject.MinionWithId], baseMinionId:
     val newMinionsList = minions.map(minionWithId =>
       minionWithId.copy(minion = minionWithId.minion.takeDamage(amount)))
     copy(minions = newMinionsList)
-  } ensuring(res => res.minions.length == minions.length)
+  }.ensuring(res => res.minions.length == minions.length)
 
   /**
    * Wake up all minions on the board.
@@ -125,7 +125,7 @@ final case class MinionBoard(minions: List[IdObject.MinionWithId], baseMinionId:
    */
   def wakeUpMinions(): MinionBoard = {
     this.copy(minions = minions.map(minionWithId => minionWithId.copy(minion = minionWithId.minion.copy(canAttack = !minionWithId.minion.card.attributes.contains(MinionCardAttributesData.Defender())))))
-  } ensuring(res => res.minions.length == minions.length)
+  }.ensuring(res => res.minions.length == minions.length)
 
   /**
     * Refreshes the board.
@@ -133,7 +133,7 @@ final case class MinionBoard(minions: List[IdObject.MinionWithId], baseMinionId:
     */
   def refresh(): (MinionBoard, List[Minion]) = {
     removeDeadMinions()
-  } ensuring(res => res._1.minions.length <= minions.length && res._2.length <= minions.length)
+  }.ensuring(res => res._1.minions.length <= minions.length && res._2.length <= minions.length)
 
   /**
     * Remove all minions that have 0 or less health points.
@@ -143,7 +143,7 @@ final case class MinionBoard(minions: List[IdObject.MinionWithId], baseMinionId:
     val deadMinions = minions.filter(_.minion.healthPoints <= 0).map(_.minion)
     val refreshedBoard = copy(minions = minions.filter(_.minion.healthPoints > 0))
     (refreshedBoard, deadMinions)
-  } ensuring(res => res._1.minions.length <= minions.length && res._2.length <= minions.length)
+  }.ensuring(res => res._1.minions.length <= minions.length && res._2.length <= minions.length)
 
   /**
    * Compute the next id for a minion on the board.
