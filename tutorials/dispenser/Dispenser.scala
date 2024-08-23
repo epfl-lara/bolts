@@ -75,8 +75,8 @@ object Dispenser {
         List(b10,b10,b10,b10)),
       coins = BigInt(0),
       oneInserted=false)
-    val Some(s1) = r(s0, FirstCoin())
-    val Some(s2) = r(s1, SecondCoin(0,0))
+    val Some(s1) = r(s0, FirstCoin()): @unchecked
+    val Some(s2) = r(s1, SecondCoin(0,0)): @unchecked
     List[(State,Action)]((s0, FirstCoin()), (s1, SecondCoin(0,0)), (s2, FirstCoin()))
   }.ensuring(res => isTrace(res))
 
