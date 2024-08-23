@@ -90,7 +90,7 @@ object Huffman {
     def times(chars: List[Char]): List[(Char, BigInt)] = {
       require(!chars.isEmpty)
       val distinctList = distinct(chars, List())
-      distinctList zip distinctList.map(elem => chars.count(e => e == elem))
+      distinctList.zip(distinctList.map(elem => chars.count(e => e == elem)))
     }.ensuring(res => listEqu(distinct(chars, List()), distinct(chars, List()).map(elem => chars.count(e => e == elem)))
                      && distinct(chars, List()).content == chars.content)
 
@@ -109,7 +109,7 @@ object Huffman {
     def listEqu(list: List[Char], zipWith: List[BigInt]): Boolean = {
       require(list.size == zipWith.size)
       decreases(list)
-      (list zip zipWith).map(elem => elem._1) == list because {
+      (list.zip(zipWith)).map(elem => elem._1) == list because {
         if (list.isEmpty) true
         else listEqu(list.tail, zipWith.tail)
       }
@@ -318,7 +318,7 @@ object Huffman {
    * into a sequence of bits.
    */
     def encode(tree: CodeTree)(text: List[Char]): List[Boolean] = {
-      require(text.content subsetOf tree.chars)
+      require(text.content.subsetOf(tree.chars))
       text.flatMap(elem => encodeChar(tree, elem))
     }
 
