@@ -47,9 +47,9 @@ object Main {
     def $(that: Lang[A]): Lang[A] = 
       Lang(this.oo && that.oo, a =>
         if (this.oo) 
-          (this.dd(a) $ that) + that.dd(a)
+          (this.dd(a) `$` that) + that.dd(a)
         else 
-          this.dd(a) $ that
+          this.dd(a) `$` that
       )
 
     // intersection
@@ -58,7 +58,7 @@ object Main {
     // Proof.
     // Similar to Lemma 1.
     def n(that: Lang[A]): Lang[A] = 
-      Lang(this.oo && that.oo, a => this.dd(a) n that.dd(a))
+      Lang(this.oo && that.oo, a => this.dd(a) `n` that.dd(a))
 
     // Kleene iteration
     // Lemma 4: for every n, if this is usable n times, then this.star is 
@@ -66,7 +66,7 @@ object Main {
     // Proof.
     // Similar to Lemma 1. Uses Lemma 2.
     def star: Lang[A] =
-      Lang(true, a => this.dd(a) $ star)
+      Lang(true, a => this.dd(a) `$` star)
 
     // complement
     // Lemma 5: for every n, if this is usable n times, then this.c is usable
