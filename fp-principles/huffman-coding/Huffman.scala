@@ -113,7 +113,7 @@ object Huffman {
         if (list.isEmpty) true
         else listEqu(list.tail, zipWith.tail)
       }
-    }..holds
+    }.holds
 
     def isDistinctList(list: List[Char]): Boolean = {
       decreases(list)
@@ -272,7 +272,7 @@ object Huffman {
           rest.size <= bits.size && (isFork(tree) ==> rest.size < bits.size)
         case _ => true
       }
-    }..holds
+    }.holds
 
     def decodeChar(tree: CodeTree, bits: List[Boolean]): Option[(Char, List[Boolean])] = {
       decreases(tree)
@@ -357,7 +357,7 @@ object Huffman {
         case Some((c, rest)) => c == cx && rest == bits
         case None() => false
       }
-    }..holds
+    }.holds
 
     def decodeEncode(tree: CodeTree, text: List[Char]): Boolean = {
       require(
@@ -374,14 +374,14 @@ object Huffman {
       }
 
       decode(tree, encode(tree)(text)) == text
-    }..holds
+    }.holds
 
     def decodeEncode(text: List[Char]): Boolean = {
       require(!text.isEmpty && isFork(createCodeTree(text)))
       val tree = createCodeTree(text)
       check(decodeEncode(tree, text))
       decode(tree, encode(tree)(text)) == text
-    }..holds
+    }.holds
 
   /**
     * CodeTree functions
@@ -446,7 +446,7 @@ object Huffman {
           case Fork(left, right) => checkCharDiff(char1, char2, left) && checkCharDiff(char1, char2, right)
         }
       }
-    }..holds
+    }.holds
 
  // Part 4b: Encoding using code table
 

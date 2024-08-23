@@ -179,26 +179,26 @@ object ExplicitSubstitution {
         require(noSubst(t))
 
         alphaEquivalent(t, t)
-    }..holds
+    }.holds
 
 
     def unique(t1: Term, t2: Term, s: Subst, n: BigInt) = {
         require(n > 0 && t1 == t2)
 
         loopingEval(ApplySubst(t1, s), n) == loopingEval(ApplySubst(t2, s), n)
-    }..holds
+    }.holds
 
     def unique2(t1: Term, t2: Term, s1: Term, s2: Term, n: BigInt, x: BigInt) = {
         require(n > 0 && t1 == t2 && s1 == s2)
 
         loopingEval(ApplySubst(t1, Subst(x, s1)), n) == loopingEval(ApplySubst(t2, Subst(x, s2)), n)
-    }..holds
+    }.holds
 
     def substitutionLemma(t: Term, s1: Subst, s2: Subst) = {
         require(noSubst(t) && noSubst(s1.m) && noSubst(s2.m) && !((fv(s2.m) ++ fv(t)) contains s1.x) && s1.x != s2.x)
 
         eval(ApplySubst(eval(ApplySubst(t, s1)), s2)) == eval(ApplySubst(eval(ApplySubst(t, s2)), Subst(s1.x, eval(ApplySubst(s1.m, s2)))))
-    }..holds
+    }.holds
 
     //λx.x((λy.yy)x)x = λx.x(xx)x
     def example1 = {
@@ -206,7 +206,7 @@ object ExplicitSubstitution {
             case Some(t) => t == Abs(0, App(App(Var(0), App(Var(0), Var(0))), Var(0)))
             case _ => false
         }
-    }..holds
+    }.holds
 
     //(λxyz.zyx)aa(λpq.q) = a
     def example2 = {
@@ -214,7 +214,7 @@ object ExplicitSubstitution {
             case Some(t) => t == Var(5)
             case _ => false
         }
-    }..holds
+    }.holds
 
     //λx.y [y:x] = λz.x
     def captureAvoidingTest = {
@@ -222,7 +222,7 @@ object ExplicitSubstitution {
             case Some(t) => alphaEquivalent(t, Abs(1, Var(0)))
             case _ => false
        }
-    }..holds
+    }.holds
 
 
 //=================================================
@@ -247,14 +247,14 @@ object ExplicitSubstitution {
             case Some(t) => alphaEquivalent(t, churchN(7))
             case _ => false
         }
-    }..holds
+    }.holds
 
     def testMult = {
         loopingStrongEval(App(App(Astar, churchN(2)), churchN(3)), 80) match {
             case Some(t) => t == churchN(6)
             case _ => false
         }
-    }..holds
+    }.holds
 
 
 //=================================================
@@ -276,7 +276,7 @@ object ExplicitSubstitution {
             case Some(t) => t == Var(10)
             case _ => false
         }
-    }..holds
+    }.holds
 
     //False x y = y
     def falseTest = {
@@ -284,7 +284,7 @@ object ExplicitSubstitution {
             case Some(t) => t == Var(11)
             case _ => false
         }
-    }..holds
+    }.holds
 
     //Cons(x, y) z (λp. p._1) = x
     def listTest = {
@@ -292,7 +292,7 @@ object ExplicitSubstitution {
             case Some(t) => t == Var(10)
             case _ => false
         }
-    }..holds
+    }.holds
 
     //Pair(x, y)._1 = x
     def testPair1 = {
@@ -300,7 +300,7 @@ object ExplicitSubstitution {
             case Some(t) => t == Var(30)
             case _ => false
         }
-    }..holds
+    }.holds
 
     //Pair(x, y)._2 = y
     def testPair2 = {
@@ -308,6 +308,6 @@ object ExplicitSubstitution {
             case Some(t) => t == Var(31)
             case _ => false
         }
-    }..holds
+    }.holds
 
 }

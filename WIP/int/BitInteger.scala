@@ -77,7 +77,7 @@ object BitInteger {
             if(a < b - 1)
                 pow2Order(a, b - 1)
             pow2(a) <= pow2(b) && a < b ==> pow2(a) < pow2(b)
-        }..holds
+        }.holds
 
         // def fasterPow2(n: BigInt): BigInt = {
         //     require(0 <= n)
@@ -136,14 +136,14 @@ object BitInteger {
             if(0 < n)
                 pow2BitSize(n - 1)
             unsignedBitSize(BigIntTools.pow2(n) - 1) == n && unsignedBitSize(BigIntTools.pow2(n)) == n + 1
-        }..holds
+        }.holds
 
         def bitSizeOrder(a: BigInt, b: BigInt): Boolean = {
             require(0 < a && a <= b)
             if(a < b)
                 bitSizeOrder(a, b - 1)
             unsignedBitSize(a) <= unsignedBitSize(b)
-        }..holds
+        }.holds
     }
 
     def toBigInt(x: UnsignedBitInteger): BigInt = {
@@ -303,12 +303,12 @@ object BitInteger {
 
     def unsignedMax(x: UnsignedBitInteger): Boolean = {
         toBigInt(x) < BigIntTools.pow2(x.length)
-    }..holds
+    }.holds
 
     def unsignedMin(x: UnsignedBitInteger): Boolean = {
         require(x.nonEmpty && x.head == true)
         BigIntTools.pow2(x.length - 1) <= toBigInt(x)
-    }..holds
+    }.holds
 
     def unsignedSize(a: UnsignedBitInteger, b: UnsignedBitInteger): Boolean = {
         require(a.length < b.length && b.head == true)
@@ -324,7 +324,7 @@ object BitInteger {
         unsignedMin(b)
         assert(p2 <= toBigInt(b))
         toBigInt(a) < toBigInt(b)
-    }..holds
+    }.holds
 
     def signedMax(x: SignedBitInteger): Boolean = {
         if(x.nonEmpty && x.head) {
@@ -334,7 +334,7 @@ object BitInteger {
         } else {
             toBigInt(x) == 0
         }
-    }..holds
+    }.holds
 
     def signedMin(x: SignedBitInteger): Boolean = {
         if(x.nonEmpty && x.head) {
@@ -342,7 +342,7 @@ object BitInteger {
         } else {
             0 <= toBigInt(x)
         }
-    }..holds
+    }.holds
 
     def signedSize(a: SignedBitInteger, b: SignedBitInteger): Boolean = {
         require(a.length < b.length && 1 < b.length && b.head != b.tail.head)
@@ -386,7 +386,7 @@ object BitInteger {
             }
             toBigInt(a) < toBigInt(b)
         }
-    }..holds
+    }.holds
 
     def equal(a: UnsignedBitInteger, b: UnsignedBitInteger): Boolean = {
         decreases(a.length + b.length)
@@ -554,11 +554,11 @@ object BitInteger {
     def unsignedSound(x: BigInt): Boolean = {
         require(0 <= x)
         toBigInt(unsignedFrom(x)) == x
-    }..holds
+    }.holds
 
     def signedSound(x: BigInt): Boolean = {
         toBigInt(from(x)) == x
-    }..holds
+    }.holds
 
     def unsignedSound2(x: UnsignedBitInteger): Boolean = {
         val a = shrinking(x)
@@ -566,7 +566,7 @@ object BitInteger {
         val b = unsignedFrom(v)
         assert(equal(a, b))
         b == a
-    }..holds
+    }.holds
 
     def signedSound2(x: SignedBitInteger): Boolean = {
         val a = shrinking(x)
@@ -575,5 +575,5 @@ object BitInteger {
         assert(equal(a, b))
         assert(equal(a, b) && a.length == b.length)
         a == b
-    }..holds
+    }.holds
 }

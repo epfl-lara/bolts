@@ -25,5 +25,5 @@ object DiffsEquiv {
   @induct
   def equiv(l: List[Int]): Boolean = {
     diffs(l) == diffs2(l)
-  }..holds
+  }.holds
 }

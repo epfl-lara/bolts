@@ -17,11 +17,11 @@ object Sets2 {
     val u1 = union(union(sa1, sa2), sa3)
     val u2 = union(sa1, union(sa2, sa3))
     u1(x) == u2(x)
-  }..holds
+  }.holds
 
   def intersection_associativity(sa1: Int => Boolean, sa2: Int => Boolean, sa3: Int => Boolean, x: Int): Boolean = {
     val u1 = intersection(intersection(sa1, sa2), sa3)
     val u2 = intersection(sa1, intersection(sa2, sa3))
     u1(x) == u2(x)
-  }..holds
+  }.holds
 }

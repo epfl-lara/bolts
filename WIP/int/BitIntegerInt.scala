@@ -99,21 +99,21 @@ object BitIntegerInt {
                 check(pow2(a) * maxUnsigned(b) <= maxUnsigned(a + b))
             }
             pow2(a) * maxUnsigned(b) <= maxUnsigned(a + b)
-        }..holds
+        }.holds
 
         // def pow2Order(a: BigInt, b: BigInt): Boolean = {
         //     require(0 <= a && a < b && b < 31)
         //     if(a < b - 1)
         //         pow2Order(a, b - 1)
         //     pow2(a) < pow2(b)
-        // }..holds
+        // }.holds
 
         // def maxIntOrder(a: BigInt, b: BigInt): Boolean = {
         //     require(0 <= a && a < b && b <= 31)
         //     if(a < b - 1)
         //         maxIntOrder(a, b - 1)
         //     maxUnsigned(a) < maxUnsigned(b)
-        // }..holds
+        // }.holds
 
         def unsignedBitSize(x: Int): BigInt = {
             require(0 <= x)
@@ -187,7 +187,7 @@ object BitIntegerInt {
             }
             unsignedBitSize(maxUnsigned(n)) == n &&
             (n < 31 ==> (unsignedBitSize(pow2(n)) == n + 1))
-        }..holds
+        }.holds
 
         def bitSizeOrder(a: Int, b: Int): Boolean = {
             require(0 < a && a <= b)
@@ -199,7 +199,7 @@ object BitIntegerInt {
             }
                 
             unsignedBitSize(a) <= unsignedBitSize(b)
-        }..holds
+        }.holds
     }
 
     def toInt(x: UnsignedBitInteger): Int = {

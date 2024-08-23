@@ -281,7 +281,7 @@ object bitstream {
     pBitStrm.moveOffset(-1)
     val read = BitStream_ReadBit(pBitStrm)
     read == true && pBitStrm.bitIndex == endPosition
-  }..holds
+  }.holds
 
   ///////////////////////////////////////////////////////////////////
 
@@ -402,7 +402,7 @@ object bitstream {
     pBitStrm.moveOffset(-8)
     val read = BitStream_ReadByte(pBitStrm)
     read == b && pBitStrm.bitIndex == endPosition
-  }..holds
+  }.holds
 
   ///////////////////////////////////////////////////////////////////
 
@@ -482,7 +482,7 @@ object bitstream {
     pBitStrm.moveOffset(-16)
     val read = BitStream_DecodeInteger16(pBitStrm)
     read == i && pBitStrm.bitIndex == endPosition
-  }..holds
+  }.holds
 
   ///////////////////////////////////////////////////////////////////
 

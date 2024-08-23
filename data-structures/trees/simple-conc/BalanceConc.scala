@@ -135,7 +135,7 @@ object BalanceConc:
             })
         case _ => true
     })
-  }..holds
+  }.holds
 
   extension[T](t: Conc[T])
     def slice(from: BigInt, until: BigInt): Conc[T] = {
