@@ -68,7 +68,7 @@ object FunSets {
   def filter(s: BigInt => Boolean, p: BigInt => Boolean): BigInt => Boolean = {
     (elem: BigInt) => s(elem) && p(elem)
   }
-  // ensuring(res => forallCheck(res, p))
+  //.ensuring(res => forallCheck(res, p))
 
   def filterIterForallCheck(a: BigInt, s: BigInt => Boolean, p: BigInt => Boolean): Boolean = {
     decreases(if (a < 0) -(a + 1) else BigInt(0), max(BigInt(0), bound - a + 1))

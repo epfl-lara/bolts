@@ -49,7 +49,7 @@ final case class Game(currentPlayer: Player, waitingPlayer: Player) {
 
     copy(currentPlayer = waitingPlayer.startTurn().addMana(manaToRegen).takeDamage(damageToDeal), waitingPlayer = newCurrentPlayer.takeDamage(damageToDeal))
     .damageAllMinions(damageToDeal).refresh()
-  } ensuring(res => res.waitingPlayer.mana == 0 && res.waitingPlayer.id == currentPlayer.id)
+  }.ensuring(res => res.waitingPlayer.mana == 0 && res.waitingPlayer.id == currentPlayer.id)
 
   /**
     * Refresh the game.

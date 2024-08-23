@@ -56,7 +56,7 @@ object MoreExtendedEuclidGCD {
       assert(ka * x + kb * y == BigInt(1))
       Result(r1.gcd, ka, kb, x, y)
     }
-  } ensuring(res => gcd(a, b, res))
+  }.ensuring(res => gcd(a, b, res))
 
   def divisorsDivideGCD(a: BigInt, b: BigInt, r: Result,
                     d1: BigInt, ka1: BigInt, kb1: BigInt): Unit = {
@@ -67,12 +67,12 @@ object MoreExtendedEuclidGCD {
     assert(r.gcd * r.kb == b)
     assert(a * r.x + b * r.y == r.gcd)
     assert(ka1*d1 * r.x + kb1*d1 * r.y == r.gcd)
-  } ensuring(_ => r.gcd == (ka1*r.x + kb1*r.y)*d1)
+  }.ensuring(_ => r.gcd == (ka1*r.x + kb1*r.y)*d1)
 
   def positiveMultiple(a: BigInt, b: BigInt, c: BigInt): Unit = {
     require(a == b * c && a > 0 && c > 0 && b >= 1)
     ()
-  } ensuring(_ => a >= c)
+  }.ensuring(_ => a >= c)
 
   def gcdIsGreatest(a: BigInt, b: BigInt, r: Result,
                     d1: BigInt, ka1: BigInt, kb1: BigInt): Unit = {
@@ -80,5 +80,5 @@ object MoreExtendedEuclidGCD {
     divisorsDivideGCD(a, b, r, d1, ka1, kb1)
     positiveMultiple(r.gcd, ka1*r.x + kb1*r.y, d1)
     assert(ka1*r.x + kb1*r.y >= 1)
-  } ensuring(_ => r.gcd >= d1)
+  }.ensuring(_ => r.gcd >= d1)
 }

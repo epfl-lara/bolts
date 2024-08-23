@@ -23,7 +23,7 @@ final case class DeckZone(cards: List[Card]) {
       */
     def addCard(card: Card): DeckZone = {
       copy(cards = card :: cards)
-    } ensuring(res => res.cards.length == cards.length + 1)
+    }.ensuring(res => res.cards.length == cards.length + 1)
 
     /**
       * Adds a list of cards to the deck.
@@ -32,7 +32,7 @@ final case class DeckZone(cards: List[Card]) {
       */
     def addCards(cards: List[Card]): DeckZone = {
       copy(cards = cards ++ this.cards)
-    } ensuring(res => res.cards.length == this.cards.length + cards.length)
+    }.ensuring(res => res.cards.length == this.cards.length + cards.length)
 
     /**
      * Removes the top card from the deck.
@@ -42,7 +42,7 @@ final case class DeckZone(cards: List[Card]) {
       require(cards.nonEmpty)
 
       (copy(cards = cards.tail), cards.head)
-    } ensuring(res => res._1.cards.length == cards.length - 1)
+    }.ensuring(res => res._1.cards.length == cards.length - 1)
 
     /**
      * Removes a given card from the deck.

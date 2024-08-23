@@ -408,7 +408,7 @@ object MutableHashMap {
     }
 
     ()
-  } ensuring (_ => {
+  }.ensuring(_ => {
     val oldMap = snapshot(hm)
     val afterUpdate = snapshot(hm)
     afterUpdate.update(k, v)
@@ -454,7 +454,7 @@ object MutableHashMap {
     }
 
     ()
-  } ensuring (_ => {
+  }.ensuring(_ => {
     val oldMap = snapshot(hm)
     val afterUpdate = snapshot(hm)
     afterUpdate.remove(k)

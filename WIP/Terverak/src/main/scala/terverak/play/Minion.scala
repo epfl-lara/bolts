@@ -33,7 +33,7 @@ final case class Minion(card: Card.MinionCard, maxHP: BigInt, healthPoints: BigI
       if (maxHP <= (healthPoints + amount)) maxHP
       else (healthPoints + amount)
     copy(healthPoints = newHealthPoints)
-  } ensuring(res => res.healthPoints <= maxHP && res.healthPoints >= healthPoints)
+  }.ensuring(res => res.healthPoints <= maxHP && res.healthPoints >= healthPoints)
 
   /**
     * Takes damage for the minion.
@@ -44,7 +44,7 @@ final case class Minion(card: Card.MinionCard, maxHP: BigInt, healthPoints: BigI
     require(amount >= 0)
 
     copy(healthPoints = healthPoints - amount)
-  } ensuring(res => res.healthPoints <= maxHP && res.healthPoints <= healthPoints)
+  }.ensuring(res => res.healthPoints <= maxHP && res.healthPoints <= healthPoints)
 
   /**
     * Boosts the attack points of the minion.
@@ -55,7 +55,7 @@ final case class Minion(card: Card.MinionCard, maxHP: BigInt, healthPoints: BigI
     require(amount >= 0)
 
     copy(attackPoints = attackPoints + amount)
-  } ensuring(res => res.attackPoints >= attackPoints)
+  }.ensuring(res => res.attackPoints >= attackPoints)
 
   /**
     * Boosts the health points of the minion.
@@ -66,7 +66,7 @@ final case class Minion(card: Card.MinionCard, maxHP: BigInt, healthPoints: BigI
     require(amount >= 0)
 
     copy(maxHP = maxHP + amount, healthPoints = healthPoints + amount)
-  } ensuring(res => res.maxHP >= maxHP && res.healthPoints >= healthPoints)
+  }.ensuring(res => res.maxHP >= maxHP && res.healthPoints >= healthPoints)
 
   /**
     * Destroys the minion.
@@ -74,7 +74,7 @@ final case class Minion(card: Card.MinionCard, maxHP: BigInt, healthPoints: BigI
     */
   def destroy(): Minion = {
     copy(healthPoints = 0)
-  } ensuring(res => res.healthPoints == 0)
+  }.ensuring(res => res.healthPoints == 0)
 
   /**
     * Attacks a minion.
@@ -85,5 +85,5 @@ final case class Minion(card: Card.MinionCard, maxHP: BigInt, healthPoints: BigI
     require(attackPoints > 0)
 
     (minion.takeDamage(attackPoints), this.takeDamage(minion.attackPoints).copy(canAttack = false))
-  } ensuring(res => res._1.healthPoints <= minion.healthPoints && res._2.healthPoints <= healthPoints && res._2.canAttack == false)
+  }.ensuring(res => res._1.healthPoints <= minion.healthPoints && res._2.healthPoints <= healthPoints && res._2.canAttack == false)
 }

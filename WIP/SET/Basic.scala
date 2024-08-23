@@ -10,30 +10,30 @@ object Basic {
   // .............................................................
   def refl(s: SET): Unit = { 
     ()
-  } ensuring (_ => s === s)
+  }.ensuring(_ => s === s)
 
   def sym(s1: SET, s2: SET): Unit = {
     ()
-  } ensuring (_ => (s1 =!= s2) || (s2 === s1))
+  }.ensuring(_ => (s1 =!= s2) || (s2 === s1))
 
   def tran(s1: SET, s2: SET, s3: SET): Unit = {
     ()
-  } ensuring(_ => (s1 =!= s2) || (s2 =!= s3) || (s1 === s3))
+  }.ensuring(_ => (s1 =!= s2) || (s2 =!= s3) || (s1 === s3))
 
   def congL(a: SET, b: SET, a1: SET): Unit = {
     ()
-  } ensuring(_ => !(a in b) || (a =!= a1) || (a1 in b))
+  }.ensuring(_ => !(a in b) || (a =!= a1) || (a1 in b))
   
   def congR(a: SET, b: SET, b1: SET): Unit = {
     ()
-  } ensuring(_ => !(a in b) || !(b === b1) || (a in b1))
+  }.ensuring(_ => !(a in b) || !(b === b1) || (a in b1))
 
   // two subsets imply equality
   def subsetsEq(a: SET, b: SET): Unit = {
     val w = SET.notEqWitn(a, b)      
     SET.subseteq(a, b, w)
     SET.subseteq(b, a, w)
-  } ensuring(_ => !(a subsetEq b) || !(b subsetEq a) || (a === b))
+  }.ensuring(_ => !(a subsetEq b) || !(b subsetEq a) || (a === b))
 
   @ghost
   def one : SET = {
@@ -48,7 +48,7 @@ object Basic {
     SET.emptyDef(w)
  
     one
-  } ensuring(one =>
+  }.ensuring(one =>
     (SET.empty in one)
     && (SET.empty =!= one)
     && (SET.empty subsetEq one))
