@@ -662,7 +662,7 @@ object RedBlackTreeSpecs {
         n.toList == l1 ++ (l2 ++ l3)
       }
     }
-  }.holds
+  }..holds
 
   def treeAssocDeepLeft(n: Node): Boolean = {
     require(
@@ -682,7 +682,7 @@ object RedBlackTreeSpecs {
             n.toList == l1 ++ (l2 ++ (l3 ++ l4))
         }
     }
-  }.holds
+  }..holds
 
   def treeAssocRight(n: Node): Boolean = {
     n.right match {
@@ -695,7 +695,7 @@ object RedBlackTreeSpecs {
         n.toList == (l1 ++ l2) ++ l3
       }
     }
-  }.holds
+  }..holds
 
   def treeAssocDeepRight(n: Node): Boolean = {
     require(
@@ -715,5 +715,5 @@ object RedBlackTreeSpecs {
             n.toList == ((l1 ++ l2) ++ l3) ++ l4
         }
     }
-  }.holds
+  }..holds
 }

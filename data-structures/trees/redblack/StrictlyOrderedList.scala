@@ -10,15 +10,15 @@ object StrictlyOrderedList {
     // Some helpers
     def concatLast(@induct left: List[BigInt], right: List[BigInt]): Boolean = {
         right.nonEmpty ==> ((left ++ right).last == right.last)
-    }.holds
+    }..holds
 
     def addLast(left: List[BigInt], elem: BigInt): Boolean = {
         (left :+ elem) == (left ++ List(elem))
-    }.holds
+    }..holds
 
     def concatElem(@induct left: List[BigInt], elem: BigInt, right: List[BigInt]): Boolean = {
         (left ++ (elem :: right)) == ((left :+ elem) ++ right)
-    }.holds
+    }..holds
 
     // StrictlyOrderedList is a strictly sorted List
     def isInorder(l: List[BigInt]): Boolean = l match {
@@ -33,7 +33,7 @@ object StrictlyOrderedList {
             isInorder(xs) &&
             (xs.isEmpty || xs.last < y)
         )
-    ).holds
+    )..holds
 
     def inorderSpread(@induct xs: List[BigInt], ys: List[BigInt]): Boolean = (
         isInorder(xs ++ ys) == (
@@ -41,14 +41,14 @@ object StrictlyOrderedList {
             isInorder(ys) &&
             (xs.isEmpty || ys.isEmpty || xs.last < ys.head)
         )
-    ).holds
+    )..holds
 
     def inorderSpread(@induct xs: List[BigInt], y: BigInt, ys: List[BigInt]): Boolean = (
         isInorder(xs ++ (y :: ys)) == (
             isInorder(xs :+ y) &&
             isInorder(y :: ys)
         ) && inorderSpread(xs, y :: ys)
-    ).holds
+    )..holds
 
     def inorderSpread(x: BigInt, @induct xs: List[BigInt], y: BigInt, ys: List[BigInt]): Boolean = (
         isInorder((x :: xs) ++ (y :: ys)) == (
@@ -57,32 +57,32 @@ object StrictlyOrderedList {
             isInorder(xs :+ y) &&
             isInorder(y :: ys)
         ) && inorderSpread(x :: xs, y, ys)
-    ).holds
+    )..holds
 
     // Inequalities and contains
     def bigger(@induct xs: List[BigInt], y: BigInt, e: BigInt): Boolean = {
         require(isInorder(xs :+ y) && y <= e)
         xs.forall(_ < e) && !xs.contains(e)
-    }.holds
+    }..holds
 
     def bigger(xs: List[BigInt], y: BigInt, ys: List[BigInt], e: BigInt): Boolean = {
         require(isInorder(xs ++ (y :: ys)) && y <= e)
         inorderSpread(xs, y, ys)
         bigger(xs, y, e)
         xs.forall(_ < e) && !xs.contains(e)
-    }.holds
+    }..holds
 
     def smaller(y: BigInt, @induct ys: List[BigInt], e: BigInt): Boolean = {
         require(isInorder(y :: ys) && e <= y)
         ys.forall(e < _) && !ys.contains(e)
-    }.holds
+    }..holds
 
     def smaller(xs: List[BigInt], y: BigInt, ys: List[BigInt], e: BigInt): Boolean = {
         require(isInorder(xs ++ (y :: ys)) && e <= y)
         inorderSpread(xs, y, ys)
         smaller(y, ys, e)
         ys.forall(e < _) && !ys.contains(e)
-    }.holds
+    }..holds
 
     def contains(xs: List[BigInt], y: BigInt, ys: List[BigInt], e: BigInt): Boolean = {
         require(isInorder(xs ++ (y :: ys)))
@@ -118,23 +118,23 @@ object StrictlyOrderedList {
             else
                 xs ++ inorderInsert(y :: ys, e)
         )
-    }.holds
+    }..holds
 
     def insertSmallerLemma(@induct xs: List[BigInt], y: BigInt, ys: List[BigInt], e: BigInt): Boolean = {
         require(isInorder(xs ++ (y :: ys)) && e < y)
         inorderInsert(xs ++ (y :: ys), e) == (inorderInsert(xs, e) ++ (y :: ys))
-    }.holds
+    }..holds
 
     def insertEqualLemma(xs: List[BigInt], y: BigInt, ys: List[BigInt], e: BigInt): Boolean = {
         require(isInorder(xs ++ (y :: ys)) && y == e)
         check(insertBiggerLemma(xs, y, ys, e))
         inorderInsert(xs ++ (y :: ys), e) == (xs ++ (y :: ys))
-    }.holds
+    }..holds
 
     def insertBiggerLemma(@induct xs: List[BigInt], y: BigInt, ys: List[BigInt], e: BigInt): Boolean = {
         require(isInorder(xs ++ (y :: ys)) && y <= e)
         inorderInsert(xs ++ (y :: ys), e) == (xs ++ inorderInsert(y :: ys, e))
-    }.holds
+    }..holds
 
     // Delete
     def deleteFirst(@induct l: List[BigInt], e: BigInt): List[BigInt] = {
@@ -159,23 +159,23 @@ object StrictlyOrderedList {
                 xs ++ deleteFirst(y :: ys, e)
             }
         }
-    }.holds
+    }..holds
 
     def deleteSmallerLemma(@induct xs: List[BigInt], y: BigInt, ys: List[BigInt], e: BigInt): Boolean = {
         require(isInorder(xs ++ (y :: ys)) && e < y)
         check(smaller(y, ys, e))
         deleteFirst(xs ++ (y :: ys), e) == (deleteFirst(xs, e) ++ (y :: ys))
-    }.holds
+    }..holds
 
     def deleteEqualLemma(xs: List[BigInt], y: BigInt, ys: List[BigInt], e: BigInt): Boolean = {
         require(isInorder(xs ++ (y :: ys)) && y == e)
         check(deleteBiggerLemma(xs, y, ys, e))
         deleteFirst(xs ++ (y :: ys), e) == (xs ++ ys)
-    }.holds
+    }..holds
 
     def deleteBiggerLemma(@induct xs: List[BigInt], y: BigInt, ys: List[BigInt], e: BigInt): Boolean = {
         require(isInorder(xs ++ (y :: ys)) && y <= e)
         check(bigger(xs, y, e))
         deleteFirst(xs ++ (y :: ys), e) == (xs ++ deleteFirst(y :: ys, e))
-    }.holds
+    }..holds
 }

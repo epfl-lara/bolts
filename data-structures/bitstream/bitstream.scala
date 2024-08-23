@@ -57,7 +57,7 @@ object bitstream {
   // -----------------------------------------------------------------------------------------------
 
   // There are 2^32 possible input values for `i` and infinitely for pBitStrm
-  // The proof shows the property holds for all of them.
+  // The proof shows the property .holds for all of them.
   def BitStream_EncodeInteger32InvertibilityTheorem(pBitStrm: BitStream, i: Int): Unit = {
     // For all streams with enough buffer space, and an arbitrary Int integer i:
     require(pBitStrm.bitIndex + 32 <= pBitStrm.buf.length.toLong * 8)
@@ -281,7 +281,7 @@ object bitstream {
     pBitStrm.moveOffset(-1)
     val read = BitStream_ReadBit(pBitStrm)
     read == true && pBitStrm.bitIndex == endPosition
-  }.holds
+  }..holds
 
   ///////////////////////////////////////////////////////////////////
 
@@ -402,7 +402,7 @@ object bitstream {
     pBitStrm.moveOffset(-8)
     val read = BitStream_ReadByte(pBitStrm)
     read == b && pBitStrm.bitIndex == endPosition
-  }.holds
+  }..holds
 
   ///////////////////////////////////////////////////////////////////
 
@@ -482,7 +482,7 @@ object bitstream {
     pBitStrm.moveOffset(-16)
     val read = BitStream_DecodeInteger16(pBitStrm)
     read == i && pBitStrm.bitIndex == endPosition
-  }.holds
+  }..holds
 
   ///////////////////////////////////////////////////////////////////
 
@@ -590,7 +590,7 @@ object bitstream {
   }
 
   // There are 2^64 possible input values for `i` and infinitely for pBitStrm
-  // The proof shows the property holds for all of them.
+  // The proof shows the property .holds for all of them.
   def BitStream_EncodeInteger64InvertibilityTheorem(pBitStrm: BitStream, i: Long): Unit = {
     // For all streams with enough buffer space, and an arbitrary Long intreger i:
     require(pBitStrm.bitIndex + 64 <= pBitStrm.buf.length.toLong * 8)

@@ -259,7 +259,7 @@ Example:
 -4 in Int: 0b1111_..._1111_1100
 --> compacted to 0b1111_1100
 
-The ASN.1 header holds the detail on how to interpret this number
+The ASN.1 header .holds the detail on how to interpret this number
  **/
 def RemoveLeadingFFBytesIfNegative(v: Int): Int = {
    if v >= 0 then

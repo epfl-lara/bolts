@@ -20,7 +20,7 @@ object ExtendedEuclidGCD {
     require(p(t))
 
     exists(p)
-  }.holds
+  }..holds
 
   def gcd(a: BigInt, b: BigInt, r: BigInt, x: BigInt, y: BigInt) = {
     a * x + b * y == r && divides(r, a) && divides(r, b)
@@ -38,7 +38,7 @@ object ExtendedEuclidGCD {
     assert(introductionExists[BigInt](j + c * i, k => a == k * r))
 
     divides(r, a)
-  }.holds
+  }..holds
 
 
   def booleanToInt(b: Boolean): BigInt = {
@@ -71,5 +71,5 @@ object ExtendedEuclidGCD {
         assert(euclidOneStep(a, b, r))
         gcd(a, b, r, x, y)
     }
-  }.holds
+  }..holds
 }

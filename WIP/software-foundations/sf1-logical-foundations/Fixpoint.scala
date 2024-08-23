@@ -152,7 +152,7 @@ object Fixpoint {
       
     b match {
       case O => 
-        // if f is bounded by O, the theorem holds with y = O
+        // if f is bounded by O, the theorem .holds with y = O
         O
       case Succ(b2) =>
         // we consider two subcases

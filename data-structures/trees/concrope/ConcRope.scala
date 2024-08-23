@@ -379,7 +379,7 @@ object ConcRopeSeq {
         appendIndex(l.toList, r.toList, i)
       case _ => true
     }
-  }.holds
+  }..holds
 
   def update[T](xs: Conc[T], i: BigInt, y: T): Conc[T] = {
     require(xs.valid && !xs.isEmpty && i >= 0 && i < xs.size)
@@ -411,7 +411,7 @@ object ConcRopeSeq {
         appendUpdate(l.toList, r.toList, i, y)
       case _ => true
     }
-  }.holds
+  }..holds
 
   /**
    * A generic concat that applies to general concTrees
@@ -524,7 +524,7 @@ object ConcRopeSeq {
             })
         case _ => true
       })
-  }.holds
+  }..holds
 
 
   def insert[T](xs: Conc[T], i: BigInt, y: T): Conc[T] = {
@@ -578,7 +578,7 @@ object ConcRopeSeq {
       (insertAtIndex((l1 ++ l2), i, y) == (
         if (i < l1.size) insertAtIndex(l1, i, y) ++ l2
         else l1 ++ insertAtIndex(l2, (i - l1.size), y)))
-  }.holds
+  }..holds
 
   def insertAppendAxiomInst[T](xs: Conc[T], i: BigInt, y: T): Boolean = {
     require(i >= 0 && i <= xs.size)
@@ -586,7 +586,7 @@ object ConcRopeSeq {
       case CC(l, r) => appendInsertIndex(l.toList, r.toList, i, y)
       case _ => true
     }
-  }.holds
+  }..holds
 
   def split[T](xs: Conc[T], n: BigInt): (Conc[T], Conc[T]) = {
     require(xs.valid && xs.isNormalized)
@@ -625,7 +625,7 @@ object ConcRopeSeq {
         appendTakeDrop(l.toList, r.toList, n)
       case _ => true
     }
-  }.holds
+  }..holds
 
   def append[T](xs: Conc[T], x: T): Conc[T] = {
     require(xs.valid)
@@ -678,7 +678,7 @@ object ConcRopeSeq {
         appendAssoc(l.toList, r.toList, ys.toList)
       case _ => true
     }
-  }.holds
+  }..holds
 
   def numTrees[T](t: Conc[T]): BigInt = {
     decreases(t)

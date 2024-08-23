@@ -41,7 +41,7 @@ object LZWa {
     BufferSize > 0 &&
     AlphabetSize > 0 &&
     DictionarySize <= 65536 // Cannot encode more index using only 16-bit codewords
-  }.holds
+  }..holds
 
   // Helper for range equality checking
   @pure

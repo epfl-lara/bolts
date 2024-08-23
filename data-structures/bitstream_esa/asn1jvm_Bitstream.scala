@@ -1778,7 +1778,7 @@ case class BitStream private [asn1scala](
    /**
     * Counter Operation to appendBitsLSBFirst
     * @param nBits number of bits to read [0-64]
-    * @return value that holds nBits from bitstream
+    * @return value that .holds nBits from bitstream
     *
     * Remarks:
     * The first bit from the bitstream will get written into the LSB
@@ -1835,7 +1835,7 @@ case class BitStream private [asn1scala](
    /**
     * Counter Operation to appendNLeastSignificantBits
     * @param nBits number of bits to read [0-64]
-    * @return value that holds nBits from bitstream
+    * @return value that .holds nBits from bitstream
     *
     * Remarks:
     * The last bit from the bitstream will get written into the LSB
