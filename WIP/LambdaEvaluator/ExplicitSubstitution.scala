@@ -168,7 +168,7 @@ object ExplicitSubstitution {
                 case _ => false
             }
             case Abs(x, body) => t2 match {
-                case Abs(x2, body2) => if (x == x2) alphaEquivalent(body, body2) else !(fv(body2) contains x) && alphaEquivalent(body, eval(ApplySubst(body2, Subst(x2, Var(x)))))
+                case Abs(x2, body2) => if (x == x2) alphaEquivalent(body, body2) else !(fv(body2).contains(x)) && alphaEquivalent(body, eval(ApplySubst(body2, Subst(x2, Var(x)))))
                 case _ => false
             }
             case _ => false
@@ -195,7 +195,7 @@ object ExplicitSubstitution {
     }.holds
 
     def substitutionLemma(t: Term, s1: Subst, s2: Subst) = {
-        require(noSubst(t) && noSubst(s1.m) && noSubst(s2.m) && !((fv(s2.m) ++ fv(t)) contains s1.x) && s1.x != s2.x)
+        require(noSubst(t) && noSubst(s1.m) && noSubst(s2.m) && !((fv(s2.m) ++ fv(t)).contains(s1.x)) && s1.x != s2.x)
 
         eval(ApplySubst(eval(ApplySubst(t, s1)), s2)) == eval(ApplySubst(eval(ApplySubst(t, s2)), Subst(s1.x, eval(ApplySubst(s1.m, s2)))))
     }.holds
