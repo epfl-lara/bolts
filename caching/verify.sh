@@ -4,4 +4,5 @@ stainless-dotty\
  ../data-structures/maps/mutablemaps/src/main/scala/ch/epfl/chassot/ListLongMap.scala\
  ../data-structures/maps/mutablemaps/src/main/scala/ch/epfl/chassot/MutableHashMap.scala \
  ../data-structures/maps/mutablemaps/src/main/scala/ch/epfl/chassot/MutableLongMap.scala\
+ ../data-structures/maps/mutablemaps/src/main/scala/ch/epfl/chassot/iMutableMaps.scala\
  --config-file=stainless.conf --functions=CachedFunction._    
