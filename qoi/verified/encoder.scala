@@ -51,7 +51,7 @@ object encoder {
         arraysEq(pixels, decodedPixels, 0, pixels.length)
       case NoneMut() => false
     }
-  }.holds
+  }..holds
 
   /////////////////////////////////////////////////////////////////////////////////////////////////////
   /////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -261,7 +261,7 @@ object encoder {
         assert(decodeLoopEncodeProp(bytes, px, outPos2, outPosRes, decodedPreRec, pxRes, decoded))
         assert(arraysEq(bytesPreRec, bytes, 0, outPos2))
 
-        // From encodeSingleStep, which holds for bytes and decoded prior to the recursive call:
+        // From encodeSingleStep, which .holds for bytes and decoded prior to the recursive call:
         //   (outPos0 < outPos2) ==> decodeEncodeProp(bytesPreRec, pxPrev, pxPos, outPos0, outPos2, oldDecoded, decodedPreRec)
 
         if (outPos0 == outPos2) {

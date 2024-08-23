@@ -71,7 +71,7 @@ object ArrayList {
             arrayEqualLemma(src, dst, from + 1, until, index, elem)
         }
         arrayEqual(src, dst.updated(index, elem), from, until)
-    }.holds
+    }..holds
 
     case class ArrayList(private var arr: Array[T], var length: Int) {
         require(0 <= length && length <= arr.length && arr.length <= Int.MaxValue)

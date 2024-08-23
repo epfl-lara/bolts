@@ -137,7 +137,7 @@ object Main {
         assert(residual_contains_oo(l.dd(x), xs))
         l.residual(w).oo == l.contains(w)
     }
-  } holds
+  } .holds
 
   def plus_zerol_contains[A](l: Lang[A], w: Word[A]): Boolean = {
     w match {
@@ -148,7 +148,7 @@ object Main {
         (zero + l).contains(w) == l.contains(w)  
     }
     
-  } holds
+  } .holds
   
   // zero is neutral for plus
   def plus_zerol[A](l: Lang[A]) = {
@@ -157,15 +157,15 @@ object Main {
       equivalentContains(zero + l, l, w)
     }))
     zero + l === l
-  } holds
+  } .holds
 
   // def plus_zeror[A](l: Lang[A]) = {
   //   l + zero === l
-  // } holds
+  // } .holds
 
   // def plus_dd[A](l1: Lang[A], l2: Lang[A], x: A): Boolean = {
   //   (l1 + l2).dd(x) == l1.dd(x) + l2.dd(x)
-  // } holds
+  // } .holds
 
   // def plus_lemma[A](l1: Lang[A], l2: Lang[A], w: Word[A]): Boolean = {
   //   assert(
@@ -175,7 +175,7 @@ object Main {
   //     }
   //   )
   //   (l1 + l2).contains(w) == (l1.contains(w) || l2.contains(w))
-  // } holds
+  // } .holds
 
   // // plus is associative (contains)
   // def plus_assoc_lemma[A](l1: Lang[A], l2: Lang[A], l3: Lang[A], w: Word[A]) = {
@@ -184,7 +184,7 @@ object Main {
   //   assert(plus_lemma(l1,l2 + l3,w))
   //   assert(plus_lemma(l1 + l2,l3,w))
   //   (l1 + (l2 + l3)).contains(w) == ((l1 + l2) + l3).contains(w)
-  // } holds
+  // } .holds
 
   // // plus is associative
   // def plus_assoc[A](l1: Lang[A], l2: Lang[A], l3: Lang[A]) = {
@@ -193,14 +193,14 @@ object Main {
   //     (l1 + (l2 + l3)).contains(w) == ((l1 + l2) + l3).contains(w)
   //   }))
   //   l1 + (l2 + l3) === (l1 + l2) + l3
-  // } holds
+  // } .holds
 
   // // plus is commutative (contains)
   // def plus_comm_lemma[A](l1: Lang[A], l2: Lang[A], w: Word[A]) = {
   //   plus_lemma(l1,l2,w)
   //   plus_lemma(l2,l1,w)
   //   (l1 + l2).contains(w) == (l2 + l1).contains(w)
-  // } holds
+  // } .holds
 
   // // plus is commutative
   // def plus_comm[A](l1: Lang[A], l2: Lang[A]) = {
@@ -209,7 +209,7 @@ object Main {
   //     (l1 + l2).contains(w) == (l2 + l1).contains(w)
   //   }))
   //   l1 + l2 === l2 + l1
-  // } holds
+  // } .holds
 
   // // a combination of associativity and commutativity
   // def plus_rotate[A](l1: Lang[A], l2: Lang[A], l3: Lang[A]) = {
@@ -217,7 +217,7 @@ object Main {
   //   assert(plus_comm(l1,l2))
   //   assert(plus_assoc(l2,l1,l3))
   //   l1 + (l2 + l3) === l2 + (l1 + l3)
-  // } holds
+  // } .holds
   
   // // plus is idempotent
   // def plus_idem[A](l: Lang[A]) = {
@@ -226,190 +226,190 @@ object Main {
   //     (l + l).contains(w) == l.contains(w)
   //   }))
   //   l + l === l
-  // } holds
+  // } .holds
   
   // // a combination of associativity and idempotence
   // def plus_idem_assoc[A](l1: Lang[A], l2: Lang[A]) = {
   //   assert(plus_assoc(l1,l1,l2))
   //   assert(plus_idem(l1))
   //   l1 + (l1 + l2) === l1 + l2
-  // } holds
+  // } .holds
 
   // // union with one does nothing when oo is true
   // def plus_one_l[A](l: Lang[A]) = {
   //   require(l.oo)
 
   //   one + l === l
-  // } holds
+  // } .holds
 
   // // union with one does nothing when oo is true
   // def plus_one_r[A](l: Lang[A]) = {
   //   require(l.oo)
 
   //   l + one === l
-  // } holds
+  // } .holds
 
   // // concatenation with the empty Lang is empty
   // def times_zero_l[A](l: Lang[A]) = {
   //   (zero $ l) === zero
-  // } holds
+  // } .holds
 
   // // concatenation with the empty Lang is empty
   // def times_zero_r[A](l: Lang[A]) = {
   //   (l $ zero) === zero
-  // } holds
+  // } .holds
 
   // // one is neutral for concatenation
   // def times_one_l[A](l: Lang[A]) = {
   //   (one $ l) === l
-  // } holds
+  // } .holds
 
   // // one is neutral for concatenation
   // def times_one_r[A](l: Lang[A]) = {
   //   (l $ one) === l
-  // } holds
+  // } .holds
 
   // // distributivity on the left
   // def times_plus_l[A](l1: Lang[A], l2: Lang[A], l3: Lang[A]) = {
   //   (l1 + l2) * l3 === (l1 * l3) + (l2 * l3)
-  // } holds
+  // } .holds
 
   // // distributivity on the right
   // def times_plus_r[A](l1: Lang[A], l2: Lang[A], l3: Lang[A]) = {
   //   l1 * (l2 + l3) === (l1 * l2) + (l1 * l3)
-  // } holds
+  // } .holds
 
   // // associativity of concatenation
   // def times_assoc[A](l1: Lang[A], l2: Lang[A], l3: Lang[A]) = {
   //   l1 * (l2 * l3) === (l1 * l2) * l3
-  // } holds
+  // } .holds
 
   // def star_zero[A] = {
   //   zero.star === zero
-  // } holds
+  // } .holds
 
   // def star_one[A] = {
   //   one.star === one
-  // } holds
+  // } .holds
 
   // def star_unfold_l[A](l: Lang[A]) = {
   //   l.star === one + (l $ l.star)
-  // } holds
+  // } .holds
 
 
   // def shuffle_zero_l[A](l: Lang[A]) = {
   //   (zero | l) === zero
-  // } holds
+  // } .holds
 
   // def shuffle_zero_r[A](l: Lang[A]) = {
   //   (l | zero) === zero
-  // } holds
+  // } .holds
 
   // def shuffle_one_l[A](l: Lang[A]) = {
   //   (one | l) === l
-  // } holds
+  // } .holds
 
   // def shuffle_one_r[A](l: Lang[A]) = {
   //   (l | one) === l
-  // } holds
+  // } .holds
 
   // def shuffle_plus_l[A](l1: Lang[A], l2: Lang[A], l3: Lang[A]) = {
   //   ((l1 + l2) | l3) === (l1 | l3) + (l2 | l3)
-  // } holds
+  // } .holds
 
   // def shuffle_plus_r[A](l1: Lang[A], l2: Lang[A], l3: Lang[A]) = {
   //   (l1 | (l2 + l3)) === (l1 | l2) + (l1 | l3)
-  // } holds
+  // } .holds
 
   // def shuffle_assoc[A](l1: Lang[A], l2: Lang[A], l3: Lang[A]) = {
   //   (l1 | (l2 | l3)) === ((l1 | l2) | l3)
-  // } holds
+  // } .holds
 
   
   // def star_unfold_r[A](l: Lang[A]) = {
   //   l.star === one + (l.star $ l)
-  // } holds
+  // } .holds
 
   // def star_star[A](l: Lang[A]) = {
   //   l.star.star === l.star
-  // } holds
+  // } .holds
 
   // def times_star[A](l: Lang[A]) = {
   //   (l.star $ l.star) === l.star
-  // } holds
+  // } .holds
 
   // def zero_one[A] = {
   //   zero =!= one
-  // } holds
+  // } .holds
 
   // def le_star_l[A](l: Lang[A]) = {
   //   one + (l $ l.star) <= l.star
-  // } holds
+  // } .holds
 
   // def le_star_r[A](l: Lang[A]) = {
   //   one + (l.star $ l) <= l.star
-  // } holds
+  // } .holds
 
   // def arden_l[A](l1: Lang[A], l2: Lang[A], l3: Lang[A]) = {
   //   require(l1 + (l2 $ l3) <= l3)
 
   //   (l2.star $ l1) <= l3
-  // } holds
+  // } .holds
 
   // def arden_r[A](l1: Lang[A], l2: Lang[A], l3: Lang[A]) = {
   //   require(l1 + (l2 $ l3) <= l2)
 
   //   (l1 $ l3.star) <= l2
-  // } holds
+  // } .holds
 
 
   // def ge_one[A](l: Lang[A]) = {
   //   require(one <= l)
 
   //   l.oo
-  // } holds
+  // } .holds
 
   // def plus_mono[A](l1: Lang[A], l2: Lang[A], l3: Lang[A], l4: Lang[A]) = {
   //   require(l1 <= l2 && l3 <= l4)
 
   //   (l1 + l3) <= (l2 + l4)
-  // } holds
+  // } .holds
 
   // def plus_upper[A](l1: Lang[A], l2: Lang[A], l: Lang[A]) = {
   //   require(l1 <= l && l2 <= l)
 
   //   l1 + l2 <= l
-  // } holds
+  // } .holds
 
   // def le_plus_l[A](l1: Lang[A], l2: Lang[A]) = {
   //   l1 <= l1 + l2
-  // } holds
+  // } .holds
 
   // def le_plus_r[A](l1: Lang[A], l2: Lang[A]) = {
   //   l2 <= l1 + l2
-  // } holds
+  // } .holds
 
   // def times_mono[A](l1: Lang[A], l2: Lang[A], l3: Lang[A], l4: Lang[A]) = {
   //   require(l1 <= l2 && l3 <= l4)
 
   //   (l1 $ l3) <= (l2 $ l4)
-  // } holds
+  // } .holds
 
   // def le_times_l[A](l1: Lang[A], l2: Lang[A]) = {
   //   require(l2.oo)
 
   //   l1 <= (l1 $ l2)
-  // } holds
+  // } .holds
 
   // def le_times_r[A](l1: Lang[A], l2: Lang[A]) = {
   //   require(l1.oo)
 
   //   l2 <= (l1 $ l2)
-  // } holds
+  // } .holds
 
   // def le_star[A](l: Lang[A]) = {
   //   l <= l.star
-  // } holds
+  // } .holds
 
   // def star_mono[A](l1: Lang[A], l2: Lang[A]) = {
   //   require(l1 <= l2)
@@ -421,83 +421,83 @@ object Main {
   //   require(l1 <= l2 && l3 <= l4)
 
   //   (l1 n l3) <= (l2 n l4)
-  // } holds
+  // } .holds
 
   // def not_antimono[A](l1: Lang[A], l2: Lang[A]) = {
   //   require(l1 <= l2)
 
   //   l2.c <= l1.c
-  // } holds
+  // } .holds
 
   // def not_plus[A](l1: Lang[A], l2: Lang[A]) = {
   //   (l1 + l2).c === (l1.c n l2.c)
-  // } holds
+  // } .holds
 
   // def not_inter[A](l1: Lang[A], l2: Lang[A]) = {
   //   (l1 n l2).c === (l1.c + l2.c)
-  // } holds
+  // } .holds
 
   // def inter_assoc[A](l1: Lang[A], l2: Lang[A], l3: Lang[A]) = {
   //   (l1 n (l2 n l3)) === ((l1 n l2) n l3)
-  // } holds
+  // } .holds
 
   // def inter_comm[A](l1: Lang[A], l2: Lang[A]) = {
   //   (l1 n l2) === (l2 n l1)
-  // } holds
+  // } .holds
 
   // def inter_idem[A](l: Lang[A]) = {
   //   (l n l) === l
-  // } holds
+  // } .holds
 
   // def inter_zero_l[A](l: Lang[A]) = {
   //   (zero n l) === zero
-  // } holds
+  // } .holds
 
   // def inter_zero_r[A](l: Lang[A]) = {
   //   (l n zero) === zero
-  // } holds
+  // } .holds
 
   // def inter_full_l[A](l: Lang[A]) = {
   //   (full n l) === l
-  // } holds
+  // } .holds
 
   // def inter_full_r[A](l: Lang[A]) = {
   //   (l n full) === l
-  // } holds
+  // } .holds
 
   // def plus_full_l[A](l: Lang[A]) = {
   //   full + l === full
-  // } holds
+  // } .holds
 
   // def plus_full_r[A](l: Lang[A]) = {
   //   l + full === full
-  // } holds
+  // } .holds
 
   // def not_not[A](l: Lang[A]) = {
   //   l.c.c === l
-  // } holds
+  // } .holds
 
   // def not_zero() = {
   //   zero.c === full
-  // } holds
+  // } .holds
 
   // def not_full() = {
   //   full.c === zero
-  // } holds
+  // } .holds
 
   // def bisimulation[A](l1: Lang[A], l2: Lang[A], l3: Lang[A]) = {
   //   require((l1 $ l2) === (l2 $ l3))
 
   //   (l1.star $ l2) === (l2 $ l3.star)
-  // } holds
+  // } .holds
 
   // def sliding[A](l1: Lang[A], l2: Lang[A]) = {
   //   ((l1 $ l2).star $ l1) === (l1 $ (l2 $ l1).star)
-  // } holds
+  // } .holds
 
   // def denesting[A](l1: Lang[A], l2: Lang[A]) = {
   //   (l1 + l2).star === (l1.star $ (l2 $ l1.star).star)
-  // } holds
+  // } .holds
 
   // def tails[T](l: List[T]): List[List[T]] = l match {
   //   case Nil() => List(Nil())
@@ -506,7 +506,7 @@ object Main {
 
   // def tails_snoc[T](xs: List[T], x: T) = {
   //   tails(xs :+ x) == tails(xs).map(l => l :+ x) :+ Nil()
-  // } holds
+  // } .holds
 
   // def length_tails[T](l: List[T]) = {
   //   tails(l).length == l.length + 1

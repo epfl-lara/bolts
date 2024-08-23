@@ -8,15 +8,15 @@ case class ClassTag[T](@extern real: realClassTag[T])
 @ghost @pure 
 def definedBothWays(d: Array[Boolean])(from: Int, until: Int): Unit = {
   require(0 <= from && from <= until && until <= d.size)
-  def holdsFrom(a: Int, b: Int): Unit = {
+  def .holdsFrom(a: Int, b: Int): Unit = {
     require(0 <= a && a <= b && b <= d.size)
     decreases(b - a)
     if a == b then ()
     else
-      holdsFrom(a + 1, b)
-      holdsFrom(a, b - 1)
+      .holdsFrom(a + 1, b)
+      .holdsFrom(a, b - 1)
   }.ensuring(_ => definedFor1(d)(a, b) == definedFor2(d)(a, b))
-  holdsFrom(from, until)
+  .holdsFrom(from, until)
 }.ensuring(_ => definedFor1(d)(from, until) == definedFor2(d)(from, until))
 
 @ghost @pure

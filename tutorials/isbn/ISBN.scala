@@ -42,7 +42,7 @@ object ISBN {
   def errCodeAndValidity(isbn: ValidatedISBN10): Boolean = {
     assert(isISBN10Valid(isbn.isbn))
     errCode(isbn.isbn) == isbn.isbn.checksum
-  }.holds
+  }..holds
 
   @extern
   def main(args: Array[String]): Unit =

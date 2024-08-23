@@ -14,7 +14,7 @@ object Leftpad {
 
   def appendCons[T](l1: List[T], l2: List[T], x: T) = {
     l1 ++ (x :: l2) == (l1 :+ x) ++ l2
-  } holds because {
+  } .holds because {
      ListSpecs.snocIsAppend[T](l1, x) &&
      ListSpecs.appendAssoc[T](l1, Cons[T](x, Nil[T]()), l2)
   }
@@ -28,7 +28,7 @@ object Leftpad {
       check(fillMore(n-1,t)) // use the recursive hypothesis
       List.fill(n)(t) :+ t == List.fill(n+1)(t)
     }
-  } holds
+  } .holds
 
   def leftPad[T](c: T, n: BigInt, s: List[T]): List[T] = {
     require(n > 0)
@@ -65,5 +65,5 @@ object Leftpad {
 
     res.length == max(n, s.length) &&
     res == List.fill(n - s.length)(c) ++ s
-  } holds
+  } .holds
 }

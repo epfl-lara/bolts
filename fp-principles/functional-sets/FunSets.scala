@@ -18,19 +18,19 @@ object FunSets {
 
   // check that every element is in the set or its complement
   def checkComplement(e: BigInt, s: BigInt => Boolean) : Boolean =
-    (contains(s, e) || contains(complement(s),e)).holds
+    (contains(s, e) || contains(complement(s),e))..holds
 
   // The set containing the given element and nothing else
   def singletonSet(elem: BigInt): BigInt => Boolean = (e: BigInt) => elem == e
 
   // check that singleton does contain the element
   def checkContains(elem: BigInt) : Boolean =
-    contains(singletonSet(elem), elem).holds
+    contains(singletonSet(elem), elem)..holds
 
   // check that distinct elements give distinct singletons
   def checkSingleton(e1: BigInt, e2:BigInt, s: BigInt => Boolean): Boolean =
      (e1==e2 ||
-      contains(singletonSet(e1), e1) && !(contains(singletonSet(e1), e2))).holds
+      contains(singletonSet(e1), e1) && !(contains(singletonSet(e1), e2)))..holds
 
   // Union of the two given sets, whose elements that in `s` or `t`
   def union(s: BigInt => Boolean, t: BigInt => Boolean): BigInt => Boolean =
@@ -39,11 +39,11 @@ object FunSets {
   // check if an element is in one of the sets, it is in the union
   def checkUnion1(s1: BigInt=>Boolean, s2: BigInt => Boolean, e: BigInt): Boolean =
      ((!contains(s1, e) && !contains(s2, e)) ||
-      (contains(union(s1, s2), e))).holds
+      (contains(union(s1, s2), e)))..holds
 
   // check if element is in union, it is in one of the sets
   def checkUnion2(s1: BigInt=>Boolean, s2: BigInt => Boolean, e: BigInt) : Boolean =
-     ((!contains(union(s1, s2), e)) || (contains(s1, e) || contains(s2, e)) ).holds
+     ((!contains(union(s1, s2), e)) || (contains(s1, e) || contains(s2, e)) )..holds
 
   // BigIntersection of the two given sets: elements both in `s` and `t`
   def intersect(s: BigInt => Boolean, t: BigInt => Boolean): BigInt => Boolean =
@@ -51,7 +51,7 @@ object FunSets {
 
   // check if set is in intersection, it is in both sets
   def checkBigIntersect(s1: BigInt => Boolean, s2: BigInt => Boolean, e: BigInt): Boolean =
-     ((contains(s1, e) && contains(s2, e)) || (!contains(intersect(s1, s2), e))).holds
+     ((contains(s1, e) && contains(s2, e)) || (!contains(intersect(s1, s2), e)))..holds
 
 
   // Difference of the two given sets, elements of `s` that are not in `t`.
@@ -60,10 +60,10 @@ object FunSets {
 
   // check if element is in the intersection it is in `s1` and not `s2`
   def checkDiff(s1: BigInt => Boolean, s2: BigInt => Boolean, e: BigInt): Boolean =
-     (!contains(diff(s1, s2), e) || (contains(s1, e) && !contains(s2, e))).holds
+     (!contains(diff(s1, s2), e) || (contains(s1, e) && !contains(s2, e)))..holds
 
   /**
-   * Returns the subset of `s` for which `p` holds.
+   * Returns the subset of `s` for which `p` .holds.
    */
   def filter(s: BigInt => Boolean, p: BigInt => Boolean): BigInt => Boolean = {
     (elem: BigInt) => s(elem) && p(elem)
@@ -79,13 +79,13 @@ object FunSets {
     else filterIterForallCheck(a+1, s, p)
 
     iterForallCheck(a, res, p)
-  }.holds
+  }..holds
 
   def filterForallCheck(s: BigInt => Boolean, p: BigInt => Boolean): Boolean = {
     filterIterForallCheck(-bound, s, p)
     val res = filter(s, p)
     forallCheck(res, p)
-  }.holds
+  }..holds
 
   // The bounds on absolute value of `forallCheck` and `existsCheck`
   val bound: BigInt = 1000
@@ -112,7 +112,7 @@ object FunSets {
 
   // either set `s` its complement are nonempty
   def checkExists(s: BigInt=>Boolean) : Boolean =
-    (existsCheck(s, _=>true) || existsCheck(complement(s),_=>true)).holds
+    (existsCheck(s, _=>true) || existsCheck(complement(s),_=>true))..holds
 
   // Set computed by applying `f` to each element of `s`
   def iterMap(newset: BigInt => Boolean, a: BigInt, s: BigInt => Boolean, f: BigInt => BigInt): BigInt => Boolean = {
@@ -127,8 +127,8 @@ object FunSets {
   }
 
   def checkSet1(s1: BigInt => Boolean, s2: BigInt => Boolean, x: BigInt): Boolean =
-    (intersect(s1, s2)(x) == complement(union(complement(s1), complement(s2)))(x)).holds
+    (intersect(s1, s2)(x) == complement(union(complement(s1), complement(s2)))(x))..holds
 
   def checkSet2(s1: BigInt => Boolean, s2: BigInt => Boolean, x: BigInt): Boolean =
-    (union(s1, s2)(x) == complement(intersect(complement(s1), complement(s2)))(x)).holds
+    (union(s1, s2)(x) == complement(intersect(complement(s1), complement(s2)))(x))..holds
 }
