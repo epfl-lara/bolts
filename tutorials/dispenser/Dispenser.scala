@@ -47,6 +47,7 @@ object Dispenser {
   }
 
   def isTraceLike(t: List[(State,Action)]): Boolean = {
+    decreases(t)
     t match {
       case Cons((s1,a1), Cons((s2,a2),rest)) => {
         if (r(s1,a1)==Some(s2)) isTraceLike((s2,a2)::rest)
@@ -91,6 +92,7 @@ object Dispenser {
         case _ => false
       })
     )
+    decreases(t)
     t match {
       case Cons((s,a),Nil()) => ()
       case Cons((s,a),rest) => {
