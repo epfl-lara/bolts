@@ -1,4 +1,4 @@
-import ch.epfl.chassot.*
+import ch.epfl.map.*
 import stainless.lang.StaticChecks.*
 import stainless.annotation.*
 import stainless.lang.{ghost => ghostExpr, _}
