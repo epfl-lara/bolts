@@ -1,6 +1,6 @@
 package ch.epfl.lexer
 
-import ch.epfl.chassot.MutableHashMap
+import ch.epfl.map.MutableHashMap
 import ch.epfl.lexer.VerifiedRegex._
 import ch.epfl.lexer.VerifiedRegexMatcher._
 import ch.epfl.lexer.Memoisation._
@@ -8,7 +8,7 @@ import ch.epfl.benchmark.RegexUtils._
 import stainless.annotation._
 import stainless.lang._
 import stainless.collection._
-import ch.epfl.chassot.Hashable
+import ch.epfl.map.Hashable
 import ch.epfl.lexer.RegexBenchmark.testSimp
 import scala.collection.View.Empty
 

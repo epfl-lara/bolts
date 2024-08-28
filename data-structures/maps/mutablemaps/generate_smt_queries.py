@@ -72,7 +72,7 @@ def main():
         shutil.rmtree("./smt-sessions")
     except OSError as e:
         print("Error: %s - %s." % (e.filename, e.strerror))
-    files = ["./src/main/scala/ch/epfl/chassot/ListLongMap.scala", "./src/main/scala/ch/epfl/chassot/MutableLongMap.scala"]
+    files = ["./src/main/scala/ch/epfl/map/ListLongMap.scala", "./src/main/scala/ch/epfl/map/MutableLongMap.scala"]
     res = verify(files)
     table = extract_table_from_res(res)
     today_date = time.strftime("%Y-%m-%d--%H-%M-%S")
