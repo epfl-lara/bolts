@@ -73,10 +73,10 @@ final case class CachedFunction[I, O](
       assert(cache.valid)
       assert(CachedFunction.allValuesAreFunctionOutputs(f, cache), "cached value is still function output")
       result
-  }.ensuring { res =>
+  }.ensuring( res =>
     unfold(this.valid)
     res == f(x) && this.valid 
-  }
+  )
 }
 
 // object IntHashable extends Hashable[Int] {

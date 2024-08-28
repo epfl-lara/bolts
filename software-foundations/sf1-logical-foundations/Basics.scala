@@ -1,7 +1,7 @@
 package sf1
 
-import stainless.lang._ // for the holds keyword
-import scala.language.postfixOps // to avoid warnings about postfix holds
+import stainless.lang._ // for the .holds keyword
+import scala.language.postfixOps // to avoid warnings about postfix .holds
 
 import stainless.annotation._ // for the @induct annotation
 
@@ -339,7 +339,7 @@ object Basics {
       case O => BigInt(0)
       case S(n2) => natToBigInt(n2) + 1
     }
-  } ensuring(res => res >= 0)
+  }.ensuring(res => res >= 0)
 
 
   // We here define a `test` function whose termination is not obvious for

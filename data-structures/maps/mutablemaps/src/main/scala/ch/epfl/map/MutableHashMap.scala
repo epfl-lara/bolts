@@ -348,7 +348,7 @@ object MutableHashMap {
 
   // ----------------- Lemmas ------------------------------------------------------------------------
   /**
-    * This lemma proves that a property `p` that holds for all pairs of the map, holds for a key and its value.
+    * This lemma proves that a property `p` that .holds for all pairs of the map, .holds for a key and its value.
     * 
     * Useful to build caches using this map.
     *
@@ -372,7 +372,7 @@ object MutableHashMap {
 
 
   /**
-    * This lemma proves that inserting a new pair preserves the property `p` that holds for all pairs of the map.
+    * This lemma proves that inserting a new pair preserves the property `p` that .holds for all pairs of the map.
     * 
     * Useful to build caches using this map.
     *
@@ -408,7 +408,7 @@ object MutableHashMap {
     }
 
     ()
-  } ensuring (_ => {
+  }.ensuring(_ => {
     val oldMap = snapshot(hm)
     val afterUpdate = snapshot(hm)
     afterUpdate.update(k, v)
@@ -416,7 +416,7 @@ object MutableHashMap {
   })
 
     /**
-    * This lemma proves that removing a pair preserves the property `p` that holds for all pairs of the map.
+    * This lemma proves that removing a pair preserves the property `p` that .holds for all pairs of the map.
     * 
     * Useful to build caches using this map.
     *
@@ -454,7 +454,7 @@ object MutableHashMap {
     }
 
     ()
-  } ensuring (_ => {
+  }.ensuring(_ => {
     val oldMap = snapshot(hm)
     val afterUpdate = snapshot(hm)
     afterUpdate.remove(k)

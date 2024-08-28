@@ -31,7 +31,7 @@ object ConstFold:
   def lemma(ctx: Env, @induct e: Expr): Unit = {
     require(zeroExpr(e))
     ()
-  } ensuring(_ => evaluate(ctx, e) == 0)
+  }.ensuring(_ => evaluate(ctx, e) == 0)
 
   def mirror(e: Expr)(anyCtx: Env = zeroEnv): Expr = {
     e match
@@ -45,7 +45,7 @@ object ConstFold:
   abstract class SoundSimplifier:
     def apply(e: Expr, anyCtx: Env): Expr = {
       (??? : Expr)
-    } ensuring(evaluate(anyCtx,_) == evaluate(anyCtx,e))
+    }.ensuring(evaluate(anyCtx,_) == evaluate(anyCtx,e))
   
   val mirSimp = new SoundSimplifier:
     override def apply(e: Expr, anyCtx: Env) = mirror(e)(anyCtx)
@@ -56,7 +56,7 @@ object ConstFold:
       case Minus(Number(n1), Number(n2)) => Number(n1 - n2)
       case Mul(Number(n1), Number(n2))   => Number(n1 * n2)
       case e                             => e
-  } ensuring(evaluate(anyCtx,_) == evaluate(anyCtx,e))
+  }.ensuring(evaluate(anyCtx,_) == evaluate(anyCtx,e))
 
   val constFoldSimp = new SoundSimplifier:
     override def apply(e: Expr, anyCtx: Env) = constfold1(e)(anyCtx)
@@ -73,7 +73,7 @@ object ConstFold:
 
   def constfold(e: Expr)(anyCtx: Env = zeroEnv): Expr = {
     mapExpr(e, constFoldSimp)(anyCtx)
-  } ensuring(evaluate(anyCtx,_) == evaluate(anyCtx,e))
+  }.ensuring(evaluate(anyCtx,_) == evaluate(anyCtx,e))
 
 
   @extern

@@ -1,6 +1,6 @@
 /* Copyright 2009-2021 EPFL, Lausanne */
 
-import scala.Predef.{ genericArrayOps => _, genericWrapArray => _, copyArrayToImmutableIndexedSeq => _, require => _, Ensuring => _, assert => _, _ } // For Scala 2.13
+import scala.Predef.{ genericArrayOps => _, genericWrapArray => _, copyArrayToImmutableIndexedSeq => _, require => _,.Ensuring(=> _, assert => _, _ } // For Scala 2.13)
 import stainless.lang.{ghost => ghostExpr, _}
 import stainless.proof._
 import stainless.annotation._
@@ -902,7 +902,7 @@ object LZWa {
     def size = {
       require(isValid)
       length
-    } ensuring { res => 0 <= res && res <= capacity }
+    }.ensuring({ res => 0 <= res && res <= capacity })
 
     def apply(index: Int): Byte = {
       require(index >= 0 && index < length)
@@ -917,26 +917,26 @@ object LZWa {
       array(length) = x
 
       length += 1
-    } ensuring { _ => isValid }
+    }.ensuring({ _ => isValid })
 
     def dropLast(): Unit = {
       require(nonEmpty)
       require(isValid)
 
       length -= 1
-    } ensuring { _ => isValid && old(this).length == length + 1 }
+    }.ensuring({ _ => isValid && old(this).length == length + 1 })
 
     def clear(): Unit = {
       require(isValid)
       length = 0
-    } ensuring { _ => isEmpty && isValid }
+    }.ensuring({ _ => isEmpty && isValid })
 
     def set(b: Buffer): Unit = {
       require(isValid)
       require(b.isValid)
       if (b.isEmpty) clear()
       else setImpl(b)
-    } ensuring { _ => b.isValid && isValid && isEqual(b) /* && b.isEqual(old(b)) */ }
+    }.ensuring({ _ => b.isValid && isValid && isEqual(b) /* && b.isEqual(old(b)) */ })
 
     @ghost @inline @pure
     def setPure(b: Buffer): Buffer = {
@@ -986,14 +986,14 @@ object LZWa {
       assert(areRangesEqual(array, b.array, 0, length))
       assert(length == b.length)
       assert(isEqual(b))
-    } ensuring { _ => b.isValid && isValid && nonEmpty && isEqual(b) /* && b.isEqual(old(b)) */ }
+    }.ensuring({ _ => b.isValid && isValid && nonEmpty && isEqual(b) /* && b.isEqual(old(b)) */ })
 
   }
 
   @inline @cCode.inline // very important because we cannot return arrays
   def createBuffer(): Buffer = {
     Buffer(Array.fill(BufferSize)(0), 0)
-  } ensuring { b => b.isEmpty && b.nonFull && b.isValid }
+  }.ensuring({ b => b.isEmpty && b.nonFull && b.isValid })
 
 
   def tryReadNext(fis: FIS)(implicit state: stainless.io.State): Option[Byte] = {
@@ -1054,7 +1054,7 @@ object LZWa {
     // promotion with negative numbers: we need to avoid the signe extension here.
     val signed = (cw.b1 << 8) | (0xff & cw.b2)
     signed + 32768
-  } ensuring { res => 0 <= res && res < 65536 }
+  }.ensuring({ res => 0 <= res && res < 65536 })
 
 
   case class Dictionary(val buffers: Array[Buffer], private var nextIndex: Int) {
@@ -1081,14 +1081,14 @@ object LZWa {
     def currIndex = {
       require(isValid)
       nextIndex
-    } ensuring { res => 0 <= res && res <= capacity }
+    }.ensuring({ res => 0 <= res && res <= capacity })
 
     @pure
     def lastIndex = {
       require(isValid)
       require(nonEmpty)
       nextIndex - 1
-    } ensuring { res => 0 <= res && res < capacity }
+    }.ensuring({ res => 0 <= res && res < capacity })
 
     @pure
     def contains(index: Int): Boolean = {
@@ -1130,7 +1130,7 @@ object LZWa {
         check(buffer.nonEmpty)
         true
       } else false
-    } ensuring { ok =>
+    }.ensuring({ ok =>)
       isValid &&
       buffer.isValid &&
       ok ==> buffer.nonEmpty

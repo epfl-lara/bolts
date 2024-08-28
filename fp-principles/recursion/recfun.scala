@@ -63,5 +63,5 @@ object Main {
     if (money == 0) BigInt(1)
     else if (money < 0 || coins.isEmpty) BigInt(0)
     else countChange(money-coins.head, coins) + countChange(money, coins.tail)
-  } ensuring(_ >= 0)
+  }.ensuring(_ >= 0)
 }

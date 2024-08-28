@@ -169,7 +169,7 @@ object Game2048 {
       }
 
       res
-    } ensuring(res => res >= n && res < 16)
+    }.ensuring(res => res >= n && res < 16)
 
     @extern
     def cells: List[Cell] = List(c11, c12, c13, c14,
@@ -207,7 +207,7 @@ object Game2048 {
       c3.n = c4.n
       c4.n = None()
     }
-  } ensuring(_ =>
+  }.ensuring(_ =>
     c1.points + c2.points + c3.points + c4.points == old(c1).points + old(c2).points + old(c3).points + old(c4).points &&
     noHoles(c1, c2, c3, c4)
   )
@@ -229,7 +229,7 @@ object Game2048 {
       merge(c2, c1)
     }
     slideLeft(c1, c2, c3, c4)
-  } ensuring(_ =>
+  }.ensuring(_ =>
     c1.points + c2.points + c3.points + c4.points == old(c1).points + old(c2).points + old(c3).points + old(c4).points &&
     noHoles(c1, c2, c3, c4)
     //noMergesOpportunities(c1, c2, c3, c4)
@@ -277,7 +277,7 @@ object Game2048 {
   //    merge(c2, c1)
   //  }
   //  slideLeft(c1, c2, c3, c4)
-  //} ensuring(_ =>
+  //}.ensuring(_ =>
   //  c1.points + c2.points + c3.points + c4.points == old(c1).points + old(c2).points + old(c3).points + old(c4).points &&
   //  noHoles(c1, c2, c3, c4) &&
   //  noMergesOpportunities(c1, c2, c3, c4)
@@ -289,7 +289,7 @@ object Game2048 {
     mergeLeft(map.c21, map.c22, map.c23, map.c24)
     mergeLeft(map.c31, map.c32, map.c33, map.c34)
     mergeLeft(map.c41, map.c42, map.c43, map.c44)
-  } ensuring(_ => 
+  }.ensuring(_ => 
     map.totalPoints == old(map).totalPoints &&
     noHoles(map.c11, map.c12, map.c13, map.c14) &&
     noHoles(map.c21, map.c22, map.c23, map.c24) &&
@@ -303,7 +303,7 @@ object Game2048 {
     mergeLeft(map.c12, map.c22, map.c32, map.c42)
     mergeLeft(map.c13, map.c23, map.c33, map.c43)
     mergeLeft(map.c14, map.c24, map.c34, map.c44)
-  } ensuring(_ => 
+  }.ensuring(_ => 
     map.totalPoints == old(map).totalPoints &&
     noHoles(map.c11, map.c21, map.c31, map.c41) &&
     noHoles(map.c12, map.c22, map.c32, map.c42) &&
@@ -318,7 +318,7 @@ object Game2048 {
     mergeLeft(map.c24, map.c23, map.c22, map.c21)
     mergeLeft(map.c34, map.c33, map.c32, map.c31)
     mergeLeft(map.c44, map.c43, map.c42, map.c41)
-  } ensuring(_ =>
+  }.ensuring(_ =>
     map.totalPoints == old(map).totalPoints &&
     noHoles(map.c14, map.c13, map.c12, map.c11) &&
     noHoles(map.c24, map.c23, map.c22, map.c21) &&
@@ -332,7 +332,7 @@ object Game2048 {
     mergeLeft(map.c42, map.c32, map.c22, map.c12)
     mergeLeft(map.c43, map.c33, map.c23, map.c13)
     mergeLeft(map.c44, map.c34, map.c24, map.c14)
-  } ensuring(_ => 
+  }.ensuring(_ => 
     map.totalPoints == old(map).totalPoints &&
     noHoles(map.c41, map.c31, map.c21, map.c11) &&
     noHoles(map.c42, map.c32, map.c22, map.c12) &&
@@ -350,7 +350,7 @@ object Game2048 {
     val tmp = that.n.get
     that.n = None()
     into.n = Some(into.n.get + tmp)
-  } ensuring(_ => into.points + that.points == old(into).points + old(that).points)
+  }.ensuring(_ => into.points + that.points == old(into).points + old(that).points)
 
 
 
@@ -402,7 +402,7 @@ object Game2048 {
       map.c44.n = Some(v)
     }
 
-  } ensuring(_ => {
+  }.ensuring(_ => {
     map.nbEmptyCells == old(map).nbEmptyCells - 1 &&
     map.totalPoints == old(map).totalPoints + v &&
     map.content == old(map).content + v

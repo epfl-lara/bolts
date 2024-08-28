@@ -68,7 +68,7 @@ object SET {
   @extern @ghost
   def eqRep(m: SETMeaning): SET = {
     (??? : SET)
-  } ensuring((s: SET) => eqClass(s) == m)
+  }.ensuring((s: SET) => eqClass(s) == m)
   
   // ...............................
   // extensionality of set equality
@@ -76,9 +76,9 @@ object SET {
   @extern
   def notEqWitn(a: SET, b: SET): SET = {
     (??? : SET)
-  } ensuring((w:SET) => (a === b) ||
-             ((w in a) && !(w in b)) ||
-             (!(w in a) && (w in b)))
+  }.ensuring((w:SET) => (a === b) ||
+             ((w.in(a)) && !(w.in(b))) ||
+             (!(w.in(a)) && (w.in(b))))
 
 
   // ...............................
@@ -94,14 +94,14 @@ object SET {
   @extern
   def subseteq(a: SET, b: SET, e: SET): Unit = {
     ()
-  } ensuring(_ => !(a subsetEq b) || !(e in a) || (e in b))
+  }.ensuring(_ => !(a.subsetEq(b)) || !(e.in(a)) || (e.in(b)))
 
   // definition of subset, part 2 skolemized
   @extern
   def notSubseteqWitn(a: SET, b: SET): SET = {
     (??? : SET)
-  } ensuring((w : SET) => (a subsetEq b) ||
-             ((w in a) && !(w in b)))
+  }.ensuring((w : SET) => (a.subsetEq(b)) ||
+             ((w.in(a)) && !(w.in(b))))
 
   
   def empty = new SET { }
@@ -109,7 +109,7 @@ object SET {
   @ghost @extern
   def emptyDef(elem: SET): Unit = {
     ()
-  }.ensuring(res => !(elem in empty))
+  }.ensuring(res => !(elem.in(empty)))  
 
   @ghost @extern 
   def singleton(elem: SET): SET = new SET { }
@@ -117,7 +117,7 @@ object SET {
   @ghost @extern 
   def singletonDef(elem: SET, x: SET): Unit = {
     ()
-  } ensuring(_ => ((x in singleton(elem)) == (x === elem)))
+  }.ensuring(_ => ((x.in(singleton(elem))) == (x === elem)))
 
  
   @ghost @extern 
@@ -126,7 +126,7 @@ object SET {
   @ghost @extern 
   def uPairDef(e1: SET, e2: SET, x: SET): Unit = {
     ()
-  } ensuring(_ => ((x in uPair(e1, e2)) == ((x === e1) || (x === e2))))
+  }.ensuring(_ => ((x.in(uPair(e1, e2))) == ((x === e1) || (x === e2))))
   
   @ghost
   def apply(): SET = empty
@@ -147,12 +147,12 @@ object SET {
   @ghost @extern  
   def unionDefLB(y: SET, x: SET, s: SET): Unit = {
     ()
-  } ensuring(_ => !(y in x) || !(x in s) || (y in union(s)))
+  }.ensuring(_ => !(y.in(x)) || !(x.in(s)) || (y.in(union(s))))
 
   @ghost @extern  
   def unionDefUB(y: SET, s: SET): SET = {
     (??? : SET)
-  } ensuring(x => !(y in union(s)) || ((y in x) && (x in s)))
+  }.ensuring(x => !(y.in(union(s))) || ((y.in(x)) && (x.in(s))))
 
   @ghost
   def union2(s1: SET, s2: SET): SET = union(SET(s1, s2))
@@ -169,7 +169,7 @@ object SET {
   @ghost @extern
   def powerSetDef(s: SET, e: SET): Unit = {
     ()
-  } ensuring(_ => (e in powerset(s)) == (e subsetEq s))
+  }.ensuring(_ => (e.in(powerset(s))) == (e.subsetEq(s)))
 
   // disjointness operator definition
   @ghost 
@@ -183,14 +183,14 @@ object SET {
   @ghost @extern
   def disjointDef(s1: SET, s2: SET, x: SET): Unit = {
     ()
-  } ensuring(_ => !(x in s1) || !(x in s2))
+  }.ensuring(_ => !(x.in(s1)) || !(x.in(s2)))
   
   // Foundation axiom
   def foundationWitn(s: SET): SET = {
     (??? : SET)
-  } ensuring((elem: SET) =>
+  }.ensuring((elem: SET) =>
     (elem === empty) ||
-             ((elem in s) && disjoint(elem, s)))
+             ((elem.in(s)) && disjoint(elem, s)))
 
   // Comprehension schema with shallowly embedded predicates
   @ghost
@@ -204,7 +204,7 @@ object SET {
   @ghost @extern
   def filterDef(s: SET, p: SET => Boolean, e: SET): Unit = {
     ()
-  } ensuring(_ => (e in filter(s,p)) == ((e in s) && p(e)))
+  }.ensuring(_ => (e.in(filter(s,p))) == ((e.in(s)) && p(e)))
 
   // Functional relation definition
   @ghost
@@ -218,12 +218,12 @@ object SET {
   @ghost @extern
   def functionalDef(r: (SET, SET) => Boolean, x: SET, y1: SET, y2: SET): Unit = {
     ()
-  } ensuring(_  => !functional(r) || !r(x, y1) || !r(x, y2) || (y1 === y2))
+  }.ensuring(_  => !functional(r) || !r(x, y1) || !r(x, y2) || (y1 === y2))
   
   @ghost @extern
   def functionalDefWitn(r: (SET, SET) => Boolean): (SET, SET, SET) = {
     (??? : (SET, SET, SET))
-  } ensuring((triple:(SET,SET,SET)) => {
+  }.ensuring((triple:(SET,SET,SET)) => {
     val (x, y1, y2) = triple
     functional(r) || (r(x, y1) && r(x, y2) && !(y1 === y2))})
 
@@ -239,12 +239,12 @@ object SET {
   @ghost @extern
   def imageDef(s: SET, r: (SET, SET) => Boolean, x: SET, y: SET): Unit = {
     ()
-  } ensuring(_ =>
-    !functional(r) || !(x in s) || !r(x,y) || (y in image(s,r)))
+  }.ensuring(_ =>
+    !functional(r) || !(x.in(s)) || !r(x,y) || (y.in(image(s,r))))
   @ghost @extern
   def imageDefWitn(s: SET, r: (SET, SET) => Boolean, y: SET): SET = {
     (??? : SET)
-  } ensuring((x:SET) =>
-    !functional(r) || !(y in image(s,r)) || ((x in s) && r(x,y)))
+  }.ensuring((x:SET) =>
+    !functional(r) || !(y.in(image(s,r))) || ((x.in(s)) && r(x,y)))
   
 }

@@ -70,7 +70,7 @@ object Reduction {
           case App(t1p, t2p) if reducesTo(t1, t1p).isDefined && t2 == t2p  => Some[ReductionRule](App1Congruence)
           case App(t1p, t2p) if t1 == t1p && reducesTo(t2, t2p).isDefined => Some[ReductionRule](App2Congruence)
           case _ => None[ReductionRule]()
-        }) orElse (t1 match {
+        }).orElse(t1 match {
           case Abs(_, body) if absSubstitution(body, t2) == tp => Some[ReductionRule](AbsAppReduction)
           case _ => None[ReductionRule]()
         })
@@ -79,7 +79,7 @@ object Reduction {
         (tp match {
           case Fix(fp) if reducesTo(f, fp).isDefined => Some[ReductionRule](FixCongruence)
           case _ => None[ReductionRule]()
-        }) orElse (f match {
+        }).orElse(f match {
           case Abs(_, body) if absSubstitution(body, t) == tp => Some[ReductionRule](AbsFixReduction)
           case _ => None[ReductionRule]()
         })
@@ -94,7 +94,7 @@ object Reduction {
         (tp match {
           case TApp(termp, typp) if reducesTo(term, termp).isDefined && typ == typp => Some[ReductionRule](TAppCongruence)
           case _ => None[ReductionRule]()
-        }) orElse (term match {
+        }).orElse(term match {
           case TAbs(body) if tabsSubstitution(body, typ) == tp => Some[ReductionRule](TAbsTappReduction)
           case _ => None[ReductionRule]()
         })
@@ -191,7 +191,7 @@ object ReductionProperties {
     require(reducesTo(t, tp).get == AbsAppReduction)
 
     assert(t.isInstanceOf[App])
-    val App(t1, _) = t
+    val App(t1, _) = t: @unchecked
     assert(t1.isInstanceOf[Abs])
   }.ensuring(
     t.isInstanceOf[App] && t.asInstanceOf[App].t1.isInstanceOf[Abs] &&
@@ -221,7 +221,7 @@ object ReductionProperties {
     require(reducesTo(t, tp).get == AbsFixReduction)
 
     assert(t.isInstanceOf[Fix])
-    val Fix(f) = t
+    val Fix(f) = t: @unchecked
     assert(f.isInstanceOf[Abs])
   }.ensuring(
     t.isInstanceOf[Fix] && t.asInstanceOf[Fix].t.isInstanceOf[Abs] &&
@@ -253,7 +253,7 @@ object ReductionProperties {
     require(reducesTo(t, tp).get == TAbsTappReduction)
 
     assert(t.isInstanceOf[TApp])
-    val TApp(body, _) = t
+    val TApp(body, _) = t: @unchecked
     assert(body.isInstanceOf[TAbs])
   }.ensuring(
     t.isInstanceOf[TApp] && t.asInstanceOf[TApp].t.isInstanceOf[TAbs] &&

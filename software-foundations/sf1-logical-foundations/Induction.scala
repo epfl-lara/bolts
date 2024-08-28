@@ -1,8 +1,8 @@
 package sf1
 
-import stainless.lang._ // for the holds keyword
+import stainless.lang._ // for the .holds keyword
 import stainless.proof._ // for the check keyword
-import scala.language.postfixOps // to avoid warnings about postfix holds
+import scala.language.postfixOps // to avoid warnings about postfix .holds
 
 import stainless.annotation._ // for the @induct annotation
 

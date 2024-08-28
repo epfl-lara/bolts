@@ -25,9 +25,9 @@ final case class DiscardZone(
     */
   def addCard(card: Card): DiscardZone = {
     copy(cards = card :: cards)
-  } ensuring(res => res.cards.length == cards.length + 1)
+  }.ensuring(res => res.cards.length == cards.length + 1)
 
   def addCards(newCards: List[Card]): DiscardZone = {
     copy(cards = cards ++ newCards)
-  } ensuring(res => res.cards.length == cards.length + newCards.length)
+  }.ensuring(res => res.cards.length == cards.length + newCards.length)
 }

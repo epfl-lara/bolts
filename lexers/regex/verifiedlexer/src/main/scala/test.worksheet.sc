@@ -108,7 +108,7 @@ def regexDepth[C](r: Regex[C]): BigInt = {
     case EmptyExpr()        => BigInt(1)
     case EmptyLang()        => BigInt(1)
   }
-} ensuring (res =>
+}.ensuring(res =>
   res > 0 && (r match {
     case Union(rOne, rTwo)  => res > regexDepth(rOne) && res > regexDepth(rTwo)
     case Concat(rOne, rTwo) => res > regexDepth(rOne) && res > regexDepth(rTwo)
@@ -128,7 +128,7 @@ def regexDepthLong[C](r: Regex[C]): Long = {
     case EmptyExpr()        => 1L
     case EmptyLang()        => 1L
   }
-} ensuring (res =>
+}.ensuring(res =>
   res > 0 && (r match {
     case Union(rOne, rTwo)  => res > regexDepthLong(rOne) && res > regexDepthLong(rTwo)
     case Concat(rOne, rTwo) => res > regexDepthLong(rOne) && res > regexDepthLong(rTwo)
@@ -150,7 +150,7 @@ def getUniqueId[C](r: Regex[C])(implicit idC: IDGiver[C]): Long = {
     case EmptyExpr()        => 11L
     case EmptyLang()        => 13L
   }
-} ensuring (res => res >= 0)
+}.ensuring(res => res >= 0)
 
 object CharIDGiver extends IDGiver[Char] {
   def id(c: Char): Long = c.toLong

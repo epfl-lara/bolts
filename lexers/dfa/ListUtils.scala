@@ -17,7 +17,7 @@ object ListUtils {
       case (_, Nil()) => false
       case (l1, l2)   => if (l1.head == l2.head) isPrefix(l1.tail, l2.tail) else false
     }
-  } ensuring (res => if (res) l.size >= prefix.size else true)
+  }.ensuring(res => if (res) l.size >= prefix.size else true)
 
   def removeLast[B](l: List[B]): List[B] = {
     require(!l.isEmpty)
@@ -26,7 +26,7 @@ object ListUtils {
       case Cons(hd, tl)    => Cons(hd, removeLast(tl))
     }
     res
-  } ensuring (res => res ++ List(l.last) == l)
+  }.ensuring(res => res ++ List(l.last) == l)
 
   def reverseList[B](l: List[B]): List[B] = l match {
     case Cons(hd, tl) => reverseList(tl) ++ List(hd)
@@ -41,7 +41,7 @@ object ListUtils {
       case Cons(hd, tl) => getSuffix(l.tail, tl)
       case Nil()        => l
     }
-  } ensuring (res => p ++ res == l)
+  }.ensuring(res => p ++ res == l)
 
   def getIndex[B](l: List[B], e: B): BigInt = {
     require(l.contains(e))
@@ -50,7 +50,7 @@ object ListUtils {
       case Cons(hd, tl) if hd != e => 1 + getIndex(tl, e)
       case Nil()                   => BigInt(-1)
     }
-  } ensuring (res => res >= 0)
+  }.ensuring(res => res >= 0)
 
   def consecutiveSubseq[B](l1: List[B], lTot: List[B]): Boolean = {
     lTot match {
@@ -78,7 +78,7 @@ object ListUtils {
       case _                                                                   => ()
     }
 
-  } ensuring (_ => ListSpecs.subseq(l1, l2))
+  }.ensuring(_ => ListSpecs.subseq(l1, l2))
 
   @inlineOnce
   @opaque
@@ -86,7 +86,7 @@ object ListUtils {
     require(l.contains(e))
     require(l.head != e)
 
-  } ensuring (_ => l.tail.contains(e))
+  }.ensuring(_ => l.tail.contains(e))
 
   @inlineOnce
   @opaque
@@ -111,7 +111,7 @@ object ListUtils {
     }
     assert(l.tail.contains(e2))
 
-  } ensuring (_ => l.tail.contains(e2))
+  }.ensuring(_ => l.tail.contains(e2))
 
   @inlineOnce
   @opaque
@@ -128,7 +128,7 @@ object ListUtils {
     } else {
       lemmaSameIndexThenSameElement(l.tail, e1, e2)
     }
-  } ensuring (_ => e1 == e2)
+  }.ensuring(_ => e1 == e2)
 
   @inlineOnce
   @opaque
@@ -138,7 +138,7 @@ object ListUtils {
     require(l.head == e1)
     require(getIndex(l, e1) < getIndex(l, e2))
 
-  } ensuring (_ => l.tail.contains(e2))
+  }.ensuring(_ => l.tail.contains(e2))
 
   @inlineOnce
   @opaque
@@ -150,7 +150,7 @@ object ListUtils {
     if (l.tail.head != e) {
       lemmaNotHeadSoGetIndexTailIsMinusOne(l.tail, e)
     }
-  } ensuring (_ => getIndex(l, e) == getIndex(l.tail, e) + 1)
+  }.ensuring(_ => getIndex(l, e) == getIndex(l.tail, e) + 1)
 
   @inlineOnce
   @opaque
@@ -161,7 +161,7 @@ object ListUtils {
       case Cons(hd, tl) => lemmaIsPrefixRefl(tl, l2.tail)
       case Nil()        => ()
     }
-  } ensuring (_ => isPrefix(l1, l2))
+  }.ensuring(_ => isPrefix(l1, l2))
 
   @inlineOnce
   @opaque
@@ -171,7 +171,7 @@ object ListUtils {
       case Cons(hd, tl) => lemmaConcatTwoListThenFirstIsPrefix(tl, l2)
       case Nil()        => ()
     }
-  } ensuring (_ => isPrefix(l1, l1 ++ l2))
+  }.ensuring(_ => isPrefix(l1, l1 ++ l2))
 
   @inlineOnce
   @opaque
@@ -188,7 +188,7 @@ object ListUtils {
       case Cons(hd, tl) => lemmaLongerPrefixContainsHeadOfSuffixOfSmallerPref(tl, s1, p2.tail, l.tail)
       case Nil()        => ()
     }
-  } ensuring (_ => p2.contains(s1.head))
+  }.ensuring(_ => p2.contains(s1.head))
 
   @inlineOnce
   @opaque
@@ -200,7 +200,7 @@ object ListUtils {
       case Cons(hd, tl) => lemmaConcatAssociativity(tl, elmt, l2, tot.tail)
       case Nil()        => ()
     }
-  } ensuring (_ => l1 ++ (List(elmt) ++ l2) == tot)
+  }.ensuring(_ => l1 ++ (List(elmt) ++ l2) == tot)
 
   @inlineOnce
   @opaque
@@ -217,7 +217,7 @@ object ListUtils {
       case Nil() => ()
     }
 
-  } ensuring (_ => (l1 ++ l2) ++ l3 == l1 ++ (l2 ++ l3))
+  }.ensuring(_ => (l1 ++ l2) ++ l3 == l1 ++ (l2 ++ l3))
 
   @inlineOnce
   @opaque
@@ -228,7 +228,7 @@ object ListUtils {
       case Cons(hd, tl) => lemmaRemoveLastConcatenatedPrefixStillPrefix(tl, elmt, tot.tail)
       case Nil()        => ()
     }
-  } ensuring (_ => isPrefix(l, tot))
+  }.ensuring(_ => isPrefix(l, tot))
 
   @inlineOnce
   @opaque
@@ -242,7 +242,7 @@ object ListUtils {
       case Nil()        => ()
     }
 
-  } ensuring (_ => isPrefix(p, removeLast(l)))
+  }.ensuring(_ => isPrefix(p, removeLast(l)))
 
   @inlineOnce
   @opaque
@@ -253,13 +253,13 @@ object ListUtils {
       case Cons(hd, tl) => lemmaPrefixStaysPrefixWhenAddingToSuffix(tl, l.tail, suffix)
       case Nil()        => ()
     }
-  } ensuring (_ => isPrefix(p, l ++ suffix))
+  }.ensuring(_ => isPrefix(p, l ++ suffix))
 
   @inlineOnce
   @opaque
   def lemmaRemoveLastPrefixDecreasesSize[B](l: List[B]): Unit = {
     require(l.size > 0)
-  } ensuring (_ => removeLast(l).size < l.size)
+  }.ensuring(_ => removeLast(l).size < l.size)
 
   @inlineOnce
   @opaque
@@ -274,7 +274,7 @@ object ListUtils {
       case Nil()        => ()
     }
 
-  } ensuring (_ => p1 == p2)
+  }.ensuring(_ => p1 == p2)
 
   @inlineOnce
   @opaque
@@ -286,7 +286,7 @@ object ListUtils {
       case Cons(hd, tl) => lemmaRemoveLastFromBothSidePreservesEq(tl, s, l.tail)
       case Nil()        => ()
     }
-  } ensuring (_ => p ++ removeLast(s) == removeLast(l))
+  }.ensuring(_ => p ++ removeLast(s) == removeLast(l))
 
   @inlineOnce
   @opaque
@@ -298,7 +298,7 @@ object ListUtils {
       case Cons(hd, tl)    => lemmaRemoveLastFromLMakesItPrefix(tl)
     }
 
-  } ensuring (_ => isPrefix(removeLast(l), l))
+  }.ensuring(_ => isPrefix(removeLast(l), l))
 
   @inlineOnce
   @opaque
@@ -314,7 +314,7 @@ object ListUtils {
       case Cons(hd, tl) => lemmaSamePrefixThenSameSuffix(tl, s1, p2.tail, s2, l.tail)
       case Nil()        => ()
     }
-  } ensuring (_ => s1 == s2)
+  }.ensuring(_ => s1 == s2)
 
   @inlineOnce
   @opaque
@@ -326,7 +326,7 @@ object ListUtils {
       case (_, Nil()) => ()
       case (l1, l2)   => lemmaIsPrefixThenSmallerEqSize(l1.tail, l2.tail)
     }
-  } ensuring (_ => p.size <= l.size)
+  }.ensuring(_ => p.size <= l.size)
 
   @inlineOnce
   @opaque
@@ -338,7 +338,7 @@ object ListUtils {
       case Cons(hd, tl) => lemmaAddHeadSuffixToPrefixStillPrefix(tl, l.tail)
       case Nil()        => ()
     }
-  } ensuring (_ => isPrefix(p ++ List(getSuffix(l, p).head), l))
+  }.ensuring(_ => isPrefix(p ++ List(getSuffix(l, p).head), l))
 
   @inlineOnce
   @opaque
@@ -349,7 +349,7 @@ object ListUtils {
       case Cons(hd, tl) => lemmaGetSuffixOnListWithItSelfIsEmpty(tl)
       case Nil()        => ()
     }
-  } ensuring (_ => getSuffix(l, l).isEmpty)
+  }.ensuring(_ => getSuffix(l, l).isEmpty)
 
   @inlineOnce
   @opaque
@@ -362,7 +362,7 @@ object ListUtils {
       case Nil()          => ()
     }
 
-  } ensuring (_ => (s1 ++ List(hd2)) ++ tl2 == tot)
+  }.ensuring(_ => (s1 ++ List(hd2)) ++ tl2 == tot)
 
   @inlineOnce
   @opaque
@@ -376,7 +376,7 @@ object ListUtils {
       case Cons(hd, tl) => lemmaPrefixFromSameListAndStrictlySmallerThenPrefixFromEachOther(s1.tail, tl, l.tail)
       case Nil()        =>
     }
-  } ensuring (_ => isPrefix(s2, s1))
+  }.ensuring(_ => isPrefix(s2, s1))
 
   @inlineOnce
   @opaque
@@ -388,7 +388,7 @@ object ListUtils {
       case Cons(hd, tl) if !baseList.contains(hd) => concatWithoutDuplicates(Cons(hd, baseList), tl)
       case Nil()                                  => baseList
     }
-  } ensuring (res => ListOps.noDuplicate(res) && (baseList ++ newList).content == res.content)
+  }.ensuring(res => ListOps.noDuplicate(res) && (baseList ++ newList).content == res.content)
 
   @inlineOnce
   @opaque
@@ -400,7 +400,7 @@ object ListUtils {
       case Cons(hd, tl)                     => removeDuplicates(tl, Cons(hd, acc))
       case Nil()                            => acc
     }
-  } ensuring (res => ListOps.noDuplicate(res) && res.content == (list ++ acc).content)
+  }.ensuring(res => ListOps.noDuplicate(res) && res.content == (list ++ acc).content)
 
   @inlineOnce
   @opaque
@@ -410,7 +410,7 @@ object ListUtils {
       case Nil()        => ()
       case Cons(hd, tl) => lemmaSubseqRefl(tl)
     }
-  } ensuring (_ => ListSpecs.subseq(l, l))
+  }.ensuring(_ => ListSpecs.subseq(l, l))
 
   @inlineOnce
   @opaque
@@ -424,7 +424,7 @@ object ListUtils {
       }
       case Cons(hd, tl) if hd != elmt => lemmaSubseqRefl(l)
     }
-  } ensuring (_ => ListSpecs.subseq(l, Cons(elmt, l)))
+  }.ensuring(_ => ListSpecs.subseq(l, Cons(elmt, l)))
 
   @inlineOnce
   @opaque
@@ -464,7 +464,7 @@ object ListUtils {
       case _ => ()
     }
 
-  } ensuring (_ => ListSpecs.subseq(l1, l3))
+  }.ensuring(_ => ListSpecs.subseq(l1, l3))
 
   @inlineOnce
   @opaque
@@ -474,7 +474,7 @@ object ListUtils {
       case Cons(hd, tl) => lemmaConcatThenFirstSubseqOfTot(tl, l2)
       case Nil()        => ()
     }
-  } ensuring (_ => ListSpecs.subseq(l1, l1 ++ l2))
+  }.ensuring(_ => ListSpecs.subseq(l1, l1 ++ l2))
 
   @inlineOnce
   @opaque
@@ -484,7 +484,7 @@ object ListUtils {
       case Cons(hd, tl) => lemmaConcatThenSecondSubseqOfTot(tl, l2)
       case Nil()        => lemmaSubseqRefl(l2)
     }
-  } ensuring (_ => ListSpecs.subseq(l2, l1 ++ l2))
+  }.ensuring(_ => ListSpecs.subseq(l2, l1 ++ l2))
 
   @inlineOnce
   @opaque
@@ -498,7 +498,7 @@ object ListUtils {
       case Cons(hd, tl)            => lemmaConcatTwoListsWhichNotContainThenTotNotContain(tl, l2, b)
       case Nil()                   => ()
     }
-  } ensuring (_ => !(l1 ++ l2).contains(b))
+  }.ensuring(_ => !(l1 ++ l2).contains(b))
 
   @inlineOnce
   @opaque
@@ -507,7 +507,7 @@ object ListUtils {
     require(l1 == l1Bis)
     require(l2 == l2Bis)
 
-  } ensuring (_ => l1Bis.forall(b => l2Bis.contains(b)))
+  }.ensuring(_ => l1Bis.forall(b => l2Bis.contains(b)))
 
   @inlineOnce
   @opaque
@@ -535,7 +535,7 @@ object ListUtils {
       }
       case Nil() => ()
     }
-  } ensuring (_ => lIn.size <= l.size)
+  }.ensuring(_ => lIn.size <= l.size)
 
   @inlineOnce
   @opaque
@@ -552,5 +552,5 @@ object ListUtils {
       case Cons(hd, tl) => lemmaRemoveElmtContainedSizeSmaller(tl, e)
       case Nil()        => check(false)
     }
-  } ensuring (_ => (l - e).size < l.size)
+  }.ensuring(_ => (l - e).size < l.size)
 }

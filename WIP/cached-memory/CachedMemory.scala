@@ -117,7 +117,7 @@ object Memory {
           MemoryC(rest, main.write(a,v))
         case _ => this
       }
-    } ensuring(res => cache.size == 0 || 
+    }.ensuring(res => cache.size == 0 || 
                       res.cache.size < cache.size)
 
     def write(a: Address, v: Value): MemoryC = {
@@ -189,7 +189,7 @@ object Memory {
         else if (a < a1) ()
         else simWrite(MemoryA(rest), a, v, ml2)
     }
-  } ensuring(_ => 
+  }.ensuring(_ => 
       (rL(ml1,Write(a,v), ml2) ==>
     rF(α(ml1),Write(a,v), α(ml2))))
 
@@ -198,11 +198,11 @@ object Memory {
       case Read(a,v) => simRead(ml1, a, v, ml2)
       case Write(a,v) => simWrite(ml1, a, v, ml2)
     }
-  } ensuring(_ => 
+  }.ensuring(_ => 
       (rL(ml1,act, ml2) ==> rF(α(ml1),act, α(ml2))))
   def initSim: Unit = {
 
-  } ensuring(_ => abst(iMemoryA) === iMemoryF)
+  }.ensuring(_ => abst(iMemoryA) === iMemoryF)
 
   def traceLikeF(t: List[(MemoryA, Action)]): Boolean = {
     t match {

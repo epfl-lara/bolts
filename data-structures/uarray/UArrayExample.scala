@@ -78,7 +78,7 @@ object UArrayExample:
         assert(initialized(i))
         updatingDefined(defined)(i)
         defined(i) = true
-    } ensuring(_  => initialized(i + 1))
+    }.ensuring(_  => initialized(i + 1))
 
     @pure
     def get: Array[T] =

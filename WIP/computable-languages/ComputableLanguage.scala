@@ -85,7 +85,7 @@ object ComputableLanguage {
       case Cons(hd, tl) => lemmaSliceFrom0ToSizeEqualsList(tl)
     }
 
-  } ensuring (l.slice(0, l.size) == l)
+  }.ensuring(l.slice(0, l.size) == l)
 
   def lemmaSliceFrom0ToSizeEqualsListForConcat[A](l1: List[A], l2: List[A]): Unit = {
     decreases(l1.size)
@@ -94,7 +94,7 @@ object ComputableLanguage {
       case Cons(hd, tl) => lemmaSliceFrom0ToSizeEqualsListForConcat(tl, l2)
     }
 
-  } ensuring ((l1 ++ l2).slice(0, l1.size) == l1)
+  }.ensuring((l1 ++ l2).slice(0, l1.size) == l1)
 
   def lemmaSliceFromSizeToSizeTotEqualsListForConcat[A](l1: List[A], l2: List[A]): Unit = {
     decreases(l1.size)
@@ -103,7 +103,7 @@ object ComputableLanguage {
       case Cons(hd, tl) => lemmaSliceFromSizeToSizeTotEqualsListForConcat(tl, l2)
     }
 
-  } ensuring ((l1 ++ l2).slice(l1.size, (l1 ++ l2).size) == l2)
+  }.ensuring((l1 ++ l2).slice(l1.size, (l1 ++ l2).size) == l2)
 
   def lemmaConcatWithNilReturnsSame[A](l1: List[A], l2: List[A]): Unit = {
     require(l2.isEmpty)
@@ -111,7 +111,7 @@ object ComputableLanguage {
       case Cons(hd, tl) => lemmaConcatWithNilReturnsSame(tl, l2)
       case Nil()        => ()
     }
-  } ensuring (l1 ++ l2 == l1)
+  }.ensuring(l1 ++ l2 == l1)
 
   case class Lang[A](contains: List[A] => Boolean) {
     def ||(that: Lang[A]): Lang[A] =
@@ -180,7 +180,7 @@ object ComputableLanguage {
     if (i < w.size) {
       lemmaCheckPPFromIThenFromTot(thiss, thatt, i + 1, w)
     } else {}
-  } ensuring (thiss.checkFromPP(w.size, thatt, w))
+  }.ensuring(thiss.checkFromPP(w.size, thatt, w))
 
   def lemmaCheckFromToStarAddingElementBeforePreserves[A](l: Lang[A], e: A, w: List[A], from: BigInt, k: BigInt, to: BigInt): Unit = {
     require(0 <= from && from < k && k <= to && to <= w.size)
@@ -202,7 +202,7 @@ object ComputableLanguage {
       lemmaCheckFromToStarAddingElementBeforePreserves(l, e, w, k, k + 1, to)
     }
 
-  } ensuring (l.checkFromToStar(from + 1, k + 1, to + 1, Cons(e, w)))
+  }.ensuring(l.checkFromToStar(from + 1, k + 1, to + 1, Cons(e, w)))
 
   def lemmaCheckFromToStarAddingListBeforePreserves[A](l: Lang[A], s1: List[A], s2: List[A]): Unit = {
     require(!s2.isEmpty)
@@ -215,7 +215,7 @@ object ComputableLanguage {
       }
       case Nil() => ()
     }
-  } ensuring (l.checkFromToStar(s1.size, s1.size + 1, (s1 ++ s2).size, s1 ++ s2))
+  }.ensuring(l.checkFromToStar(s1.size, s1.size + 1, (s1 ++ s2).size, s1 ++ s2))
 
   def lemmaCheckFromToStarTrueForKThenTrueForSmallerK[A](l: Lang[A], w: List[A], from: BigInt, k: BigInt, newK: BigInt, to: BigInt): Unit = {
     require(0 <= from && from < k && k <= to && to <= w.size)
@@ -229,7 +229,7 @@ object ComputableLanguage {
       lemmaCheckFromToStarTrueForKThenTrueForSmallerK(l, w, from, k - 1, newK, to)
     }
 
-  } ensuring (l.checkFromToStar(from, newK, to, w))
+  }.ensuring(l.checkFromToStar(from, newK, to, w))
 
 }
 
@@ -245,7 +245,7 @@ object VerifiedLanguageMatcher {
   def lemmaIfAcceptEmptyStringThenNullable[C](l: Lang[C], s: List[C]): Unit = {
     require(s.isEmpty)
     require(matchL(l, s))
-  } ensuring (l.nullable)
+  }.ensuring(l.nullable)
 
   // Single Character Lemma
   def lemmaElementLangAcceptsItsCharacterAndOnlyIt[C](
@@ -255,7 +255,7 @@ object VerifiedLanguageMatcher {
   ): Unit = {
     require(l == Lang((w: List[C]) => w == Cons(c, Nil())))
     require(c != d)
-  } ensuring (matchL(l, Cons(c, Nil())) && !matchL(l, Cons(d, Nil())))
+  }.ensuring(matchL(l, Cons(c, Nil())) && !matchL(l, Cons(d, Nil())))
 
   def lemmaElementLangDoesNotAcceptMultipleCharactersString[C](
       l: Lang[C],
@@ -264,7 +264,7 @@ object VerifiedLanguageMatcher {
   ): Unit = {
     require(l == Lang((w: List[C]) => w == Cons(c, Nil())))
     require(!s.isEmpty)
-  } ensuring (!matchL(l, Cons(c, s)))
+  }.ensuring(!matchL(l, Cons(c, s)))
 
   // Union lemmas
   def lemmaLangAcceptsStringThenUnionWithAnotherAcceptsToo[C](
@@ -274,7 +274,7 @@ object VerifiedLanguageMatcher {
   ): Unit = {
     require(matchL(l1, s))
 
-  } ensuring (matchL(l1 || l2, s))
+  }.ensuring(matchL(l1 || l2, s))
 
   def lemmaReversedUnionAcceptsSameString[C](
       l1: Lang[C],
@@ -283,7 +283,7 @@ object VerifiedLanguageMatcher {
   ): Unit = {
     require(matchL(l1 || l2, s))
 
-  } ensuring (matchL(l2 || l1, s))
+  }.ensuring(matchL(l2 || l1, s))
 
   // Concat lemmas
   def lemmaLangConcatWithNullableAcceptsSameStr[C](
@@ -305,7 +305,7 @@ object VerifiedLanguageMatcher {
       }
       case Nil() => ()
     }
-  } ensuring (matchL(l2 ++ l1, s))
+  }.ensuring(matchL(l2 ++ l1, s))
 
   def lemmaTwoLangMatchThenConcatMatchesConcatString[C](
       l1: Lang[C],
@@ -320,10 +320,10 @@ object VerifiedLanguageMatcher {
     lemmaSliceFromSizeToSizeTotEqualsListForConcat(s1, s2)
     lemmaCheckPPFromIThenFromTot(l1, l2, s1.size, s1 ++ s2)
 
-  } ensuring (matchL(l1 ++ l2, s1 ++ s2))
+  }.ensuring(matchL(l1 ++ l2, s1 ++ s2))
 
   // Star lemmas
-  def lemmaStarAcceptsEmptyString[C](l: Lang[C]): Unit = {} ensuring (matchL(l.*(), Nil()))
+  def lemmaStarAcceptsEmptyString[C](l: Lang[C]): Unit = {}.ensuring(matchL(l.*(), Nil()))
 
   def lemmaStarApp[C](l: Lang[C], s1: List[C], s2: List[C]): Unit = {
     require(matchL(l, s1))
@@ -350,5 +350,5 @@ object VerifiedLanguageMatcher {
       case (Nil(), Cons(hd2, tl2)) => ()
       case (Nil(), Nil())          => ()
     }
-  } ensuring (matchL(l.*(), s1 ++ s2))
+  }.ensuring(matchL(l.*(), s1 ++ s2))
 }

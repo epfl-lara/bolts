@@ -44,14 +44,14 @@ object SimpleArray {
   def ofInt(size: Int): SimpleArray[Int] = {
     require(0 <= size)
     SimpleArray(Array[Int](size))
-  } ensuring(res => res.toList == List.ifill(size)(0))
+  }.ensuring(res => res.toList == List.ifill(size)(0))
 
   @extern
   def fill[T](using ct: ClassTag[T])(size: Int)(elem: T): SimpleArray[T] = {
     require(0 <= size)
     given ctr: ScalaClassTag[T] = ct.actual
     SimpleArray(Array.fill(size)(elem))
-  } ensuring(res => res.toList == List.ifill[T](size)(elem))
+  }.ensuring(res => res.toList == List.ifill[T](size)(elem))
 
 }
 

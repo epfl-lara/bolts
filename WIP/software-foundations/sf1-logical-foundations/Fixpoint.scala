@@ -137,7 +137,7 @@ object Fixpoint {
     }
 
 
-  } ensuring(res => f(res) == res)
+  }.ensuring(res => f(res) == res)
 
   def Monotonic(f): Pred = forall x: Nat, forall y: Nat, x <= y => f(x) <= f(y)
 
@@ -152,7 +152,7 @@ object Fixpoint {
       
     b match {
       case O => 
-        // if f is bounded by O, the theorem holds with y = O
+        // if f is bounded by O, the theorem .holds with y = O
         O
       case Succ(b2) =>
         // we consider two subcases

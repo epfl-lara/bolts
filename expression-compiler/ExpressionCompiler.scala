@@ -6,7 +6,7 @@ import stainless.annotation._
 object ExprCompiler {
   def check(b: Boolean): Unit = {
     require(b)
-  } ensuring(_ => b)
+  }.ensuring(_ => b)
 
   abstract class Binary {
     def apply(x: Int, y:Int): Int
@@ -73,7 +73,7 @@ object ExprCompiler {
     ListSpecs.appendAssoc(as, bs ++ cs, ds)
     ListSpecs.appendAssoc(bs, cs, ds)
     ()
-  } ensuring(_ => (as ++ (bs ++ cs)) ++ ds == as ++ (bs ++ (cs ++ ds)))
+  }.ensuring(_ => (as ++ (bs ++ cs)) ++ ds == as ++ (bs ++ (cs ++ ds)))
 
   // Example expression to run {{{
   def expr1 = BinExpr(
@@ -113,5 +113,5 @@ object ExprCompiler {
           run(bs)(en, push(eval(en)(expr), inStack))
         ).qed
     }
-  } ensuring(_ => run(compile(expr) ++ bs)(en, inStack) == run(bs)(en, push(eval(en)(expr), inStack)))
+  }.ensuring(_ => run(compile(expr) ++ bs)(en, inStack) == run(bs)(en, push(eval(en)(expr), inStack)))
 }

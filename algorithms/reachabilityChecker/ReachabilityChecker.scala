@@ -72,7 +72,7 @@ object ReachabilityChecker {
                         false,
                         initial)
     }
-  } ensuring (res =>
+  }.ensuring(res =>
                 res match {
                   case Trace(t) =>
                     isTrace(s, t) && !t.isEmpty && t.head == initial && t.last == target && simple(t)
@@ -120,7 +120,7 @@ object ReachabilityChecker {
         } else
           exploreSuccessors(xs, currentTrace, s, target, k, unknown, initial)
     }
-  } ensuring (res =>
+  }.ensuring(res =>
                 res match {
                   case Trace(t) =>
                     isTrace(s, t) && !t.isEmpty && t.head == initial && t.last == target && simple(t)
@@ -475,7 +475,7 @@ object ReachabilityChecker {
           simpleTrace(s, Cons(x, removeCycle(s, xs, x)))
         }
     }
-  } ensuring (res =>
+  }.ensuring(res =>
                 simple(res) && (l.isEmpty || (!res.isEmpty && res.head == l.head &&
                   isTrace(s, res) && !res.isEmpty && res.last == l.last)))
 
@@ -492,7 +492,7 @@ object ReachabilityChecker {
           removeCycle(s, xs, duplicateState)
         }
     }
-  } ensuring (res =>
+  }.ensuring(res =>
                 res.length < l.length &&
                 isTrace(s, res) && (res.isEmpty || s.transitions.contains(
                   (duplicateState, res.head))))
