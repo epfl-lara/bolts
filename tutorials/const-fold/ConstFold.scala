@@ -3,16 +3,16 @@ import stainless.lang.*
 object ConstFold:
 
   sealed abstract class Expr
-  case class Number(value: Int) extends Expr
+  case class Number(value: BigInt) extends Expr
   case class Var(name: String) extends Expr
   case class Add(e1: Expr, e2: Expr) extends Expr
   case class Minus(e1: Expr, e2: Expr) extends Expr
   case class Mul(e1: Expr, e2: Expr) extends Expr
 
-  type Env = String => Int
-  val zeroEnv = (_:String) => 0
+  type Env = String => BigInt
+  val zeroEnv: Env = (_:String) => BigInt(0)
 
-  def evaluate(ctx: Env, e: Expr): Int = 
+  def evaluate(ctx: Env, e: Expr): BigInt = 
     e match
       case Number(value) => value
       case Var(name) => ctx(name)
