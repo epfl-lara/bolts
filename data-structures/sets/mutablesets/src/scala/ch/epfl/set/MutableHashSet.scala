@@ -8,11 +8,24 @@ import stainless.proof.check
 import stainless.lang.StaticChecks.* // Comment out when using the OptimisedEnsuring object below
 
 import ch.epfl.map.MutableMapInterface.iMHashMap
+import ch.epfl.map.MutableHashMap
+import ch.epfl.map.Hashable
 import ch.epfl.map.ListMap
 import ch.epfl.map.TupleListOpsGenK
 
+object MutableHashSet {
+  /** Helper method to create a new empty HashSet
+    *
+    * @param hashF: Hash function for the keys
+    * @return
+    */
+  def getEmptyHashSet[K](hashF: Hashable[K]): MutableHashSet[K] = {
+    MutableHashSet(MutableHashMap.getEmptyHashMap[K, Unit]((k: K) => (), hashF))
+  }.ensuring (res => res.valid && res.size == 0)
+}
 
-case class MutableHashSet[V](private val underlying: iMHashMap[V, Unit]) extends MutableSetInterface.iMSet[V]:
+@mutable
+final case class MutableHashSet[V](private val underlying: iMHashMap[V, Unit]) extends MutableSetInterface.iMSet[V]:
     @pure 
     @ghost
     override def valid: Boolean = {
