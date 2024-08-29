@@ -13,6 +13,12 @@ find . -type f -name "verify.sh" | while read -r script; do
   # Execute the "verify.sh" script
   ./verify.sh
 
+  # Check the exit code of the script, and if it is not 0, print an error message and exit with the same code
+  if [ $? -ne 0 ]; then
+    echo "Verifying $script_dir failed!!!!!!!!!"
+    exit 1
+  fi
+
   echo "\n\n----------------------------------------\n\n"
 
   # Return to the original directory
