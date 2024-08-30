@@ -7,7 +7,7 @@ import stainless.proof.check
 
 import stainless.lang.StaticChecks.* // Comment out when using the OptimisedEnsuring object below
 
-import ch.epfl.map.MutableMapInterface.iMHashMap
+import ch.epfl.map.MutableMapInterface.MutableMap
 import ch.epfl.map.MutableHashMap
 import ch.epfl.map.Hashable
 import ch.epfl.map.ListMap
@@ -25,7 +25,7 @@ object MutableHashSet {
 }
 
 @mutable
-final case class MutableHashSet[V](private val underlying: iMHashMap[V, Unit]) extends MutableSetInterface.iMSet[V]:
+final case class MutableHashSet[V](private val underlying: MutableMap[V, Unit]) extends MutableSetInterface.MutableSet[V]:
     @pure 
     @ghost
     override def valid: Boolean = {

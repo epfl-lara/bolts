@@ -14,7 +14,7 @@ import stainless.lang.StaticChecks.* // Comment out when using the OptimisedEnsu
 
 object MutableMapInterface{
   @mutable
-  trait iMLongMap[V] {
+  trait MutLongMap[V] {
     /**
      * Invariant for the datastructure
      */
@@ -67,7 +67,7 @@ object MutableMapInterface{
   }
 
   @mutable
-  trait iMHashMap[K, V] {
+  trait MutableMap[K, V] {
     import ch.epfl.map.ListMap
     /**
      * Invariant for the datastructure

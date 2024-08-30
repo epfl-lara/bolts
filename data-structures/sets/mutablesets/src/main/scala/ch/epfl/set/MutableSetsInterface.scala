@@ -10,7 +10,7 @@ import stainless.lang.StaticChecks.* // Comment out when using the OptimisedEnsu
 
 object MutableSetInterface{
   @mutable
-  trait iMSet[V] {
+  trait MutableSet[V] {
     /**
      * Invariant for the datastructure
      */

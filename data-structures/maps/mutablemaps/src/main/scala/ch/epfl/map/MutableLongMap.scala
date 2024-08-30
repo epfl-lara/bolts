@@ -13,7 +13,7 @@ import stainless.lang.Cell
 import stainless.lang.StaticChecks.* // Comment out when using the OptimisedEnsuring object below
 // import OptimisedChecks.* // Import to remove `ensuring` and `require` from the code for the benchmarks
 
-import MutableMapInterface.iMLongMap
+import MutableMapInterface.MutLongMap
 
 object MutableLongMap {
   import LongMapFixedSize.validMask
@@ -44,7 +44,7 @@ object MutableLongMap {
   @mutable
   final case class LongMap[V](
       val underlying: Cell[LongMapFixedSize[V]]
-  ) extends iMLongMap[V] {
+  ) extends MutLongMap[V] {
 
     @pure
     override def defaultEntry: Long => V = underlying.v.defaultEntry
