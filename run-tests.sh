@@ -15,5 +15,5 @@ for project in $TC_TESTS; do
   if [ $status -ne 0 ]; then
     exit $status
   fi
-echo "************* Verifying bolts projects was successful! *************"
 done
+echo "************* Verifying bolts projects was successful! *************"
