@@ -22,13 +22,13 @@ function run_tests {
     echo "$ cat ./verify.sh"
     cat "./verify.sh"
     echo ""
-    bash "./verify.sh"
+    bash "./verify.sh --compact"
     status=$?
     cd -
   else
     echo "Running '$STAINLESS --config-file=$conf $@' on bolts project: $project..."
     echo "$ find $project -name '*.scala' -exec $STAINLESS --config-file=$conf $@ {} +"
-    find "$project" -name '*.scala' -exec $STAINLESS "--config-file=$conf" "$@" {} +
+    find "$project" -name '*.scala' -exec $STAINLESS "--config-file=$conf" "--compact" "$@" {} +
   fi
 
   status=$?
