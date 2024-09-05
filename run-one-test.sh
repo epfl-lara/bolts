@@ -13,6 +13,7 @@ function run_tests {
     conf=stainless.conf.nightly
   fi
   echo ""
+  echo `date`
   echo "------------------------------------------------------------------------------------------"
   # Check if there is a verify.sh file in the project folder
   # If yes, then echo a message saying we run it and its content, then run it, other run the command X
