@@ -24,7 +24,7 @@ jobs:
         java-version: 17
         cache: sbt
     - name: Install stainless and solvers
-      run: ./install_stainless_and_solvers.sh $GITHUB_WORKSPACE/.local/bin $GITHUB_WORKSPACE/.local
+      run: ./install_stainless_and_solvers.sh $GITHUB_WORKSPACE/.local/bin $GITHUB_WORKSPACE/.local && cd $GITHUB_WORKSPACE
     - name: Add stainless to PATH
       run: echo "$GITHUB_WORKSPACE/.local/stainless/frontends/dotty/target/universal/stage/bin" >> $GITHUB_PATH
     - name: Test stainless availability

@@ -34,7 +34,6 @@ cd "$STAINLESS_DIR"
 git clone --recurse-submodules https://github.com/epfl-lara/stainless
 cd stainless
 sbt universal:stage
-cd - 
 
 echo "************** Stainless Installed **************"
 exit 0
