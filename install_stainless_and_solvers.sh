@@ -6,13 +6,6 @@ mkdir -p "$SOLVERS_DIR"
 mkdir -p "$TEMP_DIR"
 mkdir -p "$STAINLESS_DIR"
 
-# stainless
-cd "$STAINLESS_DIR"
-git clone --recurse-submodules https://github.com/epfl-lara/stainless
-cd stainless
-sbt universal:stage
-cd - 
-
 # cvc5
 wget https://github.com/cvc5/cvc5/releases/download/cvc5-1.1.2/cvc5-Linux-static.zip -O "$TEMP_DIR/downloaded.zip" -q
 unzip "$TEMP_DIR/downloaded.zip" -d "$TEMP_DIR" 
@@ -35,4 +28,13 @@ chmod +x "$SOLVERS_DIR/z3"
 rm -rf "$TEMP_DIR"
 
 echo "************** Solvers Installed **************"
+
+# stainless
+cd "$STAINLESS_DIR"
+git clone --recurse-submodules https://github.com/epfl-lara/stainless
+cd stainless
+sbt universal:stage
+cd - 
+
+echo "************** Stainless Installed **************"
 exit 0
