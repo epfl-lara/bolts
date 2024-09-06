@@ -23,7 +23,7 @@ function run_tests {
     echo "$ cat ./verify.sh"
     cat "./verify.sh"
     echo ""
-    bash "./verify.sh --compact"
+    bash "./verify.sh" "--compact"
     status=$?
     cd -
   else
