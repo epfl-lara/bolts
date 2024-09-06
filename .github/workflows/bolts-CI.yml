@@ -1,0 +1,42 @@
+name: Bolts CI
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+jobs:
+  tests:
+    if: github.event.pull_request.draft == false
+    runs-on: [self-hosted, linux]
+    env:
+      # define Java options for both official sbt and sbt-extras
+      JAVA_OPTS: -Dsbt.io.implicit.relative.glob.conversion=allow -Xss512M -Xms1024M -Xmx12G -XX:MaxMetaspaceSize=2G -XX:+UseCodeCacheFlushing -XX:ReservedCodeCacheSize=768M
+      JVM_OPTS:  -Dsbt.io.implicit.relative.glob.conversion=allow -Xss512M -Xms1024M -Xmx12G -XX:MaxMetaspaceSize=2G -XX:+UseCodeCacheFlushing -XX:ReservedCodeCacheSize=768M
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+      with:
+        submodules: recursive
+    - name: Setup JDK
+      uses: actions/setup-java@v3
+      with:
+        distribution: temurin
+        java-version: 17
+    - name: Install stainless and solvers
+      run: ./install_stainless_and_solvers.sh $GITHUB_WORKSPACE/.local/bin $GITHUB_WORKSPACE/.local
+    - name: Add stainless to PATH
+      run: echo "$GITHUB_WORKSPACE/.local/stainless/frontends/dotty/target/universal/stage/bin" >> $GITHUB_PATH
+    - name: Test stainless availability
+      run: stainless-dotty --version
+    - name: Add solvers to PATH
+      run: echo "$GITHUB_WORKSPACE/.local/bin" >> $GITHUB_PATH
+    - name: Test solvers availability
+      run: cvc5 --version && z3 --version && cvc4 --version
+    - name: Bolts Tests
+      run: ./run_tests.sh
+  fail_if_pull_request_is_draft:
+    if: github.event.pull_request.draft == true
+    runs-on: [self-hosted, linux]
+    steps:
+    - name: Fails in order to indicate that pull request needs to be marked as ready to review and tests workflows need to pass.
+      run: exit 1
