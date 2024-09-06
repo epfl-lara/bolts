@@ -8,7 +8,7 @@ mkdir -p "$STAINLESS_DIR"
 
 # stainless
 cd "$STAINLESS_DIR"
-git clone https://github.com/epfl-lara/stainless
+git clone --recurse-submodules https://github.com/epfl-lara/stainless
 cd stainless
 sbt universal:stage
 
