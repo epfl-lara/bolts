@@ -11,6 +11,7 @@ cd "$STAINLESS_DIR"
 git clone --recurse-submodules https://github.com/epfl-lara/stainless
 cd stainless
 sbt universal:stage
+cd - 
 
 # cvc5
 wget https://github.com/cvc5/cvc5/releases/download/cvc5-1.1.2/cvc5-Linux-static.zip -O "$TEMP_DIR/downloaded.zip" -q
