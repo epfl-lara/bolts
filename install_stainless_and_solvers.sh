@@ -1,6 +1,6 @@
 TEMP_DIR="temp"
 SOLVERS_DIR="$1"
-STAINLESS_DIT="$2"
+STAINLESS_DIR="$2"
 
 mkdir -p "$SOLVERS_DIR"
 mkdir -p "$TEMP_DIR"
