@@ -22,26 +22,30 @@ function run_tests {
   echo "------------------------------------------------------------------------------------------"
   # Check if there is a verify.sh file in the project folder
   # If yes, then echo a message saying we run it and its content, then run it, other run the command X
+  status=-1
   if [ -f "$project/verify.sh" ]; then
     echo "Running verify.sh script in bolts project: $project..."
     cd "$project"
     echo "$ cat ./verify.sh"
     cat "./verify.sh"
     echo ""
-    bash "./verify.sh" "--admit-vcs=true"
+    if [ "$ADMIT_VCS" = true ]; then
+      bash "./verify.sh" "--compact" "--admit-vcs=true"
+    else
+      bash "./verify.sh" "--compact"
+    fi
     status=$?
     cd -
   else
     echo "Running '$STAINLESS --config-file=$conf $@' on bolts project: $project..."
     echo "$ find $project -name '*.scala' -exec $STAINLESS --config-file=$conf $@ {} +"
     if [ "$ADMIT_VCS" = true ]; then
-      find "$project" -name '*.scala' -exec $STAINLESS "--config-file=$conf" "--admit-vcs=true" "$@" {} +
+      find "$project" -name '*.scala' -exec $STAINLESS "--config-file=$conf" "--compact" "--admit-vcs=true" "$@" {} +
     else
       find "$project" -name '*.scala' -exec $STAINLESS "--config-file=$conf" "$@" {} +
     fi
+    status=$?
   fi
-
-  status=$?
 
   if [ $ADMIT_VCS = true ]; then
     if [ $status -eq 0 ] || [ $status -eq 1 ]; then

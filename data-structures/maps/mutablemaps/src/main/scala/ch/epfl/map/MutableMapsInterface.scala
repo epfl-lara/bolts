@@ -1,6 +1,6 @@
 /** Author: Samuel Chassot
   */
-package ch.epfl.chassot
+package ch.epfl.map
 
 import stainless.annotation._
 import stainless.collection._
@@ -14,7 +14,7 @@ import stainless.lang.StaticChecks.* // Comment out when using the OptimisedEnsu
 
 object MutableMapInterface{
   @mutable
-  trait iMLongMap[V] {
+  trait MutLongMap[V] {
     /**
      * Invariant for the datastructure
      */
@@ -67,8 +67,8 @@ object MutableMapInterface{
   }
 
   @mutable
-  trait iMHashMap[K, V] {
-    import ch.epfl.chassot.ListMap
+  trait MutableMap[K, V] {
+    import ch.epfl.map.ListMap
     /**
      * Invariant for the datastructure
      */

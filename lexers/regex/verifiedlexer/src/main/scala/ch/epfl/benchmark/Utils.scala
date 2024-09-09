@@ -9,7 +9,7 @@ import stainless.proof.check
 import stainless.lang.StaticChecks.*
 import stainless.collection._
 
-import ch.epfl.chassot.Hashable
+import ch.epfl.map.Hashable
 import ch.epfl.lexer.VerifiedRegex._
 
 

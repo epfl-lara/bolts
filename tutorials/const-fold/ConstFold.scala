@@ -1,5 +1,5 @@
 import stainless.annotation.*
-import stainless.lang.*
+import stainless.lang.{ghost => ghostExpr, *}
 object ConstFold:
 
   sealed abstract class Expr
@@ -54,7 +54,11 @@ object ConstFold:
     e match
       case Add(Number(n1), Number(n2))   => Number(n1 + n2)
       case Minus(Number(n1), Number(n2)) => Number(n1 - n2)
-      case Mul(Number(n1), Number(n2))   => Number(n1 * n2)
+      case Mul(Number(n1), Number(n2))   => 
+        ghostExpr(unfold(evaluate(anyCtx,e)))
+        ghostExpr(unfold(evaluate(anyCtx,Number(n1))))
+        ghostExpr(unfold(evaluate(anyCtx,Number(n2))))
+        Number(n1 * n2)
       case e                             => e
   }.ensuring(evaluate(anyCtx,_) == evaluate(anyCtx,e))
 

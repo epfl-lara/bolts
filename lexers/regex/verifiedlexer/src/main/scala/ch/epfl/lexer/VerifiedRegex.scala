@@ -8,17 +8,17 @@ import stainless.lang.{ghost => ghostExpr, *}
 import stainless.collection._
 import stainless.annotation._
 import stainless.proof._
-import ch.epfl.chassot.MutableLongMap._
-import ch.epfl.chassot.ListLongMap
-import ch.epfl.chassot.ListMap
-import ch.epfl.chassot.TupleListOpsGenK
-import ch.epfl.chassot.MutableHashMap._
-import ch.epfl.chassot.Hashable
-import ch.epfl.chassot.TupleListOpsGenK.invariantList
-import ch.epfl.chassot.MutableHashMap
+import ch.epfl.map.MutableLongMap._
+import ch.epfl.map.ListLongMap
+import ch.epfl.map.ListMap
+import ch.epfl.map.TupleListOpsGenK
+import ch.epfl.map.MutableHashMap._
+import ch.epfl.map.Hashable
+import ch.epfl.map.TupleListOpsGenK.invariantList
+import ch.epfl.map.MutableHashMap
 
 import stainless.lang.StaticChecks._
-// import ch.epfl.chassot.OptimisedChecks.*
+// import ch.epfl.map.OptimisedChecks.*
 
 object Memoisation {
   import VerifiedRegex._

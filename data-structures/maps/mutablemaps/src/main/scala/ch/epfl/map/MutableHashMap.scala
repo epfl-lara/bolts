@@ -1,6 +1,6 @@
 /** Author: Samuel Chassot
   */
-package ch.epfl.chassot
+package ch.epfl.map
 
 import stainless.annotation._
 import stainless.collection.{ListMap => ListMapStainless, ListMapLemmas => ListMapLemmasStainless, _}
@@ -15,7 +15,7 @@ import LongMapFixedSize.validMask
 import stainless.lang.StaticChecks.* // Comment out when using the OptimisedEnsuring object below
 // import OptimisedChecks.* // Import to remove `ensuring` and `require` from the code for the benchmarks
 
-import MutableMapInterface.iMHashMap
+import MutableMapInterface.MutableMap
 
 trait Hashable[K] {
   @pure
@@ -41,7 +41,7 @@ object MutableHashMap {
       val hashF: Hashable[K],
       var _size: Int,
       val defaultValue: K => V
-  ) extends iMHashMap[K, V] {
+  ) extends MutableMap[K, V] {
 
     @pure
     override def defaultEntry: K => V = this.defaultValue

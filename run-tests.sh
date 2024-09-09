@@ -26,3 +26,4 @@ for project in $TC_TESTS; do
     exit $status
   fi
 done
+echo "************* Verifying bolts projects was successful! *************"
