@@ -24,9 +24,11 @@ jobs:
         java-version: 17
     - name: Install and unpack sbt
       run: |
-        wget https://github.com/sbt/sbt/releases/download/v1.10.1/sbt-1.10.1.tgz
+        wget --progress=dot https://github.com/sbt/sbt/releases/download/v1.10.1/sbt-1.10.1.tgz
         tar xfz sbt-1.10.1.tgz
         echo "PATH=./sbt/bin/:$PATH" >> "$GITHUB_ENV"
+    - name: Check sbt availability and version
+      run: sbt --version
     - name: Install stainless and solvers
       run: ./install_stainless_and_solvers.sh $GITHUB_WORKSPACE/.local/bin $GITHUB_WORKSPACE/.local
     - name: Add stainless to PATH
