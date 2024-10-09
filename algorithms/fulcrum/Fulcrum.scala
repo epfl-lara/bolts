@@ -27,21 +27,21 @@ object Fulcrum {
         if(i > 0) lemmaTailDrop(xs, i - 1)
     }
     l.drop(i + 1) == l.drop(i).tail
-  } holds
+  } .holds
 
   def lemmaHeadDrop(l: List[BigInt], i: BigInt): Boolean = {
     require(i >= 0 && i < l.size)
     decreases(l.size)
     if(i > BigInt(0)) lemmaHeadDrop(l.tail, i - 1)
     (l.drop(i))(0) == l(i)
-  } holds
+  } .holds
 
   def lemmaSumTake(l: List[BigInt], i: BigInt): Boolean = {
     require(i >= 0 && i < l.size && !l.isEmpty)
     decreases(l.size)
     if(i > BigInt(0)) lemmaSumTake(l.tail, i - 1)
     sum(l.take(i + 1)) == sum(l.take(i)) + l(i)
-  } holds
+  } .holds
 
 
   def fDiff(l: List[BigInt], i: BigInt): BigInt = {
@@ -80,7 +80,7 @@ object Fulcrum {
     decreases(i)
     if(i > BigInt(0)) fulcrumLessLemma(l, i - 1, v1, v)
     isLessThanPartialFulcrum(l, i, v1)
-  } holds
+  } .holds
 
   def aux(
     rList: List[BigInt],
@@ -116,12 +116,12 @@ object Fulcrum {
           aux(xs, i + 1, newI, newMinDiff, newlVal, newrVal, l)
         }
     }
-  } ensuring(res => res._1 >= 0 && res._1 <= l.size && isFulcrum(l, res._1, res._2))
+  }.ensuring(res => res._1 >= 0 && res._1 <= l.size && isFulcrum(l, res._1, res._2))
 
   def fulcrum(l: List[BigInt]) = {
     val s = sum(l)
     aux(l, 0, 0, abs(s), 0, s, l)
-  } ensuring(res => res._1 >= 0 && res._1 <= l.size && isFulcrum(l, res._1, res._2))
+  }.ensuring(res => res._1 >= 0 && res._1 <= l.size && isFulcrum(l, res._1, res._2))
 
   @ignore def main(args: Array[String]): Unit = {
     val l1: List[BigInt] = List(4, 2, -5, 0, 8)

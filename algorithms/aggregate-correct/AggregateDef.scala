@@ -15,7 +15,7 @@ extension[T] (at: AgTree[T])
     at match
       case FoldLeft(es) => es
       case Combine(at1, at2) => at1.toList ++ at2.toList   
-  } ensuring (!_.isEmpty)
+  }.ensuring(!_.isEmpty)
 
 trait Reducer[T,S]:
   def s0: S
@@ -34,7 +34,7 @@ def fold[T,S](at: AgTree[T], r: Reducer[T,S]): S = {
     case Combine(at1, at2) =>       
       combLemma(at1.toList, at2.toList, r)
       r.combop(fold(at1, r), fold(at2, r))
-} ensuring(_ == at.toList.foldLeft(r.s0)(r.seqop))
+}.ensuring(_ == at.toList.foldLeft(r.s0)(r.seqop))
 
 def foldListConc[T,S](l1: List[T], l2: List[T], s0: S, seqop: (S,T) => S): Unit = {
   l1 match
@@ -45,12 +45,12 @@ def foldListConc[T,S](l1: List[T], l2: List[T], s0: S, seqop: (S,T) => S): Unit 
              (l1rest ++ l2).foldLeft(seqop(s0, t1))(seqop))
       foldListConc(l1rest, l2, seqop(s0,t1), seqop)
     }
-} ensuring(_ => (l1 ++ l2).foldLeft(s0)(seqop) == 
+}.ensuring(_ => (l1 ++ l2).foldLeft(s0)(seqop) == 
                 l2.foldLeft(l1.foldLeft(s0)(seqop))(seqop))
 
 def foldListLast[T,S](l1: List[T], t: T, s0: S, seqop: (S,T) => S): Unit = {
   foldListConc(l1, List(t), s0, seqop)
-} ensuring(_ => (l1 ++ List(t)).foldLeft(s0)(seqop) == seqop(l1.foldLeft(s0)(seqop), t))
+}.ensuring(_ => (l1 ++ List(t)).foldLeft(s0)(seqop) == seqop(l1.foldLeft(s0)(seqop), t))
 
 def initLast[T](l: List[T]): (List[T], T) = {
   require(!l.isEmpty)
@@ -59,7 +59,7 @@ def initLast[T](l: List[T]): (List[T], T) = {
     case Cons(x, xs) => 
       val (xsInit, last) = initLast(xs)
       (Cons(x, xsInit), last)
-} ensuring(res => l == res._1 ++ List(res._2))
+}.ensuring(res => l == res._1 ++ List(res._2))
 
 def combLemma[T,S](l1: List[T], l2: List[T], r: Reducer[T,S]): Unit =   
   require(!l1.isEmpty && !l2.isEmpty)

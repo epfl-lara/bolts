@@ -18,7 +18,7 @@ case class Tweet(val user: String, val text: Int, val retweets: Int)
 /**
  * This represents a set of objects of type `Tweet` in the form of a binary search
  * tree. Every branch in the tree has two children (two `TweetSet`s). There is an
- * invariant which always holds: for every branch `b`, all elements in the left
+ * invariant which always .holds: for every branch `b`, all elements in the left
  * subtree are smaller than the tweet at `b`. The elements in the right subtree are
  * larger.
  *
@@ -116,7 +116,7 @@ sealed abstract class TweetSet {
   }
 
   /**
-   * This method checks that a predicate holds for every element in the set.
+   * This method checks that a predicate .holds for every element in the set.
    */
   def forall(f: Tweet => Boolean): Boolean = {
     decreases((this, 1))
@@ -182,7 +182,7 @@ case class NonEmpty(elem: Tweet, left: TweetSet, right: TweetSet) extends TweetS
 
       // this lemma shows that the size of remove(elem) is strictly smaller than this.size
       assert(unionSize(left,right))
-      if(p(elem)) remove(elem).filterAcc(p, acc incl elem)
+      if(p(elem)) remove(elem).filterAcc(p, acc.incl(elem))
       else remove(elem).filterAcc(p, acc)
     }
 
@@ -216,7 +216,7 @@ case class NonEmpty(elem: Tweet, left: TweetSet, right: TweetSet) extends TweetS
       if (x.text < elem.text) new NonEmpty(elem, left.incl(x), right)
       else if (elem.text < x.text) new NonEmpty(elem, left, right.incl(x))
       else this
-    } ensuring(res => (res contains x))
+    }.ensuring(res => (res.contains(x)))
 
     override def remove(tw: Tweet): TweetSet = {
       decreases((this, 0))
@@ -243,14 +243,14 @@ case class NonEmpty(elem: Tweet, left: TweetSet, right: TweetSet) extends TweetS
     override def union(that: TweetSet): TweetSet = {
       decreases((this, 0))
 
-      left union (right union (that incl elem))
+      left.union(right.union(that.incl(elem)))
     }
 
     override def size: BigInt = {
       decreases((this, 0))
 
       1 + left.size + right.size
-    } ensuring(_ >= 0)
+    }.ensuring(_ >= 0)
 
     override def isSearchTree: Boolean = {
       decreases((this, 0))
@@ -280,12 +280,12 @@ object TweetSetLemmas {
     decreases(s)
     s match {
       case Empty() =>
-        (s incl e).size <= s.size + 1
+        (s.incl(e)).size <= s.size + 1
       case NonEmpty(elem, left, right) =>
         // FIXME: change these to assertions when they are no longer simplified for postconditions
         inclSize(left, e) &&
         inclSize(right, e) &&
-        (s incl e).size <= s.size + 1
+        (s.incl(e)).size <= s.size + 1
     }
   }.holds
 
@@ -293,13 +293,13 @@ object TweetSetLemmas {
     decreases(s1)
     s1 match {
       case Empty() =>
-        (s1 union s2).size <= s1.size + s2.size
+        (s1.union(s2)).size <= s1.size + s2.size
       case NonEmpty(elem, left, right) =>
         // FIXME: change these to assertions when they are no longer simplified for postconditions
-        unionSize(left, right union (s2 incl elem)) &&
-        unionSize(right, s2 incl elem) &&
+        unionSize(left, right.union(s2.incl(elem))) &&
+        unionSize(right, s2.incl(elem)) &&
         inclSize(s2, elem) &&
-        (s1 union s2).size <= s1.size + s2.size
+        (s1.union(s2)).size <= s1.size + s2.size
     }
   }.holds
 
@@ -307,16 +307,16 @@ object TweetSetLemmas {
     decreases(s)
     s match {
       case Empty() =>
-        (s.contains(e) && (s remove e).size <= s.size - 1) ||
-        (!s.contains(e) && (s remove e).size <= s.size)
+        (s.contains(e) && (s.remove(e)).size <= s.size - 1) ||
+        (!s.contains(e) && (s.remove(e)).size <= s.size)
       case NonEmpty(elem, left, right) =>
         // FIXME: change these to assertions when they are no longer simplified for postconditions
         removeSize(left, e) &&
         removeSize(right, e) &&
         unionSize(left,right) &&
         (
-          (s.contains(e) && (s remove e).size <= s.size - 1) ||
-          (!s.contains(e) && (s remove e).size <= s.size)
+          (s.contains(e) && (s.remove(e)).size <= s.size - 1) ||
+          (!s.contains(e) && (s.remove(e)).size <= s.size)
         )
     }
   }.holds
@@ -383,7 +383,7 @@ object TweetSetLemmas {
         check(inclForall(right, elem, p))
     }
 
-    (s incl elem).forall(p)
+    (s.incl(elem)).forall(p)
   }.holds
 
   def inclIsSearchTree(s: TweetSet, elem: Tweet): Boolean = {
@@ -392,20 +392,20 @@ object TweetSetLemmas {
 
     s match {
       case Empty() =>
-        check((s incl elem).isSearchTree)
+        check((s.incl(elem)).isSearchTree)
       case NonEmpty(e, left, right) =>
         if (elem.text < e.text) {
           check(inclIsSearchTree(left, elem))
           check(inclForall(left, elem, smallerThan(e)))
-          check((s incl elem).isSearchTree)
+          check((s.incl(elem)).isSearchTree)
         } else if (elem.text > e.text) {
           check(inclIsSearchTree(right, elem))
           check(inclForall(right, elem, greaterThan(e)))
-          check((s incl elem).isSearchTree)
+          check((s.incl(elem)).isSearchTree)
         }
     }
 
-    (s incl elem).isSearchTree
+    (s.incl(elem)).isSearchTree
   }.holds
 
   def unionForall(s1: TweetSet, s2: TweetSet, p: Tweet => Boolean): Boolean = {
@@ -416,11 +416,11 @@ object TweetSetLemmas {
       case Empty() => ()
       case NonEmpty(elem, left, right) =>
         check(inclForall(s2, elem, p))
-        check(unionForall(right, s2 incl elem, p))
-        check(unionForall(left, right union (s2 incl elem), p))
+        check(unionForall(right, s2.incl(elem), p))
+        check(unionForall(left, right.union(s2.incl(elem)), p))
     }
 
-    (s1 union s2).forall(p)
+    (s1.union(s2)).forall(p)
   }.holds
 
   def unionIsSearchTree(s1: TweetSet, s2: TweetSet): Boolean = {
@@ -431,11 +431,11 @@ object TweetSetLemmas {
       case Empty() => ()
       case NonEmpty(elem, left, right) =>
         check(inclIsSearchTree(s2, elem))
-        check(unionIsSearchTree(right, s2 incl elem))
-        check(unionIsSearchTree(left, right union (s2 incl elem)))
+        check(unionIsSearchTree(right, s2.incl(elem)))
+        check(unionIsSearchTree(left, right.union(s2 `incl` elem)))
     }
 
-    (s1 union s2).isSearchTree
+    (s1.union(s2)).isSearchTree
   }.holds
 
   def removeForall(s: TweetSet, p: Tweet => Boolean, elem: Tweet): Boolean = {

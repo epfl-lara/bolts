@@ -106,7 +106,7 @@ object BitStream {
       lemmaIsPrefixTransitive(r1, w1, w2)
       lemmaIsPrefixTransitive(r1, w2, r2)
       (r1, r2)
-   } ensuring(res => 
+   }.ensuring(res => 
       res._1.isPrefixOf(res._2) 
       && res._1.isPrefixOf(w1) 
       && res._2.isPrefixOf(w2)
@@ -493,7 +493,7 @@ case class BitStream private [asn1scala](
    def resetAt(b: BitStream): BitStream = {
       require(b.buf.length == buf.length)
       BitStream(snapshot(buf), b.currentByte, b.currentBit)
-   } ensuring(res => invariant(res))
+   }.ensuring(res => invariant(res))
 
    // ****************** Append Bit Functions **********************
 
@@ -1229,7 +1229,7 @@ case class BitStream private [asn1scala](
       else
          val bit = bitStreamSnap.readBit()
          Cons(bit, bitStreamReadBitsIntoList(bitStreamSnap, nBits - 1))
-   } ensuring( res => if(nBits == 0) then res.isEmpty else res.length > 0 ) // we'd like to prove res.length == nBits but it's not possible because of type mismatch
+   }.ensuring( res => if(nBits == 0) then res.isEmpty else res.length > 0 ) // we'd like to prove res.length == nBits but it's not possible because of type mismatch
 
    @ghost
    @opaque
@@ -1254,7 +1254,7 @@ case class BitStream private [asn1scala](
          val bitStream1Snap = snapshot(bitStream1)
          assert(bitStream1.readBitPure()._2 == listBits.head)
          ()
-   } ensuring(_ => 
+   }.ensuring(_ => 
       bitStreamReadBitsIntoList(bitStream2, nBits - 1) == listBits.tail
    )
 
@@ -1338,7 +1338,7 @@ case class BitStream private [asn1scala](
 
       if nBits > 0 then
          lemmaSameBitContentListThenCheckByteArrayBitContent(arr1, arr2, fromArr1 + 1, fromArr2 + 1, nBits - 1)
-   } ensuring(_ => checkByteArrayBitContent(arr1, arr2, fromArr1, fromArr2, nBits))
+   }.ensuring(_ => checkByteArrayBitContent(arr1, arr2, fromArr1, fromArr2, nBits))
 
 
 
@@ -1677,7 +1677,7 @@ case class BitStream private [asn1scala](
       val arr: Array[Byte] = Array.fill(arrLen)(0 : Byte)
       readBitsLoop(nBits, arr, 0, nBits)
       UByte.fromArrayRaws(arr)
-   } ensuring(res =>
+   }.ensuring(res =>
       buf == old(this).buf 
       &&& BitStream.bitIndex(old(this).buf.length, old(this).currentByte, old(this).currentBit) + nBits == BitStream.bitIndex(this.buf.length, this.currentByte, this.currentBit) 
       &&& BitStream.invariant(this.currentBit, this.currentByte, this.buf.length) 
@@ -1778,7 +1778,7 @@ case class BitStream private [asn1scala](
    /**
     * Counter Operation to appendBitsLSBFirst
     * @param nBits number of bits to read [0-64]
-    * @return value that holds nBits from bitstream
+    * @return value that .holds nBits from bitstream
     *
     * Remarks:
     * The first bit from the bitstream will get written into the LSB
@@ -1835,7 +1835,7 @@ case class BitStream private [asn1scala](
    /**
     * Counter Operation to appendNLeastSignificantBits
     * @param nBits number of bits to read [0-64]
-    * @return value that holds nBits from bitstream
+    * @return value that .holds nBits from bitstream
     *
     * Remarks:
     * The last bit from the bitstream will get written into the LSB

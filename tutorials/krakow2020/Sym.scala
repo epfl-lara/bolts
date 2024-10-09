@@ -12,12 +12,12 @@ object Diffs {
           case h1 :: t1 => h :: (h1 - h) :: t1
         }
     }
-  } ensuring (undiff(_) == l)
+  }.ensuring(undiff(_) == l)
 
   def symTest1(x1: BigInt, x2: BigInt,
                x3: BigInt, x4: BigInt): Boolean = {
     diffs(List(x1,x2,x3,x4)) ==
           List(x1, x2 - x1, x3 - x2, x4 - x3)
   }.holds
-  // same as ensuring(res => res==true)
+  // same as.ensuring(res => res==true)
 } 

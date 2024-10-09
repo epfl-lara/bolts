@@ -52,11 +52,11 @@ object Bloxorz {
 
       def neighbors: List[(Block, Move)] = {
         List((left, new Move('l')),(right, new Move('r')),(up, new Move('u')),(down, new Move('d')))
-      }ensuring(res => res.size == numOfNeighbors)
+      }.ensuring(res => res.size == numOfNeighbors)
       
       def legalNeighbors: List[(Block, Move)] = {
         neighbors.filter(e => e._1.isLegal)
-      }ensuring(res => res.size <= numOfNeighbors)
+      }.ensuring(res => res.size <= numOfNeighbors)
 
 
       def isStanding: Boolean = b1.row == b2.row && b1.col == b2.col
@@ -82,14 +82,14 @@ object Bloxorz {
       // FIXME: prove the postcondition
       def neighborsWithHistory(b: Block, history: List[Move]): List[(Block, List[Move])] = {
         b.legalNeighbors.map(elem => (elem._1, elem._2::history))
-      }ensuring(res => res.size <= numOfNeighbors)
+      }.ensuring(res => res.size <= numOfNeighbors)
       // && !res.exists( e1 => res.exists( e2 => e1._1 == e2._1 && res.indexOf(e1) != res.indexOf(e2) ) ) )
 
       // FIXME: prove the postcondition
       def newNeighborsOnly(neighbors: List[(Block, List[Move])], explored: Set[Block]): List[(Block, List[Move])] = {
         require(neighbors.size <= numOfNeighbors)
-        neighbors filterNot (elem => explored contains elem._1)
-      }ensuring(res => res.size <= numOfNeighbors)
+        neighbors.filterNot(elem => explored.contains(elem._1))
+      }.ensuring(res => res.size <= numOfNeighbors)
       //  && !res.exists(elem => !neighbors.contains(elem)) 
       //  && !res.exists(elem => explored.contains(elem._1))
       //  && neighbors.forall(elem => explored.contains(elem._1) || res.contains(elem)))
@@ -100,7 +100,7 @@ object Bloxorz {
           val more = initial.flatMap(path => newNeighborsOnly(neighborsWithHistory(path._1, path._2), explored))
           initial ++ from(more, explored ++ more.map(elem => elem._1).toSet)
         }
-      }ensuring(res => res.size >= initial.size)
+      }.ensuring(res => res.size >= initial.size)
 
       lazy val pathsFromStart: List[(Block, List[Move])] = {
         val initial = List((startBlock, List[Move]()))
@@ -109,7 +109,7 @@ object Bloxorz {
 
       lazy val pathsToGoal: List[(Block, List[Move])] = {
         pathsFromStart.filter(elem => done(elem._1))
-      }ensuring(res => res.forall(elem => done(elem._1)))
+      }.ensuring(res => res.forall(elem => done(elem._1)))
 
 
       lazy val solution: List[Move] = {
@@ -162,7 +162,7 @@ object Bloxorz {
           if(levelVector.contains(row))  
             findCharInCol(c, levelVector, row, 0)
           else Pos(-1, -1)
-        }ensuring(res => res.row== -1 && res.col== -1 || levelVector(res.row)(res.col) == c)
+        }.ensuring(res => res.row== -1 && res.col== -1 || levelVector(res.row)(res.col) == c)
 
         def findCharInCol(c: Char, levelVector: Map[BigInt, Map[BigInt, Char]], row: BigInt, col: BigInt): Pos = {
           require(levelVector.contains(row))
@@ -171,10 +171,10 @@ object Bloxorz {
             else findCharInCol(c, levelVector, row, col+1)
           }
           else findCharInRow(c, levelVector, row+1)
-        }ensuring(res => res.row == -1 && res.col == -1 || levelVector(res.row)(res.col) == c)
+        }.ensuring(res => res.row == -1 && res.col == -1 || levelVector(res.row)(res.col) == c)
          
         findCharInRow(c, levelVector, 0)   
-      }ensuring(res => res.row == -1 && res.col == -1 || levelVector(res.row)(res.col) == c)  
+      }.ensuring(res => res.row == -1 && res.col == -1 || levelVector(res.row)(res.col) == c)  
     }
  
 

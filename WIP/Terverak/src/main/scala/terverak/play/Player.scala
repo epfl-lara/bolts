@@ -37,7 +37,7 @@ final case class Player(
     require(amount >= 0)
 
     copy(healthPoints = healthPoints - amount)
-  } ensuring(_.healthPoints == healthPoints - amount)
+  }.ensuring(_.healthPoints == healthPoints - amount)
 
   /**
     * Heals the player.
@@ -61,7 +61,7 @@ final case class Player(
     require(amount >= 0)
 
     copy(mana = mana + amount)
-  } ensuring(_.mana == mana + amount)
+  }.ensuring(_.mana == mana + amount)
 
   /**
     * Removes mana from the player.
@@ -73,7 +73,7 @@ final case class Player(
     require(mana - amount >= 0)
 
     copy(mana = mana - amount)
-  } ensuring(_.mana == mana - amount)
+  }.ensuring(_.mana == mana - amount)
 
   /**
     * Draws a card from the deck.
@@ -92,7 +92,7 @@ final case class Player(
       val (newDeck, drawnCard) = deck.removeTopCard()
       val newHand = hand.addCard(drawnCard)
       copy(deck = newDeck, hand = newHand).drawCards(amount - 1)
-  } ensuring(res => res.hand.cards.length >= hand.cards.length)
+  }.ensuring(res => res.hand.cards.length >= hand.cards.length)
 
   /**
     * Damage a specific id object.

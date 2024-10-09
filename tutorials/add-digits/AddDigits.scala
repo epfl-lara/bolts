@@ -9,7 +9,7 @@ object AddBitwise {
   val zero = Nil[Boolean]()
 
   def addCom0(x: Long, y: Long): Unit = {
-  } ensuring(_ => x + y == y + x)
+  }.ensuring(_ => x + y == y + x)
   
   def add(x: Digits, y: Digits, carry: Boolean): Digits = {    
     require(x.length == y.length)
@@ -27,5 +27,5 @@ object AddBitwise {
 	val carry1 = (x1 && y1) || (x1 && carry) || (y1 && carry)
 	addCom(xs, ys, carry1) }
       case _ => () }
-  } ensuring(_ => add(x, y, carry) == add(y, x, carry))
+  }.ensuring(_ => add(x, y, carry) == add(y, x, carry))
 }

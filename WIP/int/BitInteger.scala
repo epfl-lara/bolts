@@ -24,7 +24,7 @@ object BitInteger {
         def tail = {
             require(nonEmpty)
             UnsignedBitInteger(bits.tail)
-        } ensuring(_.length == length - 1)
+        }.ensuring(_.length == length - 1)
 
         def ::(b: Boolean): UnsignedBitInteger = {
             UnsignedBitInteger(b :: bits)
@@ -46,12 +46,12 @@ object BitInteger {
         def tail = {
             require(nonEmpty)
             UnsignedBitInteger(bits.tail)
-        } ensuring(_.length == length - 1)
+        }.ensuring(_.length == length - 1)
 
         def shrink = {
             require(1 < length && head == bits.tail.head)
             SignedBitInteger(bits.tail)
-        } ensuring(toBigInt(_) == toBigInt(this))
+        }.ensuring(toBigInt(_) == toBigInt(this))
     }
 
     val zero = Nil[Boolean]()
@@ -70,7 +70,7 @@ object BitInteger {
             } else {
                 2 * pow2(n-1)
             }
-        } ensuring(res => 0 < res)
+        }.ensuring(res => 0 < res)
 
         def pow2Order(a: BigInt, b: BigInt): Boolean = {
             require(0 <= a && a <= b)
@@ -89,7 +89,7 @@ object BitInteger {
         //         val prev = fasterPow2(div)
         //         prev * prev * pow2(rem)
         //     }
-        // } ensuring(res => res == pow2(n))
+        // }.ensuring(res => res == pow2(n))
 
         def unsignedBitSize(x: BigInt): BigInt = {
             require(0 <= x)
@@ -102,7 +102,7 @@ object BitInteger {
                 val out = unsignedBitSize(halfDown) + 1
                 out
             }
-        } ensuring(res =>
+        }.ensuring(res =>
             0 <= res &&
             x < pow2(res) &&
             ((0 < x) ==> (0 < res)) &&
@@ -114,7 +114,7 @@ object BitInteger {
             require(x < 0)
             decreases(-(x+1))
             unsignedBitSize(-(x+1)) + 1
-        } ensuring(res =>
+        }.ensuring(res =>
             1 <= res &&
             -pow2(res - 1) <= x  &&
             x < -1 ==> x < -pow2(res - 2) &&
@@ -157,7 +157,7 @@ object BitInteger {
         } else {
             BigInt(0)
         }
-    } ensuring(res => 0 <= res && res < BigIntTools.pow2(x.length))
+    }.ensuring(res => 0 <= res && res < BigIntTools.pow2(x.length))
 
     def toBigInt(x: SignedBitInteger): BigInt = {
         if(x.isEmpty) {
@@ -168,7 +168,7 @@ object BitInteger {
             assert(!x.head)
             toBigInt(x.tail)
         }
-    } ensuring(res => x.isEmpty || (if(x.head) { res < 0 } else { 0 <= res }))
+    }.ensuring(res => x.isEmpty || (if(x.head) { res < 0 } else { 0 <= res }))
 
     def bitExtension(x: UnsignedBitInteger, n: BigInt): UnsignedBitInteger = {
         require(x.length <= n)
@@ -178,7 +178,7 @@ object BitInteger {
         } else {
             bitExtension(false :: x, n)
         }
-    } ensuring(res => toBigInt(res) == toBigInt(x) && res.length == n)
+    }.ensuring(res => toBigInt(res) == toBigInt(x) && res.length == n)
 
     def bitExtension(x: SignedBitInteger, n: BigInt): SignedBitInteger = {
         require(x.length <= n)
@@ -190,7 +190,7 @@ object BitInteger {
         } else {
             bitExtension(SignedBitInteger(x.head :: x.bits), n)
         }
-    } ensuring(res => toBigInt(res) == toBigInt(x) && res.length == n)
+    }.ensuring(res => toBigInt(res) == toBigInt(x) && res.length == n)
 
     def shrinking(x: UnsignedBitInteger): UnsignedBitInteger = {
         decreases(x.length)
@@ -199,7 +199,7 @@ object BitInteger {
         } else {
             x
         }
-    } ensuring(res =>
+    }.ensuring(res =>
         toBigInt(res) == toBigInt(x) &&
         res.length <= x.length && (
             res == uZero || (res.head == true)
@@ -215,7 +215,7 @@ object BitInteger {
         } else {
             x
         }
-    } ensuring(res =>
+    }.ensuring(res =>
         toBigInt(res) == toBigInt(x) &&
         res.length <= x.length && (
             res == sZero ||
@@ -271,7 +271,7 @@ object BitInteger {
                 out
             }
         }
-    } ensuring(res =>
+    }.ensuring(res =>
         toBigInt(res) == (x * BigIntTools.pow2(acc.length) + toBigInt(acc)) &&
         res.length == BigIntTools.unsignedBitSize(x) + acc.length
     )
@@ -282,7 +282,7 @@ object BitInteger {
         assert(BigIntTools.pow2(uZero.length) == 1)
         assert(toBigInt(uZero) == 0)
         unsignedFrom(x, uZero)
-    } ensuring(res =>
+    }.ensuring(res =>
         toBigInt(res) == x && res.length == BigIntTools.unsignedBitSize(x)
     )
 
@@ -299,7 +299,7 @@ object BitInteger {
             assert(BigIntTools.bitSizeOrder(nx + 1, p))
             SignedBitInteger(true :: bitExtension(unsignedFrom(nx), n).bits)
         }
-    } ensuring(res => toBigInt(res) == x && res.length == BigIntTools.bitSize(x))
+    }.ensuring(res => toBigInt(res) == x && res.length == BigIntTools.bitSize(x))
 
     def unsignedMax(x: UnsignedBitInteger): Boolean = {
         toBigInt(x) < BigIntTools.pow2(x.length)
@@ -448,7 +448,7 @@ object BitInteger {
             check(out == (toBigInt(a) == toBigInt(b)))
             out
         }
-    } ensuring(_ == (toBigInt(a) == toBigInt(b)))
+    }.ensuring(_ == (toBigInt(a) == toBigInt(b)))
 
     def equal(a: SignedBitInteger, b: SignedBitInteger): Boolean = {
         decreases(a.length + b.length)
@@ -549,7 +549,7 @@ object BitInteger {
             check(out == (toBigInt(a) == toBigInt(b)))
             out
         }
-    } ensuring(_ == (toBigInt(a) == toBigInt(b)))
+    }.ensuring(_ == (toBigInt(a) == toBigInt(b)))
 
     def unsignedSound(x: BigInt): Boolean = {
         require(0 <= x)

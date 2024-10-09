@@ -4,7 +4,7 @@
   *
   * It comes without proof or specification, and is used for benchmarking purposes.
   */
-package ch.epfl.chassot
+package ch.epfl.map
 
 import stainless.annotation._
 import stainless.collection._

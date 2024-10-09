@@ -54,13 +54,13 @@ object VerifiedDFAMatcher {
   def matchDFA[C](dfa: DFA[C], input: List[C]): Boolean = {
     require(validDFA(dfa))
     !input.isEmpty && findLongestMatch(dfa, input)._2.isEmpty
-  } ensuring (res => !res || findLongestMatch(dfa, input)._1 == input)
+  }.ensuring(res => !res || findLongestMatch(dfa, input)._1 == input)
 
   @inline
   def findLongestMatch[C](dfa: DFA[C], input: List[C]): (List[C], List[C]) = {
     require(validDFA(dfa))
     findLongestMatchInner(dfa, dfa.startState, Nil(), input)
-  } ensuring (res => res._1 ++ res._2 == input)
+  }.ensuring(res => res._1 ++ res._2 == input)
 
   def findLongestMatchInner[C](dfa: DFA[C], from: State, pastChars: List[C], suffix: List[C]): (List[C], List[C]) = {
     require(validDFA(dfa))
@@ -113,7 +113,7 @@ object VerifiedDFAMatcher {
 
     }
 
-  } ensuring (res =>
+  }.ensuring(res =>
     res._1.isEmpty && res._2 == pastChars ++ suffix || res._1.size >= pastChars.size && ListUtils.isPrefix(
       res._1,
       pastChars ++ suffix
@@ -134,7 +134,7 @@ object VerifiedDFAMatcher {
       case Nil() => dfa.errorState
     }
 
-  } ensuring (res => true)
+  }.ensuring(res => true)
 
   def moveMultipleSteps[C](dfa: DFA[C], from: State, cs: List[C]): State = {
     require(validDFA(dfa))
@@ -146,7 +146,7 @@ object VerifiedDFAMatcher {
       }
       case Nil() => from
     }
-  } ensuring (res => true)
+  }.ensuring(res => true)
 
   def moveMultipleStepsOpt[C](dfa: DFA[C], from: State, cs: List[C]): State = {
     require(validDFA(dfa))
@@ -164,7 +164,7 @@ object VerifiedDFAMatcher {
       }
       case Nil() => from
     }
-  } ensuring (res => res == moveMultipleSteps(dfa, from, cs))
+  }.ensuring(res => res == moveMultipleSteps(dfa, from, cs))
 
   @opaque
   @inlineOnce
@@ -178,7 +178,7 @@ object VerifiedDFAMatcher {
       }
       case Nil() => ()
     }
-  } ensuring (_ => {
+  }.ensuring(_ => {
     ListUtils.lemmaSubseqRefl(dfa.transitions)
     moveMultipleSteps(dfa, from, cs ++ List(newC)) == moveOneStep(dfa, dfa.transitions, moveMultipleSteps(dfa, from, cs), newC)
   })
@@ -200,7 +200,7 @@ object VerifiedDFAMatcher {
       case Nil() => ()
     }
 
-  } ensuring (_ => moveMultipleSteps(dfa, from, cs) == moveMultipleSteps(dfa, moveMultipleSteps(dfa, from, prefix), suffix))
+  }.ensuring(_ => moveMultipleSteps(dfa, from, cs) == moveMultipleSteps(dfa, moveMultipleSteps(dfa, from, prefix), suffix))
 
   // Longest match theorems
   def longestMatchIsAcceptedByMatchOrIsEmpty[C](dfa: DFA[C], input: List[C]): Unit = {
@@ -208,7 +208,7 @@ object VerifiedDFAMatcher {
 
     longestMatchIsAcceptedByMatchOrIsEmptyInner(dfa, Nil(), input, findLongestMatchInner(dfa, dfa.startState, Nil(), input)._1, dfa.startState)
 
-  } ensuring (_ =>
+  }.ensuring(_ =>
     findLongestMatchInner(dfa, dfa.startState, Nil(), input)._1.isEmpty || matchDFA(dfa, findLongestMatchInner(dfa, dfa.startState, Nil(), input)._1)
   )
 
@@ -280,7 +280,7 @@ object VerifiedDFAMatcher {
       }
     }
 
-  } ensuring (_ => matchedP.isEmpty || matchDFA(dfa, matchedP))
+  }.ensuring(_ => matchedP.isEmpty || matchDFA(dfa, matchedP))
 
   def longestMatchNoBiggerStringMatch[C](dfa: DFA[C], input: List[C], returnP: List[C], bigger: List[C]): Unit = {
     require(validDFA(dfa))
@@ -299,7 +299,7 @@ object VerifiedDFAMatcher {
       }
     }
 
-  } ensuring (_ => bigger == returnP || !matchDFA(dfa, bigger))
+  }.ensuring(_ => bigger == returnP || !matchDFA(dfa, bigger))
 
   def lemmaKnownAcceptedStringFromSmallerPrefixThenAtLeastThat[C](
       dfa: DFA[C],
@@ -340,7 +340,7 @@ object VerifiedDFAMatcher {
       }
     }
 
-  } ensuring (_ => findLongestMatchInner(dfa, moveMultipleSteps(dfa, dfa.startState, testedP), testedP, testedSuffix)._1.size >= knownP.size)
+  }.ensuring(_ => findLongestMatchInner(dfa, moveMultipleSteps(dfa, dfa.startState, testedP), testedP, testedSuffix)._1.size >= knownP.size)
 
   def lemmaFindLongestMatchWithAddedSuffixReturnedBiggerOrEqualMatch[C](dfa: DFA[C], longestM: List[C], newSuffix: List[C]): Unit = {
     require(validDFA(dfa))
@@ -391,7 +391,7 @@ object VerifiedDFAMatcher {
       }
     }
 
-  } ensuring (_ => findLongestMatchInner(dfa, moveMultipleSteps(dfa, dfa.startState, longestM), longestM, newSuffix)._1.size >= longestM.size)
+  }.ensuring(_ => findLongestMatchInner(dfa, moveMultipleSteps(dfa, dfa.startState, longestM), longestM, newSuffix)._1.size >= longestM.size)
 
   def findLongestMatchFromItThenFromSmaller[C](
       dfa: DFA[C],
@@ -486,13 +486,13 @@ object VerifiedDFAMatcher {
       }
     }
 
-  } ensuring (_ => findLongestMatchInner(dfa, moveMultipleSteps(dfa, dfa.startState, smallerP), smallerP, smallerPSuffix)._1 == longestM)
+  }.ensuring(_ => findLongestMatchInner(dfa, moveMultipleSteps(dfa, dfa.startState, smallerP), smallerP, smallerPSuffix)._1 == longestM)
 
   def findLongestMatchFromItThenSameWithoutSuffixSame[C](dfa: DFA[C], input: List[C], longestM: List[C], suffix: List[C]): Unit = {
     require(validDFA(dfa))
     require(longestM ++ suffix == input)
     require(findLongestMatchInner(dfa, moveMultipleSteps(dfa, dfa.startState, longestM), longestM, suffix)._1 == longestM)
-  } ensuring (_ => findLongestMatchInner(dfa, moveMultipleSteps(dfa, dfa.startState, longestM), longestM, Nil())._1 == longestM)
+  }.ensuring(_ => findLongestMatchInner(dfa, moveMultipleSteps(dfa, dfa.startState, longestM), longestM, Nil())._1 == longestM)
 
   @opaque
   @inlineOnce
@@ -543,7 +543,7 @@ object VerifiedDFAMatcher {
       }
     }
 
-  } ensuring (_ => findLongestMatchInner(dfa, moveMultipleSteps(dfa, dfa.startState, smallerP), smallerP, smallerPSuffix)._1 == longestM)
+  }.ensuring(_ => findLongestMatchInner(dfa, moveMultipleSteps(dfa, dfa.startState, smallerP), smallerP, smallerPSuffix)._1 == longestM)
 
   @opaque
   @inlineOnce
@@ -573,7 +573,7 @@ object VerifiedDFAMatcher {
       lemmaFindLongestKnownPFromSmallerThenFromIt(dfa, input, longestM, suffix, newSmallerP, newSmallerPSuff)
     }
 
-  } ensuring (_ => findLongestMatchInner(dfa, moveMultipleSteps(dfa, dfa.startState, longestM), longestM, suffix)._1 == longestM)
+  }.ensuring(_ => findLongestMatchInner(dfa, moveMultipleSteps(dfa, dfa.startState, longestM), longestM, suffix)._1 == longestM)
 
   @opaque
   @inlineOnce
@@ -583,7 +583,7 @@ object VerifiedDFAMatcher {
     require(!usedCharactersTrans(dfa.transitions).contains(c))
 
     lemmaDFACannotMatchAStringContainingACharItDoesNotContainInner(dfa, s, c, Nil(), s, dfa.startState)
-  } ensuring (_ => !matchDFA(dfa, s))
+  }.ensuring(_ => !matchDFA(dfa, s))
 
   @opaque
   @inlineOnce
@@ -627,7 +627,7 @@ object VerifiedDFAMatcher {
       case Nil() => check(false)
     }
 
-  } ensuring (_ => !findLongestMatchInner(dfa, from, pastChars, suffix)._2.isEmpty)
+  }.ensuring(_ => !findLongestMatchInner(dfa, from, pastChars, suffix)._2.isEmpty)
 
   @opaque
   @inlineOnce
@@ -675,7 +675,7 @@ object VerifiedDFAMatcher {
       }
     }
 
-  } ensuring (_ => findLongestMatchInner(dfa, dfa.errorState, pastChars, suffix)._1.isEmpty)
+  }.ensuring(_ => findLongestMatchInner(dfa, dfa.errorState, pastChars, suffix)._1.isEmpty)
 
   @opaque
   @inlineOnce
@@ -700,7 +700,7 @@ object VerifiedDFAMatcher {
       case Nil() => ()
     }
 
-  } ensuring (_ => moveOneStep(dfa, transitionsListRec, from, c) == dfa.errorState)
+  }.ensuring(_ => moveOneStep(dfa, transitionsListRec, from, c) == dfa.errorState)
 
   @opaque
   @inlineOnce
@@ -721,7 +721,7 @@ object VerifiedDFAMatcher {
       case _ => check(false)
     }
 
-  } ensuring (_ => !usedCharactersTrans(sub).contains(c))
+  }.ensuring(_ => !usedCharactersTrans(sub).contains(c))
 
   @opaque
   @inlineOnce
@@ -740,7 +740,7 @@ object VerifiedDFAMatcher {
       }
       case Nil() => ()
     }
-  } ensuring (_ => moveMultipleSteps(dfa, dfa.errorState, cs) == dfa.errorState)
+  }.ensuring(_ => moveMultipleSteps(dfa, dfa.errorState, cs) == dfa.errorState)
 
   @opaque
   @inlineOnce
@@ -759,7 +759,7 @@ object VerifiedDFAMatcher {
       }
       case Nil() => ()
     }
-  } ensuring (_ => moveOneStep(dfa, transitionsListRec, dfa.errorState, c) == dfa.errorState)
+  }.ensuring(_ => moveOneStep(dfa, transitionsListRec, dfa.errorState, c) == dfa.errorState)
 
   @opaque
   @inlineOnce
@@ -779,7 +779,7 @@ object VerifiedDFAMatcher {
       }
       case _ => check(false)
     }
-  } ensuring (_ => noTransitionOutOfErrorState(sub, errorState))
+  }.ensuring(_ => noTransitionOutOfErrorState(sub, errorState))
 
   @opaque
   @inlineOnce
@@ -794,6 +794,6 @@ object VerifiedDFAMatcher {
       case Nil()                   => check(false)
     }
 
-  } ensuring (_ => t.from != errorState)
+  }.ensuring(_ => t.from != errorState)
 
 }

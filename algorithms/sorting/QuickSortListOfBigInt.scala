@@ -19,11 +19,11 @@ object QuickSortSize {
       case Nil() => l2
       case Cons(x, xs) => Cons(x, appendSorted(xs, l2))
     }
-  } ensuring { res =>
+  }.ensuring({ res =>
     isSorted(res) &&
     res.content == l1.content ++ l2.content &&
     res.size == l1.size + l2.size
-  }
+  })
 
   def quickSort(list: List[BigInt]): List[BigInt] = {
     decreases(list.size, BigInt(0))
@@ -31,11 +31,11 @@ object QuickSortSize {
       case Nil() => Nil[BigInt]()
       case Cons(x, xs) => par(x, Nil(), Nil(), xs)
     }
-  } ensuring { res =>
+  }.ensuring({ res =>
     isSorted(res) &&
     res.content == list.content &&
     res.size == list.size
-  }
+  })
 
   def par(x: BigInt, l: List[BigInt], r: List[BigInt], ls: List[BigInt]): List[BigInt] = {
     require(
@@ -48,9 +48,9 @@ object QuickSortSize {
       case Nil() => appendSorted(quickSort(l), Cons(x, quickSort(r)))
       case Cons(x2, xs2) => if (x2 <= x) par(x, Cons(x2, l), r, xs2) else par(x, l, Cons(x2, r), xs2)
     }
-  } ensuring { res =>
+  }.ensuring({ res =>
     isSorted(res) &&
     res.content == l.content ++ r.content ++ ls.content + x &&
     res.size == l.size + r.size + ls.size + 1
-  }
+  })
 }

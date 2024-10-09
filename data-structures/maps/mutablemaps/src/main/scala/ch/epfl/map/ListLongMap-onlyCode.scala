@@ -1,7 +1,7 @@
 /** Author: Samuel Chassot Contains only the code of the ListLongMap, without specification nor proof, for line counting purposes.
   */
 
-package ch.epfl.chassot
+package ch.epfl.map
 
 import stainless.annotation._
 import stainless.collection._

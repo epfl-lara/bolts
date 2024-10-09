@@ -29,7 +29,7 @@ object FindIndexOptionIff {
       None[Int]()
     } else None[Int]()
 
-  } ensuring((res: Option[Int]) =>
+  }.ensuring((res: Option[Int]) =>
     (res match {
       case None() => a.length == 0 || notPresent(a.length - 1, a, t)
       case Some(i) => 0 <= i && i < a.length && a(i) == t

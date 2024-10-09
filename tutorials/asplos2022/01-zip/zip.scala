@@ -17,11 +17,11 @@ enum List[T] {
       case Nil()         => BigInt(0)
       case Cons(_, tail) => BigInt(1) + tail.size
     }
-  } ensuring (res => res >= 0 && res != -1)
+  }.ensuring(res => res >= 0 && res != -1)
 
   def sizeFact: Unit = {
     ()
-  } ensuring(_ => size != -1)
+  }.ensuring(_ => size != -1)
 
   // NOTE: Adding the postcondition to size is crucial since it allows
   //   us to conclude that *both* xs and ys are Nil when we know that
@@ -45,7 +45,7 @@ def zip(xs: List[Int], ys: List[Boolean]): List[(Int, Boolean)] = {
     case _ =>
       Nil[(Int, Boolean)]()
   }
-} ensuring ( res =>   res.map(_._1) == xs &&
+}.ensuring( res =>   res.map(_._1) == xs &&
               res.map(_._2) == ys)
 
 // same zip but with weaker require and ensuring
@@ -57,4 +57,4 @@ def zipL(xs: List[Int], ys: List[Boolean]): List[(Int, Boolean)] = {
     case _ =>
       Nil[(Int, Boolean)]()
   }
-} ensuring ( res =>   res.map(_._1) == xs)
+}.ensuring( res =>   res.map(_._1) == xs)

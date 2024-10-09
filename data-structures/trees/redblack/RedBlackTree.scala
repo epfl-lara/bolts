@@ -47,7 +47,7 @@ object RedBlackTree {
     lazy val size: BigInt = (this match {
       case Empty(_) => BigInt(0)
       case Node(_, l, v, r) => l.size + 1 + r.size
-    }) ensuring(_ == toList.length)
+    }).ensuring(_ == toList.length)
 
     def color: Color = (this match {
       case Empty(c) => c
@@ -67,7 +67,7 @@ object RedBlackTree {
             right.contains(elem)
           })
       }
-    } ensuring(res => res == this.toList.contains(elem))
+    }.ensuring(res => res == this.toList.contains(elem))
   }
   
   case class Empty(c: Color) extends Tree
@@ -78,7 +78,7 @@ object RedBlackTree {
     def head: BigInt = (left match {
       case Empty(_) => value
       case n: Node => n.head
-    }) ensuring(_ == toList.head)
+    }).ensuring(_ == toList.head)
 
     def last: BigInt = {
       concatLast(leftList, rightList)
@@ -86,7 +86,7 @@ object RedBlackTree {
         case Empty(_) => value
         case n: Node => n.last
       }
-    } ensuring(_ == toList.last)
+    }.ensuring(_ == toList.last)
   }
 
   sealed abstract class OptionInt
@@ -100,14 +100,14 @@ object RedBlackTree {
   def isValidRBSubtree(t: Tree): Boolean = {
     decreases(t.size)
     isBST(t) && blackBalanced(t) && redNodesHaveBlackChildren(t)
-  } ensuring(_ ==> (t match {
+  }.ensuring(_ ==> (t match {
     case Node(_, l, v, r) => isValidRBSubtree(l) && isValidRBSubtree(r)
     case _ => true
   }))
 
   private def isValidTempSubtree(t: Tree): Boolean = {
     isBST(t) && blackBalanced(t) && redDescHaveBlackChildren(t)
-  } ensuring(_ ==> (t match {
+  }.ensuring(_ ==> (t match {
     case Node(_, l, v, r) => isValidRBSubtree(l) && isValidRBSubtree(r)
     case _ => true
   }))
@@ -131,7 +131,7 @@ object RedBlackTree {
 
   def isBST(t: Tree): Boolean = {
     isInorder(t.toList)
-  } ensuring(_ ==> (t match {
+  }.ensuring(_ ==> (t match {
     case Node(_, l, v, r) => inorderSpread(l.toList, v, r.toList)
     case _ => true
   }))
@@ -144,7 +144,7 @@ object RedBlackTree {
       case Node(R, l, _, r) => l.color == B && r.color == B && redNodesHaveBlackChildren(l) && redNodesHaveBlackChildren(r)
       case _ => false // DoubleBlack (or Red Empty node)
     }
-  } ensuring(_ ==> (redDescHaveBlackChildren(t) && isValidColor(t)))
+  }.ensuring(_ ==> (redDescHaveBlackChildren(t) && isValidColor(t)))
 
   def redDescHaveBlackChildren(t: Tree): Boolean = {
     decreases(t.size * 2)
@@ -161,7 +161,7 @@ object RedBlackTree {
     case Node(R, l, _, _) => blackHeight(l)
     case Node(B, l, _, _) => blackHeight(l) + 1
     case Node(BB, l, _, _) => blackHeight(l) + 2
-  }} ensuring(0 <= _)
+  }}.ensuring(0 <= _)
 
   def blackBalanced(t: Tree): Boolean = {
     t match {
@@ -183,14 +183,14 @@ object RedBlackTree {
     n match {
       case Node(_, l, v, r) => Node(B, l, v, r)
     }
-  } ensuring(isValidRBSubtree(n) ==> isValidRBTree(_))
+  }.ensuring(isValidRBSubtree(n) ==> isValidRBTree(_))
 
   def makeBlack(t: Tree): Tree = {
     t match {
       case n: Node => makeNodeBlack(n)
       case _ => Empty(B)
     }
-  } ensuring(isValidRBSubtree(t) ==> isValidRBTree(_))
+  }.ensuring(isValidRBSubtree(t) ==> isValidRBTree(_))
 
   def darkenNode(n: Node): Node = {
     require(isValidRBSubtree(n))
@@ -198,7 +198,7 @@ object RedBlackTree {
       case Node(R, l, v, r) => Node(B, l, v, r)
       case Node(B, l, v, r) => Node(BB, l, v, r)
     }
-  } ensuring(
+  }.ensuring(
     res =>
     res.toList == n.toList &&
     isValidTempSubtree(res) &&
@@ -221,7 +221,7 @@ object RedBlackTree {
         Node(R, l, v, r)
       }
     }
-  } ensuring(
+  }.ensuring(
     res =>
     res.toList == n.toList &&
     isValidPreBalancingNode(res) &&
@@ -280,7 +280,7 @@ object RedBlackTree {
         in
       }
     }
-  } ensuring (res =>
+  }.ensuring(res =>
     res.toList == in.toList
     && isValidRBSubtree(res)
     && blackHeight(res) == blackHeight(in)
@@ -296,7 +296,7 @@ object RedBlackTree {
       // DoubleBlack case
       darkenNode(balance(brightenNode(n)))
     }
-  } ensuring (res =>
+  }.ensuring(res =>
     res.toList == n.toList
     && isValidTempSubtree(res)
     && (n.c == BB) ==> (res.c != R)
@@ -433,7 +433,7 @@ object RedBlackTree {
       }
       // Red root - branch end
     }
-  } ensuring(res =>
+  }.ensuring(res =>
     res.toList == Node(c, l, v, r).toList
     && isValidTempSubtree(res)
     && (res.color == BB || redNodesHaveBlackChildren(res))
@@ -477,7 +477,7 @@ object RedBlackTree {
       check(redDescHaveBlackChildren(temp))
       temp
     }
-  } ensuring (res =>
+  }.ensuring(res =>
     res.toList == inorderInsert(t.toList, x)
     && isValidTempSubtree(res)
     && blackHeight(res) == blackHeight(t)
@@ -487,7 +487,7 @@ object RedBlackTree {
     require(isValidRBSubtree(t))
     val out = makeNodeBlack(ins(t, x))
     out
-  } ensuring (res => res.toList == inorderInsert(t.toList, x) && isValidRBTree(res))
+  }.ensuring(res => res.toList == inorderInsert(t.toList, x) && isValidRBTree(res))
 
   // Removal
 
@@ -529,7 +529,7 @@ object RedBlackTree {
       }
     }
     out
-  } ensuring(res =>
+  }.ensuring(res =>
     res._1.toList :+ res._2 == n.toList
     && isValidTempSubtree(res._1)
     && (res._1.color == BB || redNodesHaveBlackChildren(res._1))
@@ -573,7 +573,7 @@ object RedBlackTree {
       }
     }
     out
-  } ensuring(res =>
+  }.ensuring(res =>
     res._1 :: res._2.toList == n.toList
     && isValidTempSubtree(res._2)
     && (res._2.color == BB || redNodesHaveBlackChildren(res._2))
@@ -635,7 +635,7 @@ object RedBlackTree {
       check(preBal == Empty(B) || preBal == Empty(BB))
       preBal
     }
-  } ensuring (res =>
+  }.ensuring(res =>
     res.toList == deleteFirst(t.toList, x)
     && isValidTempSubtree(res)
     && blackHeight(res) == blackHeight(t)
@@ -645,7 +645,7 @@ object RedBlackTree {
     require(isValidRBSubtree(t))
     val out = makeBlack(del(t, x))
     out
-  } ensuring (res => res.toList == deleteFirst(t.toList, x) && isValidRBTree(res))
+  }.ensuring(res => res.toList == deleteFirst(t.toList, x) && isValidRBTree(res))
 }
 
 import RedBlackTree._

@@ -647,7 +647,7 @@ object decoder {
     require(readH == h.toInt)
     require(readChan.toLong == chan)
 
-    val SomeMut(DecodedResult(decodedPixels, ww, hh, cchan)) = decode(bytes, until)
+    val SomeMut(DecodedResult(decodedPixels, ww, hh, cchan)) = decode(bytes, until): @unchecked
     val initIndex = Array.fill(64)(0)
     val initPixels = Array.fill(w.toInt * h.toInt * chan.toInt)(0: Byte)
     val initPx = Pixel.fromRgba(0, 0, 0, 255.toByte)

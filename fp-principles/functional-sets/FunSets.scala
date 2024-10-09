@@ -63,12 +63,12 @@ object FunSets {
      (!contains(diff(s1, s2), e) || (contains(s1, e) && !contains(s2, e))).holds
 
   /**
-   * Returns the subset of `s` for which `p` holds.
+   * Returns the subset of `s` for which `p` .holds.
    */
   def filter(s: BigInt => Boolean, p: BigInt => Boolean): BigInt => Boolean = {
     (elem: BigInt) => s(elem) && p(elem)
   }
-  // ensuring(res => forallCheck(res, p))
+  //.ensuring(res => forallCheck(res, p))
 
   def filterIterForallCheck(a: BigInt, s: BigInt => Boolean, p: BigInt => Boolean): Boolean = {
     decreases(if (a < 0) -(a + 1) else BigInt(0), max(BigInt(0), bound - a + 1))

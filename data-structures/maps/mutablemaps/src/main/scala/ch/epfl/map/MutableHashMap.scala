@@ -1,6 +1,6 @@
 /** Author: Samuel Chassot
   */
-package ch.epfl.chassot
+package ch.epfl.map
 
 import stainless.annotation._
 import stainless.collection.{ListMap => ListMapStainless, ListMapLemmas => ListMapLemmasStainless, _}
@@ -15,7 +15,7 @@ import LongMapFixedSize.validMask
 import stainless.lang.StaticChecks.* // Comment out when using the OptimisedEnsuring object below
 // import OptimisedChecks.* // Import to remove `ensuring` and `require` from the code for the benchmarks
 
-import MutableMapInterface.iMHashMap
+import MutableMapInterface.MutableMap
 
 trait Hashable[K] {
   @pure
@@ -41,7 +41,7 @@ object MutableHashMap {
       val hashF: Hashable[K],
       var _size: Int,
       val defaultValue: K => V
-  ) extends iMHashMap[K, V] {
+  ) extends MutableMap[K, V] {
 
     @pure
     override def defaultEntry: K => V = this.defaultValue
@@ -348,7 +348,7 @@ object MutableHashMap {
 
   // ----------------- Lemmas ------------------------------------------------------------------------
   /**
-    * This lemma proves that a property `p` that holds for all pairs of the map, holds for a key and its value.
+    * This lemma proves that a property `p` that .holds for all pairs of the map, .holds for a key and its value.
     * 
     * Useful to build caches using this map.
     *
@@ -372,7 +372,7 @@ object MutableHashMap {
 
 
   /**
-    * This lemma proves that inserting a new pair preserves the property `p` that holds for all pairs of the map.
+    * This lemma proves that inserting a new pair preserves the property `p` that .holds for all pairs of the map.
     * 
     * Useful to build caches using this map.
     *
@@ -408,7 +408,7 @@ object MutableHashMap {
     }
 
     ()
-  } ensuring (_ => {
+  }.ensuring(_ => {
     val oldMap = snapshot(hm)
     val afterUpdate = snapshot(hm)
     afterUpdate.update(k, v)
@@ -416,7 +416,7 @@ object MutableHashMap {
   })
 
     /**
-    * This lemma proves that removing a pair preserves the property `p` that holds for all pairs of the map.
+    * This lemma proves that removing a pair preserves the property `p` that .holds for all pairs of the map.
     * 
     * Useful to build caches using this map.
     *
@@ -454,7 +454,7 @@ object MutableHashMap {
     }
 
     ()
-  } ensuring (_ => {
+  }.ensuring(_ => {
     val oldMap = snapshot(hm)
     val afterUpdate = snapshot(hm)
     afterUpdate.remove(k)

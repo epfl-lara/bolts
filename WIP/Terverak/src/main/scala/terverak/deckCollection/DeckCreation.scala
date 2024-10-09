@@ -29,7 +29,7 @@ final case class DeckCreation(user: User, deckNumber: BigInt = BigInt(0)) {
     */
   def addCardToCurrentDeck(card: Card): DeckCreation = {
     copy(user = user.copy(decks = user.decks.updated(deckNumber, user.decks(deckNumber).addCard(card))))
-  } ensuring(res => res.user.decks.size == user.decks.size &&
+  }.ensuring(res => res.user.decks.size == user.decks.size &&
     (res.user.decks(deckNumber) == user.decks(deckNumber)
     || res.user.decks(deckNumber).nbCards == user.decks(deckNumber).nbCards + 1))
 
@@ -40,7 +40,7 @@ final case class DeckCreation(user: User, deckNumber: BigInt = BigInt(0)) {
     */
   def removeCardToCurrentDeck(card: Card): DeckCreation = {
     copy(user = user.copy(decks = user.decks.updated(deckNumber, user.decks(deckNumber).removeCard(card))))
-  } ensuring(res => res.user.decks.size == user.decks.size &&
+  }.ensuring(res => res.user.decks.size == user.decks.size &&
     (res.user.decks(deckNumber) == user.decks(deckNumber)
     || res.user.decks(deckNumber).nbCards == user.decks(deckNumber).nbCards - 1))
 
@@ -50,7 +50,7 @@ final case class DeckCreation(user: User, deckNumber: BigInt = BigInt(0)) {
     */
   def nextDeck(): DeckCreation = {
     copy(deckNumber = (deckNumber + BigInt(1)) % user.decks.length)
-  } ensuring(res => if res.user.decks.length > 1 then res.deckNumber != deckNumber else res.deckNumber == deckNumber)
+  }.ensuring(res => if res.user.decks.length > 1 then res.deckNumber != deckNumber else res.deckNumber == deckNumber)
 
   /**
     * Returns the previous deck.
@@ -58,7 +58,7 @@ final case class DeckCreation(user: User, deckNumber: BigInt = BigInt(0)) {
     */
   def previousDeck(): DeckCreation = {
     copy(deckNumber = (deckNumber - BigInt(1) + user.decks.length) % user.decks.length)
-  } ensuring(res => if res.user.decks.length > 1 then res.deckNumber != deckNumber else res.deckNumber == deckNumber)
+  }.ensuring(res => if res.user.decks.length > 1 then res.deckNumber != deckNumber else res.deckNumber == deckNumber)
 }
 
 object DeckCreation {

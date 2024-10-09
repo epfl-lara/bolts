@@ -47,6 +47,7 @@ object Dispenser {
   }
 
   def isTraceLike(t: List[(State,Action)]): Boolean = {
+    decreases(t)
     t match {
       case Cons((s1,a1), Cons((s2,a2),rest)) => {
         if (r(s1,a1)==Some(s2)) isTraceLike((s2,a2)::rest)
@@ -75,8 +76,8 @@ object Dispenser {
         List(b10,b10,b10,b10)),
       coins = BigInt(0),
       oneInserted=false)
-    val Some(s1) = r(s0, FirstCoin())
-    val Some(s2) = r(s1, SecondCoin(0,0))
+    val Some(s1) = r(s0, FirstCoin()): @unchecked
+    val Some(s2) = r(s1, SecondCoin(0,0)): @unchecked
     List[(State,Action)]((s0, FirstCoin()), (s1, SecondCoin(0,0)), (s2, FirstCoin()))
   }.ensuring(res => isTrace(res))
 
@@ -91,6 +92,7 @@ object Dispenser {
         case _ => false
       })
     )
+    decreases(t)
     t match {
       case Cons((s,a),Nil()) => ()
       case Cons((s,a),rest) => {

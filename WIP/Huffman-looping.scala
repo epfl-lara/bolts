@@ -28,7 +28,7 @@ object Huffman {
           case Fork(left, right) => left.chars ++ right.chars
           case Leaf(char, weight) => Set(char)
         }
-      } ensuring(res => res != Set.empty[Char])
+      }.ensuring(res => res != Set.empty[Char])
     }
     case class Fork(left: CodeTree, right: CodeTree) extends CodeTree
     case class Leaf(char: Char, weight: BigInt) extends CodeTree
