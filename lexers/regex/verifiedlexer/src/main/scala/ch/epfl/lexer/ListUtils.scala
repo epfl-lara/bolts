@@ -434,7 +434,7 @@ object ListUtils {
         baseList
       }
     }
-  } ensuring (res => 
+  }.ensuring (res => 
     ListOps.noDuplicate(res) 
     && (baseList ++ newList).content == res.content 
     && ListSpecs.subseq(res, baseList ++ newList)
@@ -466,7 +466,7 @@ object ListUtils {
       case _ => ()
     }
     
-  } ensuring (_ => ListSpecs.subseq(sub, l1 ++ l3 ++ l2))
+  }.ensuring (_ => ListSpecs.subseq(sub, l1 ++ l3 ++ l2))
 
   @inlineOnce
   @opaque
@@ -477,7 +477,7 @@ object ListUtils {
       case Cons(hd, tl) => lemmaConcatNewListPreservesSubSeq(l1, tl, l3)
       case Nil()        => ()
     }
-  } ensuring (_ => ListSpecs.subseq(l1, l2 ++ l3))
+  }.ensuring (_ => ListSpecs.subseq(l1, l2 ++ l3))
 
   @inlineOnce
   @opaque
@@ -488,7 +488,7 @@ object ListUtils {
       case Cons(hd, tl) if !tl.isEmpty => lemmaTailOfConcatIsTailConcat(tl, l2)
       case _        => ()
     }
-  } ensuring (_ => (l1 ++ l2).tail == l1.tail ++ l2)
+  }.ensuring (_ => (l1 ++ l2).tail == l1.tail ++ l2)
 
   @inlineOnce
   @opaque
@@ -578,7 +578,7 @@ object ListUtils {
       case Cons(hd, tl) => lemmaConcatPreservesForall(tl, l2, p)
       case Nil()        => ()
     }
-  } ensuring (_ => (l1 ++ l2).forall(p))
+  }.ensuring (_ => (l1 ++ l2).forall(p))
 
   // @inlineOnce 
   @opaque
@@ -596,7 +596,7 @@ object ListUtils {
       }
       case Nil() => ()
     }
-  } ensuring (_ => l2.forall(p))
+  }.ensuring (_ => l2.forall(p))
 
   @inlineOnce
   @opaque

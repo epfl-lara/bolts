@@ -406,28 +406,6 @@ object TupleListOpsGenK {
       case Nil() => ()
     }
   }.ensuring(_ => getKeysList(l).content - key == getKeysList(removePresrvNoDuplicatedKeys(l, key)).content)
-  
-  @opaque
-  @inlineOnce
-  def lemmainsertNoDuplicatedKeysPreservesForall[K, B](
-      l: List[(K, B)],
-      key: K,
-      value: B,
-      p: ((K, B)) => Boolean
-  ): Unit = {
-    require(invariantList(l))
-    require(l.forall(p))
-    require(p((key, value)))
-    decreases(l)
-
-    l match {
-      case Cons(head, tl) if (head._1 != key) =>
-        lemmainsertNoDuplicatedKeysPreservesForall(tl, key, value, p)
-      case _ => ()
-    }
-
-  }.ensuring(_ => insertNoDuplicatedKeys(l, key, value).forall(p))
-  
 
   @opaque 
   @inlineOnce
@@ -480,28 +458,6 @@ object TupleListOpsGenK {
         case _ => ()
       }
     }.ensuring(_ => l.map(_._1).contains(p._1))
-
-  @opaque
-  @inlineOnce
-  def lemmainsertNoDuplicatedKeysPreservesForall[K, B](
-      l: List[(K, B)],
-      key: K,
-      value: B,
-      p: ((K, B)) => Boolean
-  ): Unit = {
-    require(invariantList(l))
-    require(l.forall(p))
-    require(p((key, value)))
-    decreases(l)
-
-    l match {
-      case Cons(head, tl) if (head._1 != key) =>
-        lemmainsertNoDuplicatedKeysPreservesForall(tl, key, value, p)
-      case _ => ()
-    }
-
-  }.ensuring(_ => insertNoDuplicatedKeys(l, key, value).forall(p))
-  
 
   @opaque 
   @inlineOnce
