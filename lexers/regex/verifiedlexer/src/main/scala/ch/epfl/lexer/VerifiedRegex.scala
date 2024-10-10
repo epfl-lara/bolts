@@ -263,19 +263,19 @@ object ZipperRegex {
   /**
     * For now it is unimplemented as it needs to traverse all elements of the set, which is not possible with this version of the set structure
     */
-  def unfocusZipper[C](z: Zipper[C]): Regex[C] = {
-    require(validZipper(z))
-    z match {
-      case Cons(hd, tl) if tl.isEmpty => unfocusContext(hd)
-      case Cons(hd, tl) => Union(unfocusContext(hd), unfocusZipper(tl))
-      case Nil()        => EmptyLang()
-    }
-  }.ensuring(res => validRegex(res))
+  // def unfocusZipper[C](z: Zipper[C]): Regex[C] = {
+  //   require(validZipper(z))
+  //   z match {
+  //     case Cons(hd, tl) if tl.isEmpty => unfocusContext(hd)
+  //     case Cons(hd, tl) => Union(unfocusContext(hd), unfocusZipper(tl))
+  //     case Nil()        => EmptyLang()
+  //   }
+  // }.ensuring(res => validRegex(res))
 
   def focus[C](r: Regex[C]): Zipper[C] = {
     require(validRegex(r))
     List(List(r))
-  }.ensuring(res => validZipper(res) && unfocusZipper(res) == r)
+  }.ensuring(res => validZipper(res))// && unfocusZipper(res) == r)
 
   def derivationStepZipperUp[C](context: Context[C], a: C): Zipper[C] = {
     require(validContext(context))
@@ -388,10 +388,10 @@ object ZipperRegex {
     *
     * @return
     */
-  def theoremUnfocusFocus[C](r: Regex[C], s: List[C]): Boolean = {
-    require(validRegex(r))
-    matchR(unfocusZipper(focus(r)), s) == matchR(r, s)
-  }.holds
+  // def theoremUnfocusFocus[C](r: Regex[C], s: List[C]): Boolean = {
+  //   require(validRegex(r))
+  //   matchR(unfocusZipper(focus(r)), s) == matchR(r, s)
+  // }.holds
 
   /**
     * More or less the theorem 2.2 of Romain Edelmann's thesis
@@ -401,39 +401,39 @@ object ZipperRegex {
     * @param a
     * @param s
     */
-  @inlineOnce
-  @ghost
-  @opaque
-  def theoremUnfocusDerivativeSameAsDerivative[C](r: Regex[C], z: Zipper[C], a: C, s: List[C]): Unit = {
-    require(validRegex(r))
-    require(validZipper(z))
-    require(unfocusZipper(z) == r)
+  // @inlineOnce
+  // @ghost
+  // @opaque
+  // def theoremUnfocusDerivativeSameAsDerivative[C](r: Regex[C], z: Zipper[C], a: C, s: List[C]): Unit = {
+  //   require(validRegex(r))
+  //   require(validZipper(z))
+  //   require(unfocusZipper(z) == r)
 
-    z match
-      case Nil() => ()
-      case Cons(c1, tl) if tl.isEmpty => 
-        assert(unfocusContext(c1) == r)
-        assert(unfocusZipper(z) == unfocusContext(c1))
-        lemmaDerivativeOfZipperWithOneContextIsUpOnIt(c1, z, a)
-        assert(derivationStepZipperUp(c1, a) == derivationStepZipper(z, a))
-        lemmaUnfocusDerivativesOfContextSameAsDerivative(r, c1, a, s)
-        assert(matchR(unfocusZipper(derivationStepZipperUp(c1, a)), s) == matchR(derivativeStep(r, a), s))
-        check(matchR(unfocusZipper(derivationStepZipper(z, a)), s) == matchR(derivativeStep(r, a), s))
+  //   z match
+  //     case Nil() => ()
+  //     case Cons(c1, tl) if tl.isEmpty => 
+  //       assert(unfocusContext(c1) == r)
+  //       assert(unfocusZipper(z) == unfocusContext(c1))
+  //       lemmaDerivativeOfZipperWithOneContextIsUpOnIt(c1, z, a)
+  //       assert(derivationStepZipperUp(c1, a) == derivationStepZipper(z, a))
+  //       lemmaUnfocusDerivativesOfContextSameAsDerivative(r, c1, a, s)
+  //       assert(matchR(unfocusZipper(derivationStepZipperUp(c1, a)), s) == matchR(derivativeStep(r, a), s))
+  //       check(matchR(unfocusZipper(derivationStepZipper(z, a)), s) == matchR(derivativeStep(r, a), s))
 
-      case Cons(c1, tl) => ()
-  }.ensuring(_ => matchR(unfocusZipper(derivationStepZipper(z, a)), s) == matchR(derivativeStep(r, a), s))
+  //     case Cons(c1, tl) => ()
+  // }.ensuring(_ => matchR(unfocusZipper(derivationStepZipper(z, a)), s) == matchR(derivativeStep(r, a), s))
 
 
-  @inlineOnce
-  @opaque
-  @ghost
-  def lemmaUnfocusDerivativesOfContextSameAsDerivative[C](r: Regex[C], c: Context[C], a: C, s: List[C]): Unit = {
-    require(validContext(c))
-    require(c.forall(validRegex))
-    require(validRegex(r))
-    require(unfocusContext(c) == r)
+  // @inlineOnce
+  // @opaque
+  // @ghost
+  // def lemmaUnfocusDerivativesOfContextSameAsDerivative[C](r: Regex[C], c: Context[C], a: C, s: List[C]): Unit = {
+  //   require(validContext(c))
+  //   require(c.forall(validRegex))
+  //   require(validRegex(r))
+  //   require(unfocusContext(c) == r)
 
-  }.ensuring(_ => matchR(unfocusZipper(derivationStepZipperUp(c, a)), s) == matchR(derivativeStep(r, a), s))
+  // }.ensuring(_ => matchR(unfocusZipper(derivationStepZipperUp(c, a)), s) == matchR(derivativeStep(r, a), s))
 
   @inlineOnce
   @opaque
