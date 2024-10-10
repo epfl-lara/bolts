@@ -239,6 +239,8 @@ object ZipperRegex {
   import VerifiedRegex.*
   import VerifiedRegexMatcher.*
   import ListUtils.*
+  import ch.epfl.set.MutableSetInterface.*
+  
   /**
     * Context[C] represent sequences of expressions
     * Zipper[C] are sets of Context[C], and they represent disjunctions of expressions
