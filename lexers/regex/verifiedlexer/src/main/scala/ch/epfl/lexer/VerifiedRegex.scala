@@ -246,10 +246,10 @@ object ZipperRegex {
     * Zipper[C] are sets of Context[C], and they represent disjunctions of expressions
     */
   type Context[C] = List[Regex[C]]
-  type Zipper[C] = List[Context[C]]
+  type Zipper[C] = MutableSet[Context[C]]
 
   @ghost inline def validContext[C](c: Context[C]): Boolean = c.forall(validRegex)
-  @ghost inline def validZipper[C](z: Zipper[C]): Boolean =  z.forall(c => c.forall(validRegex)) &&& ListSpecs.noDuplicate(z)
+  @ghost inline def validZipper[C](z: Zipper[C]): Boolean =  z.toList.abstractSet.forall(c => c.forall(validRegex))
 
   def unfocusContext[C](c: Context[C]): Regex[C] = {
     require(validContext(c))
@@ -260,6 +260,9 @@ object ZipperRegex {
     }
   }.ensuring(res => validRegex(res))
 
+  /**
+    * For now it is unimplemented as it needs to traverse all elements of the set, which is not possible with this version of the set structure
+    */
   def unfocusZipper[C](z: Zipper[C]): Regex[C] = {
     require(validZipper(z))
     z match {
