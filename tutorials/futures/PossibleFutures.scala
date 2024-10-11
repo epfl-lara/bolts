@@ -4,17 +4,14 @@ import stainless.lang.StaticChecks.*
 
 object PossibleFutures:
 
+  // constructure is private: enforce using Future.apply and hence asynchrony
   class Future[A](private val todo : () => A):
     @ghost 
-    def expected: A = todo() // predicted value
+    def expected: A = todo() // predicted value. Public, but spec only
 
-    @extern
     def await: A = {
       todo()
     }.ensuring(_ == expected)
-
-    def map[B](f: A => B): Future[B] =
-      Future(() => f(await))
 
   object Future:
     @extern
@@ -50,6 +47,7 @@ object PossibleFutures:
     val one = Future(() => slow(2))
     one.await + two.await + x.await
 
+  // run to observe that values are computed asynchronously 
   @main @extern
   def test =
     println(f"The result is: ${addThree(Future(() => slow(100)))}")
