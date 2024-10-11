@@ -2,10 +2,6 @@ import stainless.annotation.*
 import stainless.lang.*
 import stainless.lang.StaticChecks.*
 
-/*
-class ComputeThread[A](task: Unit => A) extends Thread:
-*/
-
 object PossibleFutures:
 
   class Future[A](private val todo : () => A):
@@ -23,7 +19,6 @@ object PossibleFutures:
   object Future:
     @extern
     def apply[A](todo: () => A): Future[A] = {      
-      println("In reality, I will create a future and allow it to start computing")
       var result: Option[A] = None[A]()
       val t = new Thread:        
         override def run: Unit =
