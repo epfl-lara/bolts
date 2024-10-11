@@ -1,38 +1,60 @@
 import stainless.annotation.*
 import stainless.lang.*
 import stainless.lang.StaticChecks.*
+
+/*
+class ComputeThread[A](task: Unit => A) extends Thread:
+*/
+
 object PossibleFutures:
 
-  class Future[A](private val todo : Unit => A):   
+  class Future[A](private val todo : () => A):
     @ghost 
-    def expected: A = todo(()) // predicted value
+    def expected: A = todo() // predicted value
 
     @extern
     def await: A = {
-      val res = todo(())
-      println(f"In reality, I will wait for the future to be done and get $res")
-      res
+      todo()
     }.ensuring(_ == expected)
 
     def map[B](f: A => B): Future[B] =
-      Future(_ => f(await))
+      Future(() => f(await))
 
   object Future:
     @extern
-    def apply[A](f: Unit => A): Future[A] = {
+    def apply[A](todo: () => A): Future[A] = {      
       println("In reality, I will create a future and allow it to start computing")
-      new Future[A](f)
-    }.ensuring(res => res.expected == f(()))
+      var result: Option[A] = None[A]()
+      val t = new Thread:        
+        override def run: Unit =
+          result = Some(todo())
+          println(f"Computed $result")
+
+      t.start               
+      def expandedTodo: A =
+        t.join
+        result.get
+
+      new Future[A](() => expandedTodo)
+    }.ensuring(_.expected == todo())
 
   def small(x:Int): Boolean = 
     -128 <= x && x < 127
 
+  @extern
+  def sleep(t: Int): Unit =
+    Thread.sleep(scala.util.Random.nextInt(t))
+
+  def slow(x: Int): Int =
+    sleep(100)
+    x
+
   def addThree(x: Future[Int]) =  
     require(small(x.expected))
-    val one = Future(_ => 1)
-    val two = Future(_ => 2)
+    val two = Future(() => slow(1))
+    val one = Future(() => slow(2))
     one.await + two.await + x.await
 
   @main @extern
   def test =
-    println(f"The result is: ${addThree(Future(_ => 100))}")
+    println(f"The result is: ${addThree(Future(() => slow(100)))}")
