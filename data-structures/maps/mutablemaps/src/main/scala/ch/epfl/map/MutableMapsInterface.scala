@@ -69,6 +69,14 @@ object MutableMapInterface{
   @mutable
   trait MutableMap[K, V] {
     import ch.epfl.map.ListMap
+
+    /**
+     * Invariant for the datastructure needed to construct the abstractMap
+     */
+    @pure 
+    @ghost
+    def simpleValid: Boolean
+
     /**
      * Invariant for the datastructure
      */
@@ -85,7 +93,7 @@ object MutableMapInterface{
     @ghost
     @pure
     def abstractMap: ListMap[K, V] = {
-      require(valid)
+      require(simpleValid)
       ??? : ListMap[K, V]
     }
 

@@ -40,7 +40,8 @@ object MutableHashMap {
       val underlying: Cell[LongMap[List[(K, V)]]],
       val hashF: Hashable[K],
       var _size: Int,
-      val defaultValue: K => V
+      val defaultValue: K => V,
+      var keys: List[K] = Nil[K]()
   ) extends MutableMap[K, V] {
 
     @pure
@@ -48,7 +49,7 @@ object MutableHashMap {
 
     @ghost
     override def abstractMap: ListMap[K, V] = {
-      require(valid)
+      require(simpleValid)
       this.map
     }
 
@@ -146,7 +147,9 @@ object MutableHashMap {
             check(underlying.v.map.toList.forall((k, v) => noDuplicateKeys(v)))
             check(allKeysSameHashInMap(underlying.v.map, hashF)) 
             check(map.eq(oldMap + (key, v)))
+            check(keys.contains(key))
           } else {
+            check(keys.contains(key))
             check(valid)
             check(map == oldMap)
           }
@@ -176,6 +179,7 @@ object MutableHashMap {
             ListMapLemmas.lemmaEquivalentThenSameContains(map, oldMap + (key, v), key)
             check((oldMap + (key, v)).contains(key))
             check(map.contains(key))
+            check(keys.contains(key))
           } else {
             check(valid)
             check(map == oldMap)
@@ -232,15 +236,23 @@ object MutableHashMap {
 
     }.ensuring (res => valid && (if (res) map.eq(old(this).map - key) else map.eq(old(this).map)))
 
-    @ghost
-    override  def valid: Boolean = underlying.v.valid &&
+    @ghost 
+    def simpleValid: Boolean = 
+      underlying.v.valid &&
       underlying.v.map.toList.forall((k, v) => noDuplicateKeys(v)) &&
       allKeysSameHashInMap(underlying.v.map, hashF)
+
+    @ghost
+    override  def valid: Boolean = 
+      val keysList = this.keys
+      simpleValid &&
+      this.abstractMap.keys().forall(k => keysList.contains(k))
+      
 
     @pure
     @ghost
     def map: ListMap[K, V] = {
-      require(valid)
+      require(simpleValid)
       extractMap(underlying.v.map.toList)
     }.ensuring(res => TupleListOpsGenK.invariantList(res.toList))
 
