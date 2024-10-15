@@ -69,14 +69,6 @@ object MutableMapInterface{
   @mutable
   trait MutableMap[K, V] {
     import ch.epfl.map.ListMap
-
-    /**
-     * Invariant for the datastructure needed to construct the abstractMap
-     */
-    @pure 
-    @ghost
-    def simpleValid: Boolean
-
     /**
      * Invariant for the datastructure
      */
@@ -93,12 +85,13 @@ object MutableMapInterface{
     @ghost
     @pure
     def abstractMap: ListMap[K, V] = {
-      require(simpleValid)
+      require(valid)
       ??? : ListMap[K, V]
     }
 
     @pure
     def size: Int
+
     @pure
     def isEmpty: Boolean = {
       require(valid)
@@ -126,5 +119,10 @@ object MutableMapInterface{
       require(valid)
       ??? : Boolean
     }.ensuring(res => valid && (if (res) then abstractMap.eq(old(this).abstractMap - key) else abstractMap.eq(old(this).abstractMap)))
+
+    def getKeys(): List[K] = {
+      require(valid)
+      ??? : List[K]
+    }.ensuring(res => valid && ListSpecs.noDuplicate(res) && res.content == abstractMap.keys().content)
   }
 }

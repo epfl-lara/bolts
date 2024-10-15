@@ -49,7 +49,7 @@ object MutableHashMap {
 
     @ghost
     override def abstractMap: ListMap[K, V] = {
-      require(simpleValid)
+      require(valid)
       this.map
     }
 
@@ -124,6 +124,7 @@ object MutableHashMap {
       require(valid)
       @ghost val oldMap = map
       @ghost val oldLongListMap = underlying.v.map
+      @ghost val oldKeyList = keys
 
       val contained = contains(key)
       val res = if (contained) {
@@ -147,11 +148,28 @@ object MutableHashMap {
             check(underlying.v.map.toList.forall((k, v) => noDuplicateKeys(v)))
             check(allKeysSameHashInMap(underlying.v.map, hashF)) 
             check(map.eq(oldMap + (key, v)))
+
+            // this.map.keys().forall(k => keysList.contains(k))
+            ListMapLemmas.lemmaEqMapSameKeysSet(oldMap + (key, v), map)
+            assert(this.map.keys().content == oldMap.keys().content + key)
+            assert(oldMap.keys().content.contains(key))
+            assert(oldMap.keys().content + key == oldMap.keys().content)
+            assert(this.map.keys().content == oldMap.keys().content)
+            val keysList = this.keys
+            TupleListOpsGenK.lemmaForallSubsetKeys(this.map.keys(), oldMap.keys(), k => keysList.contains(k))
+            assert(this.map.keys().forall(k => keysList.contains(k)))
+            ListSpecs.forallContained(this.map.keys(), k => keysList.contains(k), key)
+
             check(keys.contains(key))
+            check(valid)
           } else {
+            // this.map.keys().forall(k => keysList.contains(k))
+            val keysList = this.keys
+            ListSpecs.forallContained(this.map.keys(), k => keysList.contains(k), key)
             check(keys.contains(key))
             check(valid)
             check(map == oldMap)
+            check(valid)
           }
         })
         if (res && !contained) then _size += 1
@@ -163,6 +181,10 @@ object MutableHashMap {
         // Either currentBucket is empty, or it does not contain the key
         val newBucket = Cons((key, v), currentBucket)
         val res = underlying.v.update(hash, newBucket)
+
+        if (res && !contained) then 
+          _size += 1
+          keys = Cons(key, keys)
 
         ghostExpr({
           if (res) {
@@ -180,13 +202,27 @@ object MutableHashMap {
             check((oldMap + (key, v)).contains(key))
             check(map.contains(key))
             check(keys.contains(key))
+            check(simpleValid)
+            val keysList = this.keys
+            ListMapLemmas.lemmaEqMapSameKeysSet(oldMap + (key, v), map)
+            assert(this.map.keys().content == oldMap.keys().content + key)
+            check(oldMap.keys().forall(k => oldKeyList.contains(k)))
+            ListSpecs.forallContainsSubset(oldMap.keys(), oldKeyList)
+            assert(oldMap.keys().content.subsetOf(oldKeyList.content))
+            assert(oldKeyList.content.subsetOf(keysList.content))
+            ListSpecs.subsetContains(oldMap.keys(), keysList)
+            check(oldMap.keys().forall(k => keysList.contains(k)))
+            assert(keysList.content == oldKeyList.content + key)
+            assert(this.map.keys().content.subsetOf(keysList.content))
+            ListSpecs.subsetContains(this.map.keys(), keysList)
+            check(this.map.keys().forall(k => keysList.contains(k)))
+            check(valid)
           } else {
             check(valid)
             check(map == oldMap)
           }
         })
 
-        if (res && !contained) then _size += 1
         res
       }
       res
@@ -222,10 +258,17 @@ object MutableHashMap {
             lemmaChangeOneBucketByAValidOnePreservesForallNoDuplicatesAndHash(oldLongListMap, hash, newBucket, hashF)
             check(underlying.v.map.toList.forall((k, v) => noDuplicateKeys(v)))
             check(allKeysSameHashInMap(underlying.v.map, hashF))
-            check(valid)
             check(oldMap.contains(key))
             lemmaChangeOneBucketToRemoveAKeyRemoveThisKeyInGenMap(oldLongListMap, hash, newBucket, key, hashF)
             check(map.eq(oldMap - key))
+            ListMapLemmas.lemmaEqMapSameKeysSet(oldMap - key, map)
+            assert(this.map.keys().content == oldMap.keys().content - key)
+            val keysList = this.keys
+            ListSpecs.forallContainsSubset(oldMap.keys(), keysList)
+            assert(this.map.keys().content.subsetOf(keysList.content))
+            ListSpecs.subsetContains(this.map.keys(), keysList)
+
+            check(valid)
           } else {
             check(valid)
             check(map == oldMap)
@@ -236,18 +279,40 @@ object MutableHashMap {
 
     }.ensuring (res => valid && (if (res) map.eq(old(this).map - key) else map.eq(old(this).map)))
 
-    @ghost 
+    override def getKeys(): List[K] = {
+      require(valid)
+      filterKeys(keys)
+    }.ensuring(res => valid && ListSpecs.noDuplicate(res) && res.content == map.keys().content)
+
+    // TODO tailrec version
+    @pure
+    def filterKeys(l: List[K]): List[K] = {
+      require(ListSpecs.noDuplicate(l))
+      decreases(l)
+      l match {
+        case Cons(hd, tl) if contains(hd) => Cons(hd, filterKeys(tl))
+        case Cons(_, tl)                   => filterKeys(tl)
+        case Nil()                         => Nil()
+      }
+    
+    }.ensuring(res => 
+      val aMap = map
+      ListSpecs.noDuplicate(res) 
+      && res.content.subsetOf(l.content) 
+      && res.forall(k => aMap.contains(k)))
+
+    @ghost
+    @inline
     def simpleValid: Boolean = 
       underlying.v.valid &&
       underlying.v.map.toList.forall((k, v) => noDuplicateKeys(v)) &&
       allKeysSameHashInMap(underlying.v.map, hashF)
 
     @ghost
-    override  def valid: Boolean = 
+    override def valid: Boolean = 
       val keysList = this.keys
       simpleValid &&
-      this.abstractMap.keys().forall(k => keysList.contains(k))
-      
+      this.map.keys().forall(k => keysList.contains(k))
 
     @pure
     @ghost
