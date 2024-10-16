@@ -286,13 +286,18 @@ object MutableHashMap {
 
     // TODO tailrec version
     @pure
-    def filterKeys(l: List[K]): List[K] = {
-      require(ListSpecs.noDuplicate(l))
+    def filterKeys(l: List[K], acc: List[K] = Nil()): List[K] = {
+      require(valid)
+      require({
+        val aMap = map
+        acc.forall(k => aMap.contains(k))
+      })
+      require(ListSpecs.subseq(acc, l))
       decreases(l)
       l match {
-        case Cons(hd, tl) if contains(hd) => Cons(hd, filterKeys(tl))
-        case Cons(_, tl)                   => filterKeys(tl)
-        case Nil()                         => Nil()
+        case Cons(hd, tl) if this.contains(hd) && !acc.contains(hd) => filterKeys(tl, Cons(hd, acc))
+        case Cons(_, tl)                       => filterKeys(tl, acc)
+        case Nil()                            => acc
       }
     
     }.ensuring(res => 
