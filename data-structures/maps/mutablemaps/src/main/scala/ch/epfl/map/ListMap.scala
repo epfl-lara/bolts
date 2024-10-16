@@ -97,9 +97,10 @@ case class ListMap[K, B](toList: List[(K, B)]) {
     ListMap(newList)
 
   }.ensuring(res =>
-    res.contains(keyValue._1) && res.get(keyValue._1) == Some[B](
-      keyValue._2
-    ) && res.toList.contains(keyValue)
+    res.contains(keyValue._1)
+    && res.get(keyValue._1) == Some[B](keyValue._2) 
+    && res.toList.contains(keyValue) 
+    && res.keys().content == this.keys().content ++ Set(keyValue._1)
   )
 
   def ++(keyValues: List[(K, B)]): ListMap[K, B] = {
@@ -406,19 +407,6 @@ object TupleListOpsGenK {
       case Nil() => ()
     }
   }.ensuring(_ => getKeysList(l).content - key == getKeysList(removePresrvNoDuplicatedKeys(l, key)).content)
-  
-  @opaque 
-  @inlineOnce
-  def lemmaEqMapSameKeysSet[K, B](lm1: ListMap[K, B], lm2: ListMap[K, B]): Unit = {
-    require(lm1.eq(lm2))
-    assert(lm1.toList.content == lm2.toList.content)
-    ListSpecs.subsetRefl(lm1.toList)
-    ListSpecs.subsetRefl(lm2.toList)
-    lemmaSubsetThenKeysSubset(lm1.toList, lm2.toList)
-    lemmaSubsetThenKeysSubset(lm2.toList, lm1.toList)
-    assert(lm1.keys().content.subsetOf(lm2.keys().content))
-    assert(lm2.keys().content.subsetOf(lm1.keys().content))
-  }.ensuring(_ => lm1.keys().content == lm2.keys().content)
 
   @opaque
   @inlineOnce
@@ -500,6 +488,30 @@ object TupleListOpsGenK {
         ListSpecs.forallContained(l2, p, head)
         assert(l2.contains(head))
         lemmaForallSubset(tl, l2, p)
+        assert(tl.forall(p))
+        assert(p(head))
+      case Nil() => ()
+    }
+  }.ensuring(_ => l1.forall(p))
+
+  @opaque 
+  @inlineOnce
+  def lemmaForallSubsetKeys[K](
+      l1: List[K],
+      l2: List[K],
+      p: K => Boolean
+  ): Unit = {
+    require(l2.forall(p))
+    require(l1.content.subsetOf(l2.content))
+    decreases(l1)
+
+    l1 match {
+      case Cons(head, tl) =>
+        ListSpecs.subsetContains(l1, l2)
+        ListSpecs.forallContained(l1, l2.contains , head)
+        ListSpecs.forallContained(l2, p, head)
+        assert(l2.contains(head))
+        lemmaForallSubsetKeys(tl, l2, p)
         assert(tl.forall(p))
         assert(p(head))
       case Nil() => ()
@@ -1501,6 +1513,19 @@ object ListMapLemmas {
   )
 
   // Equivalence LEMMAS ----------------------------------------------------------------------------------------------------------------
+  @opaque 
+  @inlineOnce
+  def lemmaEqMapSameKeysSet[K, B](lm1: ListMap[K, B], lm2: ListMap[K, B]): Unit = {
+    require(lm1.eq(lm2))
+    assert(lm1.toList.content == lm2.toList.content)
+    ListSpecs.subsetRefl(lm1.toList)
+    ListSpecs.subsetRefl(lm2.toList)
+    TupleListOpsGenK.lemmaSubsetThenKeysSubset(lm1.toList, lm2.toList)
+    TupleListOpsGenK.lemmaSubsetThenKeysSubset(lm2.toList, lm1.toList)
+    assert(lm1.keys().content.subsetOf(lm2.keys().content))
+    assert(lm2.keys().content.subsetOf(lm1.keys().content))
+  }.ensuring(_ => lm1.keys().content == lm2.keys().content)
+  
   @opaque
   @inlineOnce
   def lemmaAddToEqMapsPreservesEq[K, B](

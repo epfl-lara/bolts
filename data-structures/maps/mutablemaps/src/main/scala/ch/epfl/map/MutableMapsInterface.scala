@@ -91,6 +91,7 @@ object MutableMapInterface{
 
     @pure
     def size: Int
+
     @pure
     def isEmpty: Boolean = {
       require(valid)
@@ -118,5 +119,10 @@ object MutableMapInterface{
       require(valid)
       ??? : Boolean
     }.ensuring(res => valid && (if (res) then abstractMap.eq(old(this).abstractMap - key) else abstractMap.eq(old(this).abstractMap)))
+
+    def getKeys(): List[K] = {
+      require(valid)
+      ??? : List[K]
+    }.ensuring(res => valid && ListSpecs.noDuplicate(res) && res.content == abstractMap.keys().content)
   }
 }
