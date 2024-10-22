@@ -280,18 +280,6 @@ object ZipperRegex {
     decreases(context)
     context match {
       case Cons(right, parent) if nullable(right) => derivationStepZipperDown(right, parent, a) ++ derivationStepZipperUp(parent, a)
-      // case Cons(right, parent) if nullable(right) => {
-      //   ghostExpr({
-      //     lemmaConcatPreservesForall(derivationStepZipperDown(right, parent, a), derivationStepZipperUp(parent, a), c => c.forall(validRegex))
-      //     lemmaContentSubsetPreservesForall(
-            
-      //       derivationStepZipperDown(right, parent, a) ++ derivationStepZipperUp(parent, a),
-      //       concatWithoutDuplicates(derivationStepZipperDown(right, parent, a), derivationStepZipperUp(parent, a)),
-      //       c => c.forall(validRegex)
-      //     )
-      //   })
-      //   concatWithoutDuplicates(derivationStepZipperDown(right, parent, a), derivationStepZipperUp(parent, a))
-      // }
       case Cons(right, parent) => derivationStepZipperDown(right, parent, a)
       case Nil() => Set()
     }
@@ -305,18 +293,6 @@ object ZipperRegex {
     expr match {
       case ElementMatch(c) if c == a => Set(context)
       case Union(rOne, rTwo) => derivationStepZipperDown(rOne, context, a) ++ derivationStepZipperDown(rTwo, context, a)
-      // case Concat(rOne, rTwo) if nullable(rOne) => {
-      //   ghostExpr({
-      //     lemmaConcatPreservesForall(derivationStepZipperDown(rOne, rTwo :: context, a), derivationStepZipperDown(rTwo, context, a), c => c.forall(validRegex))
-      //     lemmaContentSubsetPreservesForall(
-            
-      //       derivationStepZipperDown(rOne, rTwo :: context, a) ++ derivationStepZipperDown(rTwo, context, a),
-      //       concatWithoutDuplicates(derivationStepZipperDown(rOne, rTwo :: context, a), derivationStepZipperDown(rTwo, context, a)),
-      //       c => c.forall(validRegex)
-      //     )
-      //   })
-      //   concatWithoutDuplicates(derivationStepZipperDown(rOne, rTwo :: context, a), derivationStepZipperDown(rTwo, context, a))
-      // }
       case Concat(rOne, rTwo) if nullable(rOne) => derivationStepZipperDown(rOne, rTwo :: context, a) ++ derivationStepZipperDown(rTwo, context, a)
       case Concat(rOne, rTwo) => derivationStepZipperDown(rOne, rTwo :: context, a)
       case Star(rInner) => derivationStepZipperDown(rInner, Star(rInner) :: context, a)
@@ -340,12 +316,6 @@ object ZipperRegex {
     z.exists(c => nullableContext(c))
   }
 
-  def matchZipperRomain[C](z: Zipper[C], input: List[C]): Boolean = {
-    require(validZipper(z))
-    decreases(input.size)
-    if (input.isEmpty) nullableZipper(z) else matchZipperRomain(derivationStepZipper(z, input.head), input.tail)
-  }
-
   def matchZipper[C](z: Zipper[C], input: List[C]): Boolean = {
     require(validZipper(z))
     decreases(input.size)
@@ -355,76 +325,11 @@ object ZipperRegex {
 
   // PROOFS -----------------------------------------------------------------------------------------------------
 
-  /**
-    * Corresponds to theorem 2.1 of Romain Edelmann's thesis
-    *
-    * @return
-    */
-  // def theoremUnfocusFocus[C](r: Regex[C], s: List[C]): Boolean = {
-  //   require(validRegex(r))
-  //   matchR(unfocusZipper(focus(r)), s) == matchR(r, s)
-  // }.holds
+  def theoremZipperRegexEquiv[C](r: Regex[C], z: Zipper[C], s: List[C]): Unit = {
+    require(validRegex(r))
+    require(validZipper(z))
 
-  /**
-    * More or less the theorem 2.2 of Romain Edelmann's thesis
-    *
-    * @param r
-    * @param z
-    * @param a
-    * @param s
-    */
-  // @inlineOnce
-  // @ghost
-  // @opaque
-  // def theoremUnfocusDerivativeSameAsDerivative[C](r: Regex[C], z: Zipper[C], a: C, s: List[C]): Unit = {
-  //   require(validRegex(r))
-  //   require(validZipper(z))
-  //   require(unfocusZipper(z) == r)
-
-  //   z match
-  //     case Nil() => ()
-  //     case Cons(c1, tl) if tl.isEmpty => 
-  //       assert(unfocusContext(c1) == r)
-  //       assert(unfocusZipper(z) == unfocusContext(c1))
-  //       lemmaDerivativeOfZipperWithOneContextIsUpOnIt(c1, z, a)
-  //       assert(derivationStepZipperUp(c1, a) == derivationStepZipper(z, a))
-  //       lemmaUnfocusDerivativesOfContextSameAsDerivative(r, c1, a, s)
-  //       assert(matchR(unfocusZipper(derivationStepZipperUp(c1, a)), s) == matchR(derivativeStep(r, a), s))
-  //       check(matchR(unfocusZipper(derivationStepZipper(z, a)), s) == matchR(derivativeStep(r, a), s))
-
-  //     case Cons(c1, tl) => ()
-  // }.ensuring(_ => matchR(unfocusZipper(derivationStepZipper(z, a)), s) == matchR(derivativeStep(r, a), s))
-
-
-  // @inlineOnce
-  // @opaque
-  // @ghost
-  // def lemmaUnfocusDerivativesOfContextSameAsDerivative[C](r: Regex[C], c: Context[C], a: C, s: List[C]): Unit = {
-  //   require(validContext(c))
-  //   require(c.forall(validRegex))
-  //   require(validRegex(r))
-  //   require(unfocusContext(c) == r)
-
-  // }.ensuring(_ => matchR(unfocusZipper(derivationStepZipperUp(c, a)), s) == matchR(derivativeStep(r, a), s))
-
-  // @inlineOnce
-  // @opaque
-  // @ghost
-  // def lemmaDerivativeOfZipperWithOneContextIsUpOnIt[C](c: Context[C], z: Zipper[C], a: C): Unit = {
-  //   require(validContext(c))
-  //   require(validZipper(z))
-  //   require(z == Set(c))
-  //   z match {
-  //     case Cons(hd, tl) => {
-  //       val res = derivationStepZipperUp(hd, a) ++ derivationStepZipper(tl, a)
-  //       assert(derivationStepZipper(z, a) == res)
-  //       assert(derivationStepZipper(tl, a).isEmpty)
-  //       assert(res == derivationStepZipperUp(c, a))
-  //       res
-  //     }
-  //     case Nil()        => check(false)
-  //   }
-  // }.ensuring(_ => derivationStepZipper(z, a) == derivationStepZipperUp(c, a))
+  }.ensuring(_ => matchR(r, s) == matchZipper(focus(r), s))
 
 
 }
