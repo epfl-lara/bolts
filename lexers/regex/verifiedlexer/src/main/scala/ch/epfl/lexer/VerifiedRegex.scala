@@ -248,8 +248,8 @@ object ZipperRegex {
   type Context[C] = List[Regex[C]]
   type Zipper[C] = Set[Context[C]]
 
-  @ghost inline def validContext[C](c: Context[C]): Boolean = c.forall(validRegex)
-  @ghost inline def validZipper[C](z: Zipper[C]): Boolean =  z.toList.forall(c => c.forall(validRegex))
+  @ghost def validContext[C](c: Context[C]): Boolean = c.forall(validRegex)
+  @ghost def validZipper[C](z: Zipper[C]): Boolean =  z.toList.forall(c => c.forall(validRegex))
 
   def unfocusContext[C](c: Context[C]): Regex[C] = {
     require(validContext(c))
