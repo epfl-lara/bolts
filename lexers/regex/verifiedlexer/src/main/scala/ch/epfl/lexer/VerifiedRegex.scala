@@ -248,8 +248,8 @@ object ZipperRegex {
   type Context[C] = List[Regex[C]]
   type Zipper[C] = Set[Context[C]]
 
-  @ghost def validContext[C](c: Context[C]): Boolean = c.forall(validRegex)
-  @ghost def validZipper[C](z: Zipper[C]): Boolean =  z.toList.forall(c => c.forall(validRegex))
+  @ghost inline def validContext[C](c: Context[C]): Boolean = c.forall(validRegex)
+  @ghost inline def validZipper[C](z: Zipper[C]): Boolean =  z.forall(c => validContext(c))
 
   def unfocusContext[C](c: Context[C]): Regex[C] = {
     require(validContext(c))
@@ -273,7 +273,7 @@ object ZipperRegex {
   def focus[C](r: Regex[C]): Zipper[C] = {
     require(validRegex(r))
     Set(List(r))
-  }.ensuring(res => validZipper(res))// && unfocusZipper(res) == r)
+  }.ensuring(res => validZipper(res))
 
   def derivationStepZipperUp[C](context: Context[C], a: C): Zipper[C] = {
     require(validContext(context))
@@ -303,7 +303,6 @@ object ZipperRegex {
   // @inlineOnce
   def derivationStepZipper[C](z: Zipper[C], a: C): Zipper[C] = {
     require(validZipper(z))
-    decreases(z)
     z.flatMap(c => derivationStepZipperUp(c, a))
   }.ensuring(res => validZipper(res))
 

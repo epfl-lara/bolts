@@ -10,6 +10,21 @@ import stainless.proof.check
 import scala.annotation.tailrec
 import stainless.lang.StaticChecks._
 
+object SetUtils {
+
+  @ghost
+  @opaque
+  @inlineOnce
+  def lemmaConcatPreservesForall[A](l1: Set[A], l2: Set[A], p: A => Boolean): Unit = {
+    require(l1.forall(p))
+    require(l2.forall(p))
+    ListUtils.lemmaConcatPreservesForall(l1.toList, l2.toList, p)
+    assert((l1.toList ++ l2.toList).forall(p))
+    ListUtils.lemmaForallThenOnContent(l1.toList ++ l2.toList, p)
+    assert((l1.toList ++ l2.toList).content.forall(p))
+  }.ensuring (_ => (l1 ++ l2).forall(p))
+}
+
 object ListUtils {
   def isPrefix[B](prefix: List[B], l: List[B]): Boolean = {
     decreases(prefix)
@@ -74,6 +89,25 @@ object ListUtils {
       case _                                                    => false
     }
   }
+
+  @inlineOnce
+  @opaque
+  @ghost
+  def lemmaForallThenOnContent[B](l: List[B], p: B => Boolean): Unit = {
+    require(l.forall(p))
+    decreases(l)
+    l match {
+      case Cons(hd, tl) => {
+        lemmaForallThenOnContent(tl, p)
+        assert(tl.content.forall(p))
+        assert(l.content == tl.content ++ Set(hd))
+        assert(p(hd))
+        assert((tl.content ++ Set(hd)).toList.content.subsetOf(l.content))
+        lemmaContentSubsetPreservesForall(l, (tl.content ++ Set(hd)).toList, p)
+      }
+      case Nil() => ()
+    }
+  }.ensuring (_ => l.content.forall(p))
 
   @inlineOnce
   @opaque
