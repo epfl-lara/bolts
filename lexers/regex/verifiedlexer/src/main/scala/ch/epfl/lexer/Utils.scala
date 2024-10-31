@@ -11,18 +11,66 @@ import scala.annotation.tailrec
 import stainless.lang.StaticChecks._
 
 object SetUtils {
-
-  @ghost
   @opaque
   @inlineOnce
-  def lemmaConcatPreservesForall[A](l1: Set[A], l2: Set[A], p: A => Boolean): Unit = {
-    require(l1.forall(p))
-    require(l2.forall(p))
-    ListUtils.lemmaConcatPreservesForall(l1.toList, l2.toList, p)
-    assert((l1.toList ++ l2.toList).forall(p))
-    ListUtils.lemmaForallThenOnContent(l1.toList ++ l2.toList, p)
-    assert((l1.toList ++ l2.toList).content.forall(p))
-  }.ensuring (_ => (l1 ++ l2).forall(p))
+  def lemmaConcatPreservesForall[A](s1: Set[A], s2: Set[A], p: A => Boolean): Unit = {
+    require(s1.forall(p))
+    require(s2.forall(p))
+    ListUtils.lemmaConcatPreservesForall(s1.toList, s2.toList, p)
+    assert((s1.toList ++ s2.toList).forall(p))
+    ListUtils.lemmaForallThenOnContent(s1.toList ++ s2.toList, p)
+    assert((s1.toList ++ s2.toList).content.forall(p))
+  }.ensuring (_ => (s1 ++ s2).forall(p))
+
+  @inlineOnce
+  @opaque
+  @ghost
+  def lemmaFlatMapForallElem[A, B](s: Set[A], f: A => Set[B], p: B => Boolean, elm: B): Unit = {
+    require(s.flatMap(f).contains(elm))
+    require(Forall.Forall[A](a => f(a).forall(p)))
+
+    unfold(s.flatMapPost(f)(elm))
+    assert(s.flatMap(f).contains(elm))
+    assert(s.exists(a => f(a).contains(elm)))
+    assert(s.toList.exists(a => f(a).contains(elm)))
+    val witness = ListUtils.getWitness(s.toList, a => f(a).contains(elm))
+    assert(f(witness).contains(elm))
+    assert(f(witness).toList.contains(elm))
+    unfold(Forall.Forall[A](a => f(a).forall(p)))
+    assert(f(witness).forall(p))
+    assert(f(witness).toList.forall(p))
+    ListSpecs.forallContained(f(witness).toList, p, elm)
+  }.ensuring (_ => p(elm))
+
+  @inlineOnce
+  @opaque
+  @ghost
+  def lemmaFlatMapForallToList[A, B](s: Set[A], f: A => Set[B], p: B => Boolean, l: List[B]): Unit = {
+    require(Forall.Forall[A](a => f(a).forall(p)))
+    require(ListSpecs.subseq(l, s.flatMap(f).toList))
+    decreases(l)
+    l match 
+      case Cons(hd, tl) => 
+        ListSpecs.subseqContains(l, s.flatMap(f).toList, hd)
+        assert(s.flatMap(f).contains(hd))
+        unfold(s.flatMapPost(f)(hd))
+        lemmaFlatMapForallElem(s, f, p, hd)
+        ListSpecs.subseqTail(l, s.flatMap(f).toList)
+        lemmaFlatMapForallToList(s, f, p, tl)
+      case Nil() => ()
+
+  }.ensuring (_ => l.forall(p))
+
+  @inlineOnce
+  @opaque
+  @ghost
+  def lemmaFlatMapForall[A, B](s: Set[A], f: A => Set[B], p: B => Boolean): Unit = {
+    require(Forall.Forall[A](a => f(a).forall(p)))
+    ListUtils.lemmaSubseqRefl(s.flatMap(f).toList)
+    lemmaFlatMapForallToList(s, f, p, s.flatMap(f).toList)
+
+  }.ensuring (_ => s.flatMap(f).forall(p))
+
 }
 
 object ListUtils {
@@ -90,9 +138,19 @@ object ListUtils {
     }
   }
 
+  @ghost
+  def getWitness[B](l: List[B], p: B => Boolean): B = {
+    require(l.exists(p))
+    decreases(l)
+    l match {
+      case Cons(hd, tl) if p(hd) => hd
+      case Cons(hd, tl)           => getWitness(tl, p)
+      case Nil()                  => check(false); l.head
+    }
+  }.ensuring(res => p(res) && l.contains(res))
+
   @inlineOnce
   @opaque
-  @ghost
   def lemmaForallThenOnContent[B](l: List[B], p: B => Boolean): Unit = {
     require(l.forall(p))
     decreases(l)
@@ -603,7 +661,6 @@ object ListUtils {
 
   // @inlineOnce
   @opaque
-  @ghost
   def lemmaConcatPreservesForall[B](l1: List[B], l2: List[B], p: B => Boolean): Unit = {
     require(l1.forall(p))
     require(l2.forall(p))
@@ -616,7 +673,6 @@ object ListUtils {
 
   // @inlineOnce 
   @opaque
-  @ghost
   def lemmaContentSubsetPreservesForall[B](l1: List[B], l2: List[B], p: B => Boolean): Unit = {
     require(l1.forall(p))
     require(l2.content.subsetOf(l1.content))
