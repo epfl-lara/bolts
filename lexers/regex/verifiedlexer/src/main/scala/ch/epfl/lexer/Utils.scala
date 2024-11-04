@@ -11,6 +11,15 @@ import scala.annotation.tailrec
 import stainless.lang.StaticChecks._
 
 object SetUtils {
+
+  @ghost
+  def getWitness[A](s: Set[A], p: A => Boolean): A = {
+    require(s.exists(p))
+    ListUtils.getWitness(s.toList, p)
+  }.ensuring(res => p(res) && s.contains(res))
+
+
+  @ghost
   @opaque
   @inlineOnce
   def lemmaConcatPreservesForall[A](s1: Set[A], s2: Set[A], p: A => Boolean): Unit = {
