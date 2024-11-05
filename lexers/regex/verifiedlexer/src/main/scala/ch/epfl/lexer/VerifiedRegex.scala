@@ -280,7 +280,7 @@ object ZipperRegex {
     decreases(context)
     context match {
       case Cons(right, parent) if nullable(right) => 
-        SetUtils.lemmaConcatPreservesForall(derivationStepZipperDown(right, parent, a), derivationStepZipperUp(parent, a), validContext)
+        ghostExpr(SetUtils.lemmaConcatPreservesForall(derivationStepZipperDown(right, parent, a), derivationStepZipperUp(parent, a), validContext))
         derivationStepZipperDown(right, parent, a) ++ derivationStepZipperUp(parent, a)
       case Cons(right, parent) => derivationStepZipperDown(right, parent, a)
       case Nil() => Set()
@@ -295,10 +295,10 @@ object ZipperRegex {
     expr match {
       case ElementMatch(c) if c == a => Set(context)
       case Union(rOne, rTwo) => 
-        SetUtils.lemmaConcatPreservesForall(derivationStepZipperDown(rOne, context, a), derivationStepZipperDown(rTwo, context, a), validContext)
+        ghostExpr(SetUtils.lemmaConcatPreservesForall(derivationStepZipperDown(rOne, context, a), derivationStepZipperDown(rTwo, context, a), validContext))
         derivationStepZipperDown(rOne, context, a) ++ derivationStepZipperDown(rTwo, context, a)
       case Concat(rOne, rTwo) if nullable(rOne) => 
-        SetUtils.lemmaConcatPreservesForall(derivationStepZipperDown(rOne, rTwo :: context, a), derivationStepZipperDown(rTwo, context, a), validContext)
+        ghostExpr(SetUtils.lemmaConcatPreservesForall(derivationStepZipperDown(rOne, rTwo :: context, a), derivationStepZipperDown(rTwo, context, a), validContext))
         derivationStepZipperDown(rOne, rTwo :: context, a) ++ derivationStepZipperDown(rTwo, context, a)
       case Concat(rOne, rTwo) => derivationStepZipperDown(rOne, rTwo :: context, a)
       case Star(rInner) => derivationStepZipperDown(rInner, Star(rInner) :: context, a)
@@ -309,6 +309,7 @@ object ZipperRegex {
   // @inlineOnce
   def derivationStepZipper[C](z: Zipper[C], a: C): Zipper[C] = {
     require(validZipper(z))
+    ghostExpr(SetUtils.lemmaFlatMapForall(z, (c: Context[C]) => derivationStepZipperUp(c, a), validContext))
     z.flatMap(c => derivationStepZipperUp(c, a))
   }.ensuring(res => validZipper(res))
 
@@ -335,6 +336,28 @@ object ZipperRegex {
     require(validZipper(z))
 
   }.ensuring(_ => matchR(r, s) == matchZipper(focus(r), s))
+
+
+  // LEMMAS -----------------------------------------------------------------------------------------------------
+
+  @ghost
+  @inlineOnce
+  @opaque
+  def lemmaFlatMapDerivationUpForallValidToList[C](z: Zipper[C], a:C, l: List[Context[C]]): Unit = {
+    require(validZipper(z))
+    require(ListSpecs.subseq(l, z.flatMap(c => derivationStepZipperUp(c, a)).toList))
+    decreases(l)
+    l match 
+      case Cons(hd, tl) => 
+        ListSpecs.subseqContains(l, z.flatMap(c => derivationStepZipperUp(c, a)).toList, hd)
+        assert(z.flatMap(c => derivationStepZipperUp(c, a)).contains(hd))
+        unfold(z.flatMapPost(c => derivationStepZipperUp(c, a))(hd))
+        // lemmaFlatMapForallElem(z, c => derivationStepZipperUp(c, a), validContext, hd)
+        ListSpecs.subseqTail(l, z.flatMap(c => derivationStepZipperUp(c, a)).toList)
+        lemmaFlatMapDerivationUpForallValidToList(z, a, tl)
+      case Nil() => ()
+
+  }.ensuring (_ => l.forall(validContext))
 
 
 }
