@@ -624,16 +624,16 @@ object VerifiedRegexMatcher {
         (Nil[C](), totalInput)
       }
     } else {
-      ListUtils.lemmaIsPrefixThenSmallerEqSize(testedP, totalInput)
+      ghostExpr(ListUtils.lemmaIsPrefixThenSmallerEqSize(testedP, totalInput))
       if (testedP.size == totalInput.size) {
-        ListUtils.lemmaIsPrefixRefl(totalInput, totalInput)
-        ListUtils.lemmaIsPrefixSameLengthThenSameList(totalInput, testedP, totalInput)
+        ghostExpr(ListUtils.lemmaIsPrefixRefl(totalInput, totalInput))
+        ghostExpr(ListUtils.lemmaIsPrefixSameLengthThenSameList(totalInput, testedP, totalInput))
         check(false)
       }
       assert(testedP.size < totalInput.size)
       val suffix = ListUtils.getSuffix(totalInput, testedP)
       val newP = testedP ++ List(suffix.head)
-      lemmaAddHeadSuffixToPrefixStillPrefix(testedP, totalInput)
+      ghostExpr(lemmaAddHeadSuffixToPrefixStillPrefix(testedP, totalInput))
       if (nullable(r)) {
         val recursive = findLongestMatchInner(derivativeStep(r, suffix.head), newP, totalInput)
         if (recursive._1.isEmpty) {
@@ -666,16 +666,16 @@ object VerifiedRegexMatcher {
         (Nil[C](), totalInput)
       }
     } else {
-      ListUtils.lemmaIsPrefixThenSmallerEqSize(testedP, totalInput)
+      ghostExpr(ListUtils.lemmaIsPrefixThenSmallerEqSize(testedP, totalInput))
       if (testedP.size == totalInput.size) {
-        ListUtils.lemmaIsPrefixRefl(totalInput, totalInput)
-        ListUtils.lemmaIsPrefixSameLengthThenSameList(totalInput, testedP, totalInput)
+        ghostExpr(ListUtils.lemmaIsPrefixRefl(totalInput, totalInput))
+        ghostExpr(ListUtils.lemmaIsPrefixSameLengthThenSameList(totalInput, testedP, totalInput))
         check(false)
       }
       assert(testedP.size < totalInput.size)
       val suffix = ListUtils.getSuffix(totalInput, testedP)
       val newP = testedP ++ List(suffix.head)
-      lemmaAddHeadSuffixToPrefixStillPrefix(testedP, totalInput)
+      ghostExpr(lemmaAddHeadSuffixToPrefixStillPrefix(testedP, totalInput))
       check(newP.size > testedP.size)
       if (nullable(r)) {
         val recursive = findLongestMatchInnerMem(derivativeStepMem(r, suffix.head), newP, totalInput)

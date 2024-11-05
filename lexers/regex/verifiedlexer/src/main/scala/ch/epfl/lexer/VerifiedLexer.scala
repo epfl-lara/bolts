@@ -247,7 +247,7 @@ object VerifiedLexer {
       require(!rulesArg.isEmpty)
       decreases(rulesArg.size)
 
-      ListUtils.lemmaIsPrefixRefl(input, input)
+      ghostExpr(ListUtils.lemmaIsPrefixRefl(input, input))
       val ret: Option[(Token[C], List[C])] = rulesArg match {
         case Cons(hd, Nil()) => maxPrefixOneRule(hd, input)
         case Cons(hd, tl) => {

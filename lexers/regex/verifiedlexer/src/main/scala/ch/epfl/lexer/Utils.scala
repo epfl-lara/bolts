@@ -160,6 +160,7 @@ object ListUtils {
 
   @inlineOnce
   @opaque
+  @ghost
   def lemmaForallThenOnContent[B](l: List[B], p: B => Boolean): Unit = {
     require(l.forall(p))
     decreases(l)
@@ -178,6 +179,7 @@ object ListUtils {
 
   @inlineOnce
   @opaque
+  @ghost
   def lemmaConsecutiveSubseqThenSubseq[B](l1: List[B], l2: List[B]): Unit = {
     require(consecutiveSubseq(l1, l2))
     decreases(l2)
@@ -191,6 +193,7 @@ object ListUtils {
 
   @inlineOnce
   @opaque
+  @ghost
   def lemmaContainsAndNotHdThenTlContains[B](l: List[B], e: B): Unit = {
     require(l.contains(e))
     require(l.head != e)
@@ -199,6 +202,7 @@ object ListUtils {
 
   @inlineOnce
   @opaque
+  @ghost
   def lemmaGetIndexBiggerAndHeadNotEqThenTailContains[B](l: List[B], e1: B, e2: B): Unit = {
     require(l.contains(e1) && l.contains(e2))
     require(e1 != e2)
@@ -224,6 +228,7 @@ object ListUtils {
 
   @inlineOnce
   @opaque
+  @ghost
   def lemmaSameIndexThenSameElement[B](l: List[B], e1: B, e2: B): Unit = {
     require(l.contains(e1))
     require(l.contains(e2))
@@ -241,6 +246,7 @@ object ListUtils {
 
   @inlineOnce
   @opaque
+  @ghost
   def lemmaGetIndexBiggerAndHeadEqThenTailContains[B](l: List[B], e1: B, e2: B): Unit = {
     require(l.contains(e1) && l.contains(e2))
     require(e1 != e2)
@@ -251,6 +257,7 @@ object ListUtils {
 
   @inlineOnce
   @opaque
+  @ghost
   def lemmaNotHeadSoGetIndexTailIsMinusOne[B](l: List[B], e: B): Unit = {
     require(l.contains(e))
     require(l.head != e)  
@@ -263,6 +270,7 @@ object ListUtils {
 
   @inlineOnce
   @opaque
+  @ghost
   def lemmaIsPrefixRefl[B](l1: List[B], l2: List[B]): Unit = {
     decreases(l1)
     require(l1 == l2)
@@ -274,6 +282,7 @@ object ListUtils {
 
   @inlineOnce
   @opaque
+  @ghost
   def lemmaConcatTwoListThenFirstIsPrefix[B](l1: List[B], l2: List[B]): Unit = {
     decreases(l1.size)
     l1 match {
@@ -284,6 +293,7 @@ object ListUtils {
 
   @inlineOnce
   @opaque
+  @ghost
   def lemmaLongerPrefixContainsHeadOfSuffixOfSmallerPref[B](p1: List[B], s1: List[B], p2: List[B], l: List[B]): Unit = {
     require(isPrefix(p2, l))
     require(p1 ++ s1 == l)
@@ -301,6 +311,7 @@ object ListUtils {
 
   @inlineOnce
   @opaque
+  @ghost
   def lemmaConcatAssociativity[B](l1: List[B], elmt: B, l2: List[B], tot: List[B]): Unit = {
     require((l1 ++ List(elmt)) ++ l2 == tot)
     decreases(l1)
@@ -313,6 +324,7 @@ object ListUtils {
 
   @inlineOnce
   @opaque
+  @ghost
   def lemmaTwoListsConcatAssociativity[B](
       l1: List[B],
       l2: List[B],
@@ -330,6 +342,7 @@ object ListUtils {
 
   @inlineOnce
   @opaque
+  @ghost
   def lemmaRemoveLastConcatenatedPrefixStillPrefix[B](l: List[B], elmt: B, tot: List[B]): Unit = {
     require(isPrefix(l ++ List(elmt), tot))
     decreases(l)
@@ -341,6 +354,7 @@ object ListUtils {
 
   @inlineOnce
   @opaque
+  @ghost
   def lemmaRemoveLastPrefixStillPrefix[B](p: List[B], l: List[B]): Unit = {
     require(!l.isEmpty)
     require(isPrefix(p, l))
@@ -355,6 +369,7 @@ object ListUtils {
 
   @inlineOnce
   @opaque
+  @ghost
   def lemmaPrefixStaysPrefixWhenAddingToSuffix[B](p: List[B], l: List[B], suffix: List[B]): Unit = {
     require(isPrefix(p, l))
     decreases(p)
@@ -366,12 +381,14 @@ object ListUtils {
 
   @inlineOnce
   @opaque
+  @ghost
   def lemmaRemoveLastPrefixDecreasesSize[B](l: List[B]): Unit = {
     require(l.size > 0)
   }.ensuring (_ => removeLast(l).size < l.size)
 
   @inlineOnce
   @opaque
+  @ghost
   def lemmaIsPrefixSameLengthThenSameList[B](p1: List[B], p2: List[B], l: List[B]): Unit = {
     require(isPrefix(p1, l))
     require(isPrefix(p2, l))
@@ -387,6 +404,7 @@ object ListUtils {
 
   @inlineOnce
   @opaque
+  @ghost
   def lemmaRemoveLastFromBothSidePreservesEq[B](p: List[B], s: List[B], l: List[B]): Unit = {
     require(p ++ s == l)
     require(!s.isEmpty)
@@ -399,6 +417,7 @@ object ListUtils {
 
   @inlineOnce
   @opaque
+  @ghost
   def lemmaRemoveLastFromLMakesItPrefix[B](l: List[B]): Unit = {
     require(!l.isEmpty)
     decreases(l.size)
@@ -411,6 +430,7 @@ object ListUtils {
 
   @inlineOnce
   @opaque
+  @ghost
   def lemmaSamePrefixThenSameSuffix[B](p1: List[B], s1: List[B], p2: List[B], s2: List[B], l: List[B]): Unit = {
     require(isPrefix(p1, l))
     require(isPrefix(p2, l))
@@ -426,6 +446,7 @@ object ListUtils {
 
   @inlineOnce
   @opaque
+  @ghost
   def lemmaIsPrefixThenSmallerEqSize[B](p: List[B], l: List[B]): Unit = {
     require(isPrefix(p, l))
     decreases(p)
@@ -438,6 +459,7 @@ object ListUtils {
 
   @inlineOnce
   @opaque
+  @ghost
   def lemmaAddHeadSuffixToPrefixStillPrefix[B](p: List[B], l: List[B]): Unit = {
     require(isPrefix(p, l))
     require(p.size < l.size)
@@ -450,6 +472,7 @@ object ListUtils {
 
   @inlineOnce
   @opaque
+  @ghost
   def lemmaGetSuffixOnListWithItSelfIsEmpty[B](l: List[B]): Unit = {
     decreases(l.size)
     lemmaIsPrefixRefl(l, l)
@@ -461,6 +484,7 @@ object ListUtils {
 
   @inlineOnce
   @opaque
+  @ghost
   def lemmaMoveElementToOtherListKeepsConcatEq[B](s1: List[B], hd2: B, tl2: List[B], tot: List[B]): Unit = {
     require(s1 ++ Cons(hd2, tl2) == tot)
     decreases(s1)
@@ -473,6 +497,7 @@ object ListUtils {
 
   @inlineOnce
   @opaque
+  @ghost
   def lemmaPrefixFromSameListAndStrictlySmallerThenPrefixFromEachOther[B](s1: List[B], s2: List[B], l: List[B]): Unit = {
     require(isPrefix(s1, l))
     require(isPrefix(s2, l))
@@ -544,6 +569,7 @@ object ListUtils {
 
   @inlineOnce
   @opaque
+  @ghost
   def lemmaAppendNewElementElementPreserves[B](l: List[B], elmt: B): Unit = {
     require(ListSpecs.noDuplicate(l))
     require(!l.contains(elmt))
@@ -556,6 +582,7 @@ object ListUtils {
 
   @inlineOnce
   @opaque
+  @ghost
   def lemmaBiggerSndListPreservesSubSeq[B](sub: List[B], l1: List[B], l2: List[B], l3: List[B]): Unit = {
     require(ListSpecs.subseq(sub, l1 ++ l2))
     decreases((l1 ++ l2).size)
@@ -571,6 +598,7 @@ object ListUtils {
 
   @inlineOnce
   @opaque
+  @ghost
   def lemmaConcatNewListPreservesSubSeq[B](l1: List[B], l2: List[B], l3: List[B]): Unit = {
     require(ListSpecs.subseq(l1, l3))
     decreases(l2)
@@ -582,6 +610,7 @@ object ListUtils {
 
   @inlineOnce
   @opaque
+  @ghost
   def lemmaTailOfConcatIsTailConcat[B](l1: List[B], l2: List[B]): Unit = {
     require(!l1.isEmpty)
     decreases(l1)
@@ -605,6 +634,7 @@ object ListUtils {
 
   @inlineOnce
   @opaque
+  @ghost
   def lemmaSubseqRefl[B](l: List[B]): Unit = {
     decreases(l.size)
     l match {
@@ -615,6 +645,7 @@ object ListUtils {
 
   @inlineOnce
   @opaque
+  @ghost
   def lemmaTailIsSubseqOfList[B](elmt: B, l: List[B]): Unit = {
 
     l match {
@@ -630,6 +661,7 @@ object ListUtils {
 
   @inlineOnce
   @opaque
+  @ghost
   def lemmaSubSeqTransitive[B](l1: List[B], l2: List[B], l3: List[B]): Unit = {
     require(ListSpecs.subseq(l1, l2))
     require(ListSpecs.subseq(l2, l3))
@@ -670,6 +702,7 @@ object ListUtils {
 
   // @inlineOnce
   @opaque
+  @ghost
   def lemmaConcatPreservesForall[B](l1: List[B], l2: List[B], p: B => Boolean): Unit = {
     require(l1.forall(p))
     require(l2.forall(p))
@@ -682,6 +715,7 @@ object ListUtils {
 
   // @inlineOnce 
   @opaque
+  @ghost
   def lemmaContentSubsetPreservesForall[B](l1: List[B], l2: List[B], p: B => Boolean): Unit = {
     require(l1.forall(p))
     require(l2.content.subsetOf(l1.content))
@@ -699,6 +733,7 @@ object ListUtils {
 
   @inlineOnce
   @opaque
+  @ghost
   def lemmaConcatThenFirstSubseqOfTot[B](l1: List[B], l2: List[B]): Unit = {
     decreases(l1)
     l1 match {
@@ -709,6 +744,7 @@ object ListUtils {
 
   @inlineOnce
   @opaque
+  @ghost
   def lemmaConcatThenSecondSubseqOfTot[B](l1: List[B], l2: List[B]): Unit = {
     decreases(l1)
     l1 match {
@@ -719,6 +755,7 @@ object ListUtils {
 
   @inlineOnce
   @opaque
+  @ghost
   def lemmaConcatTwoListsWhichNotContainThenTotNotContain[B](l1: List[B], l2: List[B], b: B): Unit = {
     require(!l1.contains(b))
     require(!l2.contains(b))
@@ -733,6 +770,7 @@ object ListUtils {
 
   @inlineOnce
   @opaque
+  @ghost
   def lemmaForallContainsThenForEqualLists[B](l1: List[B], l2: List[B], l1Bis: List[B], l2Bis: List[B]): Unit = {
     require(l1.forall(b => l2.contains(b)))
     require(l1 == l1Bis)
@@ -742,6 +780,7 @@ object ListUtils {
 
   @inlineOnce
   @opaque
+  @ghost
   def lemmaForallContainsAndNoDuplicateThenSmallerList[B](l: List[B], lIn: List[B]): Unit = {
     require(lIn.forall(e => l.contains(e)))
     require(ListOps.noDuplicate(lIn))
@@ -770,6 +809,7 @@ object ListUtils {
 
   @inlineOnce
   @opaque
+  @ghost
   def lemmaRemoveElmtContainedSizeSmaller[B](l: List[B], e: B): Unit = {
     require(l.contains(e))
     decreases(l)
