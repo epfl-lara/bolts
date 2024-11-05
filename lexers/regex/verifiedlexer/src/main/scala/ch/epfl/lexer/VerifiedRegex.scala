@@ -279,7 +279,9 @@ object ZipperRegex {
     require(validContext(context))
     decreases(context)
     context match {
-      case Cons(right, parent) if nullable(right) => derivationStepZipperDown(right, parent, a) ++ derivationStepZipperUp(parent, a)
+      case Cons(right, parent) if nullable(right) => 
+        SetUtils.lemmaConcatPreservesForall(derivationStepZipperDown(right, parent, a), derivationStepZipperUp(parent, a), validContext)
+        derivationStepZipperDown(right, parent, a) ++ derivationStepZipperUp(parent, a)
       case Cons(right, parent) => derivationStepZipperDown(right, parent, a)
       case Nil() => Set()
     }
@@ -292,8 +294,12 @@ object ZipperRegex {
     decreases(regexDepth(expr))
     expr match {
       case ElementMatch(c) if c == a => Set(context)
-      case Union(rOne, rTwo) => derivationStepZipperDown(rOne, context, a) ++ derivationStepZipperDown(rTwo, context, a)
-      case Concat(rOne, rTwo) if nullable(rOne) => derivationStepZipperDown(rOne, rTwo :: context, a) ++ derivationStepZipperDown(rTwo, context, a)
+      case Union(rOne, rTwo) => 
+        SetUtils.lemmaConcatPreservesForall(derivationStepZipperDown(rOne, context, a), derivationStepZipperDown(rTwo, context, a), validContext)
+        derivationStepZipperDown(rOne, context, a) ++ derivationStepZipperDown(rTwo, context, a)
+      case Concat(rOne, rTwo) if nullable(rOne) => 
+        SetUtils.lemmaConcatPreservesForall(derivationStepZipperDown(rOne, rTwo :: context, a), derivationStepZipperDown(rTwo, context, a), validContext)
+        derivationStepZipperDown(rOne, rTwo :: context, a) ++ derivationStepZipperDown(rTwo, context, a)
       case Concat(rOne, rTwo) => derivationStepZipperDown(rOne, rTwo :: context, a)
       case Star(rInner) => derivationStepZipperDown(rInner, Star(rInner) :: context, a)
       case _ => Set()
