@@ -98,6 +98,18 @@ object Memoisation {
 
 object VerifiedRegex {
   abstract sealed class Regex[C] {}
+  case class ElementMatch[C](c: C) extends Regex[C]
+  case class Star[C](reg: Regex[C]) extends Regex[C]
+  case class Union[C](regOne: Regex[C], regTwo: Regex[C]) extends Regex[C]
+  case class Concat[C](regOne: Regex[C], regTwo: Regex[C]) extends Regex[C]
+
+  /** Regex that accepts only the empty string: represents the language {""}
+    */
+  case class EmptyExpr[C]() extends Regex[C]
+
+  /** Regex that accepts nothing: represents the empty language
+    */
+  case class EmptyLang[C]() extends Regex[C]
 
   // @ghost
   def validRegex[C](r: Regex[C]): Boolean = r match {
@@ -128,19 +140,6 @@ object VerifiedRegex {
       case _                  => res == BigInt(1)
     })
   )
-
-  case class ElementMatch[C](c: C) extends Regex[C]
-  case class Star[C](reg: Regex[C]) extends Regex[C]
-  case class Union[C](regOne: Regex[C], regTwo: Regex[C]) extends Regex[C]
-  case class Concat[C](regOne: Regex[C], regTwo: Regex[C]) extends Regex[C]
-
-  /** Regex that accepts only the empty string: represents the language {""}
-    */
-  case class EmptyExpr[C]() extends Regex[C]
-
-  /** Regex that accepts nothing: represents the empty language
-    */
-  case class EmptyLang[C]() extends Regex[C]
 
   def usedCharacters[C](r: Regex[C]): List[C] = {
     r match {
@@ -245,23 +244,27 @@ object ZipperRegex {
     * Context[C] represent sequences of expressions
     * Zipper[C] are sets of Context[C], and they represent disjunctions of expressions
     */
-  type Context[C] = List[Regex[C]]
+  case class Context[C](exprs: List[Regex[C]]){
+    require(exprs.forall(validRegex))
+    inline def prepend(r: Regex[C]): Context[C] = {
+      require(validRegex(r))
+      Context(r :: exprs)
+    }
+    inline def forall(p: Regex[C] => Boolean): Boolean = exprs.forall(p)
+    inline def isEmpty: Boolean = exprs.isEmpty
+  }
   type Zipper[C] = Set[Context[C]]
 
-  @ghost inline def validContext[C](c: Context[C]): Boolean = c.forall(validRegex)
-  @ghost inline def validZipper[C](z: Zipper[C]): Boolean =  z.forall(c => validContext(c))
-
   def unfocusContext[C](c: Context[C]): Regex[C] = {
-    require(validContext(c))
-    c match {
+    c.exprs match {
       case Cons(hd, tl) if tl.isEmpty => hd
-      case Cons(hd, tl) => Concat(hd, unfocusContext(tl))
+      case Cons(hd, tl) => Concat(hd, unfocusContext(Context(tl)))
       case Nil()        => EmptyExpr()
     }
   }.ensuring(res => validRegex(res))
 
   // def unfocusZipper[C](z: Zipper[C]): Regex[C] = {
-  //   require(validZipper(z))
+  //   
   //   // z match {
   //   //   case Cons(hd, tl) if tl.isEmpty => unfocusContext(hd)
   //   //   case Cons(hd, tl) => Union(unfocusContext(hd), unfocusZipper(tl))
@@ -272,58 +275,46 @@ object ZipperRegex {
 
   def focus[C](r: Regex[C]): Zipper[C] = {
     require(validRegex(r))
-    Set(List(r))
-  }.ensuring(res => validZipper(res))
+    Set(Context(List(r)))
+  }
 
   def derivationStepZipperUp[C](context: Context[C], a: C): Zipper[C] = {
-    require(validContext(context))
-    decreases(context)
-    context match {
-      case Cons(right, parent) if nullable(right) => 
-        ghostExpr(SetUtils.lemmaConcatPreservesForall(derivationStepZipperDown(right, parent, a), derivationStepZipperUp(parent, a), validContext))
-        derivationStepZipperDown(right, parent, a) ++ derivationStepZipperUp(parent, a)
-      case Cons(right, parent) => derivationStepZipperDown(right, parent, a)
+    decreases(context.exprs.size)
+    context.exprs match {
+      case Cons(right, parent) if nullable(right) => derivationStepZipperDown(right, Context(parent), a) ++ derivationStepZipperUp(Context(parent), a)
+      case Cons(right, parent) => derivationStepZipperDown(right, Context(parent), a)
       case Nil() => Set()
     }
-  }.ensuring(res => validZipper(res)) 
+  }
 
 
   def derivationStepZipperDown[C](expr: Regex[C], context: Context[C], a: C): Zipper[C] = {
-    require(validContext(context))
     require(validRegex(expr))
     decreases(regexDepth(expr))
     expr match {
       case ElementMatch(c) if c == a => Set(context)
-      case Union(rOne, rTwo) => 
-        ghostExpr(SetUtils.lemmaConcatPreservesForall(derivationStepZipperDown(rOne, context, a), derivationStepZipperDown(rTwo, context, a), validContext))
-        derivationStepZipperDown(rOne, context, a) ++ derivationStepZipperDown(rTwo, context, a)
-      case Concat(rOne, rTwo) if nullable(rOne) => 
-        ghostExpr(SetUtils.lemmaConcatPreservesForall(derivationStepZipperDown(rOne, rTwo :: context, a), derivationStepZipperDown(rTwo, context, a), validContext))
-        derivationStepZipperDown(rOne, rTwo :: context, a) ++ derivationStepZipperDown(rTwo, context, a)
-      case Concat(rOne, rTwo) => derivationStepZipperDown(rOne, rTwo :: context, a)
-      case Star(rInner) => derivationStepZipperDown(rInner, Star(rInner) :: context, a)
+      case Union(rOne, rTwo) => derivationStepZipperDown(rOne, context, a) ++ derivationStepZipperDown(rTwo, context, a)
+      case Concat(rOne, rTwo) if nullable(rOne) => derivationStepZipperDown(rOne, context.prepend(rTwo), a) ++ derivationStepZipperDown(rTwo, context, a)
+      case Concat(rOne, rTwo) => derivationStepZipperDown(rOne, context.prepend(rTwo), a)
+      case Star(rInner) => derivationStepZipperDown(rInner, context.prepend(Star(rInner)), a)
       case _ => Set()
     }
-  }.ensuring(res => validZipper(res))
+  }
 
   // @inlineOnce
   def derivationStepZipper[C](z: Zipper[C], a: C): Zipper[C] = {
-    require(validZipper(z))
-    ghostExpr(SetUtils.lemmaFlatMapForall(z, (c: Context[C]) => derivationStepZipperUp(c, a), validContext))
     z.flatMap(c => derivationStepZipperUp(c, a))
-  }.ensuring(res => validZipper(res))
+  }
 
   def nullableContext[C](c: Context[C]): Boolean = {
-    require(validContext(c))
     c.forall(r => nullable(r))
   }
   def nullableZipper[C](z: Zipper[C]): Boolean = {
-    require(validZipper(z))
+    
     z.exists(c => nullableContext(c))
   }
 
   def matchZipper[C](z: Zipper[C], input: List[C]): Boolean = {
-    require(validZipper(z))
     decreases(input.size)
     if (input.isEmpty) nullableZipper(z) else matchZipper(derivationStepZipper(z, input.head), input.tail)
   }
@@ -333,31 +324,31 @@ object ZipperRegex {
 
   def theoremZipperRegexEquiv[C](r: Regex[C], z: Zipper[C], s: List[C]): Unit = {
     require(validRegex(r))
-    require(validZipper(z))
+    
 
   }.ensuring(_ => matchR(r, s) == matchZipper(focus(r), s))
 
 
   // LEMMAS -----------------------------------------------------------------------------------------------------
 
-  @ghost
-  @inlineOnce
-  @opaque
-  def lemmaFlatMapDerivationUpForallValidToList[C](z: Zipper[C], a:C, l: List[Context[C]]): Unit = {
-    require(validZipper(z))
-    require(ListSpecs.subseq(l, z.flatMap(c => derivationStepZipperUp(c, a)).toList))
-    decreases(l)
-    l match 
-      case Cons(hd, tl) => 
-        ListSpecs.subseqContains(l, z.flatMap(c => derivationStepZipperUp(c, a)).toList, hd)
-        assert(z.flatMap(c => derivationStepZipperUp(c, a)).contains(hd))
-        unfold(z.flatMapPost(c => derivationStepZipperUp(c, a))(hd))
-        // lemmaFlatMapForallElem(z, c => derivationStepZipperUp(c, a), validContext, hd)
-        ListSpecs.subseqTail(l, z.flatMap(c => derivationStepZipperUp(c, a)).toList)
-        lemmaFlatMapDerivationUpForallValidToList(z, a, tl)
-      case Nil() => ()
+  // @ghost
+  // @inlineOnce
+  // @opaque
+  // def lemmaFlatMapDerivationUpForallValidToList[C](z: Zipper[C], a:C, l: List[Context[C]]): Unit = {
+  //   
+  //   require(ListSpecs.subseq(l, z.flatMap(c => derivationStepZipperUp(c, a)).toList))
+  //   decreases(l)
+  //   l match 
+  //     case Cons(hd, tl) => 
+  //       ListSpecs.subseqContains(l, z.flatMap(c => derivationStepZipperUp(c, a)).toList, hd)
+  //       assert(z.flatMap(c => derivationStepZipperUp(c, a)).contains(hd))
+  //       unfold(z.flatMapPost(c => derivationStepZipperUp(c, a))(hd))
+  //       // lemmaFlatMapForallElem(z, c => derivationStepZipperUp(c, a), validContext, hd)
+  //       ListSpecs.subseqTail(l, z.flatMap(c => derivationStepZipperUp(c, a)).toList)
+  //       lemmaFlatMapDerivationUpForallValidToList(z, a, tl)
+  //     case Nil() => ()
 
-  }.ensuring (_ => l.forall(validContext))
+  // }.ensuring (_ => l.forall(validContext))
 
 
 }
