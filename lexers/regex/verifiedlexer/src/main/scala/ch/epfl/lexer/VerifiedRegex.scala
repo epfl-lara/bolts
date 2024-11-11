@@ -310,7 +310,6 @@ object ZipperRegex {
     c.forall(r => nullable(r))
   }
   def nullableZipper[C](z: Zipper[C]): Boolean = {
-    
     z.exists(c => nullableContext(c))
   }
 
@@ -328,28 +327,47 @@ object ZipperRegex {
 
   }.ensuring(_ => matchR(r, s) == matchZipper(focus(r), s))
 
+  def lemmaZipperConcatMatchesSameAsBothZippers[C](z1:Zipper[C], z2: Zipper[C], s: List[C]): Unit = {
+    
+  }.ensuring(_ => matchZipper(z1 ++ z2, s) == matchZipper(z1, s) || matchZipper(z2, s))
+
 
   // LEMMAS -----------------------------------------------------------------------------------------------------
 
-  // @ghost
-  // @inlineOnce
-  // @opaque
-  // def lemmaFlatMapDerivationUpForallValidToList[C](z: Zipper[C], a:C, l: List[Context[C]]): Unit = {
-  //   
-  //   require(ListSpecs.subseq(l, z.flatMap(c => derivationStepZipperUp(c, a)).toList))
-  //   decreases(l)
-  //   l match 
-  //     case Cons(hd, tl) => 
-  //       ListSpecs.subseqContains(l, z.flatMap(c => derivationStepZipperUp(c, a)).toList, hd)
-  //       assert(z.flatMap(c => derivationStepZipperUp(c, a)).contains(hd))
-  //       unfold(z.flatMapPost(c => derivationStepZipperUp(c, a))(hd))
-  //       // lemmaFlatMapForallElem(z, c => derivationStepZipperUp(c, a), validContext, hd)
-  //       ListSpecs.subseqTail(l, z.flatMap(c => derivationStepZipperUp(c, a)).toList)
-  //       lemmaFlatMapDerivationUpForallValidToList(z, a, tl)
-  //     case Nil() => ()
+   @ghost
+  @opaque
+  @inlineOnce
+  def lemmaDerivativeStepZipperAssociative[C](z: Zipper[C], z1: Zipper[C], z2: Zipper[C],  a: C): Unit = {
+    require(z == z1 ++ z2)
+    SetUtils.lemmaFlatMapAssociative(z1, z2, (c: Context[C]) => derivationStepZipperUp(c, a))
+  }.ensuring(_ => derivationStepZipper(z, a) == derivationStepZipper(z1, a) ++ derivationStepZipper(z2, a))
 
-  // }.ensuring (_ => l.forall(validContext))
 
+  @ghost
+  @opaque
+  @inlineOnce
+  def lemmaZipperOfEmptyLangMatchesNothing[C](z: Zipper[C], s: List[C]): Unit = {
+    require(z == focus(EmptyLang[C]()))
+    if(s.isEmpty){
+      check(!nullableContext(Context(List(EmptyLang[C]()))))
+    }else{
+      ()
+    }
+  }.ensuring(_ => !matchZipper(z, s))
+
+
+  @ghost
+  @opaque
+  @inlineOnce
+  def lemmaZipperOfEmptyExprMatchesOnlyEmptyString[C](z: Zipper[C], s: List[C]): Unit = {
+    require(z == focus(EmptyExpr[C]()))
+    check(nullableContext(Context(List(EmptyExpr[C]()))))
+    if (s.isEmpty) {
+      check(nullableContext(Context(List(EmptyExpr[C]()))))
+    } else {
+      check(matchZipper(z, s) == false)
+    }
+  }.ensuring(_ => matchZipper(z, s) == s.isEmpty)
 
 }
 

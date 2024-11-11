@@ -12,12 +12,160 @@ import stainless.lang.StaticChecks._
 
 object SetUtils {
 
+  @opaque
+  @ghost
+  @inlineOnce
+  def lemmaFlatMapAssociativeElem[A, B](s1: Set[A], s2: Set[A], f: A => Set[B], b: B): Unit = {  
+    unfold(s2.flatMapPost(f))
+    if(s1.flatMap(f).contains(b)) {
+      unfold(s1.flatMapPost(f)(b))
+      assert(s1.exists(a => f(a).contains(b)))
+      val witness = getWitness(s1, a => f(a).contains(b))
+      assert(f(witness).contains(b))
+      assert((s1 ++ s2).contains(witness))
+      assert((s1.flatMap(f) ++ s2.flatMap(f)).contains(b))
+      lemmaContainsThenExist(s1 ++ s2, witness, a => f(a).contains(b))
+      assert((s1 ++ s2).exists(a => f(a).contains(b)))
+     
+      unfold((s1 ++ s2).flatMapPost(f)(b))
+
+      assert((s1 ++ s2).flatMap(f).contains(b))
+      assert((s1.flatMap(f) ++ s2.flatMap(f)).contains(b) == (s1++s2).flatMap(f).contains(b))
+    } else if (s2.flatMap(f).contains(b)) {
+      unfold(s2.flatMapPost(f)(b))
+      assert(s2.exists(a => f(a).contains(b)))
+      val witness = getWitness(s2, a => f(a).contains(b))
+      assert(f(witness).contains(b))
+      assert((s1 ++ s2).contains(witness))
+      assert((s1.flatMap(f) ++ s2.flatMap(f)).contains(b))
+      lemmaContainsThenExist(s1 ++ s2, witness, a => f(a).contains(b))
+      assert((s1 ++ s2).exists(a => f(a).contains(b)))
+     
+      unfold((s1 ++ s2).flatMapPost(f)(b))
+
+      assert((s1 ++ s2).flatMap(f).contains(b))
+      assert((s1.flatMap(f) ++ s2.flatMap(f)).contains(b) == (s1++s2).flatMap(f).contains(b))
+    } else{
+      assert(!(s1.flatMap(f) ++ s2.flatMap(f)).contains(b))
+      assert(!s1.flatMap(f).contains(b))
+      assert(!s2.flatMap(f).contains(b))
+      unfold(s1.flatMapPost(f)(b))
+      unfold(s2.flatMapPost(f)(b))
+      assert(!s1.exists(a => f(a).contains(b)))
+      assert(!s2.exists(a => f(a).contains(b)))
+      if((s1++s2).flatMap(f).contains(b)){
+        unfold((s1 ++ s2).flatMapPost(f)(b))
+        assert((s1 ++ s2).exists(a => f(a).contains(b)))
+        val witness = getWitness(s1 ++ s2, a => f(a).contains(b))
+        assert(s1.contains(witness) || s2.contains(witness))
+        if(s1.contains(witness)) {
+          lemmaContainsThenExist(s1, witness, a => f(a).contains(b))
+          assert(s1.exists(a => f(a).contains(b)))
+          check(false)
+        } else {
+          lemmaContainsThenExist(s2, witness, a => f(a).contains(b))
+          check(false)
+        }
+        check(false)
+      }
+      check(!(s1++s2).flatMap(f).contains(b))
+    }
+  }.ensuring(_ => (s1.flatMap(f) ++ s2.flatMap(f)).contains(b) == (s1++s2).flatMap(f).contains(b))
+
+  @opaque
+  @ghost
+  @inlineOnce
+  def lemmaFlatMapAssociative[A, B](s1: Set[A], s2: Set[A], f: A => Set[B]): Unit = {  
+
+    val l1 = (s1.flatMap(f) ++ s2.flatMap(f)).toList
+    val l2 = (s1++s2).flatMap(f).toList
+
+    ListUtils.lemmaSubseqRefl(l1)
+    ListUtils.lemmaSubseqRefl(l2)
+
+    lemmaFlatMapAssociativeToList2(s1, s2, f, l1, l2)
+    lemmaFlatMapAssociativeToList1(s1, s2, f, l1, l2)
+    check(l1.forall(l2.contains))
+    check(l2.forall(l1.contains))
+    ListSpecs.forallContainsSubset(l1, l2)
+    ListSpecs.forallContainsSubset(l2, l1)
+
+  }.ensuring(_ => s1.flatMap(f) ++ s2.flatMap(f) == (s1++s2).flatMap(f))
+
+
+  @opaque
+  @ghost
+  @inlineOnce
+  def lemmaFlatMapAssociativeToList1[A, B](s1: Set[A], s2: Set[A], f: A => Set[B], l1: List[B], l2: List[B]): Unit = {
+    require(ListSpecs.subseq(l1, (s1.flatMap(f) ++ s2.flatMap(f)).toList))
+    require(l2 == (s1++s2).flatMap(f).toList)
+    decreases(l1.size)
+    l1 match {
+      case Cons(hd, tl) => {
+        lemmaFlatMapAssociativeElem(s1, s2, f, hd)
+        ListSpecs.subseqTail(l1, (s1.flatMap(f) ++ s2.flatMap(f)).toList)
+        lemmaFlatMapAssociativeToList1(s1, s2, f, tl, l2)
+        ListSpecs.subseqContains(l1, (s1.flatMap(f) ++ s2.flatMap(f)).toList, hd)
+      }
+      case Nil() => ()
+    }
+
+  }.ensuring(_ => l1.forall(l2.contains)) 
+
+  @opaque
+  @ghost
+  @inlineOnce
+  def lemmaFlatMapAssociativeToList2[A, B](s1: Set[A], s2: Set[A], f: A => Set[B], l1: List[B], l2: List[B]): Unit = {
+    require(l1 == (s1.flatMap(f) ++ s2.flatMap(f)).toList)
+    require(ListSpecs.subseq(l2, (s1++s2).flatMap(f).toList))
+    decreases(l2.size)
+    l2 match {
+      case Cons(hd, tl) => {
+        lemmaFlatMapAssociativeElem(s1, s2, f, hd)
+        ListSpecs.subseqTail(l2, (s1++s2).flatMap(f).toList)
+        lemmaFlatMapAssociativeToList2(s1, s2, f, l1, tl)
+        ListSpecs.subseqContains(l2, (s1++s2).flatMap(f).toList, hd)
+      }
+      case Nil() => ()
+    }
+
+  }.ensuring(_ => l2.forall(l1.contains)) 
+
+
   @ghost
   def getWitness[A](s: Set[A], p: A => Boolean): A = {
     require(s.exists(p))
     ListUtils.getWitness(s.toList, p)
-  }.ensuring(res => p(res) && s.contains(res))
+  }.ensuring(res => p(res) && s.contains(res) && s.exists(p))
 
+  @opaque
+  @ghost
+  @inlineOnce
+  def lemmaContainsThenExist[A](s: Set[A], e: A, p: A => Boolean): Unit = {
+    require(s.contains(e))
+    require(p(e))
+    ListUtils.lemmaContainsThenExist(s.toList, e, p)
+    assert(s.exists(p))
+  }.ensuring(_ => s.exists(p))
+
+  @ghost
+  @inlineOnce
+  @opaque
+  def lemmaConcatNotExistThenBothNotExist[A](s1: Set[A], s2: Set[A], p: A => Boolean): Unit = {
+    require(!(s1 ++ s2).exists(p))
+    if(s1.exists(p)){
+      val witness = getWitness(s1, p)
+      assert(s1.contains(witness))
+      assert((s1 ++ s2).contains(witness))
+      lemmaContainsThenExist(s1 ++ s2, witness, p)
+    } 
+    if (s2.exists(p)){
+      val witness = getWitness(s2, p)
+      assert(s2.contains(witness))
+      assert((s1 ++ s2).contains(witness))
+      lemmaContainsThenExist(s1 ++ s2, witness, p)
+    }
+  }.ensuring(_ => !s1.exists(p) && !s2.exists(p))
 
   @ghost
   @opaque
@@ -156,7 +304,21 @@ object ListUtils {
       case Cons(hd, tl)           => getWitness(tl, p)
       case Nil()                  => check(false); l.head
     }
-  }.ensuring(res => p(res) && l.contains(res))
+  }.ensuring(res => p(res) && l.contains(res) && l.exists(p))
+
+  @ghost
+  @opaque
+  @inlineOnce
+  def lemmaContainsThenExist[B](l: List[B], e: B, p: B => Boolean): Unit = {
+    require(l.contains(e))
+    require(p(e))
+    decreases(l)
+    l match {
+      case Cons(hd, tl) if hd == e => ()
+      case Cons(hd, tl)            => lemmaContainsThenExist(tl, e, p)
+      case Nil()                   => check(false)
+    }
+  }.ensuring(_ => l.exists(p))
 
   @inlineOnce
   @opaque
