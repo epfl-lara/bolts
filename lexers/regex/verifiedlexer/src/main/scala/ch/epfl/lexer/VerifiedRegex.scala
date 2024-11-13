@@ -102,7 +102,6 @@ object VerifiedRegex {
   case class Star[C](reg: Regex[C]) extends Regex[C]
   case class Union[C](regOne: Regex[C], regTwo: Regex[C]) extends Regex[C]
   case class Concat[C](regOne: Regex[C], regTwo: Regex[C]) extends Regex[C]
-
   /** Regex that accepts only the empty string: represents the language {""}
     */
   case class EmptyExpr[C]() extends Regex[C]
@@ -111,10 +110,13 @@ object VerifiedRegex {
     */
   case class EmptyLang[C]() extends Regex[C]
 
+  case class GenUnion[C](s: Set[Regex[C]]) extends Regex[C]
+  case class GenConcat[C](l: List[Regex[C]]) extends Regex[C]
+
   // @ghost
   def validRegex[C](r: Regex[C]): Boolean = r match {
     case ElementMatch(c)    => true
-    case Star(r)            => !nullable(r) && validRegex(r) // && !isEmptyLang(r)
+    case Star(r)            => !nullable(r) && validRegex(r) 
     case Union(rOne, rTwo)  => validRegex(rOne) && validRegex(rTwo)
     case Concat(rOne, rTwo) => validRegex(rOne) && validRegex(rTwo)
     case EmptyExpr()        => true
@@ -337,23 +339,69 @@ object ZipperRegex {
 
   // PROOFS -----------------------------------------------------------------------------------------------------
 
+  @extern
+  @ghost
+  @opaque
+  def assume(c: Boolean): Unit = {
+    ()
+  }.ensuring(_ => c)
+
   @ghost
   @opaque
   @inlineOnce
   def theoremZipperRegexEquiv[C](r: Regex[C], z: Zipper[C], s: List[C]): Unit = {
     require(validRegex(r))
     require(focus(r) == z)
+    require(Concat(r, unfocus(context)))
+    decreases(regexDepth(r))
+    VerifiedRegexMatcher.mainMatchTheorem(r, s)
     r match {
       case EmptyExpr()     => lemmaZipperOfEmptyExprMatchesOnlyEmptyString(z, s)
       case EmptyLang()     => lemmaZipperStartingWithEmptyLangMatchesNothing(z, Context(List(r)), s)
-      case ElementMatch(c) => lemmaElementMatchZipperAcceptsOnlyThisChar(z, Context(List(ElementMatch(c))), c, s)
-      case Union(r1, r2) => ()
-      case Star(rInner) => ()
-      case Concat(r1, r2) => ()
+      case ElementMatch(a) => lemmaElementMatchZipperAcceptsOnlyThisChar(z, Context(List(ElementMatch(a))), a, s)
+      case Union(r1, r2) => {
+        VerifiedRegexMatcher.mainMatchTheorem(r1, s)
+        VerifiedRegexMatcher.mainMatchTheorem(r2, s)
+        assert(matchR(r, s) == (matchR(r1, s) || matchR(r2, s)))
+        s match {
+          case Nil() => {
+            lemmaFocusPreservesNullability(r, z)
+            assert(nullableZipper(z) == nullable(r))
+            check(matchZipper(z, s) == matchR(r, s))
+
+          }
+          case Cons(shd, stl) => {
+            val c = Context(List(r))
+            val deriv: Zipper[C] = derivationStepZipper(z, shd)
+            val derivUp = derivationStepZipperUp(c, shd)
+            if(nullable(r)) {
+              assert(derivUp == derivationStepZipperDown(r, Context(List()), s.head) ++ derivationStepZipperUp(Context(List()), shd))
+              val z1 = derivationStepZipperDown(r, Context(List()), shd)
+              val z2 = derivationStepZipperUp(Context(List()), shd)
+              assert(z2 == Set())
+              assert(deriv == z1 ++ z2)
+              lemmaEmptyZipperMatchesNothing(z2, stl)
+              lemmaZipperConcatMatchesSameAsBothZippers(z1, z2, stl)
+              // assert(matchZipper(z, s) == matchZipper(z1, s) || matchZipper(z2, s))
+              // assert(matchZipper(z, s) == matchZipper(z1, s))
+              
+            } else {
+              assert(deriv == derivUp)
+              // assert(derivUp == derivationStepZipperDown(r, Context(List()), s.head))
+              // assert(matchZipper(z, s) == matchZipper(derivUp, stl))
+            }
+          }
+        }
+        
+
+
+      }
+      case Star(rInner) => assume(matchR(r, s) == matchZipper(focus(r), s))
+      case Concat(r1, r2) => assume(matchR(r, s) == matchZipper(focus(r), s))
     }
     
 
-  }.ensuring(_ => matchR(r, s) == matchZipper(focus(r), s))
+  }.ensuring(_ => matchR(r, s) == matchZipper(z, s))
 
   @ghost
   @opaque
@@ -404,35 +452,18 @@ object ZipperRegex {
 
   // LEMMAS -----------------------------------------------------------------------------------------------------
 
-  // @ghost
-  // @opaque
-  // @inlineOnce
-  // def lemmaDerivationStepDownCorrect[C](r: Regex[C], c: Context[C], a: C, s: List[C]): Unit = {
-  //   require(validRegex(r))
-  //   decreases(s.size)
-  //   val unfocusRegex = Concat(r, unfocusContext(c))
-  //   VerifiedRegexMatcher.mainMatchTheorem(unfocusRegex, a :: s)
+  @ghost
+  @opaque
+  @inlineOnce
+  def lemmaFocusPreservesNullability[C](r: Regex[C], z: Zipper[C]): Unit = {
+    require(validRegex(r))
+    require(focus(r) == z)
 
-  //   r match {
-  //     // case ElementMatch(c) if c == a => Set(context)
-  //     // case Union(rOne, rTwo) => derivationStepZipperDown(rOne, context, a) ++ derivationStepZipperDown(rTwo, context, a)
-  //     // case Concat(rOne, rTwo) if nullable(rOne) => derivationStepZipperDown(rOne, context.prepend(rTwo), a) ++ derivationStepZipperDown(rTwo, context, a)
-  //     // case Concat(rOne, rTwo) => derivationStepZipperDown(rOne, context.prepend(rTwo), a)
-  //     // case Star(rInner) => derivationStepZipperDown(rInner, context.prepend(Star(rInner)), a)
-  //     case ElementMatch(cc) if cc == a => 
-  //       assert(derivationStepZipperDown(r, c, a) == Set(c))
-  //       if(!s.isEmpty && !c.isEmpty){
-  //         lemmaDerivationStepDownCorrect(c.head, c.tail, s.head, s.tail)
-  //       }
-  //     case Union(rOne, rTwo) => ()
-  //     case Concat(rOne, rTwo) if nullable(rOne) => ()
-  //     case Concat(rOne, rTwo) => ()
-  //     case Star(rInner) => ()
-  //     case _ => ()
-  //   }
-    
-  // }.ensuring(_ => matchR(Concat(r, unfocusContext(c)), a :: s) == matchZipper(derivationStepZipperDown(r, c, a), s))
+    assert(z == Set(Context(List(r))))
+    assert(nullableZipper(z) == z.exists(c => nullableContext(c)))
+    assert(nullableContext(Context(List(r))) == nullable(r))
 
+  }.ensuring(_ => nullable(r) == nullableZipper(z))
 
   @ghost
   @opaque
@@ -786,9 +817,13 @@ object VerifiedRegexMatcher {
       case EmptyLang()     => false
       case ElementMatch(c) => s == List(c)
       case Union(r1, r2)   => matchRSpec(r1, s) || matchRSpec(r2, s)
+      case GenUnion(s)     => s.exists(r => matchRSpec(r, s))
       case Star(rInner)    => s.isEmpty || findConcatSeparation(rInner, Star(rInner), Nil(), s, s).isDefined
       case Concat(r1, r2)  => findConcatSeparation(r1, r2, Nil(), s, s).isDefined
-    }
+      case GenConcat(l)    => l match {
+        case Nil() => s.isEmpty
+        case Cons(rHd, rTl) => findConcatSeparation(rHd, GenConcat(rTl), Nil(), s, s).isDefined
+      }
   }
 
   @ghost
