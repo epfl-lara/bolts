@@ -97,7 +97,7 @@ object Memoisation {
 }
 
 object VerifiedRegex {
-  abstract sealed class Regex[C] {}
+  sealed trait Regex[C]
   case class ElementMatch[C](c: C) extends Regex[C]
   case class Star[C](reg: Regex[C]) extends Regex[C]
   case class Union[C](regOne: Regex[C], regTwo: Regex[C]) extends Regex[C]
@@ -352,7 +352,6 @@ object ZipperRegex {
   def theoremZipperRegexEquiv[C](r: Regex[C], z: Zipper[C], s: List[C]): Unit = {
     require(validRegex(r))
     require(focus(r) == z)
-    require(Concat(r, unfocus(context)))
     decreases(regexDepth(r))
     VerifiedRegexMatcher.mainMatchTheorem(r, s)
     r match {
@@ -817,13 +816,14 @@ object VerifiedRegexMatcher {
       case EmptyLang()     => false
       case ElementMatch(c) => s == List(c)
       case Union(r1, r2)   => matchRSpec(r1, s) || matchRSpec(r2, s)
-      case GenUnion(s)     => s.exists(r => matchRSpec(r, s))
+      case GenUnion(rSet)     => rSet.exists(rr => matchRSpec(rr, s))
       case Star(rInner)    => s.isEmpty || findConcatSeparation(rInner, Star(rInner), Nil(), s, s).isDefined
       case Concat(r1, r2)  => findConcatSeparation(r1, r2, Nil(), s, s).isDefined
       case GenConcat(l)    => l match {
         case Nil() => s.isEmpty
         case Cons(rHd, rTl) => findConcatSeparation(rHd, GenConcat(rTl), Nil(), s, s).isDefined
       }
+    }
   }
 
   @ghost
