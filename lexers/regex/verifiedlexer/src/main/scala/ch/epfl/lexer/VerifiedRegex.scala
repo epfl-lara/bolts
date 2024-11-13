@@ -110,9 +110,6 @@ object VerifiedRegex {
     */
   case class EmptyLang[C]() extends Regex[C]
 
-  case class GenUnion[C](s: Set[Regex[C]]) extends Regex[C]
-  case class GenConcat[C](l: List[Regex[C]]) extends Regex[C]
-
   // @ghost
   def validRegex[C](r: Regex[C]): Boolean = r match {
     case ElementMatch(c)    => true
@@ -816,13 +813,13 @@ object VerifiedRegexMatcher {
       case EmptyLang()     => false
       case ElementMatch(c) => s == List(c)
       case Union(r1, r2)   => matchRSpec(r1, s) || matchRSpec(r2, s)
-      case GenUnion(rSet)     => rSet.exists(rr => matchRSpec(rr, s))
       case Star(rInner)    => s.isEmpty || findConcatSeparation(rInner, Star(rInner), Nil(), s, s).isDefined
       case Concat(r1, r2)  => findConcatSeparation(r1, r2, Nil(), s, s).isDefined
-      case GenConcat(l)    => l match {
-        case Nil() => s.isEmpty
-        case Cons(rHd, rTl) => findConcatSeparation(rHd, GenConcat(rTl), Nil(), s, s).isDefined
-      }
+      // case GenUnion(rSet)     => rSet.exists(rr => matchRSpec(rr, s))
+      // case GenConcat(l)    => l match {
+      //   case Nil() => s.isEmpty
+      //   case Cons(rHd, rTl) => findConcatSeparation(rHd, GenConcat(rTl), Nil(), s, s).isDefined
+      // }
     }
   }
 
