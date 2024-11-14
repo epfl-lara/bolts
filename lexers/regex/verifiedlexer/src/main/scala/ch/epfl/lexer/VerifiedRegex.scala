@@ -110,7 +110,23 @@ object VerifiedRegex {
     */
   case class EmptyLang[C]() extends Regex[C]
 
-  // @ghost
+  def generalisedUnion[C](l: List[Regex[C]]): Regex[C] = {
+    require(l.forall(validRegex))
+    l match {
+      case Cons(hd, tl) => Union(hd, generalisedUnion(tl))
+      case Nil()        => EmptyLang()
+    }
+  }.ensuring(res => validRegex(res))
+
+  def generalisedConcat[C](l: List[Regex[C]]): Regex[C] = {
+    require(l.forall(validRegex))
+    l match {
+      case Cons(hd, tl) => Concat(hd, generalisedConcat(tl))
+      case Nil()        => EmptyExpr()
+    }
+  }.ensuring(res => validRegex(res))
+
+  @ghost
   def validRegex[C](r: Regex[C]): Boolean = r match {
     case ElementMatch(c)    => true
     case Star(r)            => !nullable(r) && validRegex(r) 
@@ -120,7 +136,7 @@ object VerifiedRegex {
     case EmptyLang()        => true
   }
 
-  // @ghost
+  @ghost
   def regexDepth[C](r: Regex[C]): BigInt = {
     decreases(r)
     r match {
@@ -804,6 +820,41 @@ object VerifiedRegexMatcher {
   //   if (input.isEmpty) nullable(rr) else matchRMemSimp(derivativeStepMem(rr, input.head)(cache: Cache[C]), input.tail)
   // }.ensuring (res => res == matchR(r, input))
 
+
+  @ghost
+  def matchRGenUnionSpec[C](r: Regex[C], l: List[Regex[C]], s: List[C]): Unit = {
+    require(l.forall(validRegex))
+    require(r == generalisedUnion(l))
+    mainMatchTheorem(r, s)
+    r match {
+      case Union(hd, unionTl) => 
+        assert(matchR(r, s) == (matchRSpec(hd, s) || matchRSpec(unionTl, s)))
+        mainMatchTheorem(hd, s)
+        mainMatchTheorem(unionTl, s)
+        matchRGenUnionSpec(unionTl, l.tail, s)
+      case _ => ()
+    }
+  }.ensuring(_ => matchR(r, s) == l.exists(rr => {
+                                                    require(validRegex(rr))
+                                                    matchR(rr, s)
+                                                  }
+    ))
+
+  @ghost
+  def matchRGenConcatSpec[C](r: Regex[C], l: List[Regex[C]], s: List[C]): Unit = {
+    require(l.forall(validRegex))
+    require(r == generalisedConcat(l))
+    mainMatchTheorem(r, s)
+    r match {
+      case Concat(hd, concatTl) => 
+        assert(matchRSpec(r,s) == findConcatSeparation(hd, concatTl, Nil(), s, s).isDefined)
+      case _ => ()
+    }
+  }.ensuring(_ => l match {
+      case Cons(hd, tl) => matchR(r, s) == findConcatSeparation(hd, generalisedConcat(tl), Nil(), s, s).isDefined 
+      case Nil() => matchR(r, s) == s.isEmpty
+  })
+
   @ghost
   def matchRSpec[C](r: Regex[C], s: List[C]): Boolean = {
     require(validRegex(r))
@@ -815,11 +866,6 @@ object VerifiedRegexMatcher {
       case Union(r1, r2)   => matchRSpec(r1, s) || matchRSpec(r2, s)
       case Star(rInner)    => s.isEmpty || findConcatSeparation(rInner, Star(rInner), Nil(), s, s).isDefined
       case Concat(r1, r2)  => findConcatSeparation(r1, r2, Nil(), s, s).isDefined
-      // case GenUnion(rSet)     => rSet.exists(rr => matchRSpec(rr, s))
-      // case GenConcat(l)    => l match {
-      //   case Nil() => s.isEmpty
-      //   case Cons(rHd, rTl) => findConcatSeparation(rHd, GenConcat(rTl), Nil(), s, s).isDefined
-      // }
     }
   }
 

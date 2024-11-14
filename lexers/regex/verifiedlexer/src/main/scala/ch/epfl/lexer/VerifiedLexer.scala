@@ -83,7 +83,7 @@ object VerifiedLexer {
 
   object Lexer {
 
-    @inline
+    @ghost
     def ruleValid[C](r: Rule[C]): Boolean = {
       validRegex(r.regex) && !nullable(r.regex) && r.tag != ""
     }
@@ -94,6 +94,7 @@ object VerifiedLexer {
         case Cons(hd, tl) => !acc.contains(hd.tag) && noDuplicateTag(tl, Cons(hd.tag, acc))
       }
     }
+    @ghost
     def rulesValid[C](rs: List[Rule[C]]): Boolean = {
       rs match {
         case Cons(hd, tl) => ruleValid(hd) && rulesValid(tl)
@@ -139,7 +140,7 @@ object VerifiedLexer {
       usedCharacters(r1.regex).forall(c => !usedCharacters(r2.regex).contains(c))
     }
 
-    @inline
+    @inline @ghost
     def rulesInvariant[C](rules: List[Rule[C]]): Boolean =
       rulesValid(rules) && noDuplicateTag(rules, Nil())
 
