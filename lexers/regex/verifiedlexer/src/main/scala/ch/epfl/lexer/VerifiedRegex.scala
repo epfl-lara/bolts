@@ -113,6 +113,7 @@ object VerifiedRegex {
   def generalisedUnion[C](l: List[Regex[C]]): Regex[C] = {
     require(l.forall(validRegex))
     l match {
+      case Cons(hd, tl) if tl.isEmpty => hd
       case Cons(hd, tl) => Union(hd, generalisedUnion(tl))
       case Nil()        => EmptyLang()
     }
@@ -121,6 +122,7 @@ object VerifiedRegex {
   def generalisedConcat[C](l: List[Regex[C]]): Regex[C] = {
     require(l.forall(validRegex))
     l match {
+      case Cons(hd, tl) if tl.isEmpty => hd
       case Cons(hd, tl) => Concat(hd, generalisedConcat(tl))
       case Nil()        => EmptyExpr()
     }
@@ -277,29 +279,23 @@ object ZipperRegex {
   }
   type Zipper[C] = Set[Context[C]]
 
-  def unfocusContext[C](c: Context[C]): Regex[C] = {
-    decreases(c.exprs.size)
-    c.exprs match {
-      case Cons(hd, tl) if tl.isEmpty => hd
-      case Cons(hd, tl) => Concat(hd, unfocusContext(Context(tl)))
-      case Nil()        => EmptyExpr()
-    }
+  @ghost
+  def unfocusZipper[C](z: Zipper[C]): Regex[C] = {
+    VerifiedRegex.generalisedUnion(unfocusZipperList(z.toList))
   }.ensuring(res => validRegex(res))
 
-  // def unfocusZipper[C](z: Zipper[C]): Regex[C] = {
-  //   
-  //   // z match {
-  //   //   case Cons(hd, tl) if tl.isEmpty => unfocusContext(hd)
-  //   //   case Cons(hd, tl) => Union(unfocusContext(hd), unfocusZipper(tl))
-  //   //   case Nil()        => EmptyLang()
-  //   // }
-  //   z.flatMap(c =>)
-  // }.ensuring(res => validRegex(res))
+  @ghost
+  def unfocusZipperList[C](zl: List[Context[C]]): List[Regex[C]] = {
+    zl match {
+      case Cons(hd, tl) => Cons(VerifiedRegex.generalisedConcat(hd.exprs), unfocusZipperList(tl))
+      case Nil()        => Nil()
+    }
+  }.ensuring(res => res.forall(validRegex))
 
   def focus[C](r: Regex[C]): Zipper[C] = {
     require(validRegex(r))
     Set(Context(List(r)))
-  }
+  }.ensuring(res => unfocusZipper(res) == r)
 
   def derivationStepZipperUp[C](context: Context[C], a: C): Zipper[C] = {
     decreases(context.exprs.size)
@@ -362,9 +358,9 @@ object ZipperRegex {
   @ghost
   @opaque
   @inlineOnce
-  def theoremZipperRegexEquiv[C](r: Regex[C], z: Zipper[C], s: List[C]): Unit = {
+  def theoremZipperRegexEquiv[C](z: Zipper[C], r: Regex[C], s: List[C]): Unit = {
     require(validRegex(r))
-    require(focus(r) == z)
+    require(r == unfocusZipper(z))
     decreases(regexDepth(r))
     VerifiedRegexMatcher.mainMatchTheorem(r, s)
     r match {
@@ -828,10 +824,25 @@ object VerifiedRegexMatcher {
     mainMatchTheorem(r, s)
     r match {
       case Union(hd, unionTl) => 
-        assert(matchR(r, s) == (matchRSpec(hd, s) || matchRSpec(unionTl, s)))
-        mainMatchTheorem(hd, s)
-        mainMatchTheorem(unionTl, s)
-        matchRGenUnionSpec(unionTl, l.tail, s)
+        if(l.isEmpty){
+          check(false)
+        } else if(l.tail.isEmpty){
+          // It means that the head of list (i.e., one of the regex of the generalised union)
+          // is a union itself, and so this Union is not one of the chain
+          assert(generalisedUnion(l.tail) == EmptyLang[C]())
+          check(matchR(r, s) == l.exists(rr => {
+                                                    require(validRegex(rr))
+                                                    matchR(rr, s)
+                                                  }
+          ))
+
+        } else {
+          // Here the Union we are matching on is a part of the chain built by generalisedUnion
+          assert(matchR(r, s) == (matchRSpec(hd, s) || matchRSpec(unionTl, s)))
+          mainMatchTheorem(hd, s)
+          mainMatchTheorem(unionTl, s)
+          matchRGenUnionSpec(unionTl, l.tail, s)
+        }
       case _ => ()
     }
   }.ensuring(_ => matchR(r, s) == l.exists(rr => {
@@ -845,10 +856,65 @@ object VerifiedRegexMatcher {
     require(l.forall(validRegex))
     require(r == generalisedConcat(l))
     mainMatchTheorem(r, s)
-    r match {
+    r match { 
       case Concat(hd, concatTl) => 
         assert(matchRSpec(r,s) == findConcatSeparation(hd, concatTl, Nil(), s, s).isDefined)
-      case _ => ()
+        if(l.isEmpty) {
+          check(false)
+        } else if(l.tail.isEmpty){
+          // Here the Concat we are matching on is NOT a part of the chain built by generalisedConcat
+          // it means that the head of the list is a Concat itself
+          assert(generalisedConcat(l.tail) == EmptyExpr[C]())
+          if(matchR(l.head, s)) {
+            lemmaTwoRegexMatchThenConcatMatchesConcatString(l.head, EmptyExpr[C](), s, Nil())
+            check(matchR(Concat(l.head, EmptyExpr[C]()), s))
+            lemmaConcatAcceptsStringThenFindSeparationIsDefined(l.head, EmptyExpr[C](), s)
+            check(findConcatSeparation(l.head, generalisedConcat(l.tail), Nil(), s, s).isDefined)
+          } else {
+            val cut = findConcatSeparation(l.head, EmptyExpr[C](), Nil(), s, s)
+            if(cut.isDefined) {
+              lemmaFindSeparationIsDefinedThenConcatMatches(l.head, EmptyExpr[C](), cut.get._1, cut.get._2, s)
+              check(false)
+            }
+            check(!cut.isDefined)
+            check(!findConcatSeparation(l.head, generalisedConcat(l.tail), Nil(), s, s).isDefined)
+          }
+          check(matchR(r, s) == findConcatSeparation(l.head, generalisedConcat(l.tail), Nil(), s, s).isDefined )
+        } else {
+          // Here the Concat we are matching on is a part of the chain built by generalisedConcat
+          check(matchR(r, s) == findConcatSeparation(l.head, generalisedConcat(l.tail), Nil(), s, s).isDefined )
+        }
+        check(l match {
+            case Cons(hd, tl) => matchR(r, s) == findConcatSeparation(hd, generalisedConcat(tl), Nil(), s, s).isDefined 
+            case Nil() => matchR(r, s) == s.isEmpty
+        })
+      case EmptyExpr() => 
+        check(l match {
+            case Cons(hd, tl) => matchR(r, s) == findConcatSeparation(hd, generalisedConcat(tl), Nil(), s, s).isDefined 
+            case Nil() => matchR(r, s) == s.isEmpty
+        })
+      case _ => 
+        assert(!l.isEmpty)
+        assert(l.tail.isEmpty)
+        assert(generalisedConcat(l.tail) == EmptyExpr[C]())
+          if(matchR(l.head, s)) {
+            lemmaTwoRegexMatchThenConcatMatchesConcatString(l.head, EmptyExpr[C](), s, Nil())
+            check(matchR(Concat(l.head, EmptyExpr[C]()), s))
+            lemmaConcatAcceptsStringThenFindSeparationIsDefined(l.head, EmptyExpr[C](), s)
+            check(findConcatSeparation(l.head, generalisedConcat(l.tail), Nil(), s, s).isDefined)
+          } else {
+            val cut = findConcatSeparation(l.head, EmptyExpr[C](), Nil(), s, s)
+            if(cut.isDefined) {
+              lemmaFindSeparationIsDefinedThenConcatMatches(l.head, EmptyExpr[C](), cut.get._1, cut.get._2, s)
+              check(false)
+            }
+            check(!cut.isDefined)
+            check(!findConcatSeparation(l.head, generalisedConcat(l.tail), Nil(), s, s).isDefined)
+          }
+        check(l match {
+            case Cons(hd, tl) => matchR(r, s) == findConcatSeparation(hd, generalisedConcat(tl), Nil(), s, s).isDefined 
+            case Nil() => matchR(r, s) == s.isEmpty
+        })
     }
   }.ensuring(_ => l match {
       case Cons(hd, tl) => matchR(r, s) == findConcatSeparation(hd, generalisedConcat(tl), Nil(), s, s).isDefined 

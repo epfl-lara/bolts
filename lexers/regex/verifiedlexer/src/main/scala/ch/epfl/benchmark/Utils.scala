@@ -37,7 +37,7 @@ object RegexUtils {
     case stainless.collection.Nil() => ""
     case stainless.collection.Cons(h, t) => h.toString + (if t.isEmpty then "" else inter + t.mkString(inter))
   }
-  extension (c: Context[Char]) def asStringContext(): String = s"Sequence(${c.map(regex => regex.asString()).mkString(", ")})"
+  extension (c: Context[Char]) def asStringContext(): String = s"Sequence(${c.exprs.map(regex => regex.asString()).mkString(", ")})"
   extension (z: Zipper[Char]) def asStringZipper(): String = s"Set(${z.map(c => c.asStringContext()).mkString(", ")})"
 
 
