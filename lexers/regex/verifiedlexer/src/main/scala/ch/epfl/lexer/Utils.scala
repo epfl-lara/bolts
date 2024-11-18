@@ -9,6 +9,7 @@ import stainless.lang.{ghost => ghostExpr, _}
 import stainless.proof.check
 import scala.annotation.tailrec
 import stainless.lang.StaticChecks._
+import ch.epfl.lexer.ListUtils.lemmaSubseqRefl
 
 object SetUtils {
 
@@ -146,6 +147,69 @@ object SetUtils {
     }
 
   }.ensuring(_ => l2.forall(l1.contains)) 
+
+
+  @opaque
+  @ghost
+  @inlineOnce
+  def lemmaFlatMapOnSingletonSet[A, B](s: Set[A], elmt: A, f: A => Set[B]): Unit = {
+    require(s == Set(elmt))
+    val ftmap = s.flatMap(f)
+    lemmaSubseqRefl(ftmap.toList)
+    lemmaSubseqRefl(f(elmt).toList)
+    lemmaFlatMapOnSingletonSetList1(s, elmt, f, ftmap.toList)
+    lemmaFlatMapOnSingletonSetList2(s, elmt, f, f(elmt).toList)
+    ListSpecs.forallContainsSubset(ftmap.toList, f(elmt).toList)
+    ListSpecs.forallContainsSubset(f(elmt).toList, ftmap.toList)
+  }.ensuring(_ => s.flatMap(f) == f(elmt))
+
+  @opaque
+  @ghost
+  @inlineOnce
+  def lemmaFlatMapOnSingletonSetList1[A, B](s: Set[A], elmt: A, f: A => Set[B], lRes: List[B]): Unit = {
+    require(s == Set(elmt))
+    require(ListSpecs.subseq(lRes, s.flatMap(f).toList))
+    decreases(lRes)
+    lRes match {
+      case Cons(hd, tl) => {
+        ListSpecs.subseqTail(lRes, s.flatMap(f).toList)
+        lemmaFlatMapOnSingletonSetList1(s, elmt, f, tl)
+        check(tl.forall(f(elmt).toList.contains))
+        ListSpecs.subseqContains(lRes, s.flatMap(f).toList, hd)
+        assert(s.flatMap(f).contains(hd))
+        unfold(s.flatMapPost(f)(hd))
+        assert(s.exists(a => f(a).contains(hd)))
+        val witness = getWitness(s, a => f(a).contains(hd))
+        assert(s.toList.contains(witness))
+        assert(witness == elmt)
+        check(f(elmt).toList.contains(hd))
+        check(lRes.forall(f(elmt).toList.contains))
+      }
+      case Nil() => ()
+    }
+  }.ensuring(_ => lRes.forall(f(elmt).toList.contains))
+
+  @opaque
+  @ghost
+  @inlineOnce
+  def lemmaFlatMapOnSingletonSetList2[A, B](s: Set[A], elmt: A, f: A => Set[B], lRes: List[B]): Unit = {
+    require(s == Set(elmt))
+    require(ListSpecs.subseq(lRes, f(elmt).toList))
+    decreases(lRes)
+    lRes match {
+      case Cons(hd, tl) => {
+        ListSpecs.subseqTail(lRes, f(elmt).toList)
+        lemmaFlatMapOnSingletonSetList2(s, elmt, f, tl)
+        check(tl.forall(s.flatMap(f).toList.contains))
+        ListSpecs.subseqContains(lRes, f(elmt).toList, hd)
+        check(f(elmt).toList.contains(hd))
+        unfold(s.flatMapPost(f)(hd))
+        check(s.flatMap(f).toList.contains(hd))
+        check(lRes.forall(s.flatMap(f).toList.contains))
+      }
+      case Nil() => ()
+    }
+  }.ensuring(_ => lRes.forall(s.flatMap(f).toList.contains))
 
 
   @ghost

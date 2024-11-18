@@ -117,7 +117,7 @@ object VerifiedRegex {
       case Cons(hd, tl) => Union(hd, generalisedUnion(tl))
       case Nil()        => EmptyLang()
     }
-  }.ensuring(res => validRegex(res))
+  }.ensuring(res => validRegex(res) && (if(l.isEmpty) isEmptyLang(res) else if(l.tail.isEmpty) res == l.head else isUnion(res)))
 
   def generalisedConcat[C](l: List[Regex[C]]): Regex[C] = {
     require(l.forall(validRegex))
@@ -126,7 +126,7 @@ object VerifiedRegex {
       case Cons(hd, tl) => Concat(hd, generalisedConcat(tl))
       case Nil()        => EmptyExpr()
     }
-  }.ensuring(res => validRegex(res))
+  }.ensuring(res => validRegex(res) && (if(l.isEmpty) isEmptyExpr(res) else if(l.tail.isEmpty) res == l.head else isConcat(res)))
 
   @ghost
   def validRegex[C](r: Regex[C]): Boolean = r match {
@@ -280,14 +280,14 @@ object ZipperRegex {
   type Zipper[C] = Set[Context[C]]
 
   @ghost
-  def unfocusZipper[C](z: Zipper[C]): Regex[C] = {
-    VerifiedRegex.generalisedUnion(unfocusZipperList(z.toList))
+  def unfocusZipper[C](zl: List[Context[C]]): Regex[C] = {
+    generalisedUnion(unfocusZipperList(zl))
   }.ensuring(res => validRegex(res))
 
   @ghost
   def unfocusZipperList[C](zl: List[Context[C]]): List[Regex[C]] = {
     zl match {
-      case Cons(hd, tl) => Cons(VerifiedRegex.generalisedConcat(hd.exprs), unfocusZipperList(tl))
+      case Cons(hd, tl) => Cons(generalisedConcat(hd.exprs), unfocusZipperList(tl))
       case Nil()        => Nil()
     }
   }.ensuring(res => res.forall(validRegex))
@@ -295,7 +295,52 @@ object ZipperRegex {
   def focus[C](r: Regex[C]): Zipper[C] = {
     require(validRegex(r))
     Set(Context(List(r)))
-  }.ensuring(res => unfocusZipper(res) == r)
+  }.ensuring(res => unfocusZipper(res.toList) == r)
+
+  @inlineOnce
+  @ghost
+  @opaque
+  def lemmaForallRegexDepthBiggerThanTransitive[C](@induct l: List[Regex[C]], a: BigInt, b: BigInt): Unit = {
+    require(a >= b)
+    require(l.forall(r => b >= regexDepth(r)))
+    
+  }.ensuring(_ => l.forall(r => a >= regexDepth(r)))
+
+  @inlineOnce
+  @ghost
+  @opaque
+  def lemmaForallContextDepthBiggerThanTransitive[C](@induct l: List[Context[C]], a: BigInt, b: BigInt, f: Context[C] => BigInt): Unit = {
+    require(a >= b)
+    require(l.forall(r => b >= f(r)))
+    
+  }.ensuring(_ => l.forall(c => a >= f(c)))
+
+  @ghost
+  @pure
+  def contextDepth[C](c: Context[C]): BigInt = {
+    decreases(c.exprs.size)
+    c.exprs match {
+      case Cons(hd, tl) => 
+        val res = Utils.maxBigInt(regexDepth(hd), contextDepth(Context(tl)))
+        lemmaForallRegexDepthBiggerThanTransitive(tl, res, contextDepth(Context(tl)))
+        res
+      case Nil()        => BigInt(0)
+    }
+  }.ensuring(res => res >= 0 && c.exprs.forall(r => res >= regexDepth(r)))
+
+  @ghost
+  @pure  
+  def zipperDepth[C](zl: List[Context[C]]): BigInt = {
+    decreases(zl.size)
+    zl match {
+      case Cons(hd, tl) => 
+        val res = Utils.maxBigInt(contextDepth(hd), zipperDepth(tl))
+        lemmaForallContextDepthBiggerThanTransitive(tl, res, zipperDepth(tl), contextDepth)
+        res
+      case Nil() => BigInt(0)
+    }
+  }.ensuring(res => res >= 0 && zl.forall(c => res >= contextDepth(c)))
+
 
   def derivationStepZipperUp[C](context: Context[C], a: C): Zipper[C] = {
     decreases(context.exprs.size)
@@ -381,11 +426,12 @@ object ZipperRegex {
   @ghost
   @opaque
   @inlineOnce
-  def theoremZipperRegexEquiv[C](z: Zipper[C], r: Regex[C], s: List[C]): Unit = {
+  def theoremZipperRegexEquiv[C](z: Zipper[C], zl: List[Context[C]], r: Regex[C], s: List[C]): Unit = {
     require(validRegex(r))
-    require(r == unfocusZipper(z))
+    require(z.toList == zl)
+    require(r == unfocusZipper(zl))
     decreases(regexDepth(r))
-    VerifiedRegexMatcher.mainMatchTheorem(r, s)
+    mainMatchTheorem(r, s)
     r match {
       case EmptyExpr()     => lemmaZipperOfEmptyExprMatchesOnlyEmptyString(z, s)
       case EmptyLang()     => 
@@ -397,8 +443,8 @@ object ZipperRegex {
       case ElementMatch(a) => lemmaElementMatchZipperAcceptsOnlyThisChar(z, Context(List(ElementMatch(a))), a, s)
       case Union(r1, r2) => 
       {
-        VerifiedRegexMatcher.mainMatchTheorem(r1, s)
-        VerifiedRegexMatcher.mainMatchTheorem(r2, s)
+        mainMatchTheorem(r1, s)
+        mainMatchTheorem(r2, s)
         assert(matchR(r, s) == (matchR(r1, s) || matchR(r2, s)))
         s match {
           case Nil() => {
@@ -407,15 +453,301 @@ object ZipperRegex {
             check(matchZipper(z, s) == matchR(r, s))
           }
           case Cons(shd, stl) => {
+            assert(!z.toList.isEmpty)
+            val zHd: Context[C] = z.toList.head
+            val zTl: List[Context[C]] = z.toList.tail
+
             assert(matchZipper(z, s) == matchZipper(derivationStepZipper(z, shd), stl))
-            assert(r == VerifiedRegex.generalisedUnion(unfocusZipperList(z.toList)))
+            assert(r == generalisedUnion(unfocusZipperList(z.toList)))
             matchRGenUnionSpec(r, unfocusZipperList(z.toList), s)
             assert(matchR(r, s) == unfocusZipperList(z.toList).exists(rr => validRegex(rr) && matchR(rr, s)))
+
+            if(zTl.isEmpty) {
+              assert(r == generalisedConcat(zHd.exprs))
+              assert(zHd.exprs == List(r))
+              // Now let's dive in the derivative computation
+              val deriv = derivationStepZipper(z, shd)
+              val derivUp = derivationStepZipperUp(Context(List(r)), shd)
+              zHd.exprs match {
+                  case Cons(right, parent) if nullable(right) => assert(derivationStepZipperDown(right, Context(parent), shd) ++ derivationStepZipperUp(Context(parent),shd) == derivationStepZipperUp(Context(List(r)), shd))
+                  case Cons(right, parent) => assert(derivationStepZipperDown(right, Context(parent), shd) == derivationStepZipperUp(Context(List(r)), shd))
+                  case Nil() => assert(Set[Context[C]]() == derivationStepZipperUp(Context(List(r)), shd))
+              }
+
+            } else {
+              unfold(generalisedUnion(unfocusZipperList(z.toList)))
+              assert(r2 == unfocusZipper(zTl))
+            }
+
+
+
+            
+
+            
           }
         }
       }
       case Star(rInner) => assume(matchR(r, s) == matchZipper(z, s))
       case Concat(r1, r2) => assume(matchR(r, s) == matchZipper(z, s))
+    }
+    
+
+  }.ensuring(_ => matchR(r, s) == matchZipper(z, s))
+
+  @ghost
+  @opaque
+  @inlineOnce
+  def theoremZipperRegexEquivInductZ[C](z: Zipper[C], zl: List[Context[C]], r: Regex[C], s: List[C]): Unit = {
+    require(validRegex(r))
+    require(z.toList == zl)
+    require(r == unfocusZipper(zl))
+    decreases(regexDepth(r) + zipperDepth(zl) + (if zl.isEmpty || zl.head.isEmpty then BigInt(0) else regexDepth(zl.head.exprs.head)) * 2) // Pretty insane but so beautiful haha
+
+    mainMatchTheorem(r, s)
+    zl match {
+      case Cons(hd, tl) if tl.isEmpty => {
+        assert(r == generalisedConcat(hd.exprs))
+        hd.exprs match {
+          case Cons(hExp, tlExp) if tlExp.isEmpty => {
+            assert(r == hExp)
+            r match {
+              case EmptyExpr() => lemmaZipperOfEmptyExprMatchesOnlyEmptyString(z, s)
+              case EmptyLang() => lemmaZipperStartingWithEmptyLangMatchesNothing(z, Context(List(r)), s)
+              case ElementMatch(a) => lemmaElementMatchZipperAcceptsOnlyThisChar(z, Context(List(ElementMatch(a))), a, s)
+              case Union(r1, r2) => {
+                mainMatchTheorem(r1, s)
+                mainMatchTheorem(r2, s)
+                assert(matchR(r, s) == (matchR(r1, s) || matchR(r2, s)))
+                s match {
+                  case Nil() => {
+                    lemmaUnfocusPreservesNullability(r, z)
+                    assert(nullableZipper(z) == nullable(r))
+                    check(matchZipper(z, s) == matchR(r, s))
+                  }
+                  case Cons(shd, stl) => {
+                    val deriv = derivationStepZipper(z, shd)
+                    val derivUp = derivationStepZipperUp(Context(List(r)), shd)
+                    val derivDown = derivationStepZipperDown(r, Context(List()), shd)
+                    assert(derivUp == derivDown)
+                    assert(derivDown == derivationStepZipperDown(r1, Context(List()), shd) ++ derivationStepZipperDown(r2, Context(List()), shd))
+                    val z1 = derivationStepZipperDown(r1, Context(List()), shd)
+                    val z2 = derivationStepZipperDown(r2, Context(List()), shd)
+                    SetUtils.lemmaFlatMapOnSingletonSet(z, hd, (c: Context[C]) => derivationStepZipperUp(c, shd))
+                    assert(deriv == z1 ++ z2)
+                    assert(matchZipper(z1 ++ z2, stl) == matchZipper(z, s))
+                    lemmaZipperConcatMatchesSameAsBothZippers(z1, z2, stl)
+                    assert((matchZipper(z1, stl) || matchZipper(z2, stl)) == matchZipper(z1 ++ z2, stl))
+                    assert((matchZipper(z1, stl) || matchZipper(z2, stl)) == matchZipper(z, s))
+                    
+                    val zR1 = Set(Context(List(r1)))
+                    val zR2 = Set(Context(List(r2)))
+                    val derivZR1 = derivationStepZipper(zR1, shd)
+                    val derivZR2 = derivationStepZipper(zR2, shd)
+
+                    val derivUpZR1 = derivationStepZipperUp(Context(List(r1)), shd)
+                    val derivUpZR2 = derivationStepZipperUp(Context(List(r2)), shd)
+                    SetUtils.lemmaFlatMapOnSingletonSet(zR1, Context(List(r1)), (c: Context[C]) => derivationStepZipperUp(c, shd))
+                    SetUtils.lemmaFlatMapOnSingletonSet(zR2, Context(List(r2)), (c: Context[C]) => derivationStepZipperUp(c, shd))
+
+                    val zR1Deriv = derivationStepZipperDown(r1, Context(List()), shd)
+                    val zR2Deriv = derivationStepZipperDown(r2, Context(List()), shd)
+                    assert(zR1Deriv == z1)
+                    assert(zR2Deriv == z2)
+                    assert(matchZipper(zR1, s) == matchZipper(zR1Deriv, stl))
+                    assert(matchZipper(zR2, s) == matchZipper(zR2Deriv, stl))
+                    assert((matchZipper(zR1, s) || matchZipper(zR2, s)) == matchZipper(z, s))
+                    theoremZipperRegexEquivInductZ(zR1, List(Context(List(r1))), r1, s)
+                    theoremZipperRegexEquivInductZ(zR2, List(Context(List(r2))), r2, s)
+                  }
+                }
+              }
+              case Concat(r1, r2) => {
+                assert(matchR(r, s) == findConcatSeparation(r1, r2, Nil(), s, s).isDefined)
+                s match {
+                  case Nil() => {
+                    lemmaUnfocusPreservesNullability(r, z)
+                    assert(nullableZipper(z) == nullable(r))
+                    check(matchZipper(z, s) == matchR(r, s))
+                  }
+                  case Cons(shd, stl) => {
+                    val zDeriv = derivationStepZipper(z, shd)
+                    val zDerivUp = derivationStepZipperUp(Context(List(r)), shd)
+                    val zDerivDown = derivationStepZipperDown(r, Context(List()), shd)
+                    assert(zDerivUp == zDerivDown)  
+                    SetUtils.lemmaFlatMapOnSingletonSet(z, hd, (c: Context[C]) => derivationStepZipperUp(c, shd))
+                    assert(zDeriv == zDerivDown)
+                    val zR1 = Set(Context(List(r1, r2)))
+                    val zR2 = Set(Context(List(r2)))
+                    val derivZR1 = derivationStepZipper(zR1, shd)
+                    val derivZR2 = derivationStepZipper(zR2, shd)
+
+                    val derivUpZR1 = derivationStepZipperUp(Context(List(r1, r2)), shd)
+                    val derivUpZR2 = derivationStepZipperUp(Context(List(r2)), shd)
+
+                    SetUtils.lemmaFlatMapOnSingletonSet(zR1, Context(List(r1, r2)), (c: Context[C]) => derivationStepZipperUp(c, shd))
+                    SetUtils.lemmaFlatMapOnSingletonSet(zR2, Context(List(r2)), (c: Context[C]) => derivationStepZipperUp(c, shd))
+
+                    val derivDownZR1 = derivationStepZipperDown(r1, Context(List(r2)), shd)
+                    val derivDownZR2 = derivationStepZipperDown(r2, Context(List()), shd)
+
+                    if(nullable(r1)){
+                      assert(zDeriv == derivDownZR1 ++ derivDownZR2)
+                      lemmaZipperConcatMatchesSameAsBothZippers(derivDownZR1, derivDownZR2, stl)
+                      assert((matchZipper(derivDownZR1, stl) || matchZipper(derivDownZR2, stl)) == matchZipper(zDeriv, stl))
+
+                      assert(derivUpZR1 == derivDownZR1 ++ derivUpZR2)
+                      assert(derivUpZR1 == derivDownZR1 ++ derivDownZR2)
+                      assert(derivUpZR1 == zDeriv)
+
+                      assert(matchZipper(zR1, s) == matchZipper(derivationStepZipper(zR1, shd), stl))
+
+                      assert(matchZipper(zR1, s) == matchZipper(derivZR1, stl))
+                      assert(matchZipper(zR2, s) == matchZipper(derivZR2, stl))
+
+                      assert(regexDepth(r1) < regexDepth(r))
+                      assert(contextDepth(Context(List(r1, r2))) < contextDepth(Context(List(r))))
+                      assert(regexDepth(r) == regexDepth(Concat(r1, r2)))
+                      theoremZipperRegexEquivInductZ(zR1, List(Context(List(r1, r2))), Concat(r1, r2), s)
+                      theoremZipperRegexEquivInductZ(zR2, List(Context(List(r2))), r2, s)
+                      
+
+                    } else {
+                      assert(zDeriv == derivDownZR1)
+
+                      theoremZipperRegexEquivInductZ(zR1, List(Context(List(r1, r2))), Concat(r1, r2), s)
+                      theoremZipperRegexEquivInductZ(zR2, List(Context(List(r2))), r2, s)
+                    }
+                  }
+                }
+              }
+              case Star(rInner) => {
+                assert(matchR(r, s) ==  s.isEmpty || findConcatSeparation(rInner, Star(rInner), Nil(), s, s).isDefined)
+                s match {
+                  case Nil() => {
+                    lemmaUnfocusPreservesNullability(r, z)
+                    assert(nullableZipper(z) == nullable(r))
+                    check(matchZipper(z, s) == matchR(r, s))
+                  }
+                  case Cons(shd, stl) => {  
+                    val zDeriv = derivationStepZipper(z, shd)
+                    val zDerivUp = derivationStepZipperUp(Context(List(r)), shd)
+                    val zDerivDown = derivationStepZipperDown(r, Context(List()), shd)
+                    assert(zDerivUp == zDerivDown)  
+                    SetUtils.lemmaFlatMapOnSingletonSet(z, hd, (c: Context[C]) => derivationStepZipperUp(c, shd))
+                    assert(zDeriv == zDerivDown)
+
+                    val zR1 = Set(Context(List(rInner, Star(rInner))))
+                    val derivZR1 = derivationStepZipper(zR1, shd)
+
+                    val derivUpZR1 = derivationStepZipperUp(Context(List(rInner, Star(rInner))), shd)
+
+                    SetUtils.lemmaFlatMapOnSingletonSet(zR1, Context(List(rInner, Star(rInner))), (c: Context[C]) => derivationStepZipperUp(c, shd))
+                    val derivDownZR1 = derivationStepZipperDown(rInner, Context(List(Star(rInner))), shd)
+
+                    assert(zDeriv == derivDownZR1)
+                    assert(matchZipper(zR1, s) == matchZipper(derivationStepZipper(zR1, shd), stl))
+                    assert(matchZipper(zR1, s) == matchZipper(derivZR1, stl))
+
+                    assert(regexDepth(rInner) < regexDepth(r))
+                    assert(contextDepth(Context(List(rInner, Star(rInner)))) == contextDepth(Context(List(r))))
+                    assert(regexDepth(r) + 1 == regexDepth(Concat(rInner, Star(rInner))))
+                    theoremZipperRegexEquivInductZ(zR1, List(Context(List(rInner, Star(rInner)))), Concat(rInner, Star(rInner)), s)
+                    assert(matchR(Concat(rInner, Star(rInner)), s) == matchZipper(zR1, s))
+                    mainMatchTheorem(Concat(rInner, Star(rInner)), s)
+                  }
+                }
+              }
+            }
+          }
+          case Cons(hExp, tlExp) => {
+            s match {
+                case Nil() => {
+                  lemmaUnfocusPreservesNullability(r, z)
+                  assert(nullableZipper(z) == nullable(r))
+                  check(matchZipper(z, s) == matchR(r, s))
+                }
+                case Cons(shd, stl) => {
+                  val zDeriv = derivationStepZipper(z, shd)
+                  val zDerivUp = derivationStepZipperUp(Context(Cons(hExp, tlExp)), shd)
+                  val zDerivDown = derivationStepZipperDown(hExp, Context(tlExp), shd)
+                  val zDerivUpUp = derivationStepZipperUp(Context(tlExp), shd)
+                  SetUtils.lemmaFlatMapOnSingletonSet(z, hd, (c: Context[C]) => derivationStepZipperUp(c, shd))
+                  if(nullable(hExp)){
+                    assert(zDeriv == zDerivDown ++ zDerivUpUp)
+                  } else {
+                    assert(zDeriv == zDerivDown)
+                  }
+                  assert(r == generalisedConcat(hd.exprs))
+                  assert(isConcat(r))
+                  r match {
+                    case Concat(r1, r2) => {
+                      assert(matchR(r, s) == findConcatSeparation(r1, r2, Nil(), s, s).isDefined)
+                      assert(r1 == hExp)
+                      assert(r2 == generalisedConcat(tlExp))
+
+                      assert(matchZipper(z, s) == matchZipper(zDeriv, stl))
+                      if(nullable(r1)){
+                        assert(zDeriv == zDerivDown ++ zDerivUpUp)
+                        lemmaZipperConcatMatchesSameAsBothZippers(zDerivDown, zDerivUpUp, stl)
+                        assert((matchZipper(zDerivDown, stl) || matchZipper(zDerivUpUp, stl)) == matchZipper(zDeriv, stl))
+                        assert((matchZipper(zDerivDown, stl) || matchZipper(zDerivUpUp, stl)) == matchZipper(z, s))
+
+                        assert(matchZipper(zDerivDown, stl) == matchZipper(derivationStepZipperDown(r1, Context(tlExp), shd), stl))
+
+                        val zR1 = Set(Context(Cons(r1, tlExp)))
+                        val zR2 = Set(Context(tlExp))
+                        val derivZR1 = derivationStepZipper(zR1, shd)
+                        val derivZR2 = derivationStepZipper(zR2, shd)
+
+                        val derivUpZR1 = derivationStepZipperUp(Context(Cons(r1, tlExp)), shd)
+                        val derivUpZR2 = derivationStepZipperUp(Context(tlExp), shd)
+
+                        SetUtils.lemmaFlatMapOnSingletonSet(zR1, Context(Cons(r1, tlExp)), (c: Context[C]) => derivationStepZipperUp(c, shd))
+                        SetUtils.lemmaFlatMapOnSingletonSet(zR2, Context(tlExp), (c: Context[C]) => derivationStepZipperUp(c, shd))
+                        
+                        // val derivDownZR1 = derivationStepZipperDown(r1, Context(tlExp), shd)
+                        // val derivDownZR2 = derivationStepZipperDown(r2, Context(List()), shd)
+
+                        theoremZipperRegexEquivInductZ(zR1, List(Context(Cons(r1, tlExp))), r, s)
+                        theoremZipperRegexEquivInductZ(zR2, List(Context(tlExp)), r2, s)
+
+
+                      } else {
+                        assert(zDeriv == zDerivDown)
+                      }
+
+
+
+
+                      assume(matchR(r, s) == matchZipper(z, s))
+                    }
+                  }
+
+                } 
+              }
+
+            
+          }
+          case Nil() => {
+            assert(r == EmptyExpr[C]())
+            lemmaZipperOfEmptyContextMatchesEmptyString(z, s)
+          }
+        }
+      }
+      case Cons(hd, tl) => {
+         s match {
+          case Nil() => {
+            lemmaUnfocusPreservesNullability(r, z)
+            assert(nullableZipper(z) == nullable(r))
+            check(matchZipper(z, s) == matchR(r, s))
+          }
+          case Cons(shd, stl) => assume(matchR(r, s) == matchZipper(z, s))
+        }
+      }
+      case Nil() => {
+        assert(isEmptyLang(r))
+        lemmaEmptyZipperMatchesNothing(z, s)
+      }
     }
     
 
@@ -465,7 +797,7 @@ object ZipperRegex {
       }
     }
     
-  }.ensuring(_ => matchZipper(z1 ++ z2, s) == matchZipper(z1, s) || matchZipper(z2, s))
+  }.ensuring(_ => matchZipper(z1 ++ z2, s) == (matchZipper(z1, s) || matchZipper(z2, s)))
 
 
   // LEMMAS -----------------------------------------------------------------------------------------------------
@@ -475,10 +807,10 @@ object ZipperRegex {
   @inlineOnce
   def lemmaUnfocusPreservesNullability[C](r: Regex[C], z: Zipper[C]): Unit = {
     require(validRegex(r))
-    require(r == unfocusZipper(z))
+    require(r == unfocusZipper(z.toList))
     decreases(regexDepth(r))
 
-    val reg = VerifiedRegex.generalisedUnion(unfocusZipperList(z.toList))
+    val reg = generalisedUnion(unfocusZipperList(z.toList))
     assert(r == reg)
     nullableGenUnionSpec(reg, unfocusZipperList(z.toList))
     assert(nullable(reg) == unfocusZipperList(z.toList).exists(rr => nullable(rr)))
@@ -488,11 +820,11 @@ object ZipperRegex {
       assert(nullable(witnessNullableReg))
       assert(unfocusZipperList(z.toList).contains(witnessNullableReg))
       lemmaUnfocusZipperListContainsRegexFromContextThenZipperContains(z.toList, witnessNullableReg)
-      assert(z.exists(c => VerifiedRegex.generalisedConcat(c.exprs) == witnessNullableReg))
-      val witnessContext = SetUtils.getWitness(z, (c: Context[C]) => VerifiedRegex.generalisedConcat(c.exprs) == witnessNullableReg)
+      assert(z.exists(c => generalisedConcat(c.exprs) == witnessNullableReg))
+      val witnessContext = SetUtils.getWitness(z, (c: Context[C]) => generalisedConcat(c.exprs) == witnessNullableReg)
       assert(z.contains(witnessContext))
-      assert(VerifiedRegex.generalisedConcat(witnessContext.exprs) == witnessNullableReg)
-      assert(nullable(VerifiedRegex.generalisedConcat(witnessContext.exprs)))
+      assert(generalisedConcat(witnessContext.exprs) == witnessNullableReg)
+      assert(nullable(generalisedConcat(witnessContext.exprs)))
       nullableGenConcatSpec(witnessNullableReg, witnessContext.exprs)
       assert(nullableContext(witnessContext))
       SetUtils.lemmaContainsThenExists(z, witnessContext, a => nullableContext(a))
@@ -504,10 +836,10 @@ object ZipperRegex {
         assert(z.contains(witnessContext))
         assert(nullableContext(witnessContext))
         lemmaZipperContainsContextThenUnfocusZipperListContains(z.toList, witnessContext)
-        assert(unfocusZipperList(z.toList).contains(VerifiedRegex.generalisedConcat(witnessContext.exprs)))
-        nullableGenConcatSpec(VerifiedRegex.generalisedConcat(witnessContext.exprs), witnessContext.exprs)
-        assert(nullable(VerifiedRegex.generalisedConcat(witnessContext.exprs)))
-        ListUtils.lemmaContainsThenExists(unfocusZipperList(z.toList), VerifiedRegex.generalisedConcat(witnessContext.exprs), rr => nullable(rr))
+        assert(unfocusZipperList(z.toList).contains(generalisedConcat(witnessContext.exprs)))
+        nullableGenConcatSpec(generalisedConcat(witnessContext.exprs), witnessContext.exprs)
+        assert(nullable(generalisedConcat(witnessContext.exprs)))
+        ListUtils.lemmaContainsThenExists(unfocusZipperList(z.toList), generalisedConcat(witnessContext.exprs), rr => nullable(rr))
         assert(unfocusZipperList(z.toList).exists(rr => nullable(rr)))
         check(false)
       }
@@ -701,7 +1033,7 @@ object ZipperRegex {
   @opaque
   @inlineOnce
   def lemmaZipperOfEmptyExprMatchesOnlyEmptyString[C](z: Zipper[C], s: List[C]): Unit = {
-    require(unfocusZipper(z) == EmptyExpr[C]())
+    require(unfocusZipper(z.toList) == EmptyExpr[C]())
     if(z == focus(EmptyExpr[C]())){
       check(nullableContext(Context(List(EmptyExpr[C]()))))
       val c = Context(List(EmptyExpr[C]()))
