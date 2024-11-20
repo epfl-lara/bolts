@@ -531,7 +531,7 @@ object ZipperRegex {
 
   @ghost
   @opaque
-  @inlineOnce
+  @inlineOnce // type Zipper[C] = Set[Context[C]]
   def theoremZipperRegexEquivInductZ[C](z: Zipper[C], zl: List[Context[C]], r: Regex[C], s: List[C]): Unit = {
     require(validRegex(r))
     require(z.toList == zl)
@@ -993,17 +993,17 @@ object ZipperRegex {
                         case Star(rInner) => {
                           assert(zDerivDown == derivationStepZipperDown(rInner, Context(Cons(Star(rInner), tlExp)), shd))
 
-                          val zVirt = Set(Context(Cons(Star(rInner), tlExp)))
+                          val zVirt = Set(Context(Cons(Concat(rInner, Star(rInner)), tlExp)))
                           val zVirtDeriv = derivationStepZipper(zVirt, shd)
-                          val zVirtDerivUp = derivationStepZipperUp(Context(Cons(Star(rInner), tlExp)), shd)
-                          SetUtils.lemmaFlatMapOnSingletonSet(zVirt, Context(Cons(Star(rInner), tlExp)), (c: Context[C]) => derivationStepZipperUp(c, shd))
-                          assert(zVirtDeriv == derivationStepZipperDown(rInner, Context(Cons(Star(rInner), tlExp)), shd) ++ derivationStepZipperUp(Context(tlExp), shd))
+                          val zVirtDerivUp = derivationStepZipperUp(Context(Cons(Concat(rInner, Star(rInner)), tlExp)), shd)
+                          SetUtils.lemmaFlatMapOnSingletonSet(zVirt, Context(Cons(Concat(rInner, Star(rInner)), tlExp)), (c: Context[C]) => derivationStepZipperUp(c, shd))
+                          assert(zVirtDeriv == derivationStepZipperDown(rInner, Context(Cons(Concat(rInner, Star(rInner)), tlExp)), shd) ++ derivationStepZipperUp(Context(tlExp), shd))
 
                           assert(matchZipper(zVirt, s) == matchZipper(zVirtDeriv, stl))
 
 
                           //TODO measures
-                          theoremZipperRegexEquivInductZ(zVirt, List(Context(Cons(Star(rInner), tlExp))), generalisedConcat(Cons(Star(rInner), tlExp)), s)
+                          theoremZipperRegexEquivInductZ(zVirt, List(Context(Cons(Concat(rInner, Star(rInner)), tlExp))), generalisedConcat(Cons(Concat(rInner, Star(rInner)), tlExp)), s)
 
                         }
                         case _ => {

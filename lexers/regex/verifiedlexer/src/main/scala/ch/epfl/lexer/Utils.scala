@@ -12,7 +12,6 @@ import stainless.lang.StaticChecks._
 import ch.epfl.lexer.ListUtils.lemmaSubseqRefl
 
 object SetUtils {
-
   @opaque
   @ghost
   @inlineOnce
