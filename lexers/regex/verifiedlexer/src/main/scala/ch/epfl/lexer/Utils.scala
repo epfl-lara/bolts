@@ -147,6 +147,31 @@ object SetUtils {
 
   }.ensuring(_ => l2.forall(l1.contains)) 
 
+  @opaque
+  @ghost
+  @inlineOnce
+  def lemmaMapOnSingletonSet[A, B](s: Set[A], elmt: A, f: A => B): Unit = {
+    require(s == Set(elmt))
+    val smap = s.map(f)
+    smap.toList match {
+      case Cons(hd, tl) => {
+        unfold(s.mapPost2(f)(hd))
+        tl match{
+          case Cons(h, t) => {
+            unfold(s.mapPost2(f)(h))
+            check(false)
+          }
+          case Nil() => ()
+        }
+        
+      }
+      case Nil() => {
+        unfold(s.mapPost1(f)(elmt))
+        check(false)
+      }
+    }
+    // unfold(s.mapPost2(f)(f(elmt)))
+  }.ensuring(_ => s.map(f) == Set(f(elmt)))
 
   @opaque
   @ghost
