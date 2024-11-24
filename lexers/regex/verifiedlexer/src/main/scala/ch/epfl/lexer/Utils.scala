@@ -31,6 +31,113 @@ object SetUtils {
   @opaque
   @ghost
   @inlineOnce
+  def lemmaMapOnEmptySetIsEmpty[A, B](s: Set[A], f: A => B): Unit = {
+    require(s.isEmpty)
+    val smap = s.map(f)
+    if(!smap.isEmpty) {
+      val hd = smap.toList.head
+      assert(smap.contains(hd))
+      unfold(s.mapPost2(f)(hd))
+      check(false)
+    }
+  }.ensuring(_ => s.map(f).isEmpty)
+
+  @opaque
+  @ghost
+  @inlineOnce
+  def lemmaMapAssociative[A, B](s1: Set[A], s2: Set[A], f: A => B): Unit = {  
+    val l1 = (s1.map(f) ++ s2.map(f)).toList
+    val l2 = (s1++s2).map(f).toList
+
+    ListUtils.lemmaSubseqRefl(l1)
+    ListUtils.lemmaSubseqRefl(l2)
+
+    lemmaMapAssociativeToList2(s1, s2, f, l1, l2)
+    lemmaMapAssociativeToList1(s1, s2, f, l1, l2)
+    check(l1.forall(l2.contains))
+    check(l2.forall(l1.contains))
+    ListSpecs.forallContainsSubset(l1, l2)
+    ListSpecs.forallContainsSubset(l2, l1)
+
+  }.ensuring(_ => s1.map(f) ++ s2.map(f) == (s1++s2).map(f))
+
+  @opaque
+  @ghost
+  @inlineOnce
+  def lemmaMapAssociativeElem[A, B](s1: Set[A], s2: Set[A], f: A => B, b: B): Unit = {  
+    if(s1.map(f).contains(b)) {
+      val witness = s1.mapPost2(f)(b)
+      assert(s1.contains(witness))
+      // assert(witness == a)
+      assert((s1 ++ s2).contains(witness))
+      unfold((s1 ++ s2).mapPost1(f)(witness))
+      check((s1 ++ s2).map(f).contains(f(witness)))
+    } else if(s2.map(f).contains(b)) {
+      val witness = s2.mapPost2(f)(b)
+      assert(s2.contains(witness))
+      // assert(witness == a)
+      assert((s1 ++ s2).contains(witness))
+      unfold((s1 ++ s2).mapPost1(f)(witness))
+      check((s1 ++ s2).map(f).contains(f(witness)))
+    } else {
+      if((s1 ++ s2).map(f).contains(b)) {
+        val witness = (s1 ++ s2).mapPost2(f)(b)
+        assert(s1.contains(witness) || s2.contains(witness))
+        if(s1.contains(witness)) {
+          unfold(s1.mapPost1(f)(witness))
+          check(false)
+        } else {
+          unfold(s2.mapPost1(f)(witness))
+          check(false)
+        }
+        assert(f(witness) == b)
+        check(false)
+      }
+      assert(!(s1 ++ s2).map(f).contains(b))
+    }
+  }.ensuring(_ => (s1.map(f) ++ s2.map(f)).contains(b) == (s1++s2).map(f).contains(b))
+
+  @opaque
+  @ghost
+  @inlineOnce
+  def lemmaMapAssociativeToList1[A, B](s1: Set[A], s2: Set[A], f: A => B, l1: List[B], l2: List[B]): Unit = {
+    require(ListSpecs.subseq(l1, (s1.map(f) ++ s2.map(f)).toList))
+    require(l2 == (s1++s2).map(f).toList)
+    decreases(l1.size)
+    l1 match {
+      case Cons(hd, tl) => {
+        lemmaMapAssociativeElem(s1, s2, f, hd)
+        ListSpecs.subseqTail(l1, (s1.map(f) ++ s2.map(f)).toList)
+        lemmaMapAssociativeToList1(s1, s2, f, tl, l2)
+        ListSpecs.subseqContains(l1, (s1.map(f) ++ s2.map(f)).toList, hd)
+      }
+      case Nil() => ()
+    }
+
+  }.ensuring(_ => l1.forall(l2.contains)) 
+
+  @opaque
+  @ghost
+  @inlineOnce
+  def lemmaMapAssociativeToList2[A, B](s1: Set[A], s2: Set[A], f: A => B, l1: List[B], l2: List[B]): Unit = {
+    require(l1 == (s1.map(f) ++ s2.map(f)).toList)
+    require(ListSpecs.subseq(l2, (s1++s2).map(f).toList))
+    decreases(l2.size)
+    l2 match {
+      case Cons(hd, tl) => {
+        lemmaMapAssociativeElem(s1, s2, f, hd)
+        ListSpecs.subseqTail(l2, (s1++s2).map(f).toList)
+        lemmaMapAssociativeToList2(s1, s2, f, l1, tl)
+        ListSpecs.subseqContains(l2, (s1++s2).map(f).toList, hd)
+      }
+      case Nil() => ()
+    }
+
+  }.ensuring(_ => l2.forall(l1.contains)) 
+
+  @opaque
+  @ghost
+  @inlineOnce
   def lemmaFlatMapAssociativeElem[A, B](s1: Set[A], s2: Set[A], f: A => Set[B], b: B): Unit = {  
     unfold(s2.flatMapPost(f))
     if(s1.flatMap(f).contains(b)) {
