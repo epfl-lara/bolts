@@ -895,8 +895,135 @@ object ZipperRegex {
                           assert(unfocusZipper(List(Context(Cons(Star(rInner), tlExp)))) == Concat(Star(rInner), r2))
                           mainMatchTheorem(rR, s)
 
-                          
-                          check(matchR(r, s) == matchZipper(z, s))
+                          if(matchR(r, s)){ // r == Concat(Star(rInner), r2)
+                            // We have 2 cases:
+                            // - Star(rInner) matches a non-empty string
+                            // - r2 matches the entire string
+                            mainMatchTheorem(r, s)
+                            val (starMatched, r2Matched) = findConcatSeparation(Star(rInner), r2, Nil(), s, s).get
+                            assert(starMatched ++ r2Matched == s)
+                            assert(matchR(Star(rInner), starMatched))
+                            assert(matchR(r2, r2Matched))
+                            if(starMatched.isEmpty){
+                              // r2 matches the entire string
+                              // So in Zipper term, the matched part is the 2nd deriveUp (bypassing the head of the context)
+                              val zTail = Set(Context(tlExp))
+                              val zDerivTail = derivationStepZipper(zTail, shd)
+                              SetUtils.lemmaFlatMapOnSingletonSet(zTail, Context(tlExp), (c: Context[C]) => derivationStepZipperUp(c, shd))
+                              assert(zDerivUpUp == zDerivTail)
+
+                              assert(r == generalisedConcat(hd.exprs))
+                              assert(regexDepth(r) >= regexDepth(generalisedConcat(tlExp)))
+                              assert(zipperDepth(zl) >= zipperDepth(List(Context(tlExp))))
+
+                              theoremZipperRegexEquivInductZ(zTail, List(Context(tlExp)), generalisedConcat(tlExp), s)
+                              assert(matchR(generalisedConcat(tlExp), s) == matchZipper(zTail, s))
+                              check(matchR(r, s) == matchZipper(z, s))
+                            } else {
+                              // Star(rInner) matches a non-empty string
+                              // So here, we can use the rR regex to express r
+                              mainMatchTheorem(Star(rInner), starMatched)
+                              val (starS1, starS2) = findConcatSeparation(rInner, Star(rInner), Nil(), starMatched, starMatched).get
+                              assert(starMatched == starS1 ++ starS2)
+                              ListUtils.lemmaTwoListsConcatAssociativity(starS1, starS2, r2Matched)
+                              assert(starS1 ++ starS2 ++ r2Matched == s)
+                              assert(matchR(rInner, starS1))
+                              assert(matchR(Star(rInner), starS2))
+                              lemmaStarApp(rInner, starS1, starS2) 
+                              val s2 = starS2 ++ r2Matched
+                              lemmaTwoRegexMatchThenConcatMatchesConcatString(Star(rInner), r2, starS2, r2Matched)
+                              assert(matchR(Concat(Star(rInner), r2), s2))
+
+                              theoremZipperRegexEquivInductZ(subZR1, List(Context(List(rInner))), rInner, starS1)
+                              theoremZipperRegexEquivInductZ(subZR2, List(Context(Cons(Star(rInner), tlExp))), Concat(Star(rInner), r2), s2)
+                              assert(matchZipper(subZR1, starS1))
+                              assert(matchZipper(subZR2, s2))
+                              lemmaConcatenateContextMatchesConcatOfStrings(Context(List(rInner)), Context(Cons(Star(rInner), tlExp)), starS1, s2)
+
+                              assert(matchZipper(subZR1, starS1) == matchR(rInner, starS1))
+                              assert(matchZipper(subZR2, s2) == matchR(Concat(Star(rInner), r2), s2))
+                              assert(rR == Concat(rInner, Concat(Star(rInner), r2)))
+                              lemmaTwoRegexMatchThenConcatMatchesConcatString(rInner, Concat(Star(rInner), r2), starS1, s2)
+                              check(matchR(r, s) == matchR(rR, s))
+                              
+                              lemmaConcatenateContextMatchesConcatOfStrings(Context(List(rInner)), Context(Cons(Star(rInner), tlExp)), starS1, s2)
+                              assert(matchZipper(Set(Context(Cons(rInner, Cons(Star(rInner), tlExp)))), starS1 ++ s2) == matchR(rR, s))
+                              
+                              check(matchR(r, s) == matchZipper(z, s))
+                            }
+
+                            check(matchR(r, s) == matchZipper(z, s))
+                          } else {
+                            if(matchZipper(z, s)){
+                              assert(nullable(hExp))
+                              assert(matchZipper(z, s) == (matchZipper(zDerivDown, stl) || matchZipper(zDerivUpUp, stl)))
+                              if(matchZipper(zDerivDown, stl)){
+                                // Then we know that
+                                assert(matchZipper(zR1, s))
+                                assert(zR1 == Set(Context(Cons(rInner, Cons(Star(rInner), tlExp)))))
+                                assert(zR1 == Set(Context(Cons(rInner, Cons(Star(rInner), tlExp)))))
+
+                                SetUtils.lemmaMapOnSingletonSet(subZR1, Context(List(rInner)), c => c.concat(Context(Cons(Star(rInner), tlExp))))
+                                assert(appendTo(subZR1, Context(Cons(Star(rInner), tlExp))) == Set(Context(Cons(rInner, Cons(Star(rInner), tlExp)))))
+                                assert(appendTo(subZR1, Context(Cons(Star(rInner), tlExp))) == zR1)
+                                
+                                lemmaConcatZipperMatchesStringThenFindConcatDefined(subZR1, Context(Cons(Star(rInner), tlExp)), s)
+                                
+                                val (s1, s2) = findConcatSeparationZippers(subZR1, subZR2, Nil(), s, s).get
+                                assert(s == s1 ++ s2)
+                                assert(matchZipper(subZR1, s1))
+                                assert(matchZipper(subZR2, s2))
+                                lemmaConcatenateContextMatchesConcatOfStrings(Context(List(rInner)), Context(Cons(Star(rInner), tlExp)), s1, s2)
+                                
+                                theoremZipperRegexEquivInductZ(subZR1, List(Context(List(rInner))), rInner, s1)
+                                theoremZipperRegexEquivInductZ(subZR2, List(Context(Cons(Star(rInner), tlExp))), Concat(Star(rInner), r2), s2)
+                                
+                                assert(matchR(rInner, s1))
+                                assert(matchR(Concat(Star(rInner), r2), s2))
+                                lemmaTwoRegexMatchThenConcatMatchesConcatString(rInner, Concat(Star(rInner), r2), s1, s2)
+                                check(matchR(rR, s))
+                                assert(rR == Concat(rInner, Concat(Star(rInner), r2)))
+                                lemmaConcatAssociative(rInner, Star(rInner), r2, s)
+                                assert(matchR(Concat(Concat(rInner, Star(rInner)), r2), s) == matchR(Concat(rInner, Concat(Star(rInner), r2)), s))
+                                assert(matchR(Concat(Concat(rInner, Star(rInner)), r2), s))
+                                mainMatchTheorem(Concat(Concat(rInner, Star(rInner)), r2), s)
+                                val (starS, r2S) = findConcatSeparation(Concat(rInner, Star(rInner)), r2, Nil(), s, s).get
+                                assert(matchR(Concat(rInner, Star(rInner)), starS))
+                                mainMatchTheorem(Concat(rInner, Star(rInner)), starS)
+                                val (sInner, sStarInner) = findConcatSeparation(rInner, Star(rInner), Nil(), starS, starS).get
+                                ListUtils.lemmaTwoListsConcatAssociativity(sInner, sStarInner, r2S)
+                                assert(matchR(rInner, sInner))
+                                assert(matchR(Star(rInner), sStarInner))
+                                lemmaStarApp(rInner, sInner, sStarInner)
+                                assert(matchR(Star(rInner), sInner ++ sStarInner))
+                                assert(matchR(r2, r2S))
+                                lemmaTwoRegexMatchThenConcatMatchesConcatString(Star(rInner), r2, sInner ++ sStarInner, r2S)
+                                assert(s == sInner ++ sStarInner ++ r2S)
+                                assert(matchR(r, s))
+                                check(false)
+
+                              }else{
+                                assert(matchZipper(zDerivUpUp, stl))
+                                val zTail = Set(Context(tlExp))
+                                val zDerivTail = derivationStepZipper(zTail, shd)
+                                SetUtils.lemmaFlatMapOnSingletonSet(zTail, Context(tlExp), (c: Context[C]) => derivationStepZipperUp(c, shd))
+                                assert(zDerivUpUp == zDerivTail)
+
+                                assert(r == generalisedConcat(hd.exprs))
+                                assert(regexDepth(r) >= regexDepth(generalisedConcat(tlExp)))
+                                assert(zipperDepth(zl) >= zipperDepth(List(Context(tlExp))))
+
+                                theoremZipperRegexEquivInductZ(zTail, List(Context(tlExp)), generalisedConcat(tlExp), s)
+                                assert(matchR(generalisedConcat(tlExp), s) == matchZipper(zTail, s))
+                                assert(matchR(r2, s))
+                                mainMatchTheorem(Star(rInner), Nil())
+                                lemmaTwoRegexMatchThenConcatMatchesConcatString(Star(rInner), r2, Nil(), s)
+                                assert(matchR(r, s))
+                                check(false)
+                              }
+                            }
+                            check(matchR(r, s) == matchZipper(z, s))
+                          }
 
                           check(matchR(r, s) == matchZipper(z, s))
 
