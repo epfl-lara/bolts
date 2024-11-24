@@ -1197,4 +1197,14 @@ object ListUtils {
       case Nil()        => check(false)
     }
   }.ensuring (_ => (l - e).size < l.size)
+
+  @opaque
+  @inlineOnce
+  @ghost
+  def lemmaTailOfListWithoutDuplicatesContentIsContentMinusHead[B](l: List[B], s: Set[B]): Unit = {
+    require(ListOps.noDuplicate(l))
+    require(s.toList == l)
+    require(!l.isEmpty)
+   
+  }.ensuring(_ => (l.tail).content == s - l.head)
 }

@@ -4,5 +4,5 @@ stainless-dotty\
  src/main/scala/ch/epfl/lexer/Utils.scala\
  src/main/scala/ch/epfl/map/*\
  --config-file=stainless.conf\
- -D-parallel=12\
+ -D-parallel=16\
  $1
