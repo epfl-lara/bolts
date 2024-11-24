@@ -466,10 +466,13 @@ object ZipperRegex {
     }
   }.ensuring(_ => zl.exists(c => VerifiedRegex.generalisedConcat(c.exprs) == r))
 
+  /**
+   * Main theorem to prove the equivalence between a regex and its corresponding zipper
+   */
   @ghost
   @opaque
   @inlineOnce // type Zipper[C] = Set[Context[C]]
-  def theoremZipperRegexEquivInductZ[C](z: Zipper[C], zl: List[Context[C]], r: Regex[C], s: List[C]): Unit = {
+  def theoremZipperRegexEquiv[C](z: Zipper[C], zl: List[Context[C]], r: Regex[C], s: List[C]): Unit = {
     require(validRegex(r))
     require(z.toList == zl)
     require(r == unfocusZipper(zl))
@@ -528,8 +531,8 @@ object ZipperRegex {
                     assert(matchZipper(zR1, s) == matchZipper(zR1Deriv, stl))
                     assert(matchZipper(zR2, s) == matchZipper(zR2Deriv, stl))
                     assert((matchZipper(zR1, s) || matchZipper(zR2, s)) == matchZipper(z, s))
-                    theoremZipperRegexEquivInductZ(zR1, List(Context(List(r1))), r1, s)
-                    theoremZipperRegexEquivInductZ(zR2, List(Context(List(r2))), r2, s)
+                    theoremZipperRegexEquiv(zR1, List(Context(List(r1))), r1, s)
+                    theoremZipperRegexEquiv(zR2, List(Context(List(r2))), r2, s)
                   }
                 }
               }
@@ -585,8 +588,8 @@ object ZipperRegex {
                         assert(contextDepth(Context(List(r2))) < contextDepth(Context(List(r))))
                         assert(zipperDepth(List(Context(List(r2)))) < zipperDepth(List(Context(List(r)))))
                         assert(regexDepth(r) == regexDepth(Concat(r1, r2)))
-                        theoremZipperRegexEquivInductZ(zR1, List(Context(List(r1, r2))), Concat(r1, r2), s)
-                        theoremZipperRegexEquivInductZ(zR2, List(Context(List(r2))), r2, s)
+                        theoremZipperRegexEquiv(zR1, List(Context(List(r1, r2))), Concat(r1, r2), s)
+                        theoremZipperRegexEquiv(zR2, List(Context(List(r2))), r2, s)
                         
 
                       } else {
@@ -596,8 +599,8 @@ object ZipperRegex {
                         assert(hd.exprs == List(r))
                         assert(zipperDepth(List(Context(List(r1, r2)))) < zipperDepth(List(Context(List(r))))) // Measure
                         assert(zipperDepth(List(Context(List(r1, r2)))) < zipperDepth(List(Context(List(r))))) // Measure
-                        theoremZipperRegexEquivInductZ(zR1, List(Context(List(r1, r2))), Concat(r1, r2), s)
-                        theoremZipperRegexEquivInductZ(zR2, List(Context(List(r2))), r2, s)
+                        theoremZipperRegexEquiv(zR1, List(Context(List(r1, r2))), Concat(r1, r2), s)
+                        theoremZipperRegexEquiv(zR2, List(Context(List(r2))), r2, s)
                       }
                     } else {
                       // Here, we are in the case where the Concat is the result of generalisedConcat
@@ -625,7 +628,7 @@ object ZipperRegex {
                         case ElementMatch(c) if c == shd => {
                           assert(zDerivDown == Set(Context(tlExp)))
                           val zVirt = Set(Context(tlExp))
-                          theoremZipperRegexEquivInductZ(zVirt, List(Context(tlExp)), generalisedConcat(tlExp), stl)
+                          theoremZipperRegexEquiv(zVirt, List(Context(tlExp)), generalisedConcat(tlExp), stl)
                           assert(matchR(r, s) == matchZipper(z, s))
                         }
                         case Union(rOne, rTwo) => {
@@ -682,8 +685,8 @@ object ZipperRegex {
 
                           assert(zipperDepthTotal(List(Context(Cons(rOne, tlExp)))) < zipperDepthTotal(zl)) // Measure decreases
                           assert(zipperDepthTotal(List(Context(Cons(rTwo, tlExp)))) < zipperDepthTotal(zl)) // Measure decreases
-                          theoremZipperRegexEquivInductZ(zVirt1, List(Context(Cons(rOne, tlExp))), generalisedConcat(Cons(rOne, tlExp)), s)
-                          theoremZipperRegexEquivInductZ(zVirt2, List(Context(Cons(rTwo, tlExp))), generalisedConcat(Cons(rTwo, tlExp)), s)
+                          theoremZipperRegexEquiv(zVirt1, List(Context(Cons(rOne, tlExp))), generalisedConcat(Cons(rOne, tlExp)), s)
+                          theoremZipperRegexEquiv(zVirt2, List(Context(Cons(rTwo, tlExp))), generalisedConcat(Cons(rTwo, tlExp)), s)
                           mainMatchTheorem(generalisedConcat(Cons(rOne, tlExp)), s)
                           mainMatchTheorem(generalisedConcat(Cons(rTwo, tlExp)), s)
 
@@ -733,8 +736,8 @@ object ZipperRegex {
                           assert(contextDepthTotal(Context(Cons(rOne, Cons(rTwo, tlExp)))) < contextDepthTotal(Context(hd.exprs)))
                           assert(zipperDepthTotal(List(Context(Cons(rOne, Cons(rTwo, tlExp))))) < zipperDepthTotal(zl)) // Measure decreases
                           assert(zipperDepth(List(Context(Cons(rOne, Cons(rTwo, tlExp))))) <= zipperDepth(zl)) // Measure decreases
-                          theoremZipperRegexEquivInductZ(zVirt1, List(Context(Cons(rOne, Cons(rTwo, tlExp)))), generalisedConcat(Cons(rOne, Cons(rTwo, tlExp))), s)
-                          theoremZipperRegexEquivInductZ(zVirt2, List(Context(Cons(rTwo, tlExp))), generalisedConcat(Cons(rTwo, tlExp)), s)
+                          theoremZipperRegexEquiv(zVirt1, List(Context(Cons(rOne, Cons(rTwo, tlExp)))), generalisedConcat(Cons(rOne, Cons(rTwo, tlExp))), s)
+                          theoremZipperRegexEquiv(zVirt2, List(Context(Cons(rTwo, tlExp))), generalisedConcat(Cons(rTwo, tlExp)), s)
 
                           mainMatchTheorem(generalisedConcat(Cons(rOne, Cons(rTwo, tlExp))), s)
                           mainMatchTheorem(generalisedConcat(Cons(rTwo, tlExp)), s)
@@ -768,7 +771,7 @@ object ZipperRegex {
                           assert(contextDepthTotal(Context(Cons(rOne, Cons(rTwo, tlExp)))) < contextDepthTotal(Context(hd.exprs)))
                           assert(zipperDepthTotal(List(Context(Cons(rOne, Cons(rTwo, tlExp))))) < zipperDepthTotal(zl)) // Measure decreases
                           assert(zipperDepth(List(Context(Cons(rOne, Cons(rTwo, tlExp))))) <= zipperDepth(zl)) // Measure decreases
-                          theoremZipperRegexEquivInductZ(zVirt1, List(Context(Cons(rOne, Cons(rTwo, tlExp)))), generalisedConcat(Cons(rOne, Cons(rTwo, tlExp))), s)
+                          theoremZipperRegexEquiv(zVirt1, List(Context(Cons(rOne, Cons(rTwo, tlExp)))), generalisedConcat(Cons(rOne, Cons(rTwo, tlExp))), s)
 
                           mainMatchTheorem(generalisedConcat(Cons(rOne, Cons(rTwo, tlExp))), s)
                           mainMatchTheorem(generalisedConcat(Cons(rTwo, tlExp)), s)
@@ -844,7 +847,7 @@ object ZipperRegex {
                               assert(regexDepth(r) >= regexDepth(generalisedConcat(tlExp)))
                               assert(zipperDepth(zl) >= zipperDepth(List(Context(tlExp))))
 
-                              theoremZipperRegexEquivInductZ(zTail, List(Context(tlExp)), generalisedConcat(tlExp), s)
+                              theoremZipperRegexEquiv(zTail, List(Context(tlExp)), generalisedConcat(tlExp), s)
                               assert(matchR(generalisedConcat(tlExp), s) == matchZipper(zTail, s))
                               check(matchR(r, s) == matchZipper(z, s))
                             } else {
@@ -862,8 +865,8 @@ object ZipperRegex {
                               lemmaTwoRegexMatchThenConcatMatchesConcatString(Star(rInner), r2, starS2, r2Matched)
                               assert(matchR(Concat(Star(rInner), r2), s2))
 
-                              theoremZipperRegexEquivInductZ(subZR1, List(Context(List(rInner))), rInner, starS1)
-                              theoremZipperRegexEquivInductZ(subZR2, List(Context(Cons(Star(rInner), tlExp))), Concat(Star(rInner), r2), s2)
+                              theoremZipperRegexEquiv(subZR1, List(Context(List(rInner))), rInner, starS1)
+                              theoremZipperRegexEquiv(subZR2, List(Context(Cons(Star(rInner), tlExp))), Concat(Star(rInner), r2), s2)
                               assert(matchZipper(subZR1, starS1))
                               assert(matchZipper(subZR2, s2))
                               lemmaConcatenateContextMatchesConcatOfStrings(Context(List(rInner)), Context(Cons(Star(rInner), tlExp)), starS1, s2)
@@ -903,8 +906,8 @@ object ZipperRegex {
                                 assert(matchZipper(subZR2, s2))
                                 lemmaConcatenateContextMatchesConcatOfStrings(Context(List(rInner)), Context(Cons(Star(rInner), tlExp)), s1, s2)
                                 
-                                theoremZipperRegexEquivInductZ(subZR1, List(Context(List(rInner))), rInner, s1)
-                                theoremZipperRegexEquivInductZ(subZR2, List(Context(Cons(Star(rInner), tlExp))), Concat(Star(rInner), r2), s2)
+                                theoremZipperRegexEquiv(subZR1, List(Context(List(rInner))), rInner, s1)
+                                theoremZipperRegexEquiv(subZR2, List(Context(Cons(Star(rInner), tlExp))), Concat(Star(rInner), r2), s2)
                                 
                                 assert(matchR(rInner, s1))
                                 assert(matchR(Concat(Star(rInner), r2), s2))
@@ -941,7 +944,7 @@ object ZipperRegex {
                                 assert(regexDepth(r) >= regexDepth(generalisedConcat(tlExp)))
                                 assert(zipperDepth(zl) >= zipperDepth(List(Context(tlExp))))
 
-                                theoremZipperRegexEquivInductZ(zTail, List(Context(tlExp)), generalisedConcat(tlExp), s)
+                                theoremZipperRegexEquiv(zTail, List(Context(tlExp)), generalisedConcat(tlExp), s)
                                 assert(matchR(generalisedConcat(tlExp), s) == matchZipper(zTail, s))
                                 assert(matchR(r2, s))
                                 mainMatchTheorem(Star(rInner), Nil())
@@ -973,7 +976,7 @@ object ZipperRegex {
                           assert(zDeriv == zDerivDown ++ zDerivUpUp)
                           lemmaZipperConcatMatchesSameAsBothZippers(zDerivDown, zDerivUpUp, stl)
                           assert(matchZipper(z, s) == matchZipper(zDerivUpUp, stl))
-                          theoremZipperRegexEquivInductZ(zTail, List(Context(tlExp)), generalisedConcat(tlExp), s)
+                          theoremZipperRegexEquiv(zTail, List(Context(tlExp)), generalisedConcat(tlExp), s)
                           assert(matchR(generalisedConcat(tlExp), s) == matchZipper(zTail, s))
                           assert(r2 == generalisedConcat(tlExp))
 
@@ -1000,7 +1003,7 @@ object ZipperRegex {
                       assert(regexDepth(r) >= regexDepth(generalisedConcat(tlExp)))
                       assert(zipperDepth(zl) >= zipperDepth(List(Context(tlExp))))
 
-                      theoremZipperRegexEquivInductZ(zTail, List(Context(tlExp)), generalisedConcat(tlExp), s)
+                      theoremZipperRegexEquiv(zTail, List(Context(tlExp)), generalisedConcat(tlExp), s)
                       assert(matchR(generalisedConcat(tlExp), s) == matchZipper(zTail, s))
 
 
@@ -1068,8 +1071,8 @@ object ZipperRegex {
                       assert(matchR(rInner, s1))
                       assert(matchR(Star(rInner), s2))
 
-                      theoremZipperRegexEquivInductZ(subZR1, List(Context(List(rInner))), rInner, s1)
-                      theoremZipperRegexEquivInductZ(subZR2, List(Context(List(Star(rInner)))), Star(rInner), s2)
+                      theoremZipperRegexEquiv(subZR1, List(Context(List(rInner))), rInner, s1)
+                      theoremZipperRegexEquiv(subZR2, List(Context(List(Star(rInner)))), Star(rInner), s2)
                       assert(matchZipper(subZR1, s1))
                       assert(matchZipper(subZR2, s2))
                       lemmaConcatenateContextMatchesConcatOfStrings(Context(List(rInner)), Context(List(Star(rInner))), s1, s2)
@@ -1085,8 +1088,8 @@ object ZipperRegex {
                         assert(matchZipper(subZR1, s1))
                         assert(matchZipper(subZR2, s2))
                         lemmaConcatenateContextMatchesConcatOfStrings(Context(List(rInner)), Context(List(Star(rInner))), s1, s2)
-                        theoremZipperRegexEquivInductZ(subZR1, List(Context(List(rInner))), rInner, s1)
-                        theoremZipperRegexEquivInductZ(subZR2, List(Context(List(Star(rInner)))), Star(rInner), s2)
+                        theoremZipperRegexEquiv(subZR1, List(Context(List(rInner))), rInner, s1)
+                        theoremZipperRegexEquiv(subZR2, List(Context(List(Star(rInner)))), Star(rInner), s2)
                         assert(matchR(rInner, s1))
                         assert(matchR(Star(rInner), s2))
                         lemmaTwoRegexMatchThenConcatMatchesConcatString(rInner, Star(rInner), s1, s2)
@@ -1128,7 +1131,7 @@ object ZipperRegex {
               val witnessC = ListUtils.getWitness(zl, (cc: Context[C]) => generalisedConcat(cc.exprs) == witnessR)
               lemmaTotalDepthZipperLargerThanOfAnyContextMoreThanOne(zl, witnessC)
               assert(zipperDepthTotal(zl) > zipperDepthTotal(List(witnessC)))
-              theoremZipperRegexEquivInductZ(Set(witnessC), List(witnessC), witnessR, s)
+              theoremZipperRegexEquiv(Set(witnessC), List(witnessC), witnessR, s)
               assert(matchZipper(Set(witnessC), s))
               SetUtils.lemmaContainsThenExists(z, witnessC, (c: Context[C]) => matchZipper(Set(c), s))
               lemmaExistsMatchingContextThenMatchingString(zl, s)
@@ -1143,7 +1146,7 @@ object ZipperRegex {
                 assert(witnessC.exprs.forall(validRegex))
                 lemmaTotalDepthZipperLargerThanOfAnyContextMoreThanOne(zl, witnessC)
                 assert(zipperDepthTotal(zl) > zipperDepthTotal(List(witnessC)))
-                theoremZipperRegexEquivInductZ(Set(witnessC), List(witnessC), generalisedConcat(witnessC.exprs), s)
+                theoremZipperRegexEquiv(Set(witnessC), List(witnessC), generalisedConcat(witnessC.exprs), s)
                 lemmaZipperContainsContextUnfocusListContainsConcat(zl, witnessC)
                 assert(unfocusZipperList(zl).contains(generalisedConcat(witnessC.exprs)))
                 ListUtils.lemmaContainsThenExists(unfocusZipperList(zl), generalisedConcat(witnessC.exprs), (rr: Regex[C]) => validRegex(rr) && matchR(rr, s))
@@ -2377,6 +2380,13 @@ object VerifiedRegexMatcher {
     require(cache.valid)
     decreases(input.size)
     if (input.isEmpty) nullable(r) else matchRMem(derivativeStepMem(r, input.head)(cache: Cache[C]), input.tail)
+  }.ensuring (res => res == matchR(r, input))
+
+  def matchZipper[C](r: Regex[C], input: List[C]): Boolean = {
+    require(validRegex(r))
+    decreases(input.size)
+    ghostExpr(ZipperRegex.theoremZipperRegexEquiv(ZipperRegex.focus(r), ZipperRegex.focus(r).toList, r, input))
+    ZipperRegex.matchZipper(ZipperRegex.focus(r), input)
   }.ensuring (res => res == matchR(r, input))
 
   // COMMENTED OUT BECAUSE NOT VERIFIED THROUGHOUT YET
