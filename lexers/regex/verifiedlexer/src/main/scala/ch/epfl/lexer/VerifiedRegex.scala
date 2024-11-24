@@ -466,78 +466,6 @@ object ZipperRegex {
     }
   }.ensuring(_ => zl.exists(c => VerifiedRegex.generalisedConcat(c.exprs) == r))
 
-
-  // @ghost
-  // @opaque
-  // @inlineOnce
-  // def theoremZipperRegexEquiv[C](z: Zipper[C], zl: List[Context[C]], r: Regex[C], s: List[C]): Unit = {
-  //   require(validRegex(r))
-  //   require(z.toList == zl)
-  //   require(r == unfocusZipper(zl))
-  //   decreases(regexDepth(r))
-  //   mainMatchTheorem(r, s)
-  //   r match {
-  //     case EmptyExpr()     => lemmaZipperOfEmptyExprMatchesOnlyEmptyString(z, s)
-  //     case EmptyLang()     => 
-  //       if(z.isEmpty){
-  //         lemmaEmptyZipperMatchesNothing(z, s)
-  //       } else {
-  //         lemmaZipperStartingWithEmptyLangMatchesNothing(z, Context(List(r)), s)
-  //       }
-  //     case ElementMatch(a) => lemmaElementMatchZipperAcceptsOnlyThisChar(z, Context(List(ElementMatch(a))), a, s)
-  //     case Union(r1, r2) => 
-  //     {
-  //       mainMatchTheorem(r1, s)
-  //       mainMatchTheorem(r2, s)
-  //       assert(matchR(r, s) == (matchR(r1, s) || matchR(r2, s)))
-  //       s match {
-  //         case Nil() => {
-  //           lemmaUnfocusPreservesNullability(r, z)
-  //           assert(nullableZipper(z) == nullable(r))
-  //           check(matchZipper(z, s) == matchR(r, s))
-  //         }
-  //         case Cons(shd, stl) => {
-  //           assert(!z.toList.isEmpty)
-  //           val zHd: Context[C] = z.toList.head
-  //           val zTl: List[Context[C]] = z.toList.tail
-
-  //           assert(matchZipper(z, s) == matchZipper(derivationStepZipper(z, shd), stl))
-  //           assert(r == generalisedUnion(unfocusZipperList(z.toList)))
-  //           matchRGenUnionSpec(r, unfocusZipperList(z.toList), s)
-  //           assert(matchR(r, s) == unfocusZipperList(z.toList).exists(rr => validRegex(rr) && matchR(rr, s)))
-
-  //           if(zTl.isEmpty) {
-  //             assert(r == generalisedConcat(zHd.exprs))
-  //             assert(zHd.exprs == List(r))
-  //             // Now let's dive in the derivative computation
-  //             val deriv = derivationStepZipper(z, shd)
-  //             val derivUp = derivationStepZipperUp(Context(List(r)), shd)
-  //             zHd.exprs match {
-  //                 case Cons(right, parent) if nullable(right) => assert(derivationStepZipperDown(right, Context(parent), shd) ++ derivationStepZipperUp(Context(parent),shd) == derivationStepZipperUp(Context(List(r)), shd))
-  //                 case Cons(right, parent) => assert(derivationStepZipperDown(right, Context(parent), shd) == derivationStepZipperUp(Context(List(r)), shd))
-  //                 case Nil() => assert(Set[Context[C]]() == derivationStepZipperUp(Context(List(r)), shd))
-  //             }
-
-  //           } else {
-  //             unfold(generalisedUnion(unfocusZipperList(z.toList)))
-  //             assert(r2 == unfocusZipper(zTl))
-  //           }
-
-
-
-            
-
-            
-  //         }
-  //       }
-  //     }
-  //     case Star(rInner) => assume(matchR(r, s) == matchZipper(z, s))
-  //     case Concat(r1, r2) => assume(matchR(r, s) == matchZipper(z, s))
-  //   }
-    
-
-  // }.ensuring(_ => matchR(r, s) == matchZipper(z, s))
-
   @ghost
   @opaque
   @inlineOnce // type Zipper[C] = Set[Context[C]]
@@ -1224,19 +1152,6 @@ object ZipperRegex {
               check(!matchZipper(z, s))
               check(matchR(r, s) == matchZipper(z, s))
             }
-            // lemmaZipperConcatMatchesSameAsBothZippers(Set(hd), tl.content, s)
-            // theoremZipperRegexEquivInductZ(Set(hd), List(hd), generalisedConcat(hd.exprs), s)
-            // theoremZipperRegexEquivInductZ(tl.content, tl.content.toList, unfocusZipper(tl.content.toList), s)
-
-            // assert(matchZipper(z, s) == matchR(generalisedConcat(hd.exprs), s) || matchR(unfocusZipper(tl), s))
-            // r match {
-            //   case Union(r1, r2) => {
-            //     assert(r1 == generalisedConcat(hd.exprs))
-            //     assert(r2 == unfocusZipper(tl))
-            //   } 
-            //   case _ => check(false)
-            // }
-            // check(matchR(r, s) == matchZipper(z, s))
           }
         }
       }
