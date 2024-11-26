@@ -21,7 +21,7 @@ import stainless.lang.StaticChecks._
 import stainless.annotation.isabelle.lemma
 // import ch.epfl.map.OptimisedChecks.*
 
-object Memoisation {
+object MemoisationRegex {
   import VerifiedRegex._
   import VerifiedRegexMatcher._
 
@@ -34,6 +34,8 @@ object Memoisation {
       }
     )
   }
+
+  def empty[C](hashF: Hashable[(Regex[C], C)]): Cache[C] = Cache(MutableHashMap.getEmptyHashMap[(Regex[C], C), Regex[C]](k => EmptyLang[C](), hashF))
 
   @mutable
   final case class Cache[C](private val cache: HashMap[(Regex[C], C), Regex[C]]) {
@@ -94,6 +96,145 @@ object Memoisation {
 
     }.ensuring (_ => validCacheMap(this.cache))
 
+  }
+}
+
+object MemoisationZipper {
+  import ZipperRegex._
+  import VerifiedRegex.Regex
+
+  @ghost def validCacheMapUp[C](m: HashMap[(Context[C], C), Zipper[C]]): Boolean = {
+    m.valid && 
+    TupleListOpsGenK.invariantList(m.map.toList) && // Why is this needed? Without it does not verify in update...
+    m.map.forall(_ match {
+        case ((ctx, a), res) =>
+        res == derivationStepZipperUp(ctx, a)
+      }
+    )
+  }
+
+  @ghost def validCacheMapDown[C](m: HashMap[(Regex[C], Context[C], C), Zipper[C]]): Boolean = {
+    m.valid && 
+    TupleListOpsGenK.invariantList(m.map.toList) && // Why is this needed? Without it does not verify in update...
+    m.map.forall(_ match {
+        case ((r, ctx, a), res) =>
+        res == derivationStepZipperDown(r, ctx, a)
+      }
+    )
+  }
+
+  @mutable
+  final case class CacheUp[C](private val cache: HashMap[(Context[C], C), Zipper[C]]) {
+    require(validCacheMapUp(cache))
+
+    @ghost def valid: Boolean = validCacheMapUp(cache)
+
+    @ghost
+    def lemmaIfInCacheThenValid(ctx: Context[C], a: C): Unit = {
+      require(validCacheMapUp(cache))
+      if (cache.contains((ctx, a))) {
+        ghostExpr({
+          MutableHashMap.lemmaForallPairsThenForLookup(
+            cache, 
+            (ctx, a), {
+                _ match {
+                  case ((ctxx, aa), res) =>
+                  res == derivationStepZipperUp(ctxx, aa)
+                }
+              }
+              )
+          })
+      }
+    }.ensuring (_ => cache.contains((ctx, a)) ==> (derivationStepZipperUp(ctx, a) == cache((ctx, a))))
+
+    def contains(ctx: Context[C], a: C): Boolean = {
+      require(validCacheMapUp(cache))
+      cache.contains((ctx, a))
+    }
+
+    def get(ctx: Context[C], a: C): Option[Zipper[C]] = {
+      require(validCacheMapUp(cache))
+
+      if (cache.contains((ctx, a))) {
+        ghostExpr(lemmaIfInCacheThenValid(ctx, a))
+        Some(cache((ctx, a)))
+      } else {
+        None()
+      }
+    }.ensuring (res => res.isEmpty || res.get == derivationStepZipperUp(ctx, a))
+
+    def update(ctx: Context[C], a: C, res: Zipper[C]): Unit = {
+      require(validCacheMapUp(cache))
+      require(res == derivationStepZipperUp(ctx, a))
+
+      ghostExpr(MutableHashMap.lemmaUpdatePreservesForallPairs(cache, (ctx, a), res, {
+        _ match {
+           case ((ctxx, aa), res) =>
+            res == derivationStepZipperUp(ctxx, aa)
+        }
+      }))
+
+      val _ = cache.update((ctx, a), res)
+      ()
+
+    }.ensuring (_ => validCacheMapUp(this.cache))
+  }
+
+  @mutable
+  final case class CacheDown[C](private val cache: HashMap[(Regex[C], Context[C], C), Zipper[C]]) {
+    require(validCacheMapDown(cache))
+
+    @ghost def valid: Boolean = validCacheMapDown(cache)
+
+    @ghost
+    def lemmaIfInCacheThenValid(r: Regex[C], ctx: Context[C], a: C): Unit = {
+      require(validCacheMapDown(cache))
+      if (cache.contains((r, ctx, a))) {
+        ghostExpr({
+          MutableHashMap.lemmaForallPairsThenForLookup(
+            cache, 
+            (r, ctx, a), {
+                _ match {
+                  case ((rr, ctxx, aa), res) =>
+                    res == derivationStepZipperDown(rr, ctxx, aa)
+                }
+              }
+              )
+          })
+      }
+    }.ensuring (_ => cache.contains((r, ctx, a)) ==> (derivationStepZipperDown(r, ctx, a) == cache((r, ctx, a))))
+
+    def contains(r: Regex[C], ctx: Context[C], a: C): Boolean = {
+      require(validCacheMapDown(cache))
+      cache.contains((r, ctx, a))
+    }
+
+    def get(r: Regex[C], ctx: Context[C], a: C): Option[Zipper[C]] = {
+      require(validCacheMapDown(cache))
+
+      if (cache.contains((r, ctx, a))) {
+        ghostExpr(lemmaIfInCacheThenValid(r, ctx, a))
+        Some(cache((r, ctx, a)))
+      } else {
+        None()
+      }
+    }.ensuring (res => res.isEmpty || res.get == derivationStepZipperDown(r, ctx, a))
+
+    def update(r: Regex[C], ctx: Context[C], a: C, res: Zipper[C]): Unit = {
+      require(validCacheMapDown(cache))
+      require(res == derivationStepZipperDown(r, ctx, a))
+
+      ghostExpr(MutableHashMap.lemmaUpdatePreservesForallPairs(cache, (r, ctx, a), res, {
+        _ match {
+           case ((rr, ctxx, aa), res) =>
+            res == derivationStepZipperDown(rr, ctxx, aa)
+        }
+      }))
+
+      val _ = cache.update((r, ctx, a), res)
+      ()
+
+    }.ensuring (_ => validCacheMapDown(this.cache))
   }
 }
 
@@ -269,6 +410,7 @@ object ZipperRegex {
   import VerifiedRegex.*
   import VerifiedRegexMatcher.*
   import stainless.lang.Set
+  import MemoisationZipper.*
   
   /**
     * Context[C] represent sequences of expressions
@@ -426,15 +568,54 @@ object ZipperRegex {
     z.map(cz => cz.concat(c))
   }
 
+  // MEMOISED -----------------------------------------------------------------------------------------------------
+  def derivationStepZipperUpMem[C](context: Context[C], a: C)(implicit cacheUp: CacheUp[C], cacheDown: CacheDown[C]): Zipper[C] = {
+    decreases(context.exprs.size)
+    cacheUp.get(context, a) match {
+      case Some(res) => res
+      case None() => {
+        val res: Zipper[C] = context.exprs match {
+          case Cons(right, parent) if nullable(right) => derivationStepZipperDownMem(right, Context(parent), a) ++ derivationStepZipperUpMem(Context(parent), a)
+          case Cons(right, parent) => derivationStepZipperDownMem(right, Context(parent), a)
+          case Nil() => Set()
+        }
+        cacheUp.update(context, a, res)
+        res
+      }
+    }
+  }.ensuring(res => res == derivationStepZipperUp(context, a))
 
-  // PROOFS -----------------------------------------------------------------------------------------------------
+  def derivationStepZipperDownMem[C](expr: Regex[C], context: Context[C], a: C)(implicit cacheDown: CacheDown[C]): Zipper[C] = {
+    require(validRegex(expr))
+    decreases(regexDepth(expr))
+    cacheDown.get(expr, context, a) match {
+      case Some(res) => res
+      case None() => {
+        val res: Zipper[C] = expr match {
+          case ElementMatch(c) if c == a => Set(context)
+          case Union(rOne, rTwo) => derivationStepZipperDownMem(rOne, context, a) ++ derivationStepZipperDownMem(rTwo, context, a)
+          case Concat(rOne, rTwo) if nullable(rOne) => derivationStepZipperDownMem(rOne, context.prepend(rTwo), a) ++ derivationStepZipperDownMem(rTwo, context, a)
+          case Concat(rOne, rTwo) => derivationStepZipperDownMem(rOne, context.prepend(rTwo), a)
+          case Star(rInner) => derivationStepZipperDownMem(rInner, context.prepend(Star(rInner)), a)
+          case _ => Set()
+        }
+        cacheDown.update(expr, context, a, res)
+        res
+      }
+    }
+  }.ensuring(res => res == derivationStepZipperDown(expr, context, a))
 
   @extern
-  @ghost
-  @opaque
-  def assume(c: Boolean): Unit = {
-    ()
-  }.ensuring(_ => c)
+  def derivationStepZipperMem[C](z: Zipper[C], a: C)(implicit cacheUp: CacheUp[C], cacheDown: CacheDown[C]): Zipper[C] = {
+    ghostExpr(SetUtils.lemmaFlatMapWithExtEqualFunctionsOnSetThenSame(z, (c: Context[C]) => derivationStepZipperUpMem(c, a)(snapshot(cacheUp), snapshot(cacheDown)), (c: Context[C]) => derivationStepZipperUp(c, a)))
+    
+    def derivUpMem(c: Context[C]): Zipper[C] = derivationStepZipperUpMem(c, a)
+    
+    z.flatMap(derivUpMem) // rejected by stainless because of effects in the lambda's body
+  }.ensuring(res => res == derivationStepZipper(z, a))
+
+
+  // PROOFS -----------------------------------------------------------------------------------------------------
 
   @ghost
   @opaque
@@ -2269,7 +2450,7 @@ object ZipperRegex {
 object VerifiedRegexMatcher {
   import VerifiedRegex._
   import ListUtils._
-  import Memoisation._
+  import MemoisationRegex._
 
   def derivativeStep[C](r: Regex[C], a: C): Regex[C] = {
     require(validRegex(r))

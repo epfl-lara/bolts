@@ -3,7 +3,7 @@ package ch.epfl.lexer
 import ch.epfl.map.MutableHashMap
 import ch.epfl.lexer.VerifiedRegex._
 import ch.epfl.lexer.VerifiedRegexMatcher._
-import ch.epfl.lexer.Memoisation._
+import ch.epfl.lexer.MemoisationRegex._
 import ch.epfl.lexer.ZipperRegex._
 import ch.epfl.benchmark.RegexUtils._
 import stainless.annotation._
@@ -74,7 +74,7 @@ def testZipperMatch(): Unit = {
   val s1 = "abababababababababbbababbababbbabab"
   println(s"Matching against '$s1'")
   val matchResR1 = matchR(r1, s1.toStainless)
-  val matchResZ1 = matchZipper(z1, s1.toStainless)
+  val matchResZ1 = ZipperRegex.matchZipper(z1, s1.toStainless)
   println(s"matchResR1 = $matchResR1")
   println(s"matchResZ1 = $matchResZ1")
   assert(matchResR1 == matchResZ1)
@@ -87,7 +87,7 @@ def testZipperMatch(): Unit = {
   val s2 = "samuel.chassot@epfl.ch"
   println(s"Matching against '$s2'")
   val matchResR2 = matchR(r2, s2.toStainless)
-  val matchResZ2 = matchZipper(z2, s2.toStainless)
+  val matchResZ2 = ZipperRegex.matchZipper(z2, s2.toStainless)
   println(s"matchResR2 = $matchResR2")
   println(s"matchResZ2 = $matchResZ2")
   assert(matchResR2 == matchResZ2)
@@ -96,7 +96,7 @@ def testZipperMatch(): Unit = {
   val s22 = "samuel.chassot@epfl"
   println(s"Matching against '$s22'")
   val matchResR22 = matchR(r2, s22.toStainless)
-  val matchResZ22 = matchZipper(z2, s22.toStainless)
+  val matchResZ22 = ZipperRegex.matchZipper(z2, s22.toStainless)
   println(s"matchResR22 = $matchResR22")
   println(s"matchResZ22 = $matchResZ22")
   assert(matchResR22 == matchResZ22)

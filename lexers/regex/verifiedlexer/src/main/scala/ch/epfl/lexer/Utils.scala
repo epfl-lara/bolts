@@ -342,6 +342,41 @@ object SetUtils {
     }
   }.ensuring(_ => lRes.forall(s.flatMap(f).toList.contains))
 
+  @opaque
+  @ghost
+  @inlineOnce
+  def lemmaFlatMapWithExtEqualFunctionsOnSetThenSame[A, B](s: Set[A], f: A => Set[B], g: A => Set[B]): Unit = {
+    require(s.forall(a => f(a) == g(a)))
+    decreases(s.toList.size)
+    s.toList match {
+      case Cons(h, t) => {
+        assert(s == Set(h) ++ t.content)
+        lemmaFlatMapAssociative(Set(h), t.content, f)
+        lemmaFlatMapAssociative(Set(h), t.content, g)
+        assert(t.forall(a => f(a) == g(a)))
+        ListUtils.lemmaForallThenOnContent(t, a => f(a) == g(a))
+        assert(f(h) == g(h))
+
+        assert(t.content.forall(a => f(a) == g(a)))
+        ListSpecs.forallContained(s.toList, a => f(a) == g(a), h)
+
+        lemmaToListSizeBiggerThanTailContentSize(s)
+        assert(t.content.toList.size < s.toList.size)
+        lemmaFlatMapWithExtEqualFunctionsOnSetThenSame(t.content, f, g)
+        assert(t.content.flatMap(f) == t.content.flatMap(g))
+        lemmaFlatMapOnSingletonSet(Set(h), h, f)
+        lemmaFlatMapOnSingletonSet(Set(h), h, g)
+        assert(Set(h).flatMap(f) == Set(h).flatMap(g))
+      }
+      case Nil() => {
+        lemmaFlatMapOnEmptySetIsEmpty(s, f)
+        lemmaFlatMapOnEmptySetIsEmpty(s, g)
+        assert(s.flatMap(f).isEmpty)
+        assert(s.flatMap(g).isEmpty)
+        assert(s.flatMap(f) == s.flatMap(g))
+      }
+    }
+  }.ensuring(_ => s.flatMap(f) == s.flatMap(g))
 
   @ghost
   def getWitness[A](s: Set[A], p: A => Boolean): A = {
@@ -438,6 +473,31 @@ object SetUtils {
     lemmaFlatMapForallToList(s, f, p, s.flatMap(f).toList)
 
   }.ensuring (_ => s.flatMap(f).forall(p))
+
+  @inlineOnce
+  @opaque
+  @ghost
+  def lemmaToListSizeBiggerThanTailContentSize[B](s: Set[B]): Unit = {
+    require(!s.isEmpty)
+    s.toList match {
+      case Cons(hd, tl) if tl.isEmpty  => ()
+      case Cons(hd, tl)                => {
+        val l = s.toList
+        ListUtils.lemmaNoDuplicateMinusHeadSameAsTail(l, hd)
+        assert(l == Cons(hd, tl))
+        assert(l - hd == tl)
+        assert(tl == s.toList - hd)
+        ListUtils.lemmaRemoveElmtContainedSizeSmaller(s.toList, hd)
+      }
+      case Nil()                       => check(false)
+    }
+
+  }.ensuring(_ => s.toList.size > s.toList.tail.size)
+
+  // @inlineOnce
+  // @opaque
+  // @ghost
+  // def lemmaSubsetContent
 
 }
 
@@ -712,6 +772,43 @@ object ListUtils {
     }
 
   }.ensuring (_ => (l1 ++ l2) ++ l3 == l1 ++ (l2 ++ l3))
+
+  @inlineOnce
+  @opaque
+  @ghost
+  def lemmaNoDuplicateMinusHeadSameAsTail[B](l: List[B], e: B): Unit = {
+    require(ListSpecs.noDuplicate(l))
+    require(l.contains(e))
+    require(l.head == e)
+    l match {
+      case Cons(h, t) => {
+        assert(h == e)
+        assert(!t.contains(e))
+        lemmaNotContainedThenRemoveSameList(t, e)
+        assert(t - e == t)
+
+      }
+      case Nil() => check(false)
+    }
+    
+  }.ensuring(_ => l - e == l.tail)
+
+  @inlineOnce
+  @opaque
+  @ghost
+  def lemmaNotContainedThenRemoveSameList[B](l: List[B], e: B): Unit = {
+    require(ListSpecs.noDuplicate(l))
+    require(!l.contains(e))
+    decreases(l)
+    l match {
+      case Cons(h, t) => {
+        lemmaNotContainedThenRemoveSameList(t, e)
+        assert(!t.contains(e))
+        assert(t - e == t)
+      }
+      case Nil() => ()
+    }
+  }.ensuring(_ => l == l - e)
 
   @inlineOnce
   @opaque
@@ -1179,6 +1276,11 @@ object ListUtils {
       case Nil() => ()
     }
   }.ensuring (_ => lIn.size <= l.size)
+
+  // @inlineOnce
+  // @opaque
+  // @ghost
+  // def lemmaSameContentNoDuplicateThenSameSize
 
   @inlineOnce
   @opaque
