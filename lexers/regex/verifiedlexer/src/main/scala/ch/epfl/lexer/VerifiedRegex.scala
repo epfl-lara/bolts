@@ -123,6 +123,10 @@ object MemoisationZipper {
     )
   }
 
+  def emptyUp[C](hashF: Hashable[(Context[C], C)]): CacheUp[C] = CacheUp(MutableHashMap.getEmptyHashMap[(Context[C], C), Zipper[C]](k => Set[Context[C]](), hashF))
+  def emptyDown[C](hashF: Hashable[(Regex[C], Context[C], C)]): CacheDown[C] = CacheDown(MutableHashMap.getEmptyHashMap[(Regex[C], Context[C], C), Zipper[C]](k => Set[Context[C]](), hashF))
+
+
   @mutable
   final case class CacheUp[C](private val cache: HashMap[(Context[C], C), Zipper[C]]) {
     require(validCacheMapUp(cache))
@@ -2575,7 +2579,7 @@ object VerifiedRegexMatcher {
     ZipperRegex.matchZipper(ZipperRegex.focus(r), input)
   }.ensuring (res => res == matchR(r, input))
 
-  def matchZippeMem[C](r: Regex[C], input: List[C])(implicit cacheUp: MemoisationZipper.CacheUp[C], cacheDown: MemoisationZipper.CacheDown[C]): Boolean = {
+  def matchZipperMem[C](r: Regex[C], input: List[C])(implicit cacheUp: MemoisationZipper.CacheUp[C], cacheDown: MemoisationZipper.CacheDown[C]): Boolean = {
     require(validRegex(r))
     decreases(input.size)
     ghostExpr(ZipperRegex.theoremZipperRegexEquiv(ZipperRegex.focus(r), ZipperRegex.focus(r).toList, r, input))
