@@ -30,9 +30,9 @@ function run_tests {
     cat "./verify.sh"
     echo ""
     if [ "$ADMIT_VCS" = true ]; then
-      bash "./verify.sh" "--compact" "--admit-vcs=true" "--debug=stack"
+      bash "./verify.sh" "--compact" "--admit-vcs=true"
     else
-      bash "./verify.sh" "--compact" "--debug=stack"
+      bash "./verify.sh" "--compact"
     fi
     status=$?
     cd -
@@ -49,6 +49,7 @@ function run_tests {
 
   if [ $ADMIT_VCS = true ]; then
     if [ $status -eq 0 ] || [ $status -eq 1 ]; then
+      cat $project/stainless-stack-trace.txt
       echo "Stainless accepted project: $project."
       exit 0
     else
