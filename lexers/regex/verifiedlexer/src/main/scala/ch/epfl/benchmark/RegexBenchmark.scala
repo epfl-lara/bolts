@@ -49,7 +49,8 @@ class RegexBenchmark {
   def abStar_accepting_regex(): Unit = {
     val r = RegexBenchmarkUtil.abStar
     val s = RegexBenchmarkUtil.abStar_Accepting_strings(size.toInt)
-    matchR(r, s)
+    val res = matchR(r, s)
+    assert(res)
   }
 
   @Benchmark
@@ -58,7 +59,18 @@ class RegexBenchmark {
   def abStar_accepting_zipper(): Unit = {
     val r = RegexBenchmarkUtil.abStar
     val s = RegexBenchmarkUtil.abStar_Accepting_strings(size.toInt)
-    matchZipper(r, s)
+    val res = matchZipper(r, s)
+    assert(res)
+  }
+
+  @Benchmark
+  @BenchmarkMode(Array(Mode.AverageTime))
+  @OutputTimeUnit(TimeUnit.MICROSECONDS)
+  def abStar_accepting_zipper_mem(): Unit = {
+    val r = RegexBenchmarkUtil.abStar
+    val s = RegexBenchmarkUtil.abStar_Accepting_strings(size.toInt)
+    val res = matchZipper(r, s)
+    assert(res)
   }
 
   @Benchmark
@@ -67,7 +79,8 @@ class RegexBenchmark {
   def abStar_accepting_regex_mem(): Unit = {
     val r = RegexBenchmarkUtil.abStar
     val s = RegexBenchmarkUtil.abStar_Accepting_strings(size.toInt)
-    matchRMem(r, s)(RegexBenchmarkUtil.regexCache)
+    val res = matchRMem(r, s)(RegexBenchmarkUtil.regexCache)
+    assert(res)
   }
 
   // @Benchmark
@@ -96,8 +109,23 @@ object RegexBenchmarkUtil {
 
   val regexCache: MemoisationRegex.Cache[Char] = MemoisationRegex.empty(RegexCharHashable)
 
+  val possibleEmailChars = "abcdedfghijklmnopqrstuvwxyz."
+  val emailRegex = possibleEmailChars.anyOf.+ ~ "@".r ~ possibleEmailChars.anyOf.+ ~ ".".r ~ possibleEmailChars.anyOf.+
 
+  val email_Accepting_strings: Map[Int, StainlessList[Char]] = string_sizes.map(n => (n, random_email_strings(n))).toMap
   def random_a_or_b(): String = {
     if (r.nextBoolean()) "a" else "b"
+  }
+
+  def random_email_char(): String = {
+    val index = r.nextInt(possibleEmailChars.length)
+    possibleEmailChars(index).toString
+  }
+
+  def random_email_strings(n: Int): String = {
+    val firstPartSize: Int = r.nextInt(n - 2)
+    val secondPartSize: Int = n - firstPartSize - 2
+    val res: String = (1.to(firstPartSize)).map(_ => random_email_char()).mkString + "@" + (1.to(secondPartSize)).map(_ => random_email_char()).mkString + "." + (1 to 3).map(_ => random_email_char()).mkString
+    assert(res.size == n)
   }
 }

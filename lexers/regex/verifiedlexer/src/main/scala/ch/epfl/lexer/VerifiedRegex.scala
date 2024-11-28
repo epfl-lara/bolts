@@ -614,6 +614,11 @@ object ZipperRegex {
     z.flatMap(derivUpMem) // rejected by stainless because of effects in the lambda's body
   }.ensuring(res => res == derivationStepZipper(z, a))
 
+  def matchZipperMem[C](z: Zipper[C], input: List[C])(implicit cacheUp: CacheUp[C], cacheDown: CacheDown[C]): Boolean = {
+    decreases(input.size)
+    if (input.isEmpty) nullableZipper(z) else matchZipperMem(derivationStepZipperMem(z, input.head), input.tail)
+  }.ensuring(res => res == matchZipper(z, input))
+
 
   // PROOFS -----------------------------------------------------------------------------------------------------
 
@@ -2568,6 +2573,13 @@ object VerifiedRegexMatcher {
     decreases(input.size)
     ghostExpr(ZipperRegex.theoremZipperRegexEquiv(ZipperRegex.focus(r), ZipperRegex.focus(r).toList, r, input))
     ZipperRegex.matchZipper(ZipperRegex.focus(r), input)
+  }.ensuring (res => res == matchR(r, input))
+
+  def matchZippeMem[C](r: Regex[C], input: List[C])(implicit cacheUp: MemoisationZipper.CacheUp[C], cacheDown: MemoisationZipper.CacheDown[C]): Boolean = {
+    require(validRegex(r))
+    decreases(input.size)
+    ghostExpr(ZipperRegex.theoremZipperRegexEquiv(ZipperRegex.focus(r), ZipperRegex.focus(r).toList, r, input))
+    ZipperRegex.matchZipperMem(ZipperRegex.focus(r), input)
   }.ensuring (res => res == matchR(r, input))
 
   // COMMENTED OUT BECAUSE NOT VERIFIED THROUGHOUT YET
