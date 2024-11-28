@@ -30,9 +30,9 @@ function run_tests {
     cat "./verify.sh"
     echo ""
     if [ "$ADMIT_VCS" = true ]; then
-      bash "./verify.sh" "--compact" "--admit-vcs=true"
+      bash "./verify.sh" "--compact" "--admit-vcs=true" "--debug=stack"
     else
-      bash "./verify.sh" "--compact"
+      bash "./verify.sh" "--compact" "--debug=stack"
     fi
     status=$?
     cd -
