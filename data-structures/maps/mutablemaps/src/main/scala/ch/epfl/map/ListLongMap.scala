@@ -9,7 +9,6 @@ import stainless.equations._
 import stainless.lang._
 import stainless.proof.check
 import scala.annotation.tailrec
-import scala.collection.immutable
 
 // Uncomment the following import to run benchmarks
 // import OptimisedChecks.*

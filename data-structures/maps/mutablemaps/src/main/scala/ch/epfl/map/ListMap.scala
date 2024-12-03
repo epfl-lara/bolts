@@ -9,9 +9,7 @@ import stainless.equations._
 import stainless.lang._
 import stainless.proof.check
 import scala.annotation.tailrec
-import scala.collection.immutable
 import stainless.collection.ListOps.noDuplicate
-import scala.collection.mutable
 
 // Uncomment the following import to run benchmarks
 // import OptimisedChecks.*
@@ -406,7 +404,7 @@ object TupleListOpsGenK {
       case Nil() => ()
     }
   }.ensuring(_ => getKeysList(l).content - key == getKeysList(removePresrvNoDuplicatedKeys(l, key)).content)
-  
+
   @opaque 
   @inlineOnce
   def lemmaEqMapSameKeysSet[K, B](lm1: ListMap[K, B], lm2: ListMap[K, B]): Unit = {
@@ -458,28 +456,6 @@ object TupleListOpsGenK {
         case _ => ()
       }
     }.ensuring(_ => l.map(_._1).contains(p._1))
-
-  @opaque
-  @inlineOnce
-  def lemmainsertNoDuplicatedKeysPreservesForall[K, B](
-      l: List[(K, B)],
-      key: K,
-      value: B,
-      p: ((K, B)) => Boolean
-  ): Unit = {
-    require(invariantList(l))
-    require(l.forall(p))
-    require(p((key, value)))
-    decreases(l)
-
-    l match {
-      case Cons(head, tl) if (head._1 != key) =>
-        lemmainsertNoDuplicatedKeysPreservesForall(tl, key, value, p)
-      case _ => ()
-    }
-
-  }.ensuring(_ => insertNoDuplicatedKeys(l, key, value).forall(p))
-  
 
   @opaque 
   @inlineOnce
