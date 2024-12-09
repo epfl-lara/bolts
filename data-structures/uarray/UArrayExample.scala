@@ -88,15 +88,19 @@ object UArrayExample:
   end UArray
 
   object UArray:
-    @extern
-    def ofSize[T: ClassTag](size: Int): UArray[T] = {
-      require(0 <= size)
+    @extern @ignore // used because `new Array[T]` leaks out of @extern due to some compiler magic
+    def _ofSize[T: ClassTag](size: Int): UArray[T] = {
       @ghost val definedNot = Array.fill(size)(false)
       given ct: realClassTag[T] = summon[ClassTag[T]].real
       val content = new Array[T](size)
       UArray[T](content, size, definedNot)
-    }.ensuring(res => res.size == size)
+    }
 
+    @extern
+    def ofSize[T: ClassTag](size: Int): UArray[T] = {
+      require(0 <= size)
+      _ofSize[T](size)
+    }.ensuring(res => res.size == size)
 
   end UArray
 
