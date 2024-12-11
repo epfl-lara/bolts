@@ -23,8 +23,8 @@ function run_tests {
   # Check if there is a verify.sh file in the project folder
   # If yes, then echo a message saying we run it and its content, then run it, other run the command X
   status=-1
-  find .
-  find /tmp/
+  # find .
+  # find /tmp/
   if [ -f "$project/verify.sh" ]; then
     echo "Running verify.sh script in bolts project: $project..."
     cd "$project"
