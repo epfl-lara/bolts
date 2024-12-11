@@ -24,6 +24,7 @@ function run_tests {
   # If yes, then echo a message saying we run it and its content, then run it, other run the command X
   status=-1
   find .
+  find /tmp/
   if [ -f "$project/verify.sh" ]; then
     echo "Running verify.sh script in bolts project: $project..."
     cd "$project"
