@@ -9,9 +9,11 @@ jobs:
     if: github.event.pull_request.draft == false
     runs-on: [self-hosted, linux]
     env:
+      JAVA_OPTS_TMP_DIR: ./tmp_java
       # define Java options for both official sbt and sbt-extras
-      JAVA_OPTS: -Dsbt.io.implicit.relative.glob.conversion=allow -Xss512M -Xms1024M -Xmx12G -XX:MaxMetaspaceSize=2G -XX:+UseCodeCacheFlushing -XX:ReservedCodeCacheSize=768M
-      JVM_OPTS:  -Dsbt.io.implicit.relative.glob.conversion=allow -Xss512M -Xms1024M -Xmx12G -XX:MaxMetaspaceSize=2G -XX:+UseCodeCacheFlushing -XX:ReservedCodeCacheSize=768M
+      JAVA_OPTS: -Dsbt.io.implicit.relative.glob.conversion=allow -Xss512M -Xms1024M -Xmx12G -XX:MaxMetaspaceSize=2G -XX:+UseCodeCacheFlushing -XX:ReservedCodeCacheSize=768M -Djava.io.tmpdir=./tmp_java
+      JVM_OPTS:  -Dsbt.io.implicit.relative.glob.conversion=allow -Xss512M -Xms1024M -Xmx12G -XX:MaxMetaspaceSize=2G -XX:+UseCodeCacheFlushing -XX:ReservedCodeCacheSize=768M -Djava.io.tmpdir=./tmp_java
+      SBT_OPTS: -Djava.io.tmpdir=./temp_java --sbt-dir ./temp_java/
     steps:
     - name: Checkout
       uses: actions/checkout@v4
@@ -23,9 +25,9 @@ jobs:
         distribution: temurin
         java-version: 17
     - name: Install stainless and solvers
-      run: ./install_stainless_and_solvers.sh $GITHUB_WORKSPACE/.local/bin $GITHUB_WORKSPACE/.local
+      run: ./install_stainless_and_solvers.sh $GITHUB_WORKSPACE/.local/bin $GITHUB_WORKSPACE/.local && echo "PATH=$GITHUB_WORKSPACE/.local/bin:$PATH" >> "$GITHUB_ENV"
     - name: Add stainless to PATH
-      run: echo "$GITHUB_WORKSPACE/.local/stainless/frontends/dotty/target/universal/stage/bin" >> $GITHUB_PATH
+      run: echo "$GITHUB_WORKSPACE/.local/stainless/frontends/dotty/target/universal/stage/bin" >> $GITHUB_PATH && echo "PATH=$GITHUB_WORKSPACE/.local/stainless/frontends/dotty/target/universal/stage/bin:$PATH" >> "$GITHUB_ENV"
     - name: Test stainless availability
       run: stainless-dotty --version
     - name: Add solvers to PATH
