@@ -23,6 +23,8 @@ function run_tests {
   # Check if there is a verify.sh file in the project folder
   # If yes, then echo a message saying we run it and its content, then run it, other run the command X
   status=-1
+  # find .
+  # find /tmp/
   if [ -f "$project/verify.sh" ]; then
     echo "Running verify.sh script in bolts project: $project..."
     cd "$project"
@@ -30,9 +32,9 @@ function run_tests {
     cat "./verify.sh"
     echo ""
     if [ "$ADMIT_VCS" = true ]; then
-      bash "./verify.sh" "--compact" "--admit-vcs=true"
+      bash "./verify.sh" "--compact" "--admit-vcs=true" "--debug=stack"
     else
-      bash "./verify.sh" "--compact"
+      bash "./verify.sh" "--compact" "--debug=stack"
     fi
     status=$?
     cd -
@@ -40,9 +42,9 @@ function run_tests {
     echo "Running '$STAINLESS --config-file=$conf $@' on bolts project: $project..."
     echo "$ find $project -name '*.scala' -exec $STAINLESS --config-file=$conf $@ {} +"
     if [ "$ADMIT_VCS" = true ]; then
-      find "$project" -name '*.scala' -exec $STAINLESS "--config-file=$conf" "--compact" "--admit-vcs=true" "$@" {} +
+      find "$project" -name '*.scala' -exec $STAINLESS "--config-file=$conf" "--compact" "--admit-vcs=true" "--debug=stack" "$@" {} +
     else
-      find "$project" -name '*.scala' -exec $STAINLESS "--config-file=$conf" "$@" {} +
+      find "$project" -name '*.scala' -exec $STAINLESS "--config-file=$conf" "--debug=stack" "$@" {} +
     fi
     status=$?
   fi
