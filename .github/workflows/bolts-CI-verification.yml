@@ -1,0 +1,14 @@
+name: Bolts CI Verification
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+jobs:
+  setup:
+    uses: ./.github/workflows/setup.yml
+  tests:
+    runs-on: [self-hosted, linux]
+    steps:
+    - name: Bolts Tests
+      run: ./run-tests.sh
