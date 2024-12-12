@@ -232,6 +232,11 @@ object MutableHashMap {
 
     }.ensuring (res => valid && (if (res) map.eq(old(this).map - key) else map.eq(old(this).map)))
 
+    def repack(): Boolean = {
+      require(valid)
+      this.underlying.v.repack()
+    }.ensuring (res => res == false || map == old(this).map)
+
     @ghost
     override  def valid: Boolean = underlying.v.valid &&
       underlying.v.map.toList.forall((k, v) => noDuplicateKeys(v)) &&
