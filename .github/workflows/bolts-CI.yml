@@ -42,6 +42,8 @@ jobs:
       run: cvc5 --version && z3 --version && cvc4 --version
     - name: Bolts Tests
       run: ./run-tests.sh --admit-vcs
+    - name: Clean up
+      run: rm -rf $JAVA_OPTS_TMP_DIR
   fail_if_pull_request_is_draft:
     if: github.event.pull_request.draft == true
     runs-on: [self-hosted, linux]
