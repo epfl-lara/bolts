@@ -9,7 +9,6 @@ jobs:
     if: github.event.pull_request.draft == false
     runs-on: [self-hosted, linux]
     env:
-      JAVA_OPTS_TMP_DIR: ./tmp_java
       # define Java options for both official sbt and sbt-extras
       JAVA_OPTS: -Dsbt.io.implicit.relative.glob.conversion=allow -Xss512M -Xms1024M -Xmx12G -XX:MaxMetaspaceSize=2G -XX:+UseCodeCacheFlushing -XX:ReservedCodeCacheSize=768M 
       JVM_OPTS:  -Dsbt.io.implicit.relative.glob.conversion=allow -Xss512M -Xms1024M -Xmx12G -XX:MaxMetaspaceSize=2G -XX:+UseCodeCacheFlushing -XX:ReservedCodeCacheSize=768M 
