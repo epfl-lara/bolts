@@ -470,7 +470,7 @@ object TypingProperties {
 
         termAndEnvNegativeShiftValidityImplyTypeNegativeShiftValidity(btd, s, c)
         assert(btd.t.isInstanceOf[UniversalType])
-        val UniversalType(bodyTyp) = btd.t
+        val UniversalType(bodyTyp) = btd.t: @unchecked
 
         TypeTrProp.boundRangeShift(typArg, 1, 0, c, -s)
         assert(!TypeTr.shift(typArg, 1, 0).hasFreeVariablesIn(c + 1, -s))
@@ -553,7 +553,7 @@ object TypingProperties {
         val btdp = shiftAllTypes(btd, s, c)
 
         assert(btd.t.isInstanceOf[UniversalType])
-        val UniversalType(bodyTyp) = btd.t
+        val UniversalType(bodyTyp) = btd.t: @unchecked
 
         universalSubstitutionShiftCommutativity(bodyTyp, typeArg, s, c)
 
@@ -771,7 +771,7 @@ object TypingProperties {
         val btdp = preservationUnderTypeSubst(btd, j, styp)
         val argTypep = TypeTr.substitute(argType, j, styp)
         assert(btdp.t.isInstanceOf[UniversalType])
-        val UniversalType(bodyType) = btd.t
+        val UniversalType(bodyType) = btd.t: @unchecked
         universalSubstitutionSubstitutionCommutativity(bodyType, argType, j, styp)
         TAppDerivation(newEnv, newTyp, TApp(btdp.term, argTypep), btdp)
       }
@@ -790,7 +790,7 @@ object TypingProperties {
     require(absTd.ter.argType == argTd.t)
     require(absTd.t == ArrowType(argTd.t, typ))
 
-    val Abs(argType, _) = absTd.term
+    val Abs(argType, _) = absTd.term: @unchecked
 
     val sd0 = argTd
     val sd1 = insertTypeInEnv(Nil(), argType, sd0.env, sd0)
@@ -849,7 +849,7 @@ object TypingProperties {
     require(reducesTo(td.term, reduced).isDefined)
     decreases(td)
 
-    val Some(rule) = reducesTo(td.term, reduced)
+    val Some(rule) = reducesTo(td.term, reduced): @unchecked
 
     td match {
       case AbsDerivation(env, typ, t@Abs(argType, body), btd) => {
@@ -864,7 +864,7 @@ object TypingProperties {
         assert(btd.env == argType :: td.env)
         assert(btdp.env == btd.env)
         assert(typ.isInstanceOf[ArrowType])
-        val ArrowType(t1, t2) = typ
+        val ArrowType(t1, t2) = typ: @unchecked
         assert(t1 == argType)
         assert(t2 == btdp.t)
         assert(tp == Abs(argType, btdp.term))

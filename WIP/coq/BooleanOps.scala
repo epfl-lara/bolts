@@ -13,10 +13,10 @@ object BooleanOps {
     assert(x == 2) // always
 
     r
-  } ensuring { res =>
+  }.ensuring( res =>
     (res == (b && d)) &&
     (res == toBool(toInt(b) & toInt(d)))
-  }
+  )
 
   def foo2(b: Boolean, d: Boolean): Boolean = {
     var x = 0
@@ -24,10 +24,10 @@ object BooleanOps {
     assert(x == 2) // always
 
     r
-  } ensuring { res =>
+  }.ensuring( res =>
     (res == (b || d)) &&
     (res == toBool(toInt(b) | toInt(d)))
-  }
+  )
 
   def foo3(b: Boolean, d: Boolean): Boolean = {
     var x = 0
@@ -35,10 +35,10 @@ object BooleanOps {
     assert(x == 2) // always
 
     r
-  } ensuring { res =>
+  }.ensuring( res =>
     (res == (b != d)) &&
     (res == toBool(toInt(b) ^ toInt(d)))
-  }
+  )
 
   private def toInt(b: Boolean): Int = if (b) 1 else 0
   private def toBool(x: Int): Boolean = {

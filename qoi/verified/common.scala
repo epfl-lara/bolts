@@ -75,13 +75,13 @@ object common {
     require(data.length >= 2 && i >= 0 && i < data.length - 1)
     data(i) = ((0xff00 & value) >>> 8).toByte
     data(i + 1) = (0xff & value).toByte
-  } ensuring(_ => read16(data, i) == value && old(data).length == data.length)
+  }.ensuring(_ => read16(data, i) == value && old(data).length == data.length)
 
   def write32(data: Array[Byte], i: Int, value: Int): Unit = {
     require(data.length >= 4 && i >= 0 && i < data.length - 3)
     write16(data, i, (value >>> 16).toShort)
     write16(data, i + 2, value.toShort)
-  } ensuring(_ => read32(data, i) == value && old(data).length == data.length)
+  }.ensuring(_ => read32(data, i) == value && old(data).length == data.length)
 
   def read16(data: Array[Byte], i: Int): Short = {
     require(data.length >= 2 && i >= 0 && i < data.length - 1)

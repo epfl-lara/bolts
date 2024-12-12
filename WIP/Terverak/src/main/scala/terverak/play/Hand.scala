@@ -31,7 +31,7 @@ final case class Hand(cards: List[IdObject.HandCard], baseCardId: BigInt) {
     require(cards.length + 1 < Hand.MaxHandSize)
     
     copy(cards = IdObject.HandCard(card, nextId()) :: cards)
-  } ensuring(_.cards.length == cards.length + 1)
+  }.ensuring(_.cards.length == cards.length + 1)
 
   /**
     * Removes a specific card from the hand.
@@ -46,7 +46,7 @@ final case class Hand(cards: List[IdObject.HandCard], baseCardId: BigInt) {
     filterMapSorted(cards, -_.id, _.id != card.id)
 
     copy(cards = cards.filter(_.id != card.id))
-  } ensuring(res => res.cards.length <= cards.length)
+  }.ensuring(res => res.cards.length <= cards.length)
 
   /**
    * Compute the next id for a card in the hand. 

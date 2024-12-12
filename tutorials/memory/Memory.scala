@@ -79,7 +79,7 @@ object Memory {
     MemoryF(ml.read(_))
 
   def simRead(ml: MemoryL, a: Address): Unit = {
-  } ensuring(res => abst(ml.step(Read(a))) === abst(ml).step(Read(a)))
+  }.ensuring(res => abst(ml.step(Read(a))) === abst(ml).step(Read(a)))
 
   def simWrite(ml: MemoryL, a: Address, v: Value): Unit = {
     ml.state match {
@@ -89,13 +89,13 @@ object Memory {
         else if (a < a1) ()
         else simWrite(MemoryL(rest), a, v)
     }
-  } ensuring(res => abst(ml.step(Write(a,v))) === abst(ml).step(Write(a,v)))
+  }.ensuring(res => abst(ml.step(Write(a,v))) === abst(ml).step(Write(a,v)))
 
   def sim(ml: MemoryL, act: Action): Unit = {
     act match {
       case Read(a) => simRead(ml, a)
       case Write(a,v) => simWrite(ml, a, v)
     }
-  } ensuring(res => abst(ml.step(act)) === abst(ml).step(act))
+  }.ensuring(res => abst(ml.step(act)) === abst(ml).step(act))
 
 }

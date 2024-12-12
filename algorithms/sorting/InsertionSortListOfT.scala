@@ -25,7 +25,7 @@ object Sorted:
   def lemmaTest[T](x: T, y: T)(implicit ord: Ordering[T]): Unit = {
     require(ord.compare(x, y) > 0)
     assert(ord.inverse(x, y)) // If removed, a counter example is found
-  } ensuring (_ => ord.compare(y, x) < 0)
+  }.ensuring(_ => ord.compare(y, x) < 0)
 
   def isSorted[T](l: List[T])(implicit ord: Ordering[T]): Boolean = {
     decreases(l)
@@ -43,12 +43,12 @@ object Sorted:
         assert(ord.inverse(x, y))
         Cons(y, insert(ys, x))
       case Nil() => Cons(x, Nil())
-  } ensuring (res => isSorted(res) && res.size == l.size + 1)
+  }.ensuring(res => isSorted(res) && res.size == l.size + 1)
 
   def sort[T](l: List[T])(implicit ord: Ordering[T]): List[T] = {
     decreases(l)
     l match
       case Cons(x, xs) => insert(sort(xs), x)
       case Nil()       => Nil()
-  } ensuring (res => isSorted(res) && res.size == l.size)
+  }.ensuring(res => isSorted(res) && res.size == l.size)
 end Sorted

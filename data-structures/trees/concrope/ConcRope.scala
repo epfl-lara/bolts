@@ -24,7 +24,7 @@ object ConcRopeSeq {
         case CC(left, right) => flatten(left) ++ flatten(right)
         case Append(left, right) => flatten(left) ++ flatten(right)
       }
-    } ensuring (res => res.valid && res.isNormalized)
+    }.ensuring(res => res.valid && res.isNormalized)
 
     def empty[T]: Conc[T] = Empty[T]()
 
@@ -34,12 +34,12 @@ object ConcRopeSeq {
         case Nil() => Empty[T]()
         case y :: ys => y :: fromList(ys)
       }
-    } ensuring { res => res.toList == xs &&
+    }.ensuring({ res => res.toList == xs &&
       res.size == xs.size &&
       res.content == xs.content &&
       res.valid &&
       res.isNormalized
-    }
+    })
 
     def fromListReversed[T](xs: List[T]): Conc[T] = {
       decreases(xs)
@@ -58,7 +58,7 @@ object ConcRopeSeq {
           check(res.toList == xs.reverse)
           res
       }
-    } ensuring (res => res.valid &&
+    }.ensuring(res => res.valid &&
       res.content == xs.content &&
       res.size == xs.size &&
       (res.toList == xs.reverse))
@@ -147,7 +147,7 @@ object ConcRopeSeq {
         case Append(l, r) =>
           1 + max(l.level, r.level)
       }): BigInt
-    } ensuring (_ >= 0)
+    }.ensuring(_ >= 0)
 
     lazy val size: BigInt = {
       decreases(this)
@@ -159,7 +159,7 @@ object ConcRopeSeq {
         case Append(l, r) =>
           l.size + r.size
       }): BigInt
-    } ensuring (_ >= 0)
+    }.ensuring(_ >= 0)
 
     def toList: List[T] = {
       decreases(this)
@@ -171,7 +171,7 @@ object ConcRopeSeq {
         case Append(l, r) =>
           l.toList ++ r.toList
       }
-    } ensuring (res => res.size == this.size && res.content == content)
+    }.ensuring(res => res.size == this.size && res.content == content)
 
     def toSet: Set[T] = content
 
@@ -188,13 +188,13 @@ object ConcRopeSeq {
     def apply(i: BigInt): T = {
       require(this.valid && !this.isEmpty && i >= 0 && i < this.size)
       lookup(this, i)
-    } ensuring (res =>  instAppendIndexAxiom(this, i) &&  // an auxiliary axiom instantiation that required for the proof
+    }.ensuring(res =>  instAppendIndexAxiom(this, i) &&  // an auxiliary axiom instantiation that required for the proof
       res == this.toList(i))
 
     def :+(x: T) = {
       require(valid)
       append(this, x)
-    } ensuring (res => res.valid && //conctree invariants
+    }.ensuring(res => res.valid && //conctree invariants
       res.toList == this.toList ++ Cons(x, Nil[T]()) && //correctness
       res.level <= this.level + 1
     )
@@ -202,7 +202,7 @@ object ConcRopeSeq {
     def ::(x: T) = {
       require(valid && isNormalized)
       insert(this, 0, x)
-    } ensuring (res => insertAppendAxiomInst(this, 0, x) && // instantiation of an axiom
+    }.ensuring(res => insertAppendAxiomInst(this, 0, x) && // instantiation of an axiom
       res.valid && res.isNormalized && // tree invariants
       res.level - this.level <= 1 && res.level >= this.level && // height of the output tree is at most 1 greater than that of the input tree
       res.toList == x :: this.toList // correctness
@@ -211,7 +211,7 @@ object ConcRopeSeq {
     def head: T = {
       require(this.valid && !this.isEmpty && this.size > 0)
       this(0)
-    } ensuring ( res => res == this(0) &&
+    }.ensuring( res => res == this(0) &&
       res == this.toList(0))
 
     def headOption: Option[T] = {
@@ -220,7 +220,7 @@ object ConcRopeSeq {
         None[T]()
       else
         Some(this(0))
-    } ensuring ( res => if(this.size == 0)
+    }.ensuring( res => if(this.size == 0)
                           res == None[T]()
                         else
                           res == Some[T](this(0)) && res == Some[T](this.toList(0)))
@@ -228,7 +228,7 @@ object ConcRopeSeq {
     def ++(that: Conc[T]): Conc[T] = {
       require(this.valid && that.valid)
       concat(this, that)
-    } ensuring (res => res.valid && // tree invariants
+    }.ensuring(res => res.valid && // tree invariants
       res.level <= max(normalize(this).level, normalize(that).level) + 1 && // height invariants
       res.level >= max(normalize(this).level, normalize(that).level) &&
       (res.toList == this.toList ++ that.toList) && // correctness
@@ -243,7 +243,7 @@ object ConcRopeSeq {
         case CC(left, right) => CC(left.map(f), right.map(f))
         case Append(left, right) => Append(left.map(f), right.map(f))
       }
-    } ensuring { _.size == this.size }
+    }.ensuring({ _.size == this.size })
 
     def foldLeft[R](z: R)(f: (R, T) => R): R = {
       decreases(this)
@@ -290,7 +290,7 @@ object ConcRopeSeq {
         case CC(left, right) => left.flatMap(f) ++ right.flatMap(f)
         case Append(left, right) => left.flatMap(f) ++ right.flatMap(f)
       }
-    } ensuring (res => res.valid && res.isNormalized)
+    }.ensuring(res => res.valid && res.isNormalized)
 
     def forall(p: T => Boolean): Boolean = {
       decreases(this)
@@ -312,7 +312,7 @@ object ConcRopeSeq {
         case CC(left, right) => left.contains(v) || right.contains(v)
         case Append(left, right) => left.contains(v) || right.contains(v)
       }
-    } ensuring { res => res == (content contains v) && res == (toList contains v) }
+    }.ensuring({ res => res == (content.contains(v)) && res == (toList.contains(v)) })
 
     def find(p: T => Boolean): Option[T] = {
       decreases(this)
@@ -335,10 +335,10 @@ object ConcRopeSeq {
             l
         }
       }
-    } ensuring { res => res match {
-      case Some(t) => (content contains t) && p(t)
+    }.ensuring({ res => res match {
+      case Some(t) => (content.contains(t)) && p(t)
       case None() => true
-    }}
+    }})
   }
 
 
@@ -366,7 +366,7 @@ object ConcRopeSeq {
         else lookup(r, i - l.size)
       case _ => error[T]("Impossible case because of requirements")
     }
-  } ensuring (res =>  instAppendIndexAxiom(xs, i) &&  // an auxiliary axiom instantiation that required for the proof
+  }.ensuring(res =>  instAppendIndexAxiom(xs, i) &&  // an auxiliary axiom instantiation that required for the proof
     res == xs.toList(i)) // correctness
 
 
@@ -396,7 +396,7 @@ object ConcRopeSeq {
           Append(l, update(r, i - l.size, y))
       case _ => error[Conc[T]]("Impossible case because of requirements")
     }
-  } ensuring (res => instAppendUpdateAxiom(xs, i, y) && // an auxiliary axiom instantiation
+  }.ensuring(res => instAppendUpdateAxiom(xs, i, y) && // an auxiliary axiom instantiation
     res.level == xs.level && // heights of the input and output trees are equal
     res.valid && // tree invariants are preserved
     res.toList == xs.toList.updated(i, y) && // correctness
@@ -434,7 +434,7 @@ object ConcRopeSeq {
       case _ =>
         concatNonEmpty(xs, ys)
     }
-  } ensuring (res => res.valid && // tree invariants
+  }.ensuring(res => res.valid && // tree invariants
     res.level <= max(xs.level, ys.level) + 1 && // height invariants
     res.level >= max(xs.level, ys.level) &&
     (res.toList == xs.toList ++ ys.toList) && // correctness
@@ -490,7 +490,7 @@ object ConcRopeSeq {
         case _ => error[Conc[T]]("Impossible case")
       }
     }
-  } ensuring (res =>
+  }.ensuring(res =>
     appendAssocInst(xs, ys) && // instantiation of an axiom
     res.level <= max(xs.level, ys.level) + 1 && // height invariants
     res.level >= max(xs.level, ys.level) &&
@@ -543,7 +543,7 @@ object ConcRopeSeq {
       case CC(l, r) =>
        concatNonEmpty(l, insert(r, i - l.size, y))
     }
-  } ensuring (res => insertAppendAxiomInst(xs, i, y) && // instantiation of an axiom
+  }.ensuring(res => insertAppendAxiomInst(xs, i, y) && // instantiation of an axiom
     res.valid && res.isNormalized && // tree invariants
     res.level - xs.level <= 1 && res.level >= xs.level && // height of the output tree is at most 1 greater than that of the input tree
     res.toList == insertAtIndex(xs.toList, i, y) // correctness
@@ -612,7 +612,7 @@ object ConcRopeSeq {
         }
       case _ => error[(Conc[T], Conc[T])]("Impossible case")
     }
-  } ensuring (res  => instSplitAxiom(xs, n) && // instantiation of an axiom
+  }.ensuring(res  => instSplitAxiom(xs, n) && // instantiation of an axiom
     res._1.valid && res._2.valid && // tree invariants are preserved
     res._1.isNormalized && res._2.isNormalized &&
     xs.level >= res._1.level && xs.level >= res._2.level && // height bounds of the resulting tree
@@ -638,7 +638,7 @@ object ConcRopeSeq {
       case Empty() => ys
       case Single(_) => CC(xs, ys)
     }
-  } ensuring (res => res.valid && //conctree invariants
+  }.ensuring(res => res.valid && //conctree invariants
     res.toList == xs.toList ++ Cons(x, Nil[T]()) && //correctness
     res.level <= xs.level + 1
   )
@@ -665,7 +665,7 @@ object ConcRopeSeq {
           Append(l, zs)
       }
     }
-  } ensuring (res => appendAssocInst2(xs, ys) &&
+  }.ensuring(res => appendAssocInst2(xs, ys) &&
     res.valid && //conc tree invariants
     res.toList == xs.toList ++ ys.toList && //correctness invariants
     res.level <= xs.level + 1 )
@@ -686,7 +686,7 @@ object ConcRopeSeq {
       case Append(l, r) => numTrees(l) + 1
       case _ => BigInt(1)
     }
-  } ensuring (res => res >= 0)
+  }.ensuring(res => res >= 0)
 
   def normalize[T](t: Conc[T]): Conc[T] = {
     require(t.valid)
@@ -697,7 +697,7 @@ object ConcRopeSeq {
         concatNormalized(l, r)
       case _ => t
     }
-  } ensuring (res => res.valid &&
+  }.ensuring(res => res.valid &&
     res.isNormalized &&
     res.toList == t.toList && //correctness
     res.size == t.size && res.level <= t.level //normalize preserves level and size
@@ -713,7 +713,7 @@ object ConcRopeSeq {
       case l =>
         concatNormalized(l, nr)
     }
-  } ensuring (res =>
+  }.ensuring(res =>
     appendAssocInst2(xs, ys) && //some lemma instantiations
     res.valid &&
     res.isNormalized &&

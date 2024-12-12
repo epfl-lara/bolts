@@ -19,7 +19,7 @@ object InsertionSortArray {
 
             a(i) = key
             j = j + 1
-        }) invariant (j >= 1 && j <= N && a.length == N)
+        }) `invariant` (j >= 1 && j <= N && a.length == N)
 
         a
     }

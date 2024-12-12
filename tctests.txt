@@ -7,6 +7,7 @@ algorithms/reachabilityChecker
 data-structures/amortized-queue1
 data-structures/amortized-queue2
 data-structures/maps/mutablemaps
+data-structures/sets/mutablesets
 data-structures/lisp
 data-structures/sorted-array
 data-structures/trees/concrope
@@ -19,6 +20,7 @@ fp-principles/functional-sets
 fp-principles/object-oriented-sets
 fp-principles/huffman-coding
 fp-principles/recursion
+lexers/regex/verifiedlexer
 software-foundations
 system-f
 tutorials/add-digits
@@ -30,3 +32,4 @@ tutorials/simple-transform
 tutorials/fmcad2021/alt-diffs
 tutorials/fmcad2021/binary-search
 tutorials/fmcad2021/find-index
+tutorials/explicit-memory

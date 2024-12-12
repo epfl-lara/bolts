@@ -17,7 +17,7 @@ object Streams {
   @induct
   def zerosUsable(n: Nat) = {
     usable(n,zeros)
-  } holds
+  } .holds
 
   // zerosUsable: forall n, usable(n,zeros)
   //            : usable(zeros)

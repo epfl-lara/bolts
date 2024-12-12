@@ -64,7 +64,7 @@ object Transform {
     t.preserveAdd(newExpr)
     t.applyDone(e)
     t(newExpr).getOrElse(newExpr)
-  } ensuring(t.transformed(_))
+  }.ensuring(t.transformed(_))
 
   case object ConstFold extends Transformer {
     def apply(expr: Expr): Option[Expr] = {

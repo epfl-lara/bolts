@@ -1,3 +1,5 @@
+[![Build Status](https://github.com/epfl-lara/bolts/actions/workflows/bolts-CI.yml/badge.svg?branch=main)](https://github.com/epfl-lara/bolts/actions/workflows/bolts-CI.yml/?branch=main)
+
 # Bolts: Stainless Verified Scala
 
 This repository showcases examples of code verified using

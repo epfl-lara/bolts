@@ -44,15 +44,15 @@ object Main {
   // zero is neutral for plus
   def plus_zerol[A](l: Language[A]) = {
     zero + l === l
-  } holds
+  } .holds
 
   def plus_zeror[A](l: Language[A]) = {
     l + zero === l
-  } holds
+  } .holds
 
   def plus_dd[A](l1: Language[A], l2: Language[A], x: A): Boolean = {
     (l1 + l2).dd(x) == l1.dd(x) + l2.dd(x)
-  } holds
+  } .holds
 
   def plus_lemma[A](l1: Language[A], l2: Language[A], w: Word[A]): Boolean = {
     assert(
@@ -62,7 +62,7 @@ object Main {
       }
     )
     (l1 + l2).contains(w) == (l1.contains(w) || l2.contains(w))
-  } holds
+  } .holds
 
   // plus is associative (contains)
   def plus_assoc_lemma[A](l1: Language[A], l2: Language[A], l3: Language[A], w: Word[A]) = {
@@ -71,7 +71,7 @@ object Main {
     assert(plus_lemma(l1,l2 + l3,w))
     assert(plus_lemma(l1 + l2,l3,w))
     (l1 + (l2 + l3)).contains(w) == ((l1 + l2) + l3).contains(w)
-  } holds
+  } .holds
 
   def plus_assoc_lemma(l1,l2,l3,w): (l1 + (l2 + l3)).contains(w) == ((l1 + l2) + l3).contains(w)
 
@@ -84,11 +84,11 @@ object Main {
       (l1 + (l2 + l3)).contains(w) == ((l1 + l2) + l3).contains(w)
     }))
     l1 + (l2 + l3) === (l1 + l2) + l3
-  } holds
+  } .holds
 
   def forall_intro(p) = {
     forall(p)
-  } holds
+  } .holds
 
   def plus_assoc[A](l1: Language[A], l2: Language[A], l3: Language[A]): "l1 + (l2 + l3) === (l1 + l2) + l3" = {
     w => plus_assoc_lemma(l1,l2,l3,w)
@@ -99,7 +99,7 @@ object Main {
   //   plus_lemma(l1,l2,w)
   //   plus_lemma(l2,l1,w)
   //   (l1 + l2).contains(w) == (l2 + l1).contains(w)
-  // } holds
+  // } .holds
 
   // // plus is commutative
   // def plus_comm[A](l1: Language[A], l2: Language[A]) = {
@@ -108,7 +108,7 @@ object Main {
   //     (l1 + l2).contains(w) == (l2 + l1).contains(w)
   //   }))
   //   l1 + l2 === l2 + l1
-  // } holds
+  // } .holds
 
   // // a combination of associativity and commutativity
   // def plus_rotate[A](l1: Language[A], l2: Language[A], l3: Language[A]) = {
@@ -116,7 +116,7 @@ object Main {
   //   assert(plus_comm(l1,l2))
   //   assert(plus_assoc(l2,l1,l3))
   //   l1 + (l2 + l3) === l2 + (l1 + l3)
-  // } holds
+  // } .holds
   
   // // plus is idempotent
   // def plus_idem[A](l: Language[A]) = {
@@ -125,5 +125,5 @@ object Main {
   //     (l + l).contains(w) == l.contains(w)
   //   }))
   //   l + l === l
-  // } holds
+  // } .holds
 }

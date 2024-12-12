@@ -55,8 +55,8 @@ object ExplicitSubstitution {
         require(size >= 0 && size == s.size && s.unique == s)
         decreases(size)
         if (size == 0) n else
-        if (s contains n) newVar(s - n, n + 1, size - 1) else n
-    } ensuring{ res => !(s contains res) }
+        if (s.contains(n)) newVar(s - n, n + 1, size - 1) else n
+    }.ensuring( res => !(s.contains(res)) )
 
 
     //propagates a substitution down
@@ -69,7 +69,7 @@ object ExplicitSubstitution {
             case App(f, arg) => App(eval(ApplySubst(f, e.s)), eval(ApplySubst(arg, e.s)))
             case Abs(x, body) =>
                 if (x != e.s.x) {
-                    if (fv(e.s.m) contains x) {
+                    if (fv(e.s.m).contains(x)) {
                         val set = (fv(e.s.m) ++ fv(body)).unique
                         val newX = newVar(set, x + 1, set.size)
                         Abs(newX, ApplySubst(ApplySubst(body, Subst(x, Var(newX))), e.s))
@@ -107,10 +107,10 @@ object ExplicitSubstitution {
             case _ => Some(t)
         }
 
-    } ensuring { res => (res match {
+    }.ensuring( res => (res match {
         case Some(r) => isValue(r)
         case None() => true
-    })}
+    }))
 
 
     //evaluates, but also find all the beta reduction to be made
@@ -148,10 +148,10 @@ object ExplicitSubstitution {
             case _ => Some(t)
         }
 
-    } ensuring { res => (res match {
+    }.ensuring( res => (res match {
         case Some(r) => isReduced(r) && noSubst(r)
         case None() => true
-    })}
+    }))
 
 
     //checks if two terms are alpha equivalent (that is, equal upon renaming of the bound variables)
@@ -168,7 +168,7 @@ object ExplicitSubstitution {
                 case _ => false
             }
             case Abs(x, body) => t2 match {
-                case Abs(x2, body2) => if (x == x2) alphaEquivalent(body, body2) else !(fv(body2) contains x) && alphaEquivalent(body, eval(ApplySubst(body2, Subst(x2, Var(x)))))
+                case Abs(x2, body2) => if (x == x2) alphaEquivalent(body, body2) else !(fv(body2).contains(x)) && alphaEquivalent(body, eval(ApplySubst(body2, Subst(x2, Var(x)))))
                 case _ => false
             }
             case _ => false
@@ -179,26 +179,26 @@ object ExplicitSubstitution {
         require(noSubst(t))
 
         alphaEquivalent(t, t)
-    } holds
+    }.holds
 
 
     def unique(t1: Term, t2: Term, s: Subst, n: BigInt) = {
         require(n > 0 && t1 == t2)
 
         loopingEval(ApplySubst(t1, s), n) == loopingEval(ApplySubst(t2, s), n)
-    } holds
+    }.holds
 
     def unique2(t1: Term, t2: Term, s1: Term, s2: Term, n: BigInt, x: BigInt) = {
         require(n > 0 && t1 == t2 && s1 == s2)
 
         loopingEval(ApplySubst(t1, Subst(x, s1)), n) == loopingEval(ApplySubst(t2, Subst(x, s2)), n)
-    } holds
+    }.holds
 
     def substitutionLemma(t: Term, s1: Subst, s2: Subst) = {
-        require(noSubst(t) && noSubst(s1.m) && noSubst(s2.m) && !((fv(s2.m) ++ fv(t)) contains s1.x) && s1.x != s2.x)
+        require(noSubst(t) && noSubst(s1.m) && noSubst(s2.m) && !((fv(s2.m) ++ fv(t)).contains(s1.x)) && s1.x != s2.x)
 
         eval(ApplySubst(eval(ApplySubst(t, s1)), s2)) == eval(ApplySubst(eval(ApplySubst(t, s2)), Subst(s1.x, eval(ApplySubst(s1.m, s2)))))
-    } holds
+    }.holds
 
     //λx.x((λy.yy)x)x = λx.x(xx)x
     def example1 = {
@@ -206,7 +206,7 @@ object ExplicitSubstitution {
             case Some(t) => t == Abs(0, App(App(Var(0), App(Var(0), Var(0))), Var(0)))
             case _ => false
         }
-    } holds
+    }.holds
 
     //(λxyz.zyx)aa(λpq.q) = a
     def example2 = {
@@ -214,7 +214,7 @@ object ExplicitSubstitution {
             case Some(t) => t == Var(5)
             case _ => false
         }
-    } holds
+    }.holds
 
     //λx.y [y:x] = λz.x
     def captureAvoidingTest = {
@@ -222,7 +222,7 @@ object ExplicitSubstitution {
             case Some(t) => alphaEquivalent(t, Abs(1, Var(0)))
             case _ => false
        }
-    } holds
+    }.holds
 
 
 //=================================================
@@ -230,13 +230,13 @@ object ExplicitSubstitution {
     def powerN(f: Term, M: Term, n: BigInt): Term = {
         require(n >= 0 && noSubst(f) && noSubst(M))
         if (n == 0) M else App(f, powerN(f, M, n - 1))
-    } ensuring{ res => noSubst(res) }
+    }.ensuring(res => noSubst(res) )
 
     //encoding of integers using the church technic
     def churchN(n: BigInt) = {
         require(n >= 0)
         Abs(0, Abs(5, powerN(Var(0), Var(5), n)))
-    } ensuring { res => noSubst(res) }
+    }.ensuring( res => noSubst(res) )
 
 
     val Aplus = Abs(0, Abs(1, Abs(2, Abs(3, App(App(Var(0), Var(2)), App(App(Var(1), Var(2)), Var(3)))))))
@@ -247,14 +247,14 @@ object ExplicitSubstitution {
             case Some(t) => alphaEquivalent(t, churchN(7))
             case _ => false
         }
-    } holds
+    }.holds
 
     def testMult = {
         loopingStrongEval(App(App(Astar, churchN(2)), churchN(3)), 80) match {
             case Some(t) => t == churchN(6)
             case _ => false
         }
-    } holds
+    }.holds
 
 
 //=================================================
@@ -276,7 +276,7 @@ object ExplicitSubstitution {
             case Some(t) => t == Var(10)
             case _ => false
         }
-    } holds
+    }.holds
 
     //False x y = y
     def falseTest = {
@@ -284,7 +284,7 @@ object ExplicitSubstitution {
             case Some(t) => t == Var(11)
             case _ => false
         }
-    } holds
+    }.holds
 
     //Cons(x, y) z (λp. p._1) = x
     def listTest = {
@@ -292,7 +292,7 @@ object ExplicitSubstitution {
             case Some(t) => t == Var(10)
             case _ => false
         }
-    } holds
+    }.holds
 
     //Pair(x, y)._1 = x
     def testPair1 = {
@@ -300,7 +300,7 @@ object ExplicitSubstitution {
             case Some(t) => t == Var(30)
             case _ => false
         }
-    } holds
+    }.holds
 
     //Pair(x, y)._2 = y
     def testPair2 = {
@@ -308,6 +308,6 @@ object ExplicitSubstitution {
             case Some(t) => t == Var(31)
             case _ => false
         }
-    } holds
+    }.holds
 
 }

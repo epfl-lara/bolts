@@ -19,7 +19,7 @@ object BitIntegerInt {
             } else {
                 2 * pow2(n-1)
             }
-        } ensuring(res => 0 < res)
+        }.ensuring(res => 0 < res)
 
         def negPow2(n: BigInt): Int = {
             require(0 <= n && n <= 31)
@@ -29,7 +29,7 @@ object BitIntegerInt {
             } else {
                 2 * negPow2(n-1)
             }
-        } ensuring(res => res < 0 && (if (n < 31) res == -pow2(n) else res == Int.MinValue))
+        }.ensuring(res => res < 0 && (if (n < 31) res == -pow2(n) else res == Int.MinValue))
 
         def maxUnsigned(n: BigInt): Int = {
             require(0 <= n && n <= 31)
@@ -40,7 +40,7 @@ object BitIntegerInt {
                 assert(n == 31)
                 Int.MaxValue
             }
-        } ensuring(res =>
+        }.ensuring(res =>
             0 <= res &&
             (if (n == 0) res == 0 else {
                 (res == maxUnsigned(n - 1) + pow2(n - 1)) &&
@@ -142,7 +142,7 @@ object BitIntegerInt {
                 check(unsignedBitSize(x - 1) <= out)
                 out
             }
-        } ensuring(res =>
+        }.ensuring(res =>
             0 <= res && res <= 31 &&
             x <= maxUnsigned(res) &&
             ((0 < x) ==> (0 < res)) &&
@@ -154,7 +154,7 @@ object BitIntegerInt {
             require(x < 0)
             decreases(-x-1)
             unsignedBitSize(-(x + 1)) + 1
-        } ensuring(res =>
+        }.ensuring(res =>
             1 <= res && res <= 32 &&
             negPow2(res - 1) <= x  &&
             x < -1 ==> x < negPow2(res - 2) &&
@@ -225,7 +225,7 @@ object BitIntegerInt {
         } else {
             toInt(x.tail)
         }
-    } ensuring(res => 0 <= res && res <= IntTools.maxUnsigned(x.length))
+    }.ensuring(res => 0 <= res && res <= IntTools.maxUnsigned(x.length))
 
     def toInt(x: SignedBitInteger): Int = {
         require(x.length <= 32)
@@ -237,7 +237,7 @@ object BitIntegerInt {
             assert(!x.head)
             toInt(x.tail)
         }
-    } ensuring(res => x.isEmpty || (if(x.head) { res < 0 } else { 0 <= res }))
+    }.ensuring(res => x.isEmpty || (if(x.head) { res < 0 } else { 0 <= res }))
 
     def unsignedFrom(x: Int, acc: UnsignedBitInteger): UnsignedBitInteger = {
         require(0 <= x && IntTools.unsignedBitSize(x) + acc.length <= 31)
@@ -318,7 +318,7 @@ object BitIntegerInt {
                 out
             }
         }
-    } ensuring(res =>
+    }.ensuring(res =>
         (if(acc.length == 31) x == 0 else toInt(res) == (x * IntTools.pow2(acc.length) + toInt(acc))) &&
         res.length == IntTools.unsignedBitSize(x) + acc.length
     )
@@ -329,7 +329,7 @@ object BitIntegerInt {
     //     assert(pow2(zero.length) == 1)
     //     assert(unsignedToInt(zero) == 0)
     //     unsignedFromInt(x, zero)
-    // } ensuring(res =>
+    // }.ensuring(res =>
     //     unsignedToInt(res) == x && res.length == unsignedBitSize(x)
     // )
 }

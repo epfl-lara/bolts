@@ -16,6 +16,6 @@ object SetTest {
   }.holds
 
   def subsetTest[T](a: Set[T]): Boolean = {
-    (a subsetOf a)
+    (a.subsetOf(a))
   }.holds
 }
