@@ -10,7 +10,7 @@ env:
   JVM_OPTS:  -Dsbt.io.implicit.relative.glob.conversion=allow -Xss512M -Xms1024M -Xmx12G -XX:MaxMetaspaceSize=2G -XX:+UseCodeCacheFlushing -XX:ReservedCodeCacheSize=768M 
   JAVA_OPTS_TMP_DIR: /tmp/tmp_${{ github.run_id }}_${{ github.run_attempt }}
 jobs:
-  tests:
+  bolts-verification:
     runs-on: [self-hosted, linux]
     steps:
     - name: Checkout
@@ -21,5 +21,5 @@ jobs:
         java-opts: ${{ env.JAVA_OPTS }}
         java-version: 17
         temp-dir: "/tmp/tmp_${{ github.run_id }}_${{ github.run_attempt }}"
-    - name: Bolts Tests
+    - name: Bolts Tests with verification
       run: ./run-tests.sh
