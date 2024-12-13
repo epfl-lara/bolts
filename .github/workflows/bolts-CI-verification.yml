@@ -4,11 +4,22 @@ on:
   push:
     branches:
       - main
+env:
+  # define Java options for both official sbt and sbt-extras
+  JAVA_OPTS: -Dsbt.io.implicit.relative.glob.conversion=allow -Xss512M -Xms1024M -Xmx12G -XX:MaxMetaspaceSize=2G -XX:+UseCodeCacheFlushing -XX:ReservedCodeCacheSize=768M 
+  JVM_OPTS:  -Dsbt.io.implicit.relative.glob.conversion=allow -Xss512M -Xms1024M -Xmx12G -XX:MaxMetaspaceSize=2G -XX:+UseCodeCacheFlushing -XX:ReservedCodeCacheSize=768M 
+  JAVA_OPTS_TMP_DIR: /tmp/tmp_${{ github.run_id }}_${{ github.run_attempt }}
 jobs:
-  setup:
-    uses: ./.github/workflows/setup.yml
   tests:
     runs-on: [self-hosted, linux]
     steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+    - name: Setup
+      uses: ./.github/workflows/setup
+      with:
+        java-opts: ${{ env.JAVA_OPTS }}
+        java-version: 17
+        temp-dir: "/tmp/tmp_${{ github.run_id }}_${{ github.run_attempt }}"
     - name: Bolts Tests
       run: ./run-tests.sh
