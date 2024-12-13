@@ -25,7 +25,7 @@ runs:
     with:
       distribution: temurin
       java-version: ${{ inputs.java-version }}
-  - name: Setup java options
+  - name: Setup java options environment variables
     run: |
         echo "JAVA_OPTS=${{ inputs.java-opts }}" >> "$GITHUB_ENV" && \
         echo "JVM_OPTS=${{ inputs.java-opts }}" >> "$GITHUB_ENV" && \
