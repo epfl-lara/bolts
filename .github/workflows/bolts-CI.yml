@@ -11,7 +11,7 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v4
     - name: Setup
-      uses: ./.github/actions/setup
+      uses: ./.github/workflows/setup
     - name: Bolts Tests
       run: ./run-tests.sh --admit-vcs
   fail_if_pull_request_is_draft:
