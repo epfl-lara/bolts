@@ -1,17 +1,16 @@
-name: Bolts CI with admit VCs
+name: Bolts CI Verification
 on:
-  pull_request:
+  workflow_dispatch:
   push:
     branches:
       - main
-
 env:
   # define Java options for both official sbt and sbt-extras
   JAVA_OPTS: -Dsbt.io.implicit.relative.glob.conversion=allow -Xss512M -Xms1024M -Xmx12G -XX:MaxMetaspaceSize=2G -XX:+UseCodeCacheFlushing -XX:ReservedCodeCacheSize=768M 
   JVM_OPTS:  -Dsbt.io.implicit.relative.glob.conversion=allow -Xss512M -Xms1024M -Xmx12G -XX:MaxMetaspaceSize=2G -XX:+UseCodeCacheFlushing -XX:ReservedCodeCacheSize=768M 
   JAVA_OPTS_TMP_DIR: /tmp/tmp_${{ github.run_id }}_${{ github.run_attempt }}
 jobs:
-  bolts-admit-vcs:
+  bolts-verification:
     runs-on: [self-hosted, linux]
     steps:
     - name: Checkout
@@ -22,13 +21,5 @@ jobs:
         java-opts: ${{ env.JAVA_OPTS }}
         java-version: 17
         temp-dir: "/tmp/tmp_${{ github.run_id }}_${{ github.run_attempt }}"
-    - name: Bolts admit VCs tests
-      run: ./run-tests.sh --admit-vcs
-    - name: Clean up
-      run: rm -rf $JAVA_OPTS_TMP_DIR
-  fail_if_pull_request_is_draft:
-    if: github.event.pull_request.draft == true
-    runs-on: [self-hosted, linux]
-    steps:
-    - name: Fails in order to indicate that pull request needs to be marked as ready to review and tests workflows need to pass.
-      run: exit 1
+    - name: Bolts Tests with verification
+      run: ./run-tests.sh
