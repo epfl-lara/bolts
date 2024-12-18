@@ -1,0 +1,79 @@
+import stainless.lang.*
+object Find {
+
+  // 0. Download stainless release from
+  //     https://github.com/epfl-lara/stainless/releases/tag/v0.9.9.0
+
+  // 1. Recall the example find from the lecture that does linear search:
+
+  // abbreviation expanded by the compiler
+  inline def interval(a: Array[Int], lo: Int, hi: Int): Boolean = 
+    0 <= lo && lo <= hi && hi <= a.size
+
+  def existsIn(a: Array[Int], lo: Int, hi: Int, x: Int): Boolean = 
+    require(interval(a, lo, hi))
+    decreases(hi - lo)
+    !(lo == hi) &&
+    ((a(hi - 1) == x) || existsIn(a, lo, hi - 1, x))
+
+  def find(a: Array[Int], lo: Int, hi: Int, x: Int): Int = {
+    require(interval(a, lo, hi))
+    var i = lo
+    (while i < hi && a(i) != x do    
+      decreases(hi - i)
+      i = i + 1
+    ).invariant(lo <= i && i <= hi && !existsIn(a, lo, i, x))
+    if i < hi then i
+    else -1
+  }.ensuring(res =>
+    (lo <= res && res < hi && a(res) == x) ||
+    (res == -1 && !existsIn(a, lo, hi, x)))
+
+  // 2. Consider binary search algorithm to whom you should give sorted array.
+  // Let us for now assume we are happy with require and ensuring as is.
+  // The body of search1 has multiple errors. Fix them so that stainless verifies it.
+
+  def search1(a: Array[Int], lo: Int, hi: Int, x: Int): Int = {
+    require(interval(a, lo, hi))
+    if lo < hi then
+      val i = (lo + hi) / 2
+      val seeing = a(i)
+      if x == seeing then i
+      else if x < seeing then search1(a, lo, i, x)
+      else search1(a, i, hi, x)
+    else 
+      -1
+  }.ensuring(res =>
+    (lo <= res && res < hi && a(res) == x) ||
+    (res == -1)
+  )
+
+  // 3. Once fixed, convert search1 to use a while loop, specifying the body (???), 
+  // the decreases and the invariant, so that new function verifies with the given
+  // require and ensuring. Compare your specification to one for search1.
+
+  def search2(a: Array[Int], lo: Int, hi: Int, x: Int): Int = {
+    require(interval(a, lo, hi))
+    var lo0 = lo
+    var hi0 = hi
+    var res = -1
+    (while res == -1 && lo0 < hi0 do
+      (??? : Unit)
+    ).invariant(true)
+    res
+    if res == -1 then
+      assert(lo0 == hi0)
+    else
+      assert(a(res) == x)
+    res
+  }.ensuring(res =>
+    (lo <= res && res < hi && a(res) == x) ||
+    (res == -1)
+  )
+
+  // 4. (Open Ended). Suppose we wish to extend the ensuring of search1 with
+  // the specification (res == -1 && !existsIn(a, lo, hi, x))) as for find.
+  // How would you need to modify require?
+  // Do you expect that you would need any lemmas?  
+
+}
