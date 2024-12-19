@@ -24,6 +24,8 @@ jobs:
         temp-dir: "/tmp/tmp_${{ github.run_id }}_${{ github.run_attempt }}"
     - name: Bolts admit VCs tests
       run: ./run-tests.sh --admit-vcs
+    - name: Clean up
+      run: rm -rf $JAVA_OPTS_TMP_DIR
   fail_if_pull_request_is_draft:
     if: github.event.pull_request.draft == true
     runs-on: [self-hosted, linux]

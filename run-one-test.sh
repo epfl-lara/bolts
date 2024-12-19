@@ -51,6 +51,7 @@ function run_tests {
 
   if [ $ADMIT_VCS = true ]; then
     if [ $status -eq 0 ] || [ $status -eq 1 ]; then
+      cat stainless-stack-trace.txt
       echo "Stainless accepted project: $project."
       exit 0
     else
