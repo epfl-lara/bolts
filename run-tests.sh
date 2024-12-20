@@ -1,5 +1,10 @@
 #!/usr/bin/env bash
 
+SBT_TEMP=$ROOT_DIR/sbt-temp
+# if TEMP_DIR is not set, set it to the default
+JAVA_OPTS_TMP_DIR=${JAVA_OPTS_TMP_DIR:-$ROOT_DIR/temporary}
+mkdir -p $JAVA_OPTS_TMP_DIR
+
 STAINLESS="stainless-dotty"
 ADMIT_VCS=false
 # First check whether the flag --admit-vcs is present
@@ -26,4 +31,7 @@ for project in $TC_TESTS; do
     exit $status
   fi
 done
+
+rm -rf $SBT_TEMP
+rm -rf $JAVA_OPTS_TMP_DIR
 echo "************* Verifying bolts projects was successful! *************"
