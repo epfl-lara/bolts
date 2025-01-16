@@ -18,7 +18,8 @@ import ch.epfl.map.TupleListOpsGenK.invariantList
 import ch.epfl.map.MutableHashMap
 
 import stainless.lang.StaticChecks._
-import stainless.annotation.isabelle.lemma
+
+
 // import ch.epfl.map.OptimisedChecks.*
 
 object MemoisationRegex {
@@ -548,6 +549,13 @@ object ZipperRegex {
       case Concat(rOne, rTwo) => derivationStepZipperDown(rOne, context.prepend(rTwo), a)
       case Star(rInner) => derivationStepZipperDown(rInner, context.prepend(Star(rInner)), a)
       case _ => Set()
+    }
+  }
+
+  def derivationZipper[C](z: Zipper[C], input: List[C]): Zipper[C] = {
+    input match {
+      case Cons(hd, tl) => derivationZipper(derivationStepZipper(z, hd), tl)
+      case Nil()        => z
     }
   }
 
@@ -2454,6 +2462,211 @@ object ZipperRegex {
     }
   }.ensuring(_ => matchZipper(z, s) == s.isEmpty)
 
+
+  // --------- Find Longest Match Zipper ------------------------------
+
+  def findLongestMatchZipper[C](z: Zipper[C], input: List[C]): (List[C], List[C]) = {
+    findLongestMatchInnerZipper(z, Nil(), input)
+  }.ensuring (res => res._1 ++ res._2 == input)
+
+  def findLongestMatchInnerZipper[C](z: Zipper[C], testedP: List[C], totalInput: List[C]): (List[C], List[C]) = {
+    require(ListUtils.isPrefix(testedP, totalInput))
+    decreases(totalInput.size - testedP.size)
+
+    if (testedP == totalInput) {
+      if (nullableZipper(z)) {
+        (testedP, Nil[C]())
+      } else {
+        (Nil[C](), totalInput)
+      }
+    } else {
+      ghostExpr(ListUtils.lemmaIsPrefixThenSmallerEqSize(testedP, totalInput))
+      if (testedP.size == totalInput.size) {
+        ghostExpr(ListUtils.lemmaIsPrefixRefl(totalInput, totalInput))
+        ghostExpr(ListUtils.lemmaIsPrefixSameLengthThenSameList(totalInput, testedP, totalInput))
+        check(false)
+      }
+      assert(testedP.size < totalInput.size)
+      val suffix = ListUtils.getSuffix(totalInput, testedP)
+      val newP = testedP ++ List(suffix.head)
+      ghostExpr(ListUtils.lemmaAddHeadSuffixToPrefixStillPrefix(testedP, totalInput))
+      if (nullableZipper(z)) {
+        val recursive = findLongestMatchInnerZipper(derivationStepZipper(z, suffix.head), newP, totalInput)
+        if (recursive._1.isEmpty) {
+          (testedP, ListUtils.getSuffix(totalInput, testedP))
+        } else {
+          recursive
+        }
+      } else {
+        findLongestMatchInnerZipper(derivationStepZipper(z, suffix.head), newP, totalInput)
+      }
+    }
+  }.ensuring (res => res._1 ++ res._2 == totalInput && (res._1.isEmpty || res._1.size >= testedP.size)) 
+
+  // ----------------------------- Find Longest Match Zipper Theorems ------------------------------
+
+  @ghost
+  def longestMatchSameAsRegex[C](r: Regex[C], z: Zipper[C], input: List[C]): Unit = {
+    require(validRegex(r))
+    require(unfocusZipper(z.toList) == r)
+
+    val (longestPrefixZ, suffixZ) = findLongestMatchZipper(z, input)
+    val (longestPrefixR, suffixR) = findLongestMatch(r, input)
+
+    assert(longestPrefixZ ++ suffixZ == input)
+    assert(longestPrefixR ++ suffixR == input)
+    ListUtils.lemmaConcatTwoListThenFirstIsPrefix(longestPrefixZ, suffixZ)
+    ListUtils.lemmaConcatTwoListThenFirstIsPrefix(longestPrefixR, suffixR)
+
+    longestMatchIsAcceptedByMatchOrIsEmpty(z, input)
+    VerifiedRegexMatcher.longestMatchIsAcceptedByMatchOrIsEmpty(r, input)
+    assert(matchZipper(z, longestPrefixZ) || longestPrefixZ.isEmpty)
+    assert(matchR(r, longestPrefixR) || longestPrefixR.isEmpty)
+    theoremZipperRegexEquiv(z, z.toList, r, longestPrefixR)
+    theoremZipperRegexEquiv(z, z.toList, r, longestPrefixZ)
+
+    if(longestPrefixR.size > longestPrefixZ.size){
+      longestMatchNoBiggerStringMatch(z, input, longestPrefixZ, longestPrefixR)
+      check(false)
+    } else if(longestPrefixZ.size > longestPrefixR.size){
+      VerifiedRegexMatcher.longestMatchNoBiggerStringMatch(r, input, longestPrefixR, longestPrefixZ)
+      check(false)
+    } else{
+      ListUtils.lemmaIsPrefixSameLengthThenSameList(longestPrefixZ, longestPrefixR, input)
+      ListUtils.lemmaSamePrefixThenSameSuffix(longestPrefixZ, suffixZ, longestPrefixR, suffixR, input)
+      assert(longestPrefixZ == longestPrefixR)
+      assert(suffixZ == suffixR)
+    }
+  }.ensuring(_ => findLongestMatchZipper(z, input) == findLongestMatch(r, input))
+
+
+  @ghost
+  def longestMatchIsAcceptedByMatchOrIsEmpty[C](z: Zipper[C], input: List[C]): Unit = {
+    longestMatchIsAcceptedByMatchOrIsEmptyRec(z, z, Nil(), input)
+
+  }.ensuring (_ => findLongestMatchInnerZipper(z, Nil(), input)._1.isEmpty || matchZipper(z, findLongestMatchInnerZipper(z, Nil(), input)._1))
+
+  @ghost
+  def longestMatchNoBiggerStringMatch[C](baseZ: Zipper[C], input: List[C], returnP: List[C], bigger: List[C]): Unit = {
+    require(ListUtils.isPrefix(returnP, input))
+    require(ListUtils.isPrefix(bigger, input))
+    require(bigger.size >= returnP.size)
+    require(findLongestMatchInnerZipper(baseZ, Nil(), input)._1 == returnP)
+
+    if (bigger.size == returnP.size) {
+      ListUtils.lemmaIsPrefixSameLengthThenSameList(bigger, returnP, input)
+    } else {
+      if (matchZipper(baseZ, bigger)) {
+        lemmaKnownAcceptedStringThenFromSmallPAtLeastThat(baseZ, baseZ, input, Nil(), bigger)
+        check(false)
+      }
+    }
+
+  }.ensuring (_ => bigger == returnP || !matchZipper(baseZ, bigger))
+
+
+  // ----------------------------- Find Longest Match Zipper Lemmas ------------------------------
+  @ghost
+  def lemmaKnownAcceptedStringThenFromSmallPAtLeastThat[C](baseZ: Zipper[C], z: Zipper[C], input: List[C], testedP: List[C], knownP: List[C]): Unit = {
+    require(ListUtils.isPrefix(testedP, input))
+    require(ListUtils.isPrefix(knownP, input))
+    require(knownP.size >= testedP.size)
+    require(matchZipper(baseZ, knownP))
+    require(derivationZipper(baseZ, testedP) == z)
+    decreases(knownP.size - testedP.size)
+
+    if (testedP.size == knownP.size) {
+      ListUtils.lemmaIsPrefixSameLengthThenSameList(testedP, knownP, input)
+      lemmaIfMatchZipperThenLongestMatchFromThereReturnsAtLeastThis(baseZ, z, input, testedP)
+      check(findLongestMatchInnerZipper(z, testedP, input)._1.size >= knownP.size)
+    } else {
+      assert(testedP.size < input.size)
+      val suffix = ListUtils.getSuffix(input, testedP)
+      val newP = testedP ++ List(suffix.head)
+      ListUtils.lemmaAddHeadSuffixToPrefixStillPrefix(testedP, input)
+
+      lemmaDerivativeOnLWithANewCharIsANewDerivativeStep(baseZ, z, testedP, suffix.head)
+      lemmaKnownAcceptedStringThenFromSmallPAtLeastThat(baseZ, derivationStepZipper(z, suffix.head), input, newP, knownP)
+
+      check(findLongestMatchInnerZipper(z, testedP, input)._1.size >= knownP.size)
+    }
+
+  }.ensuring (_ => findLongestMatchInnerZipper(z, testedP, input)._1.size >= knownP.size)
+
+  @ghost
+  def lemmaIfMatchZipperThenLongestMatchFromThereReturnsAtLeastThis[C](baseZ: Zipper[C], z: Zipper[C], input: List[C], testedP: List[C]): Unit = {
+    require(ListUtils.isPrefix(testedP, input))
+    require(matchZipper(baseZ, testedP))
+    require(derivationZipper(baseZ, testedP) == z)
+
+    lemmaMatchZipperIsSameAsWholeDerivativeAndNil(baseZ, testedP)
+    assert(matchZipper(z, Nil()))
+    assert(nullableZipper(z))
+
+  }.ensuring (_ => findLongestMatchInnerZipper(z, testedP, input)._1.size >= testedP.size)
+
+  @ghost
+  def longestMatchIsAcceptedByMatchOrIsEmptyRec[C](baseZ: Zipper[C], z: Zipper[C], testedP: List[C], input: List[C]): Unit = {
+    require(ListUtils.isPrefix(testedP, input))
+    require(derivationZipper(baseZ, testedP) == z)
+    decreases(input.size - testedP.size)
+
+    if (findLongestMatchInnerZipper(z, testedP, input)._1.isEmpty) {
+      ()
+    } else {
+      if (testedP == input) {
+        if (nullableZipper(z)) {
+          lemmaMatchZipperIsSameAsWholeDerivativeAndNil(baseZ, testedP)
+        } else {
+          ()
+        }
+      } else {
+        ListUtils.lemmaIsPrefixThenSmallerEqSize(testedP, input)
+        if (testedP.size == input.size) {
+          ListUtils.lemmaIsPrefixRefl(input, input)
+          ListUtils.lemmaIsPrefixSameLengthThenSameList(input, testedP, input)
+          check(false)
+        }
+        assert(testedP.size < input.size)
+        val suffix = ListUtils.getSuffix(input, testedP)
+        val newP = testedP ++ List(suffix.head)
+        ListUtils.lemmaAddHeadSuffixToPrefixStillPrefix(testedP, input)
+        if (nullableZipper(z)) {
+          val recursive = findLongestMatchInnerZipper(derivationStepZipper(z, suffix.head), newP, input)
+          if (recursive._1.isEmpty) {
+            lemmaMatchZipperIsSameAsWholeDerivativeAndNil(baseZ, testedP)
+          } else {
+            lemmaDerivativeOnLWithANewCharIsANewDerivativeStep(baseZ, z, testedP, suffix.head)
+            longestMatchIsAcceptedByMatchOrIsEmptyRec(baseZ, derivationStepZipper(z, suffix.head), newP, input)
+          }
+        } else {
+          lemmaDerivativeOnLWithANewCharIsANewDerivativeStep(baseZ, z, testedP, suffix.head)
+          longestMatchIsAcceptedByMatchOrIsEmptyRec(baseZ, derivationStepZipper(z, suffix.head), newP, input)
+        }
+      }
+    }
+
+  }.ensuring (_ => findLongestMatchInnerZipper(z, testedP, input)._1.isEmpty || matchZipper(baseZ, findLongestMatchInnerZipper(z, testedP, input)._1))
+
+  @ghost
+  def lemmaMatchZipperIsSameAsWholeDerivativeAndNil[C](z: Zipper[C], input: List[C]): Unit = {
+    input match {
+      case Cons(hd, tl) => lemmaMatchZipperIsSameAsWholeDerivativeAndNil(derivationStepZipper(z, hd), tl)
+      case Nil()        => ()
+    }
+  }.ensuring (_ => matchZipper(z, input) == matchZipper(derivationZipper(z, input), Nil()))
+
+  @ghost
+  def lemmaDerivativeOnLWithANewCharIsANewDerivativeStep[C](baseZ: Zipper[C], z: Zipper[C], input: List[C], c: C): Unit = {
+    require(derivationZipper(baseZ, input) == z)
+
+    input match {
+      case Cons(hd, tl) => lemmaDerivativeOnLWithANewCharIsANewDerivativeStep(derivationStepZipper(baseZ, hd), z, tl, c)
+      case Nil()        => ()
+    }
+
+  }.ensuring (_ => derivationZipper(baseZ, input ++ List(c)) == derivationStepZipper(z, c))
+
 }
 
 object VerifiedRegexMatcher {
@@ -2858,6 +3071,14 @@ object VerifiedRegexMatcher {
     res
 
   }.ensuring (res => (res.isDefined && matchR(r1, res.get._1) && matchR(r2, res.get._2) && res.get._1 ++ res.get._2 == s) || !res.isDefined)
+
+  def findLongestMatchWithZipper[C](r: Regex[C], input: List[C]): (List[C], List[C]) = {
+    require(validRegex(r))
+    val zipper = ZipperRegex.focus(r)
+    ghostExpr(ZipperRegex.longestMatchSameAsRegex(r, zipper, input))
+    ZipperRegex.findLongestMatchInnerZipper(zipper, Nil(), input)
+  }.ensuring (res => res == findLongestMatch(r, input))
+
 
   def findLongestMatch[C](r: Regex[C], input: List[C]): (List[C], List[C]) = {
     require(validRegex(r))
