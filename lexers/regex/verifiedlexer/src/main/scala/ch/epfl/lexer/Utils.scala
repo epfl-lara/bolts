@@ -9,6 +9,7 @@ import stainless.lang.{ghost => ghostExpr, _}
 import stainless.proof.check
 import scala.annotation.tailrec
 import stainless.lang.StaticChecks._
+import stainless.lang.Quantifiers
 import ch.epfl.lexer.ListUtils.lemmaSubseqRefl
 
 object SetUtils {
@@ -435,7 +436,7 @@ object SetUtils {
   @ghost
   def lemmaFlatMapForallElem[A, B](s: Set[A], f: A => Set[B], p: B => Boolean, elm: B): Unit = {
     require(s.flatMap(f).contains(elm))
-    require(Forall.Forall[A](a => f(a).forall(p)))
+    require(Quantifiers.Forall[A](a => f(a).forall(p)))
 
     unfold(s.flatMapPost(f)(elm))
     assert(s.flatMap(f).contains(elm))
@@ -444,7 +445,7 @@ object SetUtils {
     val witness = ListUtils.getWitness(s.toList, a => f(a).contains(elm))
     assert(f(witness).contains(elm))
     assert(f(witness).toList.contains(elm))
-    unfold(Forall.Forall[A](a => f(a).forall(p)))
+    unfold(Quantifiers.Forall[A](a => f(a).forall(p)))
     assert(f(witness).forall(p))
     assert(f(witness).toList.forall(p))
     ListSpecs.forallContained(f(witness).toList, p, elm)
@@ -454,7 +455,7 @@ object SetUtils {
   @opaque
   @ghost
   def lemmaFlatMapForallToList[A, B](s: Set[A], f: A => Set[B], p: B => Boolean, l: List[B]): Unit = {
-    require(Forall.Forall[A](a => f(a).forall(p)))
+    require(Quantifiers.Forall[A](a => f(a).forall(p)))
     require(ListSpecs.subseq(l, s.flatMap(f).toList))
     decreases(l)
     l match 
@@ -473,7 +474,7 @@ object SetUtils {
   @opaque
   @ghost
   def lemmaFlatMapForall[A, B](s: Set[A], f: A => Set[B], p: B => Boolean): Unit = {
-    require(Forall.Forall[A](a => f(a).forall(p)))
+    require(Quantifiers.Forall[A](a => f(a).forall(p)))
     ListUtils.lemmaSubseqRefl(s.flatMap(f).toList)
     lemmaFlatMapForallToList(s, f, p, s.flatMap(f).toList)
 
