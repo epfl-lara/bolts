@@ -24,7 +24,7 @@ object MainLexer {
 
     val regexSep = Concat(ElementMatch(' '), Star(ElementMatch(' ')))
     val ruleSep = Rule(regexSep, "sep", true)
-    val sepToken = Token(List(' '), "sep", true)
+    val sepToken = Token(List(' '), "sep", ruleSep)
 
     // DFA which recognises any repetition of at least one "ab" string
     val regexAb = Concat(Concat(ElementMatch('a'), ElementMatch('b')), Star(Concat(ElementMatch('a'), ElementMatch('b'))))
@@ -37,8 +37,8 @@ object MainLexer {
     val rules = List(ruleAb, ruleC, ruleSep)
 
     // Tokens -> Characters -> Tokens
-    val t1 = Token(List('a', 'b'), "ab", false)
-    val t2 = Token(List('c', 'c'), "c", false)
+    val t1 = Token(List('a', 'b'), "ab", ruleAb)
+    val t2 = Token(List('c', 'c'), "c", ruleC)
     val input: List[Token[Char]] = List(t1, t2, t1, t2, t1, t1)
 
     val state = State(BigInt(1))
@@ -55,7 +55,7 @@ object MainLexer {
     println("After lexing again:")(state)
     println(lexed._1.foldLeft("")((s: String, t: Token[Char]) => s + t.toString + "\n"))(state)
 
-    println("tokens -> print -> tokens modulo separator tokens equality: " + (lexed._1.filter(!_.isSeparator) == input))(state)
+    println("tokens -> print -> tokens modulo separator tokens equality: " + (lexed._1.filter(!_.rule.isSeparator) == input))(state)
     println("--------------------------------------------------------------------------------")(state)
 
     // Characters -> Tokens -> Characters
@@ -78,7 +78,7 @@ object VerifiedLexer {
   import VerifiedRegex._
   import VerifiedRegexMatcher._
 
-  case class Token[C](characters: List[C], tag: String, isSeparator: Boolean)
+  case class Token[C](characters: List[C], tag: String, rule: Rule[C])
   case class Rule[C](regex: Regex[C], tag: String, isSeparator: Boolean)
 
   object Lexer {
@@ -192,7 +192,7 @@ object VerifiedLexer {
       * @param separatorToken
       */
     def printWithSeparatorToken[C](l: List[Token[C]], separatorToken: Token[C]): List[C] = {
-      require(separatorToken.isSeparator)
+      require(separatorToken.rule.isSeparator)
       decreases(l)
       l match {
         case Cons(hd, tl) => hd.characters ++ separatorToken.characters ++ printWithSeparatorToken(tl, separatorToken)
@@ -211,8 +211,8 @@ object VerifiedLexer {
       require(rulesInvariant(rules))
       require(rulesProduceEachTokenIndividually(rules, l))
       require(rulesProduceIndivualToken(rules, separatorToken))
-      require(separatorToken.isSeparator)
-      require(l.forall(!_.isSeparator))
+      require(separatorToken.rule.isSeparator)
+      require(l.forall(!_.rule.isSeparator))
       require(sepAndNonSepRulesDisjointChars(rules, rules))
       decreases(l)
 
@@ -283,14 +283,14 @@ object VerifiedLexer {
         None[(Token[C], List[C])]()
       } else {
         ghostExpr(longestMatchIsAcceptedByMatchOrIsEmpty(rule.regex, input))
-        Some[(Token[C], List[C])]((Token(longestPrefix, rule.tag, rule.isSeparator), suffix))
+        Some[(Token[C], List[C])]((Token(longestPrefix, rule.tag, rule), suffix))
       }
 
     }.ensuring (res =>
       res.isEmpty || matchR(
         rule.regex,
         res.get._1.characters
-      ) && res.get._1.characters ++ res.get._2 == input && res.get._2.size < input.size && res.get._1.tag == rule.tag && res.get._1.isSeparator == rule.isSeparator
+      ) && res.get._1.characters ++ res.get._2 == input && res.get._2.size < input.size && res.get._1.tag == rule.tag && res.get._1.rule == rule
     )
 
     // Proofs --------------------------------------------------------------------------------------------------------------------------------
@@ -316,7 +316,7 @@ object VerifiedLexer {
 
       require(tokens.isEmpty || tokens.head.characters.size <= otherP.size)
       require(tokens.isEmpty || tokens.head.tag == r.tag)
-      require(tokens.isEmpty || tokens.head.isSeparator == r.isSeparator)
+      require(tokens.isEmpty || tokens.head.rule == r)
       require(ListUtils.isPrefix(otherP, input))
       require(r != otherR)
       require({
@@ -383,8 +383,8 @@ object VerifiedLexer {
       require(rulesInvariant(rules))
       require(rulesProduceEachTokenIndividually(rules, tokens))
       require(rulesProduceIndivualToken(rules, separatorToken))
-      require(separatorToken.isSeparator)
-      require(tokens.forall(!_.isSeparator))
+      require(separatorToken.rule.isSeparator)
+      require(tokens.forall(!_.rule.isSeparator))
       require({
         lemmaMaxPrefReturnTokenSoItsTagBelongsToARule(rules, separatorToken.characters, separatorToken)
         getRuleFromTag(rules, separatorToken.tag).get.isSeparator
@@ -443,7 +443,7 @@ object VerifiedLexer {
         }
         case Nil() => ()
       }
-    }.ensuring (_ => lex(rules, printWithSeparatorTokenWhenNeeded(rules, tokens, separatorToken))._1.filter(!_.isSeparator) == tokens)
+    }.ensuring (_ => lex(rules, printWithSeparatorTokenWhenNeeded(rules, tokens, separatorToken))._1.filter(!_.rule.isSeparator) == tokens)
 
     @ghost
     def theoremInvertFromTokensSepTokenBetweenEach[C](rules: List[Rule[C]], tokens: List[Token[C]], separatorToken: Token[C]): Unit = {
@@ -451,8 +451,8 @@ object VerifiedLexer {
       require(rulesInvariant(rules))
       require(rulesProduceEachTokenIndividually(rules, tokens))
       require(rulesProduceIndivualToken(rules, separatorToken))
-      require(separatorToken.isSeparator)
-      require(tokens.forall(!_.isSeparator))
+      require(separatorToken.rule.isSeparator)
+      require(tokens.forall(!_.rule.isSeparator))
       require({
         lemmaMaxPrefReturnTokenSoItsTagBelongsToARule(rules, separatorToken.characters, separatorToken)
         getRuleFromTag(rules, separatorToken.tag).get.isSeparator
@@ -464,8 +464,8 @@ object VerifiedLexer {
         case Nil() => ()
         // case Cons(hd, Nil()) => ()
         case Cons(hd, Nil()) => {
-          ListSpecs.forallContained(tokens, (t: Token[C]) => !t.isSeparator, hd)
-          assert(!hd.isSeparator)
+          ListSpecs.forallContained(tokens, (t: Token[C]) => !t.rule.isSeparator, hd)
+          assert(!hd.rule.isSeparator)
           val input = printWithSeparatorToken(tokens, separatorToken)
           assert(input == hd.characters ++ separatorToken.characters)
           ListUtils.lemmaGetSuffixOnListWithItSelfIsEmpty(hd.characters)
@@ -511,10 +511,10 @@ object VerifiedLexer {
 
         }
         case Cons(hd, Cons(nextT, tl)) => {
-          ListSpecs.forallContained(tokens, (t: Token[C]) => !t.isSeparator, hd)
-          ListSpecs.forallContained(tokens, (t: Token[C]) => !t.isSeparator, nextT)
-          assert(!hd.isSeparator)
-          assert(!nextT.isSeparator)
+          ListSpecs.forallContained(tokens, (t: Token[C]) => !t.rule.isSeparator, hd)
+          ListSpecs.forallContained(tokens, (t: Token[C]) => !t.rule.isSeparator, nextT)
+          assert(!hd.rule.isSeparator)
+          assert(!nextT.rule.isSeparator)
           val input = printWithSeparatorToken(tokens, separatorToken)
           val suffixAfterSeparator = printWithSeparatorToken(Cons(nextT, tl), separatorToken)
           val suffix = separatorToken.characters ++ suffixAfterSeparator
@@ -566,7 +566,7 @@ object VerifiedLexer {
         }
       }
 
-    }.ensuring (_ => lex(rules, printWithSeparatorToken(tokens, separatorToken))._1.filter(!_.isSeparator) == tokens)
+    }.ensuring (_ => lex(rules, printWithSeparatorToken(tokens, separatorToken))._1.filter(!_.rule.isSeparator) == tokens)
 
     @ghost
     def theoremInvertFromString[C](rules: List[Rule[C]], input: List[C]): Unit = {
@@ -625,8 +625,8 @@ object VerifiedLexer {
       require(rulesInvariant(rules))
       require(rulesProduceEachTokenIndividually(rules, tokens))
       require(rulesProduceIndivualToken(rules, separatorToken))
-      require(separatorToken.isSeparator)
-      require(tokens.forall(!_.isSeparator))
+      require(separatorToken.rule.isSeparator)
+      require(tokens.forall(!_.rule.isSeparator))
       require(sepAndNonSepRulesDisjointChars(rules, rules))
 
       tokens match {
@@ -691,7 +691,7 @@ object VerifiedLexer {
       require(maxPrefix(rules, token.characters).get._1 == token)
       require(maxPrefix(rules, token.characters).get._2.isEmpty)
       require(token.tag == rule.tag)
-      require(token.isSeparator == rule.isSeparator)
+      require(token.rule == rule)
       require({
         lemmaRuleInListAndRulesValidThenRuleIsValid(rule, rules)
         matchR(rule.regex, token.characters)
@@ -713,7 +713,7 @@ object VerifiedLexer {
       assert(ListUtils.isPrefix(foundToken.characters, input))
       assert(foundRule.tag == foundToken.tag)
       assert(matchR(foundRule.regex, foundToken.characters))
-      assert(foundRule.isSeparator == foundToken.isSeparator)
+      assert(foundRule == foundToken.rule)
 
       lemmaMaxPrefixTagSoFindMaxPrefOneRuleWithThisRule(rules, foundToken.characters, input, foundSuffix, foundRule)
       ListUtils.lemmaSamePrefixThenSameSuffix(
@@ -849,7 +849,7 @@ object VerifiedLexer {
       }
     }.ensuring (_ =>
       getRuleFromTag(rules, token.tag).isDefined && matchR(getRuleFromTag(rules, token.tag).get.regex, token.characters) &&
-        token.isSeparator == getRuleFromTag(rules, token.tag).get.isSeparator
+        token.rule.isSeparator == getRuleFromTag(rules, token.tag).get.isSeparator
     )
     
     @ghost
@@ -906,7 +906,7 @@ object VerifiedLexer {
       require(rulesInvariant(rules))
       require(rules.contains(r))
       require(rules.contains(rBis))
-      require(maxPrefix(rules, input) == Some(Token(p, r.tag, r.isSeparator), ListUtils.getSuffix(input, p)))
+      require(maxPrefix(rules, input) == Some(Token(p, r.tag, r), ListUtils.getSuffix(input, p)))
       require(ListUtils.getIndex(rules, rBis) < ListUtils.getIndex(rules, r))
       require(ruleValid(r))
       require(matchR(r.regex, p))
@@ -930,7 +930,7 @@ object VerifiedLexer {
               lemmaRuleReturnsPrefixSmallerEqualThanGlobalMaxPref(
                 rules,
                 p,
-                Token(p, r.tag, r.isSeparator),
+                Token(p, r.tag, r),
                 input,
                 ListUtils.getSuffix(input, p),
                 token.characters,
@@ -947,7 +947,7 @@ object VerifiedLexer {
                 check(!matchR(rBis.regex, p))
               } else {
                 lemmaNoDuplicateTagAndDiffIndexThenNoTwoRulesTagsEq(rules, rBis, r)
-                check(Some(token, suff) != Some(Token(p, r.tag, r.isSeparator), ListUtils.getSuffix(input, p)))
+                check(Some(token, suff) != Some(Token(p, r.tag, r), ListUtils.getSuffix(input, p)))
                 check(!matchR(rBis.regex, p))
               }
             }
@@ -1000,12 +1000,12 @@ object VerifiedLexer {
       })
       require({
         ListUtils.lemmaIsPrefixRefl(input, input)
-        maxPrefixOneRule(r, input) == Some(Token(p, r.tag, r.isSeparator), ListUtils.getSuffix(input, p))
+        maxPrefixOneRule(r, input) == Some(Token(p, r.tag, r), ListUtils.getSuffix(input, p))
       })
 
       require(pBis.size > p.size)
 
-      require(maxPrefix(rules, input) == Some(Token(p, r.tag, r.isSeparator), ListUtils.getSuffix(input, p)))
+      require(maxPrefix(rules, input) == Some(Token(p, r.tag, r), ListUtils.getSuffix(input, p)))
 
       // For preconditions
       lemmaRuleInListAndRulesValidThenRuleIsValid(r, rules)
@@ -1039,13 +1039,13 @@ object VerifiedLexer {
       require(ruleValid(r))
       require({
         ListUtils.lemmaIsPrefixRefl(input, input)
-        maxPrefixOneRule(r, input) == Some(Token(p, r.tag, r.isSeparator), ListUtils.getSuffix(input, p))
+        maxPrefixOneRule(r, input) == Some(Token(p, r.tag, r), ListUtils.getSuffix(input, p))
       })
 
       require(pBis.size > p.size)
 
       require(ruleValid(rBis))
-      require(maxPrefix(rules, input) == Some(Token(p, r.tag, r.isSeparator), ListUtils.getSuffix(input, p)))
+      require(maxPrefix(rules, input) == Some(Token(p, r.tag, r), ListUtils.getSuffix(input, p)))
 
       assert(validRegex(r.regex))
 
@@ -1064,7 +1064,7 @@ object VerifiedLexer {
           lemmaRuleReturnsPrefixSmallerEqualThanGlobalMaxPref(
             rules,
             p,
-            Token(p, r.tag, r.isSeparator),
+            Token(p, r.tag, r),
             input,
             ListUtils.getSuffix(input, p),
             pBis,
@@ -1087,7 +1087,7 @@ object VerifiedLexer {
             lemmaRuleReturnsPrefixSmallerEqualThanGlobalMaxPref(
               rules,
               p,
-              Token(p, r.tag, r.isSeparator),
+              Token(p, r.tag, r),
               input,
               ListUtils.getSuffix(input, p),
               tBis.characters,
@@ -1118,7 +1118,7 @@ object VerifiedLexer {
       require(rulesInvariant(rules))
       require(rules.contains(r))
       require(input == p ++ suffix)
-      require(maxPrefix(rules, input) == Some(Token(p, r.tag, r.isSeparator), suffix))
+      require(maxPrefix(rules, input) == Some(Token(p, r.tag, r), suffix))
       require({
         lemmaRuleInListAndRulesValidThenRuleIsValid(r, rules)
         matchR(r.regex, p)
@@ -1129,11 +1129,11 @@ object VerifiedLexer {
         case Cons(hd, tl) if hd == r => {
           lemmaInvariantOnRulesThenOnTail(hd, tl)
           if (tl.isEmpty) {
-            check(maxPrefixOneRule(r, input) == Some(Token(p, r.tag, r.isSeparator), suffix))
+            check(maxPrefixOneRule(r, input) == Some(Token(p, r.tag, r), suffix))
           } else {
             lemmaNoDuplTagThenTailRulesCannotProduceHeadTagInTok(hd, tl, input)
             assert(maxPrefix(tl, input).isEmpty || maxPrefix(tl, input).get._1.tag != r.tag)
-            check(maxPrefixOneRule(r, input) == Some(Token(p, r.tag, r.isSeparator), suffix))
+            check(maxPrefixOneRule(r, input) == Some(Token(p, r.tag, r), suffix))
           }
         }
         case Cons(hd, tl) if hd != r => {
@@ -1149,8 +1149,8 @@ object VerifiedLexer {
               check(false)
             } else {
               assert(otherTokSufOpt.get._1.tag != r.tag)
-              assert(maxPrefixOneRule(hd, input) != Some(Token(p, r.tag, r.isSeparator), suffix))
-              assert(maxPrefix(tl, input) == Some(Token(p, r.tag, r.isSeparator), suffix))
+              assert(maxPrefixOneRule(hd, input) != Some(Token(p, r.tag, r), suffix))
+              assert(maxPrefix(tl, input) == Some(Token(p, r.tag, r), suffix))
               lemmaMaxPrefixTagSoFindMaxPrefOneRuleWithThisRule(tl, p, input, suffix, r)
             }
 
@@ -1160,7 +1160,7 @@ object VerifiedLexer {
 
       }
 
-    }.ensuring (_ => maxPrefixOneRule(r, input) == Some(Token(p, r.tag, r.isSeparator), suffix))
+    }.ensuring (_ => maxPrefixOneRule(r, input) == Some(Token(p, r.tag, r), suffix))
 
     @ghost
     def lemmaNoDuplTagThenTailRulesCannotProduceHeadTagInTok[C](rHead: Rule[C], rTail: List[Rule[C]], input: List[C]): Unit = {
