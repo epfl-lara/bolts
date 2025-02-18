@@ -386,7 +386,7 @@ object VerifiedLexer {
       require(separatorToken.rule.isSeparator)
       require(tokens.forall(!_.rule.isSeparator))
       require({
-        lemmaMaxPrefReturnTokenSoItsTagBelongsToARule(rules, separatorToken.characters, separatorToken)
+        lemmaMaxPrefReturnTokenSoItsTagBelongsToTheRuleWithinToken(rules, separatorToken.characters, separatorToken)
         getRuleFromTag(rules, separatorToken.tag).get.isSeparator
       })
       require(sepAndNonSepRulesDisjointChars(rules, rules))
@@ -418,9 +418,9 @@ object VerifiedLexer {
             }
             lemmaRulesProduceEachTokenIndividuallyThenForAnyToken(rules, tokens, nextToken)
             check(rulesProduceIndivualToken(rules, nextToken))
-            lemmaMaxPrefReturnTokenSoItsTagBelongsToARule(rules, separatorToken.characters, separatorToken)
+            lemmaMaxPrefReturnTokenSoItsTagBelongsToTheRuleWithinToken(rules, separatorToken.characters, separatorToken)
             val separatorRule = getRuleFromTag(rules, separatorToken.tag).get
-            lemmaMaxPrefReturnTokenSoItsTagBelongsToARule(rules, tl.head.characters, nextToken)
+            lemmaMaxPrefReturnTokenSoItsTagBelongsToTheRuleWithinToken(rules, tl.head.characters, nextToken)
             val nextTokenRule = getRuleFromTag(rules, nextToken.tag).get
 
             if (!usedCharacters(nextTokenRule.regex).contains(nextToken.characters.head)) {
@@ -454,7 +454,7 @@ object VerifiedLexer {
       require(separatorToken.rule.isSeparator)
       require(tokens.forall(!_.rule.isSeparator))
       require({
-        lemmaMaxPrefReturnTokenSoItsTagBelongsToARule(rules, separatorToken.characters, separatorToken)
+        lemmaMaxPrefReturnTokenSoItsTagBelongsToTheRuleWithinToken(rules, separatorToken.characters, separatorToken)
         getRuleFromTag(rules, separatorToken.tag).get.isSeparator
       })
       require(sepAndNonSepRulesDisjointChars(rules, rules))
@@ -470,10 +470,10 @@ object VerifiedLexer {
           assert(input == hd.characters ++ separatorToken.characters)
           ListUtils.lemmaGetSuffixOnListWithItSelfIsEmpty(hd.characters)
           lemmaRulesProduceEachTokenIndividuallyThenForAnyToken(rules, tokens, hd)
-          lemmaMaxPrefReturnTokenSoItsTagBelongsToARule(rules, hd.characters, hd)
+          lemmaMaxPrefReturnTokenSoItsTagBelongsToTheRuleWithinToken(rules, hd.characters, hd)
           val rule = getRuleFromTag(rules, hd.tag).get
           assert(!rule.isSeparator)
-          lemmaMaxPrefReturnTokenSoItsTagBelongsToARule(rules, separatorToken.characters, separatorToken)
+          lemmaMaxPrefReturnTokenSoItsTagBelongsToTheRuleWithinToken(rules, separatorToken.characters, separatorToken)
           val separatorRule = getRuleFromTag(rules, separatorToken.tag).get
           lemmaMaxPrefixTagSoFindMaxPrefOneRuleWithThisRule(rules, hd.characters, hd.characters, Nil(), rule)
 
@@ -523,12 +523,12 @@ object VerifiedLexer {
           ListUtils.lemmaTwoListsConcatAssociativity(hd.characters, separatorToken.characters, suffixAfterSeparator)
           assert(input == hd.characters ++ suffix)
           lemmaRulesProduceEachTokenIndividuallyThenForAnyToken(rules, tokens, hd)
-          lemmaMaxPrefReturnTokenSoItsTagBelongsToARule(rules, hd.characters, hd)
+          lemmaMaxPrefReturnTokenSoItsTagBelongsToTheRuleWithinToken(rules, hd.characters, hd)
           val rule = getRuleFromTag(rules, hd.tag).get
           assert(!rule.isSeparator)
           lemmaMaxPrefixTagSoFindMaxPrefOneRuleWithThisRule(rules, hd.characters, hd.characters, Nil(), rule)
 
-          lemmaMaxPrefReturnTokenSoItsTagBelongsToARule(rules, separatorToken.characters, separatorToken)
+          lemmaMaxPrefReturnTokenSoItsTagBelongsToTheRuleWithinToken(rules, separatorToken.characters, separatorToken)
           val separatorRule = getRuleFromTag(rules, separatorToken.tag).get
 
           if (!usedCharacters(separatorRule.regex).contains(separatorToken.characters.head)) {
@@ -547,7 +547,7 @@ object VerifiedLexer {
 
           lemmaRulesProduceEachTokenIndividuallyThenForAnyToken(rules, tokens, nextT)
           assert(rulesProduceIndivualToken(rules, nextT))
-          lemmaMaxPrefReturnTokenSoItsTagBelongsToARule(rules, nextT.characters, nextT)
+          lemmaMaxPrefReturnTokenSoItsTagBelongsToTheRuleWithinToken(rules, nextT.characters, nextT)
           val nextTRule = getRuleFromTag(rules, nextT.tag).get
           assert(!nextTRule.isSeparator)
           lemmaMaxPrefixTagSoFindMaxPrefOneRuleWithThisRule(rules, nextT.characters, nextT.characters, Nil(), nextTRule)
@@ -631,10 +631,10 @@ object VerifiedLexer {
 
       tokens match {
         case Cons(hd, tl) => {
-          lemmaMaxPrefReturnTokenSoItsTagBelongsToARule(rules, separatorToken.characters, separatorToken)
+          lemmaMaxPrefReturnTokenSoItsTagBelongsToTheRuleWithinToken(rules, separatorToken.characters, separatorToken)
           val separatorRule = getRuleFromTag(rules, separatorToken.tag).get
 
-          lemmaMaxPrefReturnTokenSoItsTagBelongsToARule(rules, hd.characters, hd)
+          lemmaMaxPrefReturnTokenSoItsTagBelongsToTheRuleWithinToken(rules, hd.characters, hd)
           val rule = getRuleFromTag(rules, hd.tag).get
 
           val suffix = printWithSeparatorTokenWhenNeeded(rules, tl, separatorToken)
@@ -707,7 +707,7 @@ object VerifiedLexer {
       lemmaLexIsDefinedWithStrThenLexWithSuffixIsDefined(rules, token.characters, suffix)
       val foundToken = tokenOpt.get._1
       val foundSuffix = tokenOpt.get._2
-      lemmaMaxPrefReturnTokenSoItsTagBelongsToARule(rules, input, foundToken)
+      lemmaMaxPrefReturnTokenSoItsTagBelongsToTheRuleWithinToken(rules, input, foundToken)
       val foundRule = getRuleFromTag(rules, foundToken.tag).get
       ListUtils.lemmaConcatTwoListThenFirstIsPrefix(foundToken.characters, foundSuffix)
       assert(ListUtils.isPrefix(foundToken.characters, input))
@@ -811,7 +811,7 @@ object VerifiedLexer {
       val firstT = tokens.head
       ListUtils.lemmaConcatTwoListThenFirstIsPrefix(firstT.characters, maxPrefix(rules, input).get._2)
       ListUtils.lemmaPrefixStaysPrefixWhenAddingToSuffix(firstT.characters, input, suffix)
-      lemmaMaxPrefReturnTokenSoItsTagBelongsToARule(rules, input, firstT)
+      lemmaMaxPrefReturnTokenSoItsTagBelongsToTheRuleWithinToken(rules, input, firstT)
       val rule: Rule[C] = getRuleFromTag(rules, firstT.tag).get
       assert(matchR(rule.regex, firstT.characters))
 
@@ -824,7 +824,7 @@ object VerifiedLexer {
     }.ensuring (_ => maxPrefix(rules, input ++ suffix).isDefined)
 
     @ghost
-    def lemmaMaxPrefReturnTokenSoItsTagBelongsToARule[C](rules: List[Rule[C]], input: List[C], token: Token[C]): Unit = {
+    def lemmaMaxPrefReturnTokenSoItsTagBelongsToTheRuleWithinToken[C](rules: List[Rule[C]], input: List[C], token: Token[C]): Unit = {
       require(rulesInvariant(rules))
       require(!rules.isEmpty)
       require(maxPrefix(rules, input).isDefined && maxPrefix(rules, input).get._1 == token)
@@ -838,7 +838,7 @@ object VerifiedLexer {
           } else {
             if (!tl.isEmpty) {
               lemmaInvariantOnRulesThenOnTail(hd, tl)
-              lemmaMaxPrefReturnTokenSoItsTagBelongsToARule(tl, input, token)
+              lemmaMaxPrefReturnTokenSoItsTagBelongsToTheRuleWithinToken(tl, input, token)
               lemmaGetRuleFromTagInListThenSameListWhenAddingARuleDiffTag(tl, hd, token.tag)
             } else {
               check(false)
@@ -849,9 +849,9 @@ object VerifiedLexer {
       }
     }.ensuring (_ =>
       getRuleFromTag(rules, token.tag).isDefined && matchR(getRuleFromTag(rules, token.tag).get.regex, token.characters) &&
-        token.rule.isSeparator == getRuleFromTag(rules, token.tag).get.isSeparator
+        token.rule == getRuleFromTag(rules, token.tag).get
     )
-    
+
     @ghost
     def lemmaGetRuleFromTagInListThenSameListWhenAddingARuleDiffTag[C](rules: List[Rule[C]], newHd: Rule[C], tag: String): Unit = {
       require(rulesInvariant(Cons(newHd, rules)))
