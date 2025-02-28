@@ -500,11 +500,6 @@ object SetUtils {
 
   }.ensuring(_ => s.toList.size > s.toList.tail.size)
 
-  // @inlineOnce
-  // @opaque
-  // @ghost
-  // def lemmaSubsetContent
-
 }
 
 object ListUtils {
@@ -582,6 +577,30 @@ object ListUtils {
       case Nil()                  => check(false); l.head
     }
   }.ensuring(res => p(res) && l.contains(res) && l.exists(p))
+
+
+  def disjoint[B](l1: List[B], l2: List[B]): Boolean = l1.forall(e1 => !l2.contains(e1)) && l2.forall(e2 => !l1.contains(e2))
+
+
+  // -------------------- LEMMAS --------------------
+
+  @ghost 
+  @opaque
+  @inlineOnce
+  def lemmaDisjointNotContained1[B](l1: List[B], l2: List[B], e1: B): Unit = {
+    require(disjoint(l1, l2))
+    require(l1.contains(e1))
+    ListSpecs.forallContained(l1, e1 => !l2.contains(e1), e1)
+  }.ensuring(_ => !l2.contains(e1))
+
+  @ghost 
+  @opaque
+  @inlineOnce
+  def lemmaDisjointNotContained2[B](l1: List[B], l2: List[B], e2: B): Unit = {
+    require(disjoint(l1, l2))
+    require(l2.contains(e2))
+    ListSpecs.forallContained(l2, e2 => !l1.contains(e2), e2)
+  }.ensuring(_ => !l1.contains(e2))
 
   @ghost
   @opaque

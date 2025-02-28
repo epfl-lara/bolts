@@ -318,26 +318,26 @@ object VerifiedRegex {
     }
   }.ensuring (res => res > 0)
 
-  def usedCharacters[C](r: Regex[C]): List[C] = {
+  extension[C] (r: Regex[C]) def usedCharacters: List[C] = {
     r match {
       case EmptyExpr()        => Nil[C]()
       case EmptyLang()        => Nil[C]()
       case ElementMatch(c)    => List(c)
-      case Star(r)            => usedCharacters(r)
-      case Union(rOne, rTwo)  => usedCharacters(rOne) ++ usedCharacters(rTwo)
-      case Concat(rOne, rTwo) => usedCharacters(rOne) ++ usedCharacters(rTwo)
+      case Star(r)            => r.usedCharacters
+      case Union(rOne, rTwo)  => rOne.usedCharacters ++ rTwo.usedCharacters
+      case Concat(rOne, rTwo) => rOne.usedCharacters ++ rTwo.usedCharacters
     }
   }
 
-  def firstChars[C](r: Regex[C]): List[C] = {
+  extension[C] (r: Regex[C]) def firstChars: List[C] = {
     r match {
       case EmptyExpr()                           => Nil[C]()
       case EmptyLang()                           => Nil[C]()
       case ElementMatch(c)                       => List(c)
-      case Star(r)                               => firstChars(r)
-      case Union(rOne, rTwo)                     => firstChars(rOne) ++ firstChars(rTwo)
-      case Concat(rOne, rTwo) if nullable(rOne)  => firstChars(rOne) ++ firstChars(rTwo)
-      case Concat(rOne, rTwo) if !nullable(rOne) => firstChars(rOne)
+      case Star(r)                               => r.firstChars
+      case Union(rOne, rTwo)                     => rOne.firstChars ++ rTwo.firstChars
+      case Concat(rOne, rTwo) if nullable(rOne)  => rOne.firstChars ++ rTwo.firstChars
+      case Concat(rOne, rTwo) if !nullable(rOne) => rOne.firstChars
     }
   }
 
@@ -4151,7 +4151,7 @@ object VerifiedRegexMatcher {
   def lemmaRegexCannotMatchAStringContainingACharItDoesNotContain[C](r: Regex[C], s: List[C], c: C): Unit = {
     require(validRegex(r))
     require(s.contains(c))
-    require(!usedCharacters(r).contains(c))
+    require(!r.usedCharacters.contains(c))
     decreases(s)
 
     s match {
@@ -4170,7 +4170,7 @@ object VerifiedRegexMatcher {
     require(validRegex(r))
     require(s.contains(c))
     require(s.head == c)
-    require(!usedCharacters(r).contains(c))
+    require(!r.usedCharacters.contains(c))
 
     if (matchR(r, s)) {
       lemmaMatchRIsSameAsWholeDerivativeAndNil(r, s)
@@ -4185,7 +4185,7 @@ object VerifiedRegexMatcher {
     require(validRegex(r))
     require(s.contains(c))
     require(s.head == c)
-    require(!firstChars(r).contains(c))
+    require(!r.firstChars.contains(c))
 
     if (matchR(r, s)) {
       lemmaMatchRIsSameAsWholeDerivativeAndNil(r, s)
@@ -4237,7 +4237,7 @@ object VerifiedRegexMatcher {
       }
     }
 
-  }.ensuring (_ => usedCharacters(r).contains(c))
+  }.ensuring (_ => r.usedCharacters.contains(c))
 
   // DONE
   @ghost
@@ -4261,7 +4261,7 @@ object VerifiedRegexMatcher {
         if (c == a) {
           assert(derivativeStep(r, c) == EmptyExpr[C]())
           if (tl.isEmpty) {
-            assert(usedCharacters(r).contains(c))
+            assert(r.usedCharacters.contains(c))
             assert(nullable(derivative(derivativeStep(r, c), tl)))
           } else {
             lemmaEmptyLangDerivativeIsAFixPoint(derivativeStep(derivativeStep(r, c), tl.head), tl.tail)
@@ -4343,13 +4343,13 @@ object VerifiedRegexMatcher {
       }
     }
 
-  }.ensuring (_ => usedCharacters(r).contains(c))
+  }.ensuring (_ => r.usedCharacters.contains(c))
 
   @ghost
   def lemmaDerivativeStepDoesNotAddCharToUsedCharacters[C](r: Regex[C], c: C, cNot: C): Unit = {
     decreases(r)
     require(validRegex(r))
-    require(!usedCharacters(r).contains(cNot))
+    require(!r.usedCharacters.contains(cNot))
 
     r match {
       case EmptyExpr()     => ()
@@ -4358,7 +4358,7 @@ object VerifiedRegexMatcher {
       case Union(rOne, rTwo) => {
         lemmaDerivativeStepDoesNotAddCharToUsedCharacters(rOne, c, cNot)
         lemmaDerivativeStepDoesNotAddCharToUsedCharacters(rTwo, c, cNot)
-        lemmaConcatTwoListsWhichNotContainThenTotNotContain(usedCharacters(derivativeStep(rOne, c)), usedCharacters(derivativeStep(rTwo, c)), cNot)
+        lemmaConcatTwoListsWhichNotContainThenTotNotContain(derivativeStep(rOne, c).usedCharacters, derivativeStep(rTwo, c).usedCharacters, cNot)
       }
       case Star(rInner) => {
         lemmaDerivativeStepDoesNotAddCharToUsedCharacters(rInner, c, cNot)
@@ -4367,14 +4367,14 @@ object VerifiedRegexMatcher {
         if (nullable(rOne)) {
           lemmaDerivativeStepDoesNotAddCharToUsedCharacters(rOne, c, cNot)
           lemmaDerivativeStepDoesNotAddCharToUsedCharacters(rTwo, c, cNot)
-          lemmaConcatTwoListsWhichNotContainThenTotNotContain(usedCharacters(derivativeStep(rOne, c)), usedCharacters(derivativeStep(rTwo, c)), cNot)
+          lemmaConcatTwoListsWhichNotContainThenTotNotContain(derivativeStep(rOne, c).usedCharacters, derivativeStep(rTwo, c).usedCharacters, cNot)
         } else {
           lemmaDerivativeStepDoesNotAddCharToUsedCharacters(rOne, c, cNot)
         }
       }
     }
 
-  }.ensuring (_ => !usedCharacters(derivativeStep(r, c)).contains(cNot))
+  }.ensuring (_ => !derivativeStep(r, c).usedCharacters.contains(cNot))
 
   @ghost
   def lemmaEmptyLangDerivativeIsAFixPoint[C](r: Regex[C], s: List[C]): Unit = {
@@ -4389,7 +4389,7 @@ object VerifiedRegexMatcher {
   @ghost
   def lemmaUsedCharsContainsAllFirstChars[C](r: Regex[C], c: C): Unit = {
     require(validRegex(r))
-    require(firstChars(r).contains(c))
+    require(r.firstChars.contains(c))
     decreases(r)
     r match {
       case EmptyExpr()     => ()
@@ -4397,14 +4397,14 @@ object VerifiedRegexMatcher {
       case ElementMatch(c) => ()
       case Star(r)         => lemmaUsedCharsContainsAllFirstChars(r, c)
       case Union(rOne, rTwo) =>
-        if (firstChars(rOne).contains(c)) {
+        if (rOne.firstChars.contains(c)) {
           lemmaUsedCharsContainsAllFirstChars(rOne, c)
         } else {
           lemmaUsedCharsContainsAllFirstChars(rTwo, c)
         }
 
       case Concat(rOne, rTwo) if nullable(rOne) =>
-        if (firstChars(rOne).contains(c)) {
+        if (rOne.firstChars.contains(c)) {
           lemmaUsedCharsContainsAllFirstChars(rOne, c)
         } else {
           lemmaUsedCharsContainsAllFirstChars(rTwo, c)
@@ -4413,7 +4413,7 @@ object VerifiedRegexMatcher {
       case Concat(rOne, rTwo) if !nullable(rOne) => lemmaUsedCharsContainsAllFirstChars(rOne, c)
     }
 
-  }.ensuring (_ => usedCharacters(r).contains(c))
+  }.ensuring (_ => r.usedCharacters.contains(c))
 
   @ghost
   def lemmaDerivAfterDerivStepIsNullableThenFirstCharsContainsHead[C](r: Regex[C], c: C, tl: List[C]): Unit = {
@@ -4435,7 +4435,7 @@ object VerifiedRegexMatcher {
         if (c == a) {
           assert(derivativeStep(r, c) == EmptyExpr[C]())
           if (tl.isEmpty) {
-            assert(firstChars(r).contains(c))
+            assert(r.firstChars.contains(c))
             assert(nullable(derivative(derivativeStep(r, c), tl)))
           } else {
             lemmaEmptyLangDerivativeIsAFixPoint(derivativeStep(derivativeStep(r, c), tl.head), tl.tail)
@@ -4514,7 +4514,7 @@ object VerifiedRegexMatcher {
       }
     }
 
-  }.ensuring (_ => firstChars(r).contains(c))
+  }.ensuring (_ => r.firstChars.contains(c))
 }
 
 object Utils {
