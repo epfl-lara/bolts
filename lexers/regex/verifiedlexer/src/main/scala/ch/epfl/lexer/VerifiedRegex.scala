@@ -443,6 +443,7 @@ object ZipperRegex {
       Context(r :: exprs)
     }
     inline def forall(p: Regex[C] => Boolean): Boolean = exprs.forall(p)
+    inline def exists(p: Regex[C] => Boolean): Boolean = exprs.exists(p)
     inline def isEmpty: Boolean = exprs.isEmpty
     inline def head: Regex[C] = {
       require(!isEmpty)
@@ -586,9 +587,21 @@ object ZipperRegex {
     z.exists(c => nullableContext(c))
   }
 
+  def lostCauseContext[C](c: Context[C]): Boolean = {
+    c.exists(r => lostCause(r))
+  }
+  def lostCauseZipper[C](z: Zipper[C]): Boolean = {
+    z.forall(c => lostCauseContext(c))
+  }
+
   def matchZipper[C](z: Zipper[C], input: List[C]): Boolean = {
     decreases(input.size)
     if (input.isEmpty) nullableZipper(z) else matchZipper(derivationStepZipper(z, input.head), input.tail)
+  }
+
+  def prefixMatchZipper[C](z: Zipper[C], input: List[C]): Boolean = {
+    decreases(input.size)
+    if (input.isEmpty) !lostCauseZipper(z) else prefixMatchZipper(derivationStepZipper(z, input.head), input.tail)
   }
 
   def appendTo[C](z: Zipper[C], c: Context[C]): Zipper[C] = {
@@ -648,6 +661,39 @@ object ZipperRegex {
 
 
   // PROOFS -----------------------------------------------------------------------------------------------------
+
+
+  @ghost
+  @inlineOnce
+  @opaque
+  def lemmaZipperNullableThenNotLostCause[C](z: Zipper[C]): Unit = {
+    require(nullableZipper(z))
+    assert(z.exists(c => nullableContext(c)))
+    val nullableCtx: Context[C] = SetUtils.getWitness(z, (c: Context[C]) => nullableContext(c))
+    assert(nullableContext(nullableCtx))
+    lemmaContextForallValidExprs(nullableCtx, nullableCtx.exprs)
+    assert(z.contains(nullableCtx))
+    assert(nullableCtx.forall(r => nullable(r)))
+    if(lostCauseContext(nullableCtx)){
+      assert(nullableCtx.exists(r => lostCause(r)))
+      val lostCauseRegex = ListUtils.getWitness(nullableCtx.exprs, (r: Regex[C]) => lostCause(r))
+      assert(nullableCtx.exprs.contains(lostCauseRegex))
+      assert(lostCause(lostCauseRegex))
+      ListSpecs.forallContained(nullableCtx.exprs, (r: Regex[C]) => nullable(r), lostCauseRegex)
+      ListSpecs.forallContained(nullableCtx.exprs, validRegex, lostCauseRegex)
+      assert(nullable(lostCauseRegex))
+      lemmaNullableThenNotLostCause(lostCauseRegex)
+      check(false)
+    }
+    assert(!lostCauseContext(nullableCtx))
+    if (lostCauseZipper(z)) {
+      assert(z.forall(c => lostCauseContext(c)))
+      assert(z.toList.forall(c => lostCauseContext(c)))
+      assert(z.contains(nullableCtx))
+      ListSpecs.forallContained(z.toList, (c: Context[C]) => lostCauseContext(c), nullableCtx)
+      check(false)
+    }
+  }.ensuring(_ => !lostCauseZipper(z))
 
   @ghost
   @opaque
