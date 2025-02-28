@@ -353,7 +353,8 @@ object VerifiedRegex {
   }
 
   /**
-   * This returns true if the regex is a lost cause, meaning that it will never match any string
+   * This returns true if the regex is a lost cause, meaning that it will never match any string.
+   * That's used to compute the prefix set of a regex.
    */
   def lostCause[C](r: Regex[C]): Boolean = {
     r match {
@@ -2791,6 +2792,12 @@ object VerifiedRegexMatcher {
     }
   )
 
+  def prefixMatch[C](r: Regex[C], prefix: List[C]): Boolean = {
+    require(validRegex(r))
+    decreases(prefix.size)
+    if (prefix.isEmpty) !lostCause(r) else prefixMatch(derivativeStep(r, prefix.head), prefix.tail)
+  }
+
 
   def matchRMem[C](r: Regex[C], input: List[C])(implicit cache: Cache[C]): Boolean = {
     require(validRegex(r))
@@ -3617,6 +3624,24 @@ object VerifiedRegexMatcher {
 
 
 // ---------------------------------------------------- Lemmas ----------------------------------------------------
+
+  /**
+   * Prove that if a string is not in the prefix set of a regex, then the regex will never match a string starting 
+   * with that prefix
+   */
+  @ghost
+  @inlineOnce
+  @opaque
+  def lemmaNotPrefixMatchThenCannotMatchLonger[C](r: Regex[C], prefix: List[C], s: List[C]): Unit = {
+    require(validRegex(r))
+    require(ListUtils.isPrefix(prefix, s))
+    require(!prefixMatch(r, prefix))
+    decreases(prefix.size)
+    prefix match
+      case Nil() => lemmaLostCauseCannotMatch(r, s)
+      case Cons(hd, tl) => lemmaNotPrefixMatchThenCannotMatchLonger(derivativeStep(r, hd), tl, s.tail)
+    
+  }.ensuring(_ => !matchR(r, s))
 
   @ghost
   @inlineOnce
