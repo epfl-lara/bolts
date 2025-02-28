@@ -352,6 +352,20 @@ object VerifiedRegex {
     }
   }
 
+  /**
+   * This returns true if the regex is a lost cause, meaning that it will never match any string
+   */
+  def lostCause[C](r: Regex[C]): Boolean = {
+    r match {
+      case EmptyExpr()        => false
+      case EmptyLang()        => true
+      case ElementMatch(c)    => false
+      case Star(r)            => false
+      case Union(rOne, rTwo)  => lostCause(rOne) && lostCause(rTwo)
+      case Concat(rOne, rTwo) => lostCause(rOne) || lostCause(rTwo)
+    }
+  }
+
   // @ghost
   def isEmptyExpr[C](r: Regex[C]): Boolean = {
     r match {
@@ -3603,6 +3617,101 @@ object VerifiedRegexMatcher {
 
 
 // ---------------------------------------------------- Lemmas ----------------------------------------------------
+
+  @ghost
+  @inlineOnce
+  @opaque
+  def lemmaNullableThenNotLostCause[C](r: Regex[C]): Unit = {
+    require(validRegex(r))
+    require(nullable(r))
+
+    r match {
+      case ElementMatch(c) => ()
+      case Star(reg) => ()
+      case Union(regOne, regTwo) => 
+        if nullable(regOne) then lemmaNullableThenNotLostCause(regOne)
+        else lemmaNullableThenNotLostCause(regTwo)
+      case Concat(regOne, regTwo) => 
+        lemmaNullableThenNotLostCause(regOne)
+        lemmaNullableThenNotLostCause(regTwo)
+      case EmptyExpr() => ()
+      case EmptyLang() => ()
+    }
+  }.ensuring(_ => !lostCause(r))
+
+
+  @ghost
+  @inlineOnce
+  @opaque
+  def lemmaDerivativeStepFixPointLostCause[C](r: Regex[C], c: C): Unit = {
+    require(validRegex(r))
+    require(lostCause(r))
+    decreases(regexDepth(r))
+    r match {
+      case EmptyLang() => ()
+      case EmptyExpr() => ()
+      case ElementMatch(c2) => ()
+      case Union(r1, r2) => 
+          lemmaDerivativeStepFixPointLostCause(r1, c)
+          lemmaDerivativeStepFixPointLostCause(r2, c)
+      case Star(rInner) => ()
+      case Concat(r1, r2) => 
+        assert(lostCause(r1) || lostCause(r2))
+        if(nullable(r1)) {
+          lemmaNullableThenNotLostCause(r1)
+          assert(!lostCause(r1))
+          lemmaDerivativeStepFixPointLostCause(r2, c)
+        } else {
+          if(lostCause(r1)) {
+            lemmaDerivativeStepFixPointLostCause(r1, c)
+          } else {
+            lemmaDerivativeStepFixPointLostCause(r2, c)
+          }
+        }
+    }
+  }.ensuring(_ => lostCause(derivativeStep(r, c)))
+
+  @ghost
+  @inlineOnce
+  @opaque
+  def lemmaLostCauseCannotMatch[C](r: Regex[C], s: List[C]): Unit = {
+    require(validRegex(r))
+    require(lostCause(r))
+    // require(s.nonEmpty)
+    decreases(regexDepth(r) + s.size)
+    if (s.isEmpty) {
+      if(nullable(r)) then lemmaNullableThenNotLostCause(r)
+      assert(!nullable(r))
+    } else {
+      mainMatchTheorem(r, s)
+      r match {
+        case EmptyLang() => ()
+        case EmptyExpr() => ()
+        case ElementMatch(c) => ()
+        case Union(r1, r2) => 
+            lemmaLostCauseCannotMatch(r1, s)
+            lemmaLostCauseCannotMatch(r2, s)
+            assert(!matchR(r1, s))
+            assert(!matchR(r2, s))
+            if matchR(Union(r1, r2), s) then {
+              lemmaRegexUnionAcceptsThenOneOfTheTwoAccepts(r1, r2, s)
+              check(false)
+            }
+        case Star(rInner) => ()
+        case Concat(r1, r2) => 
+          if matchR(r, s) then {
+            val (s1, s2) = findConcatSeparation(r1, r2, Nil(), s, s).get
+            assert(matchR(r1, s1))
+            assert(matchR(r2, s2))
+            if(lostCause(r1)) {
+              lemmaLostCauseCannotMatch(r1, s1)
+            } else {
+              lemmaLostCauseCannotMatch(r2, s2)
+            }
+          }
+      }
+    }
+  }.ensuring(_ => !matchR(r, s))
 
   @ghost
   @inlineOnce
