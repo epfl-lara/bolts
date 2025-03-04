@@ -18,6 +18,7 @@ import ch.epfl.map.TupleListOpsGenK.invariantList
 import ch.epfl.map.MutableHashMap
 
 import stainless.lang.StaticChecks._
+import stainless.annotation.isabelle.lemma
 
 
 // import ch.epfl.map.OptimisedChecks.*
@@ -662,6 +663,146 @@ object ZipperRegex {
 
   // PROOFS -----------------------------------------------------------------------------------------------------
 
+  @ghost
+  @inlineOnce
+  @opaque
+  def lemmaMatchThenPrefixMatchZipper[C](z: Zipper[C], prefix: List[C], s: List[C]): Unit = {
+    require(ListUtils.isPrefix(prefix, s))
+    require(matchZipper(z, s))
+    decreases(prefix.size)
+    if(!prefixMatchZipper(z, prefix)) {
+      lemmaNotPrefixMatchThenCannotMatchLonger(z, prefix, s)
+      check(false)
+    }
+    
+  }.ensuring(_ => prefixMatchZipper(z, prefix))
+
+  @ghost
+  @opaque
+  @inlineOnce // type Zipper[C] = Set[Context[C]]
+  def prefixMatchZipperRegexEquiv[C](z: Zipper[C], zl: List[Context[C]], r: Regex[C], s: List[C]): Unit = {
+    require(validRegex(r))
+    require(z.toList == zl)
+    require(r == unfocusZipper(zl))
+
+    theoremZipperRegexEquiv(z, zl, r, s)
+
+
+
+    
+
+  }.ensuring(_ => prefixMatch(r, s) == prefixMatchZipper(z, s))
+
+
+
+  @ghost
+  @inlineOnce
+  @opaque
+  def lemmaNotPrefixMatchThenCannotMatchLonger[C](z: Zipper[C], prefix: List[C], s: List[C]): Unit = {
+    require(ListUtils.isPrefix(prefix, s))
+    require(!prefixMatchZipper(z, prefix))
+    decreases(prefix.size)
+    prefix match
+      case Nil() => lemmaLostCauseCannotMatch(z, s)
+      case Cons(hd, tl) => lemmaNotPrefixMatchThenCannotMatchLonger(derivationStepZipper(z, hd), tl, s.tail)
+    
+  }.ensuring(_ => !matchZipper(z, s))
+
+  @ghost
+  @inlineOnce
+  @opaque
+  def lemmaLostCauseCannotMatch[C](z: Zipper[C], s: List[C]): Unit = {
+    require(lostCauseZipper(z))
+    decreases(s.size)
+    s match {
+      case Nil() => 
+        if(matchZipper(z, s)) {
+          assert(nullableZipper(z))
+          lemmaZipperNullableThenNotLostCause(z)
+          check(false)
+        }
+      case Cons(hd, tl) => 
+        lemmaLostCauseFixPoint(z, hd)
+        assert(lostCauseZipper(derivationStepZipper(z, hd)))
+        lemmaLostCauseCannotMatch(derivationStepZipper(z, hd), tl)
+    }
+  }.ensuring(_ => !matchZipper(z, s))
+
+  @ghost
+  @inlineOnce
+  @opaque
+  def lemmaLostCauseFixPoint[C](z: Zipper[C], a: C): Unit = {
+    require(lostCauseZipper(z))
+    val derivStep = derivationStepZipper(z, a)
+    val f = (cz: Context[C]) => derivationStepZipperUp(cz, a)
+    assert(derivStep == z.flatMap(f))
+    assert(lostCauseZipper(derivStep) == derivStep.forall(cz => lostCauseContext(cz)))
+    assert(z.forall(lostCauseContext))
+    if(!lostCauseZipper(derivStep)){
+      assert(!derivStep.forall(c => lostCauseContext(c)))
+      ListUtils.lemmaNotForallThenExists(derivStep.toList, (c: Context[C]) => lostCauseContext(c))
+      assert(derivStep.exists(c => !lostCauseContext(c)))
+      val notLostCauseWitness = ListUtils.getWitness(derivStep.toList, (c: Context[C]) => !lostCauseContext(c))
+      assert(derivStep.contains(notLostCauseWitness))
+      assert(!lostCauseContext(notLostCauseWitness))
+      SetUtils.lemmaFlatMapPost(z, f, notLostCauseWitness)
+      assert(z.exists(ct => f(ct).contains(notLostCauseWitness)))
+      val witnessContext = SetUtils.getWitness(z, (ct: Context[C]) => f(ct).contains(notLostCauseWitness))
+      assert(z.contains(witnessContext))
+      assert(f(witnessContext).contains(notLostCauseWitness))
+      ListSpecs.forallContained(z.toList, lostCauseContext, witnessContext)
+      assert(lostCauseContext(witnessContext))
+      lemmaLostCauseFixPointDerivUp(witnessContext, a)
+      assert(lostCauseZipper(f(witnessContext)))
+      ListSpecs.forallContained(f(witnessContext).toList, lostCauseContext, notLostCauseWitness)
+      check(false)
+    }
+  }.ensuring(_ => lostCauseZipper(derivationStepZipper(z, a)))
+
+  @ghost
+  @inlineOnce
+  @opaque
+  def lemmaLostCauseFixPointDerivUp[C](ctx: Context[C], a: C): Unit = {
+    require(lostCauseContext(ctx))
+    decreases(ctx.exprs.size)
+    ctx.exprs match {
+      case Cons(right, parent) if nullable(right) => 
+        lemmaNullableThenNotLostCause(right)
+        lemmaLostCauseFixPointDerivUp(Context(parent), a)
+        lemmaLostCauseFixPointDerivDown(right, Context(parent), a)
+        SetUtils.lemmaConcatPreservesForall(derivationStepZipperDown(right, Context(parent), a), derivationStepZipperUp(Context(parent), a), lostCauseContext)
+      case Cons(right, parent) => 
+        lemmaLostCauseFixPointDerivDown(right, Context(parent), a)
+      case Nil() => ()
+    }
+
+  }.ensuring(_ => lostCauseZipper(derivationStepZipperUp(ctx, a)))
+
+  @ghost
+  @inlineOnce
+  @opaque
+  def lemmaLostCauseFixPointDerivDown[C](expr: Regex[C], ctx: Context[C], a: C): Unit = {
+    require(validRegex(expr))
+    require(lostCause(expr) || lostCauseContext(ctx))
+    decreases(regexDepth(expr))
+    expr match {
+      case ElementMatch(c) if c == a => ()
+      case Union(rOne, rTwo) => 
+        lemmaLostCauseFixPointDerivDown(rOne, ctx, a)
+        lemmaLostCauseFixPointDerivDown(rTwo, ctx, a)
+        SetUtils.lemmaConcatPreservesForall(derivationStepZipperDown(rOne, ctx, a), derivationStepZipperDown(rTwo, ctx, a), lostCauseContext)
+      case Concat(rOne, rTwo) if nullable(rOne) => 
+        lemmaNullableThenNotLostCause(rOne)
+        lemmaLostCauseFixPointDerivDown(rOne, ctx.prepend(rTwo), a)
+        lemmaLostCauseFixPointDerivDown(rTwo, ctx, a)
+        SetUtils.lemmaConcatPreservesForall(derivationStepZipperDown(rOne, ctx.prepend(rTwo), a), derivationStepZipperDown(rTwo, ctx, a), lostCauseContext)
+      case Concat(rOne, rTwo) => 
+        lemmaLostCauseFixPointDerivDown(rOne, ctx.prepend(rTwo), a)
+      case Star(rInner) => lemmaLostCauseFixPointDerivDown(rInner, ctx.prepend(Star(rInner)), a)
+      case _ => ()
+    }
+    
+  }.ensuring(_ => lostCauseZipper(derivationStepZipperDown(expr, ctx, a)))
 
   @ghost
   @inlineOnce
@@ -3670,6 +3811,21 @@ object VerifiedRegexMatcher {
 
 
 // ---------------------------------------------------- Lemmas ----------------------------------------------------
+
+  @ghost
+  @inlineOnce
+  @opaque
+  def lemmaMatchThenPrefixMatch[C](r: Regex[C], prefix: List[C], s: List[C]): Unit = {
+    require(validRegex(r))
+    require(ListUtils.isPrefix(prefix, s))
+    require(matchR(r, s))
+    decreases(prefix.size)
+    if(!prefixMatch(r, prefix)) {
+      lemmaNotPrefixMatchThenCannotMatchLonger(r, prefix, s)
+      check(false)
+    }
+    
+  }.ensuring(_ => prefixMatch(r, prefix))
 
   /**
    * Prove that if a string is not in the prefix set of a regex, then the regex will never match a string starting 

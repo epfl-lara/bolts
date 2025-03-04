@@ -13,6 +13,24 @@ import stainless.lang.Quantifiers
 import ch.epfl.lexer.ListUtils.lemmaSubseqRefl
 
 object SetUtils {
+
+  /**
+   * We need this, because otherwise the SMT query explodes
+   */
+  @opaque
+  @ghost
+  @inlineOnce
+  def lemmaFlatMapPost[A, B](s: Set[A], f: A => Set[B], b: B): Unit = {
+    require(s.flatMap(f).contains(b))
+    if(s.isEmpty) {
+      lemmaFlatMapOnEmptySetIsEmpty(s, f)
+      check(false)
+    } else {
+        unfold(s.flatMapPost(f)(b))
+        assert(s.exists(a => f(a).contains(b)))
+    }
+  }.ensuring(_ => s.exists(a => f(a).contains(b)))
+
   @opaque
   @ghost
   @inlineOnce
@@ -1441,4 +1459,17 @@ object ListUtils {
     require(!l.isEmpty)
    
   }.ensuring(_ => (l.tail).content == s - l.head)
+
+  @ghost
+  @opaque
+  @inlineOnce
+  def lemmaNotForallThenExists[B](l: List[B], p: B => Boolean): Unit = {
+    require(!l.forall(p))
+    decreases(l)
+    l match {
+      case Cons(hd, tl) if !p(hd) => ()
+      case Cons(hd, tl) if p(hd)  => lemmaNotForallThenExists(tl, p)
+      case Nil()                  => ()
+    }
+  }.ensuring(_ => l.exists(e => !p(e)))
 }
