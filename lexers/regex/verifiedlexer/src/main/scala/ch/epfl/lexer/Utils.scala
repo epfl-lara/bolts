@@ -1472,4 +1472,16 @@ object ListUtils {
       case Nil()                  => ()
     }
   }.ensuring(_ => l.exists(e => !p(e)))
+
+  @ghost
+  @opaque
+  @inlineOnce
+  def lemmaForallThenNotExists[B](l: List[B], p: B => Boolean): Unit = {
+    require(l.forall(p))
+    decreases(l)
+    l match {
+      case Cons(hd, tl) => lemmaForallThenNotExists(tl, p)
+      case Nil()                  => ()
+    }
+  }.ensuring(_ => !l.exists(e => !p(e)))
 }
