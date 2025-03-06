@@ -21,6 +21,7 @@ import stainless.lang.StaticChecks._
 import stainless.annotation.isabelle.lemma
 import stainless.lang.Quantifiers.Exists
 import stainless.lang.Quantifiers.ExistsThe
+import stainless.lang.Quantifiers.pickWitness
 import stainless.lang.Heap.get
 
 
@@ -602,43 +603,45 @@ object ZipperRegex {
     z.exists(c => nullableContext(c))
   }
 
-  inline def lostCauseContext[C](c: Context[C]): Boolean = getWitnessLanguage(c).isEmpty
+  def lostCauseContext[C](c: Context[C]): Boolean = {
+    getLanguageWitness(c).isEmpty
+  }.ensuring(res => res == c.exists(r => lostCause(r)))
 
-  def getWitnessLanguage[C](c: Context[C]): Option[List[C]] = {
+  def getLanguageWitness[C](c: Context[C]): Option[List[C]] = {
     decreases(c.exprs.size)
     c.exprs match
-      case Cons(hd, tl) => getLanguageWitness(hd) match
+      case Cons(hd, tl) => VerifiedRegex.getLanguageWitness(hd) match
         case Some(v) => 
-          getWitnessLanguage(Context(tl)) match
+          getLanguageWitness(Context(tl)) match
             case Some(v2) => Some(v ++ v2)
             case None() => None()
         case None() => None()
       case Nil() => Some(List())
-  }
+  }.ensuring(res => res.isEmpty == c.exists(r => lostCause(r)))
 
   def lostCauseZipper[C](z: Zipper[C]): Boolean = {
     ghostExpr({
       if !z.forall(c => lostCauseContext(c)) then
         ListUtils.lemmaNotForallThenExists(z.toList, (c: Context[C]) => lostCauseContext(c))
         assert(z.exists(c => !lostCauseContext(c)))
-        assert(getWitnessLanguage(z).isDefined)
+        assert(getLanguageWitness(z).isDefined)
       else  
         assert(z.forall(c => lostCauseContext(c)))
         ListUtils.lemmaForallThenNotExists(z.toList, (c: Context[C]) => lostCauseContext(c))
         assert(!z.exists(c => !lostCauseContext(c)))
-        assert(getWitnessLanguage(z).isEmpty)
+        assert(getLanguageWitness(z).isEmpty)
     })
     z.forall(c => lostCauseContext(c))
-  }.ensuring(res => res == getWitnessLanguage(z).isEmpty)
+  }.ensuring(res => res == getLanguageWitness(z).isEmpty)
   
   @ghost
-  def getWitnessLanguage[C](z: Zipper[C]): Option[List[C]] = {
+  def getLanguageWitness[C](z: Zipper[C]): Option[List[C]] = {
     if z.exists(c => !lostCauseContext(c)) then
       val notLostCauseWitness = SetUtils.getWitness(z, (c: Context[C]) => !lostCauseContext(c))
-      getWitnessLanguage(notLostCauseWitness)
+      getLanguageWitness(notLostCauseWitness)
     else
       None()
-  }
+  }.ensuring(res => res.isDefined == z.exists(c => !lostCauseContext(c)))
 
   def matchZipper[C](z: Zipper[C], input: List[C]): Boolean = {
     decreases(input.size)
@@ -713,17 +716,19 @@ object ZipperRegex {
   @opaque
   def lemmaGetWitnessMatchesZipper[C](z: Zipper[C]): Unit = {
     require(!lostCauseZipper(z))
+    assert(getLanguageWitness(z).isDefined)
+    assert(!z.forall(c => lostCauseContext(c)))
+    ListUtils.lemmaNotForallThenExists(z.toList, (c: Context[C]) => lostCauseContext(c))
     assert(z.exists(c => !lostCauseContext(c)))
     val notLostCauseWitness = SetUtils.getWitness(z, (c: Context[C]) => !lostCauseContext(c))
-    // getWitnessLanguage(notLostCauseWitness)
     lemmaGetWitnessMatchesContext(notLostCauseWitness)
-    assert(matchZipper(Set(notLostCauseWitness), getWitnessLanguage(notLostCauseWitness).get))
+    assert(matchZipper(Set(notLostCauseWitness), getLanguageWitness(notLostCauseWitness).get))
     assert(z.contains(notLostCauseWitness))
-    val s = getWitnessLanguage(notLostCauseWitness).get
+    val s = getLanguageWitness(notLostCauseWitness).get
     SetUtils.lemmaContainsThenExists(z, notLostCauseWitness, c => matchZipper(Set(c), s))
     assert(z.exists(c => matchZipper(Set(c), s)))
     lemmaExistsMatchingContextThenMatchingString(z.toList, s)
-  }.ensuring(_ => matchZipper(z, getWitnessLanguage(z).get))
+  }.ensuring(_ => matchZipper(z, getLanguageWitness(z).get))
 
   @ghost
   @inlineOnce
@@ -732,9 +737,9 @@ object ZipperRegex {
     require(!lostCauseContext(c))
     decreases(c.exprs.size)
     c.exprs match
-      case Cons(hd, tl) => getLanguageWitness(hd) match
+      case Cons(hd, tl) => VerifiedRegex.getLanguageWitness(hd) match
         case Some(v1) => 
-          getWitnessLanguage(Context(tl)) match
+          getLanguageWitness(Context(tl)) match
             case Some(v2) => 
               lemmaGetWitnessMatches(hd)
               lemmaGetWitnessMatchesContext(Context(tl))
@@ -746,7 +751,7 @@ object ZipperRegex {
             case None() => () 
         case None() => () 
       case Nil() => lemmaZipperOfEmptyContextMatchesEmptyString(Set(c), List())
-  }.ensuring(_ => matchZipper(Set(c), getWitnessLanguage(c).get))
+  }.ensuring(_ => matchZipper(Set(c), getLanguageWitness(c).get))
 
   @ghost
   @inlineOnce
@@ -765,18 +770,35 @@ object ZipperRegex {
   @ghost
   @opaque
   @inlineOnce // type Zipper[C] = Set[Context[C]]
-  def prefixMatchZipperRegexEquiv[C](z: Zipper[C], zl: List[Context[C]], r: Regex[C], s: List[C]): Unit = {
+  def prefixMatchZipperRegexEquiv[C](z: Zipper[C], zl: List[Context[C]], r: Regex[C], prefix: List[C]): Unit = {
     require(validRegex(r))
     require(z.toList == zl)
     require(r == unfocusZipper(zl))
 
-    theoremZipperRegexEquiv(z, zl, r, s)
+    if !prefixMatch(r, prefix) && prefixMatchZipper(z, prefix) then
+      lemmaPrefixMatchThenExistsStringThatMatches(z, prefix)
+      assert(Exists((ss: List[C]) => matchZipper(z, ss) && ListUtils.isPrefix(prefix, ss)))
+      val witness = pickWitness[List[C]]((ss: List[C]) => matchZipper(z, ss) && ListUtils.isPrefix(prefix, ss))
+      assert(matchZipper(z, witness))
+      theoremZipperRegexEquiv(z, zl, r, witness)
+      assert(matchR(r, witness))
+      VerifiedRegexMatcher.lemmaNotPrefixMatchThenCannotMatchLonger(r, prefix, witness)
+      check(false)
+    else if prefixMatch(r, prefix) && !prefixMatchZipper(z, prefix) then
+      VerifiedRegexMatcher.lemmaPrefixMatchThenExistsStringThatMatches(r, prefix)
+      assert(Exists((ss: List[C]) => matchR(r, ss) && ListUtils.isPrefix(prefix, ss)))
+      val witness = pickWitness[List[C]]((ss: List[C]) => matchR(r, ss) && ListUtils.isPrefix(prefix, ss))
+      assert(matchR(r, witness))
+      theoremZipperRegexEquiv(z, zl, r, witness)
+      assert(matchZipper(z, witness))
+      lemmaMatchThenPrefixMatchZipper(z, prefix, witness)
+      check(false)
 
 
 
     
 
-  }.ensuring(_ => prefixMatch(r, s) == prefixMatchZipper(z, s))
+  }.ensuring(_ => prefixMatch(r, prefix) == prefixMatchZipper(z, prefix))
 
 
 
@@ -792,6 +814,33 @@ object ZipperRegex {
       case Cons(hd, tl) => lemmaNotPrefixMatchThenCannotMatchLonger(derivationStepZipper(z, hd), tl, s.tail)
     
   }.ensuring(_ => !matchZipper(z, s))
+
+  @ghost
+  @inlineOnce
+  @opaque
+  def lemmaPrefixMatchThenExistsStringThatMatches[C](z: Zipper[C], prefix: List[C]): Unit = {
+    require(prefixMatchZipper(z, prefix))
+    decreases(prefix.size)
+    prefix match
+      case Nil() => 
+        val witness = getLanguageWitness(z).get
+        lemmaGetWitnessMatchesZipper(z)
+        assert(matchZipper(z, witness))
+        assert(ListUtils.isPrefix(prefix, witness))
+        ExistsThe(witness)((s: List[C]) => matchZipper(z, s) && ListUtils.isPrefix(prefix, s))
+      case Cons(hd, tl) => 
+        val zz = derivationStepZipper(z, hd)
+        lemmaPrefixMatchThenExistsStringThatMatches(zz, tl)
+        val p: List[C] => Boolean = (s: List[C]) => matchZipper(zz, s) && ListUtils.isPrefix(tl, s)
+        check(Exists(p))
+        val witness = pickWitness[List[C]](p)
+        assert(matchZipper(derivationStepZipper(z, hd), witness))
+        assert(ListUtils.isPrefix(tl, witness))
+        assert(matchZipper(z, hd :: witness))
+        assert(ListUtils.isPrefix(prefix, hd :: witness))
+        ExistsThe(hd :: witness)((s: List[C]) => matchZipper(z, s) && ListUtils.isPrefix(prefix, s))
+
+  }.ensuring(_ => Exists((s: List[C]) => matchZipper(z, s) && ListUtils.isPrefix(prefix, s)))
 
   @ghost
   @inlineOnce
@@ -3925,6 +3974,34 @@ object VerifiedRegexMatcher {
     assert(getLanguageWitness(r).isDefined && matchR(r, getLanguageWitness(r).get))
     ExistsThe(getLanguageWitness(r))(s => s.isDefined && matchR(r, s.get))
   }.ensuring(_ => Exists((sOpt: Option[List[C]]) => sOpt.isDefined && matchR(r, sOpt.get)))
+
+  @ghost
+  @inlineOnce
+  @opaque
+  def lemmaPrefixMatchThenExistsStringThatMatches[C](r: Regex[C], prefix: List[C]): Unit = {
+    require(validRegex(r))
+    require(prefixMatch(r, prefix))
+    decreases(prefix.size)
+    prefix match
+      case Nil() => 
+        val witness = getLanguageWitness(r).get
+        lemmaGetWitnessMatches(r)
+        assert(matchR(r, witness))
+        assert(ListUtils.isPrefix(prefix, witness))
+        ExistsThe(witness)((s: List[C]) => matchR(r, s) && ListUtils.isPrefix(prefix, s))
+      case Cons(hd, tl) => 
+        val rr = derivativeStep(r, hd)
+        lemmaPrefixMatchThenExistsStringThatMatches(rr, tl)
+        val p: List[C] => Boolean = (s: List[C]) => matchR(rr, s) && ListUtils.isPrefix(tl, s)
+        check(Exists(p))
+        val witness = pickWitness[List[C]](p)
+        assert(matchR(rr, witness))
+        assert(ListUtils.isPrefix(tl, witness))
+        assert(matchR(r, hd :: witness))
+        assert(ListUtils.isPrefix(prefix, hd :: witness))
+        ExistsThe(hd :: witness)((s: List[C]) => matchR(r, s) && ListUtils.isPrefix(prefix, s))
+
+  }.ensuring(_ => Exists((s: List[C]) => matchR(r, s) && ListUtils.isPrefix(prefix, s)))
 
   @ghost
   @inlineOnce
