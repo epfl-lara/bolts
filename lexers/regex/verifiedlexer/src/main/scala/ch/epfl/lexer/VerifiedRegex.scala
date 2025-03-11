@@ -2967,7 +2967,6 @@ object VerifiedRegexMatcher {
     if (prefix.isEmpty) !lostCause(r) else prefixMatch(derivativeStep(r, prefix.head), prefix.tail)
   }
 
-
   def matchRMem[C](r: Regex[C], input: List[C])(implicit cache: Cache[C]): Boolean = {
     require(validRegex(r))
     require(cache.valid)
