@@ -78,12 +78,8 @@ object VerifiedLexer {
   import VerifiedRegex._
   import VerifiedRegexMatcher._
 
-  case class Token[C](characters: List[C], rule: Rule[C])
-  case class Rule[C](regex: Regex[C], tag: String, isSeparator: Boolean)
-
   object Lexer {
 
-    @ghost
     def ruleValid[C](r: Rule[C]): Boolean = {
       validRegex(r.regex) && !nullable(r.regex) && r.tag != ""
     }
@@ -95,12 +91,17 @@ object VerifiedLexer {
       }
     }
     @ghost
-    def rulesValid[C](rs: List[Rule[C]]): Boolean = {
+    def rulesValidInductive[C](rs: List[Rule[C]]): Boolean = {
+      decreases(rs)
       rs match {
-        case Cons(hd, tl) => ruleValid(hd) && rulesValid(tl)
+        case Cons(hd, tl) => ruleValid(hd) && rulesValidInductive(tl)
         case Nil()        => true
       }
-    }
+    }.ensuring(res => res == rs.forall(ruleValid))
+
+    def rulesValid[C](rs: List[Rule[C]]): Boolean = {
+      rs.forall(ruleValid)
+    }.ensuring(res => res == rulesValidInductive(rs))
 
     def rulesProduceIndivualToken[C](rs: List[Rule[C]], t: Token[C]): Boolean = {
       require(!rs.isEmpty)
@@ -141,17 +142,17 @@ object VerifiedLexer {
     }
 
     def rulesRegex[C](rules: List[Rule[C]]): Regex[C] = {
-      require(rulesValid(rules))
+      require(rulesValidInductive(rules))
       ghostExpr({
         def lemma(@induct rs: List[Rule[C]]): Unit = {
-          require(rulesValid(rs))
+          require(rulesValidInductive(rs))
         }.ensuring(_ => rs.map(_.regex).forall(r => validRegex(r)))
         lemma(rules)
       })
       VerifiedRegex.generalisedUnion(rules.map(_.regex))
     }
 
-    @ghost
+    // @ghost
     def tokensListTwoByTwoPredicate[C](l: List[Token[C]], rules: List[Rule[C]], pred: (Token[C], Token[C], List[Rule[C]]) => Boolean): Boolean = {
       decreases(l)
       l match {
@@ -160,7 +161,6 @@ object VerifiedLexer {
       }
     }
 
-    @ghost
     def separableTokensPredicate[C](t1: Token[C], t2: Token[C], rules: List[Rule[C]]): Boolean = {
       
       !rules.isEmpty &&
@@ -171,7 +171,6 @@ object VerifiedLexer {
       !VerifiedRegexMatcher.prefixMatch(rulesRegex(rules), t1.characters ++ List(t2.characters.head))
     }
 
-    @ghost
     def rulesInvariant[C](rules: List[Rule[C]]): Boolean =
       rulesValid(rules) && noDuplicateTag(rules, Nil())
 
@@ -183,7 +182,7 @@ object VerifiedLexer {
       *
       * @param rules
       * @param input
-      */
+      */  
     def lex[C](
         rules: List[Rule[C]],
         input: List[C]
@@ -275,7 +274,7 @@ object VerifiedLexer {
         rulesArg: List[Rule[C]],
         input: List[C]
     ): Option[(Token[C], List[C])] = {
-      require(rulesValid(rulesArg))
+      require(rulesValidInductive(rulesArg))
       require(!rulesArg.isEmpty)
       decreases(rulesArg.size)
 
@@ -350,11 +349,11 @@ object VerifiedLexer {
       require(ListUtils.isPrefix(otherP, input))
       require(r != otherR)
       require({
-        lemmaRuleInListAndRulesValidThenRuleIsValid(r, rules)
+        lemmaRuleInListAndrulesValidInductiveThenRuleIsValid(r, rules)
         tokens.isEmpty || matchR(r.regex, tokens.head.characters)
       })
 
-      lemmaRuleInListAndRulesValidThenRuleIsValid(otherR, rules)
+      lemmaRuleInListAndrulesValidInductiveThenRuleIsValid(otherR, rules)
       if (ListUtils.getIndex(rules, r) > ListUtils.getIndex(rules, otherR)) {
 
         tokens match {
@@ -803,7 +802,7 @@ object VerifiedLexer {
       require(maxPrefix(rules, token.characters).get._2.isEmpty)
       require(token.rule == rule)
       require({
-        lemmaRuleInListAndRulesValidThenRuleIsValid(rule, rules)
+        lemmaRuleInListAndrulesValidInductiveThenRuleIsValid(rule, rules)
         matchR(rule.regex, token.characters)
       })
       require(!suffix.isEmpty)
@@ -923,7 +922,7 @@ object VerifiedLexer {
       require(maxPrefix(rules, token.characters).get._2.isEmpty)
       require(token.rule == rule)
       require({
-        lemmaRuleInListAndRulesValidThenRuleIsValid(rule, rules)
+        lemmaRuleInListAndrulesValidInductiveThenRuleIsValid(rule, rules)
         matchR(rule.regex, token.characters)
       })
       require(!suffix.isEmpty)
@@ -1086,7 +1085,7 @@ object VerifiedLexer {
       require(rules.contains(r))
       require(maxPrefix(rules, input) == None[(Token[C], List[C])]())
 
-      lemmaRuleInListAndRulesValidThenRuleIsValid(r, rules)
+      lemmaRuleInListAndrulesValidInductiveThenRuleIsValid(r, rules)
 
       lemmaMaxPrefixReturnsNoneThenAnyRuleReturnsNone(r, rules, input)
       lemmaMaxPrefOneRuleReturnsNoneThenNoPrefMaxRegex(r, p, input)
@@ -1114,8 +1113,8 @@ object VerifiedLexer {
 
       assert(ListUtils.getIndex(rules, rBis) < ListUtils.getIndex(rules, r))
 
-      lemmaRuleInListAndRulesValidThenRuleIsValid(rBis, rules)
-      lemmaRuleInListAndRulesValidThenRuleIsValid(r, rules)
+      lemmaRuleInListAndrulesValidInductiveThenRuleIsValid(rBis, rules)
+      lemmaRuleInListAndrulesValidInductiveThenRuleIsValid(r, rules)
       rules match {
         case Cons(hd, tl) if hd == rBis => {
           ListUtils.lemmaGetIndexBiggerAndHeadEqThenTailContains(rules, rBis, r)
@@ -1195,7 +1194,7 @@ object VerifiedLexer {
       require(rules.contains(rBis))
 
       require({
-        lemmaRuleInListAndRulesValidThenRuleIsValid(r, rules)
+        lemmaRuleInListAndrulesValidInductiveThenRuleIsValid(r, rules)
         matchR(r.regex, p)
       })
       require({
@@ -1208,8 +1207,8 @@ object VerifiedLexer {
       require(maxPrefix(rules, input) == Some(Token(p, r), ListUtils.getSuffix(input, p)))
 
       // For preconditions
-      lemmaRuleInListAndRulesValidThenRuleIsValid(r, rules)
-      lemmaRuleInListAndRulesValidThenRuleIsValid(rBis, rules)
+      lemmaRuleInListAndrulesValidInductiveThenRuleIsValid(r, rules)
+      lemmaRuleInListAndrulesValidInductiveThenRuleIsValid(rBis, rules)
       ListUtils.lemmaIsPrefixRefl(input, input)
 
       // Main lemma
@@ -1250,7 +1249,7 @@ object VerifiedLexer {
       assert(validRegex(r.regex))
 
       ListUtils.lemmaIsPrefixThenSmallerEqSize(pBis, input)
-      lemmaRuleInListAndRulesValidThenRuleIsValid(rBis, rules)
+      lemmaRuleInListAndrulesValidInductiveThenRuleIsValid(rBis, rules)
 
       val bisTokenSuff = maxPrefixOneRule(rBis, input) // == Some(Token(pBis, rBis), ListUtils.getSuffix(input, pBis))
       if (bisTokenSuff.isEmpty) {
@@ -1320,7 +1319,7 @@ object VerifiedLexer {
       require(input == p ++ suffix)
       require(maxPrefix(rules, input) == Some(Token(p, r), suffix))
       require({
-        lemmaRuleInListAndRulesValidThenRuleIsValid(r, rules)
+        lemmaRuleInListAndrulesValidInductiveThenRuleIsValid(r, rules)
         matchR(r.regex, p)
       })
       decreases(rules.size)
@@ -1450,13 +1449,13 @@ object VerifiedLexer {
         input: List[C]
     ): Unit = {
       require(!rules.isEmpty)
-      require(rulesValid(rules))
+      require(rulesValidInductive(rules))
       require(rules.contains(r))
 
       require(maxPrefix(rules, input).isEmpty)
       decreases(rules)
 
-      lemmaRuleInListAndRulesValidThenRuleIsValid(r, rules)
+      lemmaRuleInListAndrulesValidInductiveThenRuleIsValid(r, rules)
 
       rules match {
         case Cons(hd, tl) if r == hd => ()
@@ -1515,14 +1514,14 @@ object VerifiedLexer {
     }.ensuring (_ => !matchR(r.regex, p))
 
     @ghost
-    def lemmaRuleInListAndRulesValidThenRuleIsValid[C](r: Rule[C], rules: List[Rule[C]]): Unit = {
+    def lemmaRuleInListAndrulesValidInductiveThenRuleIsValid[C](r: Rule[C], rules: List[Rule[C]]): Unit = {
       require(rules.contains(r))
-      require(rulesValid(rules))
+      require(rulesValidInductive(rules))
       rules match {
         case Cons(hd, tl) if (hd == r) => assert(ruleValid(r))
         case Cons(hd, tl) if (hd != r) => {
           assert(tl.contains(r))
-          lemmaRuleInListAndRulesValidThenRuleIsValid(r, tl)
+          lemmaRuleInListAndrulesValidInductiveThenRuleIsValid(r, tl)
         }
         case Nil() => assert(false)
       }
@@ -1531,8 +1530,8 @@ object VerifiedLexer {
     @ghost
     def lemmaInvariantOnRulesThenOnTail[C](r: Rule[C], rules: List[Rule[C]]): Unit = {
       require(rulesInvariant(Cons(r, rules)))
-      assert(rulesValid(Cons(r, rules)) && noDuplicateTag(Cons(r, rules), Nil()))
-      assert(rulesValid(rules))
+      assert(rulesValidInductive(Cons(r, rules)) && noDuplicateTag(Cons(r, rules), Nil()))
+      assert(rulesValidInductive(rules))
       assert(noDuplicateTag(rules, List(r.tag)))
 
       lemmaNoDupTagThenAlsoWithSubListAcc(List(r.tag), Nil(), rules)
@@ -1779,7 +1778,7 @@ object VerifiedLexer {
         require(token.rule == rule)
         require(input == token.characters ++ suffix)
         require({
-          lemmaRuleInListAndRulesValidThenRuleIsValid(rule, rules)
+          lemmaRuleInListAndrulesValidInductiveThenRuleIsValid(rule, rules)
           matchR(rule.regex, token.characters)
         })
 
@@ -1790,14 +1789,14 @@ object VerifiedLexer {
         assert(rules.contains(rule))
         ghostExpr({
           def lemma(@induct rs: List[Rule[C]]): Unit = {
-            require(rulesValid(rs))
+            require(rulesValidInductive(rs))
           }.ensuring(_ => rs.map(_.regex).forall(r => validRegex(r)))
           lemma(rules)
         })
         assert(rulesRegex(rules) == VerifiedRegex.generalisedUnion(rules.map(_.regex)))
         ghostExpr({
           def lemma(rs: List[Rule[C]]): Unit = {
-            require(rulesValid(rs))
+            require(rulesValidInductive(rs))
             require(rs.contains(rule))
             decreases(rs)
             rs match

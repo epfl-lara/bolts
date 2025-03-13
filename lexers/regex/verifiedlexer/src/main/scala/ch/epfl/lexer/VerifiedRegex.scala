@@ -280,7 +280,7 @@ object VerifiedRegex {
     }
   }.ensuring(res => validRegex(res) && (if(l.isEmpty) isEmptyExpr(res) else if(l.tail.isEmpty) res == l.head else isConcat(res)))
 
-  @ghost
+  // @ghost
   def validRegex[C](r: Regex[C]): Boolean = r match {
     case ElementMatch(c)    => true
     case Star(r)            => !nullable(r) && validRegex(r) 
