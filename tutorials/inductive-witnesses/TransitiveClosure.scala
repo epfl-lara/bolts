@@ -71,4 +71,17 @@ object TransitiveClosure:
   }.ensuring(proof => proof.x == x && proof.y == y)
 
 
+  final case class Prop(p: Boolean):
+    require(p)
+  val obvious = Prop(true)
+
+  def testProp = {
+    val x = 10
+    val y = 20
+    val p1 = Prop(x < y)
+  }
+  def testFunProp(x: BigInt): Prop = {
+    obvious
+  }.ensuring(_.p == (x < x + 1))
+
 end TransitiveClosure
