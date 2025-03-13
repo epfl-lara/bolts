@@ -2657,7 +2657,9 @@ object ZipperRegex {
     require(ListUtils.isPrefix(testedP, totalInput))
     decreases(totalInput.size - testedP.size)
 
-    if (testedP == totalInput) {
+    if (lostCauseZipper(z)) {
+      (Nil[C](), totalInput)
+    } else if (testedP == totalInput) {
       if (nullableZipper(z)) {
         (testedP, Nil[C]())
       } else {
@@ -2756,10 +2758,26 @@ object ZipperRegex {
     require(ListUtils.isPrefix(knownP, input))
     require(knownP.size >= testedP.size)
     require(matchZipper(baseZ, knownP))
+    require({
+      ListUtils.lemmaPrefixFromSameListAndStrictlySmallerThenPrefixFromEachOther(knownP, testedP, input)
+      matchZipper(z, ListUtils.getSuffix(knownP, testedP))
+    })
     require(derivationZipper(baseZ, testedP) == z)
     decreases(knownP.size - testedP.size)
 
-    if (testedP.size == knownP.size) {
+     if(lostCauseZipper(z)){
+      // Here derivative(r, testedP) cannot be lost cause, because we know baseR matches knownP and knownP is larger than testedP
+      lemmaMatchZipperIsSameAsWholeDerivativeAndNil(baseZ, testedP)
+      ListUtils.lemmaPrefixFromSameListAndStrictlySmallerThenPrefixFromEachOther(knownP, testedP, input)
+      val knownPSuffix = ListUtils.getSuffix(knownP, testedP)
+      assert(testedP ++ knownPSuffix == knownP)
+      assert(matchZipper(baseZ, knownP))
+
+      assert(matchZipper(z, knownPSuffix))
+
+      lemmaLostCauseCannotMatch(z, knownPSuffix)
+      check(false)
+    } else if (testedP.size == knownP.size) {
       ListUtils.lemmaIsPrefixSameLengthThenSameList(testedP, knownP, input)
       lemmaIfMatchZipperThenLongestMatchFromThereReturnsAtLeastThis(baseZ, z, input, testedP)
       check(findLongestMatchInnerZipper(z, testedP, input)._1.size >= knownP.size)
@@ -2770,6 +2788,30 @@ object ZipperRegex {
       ListUtils.lemmaAddHeadSuffixToPrefixStillPrefix(testedP, input)
 
       lemmaDerivativeOnLWithANewCharIsANewDerivativeStep(baseZ, z, testedP, suffix.head)
+
+      // Below we prove 1 and 2 to prove that matchR(r, ListUtils.getSuffix(knownP, testedP)) after the new derivative
+      ListUtils.lemmaPrefixFromSameListAndStrictlySmallerThenPrefixFromEachOther(knownP, testedP, input)
+      val knownPSuffix = ListUtils.getSuffix(knownP, testedP)
+      ListUtils.lemmaPrefixFromSameListAndStrictlySmallerThenPrefixFromEachOther(knownP, newP, input)
+      val newKnownPSuffix = ListUtils.getSuffix(knownP, newP)
+      val rest = ListUtils.getSuffix(input, knownP)
+      assert(knownP ++ rest == input)
+      assert(testedP ++ knownPSuffix ++ rest == input)
+      assert(testedP ++ suffix == input)
+      ListUtils.lemmaTwoListsConcatAssociativity(testedP, knownPSuffix, rest)
+      assert(testedP ++ (knownPSuffix ++ rest) == input)
+      ListUtils.lemmaSamePrefixThenSameSuffix(testedP, (knownPSuffix ++ rest), testedP, suffix, input)
+      assert(knownPSuffix ++ rest == suffix)
+      assert(knownPSuffix.head == suffix.head) // 1
+      assert(knownPSuffix == suffix.head :: knownPSuffix.tail)
+      assert(testedP ++ knownPSuffix == knownP)
+      assert(testedP ++ List(suffix.head) == newP)
+      assert(newP ++ newKnownPSuffix == knownP)
+      assert(testedP ++ List(suffix.head) ++ newKnownPSuffix == knownP)
+      ListUtils.lemmaTwoListsConcatAssociativity(testedP, List(suffix.head), newKnownPSuffix)
+      ListUtils.lemmaSamePrefixThenSameSuffix(testedP, List(suffix.head) ++ newKnownPSuffix, testedP, knownPSuffix, knownP)
+      assert(knownPSuffix.tail == newKnownPSuffix) // 2
+
       lemmaKnownAcceptedStringThenFromSmallPAtLeastThat(baseZ, derivationStepZipper(z, suffix.head), input, newP, knownP)
 
       check(findLongestMatchInnerZipper(z, testedP, input)._1.size >= knownP.size)
@@ -2786,6 +2828,11 @@ object ZipperRegex {
     lemmaMatchZipperIsSameAsWholeDerivativeAndNil(baseZ, testedP)
     assert(matchZipper(z, Nil()))
     assert(nullableZipper(z))
+    
+    if(lostCauseZipper(z)){
+      lemmaLostCauseCannotMatch(z, Nil())
+      check(false)
+    }
 
   }.ensuring (_ => findLongestMatchInnerZipper(z, testedP, input)._1.size >= testedP.size)
 
@@ -3279,7 +3326,9 @@ object VerifiedRegexMatcher {
     require(ListUtils.isPrefix(testedP, totalInput))
     decreases(totalInput.size - testedP.size)
 
-    if (testedP == totalInput) {
+    if (lostCause(r)) {
+      (Nil[C](), totalInput)
+    } else if (testedP == totalInput) {
       if (nullable(r)) {
         (testedP, Nil[C]())
       } else {
@@ -3321,7 +3370,9 @@ object VerifiedRegexMatcher {
     require(ListUtils.isPrefix(testedP, totalInput))
     decreases(totalInput.size - testedP.size)
 
-    if (testedP == totalInput) {
+    if (lostCause(r)) {
+      (Nil[C](), totalInput)
+    } else if (testedP == totalInput) {
       if (nullable(r)) {
         (testedP, Nil[C]())
       } else {
@@ -4078,6 +4129,10 @@ object VerifiedRegexMatcher {
     lemmaMatchRIsSameAsWholeDerivativeAndNil(baseR, testedP)
     assert(matchR(r, Nil()))
     assert(nullable(r))
+    if(lostCause(r)){
+      lemmaLostCauseCannotMatch(r, Nil())
+      check(false)
+    }
 
   }.ensuring (_ => findLongestMatchInner(r, testedP, input)._1.size >= testedP.size)
 
@@ -4089,10 +4144,26 @@ object VerifiedRegexMatcher {
     require(ListUtils.isPrefix(knownP, input))
     require(knownP.size >= testedP.size)
     require(matchR(baseR, knownP))
+    require({
+      ListUtils.lemmaPrefixFromSameListAndStrictlySmallerThenPrefixFromEachOther(knownP, testedP, input)
+      matchR(r, ListUtils.getSuffix(knownP, testedP))
+    })
     require(derivative(baseR, testedP) == r)
     decreases(knownP.size - testedP.size)
 
-    if (testedP.size == knownP.size) {
+    if(lostCause(r)){
+      // Here derivative(r, testedP) cannot be lost cause, because we know baseR matches knownP and knownP is larger than testedP
+      lemmaMatchRIsSameAsWholeDerivativeAndNil(baseR, testedP)
+      ListUtils.lemmaPrefixFromSameListAndStrictlySmallerThenPrefixFromEachOther(knownP, testedP, input)
+      val knownPSuffix = ListUtils.getSuffix(knownP, testedP)
+      assert(testedP ++ knownPSuffix == knownP)
+      assert(matchR(baseR, knownP))
+
+      assert(matchR(r, knownPSuffix))
+
+      lemmaLostCauseCannotMatch(r, knownPSuffix)
+      check(false)
+    } else if (testedP.size == knownP.size) {
       ListUtils.lemmaIsPrefixSameLengthThenSameList(testedP, knownP, input)
       lemmaIfMatchRThenLongestMatchFromThereReturnsAtLeastThis(baseR, r, input, testedP)
       check(findLongestMatchInner(r, testedP, input)._1.size >= knownP.size)
@@ -4103,6 +4174,30 @@ object VerifiedRegexMatcher {
       lemmaAddHeadSuffixToPrefixStillPrefix(testedP, input)
 
       lemmaDerivativeOnLWithANewCharIsANewDerivativeStep(baseR, r, testedP, suffix.head)
+
+      // Below we prove 1 and 2 to prove that matchR(r, ListUtils.getSuffix(knownP, testedP)) after the new derivative
+      ListUtils.lemmaPrefixFromSameListAndStrictlySmallerThenPrefixFromEachOther(knownP, testedP, input)
+      val knownPSuffix = ListUtils.getSuffix(knownP, testedP)
+      ListUtils.lemmaPrefixFromSameListAndStrictlySmallerThenPrefixFromEachOther(knownP, newP, input)
+      val newKnownPSuffix = ListUtils.getSuffix(knownP, newP)
+      val rest = ListUtils.getSuffix(input, knownP)
+      assert(knownP ++ rest == input)
+      assert(testedP ++ knownPSuffix ++ rest == input)
+      assert(testedP ++ suffix == input)
+      ListUtils.lemmaTwoListsConcatAssociativity(testedP, knownPSuffix, rest)
+      assert(testedP ++ (knownPSuffix ++ rest) == input)
+      ListUtils.lemmaSamePrefixThenSameSuffix(testedP, (knownPSuffix ++ rest), testedP, suffix, input)
+      assert(knownPSuffix ++ rest == suffix)
+      assert(knownPSuffix.head == suffix.head) // 1
+      assert(knownPSuffix == suffix.head :: knownPSuffix.tail)
+      assert(testedP ++ knownPSuffix == knownP)
+      assert(testedP ++ List(suffix.head) == newP)
+      assert(newP ++ newKnownPSuffix == knownP)
+      assert(testedP ++ List(suffix.head) ++ newKnownPSuffix == knownP)
+      ListUtils.lemmaTwoListsConcatAssociativity(testedP, List(suffix.head), newKnownPSuffix)
+      ListUtils.lemmaSamePrefixThenSameSuffix(testedP, List(suffix.head) ++ newKnownPSuffix, testedP, knownPSuffix, knownP)
+      assert(knownPSuffix.tail == newKnownPSuffix) // 2
+
       lemmaKnownAcceptedStringThenFromSmallPAtLeastThat(baseR, derivativeStep(r, suffix.head), input, newP, knownP)
 
       check(findLongestMatchInner(r, testedP, input)._1.size >= knownP.size)
