@@ -23,9 +23,5 @@ trait LexerInterface {
     *
     * @param l
     */
-  // def print[C](l: List[Token[C]]): List[C]
-
-  // def tokensListTwoByTwoPredicate[C](l: List[Token[C]], rules: List[Rule[C]], pred: (Token[C], Token[C], List[Rule[C]]) => Boolean): Boolean
-
-  // def separableTokensPredicate[C](t1: Token[C], t2: Token[C], rules: List[Rule[C]]): Boolean
+  def print[C](l: List[Token[C]]): List[C]
 }
