@@ -4,7 +4,7 @@ import stainless.lang.StaticChecks.*
 
 /* Arithmetic expression typing */
 
-object RecArithLangSound:
+object TimeoutArithLangSound:
   // Arithmetic expressions working on integers and booleans
   sealed trait Expr
   case class IntConst(c: BigInt) extends Expr
@@ -131,4 +131,4 @@ object RecArithLangSound:
   val t2: Option[TypeExpr] = typeOf(e2)
   val tv1: Outcome = evalTyped(e1, t1.get, 100)
 
-end RecArithLangSound
+end TimeoutArithLangSound
