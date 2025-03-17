@@ -5,22 +5,26 @@ import stainless.lang.StaticChecks.*
 /* Arithmetic expression typing */
 
 object ArithLangSound:
+  // Arithmetic expressions working on integers and booleans
   sealed trait Expr
   case class IntConst(c: BigInt) extends Expr
   case class BoolConst(b: Boolean) extends Expr
   case class ApplyOperator(e1: Expr, op: Operator, e2: Expr) extends Expr
   case class If(condition: Expr, thenBranch: Expr, elseBranch: Expr) extends Expr
 
+  // Several example operators
   sealed trait Operator
   case class PlusOp() extends Operator
   case class MinusOp() extends Operator
   case class EqOp() extends Operator
-  case class StrictAndOp() extends Operator
+  case class StrictAndOp() extends Operator // evaluates both arguments
 
+  // Values are integer or boolean constants
   sealed trait Value
   case class IntVal(c: BigInt) extends Value
   case class BoolVal(b: Boolean) extends Value
 
+  // Apply a given operator to a given value or give None if wrong types
   def evalVal(v1: Value, op: Operator, v2: Value): Option[Value] =
     (v1, op, v2) match
       case (IntVal(c1), PlusOp(), IntVal(c2)) => Some(IntVal(c1 + c2))
@@ -28,9 +32,9 @@ object ArithLangSound:
       case (BoolVal(b1), StrictAndOp(), BoolVal(b2)) => Some(BoolVal(b1 && b2))
       case (IntVal(c1), EqOp(), IntVal(c2)) => Some(BoolVal(c1 == c2))
       case (BoolVal(b1), EqOp(), BoolVal(b2)) => Some(BoolVal(b1 == b2))
-      case _ => None[Value]()
+      case _ => None[Value]() // Evaluation went wrong
       
-  def eval(e: Expr): Option[Value] =
+  def eval(e: Expr): Option[Value] = // e need not type check, so we can get none
     decreases(e)
     e match
       case IntConst(c) => Some(IntVal(c))
@@ -45,15 +49,12 @@ object ArithLangSound:
             if b then eval(e1) else eval(e2)
           case _ => None[Value]()
 
-  def e1: Expr = If(ApplyOperator(IntConst(2), EqOp(), IntConst(3)), IntConst(42), IntConst(7))
-  def v1: Option[Value] = eval(e1)
-  def e2: Expr = If(ApplyOperator(IntConst(2), EqOp(), BoolConst(true)), IntConst(42), IntConst(7))
-  def v2: Option[Value] = eval(e2)
-
+  // Type expressions are Bool or Int
   sealed trait TypeExpr
   case class BoolType() extends TypeExpr
   case class IntType() extends TypeExpr
   
+  // Infer the type of an expression. None means it does not type check
   def typeOf(e: Expr): Option[TypeExpr] =
     decreases(e)
     e match
@@ -73,22 +74,16 @@ object ArithLangSound:
             if t1 == t2 then Some(t1) else None[TypeExpr]()
           case _ => None[TypeExpr]()
 
+  // We can also assign types to values 
   def valTypeOf(v: Value): TypeExpr =
     v match
       case IntVal(c) => IntType()
       case BoolVal(b) => BoolType()
           
-  def typeable(e: Expr): Boolean =
-    typeOf(e) match
-      case None() => false
-      case Some(_) => true
-          
-  val t1 = typeOf(e1)
-  val t2 = typeOf(e2)
-
-   
+  // If we require an expression to have a type, then it always returns value.
+  // This means that well-typed expressions do not get stuck.
   def evalTyped(e: Expr, @ghost t: TypeExpr): Value = {
-    require(typeOf(e) == t)
+    require(typeOf(e) == Some(t))
     decreases(e)
     e match {
       case IntConst(c) => IntVal(c)
@@ -105,6 +100,15 @@ object ArithLangSound:
           case BoolVal(b) =>
             if b then evalTyped(e1, t1) else evalTyped(e2, t2)
     }
-  }.ensuring(res => valTypeOf(res) == t)
+  }.ensuring(res => valTypeOf(res) == t) // the resulting value has the same type
+  
+  // Examples
+  def e1: Expr = If(ApplyOperator(IntConst(2), EqOp(), IntConst(3)), IntConst(42), IntConst(7))
+  def v1: Option[Value] = eval(e1)
+  def e2: Expr = If(ApplyOperator(IntConst(2), EqOp(), BoolConst(true)), IntConst(42), IntConst(7))
+  def v2: Option[Value] = eval(e2)     
+  val t1: Option[TypeExpr] = typeOf(e1)
+  val t2: Option[TypeExpr] = typeOf(e2)
+  val tv1: Value = evalTyped(e1, t1.get)
   
 end ArithLangSound
