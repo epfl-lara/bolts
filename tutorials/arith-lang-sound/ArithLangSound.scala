@@ -24,7 +24,7 @@ object ArithLangSound:
   case class IntVal(c: BigInt) extends Value
   case class BoolVal(b: Boolean) extends Value
 
-  // Apply a given operator to a given value or give None if wrong types
+  // Apply a given operator to a given value or give `None` if wrong types
   def evalVal(v1: Value, op: Operator, v2: Value): Option[Value] =
     (v1, op, v2) match
       case (IntVal(c1), PlusOp(), IntVal(c2)) => Some(IntVal(c1 + c2))
@@ -34,7 +34,7 @@ object ArithLangSound:
       case (BoolVal(b1), EqOp(), BoolVal(b2)) => Some(BoolVal(b1 == b2))
       case _ => None[Value]() // Evaluation went wrong
       
-  def eval(e: Expr): Option[Value] = // e need not type check, so we can get none
+  def eval(e: Expr): Option[Value] = // e need not type check, so we can get `None`
     decreases(e)
     e match
       case IntConst(c) => Some(IntVal(c))
@@ -54,7 +54,7 @@ object ArithLangSound:
   case class BoolType() extends TypeExpr
   case class IntType() extends TypeExpr
   
-  // Infer the type of an expression. None means it does not type check
+  // Infer the type of an expression. `None` means it does not type check
   def typeOf(e: Expr): Option[TypeExpr] =
     decreases(e)
     e match
@@ -82,6 +82,7 @@ object ArithLangSound:
           
   // If we require an expression to have a type, then it always returns value.
   // This means that well-typed expressions do not get stuck.
+  // `t` is a witness that the expression was well typed (it could be in a typed tree).
   def evalTyped(e: Expr, @ghost t: TypeExpr): Value = {
     require(typeOf(e) == Some(t))
     decreases(e)
@@ -89,16 +90,17 @@ object ArithLangSound:
       case IntConst(c) => IntVal(c)
       case BoolConst(b) => BoolVal(b)
       case ApplyOperator(e1, op, e2) =>
-        @ghost val t1 = typeOf(e1).get
+        @ghost val t1 = typeOf(e1).get // invoking `get` checks that typeOf does not give `None`
         @ghost val t2 = typeOf(e2).get
         evalVal(evalTyped(e1, t1), op, evalTyped(e2, t2)).get
       case If(c, e1, e2) =>
         @ghost val t1 = typeOf(e1).get
         @ghost val t2 = typeOf(e2).get
-        assert(t1 == t2)
+        assert(t1 == t2) // follows from typeOf(e) == Some(_)
         evalTyped(c, BoolType()) match
           case BoolVal(b) =>
             if b then evalTyped(e1, t1) else evalTyped(e2, t2)
+          // it is checked that the other cases are not possible
     }
   }.ensuring(res => valTypeOf(res) == t) // the resulting value has the same type
   
