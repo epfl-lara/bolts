@@ -24,4 +24,17 @@ trait LexerInterface {
     * @param l
     */
   def print[C](l: List[Token[C]]): List[C]
+
+
+  /**
+    * Predicate over a list of tokens, that applies a binary predicate to each pair of neighbouring tokens
+    *
+    * @param l
+    * @param rules
+    * @param pred
+    * @return
+    */
+  def tokensListTwoByTwoPredicate[C](l: List[Token[C]], rules: List[Rule[C]], pred: (Token[C], Token[C], List[Rule[C]]) => Boolean): Boolean
+
+
 }

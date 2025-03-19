@@ -183,7 +183,7 @@ object VerifiedLexer {
       * @param rules
       * @param input
       */  
-    def lex[C](
+    override def lex[C](
         rules: List[Rule[C]],
         input: List[C]
     ): (List[Token[C]], List[C]) = {
@@ -208,7 +208,7 @@ object VerifiedLexer {
       *
       * @param l
       */
-    def print[C](l: List[Token[C]]): List[C] = {
+    override def print[C](l: List[Token[C]]): List[C] = {
       decreases(l)
       l match {
         case Cons(hd, tl) => hd.characters ++ print(tl)
