@@ -78,7 +78,7 @@ object VerifiedLexer {
   import VerifiedRegex._
   import VerifiedRegexMatcher._
 
-  object Lexer extends LexerInterface {
+  case object Lexer extends LexerInterface {
 
     def ruleValid[C](r: Rule[C]): Boolean = {
       validRegex(r.regex) && !nullable(r.regex) && r.tag != ""
