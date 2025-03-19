@@ -81,7 +81,7 @@ object VerifiedLexer {
   case object Lexer extends LexerInterface {
 
     def ruleValid[C](r: Rule[C]): Boolean = {
-      validRegex(r.regex) && !nullable(r.regex) && r.tag != ""
+      validRegex(r.regex) && !r.regex.nullable && r.tag != ""
     }
     def noDuplicateTag[C](rules: List[Rule[C]], acc: List[String] = Nil()): Boolean = {
       decreases(rules)

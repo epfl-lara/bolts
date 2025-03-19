@@ -249,7 +249,8 @@ object MemoisationZipper {
 }
 
 object VerifiedRegex {
-  sealed trait Regex[C]
+  sealed trait Regex[C]:
+    lazy val nullable: Boolean = this.nullableFct
   case class ElementMatch[C](c: C) extends Regex[C]
   case class Star[C](reg: Regex[C]) extends Regex[C]
   case class Union[C](regOne: Regex[C], regTwo: Regex[C]) extends Regex[C]
@@ -346,14 +347,14 @@ object VerifiedRegex {
     }
   }
 
-  extension[C] (r: Regex[C]) def nullable: Boolean = {
+  extension[C] (r: Regex[C]) def nullableFct: Boolean = {
     r match {
       case EmptyExpr()        => true
       case EmptyLang()        => false
       case ElementMatch(c)    => false
       case Star(r)            => true
-      case Union(rOne, rTwo)  => rOne.nullable || rTwo.nullable
-      case Concat(rOne, rTwo) => rOne.nullable && rTwo.nullable
+      case Union(rOne, rTwo)  => rOne.nullableFct || rTwo.nullableFct
+      case Concat(rOne, rTwo) => rOne.nullableFct && rTwo.nullableFct
     }
   }
 
