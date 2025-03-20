@@ -13,6 +13,24 @@ import stainless.lang.Quantifiers
 import ch.epfl.lexer.ListUtils.lemmaSubseqRefl
 
 object SetUtils {
+
+  /**
+   * We need this, because otherwise the SMT query explodes
+   */
+  @opaque
+  @ghost
+  @inlineOnce
+  def lemmaFlatMapPost[A, B](s: Set[A], f: A => Set[B], b: B): Unit = {
+    require(s.flatMap(f).contains(b))
+    if(s.isEmpty) {
+      lemmaFlatMapOnEmptySetIsEmpty(s, f)
+      check(false)
+    } else {
+        unfold(s.flatMapPost(f)(b))
+        assert(s.exists(a => f(a).contains(b)))
+    }
+  }.ensuring(_ => s.exists(a => f(a).contains(b)))
+
   @opaque
   @ghost
   @inlineOnce
@@ -500,11 +518,6 @@ object SetUtils {
 
   }.ensuring(_ => s.toList.size > s.toList.tail.size)
 
-  // @inlineOnce
-  // @opaque
-  // @ghost
-  // def lemmaSubsetContent
-
 }
 
 object ListUtils {
@@ -582,6 +595,30 @@ object ListUtils {
       case Nil()                  => check(false); l.head
     }
   }.ensuring(res => p(res) && l.contains(res) && l.exists(p))
+
+
+  def disjoint[B](l1: List[B], l2: List[B]): Boolean = l1.forall(e1 => !l2.contains(e1)) && l2.forall(e2 => !l1.contains(e2))
+
+
+  // -------------------- LEMMAS --------------------
+
+  @ghost 
+  @opaque
+  @inlineOnce
+  def lemmaDisjointNotContained1[B](l1: List[B], l2: List[B], e1: B): Unit = {
+    require(disjoint(l1, l2))
+    require(l1.contains(e1))
+    ListSpecs.forallContained(l1, e1 => !l2.contains(e1), e1)
+  }.ensuring(_ => !l2.contains(e1))
+
+  @ghost 
+  @opaque
+  @inlineOnce
+  def lemmaDisjointNotContained2[B](l1: List[B], l2: List[B], e2: B): Unit = {
+    require(disjoint(l1, l2))
+    require(l2.contains(e2))
+    ListSpecs.forallContained(l2, e2 => !l1.contains(e2), e2)
+  }.ensuring(_ => !l1.contains(e2))
 
   @ghost
   @opaque
@@ -1422,4 +1459,29 @@ object ListUtils {
     require(!l.isEmpty)
    
   }.ensuring(_ => (l.tail).content == s - l.head)
+
+  @ghost
+  @opaque
+  @inlineOnce
+  def lemmaNotForallThenExists[B](l: List[B], p: B => Boolean): Unit = {
+    require(!l.forall(p))
+    decreases(l)
+    l match {
+      case Cons(hd, tl) if !p(hd) => ()
+      case Cons(hd, tl) if p(hd)  => lemmaNotForallThenExists(tl, p)
+      case Nil()                  => ()
+    }
+  }.ensuring(_ => l.exists(e => !p(e)))
+
+  @ghost
+  @opaque
+  @inlineOnce
+  def lemmaForallThenNotExists[B](l: List[B], p: B => Boolean): Unit = {
+    require(l.forall(p))
+    decreases(l)
+    l match {
+      case Cons(hd, tl) => lemmaForallThenNotExists(tl, p)
+      case Nil()                  => ()
+    }
+  }.ensuring(_ => !l.exists(e => !p(e)))
 }
