@@ -7,3 +7,4 @@ stainless-dotty\
  --config-file=stainless.conf\
  -D-parallel=12 --functions=Memoisation._,VerifiedRegex_,ZipperRegex._,VerifiedRegexMatcher._,VerifiedLexer._,ListUtils._,SetUtils._\
  $1
+
