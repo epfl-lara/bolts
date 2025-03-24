@@ -33,10 +33,10 @@ case class Vector[T](@pure @extern underlying: scala.collection.immutable.Vector
   }.ensuring(_ == toList.head)
 
   @pure @extern
-  override def tail: List[T] = {
+  override def tail: Vector[T] = {
     require(!isEmpty)
-    List.fromScala(underlying.tail.toList)
-  }.ensuring(_ == toList.tail)
+    Vector(underlying.tail)
+  }.ensuring(_.toList == toList.tail)
 
   @pure @extern
   override def apply(index: Int): T = {
@@ -118,6 +118,11 @@ object Vector {
   def empty[T]: Vector[T] = {
     Vector(scala.collection.immutable.Vector.empty[T])
   }.ensuring(_.toList == Nil[T]())
+
+  @pure @extern
+  def of[T](t: T): Vector[T] = {
+    Vector(scala.collection.immutable.Vector(t))
+  }.ensuring(_.toList == Cons(t, Nil[T]()))
 
   @pure @extern
   def fromList[T](l: List[T]): Vector[T] = {

@@ -27,10 +27,10 @@ trait Seq[T]:
     ??? : T
   }.ensuring(_ == toList.head)
 
-  def tail: List[T] = {
+  def tail: Seq[T] = {
     require(!isEmpty)
-    ??? : List[T]
-  }.ensuring(_ == toList.tail)
+    ??? : Seq[T]
+  }.ensuring(_.toList == toList.tail)
 
   def apply(index: Int): T = {
     require(0 <= index && index < isize)
