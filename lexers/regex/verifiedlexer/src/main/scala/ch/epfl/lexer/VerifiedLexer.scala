@@ -1789,14 +1789,14 @@ object VerifiedLexer {
         assert(rules.contains(rule))
         ghostExpr({
           def lemma(@induct rs: List[Rule[C]]): Unit = {
-            require(rulesValidInductive(rs))
+            require(rulesValid(rs))
           }.ensuring(_ => rs.map(_.regex).forall(r => validRegex(r)))
           lemma(rules)
         })
         assert(rulesRegex(rules) == VerifiedRegex.generalisedUnion(rules.map(_.regex)))
         ghostExpr({
           def lemma(rs: List[Rule[C]]): Unit = {
-            require(rulesValidInductive(rs))
+            require(rulesValid(rs))
             require(rs.contains(rule))
             decreases(rs)
             rs match
