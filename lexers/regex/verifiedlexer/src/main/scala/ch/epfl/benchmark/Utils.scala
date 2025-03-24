@@ -1,12 +1,12 @@
 /** Author: Samuel Chassot
   */
 
-package ch.epfl.benchmark
+package ch.epfl.lexer.benchmark
 
 import stainless.annotation._
 import stainless.lang._
 import stainless.proof.check
-import stainless.lang.StaticChecks.*
+import stainless.lang.StaticChecks._
 import stainless.collection._
 
 import ch.epfl.map.Hashable
@@ -33,6 +33,9 @@ object RegexUtils {
     case Concat(r1, r2) => s"${r1.asString()}${r2.asString()}"
     case Star(r1) => s"${r1.asString()}*"
   }
+
+  val letterRegex: Regex[Char] = anyOf("abcdefghijklmnopqrstuvwxyz") | anyOf("ABCDEFGHIJKLMNOPQRSTUVWXYZ")
+  val digitRegex: Regex[Char] = anyOf("0123456789")
   extension [A] (l: stainless.collection.List[A]) def mkString(inter: String) : String = l match {
     case stainless.collection.Nil() => ""
     case stainless.collection.Cons(h, t) => h.toString + (if t.isEmpty then "" else inter + t.mkString(inter))
