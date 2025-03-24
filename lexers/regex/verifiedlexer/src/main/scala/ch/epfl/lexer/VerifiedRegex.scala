@@ -385,32 +385,6 @@ object VerifiedRegex {
     }
   }
 
-  inline def lostCause[C](r: Regex[C]): Boolean = getLanguageWitness(r).isEmpty
-
-  /**
-   * Return a witness of the language denoted by the given regex. If it returns None, the regex denotes the empty language.
-   * That's used to compute the prefix set of a regex.
-   */
-  def getLanguageWitness[C](r: Regex[C]): Option[List[C]] = {
-    r match {
-      case EmptyExpr()        => Some(List())
-      case EmptyLang()        => None()
-      case ElementMatch(c)    => Some(List(c))
-      case Star(r)            => Some(List())
-      case Union(rOne, rTwo)  => 
-        getLanguageWitness(rOne) match
-          case Some(v) => Some(v)
-          case None() => getLanguageWitness(rTwo)
-      case Concat(rOne, rTwo) => 
-        getLanguageWitness(rOne) match
-          case Some(v) => 
-            getLanguageWitness(rTwo) match
-              case Some(v2) => Some(v ++ v2)
-              case None() => None()
-          case None() => None()
-    }
-  }
-
   // @ghost
   def isEmptyExpr[C](r: Regex[C]): Boolean = {
     r match {
@@ -4924,11 +4898,7 @@ object VerifiedRegexMatcher {
           lemmaUsedCharsContainsAllFirstChars(rTwo, c)
         }
 
-<<<<<<< HEAD
-      case Concat(rOne, rTwo) if nullable(rOne) =>
-=======
       case Concat(rOne, rTwo) if rOne.nullable =>
->>>>>>> main
         if (rOne.firstChars.contains(c)) {
           lemmaUsedCharsContainsAllFirstChars(rOne, c)
         } else {
