@@ -8,32 +8,6 @@ import stainless.annotation._
 import stainless.proof._
 import stainless.lang.StaticChecks._
 
-
-// Ioana's project starting point -----------------------------------------------------------------------------------------------------------
-// object VerifiedNFA {
-//   case class Transition[S, C](from: S, c: C, to: S)
-//   case class NFA[S, C](startStates: List[S], acceptingStates: List[S], transitions: List[Transition[C]])
-
-//   /**
-//    * 1. implement the simulation algorithm for NFAs
-//    * 2. prove that swapping startStates and acceptingStates, and flipping 
-//    * transitions accepts the reverse of the strings accepted by the original NFA
-//    *    (or reverse(reverse(nfa)) accepts the same strings)
-//    * 3. prove the union/intersection of NFAs
-//    * 
-//    */
-
-//    def lemmaReverse(nfa: NFA, s: List[C]): Unit = {
-//     require(accepts(nfa, s))
-
-//    }.ensuring(_ => accepts(reverse(nfa), s.reverse))
-
-//    def lemmaReverseReverse(nfa: NFA, s: List[C]): Unit = {
-//     require(accepts(nfa, s))
-
-//    }.ensuring(_ => accepts(reverse(reverse(nfa)), s))
-// }
-// Ioana's project starting point -----------------------------------------------------------------------------------------------------------
 object VerifiedDFA {
   case class State(label: BigInt) {
     require(label >= 0)
