@@ -249,7 +249,9 @@ object MemoisationZipper {
 }
 
 object VerifiedRegex {
-  sealed trait Regex[C]
+  sealed trait Regex[C]:
+    lazy val nullable: Boolean = this.nullableFct
+  end Regex
   case class ElementMatch[C](c: C) extends Regex[C]
   case class Star[C](reg: Regex[C]) extends Regex[C]
   case class Union[C](regOne: Regex[C], regTwo: Regex[C]) extends Regex[C]
@@ -280,10 +282,10 @@ object VerifiedRegex {
     }
   }.ensuring(res => validRegex(res) && (if(l.isEmpty) isEmptyExpr(res) else if(l.tail.isEmpty) res == l.head else isConcat(res)))
 
-  @ghost
+  // @ghost
   def validRegex[C](r: Regex[C]): Boolean = r match {
     case ElementMatch(c)    => true
-    case Star(r)            => !nullable(r) && validRegex(r) 
+    case Star(r)            => !r.nullable && validRegex(r) 
     case Union(rOne, rTwo)  => validRegex(rOne) && validRegex(rTwo)
     case Concat(rOne, rTwo) => validRegex(rOne) && validRegex(rTwo)
     case EmptyExpr()        => true
@@ -341,19 +343,45 @@ object VerifiedRegex {
       case ElementMatch(c)                       => List(c)
       case Star(r)                               => r.firstChars
       case Union(rOne, rTwo)                     => rOne.firstChars ++ rTwo.firstChars
-      case Concat(rOne, rTwo) if nullable(rOne)  => rOne.firstChars ++ rTwo.firstChars
-      case Concat(rOne, rTwo) if !nullable(rOne) => rOne.firstChars
+      case Concat(rOne, rTwo) if rOne.nullable   => rOne.firstChars ++ rTwo.firstChars
+      case Concat(rOne, rTwo) if !rOne.nullable  => rOne.firstChars
     }
   }
 
-  def nullable[C](r: Regex[C]): Boolean = {
+  extension[C] (r: Regex[C]) def nullableFct: Boolean = {
     r match {
       case EmptyExpr()        => true
       case EmptyLang()        => false
       case ElementMatch(c)    => false
       case Star(r)            => true
-      case Union(rOne, rTwo)  => nullable(rOne) || nullable(rTwo)
-      case Concat(rOne, rTwo) => nullable(rOne) && nullable(rTwo)
+      case Union(rOne, rTwo)  => rOne.nullableFct || rTwo.nullableFct
+      case Concat(rOne, rTwo) => rOne.nullableFct && rTwo.nullableFct
+    }
+  }
+
+  inline def lostCause[C](r: Regex[C]): Boolean = getLanguageWitness(r).isEmpty
+
+  /**
+   * Return a witness of the language denoted by the given regex. If it returns None, the regex denotes the empty language.
+   * That's used to compute the prefix set of a regex.
+   */
+  def getLanguageWitness[C](r: Regex[C]): Option[List[C]] = {
+    r match {
+      case EmptyExpr()        => Some(List())
+      case EmptyLang()        => None()
+      case ElementMatch(c)    => Some(List(c))
+      case Star(r)            => Some(List())
+      case Union(rOne, rTwo)  => 
+        getLanguageWitness(rOne) match
+          case Some(v) => Some(v)
+          case None() => getLanguageWitness(rTwo)
+      case Concat(rOne, rTwo) => 
+        getLanguageWitness(rOne) match
+          case Some(v) => 
+            getLanguageWitness(rTwo) match
+              case Some(v2) => Some(v ++ v2)
+              case None() => None()
+          case None() => None()
     }
   }
 
@@ -564,7 +592,7 @@ object ZipperRegex {
   def derivationStepZipperUp[C](context: Context[C], a: C): Zipper[C] = {
     decreases(context.exprs.size)
     context.exprs match {
-      case Cons(right, parent) if nullable(right) => derivationStepZipperDown(right, Context(parent), a) ++ derivationStepZipperUp(Context(parent), a)
+      case Cons(right, parent) if right.nullable => derivationStepZipperDown(right, Context(parent), a) ++ derivationStepZipperUp(Context(parent), a)
       case Cons(right, parent) => derivationStepZipperDown(right, Context(parent), a)
       case Nil() => Set()
     }
@@ -577,7 +605,7 @@ object ZipperRegex {
     expr match {
       case ElementMatch(c) if c == a => Set(context)
       case Union(rOne, rTwo) => derivationStepZipperDown(rOne, context, a) ++ derivationStepZipperDown(rTwo, context, a)
-      case Concat(rOne, rTwo) if nullable(rOne) => derivationStepZipperDown(rOne, context.prepend(rTwo), a) ++ derivationStepZipperDown(rTwo, context, a)
+      case Concat(rOne, rTwo) if rOne.nullable => derivationStepZipperDown(rOne, context.prepend(rTwo), a) ++ derivationStepZipperDown(rTwo, context, a)
       case Concat(rOne, rTwo) => derivationStepZipperDown(rOne, context.prepend(rTwo), a)
       case Star(rInner) => derivationStepZipperDown(rInner, context.prepend(Star(rInner)), a)
       case _ => Set()
@@ -597,7 +625,7 @@ object ZipperRegex {
   }
 
   def nullableContext[C](c: Context[C]): Boolean = {
-    c.forall(r => nullable(r))
+    c.forall(r => r.nullable)
   }
   def nullableZipper[C](z: Zipper[C]): Boolean = {
     z.exists(c => nullableContext(c))
@@ -664,7 +692,7 @@ object ZipperRegex {
       case Some(res) => res
       case None() => {
         val res: Zipper[C] = context.exprs match {
-          case Cons(right, parent) if nullable(right) => derivationStepZipperDownMem(right, Context(parent), a) ++ derivationStepZipperUpMem(Context(parent), a)
+          case Cons(right, parent) if right.nullable => derivationStepZipperDownMem(right, Context(parent), a) ++ derivationStepZipperUpMem(Context(parent), a)
           case Cons(right, parent) => derivationStepZipperDownMem(right, Context(parent), a)
           case Nil() => Set()
         }
@@ -683,7 +711,7 @@ object ZipperRegex {
         val res: Zipper[C] = expr match {
           case ElementMatch(c) if c == a => Set(context)
           case Union(rOne, rTwo) => derivationStepZipperDownMem(rOne, context, a) ++ derivationStepZipperDownMem(rTwo, context, a)
-          case Concat(rOne, rTwo) if nullable(rOne) => derivationStepZipperDownMem(rOne, context.prepend(rTwo), a) ++ derivationStepZipperDownMem(rTwo, context, a)
+          case Concat(rOne, rTwo) if rOne.nullable => derivationStepZipperDownMem(rOne, context.prepend(rTwo), a) ++ derivationStepZipperDownMem(rTwo, context, a)
           case Concat(rOne, rTwo) => derivationStepZipperDownMem(rOne, context.prepend(rTwo), a)
           case Star(rInner) => derivationStepZipperDownMem(rInner, context.prepend(Star(rInner)), a)
           case _ => Set()
@@ -900,7 +928,7 @@ object ZipperRegex {
     require(lostCauseContext(ctx))
     decreases(ctx.exprs.size)
     ctx.exprs match {
-      case Cons(right, parent) if nullable(right) => 
+      case Cons(right, parent) if right.nullable => 
         lemmaNullableThenNotLostCause(right)
         lemmaLostCauseFixPointDerivUp(Context(parent), a)
         lemmaLostCauseFixPointDerivDown(right, Context(parent), a)
@@ -925,7 +953,7 @@ object ZipperRegex {
         lemmaLostCauseFixPointDerivDown(rOne, ctx, a)
         lemmaLostCauseFixPointDerivDown(rTwo, ctx, a)
         SetUtils.lemmaConcatPreservesForall(derivationStepZipperDown(rOne, ctx, a), derivationStepZipperDown(rTwo, ctx, a), lostCauseContext)
-      case Concat(rOne, rTwo) if nullable(rOne) => 
+      case Concat(rOne, rTwo) if rOne.nullable => 
         lemmaNullableThenNotLostCause(rOne)
         lemmaLostCauseFixPointDerivDown(rOne, ctx.prepend(rTwo), a)
         lemmaLostCauseFixPointDerivDown(rTwo, ctx, a)
@@ -948,15 +976,15 @@ object ZipperRegex {
     assert(nullableContext(nullableCtx))
     lemmaContextForallValidExprs(nullableCtx, nullableCtx.exprs)
     assert(z.contains(nullableCtx))
-    assert(nullableCtx.forall(r => nullable(r)))
+    assert(nullableCtx.forall(r => r.nullable))
     if(lostCauseContext(nullableCtx)){
       assert(nullableCtx.exists(r => lostCause(r)))
       val lostCauseRegex = ListUtils.getWitness(nullableCtx.exprs, (r: Regex[C]) => lostCause(r))
       assert(nullableCtx.exprs.contains(lostCauseRegex))
       assert(lostCause(lostCauseRegex))
-      ListSpecs.forallContained(nullableCtx.exprs, (r: Regex[C]) => nullable(r), lostCauseRegex)
+      ListSpecs.forallContained(nullableCtx.exprs, (r: Regex[C]) => r.nullable, lostCauseRegex)
       ListSpecs.forallContained(nullableCtx.exprs, validRegex, lostCauseRegex)
-      assert(nullable(lostCauseRegex))
+      assert(lostCauseRegex.nullable)
       lemmaNullableThenNotLostCause(lostCauseRegex)
       check(false)
     }
@@ -1030,7 +1058,7 @@ object ZipperRegex {
                 s match {
                   case Nil() => {
                     lemmaUnfocusPreservesNullability(r, z)
-                    assert(nullableZipper(z) == nullable(r))
+                    assert(nullableZipper(z) == r.nullable)
                     check(matchZipper(z, s) == matchR(r, s))
                   }
                   case Cons(shd, stl) => {
@@ -1075,7 +1103,7 @@ object ZipperRegex {
                 s match {
                   case Nil() => {
                     lemmaUnfocusPreservesNullability(r, z)
-                    assert(nullableZipper(z) == nullable(r))
+                    assert(nullableZipper(z) == r.nullable)
                     check(matchZipper(z, s) == matchR(r, s))
                   }
                   case Cons(shd, stl) => {
@@ -1101,7 +1129,7 @@ object ZipperRegex {
                       val derivDownZR1 = derivationStepZipperDown(r1, Context(List(r2)), shd)
                       val derivDownZR2 = derivationStepZipperDown(r2, Context(List()), shd)
 
-                      if(nullable(r1)){
+                      if(r1.nullable){
                         assert(zDeriv == derivDownZR1 ++ derivDownZR2)
                         lemmaZipperConcatMatchesSameAsBothZippers(derivDownZR1, derivDownZR2, stl)
                         assert((matchZipper(derivDownZR1, stl) || matchZipper(derivDownZR2, stl)) == matchZipper(zDeriv, stl))
@@ -1145,7 +1173,7 @@ object ZipperRegex {
 
                       SetUtils.lemmaFlatMapOnSingletonSet(z, hd, (c: Context[C]) => derivationStepZipperUp(c, shd))
 
-                      if(nullable(hExp)){
+                      if(hExp.nullable){
                         assert(zDerivUp == zDerivDown ++ zDerivUpUp)
                         assert(zDeriv == zDerivUp)
                         lemmaZipperConcatMatchesSameAsBothZippers(zDerivDown, zDerivUpUp, stl)
@@ -1177,7 +1205,7 @@ object ZipperRegex {
                           val zVirt1Deriv = derivationStepZipper(zVirt1, shd)
                           val zVirt1DerivUp = derivationStepZipperUp(Context(Cons(rOne, tlExp)), shd)
                           SetUtils.lemmaFlatMapOnSingletonSet(zVirt1, Context(Cons(rOne, tlExp)), (c: Context[C]) => derivationStepZipperUp(c, shd))
-                          if (nullable(rOne)){
+                          if (rOne.nullable){
                             assert(zVirt1DerivUp == derivationStepZipperDown(rOne, Context(tlExp), shd) ++ derivationStepZipperUp(Context(tlExp), shd))
                             assert(zVirt1Deriv == derivationStepZipperDown(rOne, Context(tlExp), shd) ++ derivationStepZipperUp(Context(tlExp), shd))
                             assert(matchZipper(zVirt1, s) == matchZipper(zVirt1Deriv, stl))
@@ -1191,7 +1219,7 @@ object ZipperRegex {
                           val zVirt2Deriv = derivationStepZipper(zVirt2, shd)
                           val zVirt2DerivUp = derivationStepZipperUp(Context(Cons(rTwo, tlExp)), shd)
                           SetUtils.lemmaFlatMapOnSingletonSet(zVirt2, Context(Cons(rTwo, tlExp)), (c: Context[C]) => derivationStepZipperUp(c, shd))
-                          if (nullable(rTwo)){
+                          if (rTwo.nullable){
                             assert(zVirt2DerivUp == derivationStepZipperDown(rTwo, Context(tlExp), shd) ++ derivationStepZipperUp(Context(tlExp), shd))
                             assert(zVirt2Deriv == derivationStepZipperDown(rTwo, Context(tlExp), shd) ++ derivationStepZipperUp(Context(tlExp), shd))
                             assert(matchZipper(zVirt2, s) == matchZipper(zVirt2Deriv, stl))
@@ -1201,14 +1229,14 @@ object ZipperRegex {
                             assert(zVirt2DerivUp == derivationStepZipperDown(rTwo, Context(tlExp), shd))
                             assert(matchZipper(zVirt2, s) == (matchZipper(zDerivDown2, stl)))
                           }
-                          if(nullable(r1)){
+                          if(r1.nullable){
                             // This one is really beautiful, as the matching of derivUpUp appears in the derivative of one of the 2 virtual zippers
                             // if they are nullable, but the same term appears before if r1 is nullable, so it cancels out and does not break
                             // anything
-                            assert(nullable(rOne) || nullable(rTwo))
+                            assert(rOne.nullable || rTwo.nullable)
                             assert(matchZipper(z, s) == (matchZipper(zDerivDown1, stl) || matchZipper(zDerivDown2, stl) || matchZipper(zDerivUpUp, stl)))
                           } else {
-                            assert(!nullable(rOne) && !nullable(rTwo))
+                            assert(!rOne.nullable && !rTwo.nullable)
                             assert(matchZipper(z, s) == (matchZipper(zDerivDown1, stl) || matchZipper(zDerivDown2, stl)))
                           }
                           assert(matchZipper(z, s) == (matchZipper(zVirt1, s) || matchZipper(zVirt2, s)))
@@ -1240,7 +1268,7 @@ object ZipperRegex {
 
                           check(matchR(r, s) == matchZipper(z, s))
                         }
-                        case Concat(rOne, rTwo) if nullable(rOne) => {
+                        case Concat(rOne, rTwo) if rOne.nullable => {
                           assert(zDerivDown == derivationStepZipperDown(rOne, Context(Cons(rTwo, tlExp)), shd) ++ derivationStepZipperDown(rTwo, Context(tlExp), shd))
                           val zDerivDown1 = derivationStepZipperDown(rOne,  Context(Cons(rTwo, tlExp)), shd)
                           val zDerivDown2 = derivationStepZipperDown(rTwo, Context(tlExp), shd)
@@ -1258,7 +1286,7 @@ object ZipperRegex {
                           val zVirt2DerivUp = derivationStepZipperUp(Context(Cons(rTwo, tlExp)), shd)
                           SetUtils.lemmaFlatMapOnSingletonSet(zVirt2, Context(Cons(rTwo, tlExp)), (c: Context[C]) => derivationStepZipperUp(c, shd))
 
-                          if(nullable(rTwo)){
+                          if(rTwo.nullable){
                             assert(zVirt2Deriv == derivationStepZipperDown(rTwo, Context(tlExp), shd) ++ derivationStepZipperUp(Context(tlExp), shd))
                           } else {
                             assert(zVirt2Deriv == derivationStepZipperDown(rTwo, Context(tlExp), shd))
@@ -1420,7 +1448,7 @@ object ZipperRegex {
                             check(matchR(r, s) == matchZipper(z, s))
                           } else {
                             if(matchZipper(z, s)){
-                              assert(nullable(hExp))
+                              assert(hExp.nullable)
                               assert(matchZipper(z, s) == (matchZipper(zDerivDown, stl) || matchZipper(zDerivUpUp, stl)))
                               if(matchZipper(zDerivDown, stl)){
                                 // Then we know that
@@ -1552,7 +1580,7 @@ object ZipperRegex {
                 s match {
                   case Nil() => {
                     lemmaUnfocusPreservesNullability(r, z)
-                    assert(nullableZipper(z) == nullable(r))
+                    assert(nullableZipper(z) == r.nullable)
                     check(matchZipper(z, s) == matchR(r, s))
                   }
                   case Cons(shd, stl) => {  
@@ -1647,7 +1675,7 @@ object ZipperRegex {
          s match {
           case Nil() => {
             lemmaUnfocusPreservesNullability(r, z)
-            assert(nullableZipper(z) == nullable(r))
+            assert(nullableZipper(z) == r.nullable)
             check(matchZipper(z, s) == matchR(r, s))
           }
           case Cons(shd, stl) => {
@@ -1887,7 +1915,7 @@ object ZipperRegex {
           ct1.exprs match {
             case Cons(ct1Hd, ct1Tl) => {
               val ct1Tl = ct1.tail
-              if(nullable(ct1Hd) ){
+              if(ct1Hd.nullable ){
                 assert(derivUp == derivationStepZipperDown(ct1Hd, ct1Tl.concat(ct2), shd) ++ derivationStepZipperUp(ct1Tl.concat(ct2), shd))
                 lemmaZipperConcatMatchesSameAsBothZippers(derivationStepZipperDown(ct1Hd, ct1Tl.concat(ct2), shd), derivationStepZipperUp(ct1Tl.concat(ct2), shd), stl)
                 assert(matchZipper(derivUp, stl) == matchZipper(derivationStepZipperDown(ct1Hd, ct1Tl.concat(ct2), shd), stl) || matchZipper(derivationStepZipperUp(ct1Tl.concat(ct2), shd), stl))
@@ -2037,8 +2065,8 @@ object ZipperRegex {
         assert(witnessBeforeConcat.concat(ct2) == witness)
         ListUtils.lemmaConcatThenFirstSubseqOfTot(witnessBeforeConcat.exprs, ct2.exprs)
         ListUtils.lemmaConcatThenSecondSubseqOfTot(witnessBeforeConcat.exprs, ct2.exprs)
-        ListUtils.lemmaContentSubsetPreservesForall(witnessBeforeConcat.exprs ++ ct2.exprs, witnessBeforeConcat.exprs, (r: Regex[C]) => nullable(r))
-        ListUtils.lemmaContentSubsetPreservesForall(witnessBeforeConcat.exprs ++ ct2.exprs, ct2.exprs, (r: Regex[C]) => nullable(r))
+        ListUtils.lemmaContentSubsetPreservesForall(witnessBeforeConcat.exprs ++ ct2.exprs, witnessBeforeConcat.exprs, (r: Regex[C]) => r.nullable)
+        ListUtils.lemmaContentSubsetPreservesForall(witnessBeforeConcat.exprs ++ ct2.exprs, ct2.exprs, (r: Regex[C]) => r.nullable)
         assert(nullableContext(witnessBeforeConcat) && nullableContext(ct2))
         SetUtils.lemmaContainsThenExists(z1, witnessBeforeConcat, (c: Context[C]) => nullableContext(c))
         SetUtils.lemmaContainsThenExists(Set(ct2), ct2, (c: Context[C]) => nullableContext(c))
@@ -2063,24 +2091,24 @@ object ZipperRegex {
     val reg = generalisedUnion(unfocusZipperList(z.toList))
     assert(r == reg)
     nullableGenUnionSpec(reg, unfocusZipperList(z.toList))
-    assert(nullable(reg) == unfocusZipperList(z.toList).exists(rr => nullable(rr)))
-    if(nullable(reg)){
-      assert( unfocusZipperList(z.toList).exists(rr => nullable(rr)))
-      val witnessNullableReg = ListUtils.getWitness(unfocusZipperList(z.toList), (rr: Regex[C]) => nullable(rr))
-      assert(nullable(witnessNullableReg))
+    assert(reg.nullable == unfocusZipperList(z.toList).exists(rr => rr.nullable))
+    if(reg.nullable){
+      assert( unfocusZipperList(z.toList).exists(rr => rr.nullable))
+      val witnessNullableReg = ListUtils.getWitness(unfocusZipperList(z.toList), (rr: Regex[C]) => rr.nullable)
+      assert(witnessNullableReg.nullable)
       assert(unfocusZipperList(z.toList).contains(witnessNullableReg))
       lemmaUnfocusZipperListContainsRegexFromContextThenZipperContains(z.toList, witnessNullableReg)
       assert(z.exists(c => generalisedConcat(c.exprs) == witnessNullableReg))
       val witnessContext = SetUtils.getWitness(z, (c: Context[C]) => generalisedConcat(c.exprs) == witnessNullableReg)
       assert(z.contains(witnessContext))
       assert(generalisedConcat(witnessContext.exprs) == witnessNullableReg)
-      assert(nullable(generalisedConcat(witnessContext.exprs)))
+      assert(generalisedConcat(witnessContext.exprs).nullable)
       nullableGenConcatSpec(witnessNullableReg, witnessContext.exprs)
       assert(nullableContext(witnessContext))
       SetUtils.lemmaContainsThenExists(z, witnessContext, a => nullableContext(a))
       assert(nullableZipper(z))
     } else {
-      assert(!unfocusZipperList(z.toList).exists(rr => nullable(rr)))
+      assert(!unfocusZipperList(z.toList).exists(rr => rr.nullable))
       if(z.exists(c => nullableContext(c))){
         val witnessContext = SetUtils.getWitness(z, (c: Context[C]) => nullableContext(c))
         assert(z.contains(witnessContext))
@@ -2088,9 +2116,9 @@ object ZipperRegex {
         lemmaZipperContainsContextThenUnfocusZipperListContains(z.toList, witnessContext)
         assert(unfocusZipperList(z.toList).contains(generalisedConcat(witnessContext.exprs)))
         nullableGenConcatSpec(generalisedConcat(witnessContext.exprs), witnessContext.exprs)
-        assert(nullable(generalisedConcat(witnessContext.exprs)))
-        ListUtils.lemmaContainsThenExists(unfocusZipperList(z.toList), generalisedConcat(witnessContext.exprs), rr => nullable(rr))
-        assert(unfocusZipperList(z.toList).exists(rr => nullable(rr)))
+        assert(generalisedConcat(witnessContext.exprs).nullable)
+        ListUtils.lemmaContainsThenExists(unfocusZipperList(z.toList), generalisedConcat(witnessContext.exprs), rr => rr.nullable)
+        assert(unfocusZipperList(z.toList).exists(rr => rr.nullable))
         check(false)
       }
 
@@ -2100,7 +2128,7 @@ object ZipperRegex {
 
 
 
-  }.ensuring(_ => nullable(r) == nullableZipper(z))
+  }.ensuring(_ => r.nullable == nullableZipper(z))
 
   @ghost
   @opaque
@@ -2166,7 +2194,7 @@ object ZipperRegex {
         SetUtils.lemmaMapAssociative(derivationStepZipperDown(rOne, c, a), derivationStepZipperDown(rTwo, c, a), f)
         check(derivationStepZipperDown(r, c.concat(auxCtx), a) == appendTo(derivationStepZipperDown(r, c, a), auxCtx))
       }
-      case Concat(rOne, rTwo) if nullable(rOne) => {
+      case Concat(rOne, rTwo) if rOne.nullable => {
         assert(derivationStepZipperDown(r, c.concat(auxCtx), a) == derivationStepZipperDown(rOne, c.concat(auxCtx).prepend(rTwo), a) ++ derivationStepZipperDown(rTwo, c.concat(auxCtx), a)) 
         lemmaDerivativeStepZipperDownConcatCtxSameAsAppendTo(c.prepend(rTwo), rOne, a, auxCtx)
         lemmaDerivativeStepZipperDownConcatCtxSameAsAppendTo(c, rTwo, a, auxCtx)
@@ -2236,7 +2264,7 @@ object ZipperRegex {
             SetUtils.lemmaFlatMapOnSingletonSet(z1, ct1, (c: Context[C]) => derivationStepZipperUp(c, shd))
             SetUtils.lemmaFlatMapOnSingletonSet(concatenated, ct1.concat(ct2), (c: Context[C]) => derivationStepZipperUp(c, shd))
 
-            if(nullable(ct1hd)){
+            if(ct1hd.nullable){
               assert(z1DerivUp == z1DerivDown ++ derivationStepZipperUp(ct1.tail, shd))
               assert(z1Deriv == z1DerivUp)
               assert(concatenatedDerivUp == concatenatedDerivDown ++ derivationStepZipperUp(ct1.concat(ct2).tail, shd))
@@ -2295,7 +2323,7 @@ object ZipperRegex {
           case Cons(ct1hd, ct1tl) => {
             val ct1tl = ct1.tail
             val derivUp = derivationStepZipperUp(ct1, shd)
-            assert(nullable(ct1hd))
+            assert(ct1hd.nullable)
             assert(derivUp == derivationStepZipperDown(ct1hd, ct1tl, shd) ++ derivationStepZipperUp(ct1tl, shd))
             assert(concatDerivUp == derivationStepZipperDown(ct1hd, ct1tl.concat(ct2), shd) ++ derivationStepZipperUp(ct1tl.concat(ct2), shd))
             lemmaPrependingNullableCtxStillMatches(ct1tl, ct2, s)
@@ -2311,7 +2339,7 @@ object ZipperRegex {
       }
       case Nil() =>
         assert(nullableContext(ct2))
-        ListUtils.lemmaConcatPreservesForall(ct1.exprs, ct2.exprs, (r: Regex[C]) => nullable(r))
+        ListUtils.lemmaConcatPreservesForall(ct1.exprs, ct2.exprs, (r: Regex[C]) => r.nullable)
         check(matchZipper(Set(ct1.concat(ct2)), s))
     }
 
@@ -2330,7 +2358,7 @@ object ZipperRegex {
         val tl = ct1.tail
         val derivUp = derivationStepZipperUp(ct1, c)
         val derivDown = derivationStepZipperDown(hd, tl, c)
-        if(nullable(hd)){
+        if(hd.nullable){
           assert(derivUp == derivDown ++ derivationStepZipperUp(tl, c))
           assert(derivDown.contains(cWitness) || derivationStepZipperUp(tl, c).contains(cWitness))
           if(derivationStepZipperUp(tl,c).contains(cWitness)) {
@@ -2384,7 +2412,7 @@ object ZipperRegex {
           check(concatDerivDown.contains(cWitness.concat(ct2)))
         }
       }
-      case Concat(rOne, rTwo) if nullable(rOne) => {
+      case Concat(rOne, rTwo) if rOne.nullable => {
         assert(derivDown == derivationStepZipperDown(rOne, ct1.prepend(rTwo), c) ++ derivationStepZipperDown(rTwo, ct1, c))
         if(derivationStepZipperDown(rOne, ct1.prepend(rTwo), c).contains(cWitness)) {
           lemmaDerivContainsCtxtThenConcatDerivContainsConcatCtxDerivDown(rOne, ct1.prepend(rTwo), ct2, cWitness, c)
@@ -2915,7 +2943,7 @@ object VerifiedRegexMatcher {
       case Union(rOne, rTwo) => Union(derivativeStep(rOne, a), derivativeStep(rTwo, a))
       case Star(rInner)      => Concat(derivativeStep(rInner, a), Star(rInner))
       case Concat(rOne, rTwo) => {
-        if (nullable(rOne)) Union(Concat(derivativeStep(rOne, a), rTwo), derivativeStep(rTwo, a))
+        if (rOne.nullable) Union(Concat(derivativeStep(rOne, a), rTwo), derivativeStep(rTwo, a))
         else Union(Concat(derivativeStep(rOne, a), rTwo), EmptyLang())
       }
     }
@@ -2937,7 +2965,7 @@ object VerifiedRegexMatcher {
           case Union(rOne, rTwo) => Union(derivativeStepMem(rOne, a)(cache), derivativeStepMem(rTwo, a)(cache))
           case Star(rInner)      => Concat(derivativeStepMem(rInner, a)(cache), Star(rInner))
           case Concat(rOne, rTwo) => {
-            if (nullable(rOne)) Union(Concat(derivativeStepMem(rOne, a)(cache), rTwo), derivativeStepMem(rTwo, a)(cache))
+            if (rOne.nullable) Union(Concat(derivativeStepMem(rOne, a)(cache), rTwo), derivativeStepMem(rTwo, a)(cache))
             else Union(Concat(derivativeStepMem(rOne, a)(cache), rTwo), EmptyLang())
           }
         }
@@ -2966,7 +2994,7 @@ object VerifiedRegexMatcher {
   //         case Union(rOne, rTwo) => Union(derivativeStepMem(rOne, a)(cache), derivativeStepMem(rTwo, a)(cache))
   //         case Star(rInner)      => Concat(derivativeStepMem(rInner, a)(cache), Star(rInner))
   //         case Concat(rOne, rTwo) => {
-  //           if (nullable(rOne)) Union(Concat(derivativeStepMem(rOne, a)(cache), rTwo), derivativeStepMem(rTwo, a)(cache))
+  //           if (rOne.nullable) Union(Concat(derivativeStepMem(rOne, a)(cache), rTwo), derivativeStepMem(rTwo, a)(cache))
   //           else Union(Concat(derivativeStepMem(rOne, a)(cache), rTwo), EmptyLang())
   //         }
   //       }
@@ -2997,7 +3025,7 @@ object VerifiedRegexMatcher {
   def matchR[C](r: Regex[C], input: List[C]): Boolean = {
     require(validRegex(r))
     decreases(input.size)
-    if (input.isEmpty) nullable(r) else matchR(derivativeStep(r, input.head), input.tail)
+    if (input.isEmpty) r.nullable else matchR(derivativeStep(r, input.head), input.tail)
   }.ensuring (res =>
     r match {
       case EmptyExpr() => res == input.isEmpty
@@ -3018,7 +3046,7 @@ object VerifiedRegexMatcher {
     require(validRegex(r))
     require(cache.valid)
     decreases(input.size)
-    if (input.isEmpty) nullable(r) else matchRMem(derivativeStepMem(r, input.head)(cache: Cache[C]), input.tail)
+    if (input.isEmpty) r.nullable else matchRMem(derivativeStepMem(r, input.head)(cache: Cache[C]), input.tail)
   }.ensuring (res => res == matchR(r, input))
 
   def matchZipper[C](r: Regex[C], input: List[C]): Boolean = {
@@ -3052,7 +3080,7 @@ object VerifiedRegexMatcher {
   //       return false
   //     }
   //   } 
-  //   if (input.isEmpty) nullable(rr) else matchRMemSimp(derivativeStepMem(rr, input.head)(cache: Cache[C]), input.tail)
+  //   if (input.isEmpty) rr.nullable else matchRMemSimp(derivativeStepMem(rr, input.head)(cache: Cache[C]), input.tail)
   // }.ensuring (res => res == matchR(r, input))
 
   @ghost
@@ -3073,7 +3101,7 @@ object VerifiedRegexMatcher {
       }
       case Nil() => ()
     }
-  }.ensuring(_ => nullable(r) == l.exists(rr => nullable(rr)))
+  }.ensuring(_ => r.nullable == l.exists(rr => rr.nullable))
 
   @ghost
   @opaque
@@ -3124,7 +3152,7 @@ object VerifiedRegexMatcher {
       }
       case Nil() => ()
     }
-  }.ensuring(_ => nullable(r) == l.forall(rr => nullable(rr)))
+  }.ensuring(_ => r.nullable == l.forall(rr => rr.nullable))
 
 
   @ghost
@@ -3329,7 +3357,7 @@ object VerifiedRegexMatcher {
     if (lostCause(r)) {
       (Nil[C](), totalInput)
     } else if (testedP == totalInput) {
-      if (nullable(r)) {
+      if (r.nullable) {
         (testedP, Nil[C]())
       } else {
         (Nil[C](), totalInput)
@@ -3345,7 +3373,7 @@ object VerifiedRegexMatcher {
       val suffix = ListUtils.getSuffix(totalInput, testedP)
       val newP = testedP ++ List(suffix.head)
       ghostExpr(lemmaAddHeadSuffixToPrefixStillPrefix(testedP, totalInput))
-      if (nullable(r)) {
+      if (r.nullable) {
         val recursive = findLongestMatchInner(derivativeStep(r, suffix.head), newP, totalInput)
         if (recursive._1.isEmpty) {
           (testedP, ListUtils.getSuffix(totalInput, testedP))
@@ -3373,7 +3401,7 @@ object VerifiedRegexMatcher {
     if (lostCause(r)) {
       (Nil[C](), totalInput)
     } else if (testedP == totalInput) {
-      if (nullable(r)) {
+      if (r.nullable) {
         (testedP, Nil[C]())
       } else {
         (Nil[C](), totalInput)
@@ -3390,7 +3418,7 @@ object VerifiedRegexMatcher {
       val newP = testedP ++ List(suffix.head)
       ghostExpr(lemmaAddHeadSuffixToPrefixStillPrefix(testedP, totalInput))
       check(newP.size > testedP.size)
-      if (nullable(r)) {
+      if (r.nullable) {
         val recursive = findLongestMatchInnerMem(derivativeStepMem(r, suffix.head), newP, totalInput)
         if (recursive._1.isEmpty) {
           (testedP, ListUtils.getSuffix(totalInput, testedP))
@@ -3448,7 +3476,7 @@ object VerifiedRegexMatcher {
       case Star(rInner) => Star(removeUselessConcat(rInner))
       case _ => r
     }
-  }.ensuring (res => validRegex(res) && nullable(res) == nullable(r))
+  }.ensuring (res => validRegex(res) && res.nullable == r.nullable)
 
   @ghost
   def lemmaRemoveUselessConcatSound[C](r: Regex[C], s: List[C]) : Unit = {
@@ -3523,7 +3551,7 @@ object VerifiedRegexMatcher {
               assert(s1.isEmpty)
               assert(matchR(rInner, s1))
               mainMatchTheorem(rInner, s1)
-              assert(nullable(rInner))
+              assert(rInner.nullable)
               check(false)
             }
             lemmaRemoveUselessConcatSound(Star(rInner), s2)
@@ -3610,7 +3638,7 @@ object VerifiedRegexMatcher {
               assert(s1.isEmpty)
               assert(matchR(rInner, s1))
               mainMatchTheorem(rInner, s1)
-              assert(nullable(rInner))
+              assert(rInner.nullable)
               check(false)
             }
             lemmaRemoveUselessConcatSound(Star(rInner), s2)
@@ -3658,7 +3686,7 @@ object VerifiedRegexMatcher {
           simpR1 
         else Concat(simpR1, simpR2)
     }
-  }.ensuring (res => validRegex(res) && nullable(res) == nullable(r))
+  }.ensuring (res => validRegex(res) && res.nullable == r.nullable)
 
   @ghost
   def lemmaSimplifySound[C](r: Regex[C], s: List[C]) : Unit = {
@@ -3712,7 +3740,7 @@ object VerifiedRegexMatcher {
               assert(s1.isEmpty)
               assert(matchR(rInner, s1))
               mainMatchTheorem(rInner, s1)
-              assert(nullable(rInner))
+              assert(rInner.nullable)
               check(false)
             }
             lemmaSimplifySound(Star(rInner), s2)
@@ -3824,7 +3852,7 @@ object VerifiedRegexMatcher {
                   assert(s1.isEmpty)
                   assert(matchR(rInner, s1))
                   mainMatchTheorem(rInner, s1)
-                  assert(nullable(rInner))
+                  assert(rInner.nullable)
                   check(false)
                 }
                 lemmaSimplifySound(Star(rInner), s2)
@@ -3882,13 +3910,13 @@ object VerifiedRegexMatcher {
   @opaque
   def lemmaNullableThenNotLostCause[C](r: Regex[C]): Unit = {
     require(validRegex(r))
-    require(nullable(r))
+    require(r.nullable)
     decreases(regexDepth(r))
     r match {
       case ElementMatch(c) => ()
       case Star(reg) => ()
       case Union(regOne, regTwo) => 
-        if nullable(regOne) then lemmaNullableThenNotLostCause(regOne)
+        if regOne.nullable then lemmaNullableThenNotLostCause(regOne)
         else lemmaNullableThenNotLostCause(regTwo)
       case Concat(regOne, regTwo) => 
         lemmaNullableThenNotLostCause(regOne)
@@ -3916,7 +3944,7 @@ object VerifiedRegexMatcher {
       case Star(rInner) => ()
       case Concat(r1, r2) => 
         assert(lostCause(r1) || lostCause(r2))
-        if(nullable(r1)) {
+        if(r1.nullable) {
           lemmaNullableThenNotLostCause(r1)
           assert(!lostCause(r1))
           lemmaDerivativeStepFixPointLostCause(r2, c)
@@ -3939,8 +3967,8 @@ object VerifiedRegexMatcher {
     // require(s.nonEmpty)
     decreases(regexDepth(r) + s.size)
     if (s.isEmpty) {
-      if(nullable(r)) then lemmaNullableThenNotLostCause(r)
-      assert(!nullable(r))
+      if(r.nullable) then lemmaNullableThenNotLostCause(r)
+      assert(!r.nullable)
     } else {
       mainMatchTheorem(r, s)
       r match {
@@ -4128,7 +4156,7 @@ object VerifiedRegexMatcher {
 
     lemmaMatchRIsSameAsWholeDerivativeAndNil(baseR, testedP)
     assert(matchR(r, Nil()))
-    assert(nullable(r))
+    assert(r.nullable)
     if(lostCause(r)){
       lemmaLostCauseCannotMatch(r, Nil())
       check(false)
@@ -4216,7 +4244,7 @@ object VerifiedRegexMatcher {
       ()
     } else {
       if (testedP == input) {
-        if (nullable(r)) {
+        if (r.nullable) {
           lemmaMatchRIsSameAsWholeDerivativeAndNil(baseR, testedP)
         } else {
           ()
@@ -4232,7 +4260,7 @@ object VerifiedRegexMatcher {
         val suffix = ListUtils.getSuffix(input, testedP)
         val newP = testedP ++ List(suffix.head)
         lemmaAddHeadSuffixToPrefixStillPrefix(testedP, input)
-        if (nullable(r)) {
+        if (r.nullable) {
           val recursive = findLongestMatchInner(derivativeStep(r, suffix.head), newP, input)
           if (recursive._1.isEmpty) {
             lemmaMatchRIsSameAsWholeDerivativeAndNil(baseR, testedP)
@@ -4276,14 +4304,14 @@ object VerifiedRegexMatcher {
     require(validRegex(r))
     require(s.isEmpty)
     require(matchR(r, s))
-  }.ensuring (_ => nullable(r))
+  }.ensuring (_ => r.nullable)
 
   @ghost
   def lemmaRegexAcceptsStringThenDerivativeAcceptsTail[C](r: Regex[C], s: List[C]): Unit = {
     require(validRegex(r))
     require(matchR(r, s))
 
-  }.ensuring (_ => if (s.isEmpty) nullable(r) else matchR(derivativeStep(r, s.head), s.tail))
+  }.ensuring (_ => if (s.isEmpty) r.nullable else matchR(derivativeStep(r, s.head), s.tail))
 
   // EmptyString Lemma
   @ghost
@@ -4373,13 +4401,13 @@ object VerifiedRegexMatcher {
     require(validRegex(r1))
     require(validRegex(r2))
     require(matchR(r1, s))
-    require(nullable(r2))
+    require(r2.nullable)
 
     val newR = Concat(r2, r1)
 
     s match {
       case Cons(hd, tl) => {
-        assert(nullable(r2))
+        assert(r2.nullable)
         assert(
           derivativeStep(newR, hd) == Union(Concat(derivativeStep(r2, hd), r1), derivativeStep(r1, hd))
         )
@@ -4411,7 +4439,7 @@ object VerifiedRegexMatcher {
       case Cons(hd, tl) => {
         lemmaTwoRegexMatchThenConcatMatchesConcatString(derivativeStep(r1, hd), r2, tl, s2)
         assert(matchR(Concat(derivativeStep(r1, hd), r2), tl ++ s2))
-        if (nullable(r1)) {
+        if (r1.nullable) {
           assert(
             derivativeStep(Concat(r1, r2), hd) == Union(Concat(derivativeStep(r1, hd), r2), derivativeStep(r2, hd))
           )
@@ -4509,9 +4537,9 @@ object VerifiedRegexMatcher {
     s match {
       case Cons(hd, tl) => {
         assert(matchR(derivativeStep(Concat(r1, r2), hd), tl))
-        //  if (nullable(rOne)) Union(Concat(derivativeStep(rOne, a), rTwo), derivativeStep(rTwo, a))
+        //  if (rOne.nullable) Union(Concat(derivativeStep(rOne, a), rTwo), derivativeStep(rTwo, a))
         // else Union(Concat(derivativeStep(rOne, a), rTwo), EmptyLang())
-        if (nullable(r1)) {
+        if (r1.nullable) {
           assert(derivativeStep(r, hd) == Union(Concat(derivativeStep(r1, hd), r2), derivativeStep(r2, hd)))
           lemmaRegexUnionAcceptsThenOneOfTheTwoAccepts(Concat(derivativeStep(r1, hd), r2), derivativeStep(r2, hd), tl)
           if (matchR(Concat(derivativeStep(r1, hd), r2), tl)) {
@@ -4533,7 +4561,7 @@ object VerifiedRegexMatcher {
         }
       }
       case Nil() => {
-        assert(nullable(r1) && nullable(r2))
+        assert(r1.nullable && r2.nullable)
         assert(findConcatSeparation(r1, r2, Nil(), Nil(), Nil()) == Some((Nil[C](), Nil[C]())))
       }
     }
@@ -4692,8 +4720,8 @@ object VerifiedRegexMatcher {
   @ghost
   def lemmaRIsNotNullableDerivativeStepIsThenUsedCharContainsC[C](r: Regex[C], c: C): Unit = {
     require(validRegex(r))
-    require(!nullable(r))
-    require(nullable(derivativeStep(r, c)))
+    require(!r.nullable)
+    require(derivativeStep(r, c).nullable)
     decreases(r)
 
     r match {
@@ -4701,26 +4729,26 @@ object VerifiedRegexMatcher {
       case EmptyLang()     => ()
       case ElementMatch(a) => ()
       case Union(rOne, rTwo) => {
-        if (nullable(rOne)) {
+        if (rOne.nullable) {
           check(false)
         }
-        if (nullable(rTwo)) {
+        if (rTwo.nullable) {
           check(false)
         }
-        if (nullable(derivativeStep(rOne, c))) {
+        if (derivativeStep(rOne, c).nullable) {
           lemmaRIsNotNullableDerivativeStepIsThenUsedCharContainsC(rOne, c)
         } else {
-          assert(nullable(derivativeStep(rTwo, c)))
+          assert(derivativeStep(rTwo, c).nullable)
           lemmaRIsNotNullableDerivativeStepIsThenUsedCharContainsC(rTwo, c)
         }
       }
       case Star(rInner) => ()
       case Concat(rOne, rTwo) => {
-        if (nullable(rOne)) {
-          if (nullable(Concat(derivativeStep(rOne, c), rTwo))) {
+        if (rOne.nullable) {
+          if (Concat(derivativeStep(rOne, c), rTwo).nullable) {
             lemmaRIsNotNullableDerivativeStepIsThenUsedCharContainsC(rOne, c)
           } else {
-            assert(nullable(derivativeStep(rTwo, c)))
+            assert(derivativeStep(rTwo, c).nullable)
             lemmaRIsNotNullableDerivativeStepIsThenUsedCharContainsC(rTwo, c)
 
           }
@@ -4736,7 +4764,7 @@ object VerifiedRegexMatcher {
   @ghost
   def lemmaDerivativeAfterDerivativeStepIsNullableThenUsedCharsContainsHead[C](r: Regex[C], c: C, tl: List[C]): Unit = {
     require(validRegex(r))
-    require(nullable(derivative(derivativeStep(r, c), tl)))
+    require(derivative(derivativeStep(r, c), tl).nullable)
     decreases(r)
 
     r match {
@@ -4755,7 +4783,7 @@ object VerifiedRegexMatcher {
           assert(derivativeStep(r, c) == EmptyExpr[C]())
           if (tl.isEmpty) {
             assert(r.usedCharacters.contains(c))
-            assert(nullable(derivative(derivativeStep(r, c), tl)))
+            assert(derivative(derivativeStep(r, c), tl).nullable)
           } else {
             lemmaEmptyLangDerivativeIsAFixPoint(derivativeStep(derivativeStep(r, c), tl.head), tl.tail)
             check(false)
@@ -4767,9 +4795,9 @@ object VerifiedRegexMatcher {
         }
       }
       case Union(rOne, rTwo) => {
-        if (nullable(derivative(derivativeStep(rOne, c), tl))) {
+        if (derivative(derivativeStep(rOne, c), tl).nullable) {
           lemmaDerivativeAfterDerivativeStepIsNullableThenUsedCharsContainsHead(rOne, c, tl)
-        } else if (nullable(derivative(derivativeStep(rTwo, c), tl))) {
+        } else if (derivative(derivativeStep(rTwo, c), tl).nullable) {
           lemmaDerivativeAfterDerivativeStepIsNullableThenUsedCharsContainsHead(rTwo, c, tl)
         } else {
           lemmaMatchRIsSameAsWholeDerivativeAndNil(r, Cons(c, tl))
@@ -4781,7 +4809,7 @@ object VerifiedRegexMatcher {
       }
       case Star(rInner) => {
         assert(derivativeStep(r, c) == Concat(derivativeStep(rInner, c), Star(rInner)))
-        if (nullable(derivative(derivativeStep(rInner, c), tl))) {
+        if (derivative(derivativeStep(rInner, c), tl).nullable) {
           lemmaDerivativeAfterDerivativeStepIsNullableThenUsedCharsContainsHead(rInner, c, tl)
         } else {
           lemmaMatchRIsSameAsWholeDerivativeAndNil(derivativeStep(r, c), tl)
@@ -4798,10 +4826,10 @@ object VerifiedRegexMatcher {
         }
       }
       case Concat(rOne, rTwo) => {
-        //  if (nullable(rOne)) Union(Concat(derivativeStep(rOne, a), rTwo), derivativeStep(rTwo, a))
+        //  if (rOne.nullable) Union(Concat(derivativeStep(rOne, a), rTwo), derivativeStep(rTwo, a))
         // else Union(Concat(derivativeStep(rOne, a), rTwo), EmptyLang())
 
-        if (nullable(rOne)) {
+        if (rOne.nullable) {
           lemmaMatchRIsSameAsWholeDerivativeAndNil(Union(Concat(derivativeStep(rOne, c), rTwo), derivativeStep(rTwo, c)), tl)
           lemmaRegexUnionAcceptsThenOneOfTheTwoAccepts(Concat(derivativeStep(rOne, c), rTwo), derivativeStep(rTwo, c), tl)
           if (matchR(Concat(derivativeStep(rOne, c), rTwo), tl)) {
@@ -4857,7 +4885,7 @@ object VerifiedRegexMatcher {
         lemmaDerivativeStepDoesNotAddCharToUsedCharacters(rInner, c, cNot)
       }
       case Concat(rOne, rTwo) => {
-        if (nullable(rOne)) {
+        if (rOne.nullable) {
           lemmaDerivativeStepDoesNotAddCharToUsedCharacters(rOne, c, cNot)
           lemmaDerivativeStepDoesNotAddCharToUsedCharacters(rTwo, c, cNot)
           lemmaConcatTwoListsWhichNotContainThenTotNotContain(derivativeStep(rOne, c).usedCharacters, derivativeStep(rTwo, c).usedCharacters, cNot)
@@ -4896,14 +4924,18 @@ object VerifiedRegexMatcher {
           lemmaUsedCharsContainsAllFirstChars(rTwo, c)
         }
 
+<<<<<<< HEAD
       case Concat(rOne, rTwo) if nullable(rOne) =>
+=======
+      case Concat(rOne, rTwo) if rOne.nullable =>
+>>>>>>> main
         if (rOne.firstChars.contains(c)) {
           lemmaUsedCharsContainsAllFirstChars(rOne, c)
         } else {
           lemmaUsedCharsContainsAllFirstChars(rTwo, c)
         }
 
-      case Concat(rOne, rTwo) if !nullable(rOne) => lemmaUsedCharsContainsAllFirstChars(rOne, c)
+      case Concat(rOne, rTwo) if !rOne.nullable => lemmaUsedCharsContainsAllFirstChars(rOne, c)
     }
 
   }.ensuring (_ => r.usedCharacters.contains(c))
@@ -4911,7 +4943,7 @@ object VerifiedRegexMatcher {
   @ghost
   def lemmaDerivAfterDerivStepIsNullableThenFirstCharsContainsHead[C](r: Regex[C], c: C, tl: List[C]): Unit = {
     require(validRegex(r))
-    require(nullable(derivative(derivativeStep(r, c), tl)))
+    require(derivative(derivativeStep(r, c), tl).nullable)
 
     r match {
       case EmptyExpr() => {
@@ -4929,7 +4961,7 @@ object VerifiedRegexMatcher {
           assert(derivativeStep(r, c) == EmptyExpr[C]())
           if (tl.isEmpty) {
             assert(r.firstChars.contains(c))
-            assert(nullable(derivative(derivativeStep(r, c), tl)))
+            assert(derivative(derivativeStep(r, c), tl).nullable)
           } else {
             lemmaEmptyLangDerivativeIsAFixPoint(derivativeStep(derivativeStep(r, c), tl.head), tl.tail)
             check(false)
@@ -4941,9 +4973,9 @@ object VerifiedRegexMatcher {
         }
       }
       case Union(rOne, rTwo) => {
-        if (nullable(derivative(derivativeStep(rOne, c), tl))) {
+        if (derivative(derivativeStep(rOne, c), tl).nullable) {
           lemmaDerivAfterDerivStepIsNullableThenFirstCharsContainsHead(rOne, c, tl)
-        } else if (nullable(derivative(derivativeStep(rTwo, c), tl))) {
+        } else if (derivative(derivativeStep(rTwo, c), tl).nullable) {
           lemmaDerivAfterDerivStepIsNullableThenFirstCharsContainsHead(rTwo, c, tl)
         } else {
           lemmaMatchRIsSameAsWholeDerivativeAndNil(r, Cons(c, tl))
@@ -4955,7 +4987,7 @@ object VerifiedRegexMatcher {
       }
       case Star(rInner) => {
         assert(derivativeStep(r, c) == Concat(derivativeStep(rInner, c), Star(rInner)))
-        if (nullable(derivative(derivativeStep(rInner, c), tl))) {
+        if (derivative(derivativeStep(rInner, c), tl).nullable) {
           lemmaDerivAfterDerivStepIsNullableThenFirstCharsContainsHead(rInner, c, tl)
         } else {
           lemmaMatchRIsSameAsWholeDerivativeAndNil(derivativeStep(r, c), tl)
@@ -4972,7 +5004,7 @@ object VerifiedRegexMatcher {
         }
       }
       case Concat(rOne, rTwo) => {
-        if (nullable(rOne)) {
+        if (rOne.nullable) {
           lemmaMatchRIsSameAsWholeDerivativeAndNil(Union(Concat(derivativeStep(rOne, c), rTwo), derivativeStep(rTwo, c)), tl)
           lemmaRegexUnionAcceptsThenOneOfTheTwoAccepts(Concat(derivativeStep(rOne, c), rTwo), derivativeStep(rTwo, c), tl)
           if (matchR(Concat(derivativeStep(rOne, c), rTwo), tl)) {
