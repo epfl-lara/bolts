@@ -12,6 +12,7 @@ import stainless.collection._
 import ch.epfl.map.Hashable
 import ch.epfl.lexer.VerifiedRegex._
 import ch.epfl.lexer.ZipperRegex._
+import ch.epfl.lexer.Token
 
 
 object RegexUtils {
@@ -36,6 +37,21 @@ object RegexUtils {
 
   val letterRegex: Regex[Char] = anyOf("abcdefghijklmnopqrstuvwxyz") | anyOf("ABCDEFGHIJKLMNOPQRSTUVWXYZ")
   val digitRegex: Regex[Char] = anyOf("0123456789")
+  val whiteSpaceRegex: Regex[Char] = anyOf(" \n\t")
+  val specialCharRegex: Regex[Char] = anyOf("+-/*!?=()[]{}<>|&%$§§°`^@#~;:,.éàèçù")
+
+  extension (t: Token[Char]) def asString(): String = 
+    def replaceSpecialCharacters(l: List[Char]): List[String] = 
+      // t.characters.map(c => if c == '\t' then "\\t" else if c == '\n' then "\\n" else f"$c")
+      l match {
+        case Nil() => Nil()
+        case Cons(h, tl) if h == '\t'  => Cons("\\t", replaceSpecialCharacters(tl))
+        case Cons(h, tl) if h == '\n'  => Cons("\\n", replaceSpecialCharacters(tl))
+        case Cons(h, tl) if h == '\r'  => Cons("\\r", replaceSpecialCharacters(tl))
+        case Cons(h, tl) if h == '\b'  => Cons("\\b", replaceSpecialCharacters(tl))
+        case Cons(h, tl) => Cons(f"$h", replaceSpecialCharacters(tl))
+      }
+    s"Token(${t.rule.tag}, \"${replaceSpecialCharacters(t.characters).mkString("")}\")"
   extension [A] (l: stainless.collection.List[A]) def mkString(inter: String) : String = l match {
     case stainless.collection.Nil() => ""
     case stainless.collection.Cons(h, t) => h.toString + (if t.isEmpty then "" else inter + t.mkString(inter))

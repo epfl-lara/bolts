@@ -74,6 +74,7 @@ object MainLexer {
   }
 
 }
+
 object VerifiedLexer {
   import VerifiedRegex._
   import VerifiedRegexMatcher._
@@ -190,9 +191,30 @@ object VerifiedLexer {
       decreases(input.size)
       require(!rules.isEmpty)
       require(rulesInvariant(rules))
-      val ret: (List[Token[C]], List[C]) = maxPrefix(rules, input) match {
+      val ret: (List[Token[C]], List[C]) = maxPrefixZipper(rules, input) match {
         case Some((token, suffix)) => {
           val (followingTokens, nextSuffix) = lex(rules, suffix)
+          assert(token.characters ++ suffix == input)
+          (Cons(token, followingTokens), nextSuffix)
+        }
+        case None() => (Nil(), input)
+      }
+      ret
+    }.ensuring (res =>
+      if (res._1.size > 0) res._2.size < input.size && !res._1.isEmpty
+      else res._2 == input
+    )
+
+    def lexRegex[C](
+        rules: List[Rule[C]],
+        input: List[C]
+    ): (List[Token[C]], List[C]) = {
+      decreases(input.size)
+      require(!rules.isEmpty)
+      require(rulesInvariant(rules))
+      val ret: (List[Token[C]], List[C]) = maxPrefix(rules, input) match {
+        case Some((token, suffix)) => {
+          val (followingTokens, nextSuffix) = lexRegex(rules, suffix)
           assert(token.characters ++ suffix == input)
           (Cons(token, followingTokens), nextSuffix)
         }
@@ -296,6 +318,33 @@ object VerifiedLexer {
       ret
     }.ensuring (res => res.isEmpty || res.isDefined && (res.get._2.size < input.size && res.get._1.characters ++ res.get._2 == input))
 
+    def maxPrefixZipper[C](
+        rulesArg: List[Rule[C]],
+        input: List[C]
+    ): Option[(Token[C], List[C])] = {
+      require(rulesValidInductive(rulesArg))
+      require(!rulesArg.isEmpty)
+      decreases(rulesArg.size)
+
+      ghostExpr(ListUtils.lemmaIsPrefixRefl(input, input))
+      val ret: Option[(Token[C], List[C])] = rulesArg match {
+        case Cons(hd, Nil()) => maxPrefixOneRuleZipper(hd, input)
+        case Cons(hd, tl) => {
+          val currentRulePref = maxPrefixOneRuleZipper(hd, input)
+          val othersPrefix = maxPrefixZipper(tl, input)
+          (currentRulePref, othersPrefix) match {
+            case (None(), None())                                                   => None()
+            case (c, None())                                                        => c
+            case (None(), o)                                                        => o
+            case (Some(c), Some(o)) if c._1.characters.size >= o._1.characters.size => Some(c)
+            case (Some(c), Some(o)) if c._1.characters.size < o._1.characters.size  => Some(o)
+          }
+        }
+      }
+      ret
+    }.ensuring (res => res == maxPrefix(rulesArg, input))
+
+
     /** Finds the biggest prefix matching any rule in the input list of characters If nothing matched a rule, returns None Else, returns the matched
       * prefix and the remaining suffix
       *
@@ -322,6 +371,22 @@ object VerifiedLexer {
         res.get._1.characters
       ) && res.get._1.characters ++ res.get._2 == input && res.get._2.size < input.size && res.get._1.rule == rule
     )
+
+    def maxPrefixOneRuleZipper[C](
+        rule: Rule[C],
+        input: List[C]
+    ): Option[(Token[C], List[C])] = {
+      require(ruleValid(rule))
+
+      val (longestPrefix, suffix) = findLongestMatchWithZipper(rule.regex, input)
+      if (longestPrefix.isEmpty) {
+        None[(Token[C], List[C])]()
+      } else {
+        ghostExpr(longestMatchIsAcceptedByMatchOrIsEmpty(rule.regex, input))
+        Some[(Token[C], List[C])]((Token(longestPrefix, rule), suffix))
+      }
+
+    }.ensuring (res => res == maxPrefixOneRule(rule, input))
 
     // Proofs --------------------------------------------------------------------------------------------------------------------------------
 

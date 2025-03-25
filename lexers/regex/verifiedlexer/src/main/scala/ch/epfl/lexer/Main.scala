@@ -5,29 +5,68 @@ import ch.epfl.lexer.VerifiedRegex._
 import ch.epfl.lexer.VerifiedRegexMatcher._
 import ch.epfl.lexer.MemoisationRegex._
 import ch.epfl.lexer.ZipperRegex._
-import ch.epfl.benchmark.RegexUtils._
+import ch.epfl.lexer.benchmark.RegexUtils._
 import stainless.annotation._
 import stainless.lang._
 import stainless.collection._
 import ch.epfl.map.Hashable
 import ch.epfl.lexer.RegexBenchmark.testSimp
-import scala.collection.View.Empty
 
+import ch.epfl.lexer.example.AmyLexer
+import ch.epfl.lexer.VerifiedLexer.Lexer
+
+import ch.epfl.lexer.benchmark.RegexUtils._
+
+import stainless.collection.List
 object Main {
   def main(args: Array[String]): Unit = {
-    testZippers1()
-    testZippers2()
-    testZippers3()
-    println("Running zipper match test...")
-    testZipperMatch()
-    // RegexBenchmark.benchmark01()
-    // RegexBenchmark.benchmark02()
-    // RegexBenchmark.benchmark03()
-    // RegexBenchmark.benchmark03Simp()
-    // testRegex()
-    // println("\n\n\n")
-    // testSimp()
+    testAmyLexer()
+    // tokeniseAmyFile("src/main/scala/ch/epfl/example/res/Factorial.amy","src/main/scala/ch/epfl/example/res/Factorial.amy.tokens")
+    // addNumberOfCharsInFileName("src/main/scala/ch/epfl/example/res/ADT.amy")
+    // addNumberOfCharsInFileName("src/main/scala/ch/epfl/example/res/BinaryTree.amy")
+    // addNumberOfCharsInFileName("src/main/scala/ch/epfl/example/res/Calculator.amy")
+    // addNumberOfCharsInFileName("src/main/scala/ch/epfl/example/res/Comments.amy")
+    // addNumberOfCharsInFileName("src/main/scala/ch/epfl/example/res/Compute.amy")
+    // addNumberOfCharsInFileName("src/main/scala/ch/epfl/example/res/ExpressionTree.amy")
+    // addNumberOfCharsInFileName("src/main/scala/ch/epfl/example/res/FullBenchmark.amy")
+    // addNumberOfCharsInFileName("src/main/scala/ch/epfl/example/res/Hello.amy")
+    // addNumberOfCharsInFileName("src/main/scala/ch/epfl/example/res/IOAndError.amy")
+    // addNumberOfCharsInFileName("src/main/scala/ch/epfl/example/res/ListProcessing.amy")
+    // addNumberOfCharsInFileName("src/main/scala/ch/epfl/example/res/MutualRec.amy")
+    // addNumberOfCharsInFileName("src/main/scala/ch/epfl/example/res/NestedMatch.amy")
+    // addNumberOfCharsInFileName("src/main/scala/ch/epfl/example/res/Rec.amy")
+    // addNumberOfCharsInFileName("src/main/scala/ch/epfl/example/res/Ultimate.amy")
   }
+}
+
+def addNumberOfCharsInFileName(path: String): Unit = {
+  val file = new java.io.File(path)
+  val parent = file.getParent
+  val name = file.getName
+  val contentSize = scala.io.Source.fromFile(path).mkString.length
+  val newName = s"$parent/${name.replace(".amy", "")}_${contentSize}chars.amy"
+  val newFile = new java.io.File(newName)
+  file.renameTo(newFile)
+}
+
+def tokeniseAmyFile(filepath: String, destFilePath: String): Unit = {
+  val fileContent: String = scala.io.Source.fromFile(filepath).mkString
+  println(s"File content for file '$filepath':\n$fileContent")
+  val (tokens, suffix) = Lexer.lex(AmyLexer.rules, fileContent.toStainless)
+  assert(suffix.isEmpty)
+  val tokenStrings = tokens.map(t => t.asString())
+  val tokenString = tokenStrings.mkString("\n")
+  // Write to file
+  val writer = new java.io.PrintWriter(new java.io.File(destFilePath))
+  writer.write(tokenString)
+  writer.close()
+}
+
+def testAmyLexer(): Unit = {
+  val s = "abstract case class def else extends if match object val error _ end"
+  val (tokens, suffix) = Lexer.lex(AmyLexer.rules, s.toStainless)
+  println(s"Tokens for '$s': ${tokens.map(t => t.asString()).mkString(", ")}")
+  assert(suffix.isEmpty)
 }
 
 def testZippers1(): Unit = {

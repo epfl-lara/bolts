@@ -1,0 +1,29 @@
+object ListBench
+  abstract class List
+  case class Nil() extends List
+  case class Cons(h: Int(32), t: List) extends List
+
+  def range(from: Int(32), to: Int(32)): List = {
+    if (to < from) { Nil() }
+    else {
+      Cons(from, range(from + 1, to))
+    }
+  }
+
+  def length(l: List): Int(32) = {
+    l match {
+      case Nil() => 0
+      case Cons(h, t) => 1 + length(t)
+    }
+  }
+
+  def sum(l: List): Int(32) = {
+    l match {
+      case Nil() => 0
+      case Cons(h, t) => h + sum(t)
+    }
+  }
+
+  Std.printString("Length: " ++ Std.intToString(length(range(1, 10))));
+  Std.printString("Sum: " ++ Std.intToString(sum(range(1, 10))))
+end ListBench

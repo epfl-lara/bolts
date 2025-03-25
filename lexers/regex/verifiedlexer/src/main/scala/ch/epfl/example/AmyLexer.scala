@@ -1,4 +1,4 @@
-package ch.epf.lexer.example
+package ch.epfl.lexer.example
 
 import ch.epfl.lexer.VerifiedLexer.Lexer
 import ch.epfl.lexer.LexerInterface
@@ -36,7 +36,7 @@ case object AmyLexer:
 
     val primitivTypeRule = 
         Rule(
-            regex = "Int".r |
+            regex = "Int(32)".r |
             "Unit".r |
             "Boolean".r |
             "String".r,
@@ -63,3 +63,62 @@ case object AmyLexer:
             tag = "identifier",
             isSeparator = false)
 
+    // many1(elem(_.isDigit))
+    val integerLiteralRule = 
+        Rule(
+            regex = digitRegex.+,
+            tag = "integer_literal",
+            isSeparator = false)
+
+    // elem('"') ~ many(elem(c => c != '"' && c != '\n')) ~ elem('"')
+    val stringLiteralRule = 
+        Rule(
+            regex = "\"".r ~ (letterRegex | digitRegex | " ".r | "\t".r | specialCharRegex).* ~ "\"".r,
+            tag = "string_literal",
+            isSeparator = false)
+
+    // oneOf(".,:;(){}[]=") | word("=>")
+    val delimiterRule = 
+        Rule(
+            regex = anyOf(".,:;(){}[]=") | "=>".r,
+            tag = "delimiter",
+            isSeparator = false)
+    
+    // many1(elem(_.isWhitespace))
+    val whitespaceRule = 
+        Rule(
+            regex = whiteSpaceRegex.+,
+            tag = "whitespace",
+            isSeparator = true)
+
+    // word("//") ~ many(elem(_ != '\n'))
+    val singleCommentRule = 
+        Rule(
+            regex = "//".r ~ (letterRegex | digitRegex | " ".r | "\t".r | specialCharRegex).*,
+            tag = "comment",
+            isSeparator = true)
+
+    // word("/*") ~
+    // many(elem(_ != '*') | many1(elem('*')) ~ elem(c => c != '/' && c != '*')) ~
+    // many(elem('*')) ~
+    // word("*/")
+    val multiCommentRule = 
+        Rule(
+            regex = "/*".r ~ 
+            (letterRegex | digitRegex | " ".r | "\t".r | specialCharRegex | "*".r).* ~ "*/".r,
+            tag = "comment",
+            isSeparator = true)
+
+    val rules = List(
+        keywordRule,
+        primitivTypeRule,
+        booleanLiteralRule,
+        operatorRule,
+        identifierRule,
+        integerLiteralRule,
+        stringLiteralRule,
+        delimiterRule,
+        whitespaceRule,
+        singleCommentRule,
+        multiCommentRule
+    )
