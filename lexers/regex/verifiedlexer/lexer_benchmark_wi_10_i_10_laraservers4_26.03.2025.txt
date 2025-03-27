@@ -1,0 +1,1401 @@
+copying runtime jar...
+[info] welcome to sbt 1.9.8 (Ubuntu Java 17.0.14)
+[info] loading settings for project verifiedlexer-build from plugins.sbt ...
+[info] loading project definition from /localhome/chassot/bolts/lexers/regex/verifiedlexer/project
+[info] loading settings for project verifiedlexer from build.sbt ...
+[info] set current project to VerifiedLexer (in build file:/localhome/chassot/bolts/lexers/regex/verifiedlexer/)
+[info] compiling 60 Scala sources to /localhome/chassot/bolts/lexers/regex/verifiedlexer/target/scala-3.5.2/classes ...
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/main/scala/ch/epfl/lexer/Utils.scala:537:23 
+[warn] 537 |    val res: List[B] = l match {
+[warn]     |                       ^
+[warn]     |             match may not be exhaustive.
+[warn]     |
+[warn]     |             It would fail on pattern case: stainless.collection.Nil()
+[warn]     |
+[warn]     | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/main/scala/ch/epfl/lexer/Utils.scala:565:4 
+[warn] 565 |    l match {
+[warn]     |    ^
+[warn]     |    match may not be exhaustive.
+[warn]     |
+[warn]     |    It would fail on pattern case: stainless.collection.Cons(_, _)
+[warn]     |
+[warn]     | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/main/scala/ch/epfl/lexer/Utils.scala:1074:4 
+[warn] 1074 |    newList match {
+[warn]      |    ^^^^^^^
+[warn]      |    match may not be exhaustive.
+[warn]      |
+[warn]      |    It would fail on pattern case: stainless.collection.Cons(_, _)
+[warn]      |
+[warn]      | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/main/scala/ch/epfl/lexer/VerifiedLexer.scala:275:10 
+[warn] 275 |          maxPrefWithoutSep match {
+[warn]     |          ^^^^^^^^^^^^^^^^^
+[warn]     |          match may not be exhaustive.
+[warn]     |
+[warn]     |          It would fail on pattern case: stainless.lang.Some(_)
+[warn]     |
+[warn]     | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/main/scala/ch/epfl/lexer/VerifiedLexer.scala:309:10 
+[warn] 309 |          (currentRulePref, othersPrefix) match {
+[warn]     |          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[warn]     |match may not be exhaustive.
+[warn]     |
+[warn]     |It would fail on pattern case: (stainless.lang.Some(_), stainless.lang.Some(_))
+[warn]     |
+[warn]     | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/main/scala/ch/epfl/lexer/VerifiedLexer.scala:304:45 
+[warn] 304 |      val ret: Option[(Token[C], List[C])] = rulesArg match {
+[warn]     |                                             ^^^^^^^^
+[warn]     |             match may not be exhaustive.
+[warn]     |
+[warn]     |             It would fail on pattern case: stainless.collection.Nil()
+[warn]     |
+[warn]     | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/main/scala/ch/epfl/lexer/VerifiedLexer.scala:335:10 
+[warn] 335 |          (currentRulePref, othersPrefix) match {
+[warn]     |          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[warn]     |match may not be exhaustive.
+[warn]     |
+[warn]     |It would fail on pattern case: (stainless.lang.Some(_), stainless.lang.Some(_))
+[warn]     |
+[warn]     | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/main/scala/ch/epfl/lexer/VerifiedLexer.scala:330:45 
+[warn] 330 |      val ret: Option[(Token[C], List[C])] = rulesArg match {
+[warn]     |                                             ^^^^^^^^
+[warn]     |             match may not be exhaustive.
+[warn]     |
+[warn]     |             It would fail on pattern case: stainless.collection.Nil()
+[warn]     |
+[warn]     | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/main/scala/ch/epfl/lexer/VerifiedLexer.scala:786:6 
+[warn] 786 |      rules match {
+[warn]     |      ^^^^^
+[warn]     |      match may not be exhaustive.
+[warn]     |
+[warn]     |      It would fail on pattern case: stainless.collection.Cons(_, _)
+[warn]     |
+[warn]     | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/main/scala/ch/epfl/lexer/VerifiedLexer.scala:1810:6 
+[warn] 1810 |      l1 match {
+[warn]      |      ^^
+[warn]      |match may not be exhaustive.
+[warn]      |
+[warn]      |It would fail on pattern case: _: stainless.collection.List[ch.epfl.lexer.Token[C]]
+[warn]      |
+[warn]      | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/main/scala/ch/epfl/lexer/VerifiedRegex.scala:340:4 
+[warn] 340 |    r match {
+[warn]     |    ^
+[warn]     |    match may not be exhaustive.
+[warn]     |
+[warn]     |    It would fail on pattern case: Concat(_, _)
+[warn]     |
+[warn]     | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/main/scala/ch/epfl/map/ListLongMap.scala:157:4 
+[warn] 157 |    l match {
+[warn]     |    ^
+[warn]     |    match may not be exhaustive.
+[warn]     |
+[warn]     |    It would fail on pattern case: stainless.collection.Cons(_, _)
+[warn]     |
+[warn]     | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/main/scala/ch/epfl/map/ListLongMap.scala:191:4 
+[warn] 191 |    l match {
+[warn]     |    ^
+[warn]     |    match may not be exhaustive.
+[warn]     |
+[warn]     |    It would fail on pattern case: stainless.collection.Cons(_, _)
+[warn]     |
+[warn]     | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/main/scala/ch/epfl/map/ListLongMap.scala:206:4 
+[warn] 206 |    l match {
+[warn]     |    ^
+[warn]     |    match may not be exhaustive.
+[warn]     |
+[warn]     |    It would fail on pattern case: stainless.collection.Cons(_, _)
+[warn]     |
+[warn]     | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/main/scala/ch/epfl/map/ListLongMap.scala:222:4 
+[warn] 222 |    l match {
+[warn]     |    ^
+[warn]     |    match may not be exhaustive.
+[warn]     |
+[warn]     |    It would fail on pattern case: stainless.collection.Cons(_, _)
+[warn]     |
+[warn]     | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/main/scala/ch/epfl/map/ListLongMap.scala:243:4 
+[warn] 243 |    l match {
+[warn]     |    ^
+[warn]     |    match may not be exhaustive.
+[warn]     |
+[warn]     |    It would fail on pattern case: stainless.collection.Cons(_, _)
+[warn]     |
+[warn]     | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/main/scala/ch/epfl/map/ListLongMap.scala:274:4 
+[warn] 274 |    l match {
+[warn]     |    ^
+[warn]     |    match may not be exhaustive.
+[warn]     |
+[warn]     |    It would fail on pattern case: stainless.collection.Cons(_, _)
+[warn]     |
+[warn]     | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/main/scala/ch/epfl/map/ListMap.scala:195:4 
+[warn] 195 |    l match {
+[warn]     |    ^
+[warn]     |    match may not be exhaustive.
+[warn]     |
+[warn]     |    It would fail on pattern case: stainless.collection.Cons(_, _)
+[warn]     |
+[warn]     | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/main/scala/ch/epfl/map/ListMap.scala:229:4 
+[warn] 229 |    l match {
+[warn]     |    ^
+[warn]     |    match may not be exhaustive.
+[warn]     |
+[warn]     |    It would fail on pattern case: stainless.collection.Cons(_, _)
+[warn]     |
+[warn]     | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/main/scala/ch/epfl/map/ListMap.scala:256:4 
+[warn] 256 |    l match {
+[warn]     |    ^
+[warn]     |    match may not be exhaustive.
+[warn]     |
+[warn]     |    It would fail on pattern case: stainless.collection.Cons(_, _)
+[warn]     |
+[warn]     | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/main/scala/ch/epfl/map/ListMap.scala:308:4 
+[warn] 308 |    l match {
+[warn]     |    ^
+[warn]     |    match may not be exhaustive.
+[warn]     |
+[warn]     |    It would fail on pattern case: stainless.collection.Cons(_, _)
+[warn]     |
+[warn]     | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/main/scala/ch/epfl/map/ListMap.scala:380:4 
+[warn] 380 |    l match {
+[warn]     |    ^
+[warn]     |    match may not be exhaustive.
+[warn]     |
+[warn]     |    It would fail on pattern case: stainless.collection.Cons(_, _)
+[warn]     |
+[warn]     | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/main/scala/ch/epfl/map/MutableLongMap.scala:347:4 
+[warn] 347 |    c match {
+[warn]     |    ^
+[warn]     |    match may not be exhaustive.
+[warn]     |
+[warn]     |    It would fail on pattern case: EmptyCell()
+[warn]     |
+[warn]     | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/main/scala/ch/epfl/map/MutableLongMap.scala:596:8 
+[warn] 596 |        seekEntryRes match {
+[warn]     |        ^^^^^^^^^^^^
+[warn]     |match may not be exhaustive.
+[warn]     |
+[warn]     |It would fail on pattern case: ch.epfl.map.MutableLongMap.Intermediate(_, _, _)
+[warn]     |
+[warn]     | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/main/scala/ch/epfl/map/MutableLongMap.scala:1106:6 
+[warn] 1106 |      intermediate match {
+[warn]      |      ^^^^^^^^^^^^
+[warn]      |match may not be exhaustive.
+[warn]      |
+[warn]      |It would fail on pattern case: _: ch.epfl.map.MutableLongMap.SeekEntryResult
+[warn]      |
+[warn]      | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/main/scala/ch/epfl/map/MutableLongMap.scala:1156:6 
+[warn] 1156 |      intermediate match {
+[warn]      |      ^^^^^^^^^^^^
+[warn]      |match may not be exhaustive.
+[warn]      |
+[warn]      |It would fail on pattern case: _: ch.epfl.map.MutableLongMap.SeekEntryResult
+[warn]      |
+[warn]      | longer explanation available when compiling with `-explain`
+[warn] 26 warnings found
+[info] done compiling
+[info] running org.openjdk.jmh.generators.bytecode.JmhBytecodeGenerator /localhome/chassot/bolts/lexers/regex/verifiedlexer/target/scala-3.5.2/classes /localhome/chassot/bolts/lexers/regex/verifiedlexer/target/scala-3.5.2/src_managed/jmh /localhome/chassot/bolts/lexers/regex/verifiedlexer/target/scala-3.5.2/resource_managed/jmh default
+Processing 868 classes from /localhome/chassot/bolts/lexers/regex/verifiedlexer/target/scala-3.5.2/classes with "reflection" generator
+Writing out Java source to /localhome/chassot/bolts/lexers/regex/verifiedlexer/target/scala-3.5.2/src_managed/jmh and resources to /localhome/chassot/bolts/lexers/regex/verifiedlexer/target/scala-3.5.2/resource_managed/jmh
+[info] compiling 18 Java sources to /localhome/chassot/bolts/lexers/regex/verifiedlexer/target/scala-3.5.2/classes ...
+[info] done compiling
+[info] running (fork) org.openjdk.jmh.Main -i 10 -wi 10 -f1 -t1 benchmark.LexerBenchmark.*
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.14, OpenJDK 64-Bit Server VM, 17.0.14+7-Ubuntu-124.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 10 iterations, 10 s each
+[info] # Measurement: 10 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: benchmark.LexerBenchmark.lex_Regex
+[info] # Parameters: (file = ADT_864chars.amy)
+[info] # Run progress: 0.00% complete, ETA 01:40:00
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 17531.821 us/op
+[info] # Warmup Iteration   2: 16877.838 us/op
+[info] # Warmup Iteration   3: 16262.268 us/op
+[info] # Warmup Iteration   4: 16751.230 us/op
+[info] # Warmup Iteration   5: 16238.008 us/op
+[info] # Warmup Iteration   6: 16337.246 us/op
+[info] # Warmup Iteration   7: 16504.395 us/op
+[info] # Warmup Iteration   8: 16109.816 us/op
+[info] # Warmup Iteration   9: 16104.020 us/op
+[info] # Warmup Iteration  10: 16143.781 us/op
+[info] Iteration   1: 16525.014 us/op
+[info] Iteration   2: 16276.257 us/op
+[info] Iteration   3: 16204.015 us/op
+[info] Iteration   4: 16551.002 us/op
+[info] Iteration   5: 16409.895 us/op
+[info] Iteration   6: 16095.937 us/op
+[info] Iteration   7: 16117.195 us/op
+[info] Iteration   8: 16343.468 us/op
+[info] Iteration   9: 16251.900 us/op
+[info] Iteration  10: 16414.863 us/op
+[info] Result "benchmark.LexerBenchmark.lex_Regex":
+[info]   16318.955 ±(99.9%) 238.700 us/op [Average]
+[info]   (min, avg, max) = (16095.937, 16318.955, 16551.002), stdev = 157.885
+[info]   CI (99.9%): [16080.254, 16557.655] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.14, OpenJDK 64-Bit Server VM, 17.0.14+7-Ubuntu-124.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 10 iterations, 10 s each
+[info] # Measurement: 10 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: benchmark.LexerBenchmark.lex_Regex
+[info] # Parameters: (file = BinaryTree_952chars.amy)
+[info] # Run progress: 3.33% complete, ETA 01:36:54
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 18721.789 us/op
+[info] # Warmup Iteration   2: 17478.765 us/op
+[info] # Warmup Iteration   3: 18227.338 us/op
+[info] # Warmup Iteration   4: 17593.176 us/op
+[info] # Warmup Iteration   5: 17682.044 us/op
+[info] # Warmup Iteration   6: 17218.114 us/op
+[info] # Warmup Iteration   7: 17219.575 us/op
+[info] # Warmup Iteration   8: 17220.636 us/op
+[info] # Warmup Iteration   9: 17228.633 us/op
+[info] # Warmup Iteration  10: 17314.416 us/op
+[info] Iteration   1: 17769.633 us/op
+[info] Iteration   2: 17256.737 us/op
+[info] Iteration   3: 17321.893 us/op
+[info] Iteration   4: 17476.580 us/op
+[info] Iteration   5: 17561.238 us/op
+[info] Iteration   6: 17228.192 us/op
+[info] Iteration   7: 17237.650 us/op
+[info] Iteration   8: 17213.154 us/op
+[info] Iteration   9: 17220.486 us/op
+[info] Iteration  10: 17213.079 us/op
+[info] Result "benchmark.LexerBenchmark.lex_Regex":
+[info]   17349.864 ±(99.9%) 288.590 us/op [Average]
+[info]   (min, avg, max) = (17213.079, 17349.864, 17769.633), stdev = 190.884
+[info]   CI (99.9%): [17061.274, 17638.454] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.14, OpenJDK 64-Bit Server VM, 17.0.14+7-Ubuntu-124.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 10 iterations, 10 s each
+[info] # Measurement: 10 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: benchmark.LexerBenchmark.lex_Regex
+[info] # Parameters: (file = Calculator_962chars.amy)
+[info] # Run progress: 6.67% complete, ETA 01:33:33
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 19265.167 us/op
+[info] # Warmup Iteration   2: 18247.346 us/op
+[info] # Warmup Iteration   3: 18225.022 us/op
+[info] # Warmup Iteration   4: 17778.443 us/op
+[info] # Warmup Iteration   5: 18200.166 us/op
+[info] # Warmup Iteration   6: 17759.701 us/op
+[info] # Warmup Iteration   7: 17659.220 us/op
+[info] # Warmup Iteration   8: 17660.112 us/op
+[info] # Warmup Iteration   9: 17758.327 us/op
+[info] # Warmup Iteration  10: 17697.094 us/op
+[info] Iteration   1: 17766.527 us/op
+[info] Iteration   2: 17808.457 us/op
+[info] Iteration   3: 18089.094 us/op
+[info] Iteration   4: 17776.082 us/op
+[info] Iteration   5: 17654.957 us/op
+[info] Iteration   6: 17653.109 us/op
+[info] Iteration   7: 17664.119 us/op
+[info] Iteration   8: 17691.691 us/op
+[info] Iteration   9: 17668.843 us/op
+[info] Iteration  10: 17661.416 us/op
+[info] Result "benchmark.LexerBenchmark.lex_Regex":
+[info]   17743.430 ±(99.9%) 203.183 us/op [Average]
+[info]   (min, avg, max) = (17653.109, 17743.430, 18089.094), stdev = 134.393
+[info]   CI (99.9%): [17540.246, 17946.613] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.14, OpenJDK 64-Bit Server VM, 17.0.14+7-Ubuntu-124.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 10 iterations, 10 s each
+[info] # Measurement: 10 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: benchmark.LexerBenchmark.lex_Regex
+[info] # Parameters: (file = Comments_324chars.amy)
+[info] # Run progress: 10.00% complete, ETA 01:30:14
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 5315.924 us/op
+[info] # Warmup Iteration   2: 4991.567 us/op
+[info] # Warmup Iteration   3: 4943.954 us/op
+[info] # Warmup Iteration   4: 4841.953 us/op
+[info] # Warmup Iteration   5: 4968.851 us/op
+[info] # Warmup Iteration   6: 4807.317 us/op
+[info] # Warmup Iteration   7: 4810.953 us/op
+[info] # Warmup Iteration   8: 4809.839 us/op
+[info] # Warmup Iteration   9: 4800.940 us/op
+[info] # Warmup Iteration  10: 4808.287 us/op
+[info] Iteration   1: 4820.250 us/op
+[info] Iteration   2: 4854.871 us/op
+[info] Iteration   3: 4922.920 us/op
+[info] Iteration   4: 4794.279 us/op
+[info] Iteration   5: 4803.667 us/op
+[info] Iteration   6: 4851.094 us/op
+[info] Iteration   7: 4836.383 us/op
+[info] Iteration   8: 4879.425 us/op
+[info] Iteration   9: 4833.498 us/op
+[info] Iteration  10: 4810.345 us/op
+[info] Result "benchmark.LexerBenchmark.lex_Regex":
+[info]   4840.673 ±(99.9%) 58.565 us/op [Average]
+[info]   (min, avg, max) = (4794.279, 4840.673, 4922.920), stdev = 38.737
+[info]   CI (99.9%): [4782.108, 4899.238] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.14, OpenJDK 64-Bit Server VM, 17.0.14+7-Ubuntu-124.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 10 iterations, 10 s each
+[info] # Measurement: 10 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: benchmark.LexerBenchmark.lex_Regex
+[info] # Parameters: (file = Compute_230chars.amy)
+[info] # Run progress: 13.33% complete, ETA 01:26:52
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 1718.293 us/op
+[info] # Warmup Iteration   2: 1612.969 us/op
+[info] # Warmup Iteration   3: 1578.549 us/op
+[info] # Warmup Iteration   4: 1570.327 us/op
+[info] # Warmup Iteration   5: 1603.893 us/op
+[info] # Warmup Iteration   6: 1590.710 us/op
+[info] # Warmup Iteration   7: 1571.211 us/op
+[info] # Warmup Iteration   8: 1569.907 us/op
+[info] # Warmup Iteration   9: 1589.212 us/op
+[info] # Warmup Iteration  10: 1593.367 us/op
+[info] Iteration   1: 1580.787 us/op
+[info] Iteration   2: 1569.787 us/op
+[info] Iteration   3: 1567.451 us/op
+[info] Iteration   4: 1568.456 us/op
+[info] Iteration   5: 1567.720 us/op
+[info] Iteration   6: 1567.453 us/op
+[info] Iteration   7: 1573.420 us/op
+[info] Iteration   8: 1573.466 us/op
+[info] Iteration   9: 1578.063 us/op
+[info] Iteration  10: 1573.029 us/op
+[info] Result "benchmark.LexerBenchmark.lex_Regex":
+[info]   1571.963 ±(99.9%) 7.061 us/op [Average]
+[info]   (min, avg, max) = (1567.451, 1571.963, 1580.787), stdev = 4.670
+[info]   CI (99.9%): [1564.902, 1579.024] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.14, OpenJDK 64-Bit Server VM, 17.0.14+7-Ubuntu-124.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 10 iterations, 10 s each
+[info] # Measurement: 10 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: benchmark.LexerBenchmark.lex_Regex
+[info] # Parameters: (file = ExpressionTree_1176chars.amy)
+[info] # Run progress: 16.67% complete, ETA 01:23:31
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 29630.315 us/op
+[info] # Warmup Iteration   2: 27979.899 us/op
+[info] # Warmup Iteration   3: 27296.708 us/op
+[info] # Warmup Iteration   4: 27771.645 us/op
+[info] # Warmup Iteration   5: 27695.108 us/op
+[info] # Warmup Iteration   6: 27353.970 us/op
+[info] # Warmup Iteration   7: 27224.618 us/op
+[info] # Warmup Iteration   8: 27835.448 us/op
+[info] # Warmup Iteration   9: 27410.329 us/op
+[info] # Warmup Iteration  10: 27225.974 us/op
+[info] Iteration   1: 27193.611 us/op
+[info] Iteration   2: 27196.271 us/op
+[info] Iteration   3: 27169.077 us/op
+[info] Iteration   4: 27192.342 us/op
+[info] Iteration   5: 27211.821 us/op
+[info] Iteration   6: 27227.194 us/op
+[info] Iteration   7: 27415.852 us/op
+[info] Iteration   8: 27234.349 us/op
+[info] Iteration   9: 27568.635 us/op
+[info] Iteration  10: 27577.444 us/op
+[info] Result "benchmark.LexerBenchmark.lex_Regex":
+[info]   27298.660 ±(99.9%) 242.075 us/op [Average]
+[info]   (min, avg, max) = (27169.077, 27298.660, 27577.444), stdev = 160.118
+[info]   CI (99.9%): [27056.584, 27540.735] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.14, OpenJDK 64-Bit Server VM, 17.0.14+7-Ubuntu-124.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 10 iterations, 10 s each
+[info] # Measurement: 10 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: benchmark.LexerBenchmark.lex_Regex
+[info] # Parameters: (file = Factorial_275chars.amy)
+[info] # Run progress: 20.00% complete, ETA 01:20:11
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 2526.750 us/op
+[info] # Warmup Iteration   2: 2339.614 us/op
+[info] # Warmup Iteration   3: 2288.399 us/op
+[info] # Warmup Iteration   4: 2300.342 us/op
+[info] # Warmup Iteration   5: 2330.395 us/op
+[info] # Warmup Iteration   6: 2272.776 us/op
+[info] # Warmup Iteration   7: 2279.897 us/op
+[info] # Warmup Iteration   8: 2316.870 us/op
+[info] # Warmup Iteration   9: 2274.497 us/op
+[info] # Warmup Iteration  10: 2264.126 us/op
+[info] Iteration   1: 2263.388 us/op
+[info] Iteration   2: 2262.944 us/op
+[info] Iteration   3: 2264.416 us/op
+[info] Iteration   4: 2260.508 us/op
+[info] Iteration   5: 2285.306 us/op
+[info] Iteration   6: 2272.021 us/op
+[info] Iteration   7: 2275.626 us/op
+[info] Iteration   8: 2264.464 us/op
+[info] Iteration   9: 2265.137 us/op
+[info] Iteration  10: 2278.685 us/op
+[info] Result "benchmark.LexerBenchmark.lex_Regex":
+[info]   2269.249 ±(99.9%) 12.436 us/op [Average]
+[info]   (min, avg, max) = (2260.508, 2269.249, 2285.306), stdev = 8.225
+[info]   CI (99.9%): [2256.814, 2281.685] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.14, OpenJDK 64-Bit Server VM, 17.0.14+7-Ubuntu-124.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 10 iterations, 10 s each
+[info] # Measurement: 10 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: benchmark.LexerBenchmark.lex_Regex
+[info] # Parameters: (file = FullBenchmark_1852chars.amy)
+[info] # Run progress: 23.33% complete, ETA 01:16:50
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 67047.912 us/op
+[info] # Warmup Iteration   2: 63789.931 us/op
+[info] # Warmup Iteration   3: 64185.597 us/op
+[info] # Warmup Iteration   4: 62020.209 us/op
+[info] # Warmup Iteration   5: 63141.242 us/op
+[info] # Warmup Iteration   6: 61998.370 us/op
+[info] # Warmup Iteration   7: 61589.034 us/op
+[info] # Warmup Iteration   8: 61877.882 us/op
+[info] # Warmup Iteration   9: 61611.816 us/op
+[info] # Warmup Iteration  10: 61795.272 us/op
+[info] Iteration   1: 61790.344 us/op
+[info] Iteration   2: 61654.681 us/op
+[info] Iteration   3: 61975.953 us/op
+[info] Iteration   4: 62082.077 us/op
+[info] Iteration   5: 62601.437 us/op
+[info] Iteration   6: 62061.006 us/op
+[info] Iteration   7: 61464.866 us/op
+[info] Iteration   8: 61716.756 us/op
+[info] Iteration   9: 61478.614 us/op
+[info] Iteration  10: 61476.368 us/op
+[info] Result "benchmark.LexerBenchmark.lex_Regex":
+[info]   61830.210 ±(99.9%) 542.846 us/op [Average]
+[info]   (min, avg, max) = (61464.866, 61830.210, 62601.437), stdev = 359.059
+[info]   CI (99.9%): [61287.365, 62373.056] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.14, OpenJDK 64-Bit Server VM, 17.0.14+7-Ubuntu-124.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 10 iterations, 10 s each
+[info] # Measurement: 10 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: benchmark.LexerBenchmark.lex_Regex
+[info] # Parameters: (file = Hello_56chars.amy)
+[info] # Run progress: 26.67% complete, ETA 01:13:31
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 520.081 us/op
+[info] # Warmup Iteration   2: 444.359 us/op
+[info] # Warmup Iteration   3: 456.192 us/op
+[info] # Warmup Iteration   4: 438.920 us/op
+[info] # Warmup Iteration   5: 451.771 us/op
+[info] # Warmup Iteration   6: 447.825 us/op
+[info] # Warmup Iteration   7: 444.115 us/op
+[info] # Warmup Iteration   8: 445.227 us/op
+[info] # Warmup Iteration   9: 448.844 us/op
+[info] # Warmup Iteration  10: 438.156 us/op
+[info] Iteration   1: 438.455 us/op
+[info] Iteration   2: 437.816 us/op
+[info] Iteration   3: 438.949 us/op
+[info] Iteration   4: 437.975 us/op
+[info] Iteration   5: 437.724 us/op
+[info] Iteration   6: 438.111 us/op
+[info] Iteration   7: 437.422 us/op
+[info] Iteration   8: 437.101 us/op
+[info] Iteration   9: 439.020 us/op
+[info] Iteration  10: 440.702 us/op
+[info] Result "benchmark.LexerBenchmark.lex_Regex":
+[info]   438.328 ±(99.9%) 1.565 us/op [Average]
+[info]   (min, avg, max) = (437.101, 438.328, 440.702), stdev = 1.035
+[info]   CI (99.9%): [436.763, 439.892] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.14, OpenJDK 64-Bit Server VM, 17.0.14+7-Ubuntu-124.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 10 iterations, 10 s each
+[info] # Measurement: 10 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: benchmark.LexerBenchmark.lex_Regex
+[info] # Parameters: (file = IOAndError_267chars.amy)
+[info] # Run progress: 30.00% complete, ETA 01:10:10
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 3652.369 us/op
+[info] # Warmup Iteration   2: 3393.287 us/op
+[info] # Warmup Iteration   3: 3380.639 us/op
+[info] # Warmup Iteration   4: 3327.668 us/op
+[info] # Warmup Iteration   5: 3327.202 us/op
+[info] # Warmup Iteration   6: 3331.657 us/op
+[info] # Warmup Iteration   7: 3288.850 us/op
+[info] # Warmup Iteration   8: 3280.003 us/op
+[info] # Warmup Iteration   9: 3281.946 us/op
+[info] # Warmup Iteration  10: 3287.824 us/op
+[info] Iteration   1: 3279.573 us/op
+[info] Iteration   2: 3284.538 us/op
+[info] Iteration   3: 3293.089 us/op
+[info] Iteration   4: 3307.011 us/op
+[info] Iteration   5: 3368.865 us/op
+[info] Iteration   6: 3300.923 us/op
+[info] Iteration   7: 3279.777 us/op
+[info] Iteration   8: 3297.599 us/op
+[info] Iteration   9: 3310.361 us/op
+[info] Iteration  10: 3364.844 us/op
+[info] Result "benchmark.LexerBenchmark.lex_Regex":
+[info]   3308.658 ±(99.9%) 49.051 us/op [Average]
+[info]   (min, avg, max) = (3279.573, 3308.658, 3368.865), stdev = 32.444
+[info]   CI (99.9%): [3259.607, 3357.709] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.14, OpenJDK 64-Bit Server VM, 17.0.14+7-Ubuntu-124.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 10 iterations, 10 s each
+[info] # Measurement: 10 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: benchmark.LexerBenchmark.lex_Regex
+[info] # Parameters: (file = ListProcessing_649chars.amy)
+[info] # Run progress: 33.33% complete, ETA 01:06:49
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 9825.628 us/op
+[info] # Warmup Iteration   2: 9405.919 us/op
+[info] # Warmup Iteration   3: 9964.355 us/op
+[info] # Warmup Iteration   4: 9624.957 us/op
+[info] # Warmup Iteration   5: 9436.049 us/op
+[info] # Warmup Iteration   6: 9123.989 us/op
+[info] # Warmup Iteration   7: 8938.337 us/op
+[info] # Warmup Iteration   8: 8978.505 us/op
+[info] # Warmup Iteration   9: 9026.061 us/op
+[info] # Warmup Iteration  10: 8960.499 us/op
+[info] Iteration   1: 9110.135 us/op
+[info] Iteration   2: 9190.083 us/op
+[info] Iteration   3: 8929.589 us/op
+[info] Iteration   4: 9311.581 us/op
+[info] Iteration   5: 9273.798 us/op
+[info] Iteration   6: 8920.048 us/op
+[info] Iteration   7: 9150.617 us/op
+[info] Iteration   8: 9499.738 us/op
+[info] Iteration   9: 9060.438 us/op
+[info] Iteration  10: 9153.650 us/op
+[info] Result "benchmark.LexerBenchmark.lex_Regex":
+[info]   9159.968 ±(99.9%) 264.490 us/op [Average]
+[info]   (min, avg, max) = (8920.048, 9159.968, 9499.738), stdev = 174.943
+[info]   CI (99.9%): [8895.478, 9424.457] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.14, OpenJDK 64-Bit Server VM, 17.0.14+7-Ubuntu-124.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 10 iterations, 10 s each
+[info] # Measurement: 10 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: benchmark.LexerBenchmark.lex_Regex
+[info] # Parameters: (file = MutualRec_296chars.amy)
+[info] # Run progress: 36.67% complete, ETA 01:03:28
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 2913.371 us/op
+[info] # Warmup Iteration   2: 2755.549 us/op
+[info] # Warmup Iteration   3: 2697.910 us/op
+[info] # Warmup Iteration   4: 2698.433 us/op
+[info] # Warmup Iteration   5: 2777.934 us/op
+[info] # Warmup Iteration   6: 2663.336 us/op
+[info] # Warmup Iteration   7: 2679.044 us/op
+[info] # Warmup Iteration   8: 2699.152 us/op
+[info] # Warmup Iteration   9: 2670.336 us/op
+[info] # Warmup Iteration  10: 2649.597 us/op
+[info] Iteration   1: 2690.255 us/op
+[info] Iteration   2: 2717.087 us/op
+[info] Iteration   3: 2670.039 us/op
+[info] Iteration   4: 2663.414 us/op
+[info] Iteration   5: 2740.264 us/op
+[info] Iteration   6: 2662.294 us/op
+[info] Iteration   7: 2702.172 us/op
+[info] Iteration   8: 2710.324 us/op
+[info] Iteration   9: 2655.197 us/op
+[info] Iteration  10: 2653.604 us/op
+[info] Result "benchmark.LexerBenchmark.lex_Regex":
+[info]   2686.465 ±(99.9%) 45.371 us/op [Average]
+[info]   (min, avg, max) = (2653.604, 2686.465, 2740.264), stdev = 30.010
+[info]   CI (99.9%): [2641.094, 2731.836] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.14, OpenJDK 64-Bit Server VM, 17.0.14+7-Ubuntu-124.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 10 iterations, 10 s each
+[info] # Measurement: 10 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: benchmark.LexerBenchmark.lex_Regex
+[info] # Parameters: (file = NestedMatch_451chars.amy)
+[info] # Run progress: 40.00% complete, ETA 01:00:08
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 4988.235 us/op
+[info] # Warmup Iteration   2: 4718.075 us/op
+[info] # Warmup Iteration   3: 4594.216 us/op
+[info] # Warmup Iteration   4: 4695.251 us/op
+[info] # Warmup Iteration   5: 4666.741 us/op
+[info] # Warmup Iteration   6: 4525.319 us/op
+[info] # Warmup Iteration   7: 4513.133 us/op
+[info] # Warmup Iteration   8: 4531.263 us/op
+[info] # Warmup Iteration   9: 4591.507 us/op
+[info] # Warmup Iteration  10: 4582.319 us/op
+[info] Iteration   1: 4509.588 us/op
+[info] Iteration   2: 4538.288 us/op
+[info] Iteration   3: 4514.222 us/op
+[info] Iteration   4: 4533.342 us/op
+[info] Iteration   5: 4521.046 us/op
+[info] Iteration   6: 4522.917 us/op
+[info] Iteration   7: 4515.606 us/op
+[info] Iteration   8: 4617.329 us/op
+[info] Iteration   9: 4527.762 us/op
+[info] Iteration  10: 4542.820 us/op
+[info] Result "benchmark.LexerBenchmark.lex_Regex":
+[info]   4534.292 ±(99.9%) 46.991 us/op [Average]
+[info]   (min, avg, max) = (4509.588, 4534.292, 4617.329), stdev = 31.081
+[info]   CI (99.9%): [4487.301, 4581.283] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.14, OpenJDK 64-Bit Server VM, 17.0.14+7-Ubuntu-124.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 10 iterations, 10 s each
+[info] # Measurement: 10 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: benchmark.LexerBenchmark.lex_Regex
+[info] # Parameters: (file = Rec_66chars.amy)
+[info] # Run progress: 43.33% complete, ETA 00:56:47
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 317.174 us/op
+[info] # Warmup Iteration   2: 266.186 us/op
+[info] # Warmup Iteration   3: 275.556 us/op
+[info] # Warmup Iteration   4: 271.639 us/op
+[info] # Warmup Iteration   5: 276.955 us/op
+[info] # Warmup Iteration   6: 269.520 us/op
+[info] # Warmup Iteration   7: 266.599 us/op
+[info] # Warmup Iteration   8: 269.597 us/op
+[info] # Warmup Iteration   9: 272.735 us/op
+[info] # Warmup Iteration  10: 271.346 us/op
+[info] Iteration   1: 266.288 us/op
+[info] Iteration   2: 266.109 us/op
+[info] Iteration   3: 266.423 us/op
+[info] Iteration   4: 266.563 us/op
+[info] Iteration   5: 266.457 us/op
+[info] Iteration   6: 266.204 us/op
+[info] Iteration   7: 267.721 us/op
+[info] Iteration   8: 268.558 us/op
+[info] Iteration   9: 270.898 us/op
+[info] Iteration  10: 271.205 us/op
+[info] Result "benchmark.LexerBenchmark.lex_Regex":
+[info]   267.643 ±(99.9%) 2.958 us/op [Average]
+[info]   (min, avg, max) = (266.109, 267.643, 271.205), stdev = 1.956
+[info]   CI (99.9%): [264.685, 270.601] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.14, OpenJDK 64-Bit Server VM, 17.0.14+7-Ubuntu-124.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 10 iterations, 10 s each
+[info] # Measurement: 10 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: benchmark.LexerBenchmark.lex_Regex
+[info] # Parameters: (file = Ultimate_3811chars.amy)
+[info] # Run progress: 46.67% complete, ETA 00:53:27
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 246502.716 us/op
+[info] # Warmup Iteration   2: 211810.401 us/op
+[info] # Warmup Iteration   3: 210269.748 us/op
+[info] # Warmup Iteration   4: 206405.550 us/op
+[info] # Warmup Iteration   5: 209661.731 us/op
+[info] # Warmup Iteration   6: 212116.912 us/op
+[info] # Warmup Iteration   7: 204578.945 us/op
+[info] # Warmup Iteration   8: 205937.935 us/op
+[info] # Warmup Iteration   9: 205210.215 us/op
+[info] # Warmup Iteration  10: 208933.090 us/op
+[info] Iteration   1: 209862.316 us/op
+[info] Iteration   2: 211011.363 us/op
+[info] Iteration   3: 204624.183 us/op
+[info] Iteration   4: 204788.749 us/op
+[info] Iteration   5: 205869.047 us/op
+[info] Iteration   6: 205517.762 us/op
+[info] Iteration   7: 207670.027 us/op
+[info] Iteration   8: 204993.112 us/op
+[info] Iteration   9: 205764.451 us/op
+[info] Iteration  10: 206663.084 us/op
+[info] Result "benchmark.LexerBenchmark.lex_Regex":
+[info]   206676.409 ±(99.9%) 3318.580 us/op [Average]
+[info]   (min, avg, max) = (204624.183, 206676.409, 211011.363), stdev = 2195.035
+[info]   CI (99.9%): [203357.829, 209994.990] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.14, OpenJDK 64-Bit Server VM, 17.0.14+7-Ubuntu-124.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 10 iterations, 10 s each
+[info] # Measurement: 10 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: benchmark.LexerBenchmark.lex_Zipper
+[info] # Parameters: (file = ADT_864chars.amy)
+[info] # Run progress: 50.00% complete, ETA 00:50:08
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 20850.906 us/op
+[info] # Warmup Iteration   2: 19731.860 us/op
+[info] # Warmup Iteration   3: 19715.686 us/op
+[info] # Warmup Iteration   4: 19408.590 us/op
+[info] # Warmup Iteration   5: 19716.931 us/op
+[info] # Warmup Iteration   6: 18968.840 us/op
+[info] # Warmup Iteration   7: 18957.274 us/op
+[info] # Warmup Iteration   8: 18956.737 us/op
+[info] # Warmup Iteration   9: 18987.895 us/op
+[info] # Warmup Iteration  10: 19179.221 us/op
+[info] Iteration   1: 18984.189 us/op
+[info] Iteration   2: 19752.969 us/op
+[info] Iteration   3: 19251.233 us/op
+[info] Iteration   4: 19262.918 us/op
+[info] Iteration   5: 19269.971 us/op
+[info] Iteration   6: 19170.929 us/op
+[info] Iteration   7: 18955.270 us/op
+[info] Iteration   8: 18959.927 us/op
+[info] Iteration   9: 18960.224 us/op
+[info] Iteration  10: 18953.695 us/op
+[info] Result "benchmark.LexerBenchmark.lex_Zipper":
+[info]   19152.133 ±(99.9%) 382.953 us/op [Average]
+[info]   (min, avg, max) = (18953.695, 19152.133, 19752.969), stdev = 253.300
+[info]   CI (99.9%): [18769.179, 19535.086] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.14, OpenJDK 64-Bit Server VM, 17.0.14+7-Ubuntu-124.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 10 iterations, 10 s each
+[info] # Measurement: 10 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: benchmark.LexerBenchmark.lex_Zipper
+[info] # Parameters: (file = BinaryTree_952chars.amy)
+[info] # Run progress: 53.33% complete, ETA 00:46:47
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 23007.459 us/op
+[info] # Warmup Iteration   2: 20277.369 us/op
+[info] # Warmup Iteration   3: 20079.642 us/op
+[info] # Warmup Iteration   4: 20628.933 us/op
+[info] # Warmup Iteration   5: 20683.983 us/op
+[info] # Warmup Iteration   6: 20024.604 us/op
+[info] # Warmup Iteration   7: 20153.418 us/op
+[info] # Warmup Iteration   8: 20195.834 us/op
+[info] # Warmup Iteration   9: 20340.545 us/op
+[info] # Warmup Iteration  10: 20157.357 us/op
+[info] Iteration   1: 20019.835 us/op
+[info] Iteration   2: 20027.260 us/op
+[info] Iteration   3: 20017.507 us/op
+[info] Iteration   4: 20019.013 us/op
+[info] Iteration   5: 20080.793 us/op
+[info] Iteration   6: 20015.327 us/op
+[info] Iteration   7: 20075.739 us/op
+[info] Iteration   8: 20099.732 us/op
+[info] Iteration   9: 20026.145 us/op
+[info] Iteration  10: 20061.320 us/op
+[info] Result "benchmark.LexerBenchmark.lex_Zipper":
+[info]   20044.267 ±(99.9%) 48.068 us/op [Average]
+[info]   (min, avg, max) = (20015.327, 20044.267, 20099.732), stdev = 31.794
+[info]   CI (99.9%): [19996.199, 20092.335] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.14, OpenJDK 64-Bit Server VM, 17.0.14+7-Ubuntu-124.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 10 iterations, 10 s each
+[info] # Measurement: 10 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: benchmark.LexerBenchmark.lex_Zipper
+[info] # Parameters: (file = Calculator_962chars.amy)
+[info] # Run progress: 56.67% complete, ETA 00:43:27
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 22576.927 us/op
+[info] # Warmup Iteration   2: 21724.639 us/op
+[info] # Warmup Iteration   3: 20753.073 us/op
+[info] # Warmup Iteration   4: 22130.225 us/op
+[info] # Warmup Iteration   5: 20911.182 us/op
+[info] # Warmup Iteration   6: 21074.552 us/op
+[info] # Warmup Iteration   7: 21227.174 us/op
+[info] # Warmup Iteration   8: 21064.222 us/op
+[info] # Warmup Iteration   9: 21073.022 us/op
+[info] # Warmup Iteration  10: 20898.596 us/op
+[info] Iteration   1: 20932.507 us/op
+[info] Iteration   2: 20884.943 us/op
+[info] Iteration   3: 20893.785 us/op
+[info] Iteration   4: 20965.957 us/op
+[info] Iteration   5: 20887.170 us/op
+[info] Iteration   6: 20892.654 us/op
+[info] Iteration   7: 20934.443 us/op
+[info] Iteration   8: 21004.791 us/op
+[info] Iteration   9: 20926.665 us/op
+[info] Iteration  10: 20945.625 us/op
+[info] Result "benchmark.LexerBenchmark.lex_Zipper":
+[info]   20926.854 ±(99.9%) 58.856 us/op [Average]
+[info]   (min, avg, max) = (20884.943, 20926.854, 21004.791), stdev = 38.930
+[info]   CI (99.9%): [20867.998, 20985.710] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.14, OpenJDK 64-Bit Server VM, 17.0.14+7-Ubuntu-124.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 10 iterations, 10 s each
+[info] # Measurement: 10 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: benchmark.LexerBenchmark.lex_Zipper
+[info] # Parameters: (file = Comments_324chars.amy)
+[info] # Run progress: 60.00% complete, ETA 00:40:06
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 4113.497 us/op
+[info] # Warmup Iteration   2: 3774.083 us/op
+[info] # Warmup Iteration   3: 3825.147 us/op
+[info] # Warmup Iteration   4: 3699.277 us/op
+[info] # Warmup Iteration   5: 3688.797 us/op
+[info] # Warmup Iteration   6: 3781.192 us/op
+[info] # Warmup Iteration   7: 3743.790 us/op
+[info] # Warmup Iteration   8: 3765.088 us/op
+[info] # Warmup Iteration   9: 3792.577 us/op
+[info] # Warmup Iteration  10: 3687.080 us/op
+[info] Iteration   1: 3689.727 us/op
+[info] Iteration   2: 3689.727 us/op
+[info] Iteration   3: 3686.537 us/op
+[info] Iteration   4: 3690.662 us/op
+[info] Iteration   5: 3685.292 us/op
+[info] Iteration   6: 3685.281 us/op
+[info] Iteration   7: 3683.854 us/op
+[info] Iteration   8: 3681.429 us/op
+[info] Iteration   9: 3682.623 us/op
+[info] Iteration  10: 3683.176 us/op
+[info] Result "benchmark.LexerBenchmark.lex_Zipper":
+[info]   3685.831 ±(99.9%) 4.922 us/op [Average]
+[info]   (min, avg, max) = (3681.429, 3685.831, 3690.662), stdev = 3.256
+[info]   CI (99.9%): [3680.908, 3690.753] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.14, OpenJDK 64-Bit Server VM, 17.0.14+7-Ubuntu-124.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 10 iterations, 10 s each
+[info] # Measurement: 10 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: benchmark.LexerBenchmark.lex_Zipper
+[info] # Parameters: (file = Compute_230chars.amy)
+[info] # Run progress: 63.33% complete, ETA 00:36:45
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 2750.191 us/op
+[info] # Warmup Iteration   2: 2528.617 us/op
+[info] # Warmup Iteration   3: 2553.541 us/op
+[info] # Warmup Iteration   4: 2494.948 us/op
+[info] # Warmup Iteration   5: 2475.366 us/op
+[info] # Warmup Iteration   6: 2508.511 us/op
+[info] # Warmup Iteration   7: 2531.657 us/op
+[info] # Warmup Iteration   8: 2474.038 us/op
+[info] # Warmup Iteration   9: 2472.030 us/op
+[info] # Warmup Iteration  10: 2473.386 us/op
+[info] Iteration   1: 2472.525 us/op
+[info] Iteration   2: 2471.605 us/op
+[info] Iteration   3: 2473.784 us/op
+[info] Iteration   4: 2471.801 us/op
+[info] Iteration   5: 2471.427 us/op
+[info] Iteration   6: 2468.283 us/op
+[info] Iteration   7: 2526.238 us/op
+[info] Iteration   8: 2552.053 us/op
+[info] Iteration   9: 2490.871 us/op
+[info] Iteration  10: 2541.478 us/op
+[info] Result "benchmark.LexerBenchmark.lex_Zipper":
+[info]   2494.006 ±(99.9%) 49.655 us/op [Average]
+[info]   (min, avg, max) = (2468.283, 2494.006, 2552.053), stdev = 32.844
+[info]   CI (99.9%): [2444.351, 2543.661] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.14, OpenJDK 64-Bit Server VM, 17.0.14+7-Ubuntu-124.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 10 iterations, 10 s each
+[info] # Measurement: 10 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: benchmark.LexerBenchmark.lex_Zipper
+[info] # Parameters: (file = ExpressionTree_1176chars.amy)
+[info] # Run progress: 66.67% complete, ETA 00:33:25
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 32284.597 us/op
+[info] # Warmup Iteration   2: 29970.139 us/op
+[info] # Warmup Iteration   3: 30293.506 us/op
+[info] # Warmup Iteration   4: 29660.610 us/op
+[info] # Warmup Iteration   5: 29735.296 us/op
+[info] # Warmup Iteration   6: 29718.716 us/op
+[info] # Warmup Iteration   7: 29914.037 us/op
+[info] # Warmup Iteration   8: 29703.065 us/op
+[info] # Warmup Iteration   9: 29796.831 us/op
+[info] # Warmup Iteration  10: 30129.191 us/op
+[info] Iteration   1: 30168.433 us/op
+[info] Iteration   2: 29725.341 us/op
+[info] Iteration   3: 29710.802 us/op
+[info] Iteration   4: 29721.218 us/op
+[info] Iteration   5: 29716.852 us/op
+[info] Iteration   6: 29719.372 us/op
+[info] Iteration   7: 29788.417 us/op
+[info] Iteration   8: 29785.597 us/op
+[info] Iteration   9: 30204.016 us/op
+[info] Iteration  10: 30255.698 us/op
+[info] Result "benchmark.LexerBenchmark.lex_Zipper":
+[info]   29879.575 ±(99.9%) 347.984 us/op [Average]
+[info]   (min, avg, max) = (29710.802, 29879.575, 30255.698), stdev = 230.170
+[info]   CI (99.9%): [29531.590, 30227.559] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.14, OpenJDK 64-Bit Server VM, 17.0.14+7-Ubuntu-124.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 10 iterations, 10 s each
+[info] # Measurement: 10 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: benchmark.LexerBenchmark.lex_Zipper
+[info] # Parameters: (file = Factorial_275chars.amy)
+[info] # Run progress: 70.00% complete, ETA 00:30:04
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 3499.463 us/op
+[info] # Warmup Iteration   2: 3261.525 us/op
+[info] # Warmup Iteration   3: 3259.934 us/op
+[info] # Warmup Iteration   4: 3116.671 us/op
+[info] # Warmup Iteration   5: 3117.016 us/op
+[info] # Warmup Iteration   6: 3191.533 us/op
+[info] # Warmup Iteration   7: 3164.942 us/op
+[info] # Warmup Iteration   8: 3138.102 us/op
+[info] # Warmup Iteration   9: 3220.186 us/op
+[info] # Warmup Iteration  10: 3118.737 us/op
+[info] Iteration   1: 3118.265 us/op
+[info] Iteration   2: 3117.378 us/op
+[info] Iteration   3: 3118.588 us/op
+[info] Iteration   4: 3145.275 us/op
+[info] Iteration   5: 3132.401 us/op
+[info] Iteration   6: 3117.945 us/op
+[info] Iteration   7: 3119.006 us/op
+[info] Iteration   8: 3128.052 us/op
+[info] Iteration   9: 3125.550 us/op
+[info] Iteration  10: 3119.900 us/op
+[info] Result "benchmark.LexerBenchmark.lex_Zipper":
+[info]   3124.236 ±(99.9%) 13.578 us/op [Average]
+[info]   (min, avg, max) = (3117.378, 3124.236, 3145.275), stdev = 8.981
+[info]   CI (99.9%): [3110.658, 3137.814] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.14, OpenJDK 64-Bit Server VM, 17.0.14+7-Ubuntu-124.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 10 iterations, 10 s each
+[info] # Measurement: 10 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: benchmark.LexerBenchmark.lex_Zipper
+[info] # Parameters: (file = FullBenchmark_1852chars.amy)
+[info] # Run progress: 73.33% complete, ETA 00:26:44
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 67307.862 us/op
+[info] # Warmup Iteration   2: 61209.101 us/op
+[info] # Warmup Iteration   3: 63114.571 us/op
+[info] # Warmup Iteration   4: 61416.895 us/op
+[info] # Warmup Iteration   5: 62396.861 us/op
+[info] # Warmup Iteration   6: 60041.873 us/op
+[info] # Warmup Iteration   7: 60431.957 us/op
+[info] # Warmup Iteration   8: 60437.153 us/op
+[info] # Warmup Iteration   9: 60052.083 us/op
+[info] # Warmup Iteration  10: 60095.932 us/op
+[info] Iteration   1: 60562.109 us/op
+[info] Iteration   2: 60520.269 us/op
+[info] Iteration   3: 61151.359 us/op
+[info] Iteration   4: 60987.498 us/op
+[info] Iteration   5: 61493.987 us/op
+[info] Iteration   6: 61190.666 us/op
+[info] Iteration   7: 61006.067 us/op
+[info] Iteration   8: 59841.242 us/op
+[info] Iteration   9: 61556.116 us/op
+[info] Iteration  10: 61705.527 us/op
+[info] Result "benchmark.LexerBenchmark.lex_Zipper":
+[info]   61001.484 ±(99.9%) 854.508 us/op [Average]
+[info]   (min, avg, max) = (59841.242, 61001.484, 61705.527), stdev = 565.204
+[info]   CI (99.9%): [60146.976, 61855.992] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.14, OpenJDK 64-Bit Server VM, 17.0.14+7-Ubuntu-124.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 10 iterations, 10 s each
+[info] # Measurement: 10 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: benchmark.LexerBenchmark.lex_Zipper
+[info] # Parameters: (file = Hello_56chars.amy)
+[info] # Run progress: 76.67% complete, ETA 00:23:23
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 504.385 us/op
+[info] # Warmup Iteration   2: 470.601 us/op
+[info] # Warmup Iteration   3: 455.108 us/op
+[info] # Warmup Iteration   4: 461.654 us/op
+[info] # Warmup Iteration   5: 466.634 us/op
+[info] # Warmup Iteration   6: 455.437 us/op
+[info] # Warmup Iteration   7: 455.402 us/op
+[info] # Warmup Iteration   8: 455.465 us/op
+[info] # Warmup Iteration   9: 455.459 us/op
+[info] # Warmup Iteration  10: 461.259 us/op
+[info] Iteration   1: 462.422 us/op
+[info] Iteration   2: 459.789 us/op
+[info] Iteration   3: 455.278 us/op
+[info] Iteration   4: 455.405 us/op
+[info] Iteration   5: 455.282 us/op
+[info] Iteration   6: 461.533 us/op
+[info] Iteration   7: 458.960 us/op
+[info] Iteration   8: 461.752 us/op
+[info] Iteration   9: 454.910 us/op
+[info] Iteration  10: 454.725 us/op
+[info] Result "benchmark.LexerBenchmark.lex_Zipper":
+[info]   458.006 ±(99.9%) 4.835 us/op [Average]
+[info]   (min, avg, max) = (454.725, 458.006, 462.422), stdev = 3.198
+[info]   CI (99.9%): [453.171, 462.841] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.14, OpenJDK 64-Bit Server VM, 17.0.14+7-Ubuntu-124.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 10 iterations, 10 s each
+[info] # Measurement: 10 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: benchmark.LexerBenchmark.lex_Zipper
+[info] # Parameters: (file = IOAndError_267chars.amy)
+[info] # Run progress: 80.00% complete, ETA 00:20:03
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 3369.856 us/op
+[info] # Warmup Iteration   2: 3116.931 us/op
+[info] # Warmup Iteration   3: 3221.073 us/op
+[info] # Warmup Iteration   4: 3069.544 us/op
+[info] # Warmup Iteration   5: 3135.410 us/op
+[info] # Warmup Iteration   6: 3047.415 us/op
+[info] # Warmup Iteration   7: 3039.329 us/op
+[info] # Warmup Iteration   8: 3048.785 us/op
+[info] # Warmup Iteration   9: 3042.597 us/op
+[info] # Warmup Iteration  10: 3055.162 us/op
+[info] Iteration   1: 3111.647 us/op
+[info] Iteration   2: 3057.731 us/op
+[info] Iteration   3: 3053.578 us/op
+[info] Iteration   4: 3062.374 us/op
+[info] Iteration   5: 3070.975 us/op
+[info] Iteration   6: 3085.422 us/op
+[info] Iteration   7: 3035.738 us/op
+[info] Iteration   8: 3030.684 us/op
+[info] Iteration   9: 3029.857 us/op
+[info] Iteration  10: 3032.780 us/op
+[info] Result "benchmark.LexerBenchmark.lex_Zipper":
+[info]   3057.078 ±(99.9%) 40.625 us/op [Average]
+[info]   (min, avg, max) = (3029.857, 3057.078, 3111.647), stdev = 26.871
+[info]   CI (99.9%): [3016.453, 3097.703] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.14, OpenJDK 64-Bit Server VM, 17.0.14+7-Ubuntu-124.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 10 iterations, 10 s each
+[info] # Measurement: 10 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: benchmark.LexerBenchmark.lex_Zipper
+[info] # Parameters: (file = ListProcessing_649chars.amy)
+[info] # Run progress: 83.33% complete, ETA 00:16:42
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 12851.502 us/op
+[info] # Warmup Iteration   2: 12045.627 us/op
+[info] # Warmup Iteration   3: 12097.335 us/op
+[info] # Warmup Iteration   4: 11798.617 us/op
+[info] # Warmup Iteration   5: 11794.085 us/op
+[info] # Warmup Iteration   6: 12184.858 us/op
+[info] # Warmup Iteration   7: 11879.110 us/op
+[info] # Warmup Iteration   8: 12037.805 us/op
+[info] # Warmup Iteration   9: 12027.554 us/op
+[info] # Warmup Iteration  10: 11799.811 us/op
+[info] Iteration   1: 11799.654 us/op
+[info] Iteration   2: 11796.461 us/op
+[info] Iteration   3: 11799.722 us/op
+[info] Iteration   4: 11797.038 us/op
+[info] Iteration   5: 11799.486 us/op
+[info] Iteration   6: 11795.686 us/op
+[info] Iteration   7: 11819.460 us/op
+[info] Iteration   8: 11817.280 us/op
+[info] Iteration   9: 11819.288 us/op
+[info] Iteration  10: 11898.743 us/op
+[info] Result "benchmark.LexerBenchmark.lex_Zipper":
+[info]   11814.282 ±(99.9%) 47.275 us/op [Average]
+[info]   (min, avg, max) = (11795.686, 11814.282, 11898.743), stdev = 31.270
+[info]   CI (99.9%): [11767.006, 11861.557] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.14, OpenJDK 64-Bit Server VM, 17.0.14+7-Ubuntu-124.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 10 iterations, 10 s each
+[info] # Measurement: 10 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: benchmark.LexerBenchmark.lex_Zipper
+[info] # Parameters: (file = MutualRec_296chars.amy)
+[info] # Run progress: 86.67% complete, ETA 00:13:22
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 4006.205 us/op
+[info] # Warmup Iteration   2: 3734.123 us/op
+[info] # Warmup Iteration   3: 3631.710 us/op
+[info] # Warmup Iteration   4: 3664.716 us/op
+[info] # Warmup Iteration   5: 3578.592 us/op
+[info] # Warmup Iteration   6: 3599.357 us/op
+[info] # Warmup Iteration   7: 3643.017 us/op
+[info] # Warmup Iteration   8: 3633.445 us/op
+[info] # Warmup Iteration   9: 3579.860 us/op
+[info] # Warmup Iteration  10: 3577.889 us/op
+[info] Iteration   1: 3578.456 us/op
+[info] Iteration   2: 3581.601 us/op
+[info] Iteration   3: 3593.488 us/op
+[info] Iteration   4: 3580.526 us/op
+[info] Iteration   5: 3579.682 us/op
+[info] Iteration   6: 3578.231 us/op
+[info] Iteration   7: 3584.139 us/op
+[info] Iteration   8: 3584.490 us/op
+[info] Iteration   9: 3594.097 us/op
+[info] Iteration  10: 3621.214 us/op
+[info] Result "benchmark.LexerBenchmark.lex_Zipper":
+[info]   3587.592 ±(99.9%) 19.831 us/op [Average]
+[info]   (min, avg, max) = (3578.231, 3587.592, 3621.214), stdev = 13.117
+[info]   CI (99.9%): [3567.761, 3607.424] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.14, OpenJDK 64-Bit Server VM, 17.0.14+7-Ubuntu-124.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 10 iterations, 10 s each
+[info] # Measurement: 10 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: benchmark.LexerBenchmark.lex_Zipper
+[info] # Parameters: (file = NestedMatch_451chars.amy)
+[info] # Run progress: 90.00% complete, ETA 00:10:01
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 6615.693 us/op
+[info] # Warmup Iteration   2: 6072.598 us/op
+[info] # Warmup Iteration   3: 6019.444 us/op
+[info] # Warmup Iteration   4: 5966.801 us/op
+[info] # Warmup Iteration   5: 5920.444 us/op
+[info] # Warmup Iteration   6: 5910.203 us/op
+[info] # Warmup Iteration   7: 5826.372 us/op
+[info] # Warmup Iteration   8: 5826.074 us/op
+[info] # Warmup Iteration   9: 5868.186 us/op
+[info] # Warmup Iteration  10: 5865.635 us/op
+[info] Iteration   1: 6017.586 us/op
+[info] Iteration   2: 5828.076 us/op
+[info] Iteration   3: 5883.233 us/op
+[info] Iteration   4: 5887.386 us/op
+[info] Iteration   5: 5925.589 us/op
+[info] Iteration   6: 5890.989 us/op
+[info] Iteration   7: 5835.361 us/op
+[info] Iteration   8: 5850.420 us/op
+[info] Iteration   9: 5839.545 us/op
+[info] Iteration  10: 5836.740 us/op
+[info] Result "benchmark.LexerBenchmark.lex_Zipper":
+[info]   5879.493 ±(99.9%) 87.669 us/op [Average]
+[info]   (min, avg, max) = (5828.076, 5879.493, 6017.586), stdev = 57.988
+[info]   CI (99.9%): [5791.823, 5967.162] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.14, OpenJDK 64-Bit Server VM, 17.0.14+7-Ubuntu-124.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 10 iterations, 10 s each
+[info] # Measurement: 10 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: benchmark.LexerBenchmark.lex_Zipper
+[info] # Parameters: (file = Rec_66chars.amy)
+[info] # Run progress: 93.33% complete, ETA 00:06:41
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 666.688 us/op
+[info] # Warmup Iteration   2: 606.970 us/op
+[info] # Warmup Iteration   3: 601.118 us/op
+[info] # Warmup Iteration   4: 606.021 us/op
+[info] # Warmup Iteration   5: 595.888 us/op
+[info] # Warmup Iteration   6: 597.078 us/op
+[info] # Warmup Iteration   7: 602.205 us/op
+[info] # Warmup Iteration   8: 596.164 us/op
+[info] # Warmup Iteration   9: 591.932 us/op
+[info] # Warmup Iteration  10: 591.739 us/op
+[info] Iteration   1: 592.008 us/op
+[info] Iteration   2: 591.788 us/op
+[info] Iteration   3: 591.867 us/op
+[info] Iteration   4: 591.520 us/op
+[info] Iteration   5: 591.814 us/op
+[info] Iteration   6: 594.948 us/op
+[info] Iteration   7: 596.451 us/op
+[info] Iteration   8: 601.637 us/op
+[info] Iteration   9: 595.772 us/op
+[info] Iteration  10: 591.524 us/op
+[info] Result "benchmark.LexerBenchmark.lex_Zipper":
+[info]   593.933 ±(99.9%) 5.009 us/op [Average]
+[info]   (min, avg, max) = (591.520, 593.933, 601.637), stdev = 3.313
+[info]   CI (99.9%): [588.924, 598.942] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.14, OpenJDK 64-Bit Server VM, 17.0.14+7-Ubuntu-124.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 10 iterations, 10 s each
+[info] # Measurement: 10 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: benchmark.LexerBenchmark.lex_Zipper
+[info] # Parameters: (file = Ultimate_3811chars.amy)
+[info] # Run progress: 96.67% complete, ETA 00:03:20
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 218864.537 us/op
+[info] # Warmup Iteration   2: 199585.302 us/op
+[info] # Warmup Iteration   3: 187911.862 us/op
+[info] # Warmup Iteration   4: 190026.886 us/op
+[info] # Warmup Iteration   5: 191310.205 us/op
+[info] # Warmup Iteration   6: 185431.701 us/op
+[info] # Warmup Iteration   7: 186890.978 us/op
+[info] # Warmup Iteration   8: 185455.341 us/op
+[info] # Warmup Iteration   9: 185523.002 us/op
+[info] # Warmup Iteration  10: 185206.851 us/op
+[info] Iteration   1: 190551.787 us/op
+[info] Iteration   2: 190154.013 us/op
+[info] Iteration   3: 188727.845 us/op
+[info] Iteration   4: 184922.021 us/op
+[info] Iteration   5: 185553.010 us/op
+[info] Iteration   6: 184907.666 us/op
+[info] Iteration   7: 190164.265 us/op
+[info] Iteration   8: 187082.261 us/op
+[info] Iteration   9: 189999.108 us/op
+[info] Iteration  10: 191648.717 us/op
+[info] Result "benchmark.LexerBenchmark.lex_Zipper":
+[info]   188371.069 ±(99.9%) 3843.421 us/op [Average]
+[info]   (min, avg, max) = (184907.666, 188371.069, 191648.717), stdev = 2542.185
+[info]   CI (99.9%): [184527.649, 192214.490] (assumes normal distribution)
+[info] # Run complete. Total time: 01:40:16
+[info] REMEMBER: The numbers below are just data. To gain reusable insights, you need to follow up on
+[info] why the numbers are the way they are. Use profilers (see -prof, -lprof), design factorial
+[info] experiments, perform baseline and negative tests that provide experimental control, make sure
+[info] the benchmarking environment is safe on JVM/OS/HW level, ask for reviews from the domain experts.
+[info] Do not assume the numbers tell you what you want them to tell.
+[info] Benchmark                                        (file)  Mode  Cnt       Score      Error  Units
+[info] LexerBenchmark.lex_Regex               ADT_864chars.amy  avgt   10   16318.955 ±  238.700  us/op
+[info] LexerBenchmark.lex_Regex        BinaryTree_952chars.amy  avgt   10   17349.864 ±  288.590  us/op
+[info] LexerBenchmark.lex_Regex        Calculator_962chars.amy  avgt   10   17743.430 ±  203.183  us/op
+[info] LexerBenchmark.lex_Regex          Comments_324chars.amy  avgt   10    4840.673 ±   58.565  us/op
+[info] LexerBenchmark.lex_Regex           Compute_230chars.amy  avgt   10    1571.963 ±    7.061  us/op
+[info] LexerBenchmark.lex_Regex   ExpressionTree_1176chars.amy  avgt   10   27298.660 ±  242.075  us/op
+[info] LexerBenchmark.lex_Regex         Factorial_275chars.amy  avgt   10    2269.249 ±   12.436  us/op
+[info] LexerBenchmark.lex_Regex    FullBenchmark_1852chars.amy  avgt   10   61830.210 ±  542.846  us/op
+[info] LexerBenchmark.lex_Regex              Hello_56chars.amy  avgt   10     438.328 ±    1.565  us/op
+[info] LexerBenchmark.lex_Regex        IOAndError_267chars.amy  avgt   10    3308.658 ±   49.051  us/op
+[info] LexerBenchmark.lex_Regex    ListProcessing_649chars.amy  avgt   10    9159.968 ±  264.490  us/op
+[info] LexerBenchmark.lex_Regex         MutualRec_296chars.amy  avgt   10    2686.465 ±   45.371  us/op
+[info] LexerBenchmark.lex_Regex       NestedMatch_451chars.amy  avgt   10    4534.292 ±   46.991  us/op
+[info] LexerBenchmark.lex_Regex                Rec_66chars.amy  avgt   10     267.643 ±    2.958  us/op
+[info] LexerBenchmark.lex_Regex         Ultimate_3811chars.amy  avgt   10  206676.409 ± 3318.580  us/op
+[info] LexerBenchmark.lex_Zipper              ADT_864chars.amy  avgt   10   19152.133 ±  382.953  us/op
+[info] LexerBenchmark.lex_Zipper       BinaryTree_952chars.amy  avgt   10   20044.267 ±   48.068  us/op
+[info] LexerBenchmark.lex_Zipper       Calculator_962chars.amy  avgt   10   20926.854 ±   58.856  us/op
+[info] LexerBenchmark.lex_Zipper         Comments_324chars.amy  avgt   10    3685.831 ±    4.922  us/op
+[info] LexerBenchmark.lex_Zipper          Compute_230chars.amy  avgt   10    2494.006 ±   49.655  us/op
+[info] LexerBenchmark.lex_Zipper  ExpressionTree_1176chars.amy  avgt   10   29879.575 ±  347.984  us/op
+[info] LexerBenchmark.lex_Zipper        Factorial_275chars.amy  avgt   10    3124.236 ±   13.578  us/op
+[info] LexerBenchmark.lex_Zipper   FullBenchmark_1852chars.amy  avgt   10   61001.484 ±  854.508  us/op
+[info] LexerBenchmark.lex_Zipper             Hello_56chars.amy  avgt   10     458.006 ±    4.835  us/op
+[info] LexerBenchmark.lex_Zipper       IOAndError_267chars.amy  avgt   10    3057.078 ±   40.625  us/op
+[info] LexerBenchmark.lex_Zipper   ListProcessing_649chars.amy  avgt   10   11814.282 ±   47.275  us/op
+[info] LexerBenchmark.lex_Zipper        MutualRec_296chars.amy  avgt   10    3587.592 ±   19.831  us/op
+[info] LexerBenchmark.lex_Zipper      NestedMatch_451chars.amy  avgt   10    5879.493 ±   87.669  us/op
+[info] LexerBenchmark.lex_Zipper               Rec_66chars.amy  avgt   10     593.933 ±    5.009  us/op
+[info] LexerBenchmark.lex_Zipper        Ultimate_3811chars.amy  avgt   10  188371.069 ± 3843.421  us/op
+[success] Total time: 6036 s (01:40:36), completed Mar 26, 2025, 10:34:20 AM
