@@ -316,7 +316,14 @@ object VerifiedLexer {
         }
       }
       ret
-    }.ensuring (res => res.isEmpty || res.isDefined && (res.get._2.size < input.size && res.get._1.characters ++ res.get._2 == input))
+    }.ensuring (res => 
+      res.isEmpty 
+      || 
+        (
+          res.isDefined && (res.get._2.size < input.size && res.get._1.characters ++ res.get._2 == input)
+          && res.get._1.value == res.get._1.rule.transformation.toValue(res.get._1.originalCharacters)
+        )
+      )
 
     def maxPrefixZipper[C](
         rulesArg: List[Rule[C]],
@@ -362,6 +369,7 @@ object VerifiedLexer {
         None[(Token[C], List[C])]()
       } else {
         ghostExpr(longestMatchIsAcceptedByMatchOrIsEmpty(rule.regex, input))
+        assert(rule.transformation.toValueToCharacters(longestPrefix))
         Some[(Token[C], List[C])]((Token(rule.transformation.toValue(longestPrefix), rule,  longestPrefix), suffix))
       }
 
@@ -370,6 +378,7 @@ object VerifiedLexer {
         rule.regex,
         res.get._1.characters
       ) && res.get._1.characters ++ res.get._2 == input && res.get._2.size < input.size && res.get._1.rule == rule
+      && res.get._1.value == res.get._1.rule.transformation.toValue(res.get._1.originalCharacters)
     )
 
     def maxPrefixOneRuleZipper[C](
@@ -383,6 +392,7 @@ object VerifiedLexer {
         None[(Token[C], List[C])]()
       } else {
         ghostExpr(longestMatchIsAcceptedByMatchOrIsEmpty(rule.regex, input))
+        assert(rule.transformation.toValueToCharacters(longestPrefix))
         Some[(Token[C], List[C])]((Token(rule.transformation.toValue(longestPrefix), rule,  longestPrefix), suffix))
       }
 
@@ -1053,6 +1063,8 @@ object VerifiedLexer {
           check(false)
         }
         if(ListUtils.getIndex(rules, foundToken.rule) < ListUtils.getIndex(rules, token.rule)) {
+          assert(token.rule.transformation.toValueToCharacters(token.characters))
+          assert(token.rule.transformation.toCharactersToValue(token.rule.transformation.toValue(token.characters)))
           lemmaMaxPrefNoSmallerRuleMatches(rules, token.rule, token.characters, token.characters, foundToken.rule)
           check(false)
         }
@@ -1268,12 +1280,13 @@ object VerifiedLexer {
         matchR(r.regex, p)
       })
       require({
+        assert(r.transformation.toValueToCharacters(p))
+        assert(r.transformation.toCharactersToValue(r.transformation.toValue(p)))
         ListUtils.lemmaIsPrefixRefl(input, input)
         maxPrefixOneRule(r, input) == Some(Token(r.transformation.toValue(p), r , p), ListUtils.getSuffix(input, p))
       })
 
       require(pBis.size > p.size)
-
       require(maxPrefix(rules, input) == Some(Token(r.transformation.toValue(p), r , p), ListUtils.getSuffix(input, p)))
 
       // For preconditions
@@ -1308,13 +1321,19 @@ object VerifiedLexer {
       require(ruleValid(r))
       require({
         ListUtils.lemmaIsPrefixRefl(input, input)
+        assert(r.transformation.toValueToCharacters(p))
+        assert(r.transformation.toCharactersToValue(r.transformation.toValue(p)))
         maxPrefixOneRule(r, input) == Some(Token(r.transformation.toValue(p), r , p), ListUtils.getSuffix(input, p))
       })
 
       require(pBis.size > p.size)
 
       require(ruleValid(rBis))
-      require(maxPrefix(rules, input) == Some(Token(r.transformation.toValue(p), r , p), ListUtils.getSuffix(input, p)))
+      require({
+        assert(r.transformation.toValueToCharacters(p))
+        assert(r.transformation.toCharactersToValue(r.transformation.toValue(p)))
+        maxPrefix(rules, input) == Some(Token(r.transformation.toValue(p), r , p), ListUtils.getSuffix(input, p))
+      })
 
       assert(validRegex(r.regex))
 
@@ -1387,7 +1406,10 @@ object VerifiedLexer {
       require(rulesInvariant(rules))
       require(rules.contains(r))
       require(input == p ++ suffix)
-      require(maxPrefix(rules, input) == Some(Token(r.transformation.toValue(p), r , p), suffix))
+      require({
+        assert(r.transformation.toValueToCharacters(p))
+        maxPrefix(rules, input) == Some(Token(r.transformation.toValue(p), r , p), suffix)
+      })
       require({
         lemmaRuleInListAndrulesValidInductiveThenRuleIsValid(r, rules)
         matchR(r.regex, p)
