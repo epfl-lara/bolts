@@ -14,7 +14,7 @@ import ch.epfl.lexer.VerifiedRegex._
 import ch.epfl.lexer.ZipperRegex._
 import ch.epfl.lexer.Token
 
-
+@extern
 object RegexUtils {
   extension (s: String) def r: Regex[Char] = s.toCharArray().toList.foldRight[Regex[Char]](EmptyExpr())((c, acc) => Concat(ElementMatch(c), acc))
   extension (r: Regex[Char]) infix def | (r2: Regex[Char]): Regex[Char] = Union(r, r2)
