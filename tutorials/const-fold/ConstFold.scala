@@ -26,11 +26,17 @@ object ConstFold:
       case Var(_) => false
       case Add(e1, e2) => zeroExpr(e1) && zeroExpr(e2)
       case Minus(e1, e2) => zeroExpr(e1) && zeroExpr(e2)
-      case Mul(e1, e2) => zeroExpr(e1) && zeroExpr(e2)
+      case Mul(e1, e2) => zeroExpr(e1) || zeroExpr(e2)
 
-  def lemma(ctx: Env, @induct e: Expr): Unit = {
+  def lemma(ctx: Env, e: Expr): Unit = {
     require(zeroExpr(e))
-    ()
+    e match
+      case Number(_) => ()
+      case Var(_) => ()
+      case Add(e1, e2) => lemma(ctx, e1); lemma(ctx, e2)
+      case Minus(e1, e2) => lemma(ctx, e1); lemma(ctx, e2)
+      case Mul(e1, e2) => if (zeroExpr(e1)) then lemma(ctx, e1) else lemma(ctx, e2)
+    
   }.ensuring(_ => evaluate(ctx, e) == 0)
 
   def mirror(e: Expr)(anyCtx: Env = zeroEnv): Expr = {
