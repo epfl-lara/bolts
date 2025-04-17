@@ -45,7 +45,7 @@ object ConstFold:
       case Var(name) => e
       case Add(e1, e2) => Add(mirror(e2)(anyCtx), mirror(e1)(anyCtx))
       case Minus(e1, e2) => Minus(mirror(e1)(anyCtx), mirror(e2)(anyCtx))
-      case Mul(e1, e2) => Mul(mirror(e1)(anyCtx), mirror(e2)(anyCtx))
+      case Mul(e1, e2) => Mul(mirror(e2)(anyCtx), mirror(e1)(anyCtx))
   }.ensuring(evaluate(anyCtx, _) == evaluate(anyCtx,e))
 
   abstract class SoundSimplifier:
