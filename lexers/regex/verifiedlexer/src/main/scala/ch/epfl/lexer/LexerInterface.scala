@@ -5,29 +5,19 @@ import stainless.collection.List
 import stainless.annotation.law
 import stainless.annotation.ghost
 import stainless.lang.StaticChecks.*
+import stainless.lang.Quantifiers.*
 
 
 // This is a tradeoff so that we can have different types in different tokens/rules
 trait TokenValue
 
-trait Bijection[C] {
-  def toValue(l: List[C]): TokenValue
-  def toCharacters(t: TokenValue): List[C]
-
-  @law
-  def toValueToCharacters(l: List[C]): Boolean = toCharacters(toValue(l)) == l
-
-  @law @ghost
-  def toCharactersToValue(t: TokenValue): Boolean = toValue(toCharacters(t)) == t
-}
-
 case class Token[C](value: TokenValue, rule: Rule[C], @ghost originalCharacters: List[C]) {
-  require(originalCharacters == rule.transformation.toCharacters(value))
+  require(originalCharacters == rule.transformation.g(value))
   def characters: List[C] = {
-    rule.transformation.toCharacters(value)
+    rule.transformation.g(value)
   }.ensuring(res => res == originalCharacters)
 }
-case class Rule[C](regex: Regex[C], tag: String, isSeparator: Boolean, transformation: Bijection[C])
+case class Rule[C](regex: Regex[C], tag: String, isSeparator: Boolean, transformation: Bijection[List[C], TokenValue])
 
 trait LexerInterface {
 
