@@ -150,24 +150,6 @@ object TokenKinds {
   case object NoKind extends TokenKind("<???>")
 }
 
-object TokenKind {
-  import Tokens._
-  import TokenKinds._
-
-  def of(token: Token): TokenKind = token match {
-    case KeywordToken(value) => KeywordKind(value)
-    case IdentifierToken(_) => IdentifierKind
-    case PrimTypeToken(_) => PrimTypeKind
-    case BoolLitToken(_) => LiteralKind
-    case IntLitToken(_) => LiteralKind
-    case StringLitToken(_) => LiteralKind
-    case DelimiterToken(value) => DelimiterKind(value)
-    case OperatorToken(value) => OperatorKind(value)
-    case EOFToken() => EOFKind
-    case _ => NoKind
-  }
-}
-
 
 
 // POSITION UTILS ---------------------------------------------------------------------------------------------------------------------
