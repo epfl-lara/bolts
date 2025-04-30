@@ -8,7 +8,9 @@ import scala.compiletime.uninitialized
 import ch.epfl.lexer.VerifiedLexer.Lexer
 import ch.epfl.lexer.example.ExampleAmyLexer.AmyLexer
 import ch.epfl.lexer.benchmark.RegexUtils.*
+import ch.epfl.benchmark.original.OriginalAmyLexer
 
+import java.io.File
 
 @State(Scope.Benchmark)
 class LexerBenchmark {
@@ -49,6 +51,13 @@ class LexerBenchmark {
     val (tokens, suffix) = Lexer.lex(AmyLexer.rules, LexerBenchmarkUtils.fileContents(file))
     assert(suffix.isEmpty)
   }
+
+  @Benchmark
+  @BenchmarkMode(Array(Mode.AverageTime))
+  @OutputTimeUnit(TimeUnit.MICROSECONDS)
+  def lex_OriginalSilex(): Unit = {
+    val tokens = OriginalAmyLexer.run(LexerBenchmarkUtils.filesJavaIo(file))
+  }
  
 }
 
@@ -74,5 +83,10 @@ object LexerBenchmarkUtils {
     val source = scala.io.Source.fromFile(s"src/main/scala/ch/epfl/example/res/$name")
     val lines = try source.mkString.toStainless finally source.close()
     (name -> lines)
+  }).toMap
+
+  val filesJavaIo: Map[String, java.io.File] = fileNames.map(name => {
+    val file = new java.io.File(s"src/main/scala/ch/epfl/example/res/$name")
+    (name -> file)
   }).toMap
 }
