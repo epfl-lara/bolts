@@ -6,7 +6,7 @@ import scala.util.Random
 import stainless.collection.{List => StainlessList}
 import scala.compiletime.uninitialized
 import ch.epfl.lexer.VerifiedLexer.Lexer
-import ch.epfl.lexer.example.AmyLexer
+import ch.epfl.lexer.example.ExampleAmyLexer.AmyLexer
 import ch.epfl.lexer.benchmark.RegexUtils.*
 
 

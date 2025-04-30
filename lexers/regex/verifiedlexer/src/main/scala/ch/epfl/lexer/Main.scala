@@ -9,10 +9,11 @@ import ch.epfl.lexer.benchmark.RegexUtils._
 import stainless.annotation._
 import stainless.lang._
 import stainless.collection._
+import stainless.lang.Quantifiers.*
 import ch.epfl.map.Hashable
 import ch.epfl.lexer.RegexBenchmark.testSimp
 
-import ch.epfl.lexer.example.AmyLexer
+import ch.epfl.lexer.example.ExampleAmyLexer.*
 import ch.epfl.lexer.VerifiedLexer.Lexer
 
 import ch.epfl.lexer.benchmark.RegexUtils._
@@ -21,7 +22,7 @@ import stainless.collection.List
 object Main {
   def main(args: Array[String]): Unit = {
     testAmyLexer()
-    // tokeniseAmyFile("src/main/scala/ch/epfl/example/res/Factorial.amy","src/main/scala/ch/epfl/example/res/Factorial.amy.tokens")
+    tokeniseAmyFile("src/main/scala/ch/epfl/example/res/Factorial_275chars.amy","src/main/scala/ch/epfl/example/res/Factorial_275chars.amy.tokens")
     // addNumberOfCharsInFileName("src/main/scala/ch/epfl/example/res/ADT.amy")
     // addNumberOfCharsInFileName("src/main/scala/ch/epfl/example/res/BinaryTree.amy")
     // addNumberOfCharsInFileName("src/main/scala/ch/epfl/example/res/Calculator.amy")

@@ -52,16 +52,19 @@ object ExampleAmyLexer:
             case Error
             case Underscore
             case End
+            case Broken(value: List[Char])
         end KeywordValue
         enum PrimitiveTypeValue extends TokenValue:
             case Int32
             case Unit
             case Boolean
             case String
+            case Broken(value: List[Char])
         end PrimitiveTypeValue
         enum BooleanLiteralValue extends TokenValue:
             case True
             case False
+            case Broken(value: List[Char])
         end BooleanLiteralValue
         enum OperatorValue extends TokenValue:
             case Plus
@@ -75,248 +78,349 @@ object ExampleAmyLexer:
             case And
             case Or
             case Concat
+            case Broken(value: List[Char])
         end OperatorValue
         case class StringLiteralValue(value: List[Char]) extends TokenValue
         case class DelimiterValue(value: List[Char]) extends TokenValue
         case class WhitespaceValue(value: List[Char]) extends TokenValue
         case class CommentValue(value: List[Char]) extends TokenValue
 
-        case object IntegerValueBijection:
-
+        case object IntegerValueInjection:
             def toValue(l: List[Char]): TokenValue = IntegerValue(IntegerValueUtils.charsToInt(l), l)
             def toCharacters(t: TokenValue): List[Char] = t match
-                case IntegerValue(_, text) => text
+                    case IntegerValue(_, text) => text
+                    case _ => Nil()
+            
+            val injection: Injection[List[Char], TokenValue] = {
+                ghostExpr{
+                    assert({
+                        unfold(semiInverseBody(toCharacters, toValue))
+                        semiInverseBody(toCharacters, toValue)
+                    })
+                    unfold(semiInverse(toCharacters, toValue))
+                }
+                Injection(toValue, toCharacters)
+            }
+        end IntegerValueInjection
+
+        case object IdentifierValueInjection:
+            def toValue(l: List[Char]): TokenValue = IdentifierValue(l)
+            def toCharacters(t: TokenValue): List[Char] = t match
+                case IdentifierValue(value) => value
                 case _ => Nil()
             
-            val bijection: Bijection[List[Char], TokenValue] = {
+            val injection: Injection[List[Char], TokenValue] = {
                 ghostExpr{
-                    assert(Forall((v: TokenValue) => toValue(toCharacters(v)) == v) == partialInverseBody(toValue, toCharacters))
                     assert({
-                        unfold(partialInverseBody(toValue, toCharacters))
-                        partialInverseBody(toValue, toCharacters)
+                        unfold(semiInverseBody(toCharacters, toValue))
+                        semiInverseBody(toCharacters, toValue)
                     })
-
-                    assert(Forall((v: List[Char]) => toCharacters(toValue(v)) == v) == partialInverseBody(toCharacters, toValue))
-                    assert({
-                        unfold(partialInverseBody(toCharacters, toValue))
-                        partialInverseBody(toCharacters, toValue)
-                    })
-                    unfold(partialInverse(toValue, toCharacters))
-                    unfold(partialInverse(toCharacters, toValue))
-                    }
-                Bijection(toValue, toCharacters)
+                    unfold(semiInverse(toCharacters, toValue))
+                }
+                Injection(toValue, toCharacters)
             }
-        end IntegerValueBijection
+        end IdentifierValueInjection
 
-    //     case object IdentifierValueBijection extends Bijection[Char]:
-    //         def toValue(l: List[Char]): TokenValue = IdentifierValue(l)
-    //         def toCharacters(t: TokenValue): List[Char] = t match
-    //             case IdentifierValue(value) => value
-    //     end IdentifierValueBijection
+        // forall l: List[Char], toCharacters(toValue(l)) == l
+        case object KeywordValueInjection:
+            def toValue(l: List[Char]): TokenValue = l match
+                case ll if ll == List('a', 'b', 's', 't', 'r', 'a', 'c', 't')                         => KeywordValue.Abstract
+                case ll if ll == List('c', 'a', 's', 'e')                                            => KeywordValue.Case
+                case ll if ll == List('c', 'l', 'a', 's', 's')                                  => KeywordValue.Class
+                case ll if ll == List('d', 'e', 'f')                                                       => KeywordValue.Def
+                case ll if ll == List('e', 'l', 's', 'e')                                             => KeywordValue.Else
+                case ll if ll == List('e', 'x', 't', 'e', 'n', 'd', 's')            => KeywordValue.Extends
+                case ll if ll == List('i', 'f')                                                                => KeywordValue.If
+                case ll if ll == List('m', 'a', 't', 'c', 'h')                                  => KeywordValue.Match
+                case ll if ll == List('o', 'b', 'j', 'e', 'c', 't')                      => KeywordValue.Object
+                case ll if ll == List('v', 'a', 'l')                                                      => KeywordValue.Val
+                case ll if ll == List('e','r', 'r', 'o', 'r')                              => KeywordValue.Error
+                case ll if ll == List('_')                                                                            => KeywordValue.Underscore
+                case ll if ll == List('e', 'n', 'd')                                                        => KeywordValue.End
+                case ll                                                                                             => KeywordValue.Broken(ll)
+            def toCharacters(t: TokenValue): List[Char] = t match
+                case KeywordValue.Abstract          => Cons('a', Cons('b', Cons('s', Cons('t', Cons('r', Cons('a', Cons('c', Cons('t', Nil()))))))))
+                case KeywordValue.Case              => Cons('c', Cons('a', Cons('s', Cons('e', Nil()))))
+                case KeywordValue.Class             => Cons('c', Cons('l', Cons('a', Cons('s', Cons('s', Nil())))))
+                case KeywordValue.Def               => Cons('d', Cons('e', Cons('f', Nil())))
+                case KeywordValue.Else              => Cons('e', Cons('l', Cons('s', Cons('e', Nil()))))
+                case KeywordValue.Extends           => Cons('e', Cons('x', Cons('t', Cons('e', Cons('n', Cons('d', Cons('s', Nil())))))))
+                case KeywordValue.If                => Cons('i', Cons('f', Nil()))
+                case KeywordValue.Match             => Cons('m', Cons('a', Cons('t', Cons('c', Cons('h', Nil())))))
+                case KeywordValue.Object            => Cons('o', Cons('b', Cons('j', Cons('e', Cons('c', Cons('t', Nil()))))))
+                case KeywordValue.Val               => Cons('v', Cons('a', Cons('l', Nil())))
+                case KeywordValue.Error             => Cons('e', Cons('r', Cons('r', Cons('o', Cons('r', Nil())))))
+                case KeywordValue.Underscore        => Cons('_', Nil())
+                case KeywordValue.End               => Cons('e', Cons('n', Cons('d', Nil())))
+                case KeywordValue.Broken(value)      => value
+                case _ => Nil()
 
-    //     case object KeywordValueBijection extends Bijection[Char]:
-    //         override def toValue(l: List[Char]): TokenValue = l match
-    //             case ll if ll == List('a', 'b', 's', 't', 'r', 'a', 'c', 't') => KeywordValue.Abstract
-    //             case ll if ll == List('c', 'a', 's', 'e')                                            => KeywordValue.Case
-    //             case ll if ll == List('c', 'l', 'a', 's', 's')                                  => KeywordValue.Class
-    //             case ll if ll == List('d', 'e', 'f')                                                       => KeywordValue.Def
-    //             case ll if ll == List('e', 'l', 's', 'e')                                             => KeywordValue.Else
-    //             case ll if ll == List('e', 'x', 't', 'e', 'n', 'd', 's')            => KeywordValue.Extends
-    //             case ll if ll == List('i', 'f')                                                                => KeywordValue.If
-    //             case ll if ll == List('m', 'a', 't', 'c', 'h')                                  => KeywordValue.Match
-    //             case ll if ll == List('o', 'b', 'j', 'e', 'c', 't')                      => KeywordValue.Object
-    //             case ll if ll == List('v', 'a', 'l')                                                      => KeywordValue.Val
-    //             case ll if ll == List('e','r', 'r', 'o', 'r')                              => KeywordValue.Error
-    //             case ll if ll == List('_')                                                                            => KeywordValue.Underscore
-    //             case ll if ll == List('e', 'n', 'd')                                                        => KeywordValue.End
-    //             case _                                                                                             => throw Exception("Invalid keyword")
-    //         override def toCharacters(t: TokenValue): List[Char] = t match
-    //             case KeywordValue.Abstract          => Cons('a', Cons('b', Cons('s', Cons('t', Cons('r', Cons('a', Cons('c', Cons('t', Nil()))))))))
-    //             case KeywordValue.Case              => Cons('c', Cons('a', Cons('s', Cons('e', Nil()))))
-    //             case KeywordValue.Class             => Cons('c', Cons('l', Cons('a', Cons('s', Cons('s', Nil())))))
-    //             case KeywordValue.Def               => Cons('d', Cons('e', Cons('f', Nil())))
-    //             case KeywordValue.Else              => Cons('e', Cons('l', Cons('s', Cons('e', Nil()))))
-    //             case KeywordValue.Extends           => Cons('e', Cons('x', Cons('t', Cons('e', Cons('n', Cons('d', Cons('s', Nil())))))))
-    //             case KeywordValue.If                => Cons('i', Cons('f', Nil()))
-    //             case KeywordValue.Match             => Cons('m', Cons('a', Cons('t', Cons('c', Cons('h', Nil())))))
-    //             case KeywordValue.Object            => Cons('o', Cons('b', Cons('j', Cons('e', Cons('c', Cons('t', Nil()))))))
-    //             case KeywordValue.Val               => Cons('v', Cons('a', Cons('l', Nil())))
-    //             case KeywordValue.Error             => Cons('e', Cons('r', Cons('r', Cons('o', Cons('r', Nil())))))
-    //             case KeywordValue.Underscore        => Cons('_', Nil())
-    //             case KeywordValue.End               => Cons('e', Cons('n', Cons('d', Nil())))
-    //     end KeywordValueBijection
+            val injection: Injection[List[Char], TokenValue] = {
+                ghostExpr{
+                    assert({
+                        unfold(semiInverseBody(toCharacters, toValue))
+                        semiInverseBody(toCharacters, toValue)
+                    })
+                    unfold(semiInverse(toCharacters, toValue))
+                }
+                Injection(toValue, toCharacters)
+            }
+        end KeywordValueInjection
 
-    //     case object PrimitiveTypeValueBijection extends Bijection[Char]:
-    //         def toValue(l: List[Char]): TokenValue = l match
-    //             case ll if ll == List('I', 'n', 't', '3', '2') => PrimitiveTypeValue.Int32
-    //             case ll if ll == List('U', 'n', 'i','t')            => PrimitiveTypeValue.Unit
-    //             case ll if ll == List('B', 'o', 'o', 'l', 'e', 'a', 'n') => PrimitiveTypeValue.Boolean
-    //             case ll if ll == List('S', 't', 'r', 'i', 'n', 'g') => PrimitiveTypeValue.String
-    //             case _ => throw  Exception("Invalid primitive type")
-    //         def toCharacters(t: TokenValue): List[Char] = t match
-    //             case PrimitiveTypeValue.Int32   => List('I', 'n', 't', '3', '2')
-    //             case PrimitiveTypeValue.Unit    => List('U', 'n', 'i','t')
-    //             case PrimitiveTypeValue.Boolean => List('B', 'o', 'o', 'l', 'e', 'a', 'n')
-    //             case PrimitiveTypeValue.String  => List('S', 't', 'r', 'i', 'n', 'g')
-    //     end PrimitiveTypeValueBijection
+        case object PrimitiveTypeValueInjection:
+            def toValue(l: List[Char]): TokenValue = l match
+                case ll if ll == List('I', 'n', 't', '3', '2') => PrimitiveTypeValue.Int32
+                case ll if ll == List('U', 'n', 'i','t')            => PrimitiveTypeValue.Unit
+                case ll if ll == List('B', 'o', 'o', 'l', 'e', 'a', 'n') => PrimitiveTypeValue.Boolean
+                case ll if ll == List('S', 't', 'r', 'i', 'n', 'g') => PrimitiveTypeValue.String
+                case ll => PrimitiveTypeValue.Broken(ll)
+            def toCharacters(t: TokenValue): List[Char] = t match
+                case PrimitiveTypeValue.Int32   => List('I', 'n', 't', '3', '2')
+                case PrimitiveTypeValue.Unit    => List('U', 'n', 'i','t')
+                case PrimitiveTypeValue.Boolean => List('B', 'o', 'o', 'l', 'e', 'a', 'n')
+                case PrimitiveTypeValue.String  => List('S', 't', 'r', 'i', 'n', 'g')
+                case PrimitiveTypeValue.Broken(value) => value
+                case _ => Nil()
 
-    //     case object BooleanLiteralValueBijection extends Bijection[Char]:
-    //         def toValue(l: List[Char]): TokenValue = l match
-    //             case ll if ll == List('t', 'r', 'u', 'e') => BooleanLiteralValue.True
-    //             case ll if ll == List('f', 'a', 'l', 's', 'e') => BooleanLiteralValue.False
-    //             case _ => throw  Exception("Invalid boolean literal")
-    //         def toCharacters(t: TokenValue): List[Char] = t match
-    //             case BooleanLiteralValue.True  => Cons('t', Cons('r', Cons('u', Cons('e', Nil()))))
-    //             case BooleanLiteralValue.False => Cons('f', Cons('a', Cons('l', Cons('s', Cons('e', Nil())))))
-    //     end BooleanLiteralValueBijection
+            val injection: Injection[List[Char], TokenValue] = {
+                ghostExpr{
+                    assert({
+                        unfold(semiInverseBody(toCharacters, toValue))
+                        semiInverseBody(toCharacters, toValue)
+                    })
+                    unfold(semiInverse(toCharacters, toValue))
+                }
+                Injection(toValue, toCharacters)
+            }
+        end PrimitiveTypeValueInjection
 
-    //     case object OperatorValueBijection extends Bijection[Char]:
-    //         def toValue(l: List[Char]): TokenValue = l match
-    //             case ll if ll == List('+') => OperatorValue.Plus
-    //             case ll if ll == List('-') => OperatorValue.Minus
-    //             case ll if ll == List('*') => OperatorValue.Times
-    //             case ll if ll == List('/') => OperatorValue.Div
-    //             case ll if ll == List('%') => OperatorValue.Mod
-    //             case ll if ll == List('!') => OperatorValue.Not
-    //             case ll if ll == List('=') => OperatorValue.Equal
-    //             case ll if ll == List('<', '=') => OperatorValue.LessEqual
-    //             case ll if ll == List('&', '&') => OperatorValue.And
-    //             case ll if ll == List('|', '|') => OperatorValue.Or
-    //             case ll if ll == List('+', '+') => OperatorValue.Concat
-    //             case _ => throw  Exception("Invalid operator")
-    //         def toCharacters(t: TokenValue): List[Char] = t match
-    //             case OperatorValue.Plus      => Cons('+', Nil())
-    //             case OperatorValue.Minus     => Cons('-', Nil())
-    //             case OperatorValue.Times     => Cons('*', Nil())
-    //             case OperatorValue.Div       => Cons('/', Nil())
-    //             case OperatorValue.Mod       => Cons('%', Nil())
-    //             case OperatorValue.Not       => Cons('!', Nil())
-    //             case OperatorValue.Equal     => Cons('=', Nil())
-    //             case OperatorValue.LessEqual => Cons('<', Cons('=', Nil()))
-    //             case OperatorValue.And       => Cons('&', Cons('&', Nil()))
-    //             case OperatorValue.Or        => Cons('|', Cons('|', Nil()))
-    //             case OperatorValue.Concat    => Cons('+', Cons('+', Nil()))
-    //     end OperatorValueBijection
+        case object BooleanLiteralValueInjection:
+            def toValue(l: List[Char]): TokenValue = l match
+                case ll if ll == List('t', 'r', 'u', 'e') => BooleanLiteralValue.True
+                case ll if ll == List('f', 'a', 'l', 's', 'e') => BooleanLiteralValue.False
+                case ll => BooleanLiteralValue.Broken(ll)
+            def toCharacters(t: TokenValue): List[Char] = t match
+                case BooleanLiteralValue.True  => Cons('t', Cons('r', Cons('u', Cons('e', Nil()))))
+                case BooleanLiteralValue.False => Cons('f', Cons('a', Cons('l', Cons('s', Cons('e', Nil())))))
+                case BooleanLiteralValue.Broken(value) => value
+                case _ => Nil()
+            val injection: Injection[List[Char], TokenValue] = {
+                ghostExpr{
+                    assert({
+                        unfold(semiInverseBody(toCharacters, toValue))
+                        semiInverseBody(toCharacters, toValue)
+                    })
+                    unfold(semiInverse(toCharacters, toValue))
+                }
+                Injection(toValue, toCharacters)
+            }
+        end BooleanLiteralValueInjection
 
-    //     case object StringLiteralValueBijection extends Bijection[Char]:
-    //         override def toValue(l: List[Char]): TokenValue = StringLiteralValue(l)
-    //         override def toCharacters(t: TokenValue): List[Char] =
-    //             t match
-    //                 case StringLiteralValue(value) => value
-    //     end StringLiteralValueBijection
+        case object OperatorValueInjection:
+            def toValue(l: List[Char]): TokenValue = l match
+                case ll if ll == List('+') => OperatorValue.Plus
+                case ll if ll == List('-') => OperatorValue.Minus
+                case ll if ll == List('*') => OperatorValue.Times
+                case ll if ll == List('/') => OperatorValue.Div
+                case ll if ll == List('%') => OperatorValue.Mod
+                case ll if ll == List('!') => OperatorValue.Not
+                case ll if ll == List('=') => OperatorValue.Equal
+                case ll if ll == List('<', '=') => OperatorValue.LessEqual
+                case ll if ll == List('&', '&') => OperatorValue.And
+                case ll if ll == List('|', '|') => OperatorValue.Or
+                case ll if ll == List('+', '+') => OperatorValue.Concat
+                case ll => OperatorValue.Broken(ll)
+            def toCharacters(t: TokenValue): List[Char] = t match
+                case OperatorValue.Plus      => Cons('+', Nil())
+                case OperatorValue.Minus     => Cons('-', Nil())
+                case OperatorValue.Times     => Cons('*', Nil())
+                case OperatorValue.Div       => Cons('/', Nil())
+                case OperatorValue.Mod       => Cons('%', Nil())
+                case OperatorValue.Not       => Cons('!', Nil())
+                case OperatorValue.Equal     => Cons('=', Nil())
+                case OperatorValue.LessEqual => Cons('<', Cons('=', Nil()))
+                case OperatorValue.And       => Cons('&', Cons('&', Nil()))
+                case OperatorValue.Or        => Cons('|', Cons('|', Nil()))
+                case OperatorValue.Concat    => Cons('+', Cons('+', Nil()))
+                case OperatorValue.Broken(value) => value
+                case _ => Nil()
+            val injection: Injection[List[Char], TokenValue] = {
+                ghostExpr{
+                    assert({
+                        unfold(semiInverseBody(toCharacters, toValue))
+                        semiInverseBody(toCharacters, toValue)
+                    })
+                    unfold(semiInverse(toCharacters, toValue))
+                }
+                Injection(toValue, toCharacters)
+            }
+        end OperatorValueInjection
 
-    //     case object DelimiterValueBijection extends Bijection[Char]:
-    //         override def toValue(l: List[Char]): TokenValue = DelimiterValue(l)
-    //         override def toCharacters(t: TokenValue): List[Char] = t match
-    //             case DelimiterValue(value) => value
-    //     end DelimiterValueBijection
+        case object StringLiteralValueInjection:
+            def toValue(l: List[Char]): TokenValue = StringLiteralValue(l)
+            def toCharacters(t: TokenValue): List[Char] =
+                t match
+                    case StringLiteralValue(value) => value
+                    case _ => Nil()
 
-    //     case object WhitespaceValueBijection extends Bijection[Char]:
-    //         override def toValue(l: List[Char]): TokenValue = WhitespaceValue(l)
-    //         override def toCharacters(t: TokenValue): List[Char] = 
-    //             t match
-    //                 case WhitespaceValue(value) => value
-    //     end WhitespaceValueBijection
+            val injection: Injection[List[Char], TokenValue] = {
+                ghostExpr{
+                    assert({
+                        unfold(semiInverseBody(toCharacters, toValue))
+                        semiInverseBody(toCharacters, toValue)
+                    })
+                    unfold(semiInverse(toCharacters, toValue))
+                }
+                Injection(toValue, toCharacters)
+            }
+        end StringLiteralValueInjection
 
-    //     case object CommentValueBijection extends Bijection[Char]:
-    //         override def toValue(l: List[Char]): TokenValue = CommentValue(l)
-    //         override def toCharacters(t: TokenValue): List[Char] = 
-    //             t match
-    //                 case CommentValue(value) => value
-    //     end CommentValueBijection
-    // end Types
+        case object DelimiterValueInjection:
+            def toValue(l: List[Char]): TokenValue = DelimiterValue(l)
+            def toCharacters(t: TokenValue): List[Char] = t match
+                case DelimiterValue(value) => value
+                case _ => Nil()
+            
+            val injection: Injection[List[Char], TokenValue] = {
+                ghostExpr{
+                    assert({
+                        unfold(semiInverseBody(toCharacters, toValue))
+                        semiInverseBody(toCharacters, toValue)
+                    })
+                    unfold(semiInverse(toCharacters, toValue))
+                }
+                Injection(toValue, toCharacters)
+            }
+        end DelimiterValueInjection
 
-    // @extern
-    // case object AmyLexer:
-    //     import Types.*
-    //     val keywordRule =
-    //         Rule(
-    //         regex = "abstract".r |
-    //             "case".r |
-    //             "class".r |
-    //             "def".r |
-    //             "else".r |
-    //             "extends".r |
-    //             "if".r |
-    //             "match".r |
-    //             "object".r |
-    //             "val".r |
-    //             "error".r |
-    //             "_".r |
-    //             "end".r,
-    //         tag = "keyword",
-    //         isSeparator = false,
-    //         transformation = KeywordValueBijection
-    //         )
+        case object WhitespaceValueInjection:
+            def toValue(l: List[Char]): TokenValue = WhitespaceValue(l)
+            def toCharacters(t: TokenValue): List[Char] = 
+                t match
+                    case WhitespaceValue(value) => value
+                    case _ => Nil()
+            val injection: Injection[List[Char], TokenValue] = {
+                ghostExpr{
+                    assert({
+                        unfold(semiInverseBody(toCharacters, toValue))
+                        semiInverseBody(toCharacters, toValue)
+                    })
+                    unfold(semiInverse(toCharacters, toValue))
+                }
+                Injection(toValue, toCharacters)
+            }
+        end WhitespaceValueInjection
 
-    //     val primitivTypeRule =
-    //         Rule(
-    //         regex = "Int(32)".r |
-    //             "Unit".r |
-    //             "Boolean".r |
-    //             "String".r,
-    //         tag = "primitive_type",
-    //         isSeparator = false,
-    //         transformation = PrimitiveTypeValueBijection
-    //         )
+        case object CommentValueInjection:
+            def toValue(l: List[Char]): TokenValue = CommentValue(l)
+            def toCharacters(t: TokenValue): List[Char] = 
+                t match
+                    case CommentValue(value) => value
+                    case _ => Nil()
+            val injection: Injection[List[Char], TokenValue] = {
+                ghostExpr{
+                    assert({
+                        unfold(semiInverseBody(toCharacters, toValue))
+                        semiInverseBody(toCharacters, toValue)
+                    })
+                    unfold(semiInverse(toCharacters, toValue))
+                }
+                Injection(toValue, toCharacters)
+            }
+        end CommentValueInjection
+    end Types
 
-    //     val booleanLiteralRule =
-    //         Rule(regex = "true".r | "false".r, tag = "boolean_literal", isSeparator = false, transformation = BooleanLiteralValueBijection)
+    @extern
+    case object AmyLexer:
+        import Types.*
+        val keywordRule =
+            Rule(
+            regex = "abstract".r |
+                "case".r |
+                "class".r |
+                "def".r |
+                "else".r |
+                "extends".r |
+                "if".r |
+                "match".r |
+                "object".r |
+                "val".r |
+                "error".r |
+                "_".r |
+                "end".r,
+            tag = "keyword",
+            isSeparator = false,
+            transformation = KeywordValueInjection.injection
+            )
 
-    //     // oneOf("+-/*%!<") | word("==") | word("<=") | word("&&") | word("||") | word("++")
-    //     val operatorRule =
-    //         Rule(regex = anyOf("+-/*%!<") | "==".r | "<=".r | "&&".r | "||".r | "++".r, tag = "operator", isSeparator = false, transformation = OperatorValueBijection)
+        val primitivTypeRule =
+            Rule(
+            regex = "Int(32)".r |
+                "Unit".r |
+                "Boolean".r |
+                "String".r,
+            tag = "primitive_type",
+            isSeparator = false,
+            transformation = PrimitiveTypeValueInjection.injection
+            )
 
-    //     // elem(_.isLetter) ~ many(elem(_.isLetterOrDigit) | elem('_'))
-    //     val identifierRule =
-    //         Rule(regex = letterRegex ~ (letterRegex | digitRegex | "_".r).*, tag = "identifier", isSeparator = false, transformation = IdentifierValueBijection)
+        val booleanLiteralRule =
+            Rule(regex = "true".r | "false".r, tag = "boolean_literal", isSeparator = false, transformation = BooleanLiteralValueInjection.injection)
 
-    //     // many1(elem(_.isDigit))
-    //     val integerLiteralRule =
-    //         Rule(regex = digitRegex.+, tag = "integer_literal", isSeparator = false, transformation = IntegerValueBijection)
+        // oneOf("+-/*%!<") | word("==") | word("<=") | word("&&") | word("||") | word("++")
+        val operatorRule =
+            Rule(regex = anyOf("+-/*%!<") | "==".r | "<=".r | "&&".r | "||".r | "++".r, tag = "operator", isSeparator = false, transformation = OperatorValueInjection.injection)
 
-    //     // elem('"') ~ many(elem(c => c != '"' && c != '\n')) ~ elem('"')
-    //     val stringLiteralRule =
-    //         Rule(regex = "\"".r ~ (letterRegex | digitRegex | " ".r | "\t".r | specialCharRegex).* ~ "\"".r, tag = "string_literal", isSeparator = false, transformation = StringLiteralValueBijection)
+        // elem(_.isLetter) ~ many(elem(_.isLetterOrDigit) | elem('_'))
+        val identifierRule =
+            Rule(regex = letterRegex ~ (letterRegex | digitRegex | "_".r).*, tag = "identifier", isSeparator = false, transformation = IdentifierValueInjection.injection)
 
-    //     // oneOf(".,:;(){}[]=") | word("=>")
-    //     val delimiterRule =
-    //         Rule(regex = anyOf(".,:;(){}[]=") | "=>".r, tag = "delimiter", isSeparator = false, transformation = DelimiterValueBijection)
+        // many1(elem(_.isDigit))
+        val integerLiteralRule =
+            Rule(regex = digitRegex.+, tag = "integer_literal", isSeparator = false, transformation = IdentifierValueInjection.injection)
 
-    //     // many1(elem(_.isWhitespace))
-    //     val whitespaceRule =
-    //         Rule(regex = whiteSpaceRegex.+, tag = "whitespace", isSeparator = true, transformation = WhitespaceValueBijection)
+        // elem('"') ~ many(elem(c => c != '"' && c != '\n')) ~ elem('"')
+        val stringLiteralRule =
+            Rule(regex = "\"".r ~ (letterRegex | digitRegex | " ".r | "\t".r | specialCharRegex).* ~ "\"".r, tag = "string_literal", isSeparator = false, transformation = StringLiteralValueInjection.injection)
 
-    //     // word("//") ~ many(elem(_ != '\n'))
-    //     val singleCommentRule =
-    //         Rule(regex = "//".r ~ (letterRegex | digitRegex | " ".r | "\t".r | specialCharRegex).*, tag = "comment", isSeparator = true, transformation = CommentValueBijection)
+        // oneOf(".,:;(){}[]=") | word("=>")
+        val delimiterRule =
+            Rule(regex = anyOf(".,:;(){}[]=") | "=>".r, tag = "delimiter", isSeparator = false, transformation = DelimiterValueInjection.injection)
 
-    //     // word("/*") ~
-    //     // many(elem(_ != '*') | many1(elem('*')) ~ elem(c => c != '/' && c != '*')) ~
-    //     // many(elem('*')) ~
-    //     // word("*/")
-    //     val multiCommentRule =
-    //         Rule(
-    //         regex = "/*".r ~
-    //             (letterRegex | digitRegex | " ".r | "\t".r | specialCharRegex | "*".r).* ~ "*/".r,
-    //         tag = "comment",
-    //         isSeparator = true,
-    //         transformation = CommentValueBijection
-    //         )
+        // many1(elem(_.isWhitespace))
+        val whitespaceRule =
+            Rule(regex = whiteSpaceRegex.+, tag = "whitespace", isSeparator = true, transformation = WhitespaceValueInjection.injection)
 
-    //     val rules = List(
-    //         keywordRule,
-    //         primitivTypeRule,
-    //         booleanLiteralRule,
-    //         operatorRule,
-    //         identifierRule,
-    //         integerLiteralRule,
-    //         stringLiteralRule,
-    //         delimiterRule,
-    //         whitespaceRule,
-    //         singleCommentRule,
-    //         multiCommentRule
-    //     )
-    // end AmyLexer
+        // word("//") ~ many(elem(_ != '\n'))
+        val singleCommentRule =
+            Rule(regex = "//".r ~ (letterRegex | digitRegex | " ".r | "\t".r | specialCharRegex).*, tag = "comment", isSeparator = true, transformation = CommentValueInjection.injection)
+
+        // word("/*") ~
+        // many(elem(_ != '*') | many1(elem('*')) ~ elem(c => c != '/' && c != '*')) ~
+        // many(elem('*')) ~
+        // word("*/")
+        val multiCommentRule =
+            Rule(
+            regex = "/*".r ~
+                (letterRegex | digitRegex | " ".r | "\t".r | specialCharRegex | "*".r).* ~ "*/".r,
+            tag = "comment",
+            isSeparator = true,
+            transformation = CommentValueInjection.injection
+            )
+
+        val rules = List(
+            keywordRule,
+            primitivTypeRule,
+            booleanLiteralRule,
+            operatorRule,
+            identifierRule,
+            integerLiteralRule,
+            stringLiteralRule,
+            delimiterRule,
+            whitespaceRule,
+            singleCommentRule,
+            multiCommentRule
+        )
+    end AmyLexer
 
 end ExampleAmyLexer

@@ -12,12 +12,12 @@ import stainless.lang.Quantifiers.*
 trait TokenValue
 
 case class Token[C](value: TokenValue, rule: Rule[C], @ghost originalCharacters: List[C]) {
-  require(originalCharacters == rule.transformation.g(value))
+  require(originalCharacters == rule.transformation.witness(value))
   def characters: List[C] = {
-    rule.transformation.g(value)
+    rule.transformation.witness(value)
   }.ensuring(res => res == originalCharacters)
 }
-case class Rule[C](regex: Regex[C], tag: String, isSeparator: Boolean, transformation: Bijection[List[C], TokenValue])
+case class Rule[C](regex: Regex[C], tag: String, isSeparator: Boolean, transformation: Injection[List[C], TokenValue])
 
 trait LexerInterface {
 
