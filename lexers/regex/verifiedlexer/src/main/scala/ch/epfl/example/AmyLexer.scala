@@ -21,6 +21,8 @@ import stainless.lang.{ghost => ghostExpr}
 import stainless.lang.unfold
 
 import stainless.lang.Exception
+import ch.epfl.lexer.example.ExampleAmyLexer.Types.WhitespaceValue
+import ch.epfl.lexer.example.ExampleAmyLexer.Types.KeywordValueInjection
 
 object ExampleAmyLexer:
     object Types:
@@ -330,80 +332,84 @@ object ExampleAmyLexer:
         end CommentValueInjection
     end Types
 
-    @extern
     case object AmyLexer:
         import Types.*
+        @extern def keywordRegex(): Regex[Char] = "abstract".r |
+                                                "case".r |
+                                                "class".r |
+                                                "def".r |
+                                                "else".r |
+                                                "extends".r |
+                                                "if".r |
+                                                "match".r |
+                                                "object".r |
+                                                "val".r |
+                                                "error".r |
+                                                "_".r |
+                                                "end".r
         val keywordRule =
             Rule(
-            regex = "abstract".r |
-                "case".r |
-                "class".r |
-                "def".r |
-                "else".r |
-                "extends".r |
-                "if".r |
-                "match".r |
-                "object".r |
-                "val".r |
-                "error".r |
-                "_".r |
-                "end".r,
+            regex = keywordRegex(),
             tag = "keyword",
             isSeparator = false,
             transformation = KeywordValueInjection.injection
             )
-
+        @extern def primitivTypeRegex(): Regex[Char] = "Int(32)".r | "Unit".r | "Boolean".r | "String".r
         val primitivTypeRule =
             Rule(
-            regex = "Int(32)".r |
-                "Unit".r |
-                "Boolean".r |
-                "String".r,
+            regex = primitivTypeRegex(),
             tag = "primitive_type",
             isSeparator = false,
             transformation = PrimitiveTypeValueInjection.injection
             )
-
+        @extern def booleanLiteralRegex(): Regex[Char] = "true".r | "false".r
         val booleanLiteralRule =
-            Rule(regex = "true".r | "false".r, tag = "boolean_literal", isSeparator = false, transformation = BooleanLiteralValueInjection.injection)
+            Rule(regex = booleanLiteralRegex(), tag = "boolean_literal", isSeparator = false, transformation = BooleanLiteralValueInjection.injection)
 
         // oneOf("+-/*%!<") | word("==") | word("<=") | word("&&") | word("||") | word("++")
+        @extern def operatorRegex(): Regex[Char] = anyOf("+-/*%!<") | "==".r | "<=".r | "&&".r | "||".r | "++".r    
         val operatorRule =
-            Rule(regex = anyOf("+-/*%!<") | "==".r | "<=".r | "&&".r | "||".r | "++".r, tag = "operator", isSeparator = false, transformation = OperatorValueInjection.injection)
+            Rule(regex = operatorRegex(), tag = "operator", isSeparator = false, transformation = OperatorValueInjection.injection)
 
         // elem(_.isLetter) ~ many(elem(_.isLetterOrDigit) | elem('_'))
+        @extern def identifierRegex(): Regex[Char] = letterRegex ~ (letterRegex | digitRegex | "_".r).*
         val identifierRule =
-            Rule(regex = letterRegex ~ (letterRegex | digitRegex | "_".r).*, tag = "identifier", isSeparator = false, transformation = IdentifierValueInjection.injection)
+            Rule(regex = identifierRegex(), tag = "identifier", isSeparator = false, transformation = IdentifierValueInjection.injection)
 
         // many1(elem(_.isDigit))
+        @extern def integerLiteralRegex(): Regex[Char] = digitRegex.+
         val integerLiteralRule =
-            Rule(regex = digitRegex.+, tag = "integer_literal", isSeparator = false, transformation = IdentifierValueInjection.injection)
+            Rule(regex = integerLiteralRegex(), tag = "integer_literal", isSeparator = false, transformation = IdentifierValueInjection.injection)
 
         // elem('"') ~ many(elem(c => c != '"' && c != '\n')) ~ elem('"')
+        @extern def stringLiteralRegex(): Regex[Char] = "\"".r ~ (letterRegex | digitRegex | " ".r | "\t".r | specialCharRegex).* ~ "\"".r
         val stringLiteralRule =
-            Rule(regex = "\"".r ~ (letterRegex | digitRegex | " ".r | "\t".r | specialCharRegex).* ~ "\"".r, tag = "string_literal", isSeparator = false, transformation = StringLiteralValueInjection.injection)
+            Rule(regex = stringLiteralRegex(), tag = "string_literal", isSeparator = false, transformation = StringLiteralValueInjection.injection)
 
         // oneOf(".,:;(){}[]=") | word("=>")
+        @extern def delimiterRegex(): Regex[Char] = anyOf(".,:;(){}[]=") | "=>".r
         val delimiterRule =
-            Rule(regex = anyOf(".,:;(){}[]=") | "=>".r, tag = "delimiter", isSeparator = false, transformation = DelimiterValueInjection.injection)
+            Rule(regex = delimiterRegex(), tag = "delimiter", isSeparator = false, transformation = DelimiterValueInjection.injection)
 
         // many1(elem(_.isWhitespace))
+        @extern def whiteSpacesRegex(): Regex[Char] = whiteSpaceRegex.+
         val whitespaceRule =
-            Rule(regex = whiteSpaceRegex.+, tag = "whitespace", isSeparator = true, transformation = WhitespaceValueInjection.injection)
+            Rule(regex = whiteSpacesRegex(), tag = "whitespace", isSeparator = true, transformation = WhitespaceValueInjection.injection)
 
         // word("//") ~ many(elem(_ != '\n'))
+        @extern def singleCommentRegex(): Regex[Char] = "//".r ~ (letterRegex | digitRegex | " ".r | "\t".r | specialCharRegex).*
         val singleCommentRule =
-            Rule(regex = "//".r ~ (letterRegex | digitRegex | " ".r | "\t".r | specialCharRegex).*, tag = "comment", isSeparator = true, transformation = CommentValueInjection.injection)
+            Rule(regex = singleCommentRegex(), tag = "comment", isSeparator = true, transformation = CommentValueInjection.injection)
 
         // word("/*") ~
         // many(elem(_ != '*') | many1(elem('*')) ~ elem(c => c != '/' && c != '*')) ~
         // many(elem('*')) ~
         // word("*/")
+        @extern def multiCommentRegex(): Regex[Char] = "/*".r ~ (letterRegex | digitRegex | " ".r | "\t".r | specialCharRegex | "*".r).* ~ "*/".r
         val multiCommentRule =
             Rule(
-            regex = "/*".r ~
-                (letterRegex | digitRegex | " ".r | "\t".r | specialCharRegex | "*".r).* ~ "*/".r,
-            tag = "comment",
+            regex = multiCommentRegex(),
+            tag = "multiline_comment",
             isSeparator = true,
             transformation = CommentValueInjection.injection
             )
@@ -422,5 +428,65 @@ object ExampleAmyLexer:
             multiCommentRule
         )
     end AmyLexer
+
+
+    object DemoPrintableTokens:
+        import ch.epfl.lexer.benchmark.RegexUtils.*
+        @extern def main(): Unit = {
+            // Check validity of the rules
+            val rules = AmyLexer.rules
+            assert(Lexer.rulesInvariant(rules))
+            assert(!rules.isEmpty)
+
+            val inputProgram = 
+                    """object Hello
+                        Std.printString("Hello world!")
+                    end Hello""".toStainless
+            val (tokens, suffix) = Lexer.lex(AmyLexer.rules, inputProgram)
+            assert(suffix.isEmpty)
+            println(f"Tokens: ${tokens.map(t => t.asString()).mkString(", ")}")
+
+            val printable = Lexer.tokensListTwoByTwoPredicate(tokens, AmyLexer.rules, Lexer.separableTokensPredicate)
+            println(f"Now we can see that the produced list is printable wrt our criterion: list is printable = $printable")
+
+            // details 
+            val twoByTwo = tokens.reverse.tail.reverse.zip(tokens.tail)
+            println(f"Tokens two by two: ${twoByTwo.map(t => f"(${t._1.asString()}, ${t._2.asString()})").mkString(", ")}")
+            val separable = twoByTwo.map(t => Lexer.separableTokensPredicate(t._1, t._2, AmyLexer.rules))
+            println(f"Separable tokens pairs: ${separable.mkString(", ")}")
+
+            // Now let's modify the tokens
+            val modifiedTokens = tokens.map(t => t match
+                case Token(WhitespaceValue(value), rule, o) => Token(WhitespaceValue(" ".toStainless), rule, o)
+                case _ => t
+            )
+
+            println(f"Modified tokens: ${modifiedTokens.map(t => t.asString()).mkString(", ")}")
+            println(f"Modified tokens printable: ${Lexer.tokensListTwoByTwoPredicate(modifiedTokens, AmyLexer.rules, Lexer.separableTokensPredicate)}")
+
+            val prettyPrinted = Lexer.print(modifiedTokens)
+            println(f"Pretty printed: ${prettyPrinted.mkString("")}")
+
+            val (tokens2, suffix2) = Lexer.lex(AmyLexer.rules, prettyPrinted)
+            assert(suffix2.isEmpty)
+            assert(tokens2 == modifiedTokens)
+
+            // Now let's modify the tokens in a way that makes them not printable
+            val modifiedTokens2 = Cons(Token(Types.KeywordValue.Abstract, AmyLexer.keywordRule, "abstract".toStainless), modifiedTokens)
+            println(f"Modified tokens unprintable: ${modifiedTokens2.map(t => t.asString()).mkString(", ")}")
+
+            println(f"Modified tokens unprintable: printable = ${Lexer.tokensListTwoByTwoPredicate(modifiedTokens2, AmyLexer.rules, Lexer.separableTokensPredicate)}")
+
+
+            // and indeed if we print them and tokenise them again, we don't get the same tokens
+            val prettyPrinted2 = Lexer.print(modifiedTokens2)
+            println(f"Pretty printed: ${prettyPrinted2.mkString("")}")
+            val (tokens3, suffix3) = Lexer.lex(AmyLexer.rules, prettyPrinted2)
+            assert(suffix3.isEmpty)
+            println(f"Tokens: ${tokens3.map(t => t.asString()).mkString(", ")}")
+            assert(tokens3 != modifiedTokens2)
+        }
+
+    end DemoPrintableTokens
 
 end ExampleAmyLexer

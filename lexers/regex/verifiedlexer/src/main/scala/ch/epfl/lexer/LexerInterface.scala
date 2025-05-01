@@ -49,5 +49,15 @@ trait LexerInterface {
     */
   def tokensListTwoByTwoPredicate[C](l: List[Token[C]], rules: List[Rule[C]], pred: (Token[C], Token[C], List[Rule[C]]) => Boolean): Boolean
 
+  /**
+    * Predicate over 2 tokens, that indicates whether they are seaprable by a lexer represented by the rules
+    *
+    * @param t1
+    * @param t2
+    * @param rules
+    * @return
+    */
+  def separableTokensPredicate[C](t1: Token[C], t2: Token[C], rules: List[Rule[C]]): Boolean
+
 
 }

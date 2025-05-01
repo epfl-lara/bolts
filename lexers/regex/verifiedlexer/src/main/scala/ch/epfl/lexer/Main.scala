@@ -21,8 +21,10 @@ import ch.epfl.lexer.benchmark.RegexUtils._
 import stainless.collection.List
 object Main {
   def main(args: Array[String]): Unit = {
-    testAmyLexer()
-    tokeniseAmyFile("src/main/scala/ch/epfl/example/res/Factorial_275chars.amy","src/main/scala/ch/epfl/example/res/Factorial_275chars.amy.tokens")
+    // testAmyLexer()
+    // tokeniseAmyFile("src/main/scala/ch/epfl/example/res/Factorial_275chars.amy","src/main/scala/ch/epfl/example/res/Factorial_275chars.amy.tokens")
+
+    DemoPrintableTokens.main()
     // addNumberOfCharsInFileName("src/main/scala/ch/epfl/example/res/ADT.amy")
     // addNumberOfCharsInFileName("src/main/scala/ch/epfl/example/res/BinaryTree.amy")
     // addNumberOfCharsInFileName("src/main/scala/ch/epfl/example/res/Calculator.amy")
@@ -39,6 +41,7 @@ object Main {
     // addNumberOfCharsInFileName("src/main/scala/ch/epfl/example/res/Ultimate.amy")
   }
 }
+
 
 def addNumberOfCharsInFileName(path: String): Unit = {
   val file = new java.io.File(path)
