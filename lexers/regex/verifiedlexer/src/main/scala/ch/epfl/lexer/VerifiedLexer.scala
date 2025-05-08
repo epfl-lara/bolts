@@ -308,11 +308,10 @@ object VerifiedLexer {
           val currentRulePref = maxPrefixOneRule(hd, input)
           val othersPrefix = maxPrefix(tl, input)
           (currentRulePref, othersPrefix) match {
-            case (None(), None())                                                   => None()
-            case (c, None())                                                        => c
-            case (None(), o)                                                        => o
-            case (Some(c), Some(o)) if c._1.characters.size >= o._1.characters.size => Some(c)
-            case (Some(c), Some(o)) if c._1.characters.size < o._1.characters.size  => Some(o)
+            case (None(), None())   => None()
+            case (c, None())        => c
+            case (None(), o)        => o
+            case (Some(c), Some(o)) => if c._1.size >= o._1.size then Some(c) else Some(o)
           }
         }
       }
@@ -341,11 +340,10 @@ object VerifiedLexer {
           val currentRulePref = maxPrefixOneRuleZipper(hd, input)
           val othersPrefix = maxPrefixZipper(tl, input)
           (currentRulePref, othersPrefix) match {
-            case (None(), None())                                                   => None()
-            case (c, None())                                                        => c
-            case (None(), o)                                                        => o
-            case (Some(c), Some(o)) if c._1.characters.size >= o._1.characters.size => Some(c)
-            case (Some(c), Some(o)) if c._1.characters.size < o._1.characters.size  => Some(o)
+            case (None(), None())   => None()
+            case (c, None())        => c
+            case (None(), o)        => o
+            case (Some(c), Some(o)) => if c._1.size >= o._1.size then Some(c) else Some(o)
           }
         }
       }
@@ -370,8 +368,8 @@ object VerifiedLexer {
         None[(Token[C], List[C])]()
       } else {
         ghostExpr(longestMatchIsAcceptedByMatchOrIsEmpty(rule.regex, input))
-        ghostExpr(ForallOf((a: List[C]) => rule.transformation.witness(rule.transformation.apply(a)) == a)(longestPrefix))
-        Some[(Token[C], List[C])]((Token(rule.transformation.apply(longestPrefix), rule,  longestPrefix), suffix))
+        ghostExpr(ForallOf((a: List[C]) => rule.transformation.witness(rule.transformation.f(a)) == a)(longestPrefix))
+        Some[(Token[C], List[C])]((Token(rule.transformation.apply(longestPrefix), rule, longestPrefix.size, longestPrefix), suffix))
       }
 
     }.ensuring (res =>
@@ -395,7 +393,7 @@ object VerifiedLexer {
         ghostExpr(longestMatchIsAcceptedByMatchOrIsEmpty(rule.regex, input))
         // assert(rule.transformation.toValueToCharacters(longestPrefix))
         ghostExpr(ForallOf((a: List[C]) => rule.transformation.witness(rule.transformation.apply(a)) == a)(longestPrefix))
-        Some[(Token[C], List[C])]((Token(rule.transformation.apply(longestPrefix), rule,  longestPrefix), suffix))
+        Some[(Token[C], List[C])]((Token(rule.transformation.apply(longestPrefix), rule, longestPrefix.size, longestPrefix), suffix))
       }
 
     }.ensuring (res => res == maxPrefixOneRule(rule, input))
@@ -1187,7 +1185,7 @@ object VerifiedLexer {
       require(rules.contains(r))
       require(rules.contains(rBis))
       require({
-        ForallOf((a: List[C]) => r.transformation.witness(r.transformation.apply(a)) == a)(p)
+        ForallOf((a: List[C]) => r.transformation.witness(r.transformation.f(a)) == a)(p)
         maxPrefix(rules, input) == Some(Token(r.transformation.apply(p), r, p), ListUtils.getSuffix(input, p))
       })
       require(ListUtils.getIndex(rules, rBis) < ListUtils.getIndex(rules, r))
@@ -1282,7 +1280,7 @@ object VerifiedLexer {
         matchR(r.regex, p)
       })
       require({
-        ForallOf((a: List[C]) => r.transformation.witness(r.transformation.apply(a)) == a)(p)
+        ForallOf((a: List[C]) => r.transformation.witness(r.transformation.f(a)) == a)(p)
         ListUtils.lemmaIsPrefixRefl(input, input)
         maxPrefixOneRule(r, input) == Some(Token(r.transformation.apply(p), r , p), ListUtils.getSuffix(input, p))
       })
@@ -1322,7 +1320,7 @@ object VerifiedLexer {
       require(ruleValid(r))
       require({
         ListUtils.lemmaIsPrefixRefl(input, input)
-        ForallOf((a: List[C]) => r.transformation.witness(r.transformation.apply(a)) == a)(p)
+        ForallOf((a: List[C]) => r.transformation.witness(r.transformation.f(a)) == a)(p)
         maxPrefixOneRule(r, input) == Some(Token(r.transformation.apply(p), r , p), ListUtils.getSuffix(input, p))
       })
 
@@ -1330,7 +1328,7 @@ object VerifiedLexer {
 
       require(ruleValid(rBis))
       require({
-        ForallOf((a: List[C]) => r.transformation.witness(r.transformation.apply(a)) == a)(p)
+        ForallOf((a: List[C]) => r.transformation.witness(r.transformation.f(a)) == a)(p)
         maxPrefix(rules, input) == Some(Token(r.transformation.apply(p), r , p), ListUtils.getSuffix(input, p))
       })
 
@@ -1406,7 +1404,7 @@ object VerifiedLexer {
       require(rules.contains(r))
       require(input == p ++ suffix)
       require({
-        ForallOf((a: List[C]) => r.transformation.witness(r.transformation.apply(a)) == a)(p)
+        ForallOf((a: List[C]) => r.transformation.witness(r.transformation.f(a)) == a)(p)
         maxPrefix(rules, input) == Some(Token(r.transformation.apply(p), r , p), suffix)
       })
       require({

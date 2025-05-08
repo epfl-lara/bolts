@@ -11,8 +11,9 @@ import stainless.lang.Quantifiers.*
 // This is a tradeoff so that we can have different types in different tokens/rules
 trait TokenValue
 
-case class Token[C](value: TokenValue, rule: Rule[C], @ghost originalCharacters: List[C]) {
+case class Token[C](value: TokenValue, rule: Rule[C], size: BigInt, @ghost originalCharacters: List[C]) {
   require(originalCharacters == rule.transformation.witness(value))
+  require(size == originalCharacters.size)
   def characters: List[C] = {
     rule.transformation.witness(value)
   }.ensuring(res => res == originalCharacters)

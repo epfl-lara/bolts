@@ -11,6 +11,7 @@ import stainless.collection.Cons
 import stainless.collection.Nil
 
 import stainless.annotation.extern
+import stainless.annotation.pure
 
 import ch.epfl.lexer.benchmark.RegexUtils.*
 import ch.epfl.lexer.benchmark.RegexUtils.digitRegex
@@ -32,7 +33,8 @@ object ExampleAmyLexer:
             
         object IntegerValueUtils:
             extension [A](l: stainless.collection.List[A])
-                @extern def mkString(inter: String): String = l match {
+                //TODO: use StringBuffer
+                @extern @pure def mkString(inter: String): String = l match {
                     case stainless.collection.Nil()      => ""
                     case stainless.collection.Cons(h, t) => h.toString + (if t.isEmpty then "" else inter + t.mkString(inter))
                 }
@@ -171,13 +173,13 @@ object ExampleAmyLexer:
 
         case object PrimitiveTypeValueInjection:
             def toValue(l: List[Char]): TokenValue = l match
-                case ll if ll == List('I', 'n', 't', '3', '2') => PrimitiveTypeValue.Int32
+                case ll if ll == List('I', 'n', 't', '(', '3', '2', ')') => PrimitiveTypeValue.Int32
                 case ll if ll == List('U', 'n', 'i','t')            => PrimitiveTypeValue.Unit
                 case ll if ll == List('B', 'o', 'o', 'l', 'e', 'a', 'n') => PrimitiveTypeValue.Boolean
                 case ll if ll == List('S', 't', 'r', 'i', 'n', 'g') => PrimitiveTypeValue.String
                 case ll => PrimitiveTypeValue.Broken(ll)
             def toCharacters(t: TokenValue): List[Char] = t match
-                case PrimitiveTypeValue.Int32   => List('I', 'n', 't', '3', '2')
+                case PrimitiveTypeValue.Int32   => List('I', 'n', 't', '(', '3', '2', ')')
                 case PrimitiveTypeValue.Unit    => List('U', 'n', 'i','t')
                 case PrimitiveTypeValue.Boolean => List('B', 'o', 'o', 'l', 'e', 'a', 'n')
                 case PrimitiveTypeValue.String  => List('S', 't', 'r', 'i', 'n', 'g')
