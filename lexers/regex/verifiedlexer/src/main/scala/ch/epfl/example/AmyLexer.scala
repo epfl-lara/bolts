@@ -459,7 +459,7 @@ object ExampleAmyLexer:
 
             // Now let's modify the tokens
             val modifiedTokens = tokens.map(t => t match
-                case Token(WhitespaceValue(value), rule, o) => Token(WhitespaceValue(" ".toStainless), rule, o)
+                case Token(WhitespaceValue(value), rule, s, o) => Token(WhitespaceValue(" ".toStainless), rule, s, o)
                 case _ => t
             )
 
@@ -474,7 +474,7 @@ object ExampleAmyLexer:
             assert(tokens2 == modifiedTokens)
 
             // Now let's modify the tokens in a way that makes them not printable
-            val modifiedTokens2 = Cons(Token(Types.KeywordValue.Abstract, AmyLexer.keywordRule, "abstract".toStainless), modifiedTokens)
+            val modifiedTokens2 = Cons(Token(Types.KeywordValue.Abstract, AmyLexer.keywordRule, "abstract".toStainless.size, "abstract".toStainless), modifiedTokens)
             println(f"Modified tokens unprintable: ${modifiedTokens2.map(t => t.asString()).mkString(", ")}")
 
             println(f"Modified tokens unprintable: printable = ${Lexer.tokensListTwoByTwoPredicate(modifiedTokens2, AmyLexer.rules, Lexer.separableTokensPredicate)}")

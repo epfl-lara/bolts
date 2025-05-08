@@ -17,6 +17,9 @@ case class Token[C](value: TokenValue, rule: Rule[C], size: BigInt, @ghost origi
   def characters: List[C] = {
     rule.transformation.witness(value)
   }.ensuring(res => res == originalCharacters)
+
+  def lemmaCharactersSize(): Unit = {
+  }.ensuring(_ => size == originalCharacters.size)
 }
 case class Rule[C](regex: Regex[C], tag: String, isSeparator: Boolean, transformation: Injection[List[C], TokenValue])
 
