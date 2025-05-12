@@ -17,13 +17,12 @@ import ch.epfl.map.Hashable
 import ch.epfl.map.TupleListOpsGenK.invariantList
 import ch.epfl.map.MutableHashMap
 
-import stainless.lang.StaticChecks._
 import stainless.lang.Quantifiers.Exists
 import stainless.lang.Quantifiers.ExistsThe
 import stainless.lang.Quantifiers.pickWitness
 
-
-// import ch.epfl.map.OptimisedChecks.*
+// import stainless.lang.StaticChecks._
+import ch.epfl.lexer.OptimisedChecks.*
 
 object MemoisationRegex {
   import VerifiedRegex._

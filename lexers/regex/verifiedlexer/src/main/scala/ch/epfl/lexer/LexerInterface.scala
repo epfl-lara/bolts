@@ -5,7 +5,6 @@ import stainless.collection.List
 import stainless.annotation.law
 import stainless.annotation.pure
 import stainless.annotation.ghost
-import stainless.lang.StaticChecks.*
 import stainless.lang.Quantifiers.*
 import stainless.lang._
 
@@ -14,6 +13,8 @@ import stainless.collection.Cons
 import stainless.collection.Nil
 
 
+// import stainless.lang.StaticChecks.*
+import ch.epfl.lexer.OptimisedChecks.*
 
 // This is a tradeoff so that we can have different types in different tokens/rules
 trait TokenValue
