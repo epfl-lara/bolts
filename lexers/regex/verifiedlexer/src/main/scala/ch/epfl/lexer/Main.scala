@@ -24,7 +24,7 @@ object Main {
     // testAmyLexer()
     // tokeniseAmyFile("src/main/scala/ch/epfl/example/res/Factorial_275chars.amy","src/main/scala/ch/epfl/example/res/Factorial_275chars.amy.tokens")
 
-    DemoPrintableTokens.main()
+    // DemoPrintableTokens.main()
     // addNumberOfCharsInFileName("src/main/scala/ch/epfl/example/res/ADT.amy")
     // addNumberOfCharsInFileName("src/main/scala/ch/epfl/example/res/BinaryTree.amy")
     // addNumberOfCharsInFileName("src/main/scala/ch/epfl/example/res/Calculator.amy")
@@ -38,7 +38,8 @@ object Main {
     // addNumberOfCharsInFileName("src/main/scala/ch/epfl/example/res/MutualRec.amy")
     // addNumberOfCharsInFileName("src/main/scala/ch/epfl/example/res/NestedMatch.amy")
     // addNumberOfCharsInFileName("src/main/scala/ch/epfl/example/res/Rec.amy")
-    // addNumberOfCharsInFileName("src/main/scala/ch/epfl/example/res/Ultimate.amy")
+    // addNumberOfCharsInFileName("src/main/scala/ch/epfl/example/res/Ultimate_duplicated_commented.amy")
+    // addNumberOfCharsInFileName("src/main/scala/ch/epfl/example/res/NestedMatch_duplicated_commented.amy")
   }
 }
 
