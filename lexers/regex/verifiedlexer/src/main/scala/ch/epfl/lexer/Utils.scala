@@ -551,7 +551,7 @@ object ListUtils {
       case Nil()        => Nil()
     }
   }
-
+  @ghost
   def getSuffix[B](l: List[B], p: List[B]): List[B] = {
     require(l.size >= p.size)
     require(isPrefix(p, l))
