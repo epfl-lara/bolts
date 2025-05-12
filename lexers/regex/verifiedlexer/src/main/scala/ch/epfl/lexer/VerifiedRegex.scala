@@ -2667,11 +2667,13 @@ object ZipperRegex {
       }
     } else {
       ghostExpr(ListUtils.lemmaIsPrefixThenSmallerEqSize(testedP, totalInput))
-      if (testedP.size == totalInput.size) {
-        ghostExpr(ListUtils.lemmaIsPrefixRefl(totalInput, totalInput))
-        ghostExpr(ListUtils.lemmaIsPrefixSameLengthThenSameList(totalInput, testedP, totalInput))
-        check(false)
-      }
+      ghostExpr({
+        if (testedP.size == totalInput.size) {
+          ListUtils.lemmaIsPrefixRefl(totalInput, totalInput)
+          ListUtils.lemmaIsPrefixSameLengthThenSameList(totalInput, testedP, totalInput)
+          check(false)
+        }
+      })
       assert(testedP.size < totalInput.size)
       val suffix = ListUtils.getSuffix(totalInput, testedP)
       val newP = testedP ++ List(suffix.head)
@@ -3336,11 +3338,13 @@ object VerifiedRegexMatcher {
       }
     } else {
       ghostExpr(ListUtils.lemmaIsPrefixThenSmallerEqSize(testedP, totalInput))
-      if (testedP.size == totalInput.size) {
-        ghostExpr(ListUtils.lemmaIsPrefixRefl(totalInput, totalInput))
-        ghostExpr(ListUtils.lemmaIsPrefixSameLengthThenSameList(totalInput, testedP, totalInput))
-        check(false)
-      }
+      ghostExpr({
+        if (testedP.size == totalInput.size) {
+          ListUtils.lemmaIsPrefixRefl(totalInput, totalInput)
+          ListUtils.lemmaIsPrefixSameLengthThenSameList(totalInput, testedP, totalInput)
+          check(false)
+        }
+      })
       assert(testedP.size < totalInput.size)
       val suffix = ListUtils.getSuffix(totalInput, testedP)
       val newP = testedP ++ List(suffix.head)
