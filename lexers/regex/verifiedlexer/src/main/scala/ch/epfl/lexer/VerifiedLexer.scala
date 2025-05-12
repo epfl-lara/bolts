@@ -11,8 +11,8 @@ import stainless.proof.check
 import scala.annotation.tailrec
 import stainless.lang.Quantifiers._
 
-// import stainless.lang.StaticChecks._
-import ch.epfl.lexer.OptimisedChecks.*
+import stainless.lang.StaticChecks._
+// import ch.epfl.lexer.OptimisedChecks.*
 
 
 object VerifiedLexer {

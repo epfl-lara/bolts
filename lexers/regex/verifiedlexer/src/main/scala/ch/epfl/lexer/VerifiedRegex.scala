@@ -21,8 +21,8 @@ import stainless.lang.Quantifiers.Exists
 import stainless.lang.Quantifiers.ExistsThe
 import stainless.lang.Quantifiers.pickWitness
 
-// import stainless.lang.StaticChecks._
-import ch.epfl.lexer.OptimisedChecks.*
+import stainless.lang.StaticChecks._
+// import ch.epfl.lexer.OptimisedChecks.*
 
 object MemoisationRegex {
   import VerifiedRegex._
