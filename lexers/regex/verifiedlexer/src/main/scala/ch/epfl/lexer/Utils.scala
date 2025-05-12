@@ -522,6 +522,7 @@ object SetUtils {
 }
 
 object ListUtils {
+  @ghost
   def isPrefix[B](prefix: List[B], l: List[B]): Boolean = {
     decreases(prefix)
     (prefix, l) match {
@@ -531,6 +532,7 @@ object ListUtils {
     }
   }.ensuring (res => if (res) l.size >= prefix.size else true)
 
+  @ghost
   def removeLast[B](l: List[B]): List[B] = {
     require(!l.isEmpty)
     decreases(l)
@@ -541,6 +543,7 @@ object ListUtils {
     res
   }.ensuring (res => res ++ List(l.last) == l)
 
+  @ghost
   def reverseList[B](l: List[B]): List[B] = {
     decreases(l)
     l match {
@@ -549,6 +552,7 @@ object ListUtils {
     }
   }
 
+  @ghost
   def getSuffix[B](l: List[B], p: List[B]): List[B] = {
     require(l.size >= p.size)
     require(isPrefix(p, l))
@@ -559,6 +563,7 @@ object ListUtils {
     }
   }.ensuring (res => p ++ res == l)
 
+  @ghost
   def getIndex[B](l: List[B], e: B): BigInt = {
     require(l.contains(e))
     decreases(l)
@@ -569,6 +574,7 @@ object ListUtils {
     }
   }.ensuring (res => res >= 0)
 
+  @ghost
   def consecutiveSubseq[B](l1: List[B], lTot: List[B]): Boolean = {
     decreases(lTot)
     lTot match {
@@ -577,6 +583,7 @@ object ListUtils {
     }
   }
 
+  @ghost
   def consecutiveSubseqAtHead[B](l1: List[B], lTot: List[B]): Boolean = {
     decreases(lTot)
     (l1, lTot) match {
