@@ -1,4 +1,4 @@
-package benchmark
+package benchmark.lexer
 
 import java.util.concurrent.TimeUnit
 import org.openjdk.jmh.annotations.*
@@ -63,6 +63,7 @@ class LexerBenchmark {
  
 }
 
+@State(Scope.Benchmark)
 class LexerBenchmarkGenerated {
   @Param(
     Array(
