@@ -18,11 +18,9 @@ import ch.epfl.map.TupleListOpsGenK.invariantList
 import ch.epfl.map.MutableHashMap
 
 import stainless.lang.StaticChecks._
-import stainless.annotation.isabelle.lemma
 import stainless.lang.Quantifiers.Exists
 import stainless.lang.Quantifiers.ExistsThe
 import stainless.lang.Quantifiers.pickWitness
-import stainless.lang.Heap.get
 
 
 // import ch.epfl.map.OptimisedChecks.*

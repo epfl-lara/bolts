@@ -4,6 +4,7 @@ import ch.epfl.lexer.VerifiedLexer.Lexer
 import ch.epfl.lexer.LexerInterface
 import ch.epfl.lexer.Rule
 import ch.epfl.lexer.Token
+import ch.epfl.lexer.TokenValue
 import ch.epfl.lexer.VerifiedRegex.*
 
 import stainless.collection.List
@@ -15,7 +16,6 @@ import stainless.annotation.pure
 
 import ch.epfl.lexer.benchmark.RegexUtils.*
 import ch.epfl.lexer.benchmark.RegexUtils.digitRegex
-import ch.epfl.lexer.TokenValue
 import stainless.lang.Quantifiers.*
 
 import stainless.lang.{ghost => ghostExpr}
@@ -33,11 +33,17 @@ object ExampleAmyLexer:
             
         object IntegerValueUtils:
             extension [A](l: stainless.collection.List[A])
-                //TODO: use StringBuffer
-                @extern @pure def mkString(inter: String): String = l match {
-                    case stainless.collection.Nil()      => ""
-                    case stainless.collection.Cons(h, t) => h.toString + (if t.isEmpty then "" else inter + t.mkString(inter))
-                }
+                @extern @pure def mkString(inter: String): String = 
+                    val sb = new StringBuilder()
+                    def loop(l: List[A]): Unit = l match
+                        case Nil() => ()
+                        case Cons(h, Nil()) => sb.append(h.toString())
+                        case Cons(h, t) =>
+                            sb.append(h.toString())
+                            sb.append(inter)
+                            loop(t)
+                    loop(l)
+                    sb.toString()
             @extern def charsToInt(l: List[Char]): Int = l.mkString("").toInt
         end IntegerValueUtils
 
