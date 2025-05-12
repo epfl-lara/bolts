@@ -14,6 +14,8 @@ import ch.epfl.lexer.VerifiedRegex._
 import ch.epfl.lexer.ZipperRegex._
 import ch.epfl.lexer.Token
 
+import scala.annotation.tailrec
+
 @extern
 object RegexUtils {
   extension (s: String) def r: Regex[Char] = s.toCharArray().toList.foldRight[Regex[Char]](EmptyExpr())((c, acc) => Concat(ElementMatch(c), acc))
@@ -60,8 +62,9 @@ object RegexUtils {
   extension (z: Zipper[Char]) def asStringZipper(): String = s"Set(${z.map(c => c.asStringContext()).mkString(", ")})"
 
 
-  def toStainlessList(l: scala.collection.immutable.List[Char]): stainless.collection.List[Char] = l match {
-    case l: scala.collection.immutable.List[Char] if l.isEmpty => stainless.collection.Nil[Char]()
-    case l: scala.collection.immutable.List[Char] => stainless.collection.Cons(l.head, toStainlessList(l.tail))
+  @tailrec
+  def toStainlessList(l: scala.collection.immutable.List[Char], acc: stainless.collection.List[Char] = stainless.collection.Nil[Char]()): stainless.collection.List[Char] = l match {
+    case l: scala.collection.immutable.List[Char] if l.isEmpty => acc
+    case l: scala.collection.immutable.List[Char] => toStainlessList(l.tail, acc :+ l.head)
   }
 }
