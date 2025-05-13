@@ -413,7 +413,11 @@ object ExampleAmyLexer:
         // many(elem(_ != '*') | many1(elem('*')) ~ elem(c => c != '/' && c != '*')) ~
         // many(elem('*')) ~
         // word("*/")
-        @extern def multiCommentRegex(): Regex[Char] = "/*".r ~ (letterRegex | digitRegex | " ".r | "\t".r | specialCharRegex | "*".r).* ~ "*/".r
+        @extern def multiCommentRegex(): Regex[Char] = 
+            "/*".r ~ 
+                (letterRegex | digitRegex | whiteSpaceRegex | specialCharRegexWithoutSlashAndStar | "/".r | ("*".r ~ "*".r.* ~ (letterRegex | digitRegex | whiteSpaceRegex | specialCharRegexWithoutSlashAndStar | "/".r))).* ~  
+                "*".r.* ~
+            "*/".r
         val multiCommentRule =
             Rule(
             regex = multiCommentRegex(),

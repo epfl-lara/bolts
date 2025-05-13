@@ -40,7 +40,8 @@ object RegexUtils {
   val letterRegex: Regex[Char] = anyOf("abcdefghijklmnopqrstuvwxyz") | anyOf("ABCDEFGHIJKLMNOPQRSTUVWXYZ")
   val digitRegex: Regex[Char] = anyOf("0123456789")
   val whiteSpaceRegex: Regex[Char] = anyOf(" \n\t")
-  val specialCharRegex: Regex[Char] = anyOf("+-/*!?=()[]{}<>|&%$§§°`^@#~;:,.éàèçù")
+  val specialCharRegex: Regex[Char] = anyOf("+-/*!?=()[]{}<>|\\&%$§§°`^@#~;:,.éàèçù\'\"`")
+  val specialCharRegexWithoutSlashAndStar: Regex[Char] = anyOf("+-!?=()[]{}<>|\\&%$§§°`^@#~;:,.éàèçù\'\"`")
 
   extension (t: Token[Char]) def asString(): String = 
     def replaceSpecialCharacters(l: List[Char]): List[String] = 

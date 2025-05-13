@@ -41,7 +41,12 @@ class RegexBenchmark {
      "85",
      "90",
      "95", 
-     "100"
+     "100",
+     "110",
+     "120",
+     "130",
+     "140",
+     "150"
     )
   )
   var size: String = uninitialized
@@ -128,6 +133,46 @@ class RegexBenchmark {
     assert(res)
   }
 
+  // Comment accepting regex -----------------------------------------------------------------------------------------------------------------------
+  @Benchmark
+  @BenchmarkMode(Array(Mode.AverageTime))
+  @OutputTimeUnit(TimeUnit.MICROSECONDS)
+  def commentAccepting_Regex(): Unit = {
+    val r = RegexBenchmarkUtil.singleLineCommentRegex
+    val s = RegexBenchmarkUtil.comment_Accepting_strings(size.toInt)
+    val res = matchR(r, s)
+    assert(res)
+  }
+  @Benchmark
+  @BenchmarkMode(Array(Mode.AverageTime))
+  @OutputTimeUnit(TimeUnit.MICROSECONDS)
+  def commentAccepting_Zipper(): Unit = {
+    val r = RegexBenchmarkUtil.singleLineCommentRegex
+    val s = RegexBenchmarkUtil.comment_Accepting_strings(size.toInt)
+    val res = matchZipper(r, s)
+    assert(res)
+  }
+
+  // Multiline comment accepting regex -----------------------------------------------------------------------------------------------------------------------
+  @Benchmark
+  @BenchmarkMode(Array(Mode.AverageTime))
+  @OutputTimeUnit(TimeUnit.MICROSECONDS)
+  def commentAccepting_Regex_multiline(): Unit = {
+    val r = RegexBenchmarkUtil.multiCommentRegex
+    val s = RegexBenchmarkUtil.comment_Accepting_strings_multiline(size.toInt)
+    val res = matchR(r, s)
+    assert(res)
+  }
+  @Benchmark
+  @BenchmarkMode(Array(Mode.AverageTime))
+  @OutputTimeUnit(TimeUnit.MICROSECONDS)
+  def commentAccepting_Zipper_multiline(): Unit = {
+    val r = RegexBenchmarkUtil.multiCommentRegex
+    val s = RegexBenchmarkUtil.comment_Accepting_strings_multiline(size.toInt)
+    val res = matchZipper(r, s)
+    assert(res)
+  }
+
  
 }
 
@@ -156,7 +201,7 @@ object RegexBenchmarkUtil {
   val seed = 0x0ddba11
   val r = new Random(seed)
 
-  val string_sizes = List(5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60, 65, 70, 75, 80, 85, 90, 95, 100, 150, 200)
+  val string_sizes = List(5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60, 65, 70, 75, 80, 85, 90, 95, 100, 110, 120, 130, 140, 150, 200)
   val abStar: Regex[Char] = ("a" | "b").*
 
   val abStar_Accepting_strings: Map[Int, StainlessList[Char]] = string_sizes.map(n => (n, (1 to n).map(_ => random_a_or_b()).mkString.toStainless)).toMap
@@ -188,4 +233,44 @@ object RegexBenchmarkUtil {
     assert(res.size == n)
     res
   }
+
+  val singleLineCommentRegex = "//".r ~ (letterRegex | digitRegex | " ".r | "\t".r | specialCharRegex).*
+  val multiCommentRegex = "/*".r ~ 
+                          (letterRegex | digitRegex | whiteSpaceRegex | specialCharRegexWithoutSlashAndStar | "/".r | ("*".r ~ "*".r.* ~ (letterRegex | digitRegex | whiteSpaceRegex | specialCharRegexWithoutSlashAndStar | "/".r))).* ~  
+                          "*".r.* ~
+                          "*/".r
+
+  val possibleCommentChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdedfghijklmnopqrstuvwxyz0123456789 \t+-/*!?=()[]{}<>|\\&%$§§°`^@#~;:,.éàèçù\'\"`"
+  def random_comment_char(): String = {
+    val index = r.nextInt(possibleCommentChars.length)
+    possibleCommentChars(index).toString
+  }
+  def random_inline_comment(n: Int): String = {
+    val usableLength = n - 2
+    val res: String = "//" + (1.to(usableLength)).map(_ => random_comment_char()).mkString
+    assert(res.size == n)
+    res
+  }
+  def random_multiline_comment_char(): String = {
+    val index = r.nextInt(possibleCommentChars.length + 1)
+    (possibleCommentChars + "\n")(index).toString
+  }
+  def random_multiline_comment(n: Int): String = {
+    val usableLength = n - 4
+    var flag = true
+    var body = ""
+    while (flag){
+      body = (1.to(usableLength)).map(_ => random_multiline_comment_char()).mkString
+      if (!body.contains("*/")){
+        flag = false
+      }
+    }
+    val res: String = "/*" + body + "*/"
+    assert(res.size == n)
+    res
+  }
+
+  val comment_Accepting_strings: Map[Int, StainlessList[Char]] = string_sizes.map(n => (n, random_inline_comment(n).toStainless)).toMap
+  val comment_Accepting_strings_multiline: Map[Int, StainlessList[Char]] = string_sizes.map(n => (n, random_multiline_comment(n).toStainless)).toMap
+
 }
