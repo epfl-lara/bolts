@@ -133,47 +133,99 @@ class RegexBenchmark {
     assert(res)
   }
 
-  // Comment accepting regex -----------------------------------------------------------------------------------------------------------------------
-  @Benchmark
-  @BenchmarkMode(Array(Mode.AverageTime))
-  @OutputTimeUnit(TimeUnit.MICROSECONDS)
-  def commentAccepting_Regex(): Unit = {
-    val r = RegexBenchmarkUtil.singleLineCommentRegex
-    val s = RegexBenchmarkUtil.comment_Accepting_strings(size.toInt)
-    val res = matchR(r, s)
-    assert(res)
-  }
-  @Benchmark
-  @BenchmarkMode(Array(Mode.AverageTime))
-  @OutputTimeUnit(TimeUnit.MICROSECONDS)
-  def commentAccepting_Zipper(): Unit = {
-    val r = RegexBenchmarkUtil.singleLineCommentRegex
-    val s = RegexBenchmarkUtil.comment_Accepting_strings(size.toInt)
-    val res = matchZipper(r, s)
-    assert(res)
-  }
+}
 
-  // Multiline comment accepting regex -----------------------------------------------------------------------------------------------------------------------
-  @Benchmark
-  @BenchmarkMode(Array(Mode.AverageTime))
-  @OutputTimeUnit(TimeUnit.MICROSECONDS)
-  def commentAccepting_Regex_multiline(): Unit = {
-    val r = RegexBenchmarkUtil.multiCommentRegex
-    val s = RegexBenchmarkUtil.comment_Accepting_strings_multiline(size.toInt)
-    val res = matchR(r, s)
-    assert(res)
-  }
-  @Benchmark
-  @BenchmarkMode(Array(Mode.AverageTime))
-  @OutputTimeUnit(TimeUnit.MICROSECONDS)
-  def commentAccepting_Zipper_multiline(): Unit = {
-    val r = RegexBenchmarkUtil.multiCommentRegex
-    val s = RegexBenchmarkUtil.comment_Accepting_strings_multiline(size.toInt)
-    val res = matchZipper(r, s)
-    assert(res)
-  }
+@State(Scope.Benchmark)
+class LexerRegexBenchmark {
+    @Param(
+      Array(
+      "5", 
+      "10", 
+      "15", 
+      "20", 
+      "25", 
+      "30", 
+      "35", 
+      "40", 
+      "45", 
+      "50", 
+      "55", 
+      "60", 
+      "65", 
+      "70", 
+      "75", 
+      "80",
+      "85",
+      "90",
+      "95", 
+      "100",
+      "110",
+      "120",
+      "130",
+      "140",
+      "150"
+      )
+    )
+    var size: String = uninitialized
 
- 
+    // Comment accepting regex -----------------------------------------------------------------------------------------------------------------------
+    @Benchmark
+    @BenchmarkMode(Array(Mode.AverageTime))
+    @OutputTimeUnit(TimeUnit.MICROSECONDS)
+    def commentAccepting_Regex(): Unit = {
+      val r = RegexBenchmarkUtil.singleLineCommentRegex
+      val s = RegexBenchmarkUtil.comment_Accepting_strings(size.toInt)
+      val res = matchR(r, s)
+      assert(res)
+    }
+    @Benchmark
+    @BenchmarkMode(Array(Mode.AverageTime))
+    @OutputTimeUnit(TimeUnit.MICROSECONDS)
+    def commentAccepting_Zipper(): Unit = {
+      val r = RegexBenchmarkUtil.singleLineCommentRegex
+      val s = RegexBenchmarkUtil.comment_Accepting_strings(size.toInt)
+      val res = matchZipper(r, s)
+      assert(res)
+    }
+    @Benchmark
+    @BenchmarkMode(Array(Mode.AverageTime))
+    @OutputTimeUnit(TimeUnit.MICROSECONDS)
+    def commentAccepting_scalaRegex(): Unit = {
+      val r = ScalaRegexUtils.inlineCommentRegex
+      val s = RegexBenchmarkUtil.comment_Accepting_strings_realString(size.toInt)
+      val res = r.matches(s)
+      assert(res)
+    }
+
+    // Multiline comment accepting regex -----------------------------------------------------------------------------------------------------------------------
+    @Benchmark
+    @BenchmarkMode(Array(Mode.AverageTime))
+    @OutputTimeUnit(TimeUnit.MICROSECONDS)
+    def commentAccepting_Regex_multiline(): Unit = {
+      val r = RegexBenchmarkUtil.multiCommentRegex
+      val s = RegexBenchmarkUtil.comment_Accepting_strings_multiline(size.toInt)
+      val res = matchR(r, s)
+      assert(res)
+    }
+    @Benchmark
+    @BenchmarkMode(Array(Mode.AverageTime))
+    @OutputTimeUnit(TimeUnit.MICROSECONDS)
+    def commentAccepting_Zipper_multiline(): Unit = {
+      val r = RegexBenchmarkUtil.multiCommentRegex
+      val s = RegexBenchmarkUtil.comment_Accepting_strings_multiline(size.toInt)
+      val res = matchZipper(r, s)
+      assert(res)
+    }
+
+    @Benchmark
+    @BenchmarkMode(Array(Mode.AverageTime))
+    @OutputTimeUnit(TimeUnit.MICROSECONDS)
+    def commentAccepting_scalaRegex_multiline(): Unit = {
+      val r = ScalaRegexUtils.multiCommentRegex
+      val s = RegexBenchmarkUtil.comment_Accepting_strings_multiline_realString(size.toInt)
+      val res = r.matches(s)
+      assert(res)
+    }
 }
 
 object RegexCharHashable extends Hashable[(Regex[Char], Char)] {
@@ -273,4 +325,12 @@ object RegexBenchmarkUtil {
   val comment_Accepting_strings: Map[Int, StainlessList[Char]] = string_sizes.map(n => (n, random_inline_comment(n).toStainless)).toMap
   val comment_Accepting_strings_multiline: Map[Int, StainlessList[Char]] = string_sizes.map(n => (n, random_multiline_comment(n).toStainless)).toMap
 
+  val comment_Accepting_strings_realString: Map[Int, String] = comment_Accepting_strings.map { case (k, v) => (k, v.mkString("")) }
+  val comment_Accepting_strings_multiline_realString: Map[Int, String] = comment_Accepting_strings_multiline.map { case (k, v) => (k, v.mkString("")) }
+}
+
+object ScalaRegexUtils {
+  import scala.util.matching.Regex
+  val inlineCommentRegex: Regex = "//([a-zA-Z0-9 \t+-/\\*!?=()[]{}<>|\\&%$§§°`^@#~;:,.éàèçù\'\"`]*)".r
+  val multiCommentRegex: Regex = "/\\*([a-zA-Z0-9 \t\n+-/!?=()[]{}<>|\\&%$§§°`^@#~;:,.éàèçù\'\"`]|(\\*[\\*]*[a-zA-Z0-9 \t\n+-/!?=()[]{}<>|\\&%$§§°`^@#~;:,.éàèçù\'\"`]))*\\**\\*/".r
 }
