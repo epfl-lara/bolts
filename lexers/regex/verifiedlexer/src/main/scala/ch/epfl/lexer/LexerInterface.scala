@@ -6,15 +6,23 @@ import stainless.annotation.law
 import stainless.annotation.pure
 import stainless.annotation.ghost
 import stainless.lang.Quantifiers.*
-import stainless.lang._
 
 import stainless.collection.List
 import stainless.collection.Cons
 import stainless.collection.Nil
 
+import scala.annotation.tailrec
 
-import stainless.lang.StaticChecks.*
-// import ch.epfl.lexer.OptimisedChecks.*
+// import stainless.lang.StaticChecks.*
+import stainless.lang.{ghost => ghostExpr, decreases => _, _}
+import ch.epfl.lexer.OptimisedChecks.*
+import Predef.{assert => _, Ensuring => _, require => _}
+
+@tailrec
+def dummyInt(x: BigInt): BigInt = {
+  if (x == BigInt(0)) then x
+  else dummyInt(x - BigInt(1))
+}.ensuring( res => res == BigInt(0))
 
 // This is a tradeoff so that we can have different types in different tokens/rules
 trait TokenValue
@@ -80,7 +88,7 @@ trait LexerInterface {
       (r != otherR) &&
       (tokens.isEmpty || VerifiedRegexMatcher.matchR(r.regex, tokens.head.characters)) 
       ==> 
-      (if (ListUtils.getIndex(rules, otherR) < ListUtils.getIndex(rules, r)) !VerifiedRegexMatcher.matchR(otherR.regex, otherP)
+      (if ListUtils.getIndex(rules, otherR) < ListUtils.getIndex(rules, r) then !VerifiedRegexMatcher.matchR(otherR.regex, otherP)
       else tokens.size > 0 && otherP.size <= tokens.head.characters.size || !VerifiedRegexMatcher.matchR(otherR.regex, otherP))
     }
   // -------------- Invertibility properties String -> tokens -> String ----------------

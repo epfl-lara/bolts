@@ -100,21 +100,21 @@ class LexerBenchmarkGenerated {
   )
   var file: String = uninitialized
 
-  @Benchmark
-  @BenchmarkMode(Array(Mode.AverageTime))
-  @OutputTimeUnit(TimeUnit.MICROSECONDS)
-  def lex_Regex(): Unit = {
-    if 
-        file == "generated_code_000425chars.amy" ||
-        file == "generated_code_000850chars.amy" ||
-        file == "generated_code_001275chars.amy" ||
-        file == "generated_code_001700chars.amy" ||
-        file == "generated_code_002125chars.amy" then 
-      val (tokens, suffix) = Lexer.lexRegex(AmyLexer.rules, LexerBenchmarkUtils.generatedFileContents(file))
-      assert(suffix.isEmpty)
-    else 
-      ()
-  }
+  // @Benchmark
+  // @BenchmarkMode(Array(Mode.AverageTime))
+  // @OutputTimeUnit(TimeUnit.MICROSECONDS)
+  // def lex_Regex(): Unit = {
+  //   if 
+  //       file == "generated_code_000425chars.amy" ||
+  //       file == "generated_code_000850chars.amy" ||
+  //       file == "generated_code_001275chars.amy" ||
+  //       file == "generated_code_001700chars.amy" ||
+  //       file == "generated_code_002125chars.amy" then 
+  //     val (tokens, suffix) = Lexer.lexRegex(AmyLexer.rules, LexerBenchmarkUtils.generatedFileContents(file))
+  //     assert(suffix.isEmpty)
+  //   else 
+  //     ()
+  // }
 
   @Benchmark
   @BenchmarkMode(Array(Mode.AverageTime))

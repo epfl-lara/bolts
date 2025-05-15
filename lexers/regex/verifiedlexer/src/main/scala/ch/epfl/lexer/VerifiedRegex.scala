@@ -4,7 +4,6 @@
 package ch.epfl.lexer
 
 import stainless.equations._
-import stainless.lang.{ghost => ghostExpr, *}
 import stainless.collection._
 import stainless.annotation._
 import stainless.proof._
@@ -21,8 +20,18 @@ import stainless.lang.Quantifiers.Exists
 import stainless.lang.Quantifiers.ExistsThe
 import stainless.lang.Quantifiers.pickWitness
 
-import stainless.lang.StaticChecks._
-// import ch.epfl.lexer.OptimisedChecks.*
+import scala.annotation.tailrec
+
+// import stainless.lang.StaticChecks._
+import stainless.lang.{ghost => ghostExpr, decreases => _, _}
+import ch.epfl.lexer.OptimisedChecks.*
+import Predef.{assert => _, Ensuring => _, require => _}
+
+@tailrec
+def dummyReg(x: BigInt): BigInt = {
+  if (x == BigInt(0)) then x
+  else dummyReg(x - BigInt(1))
+}.ensuring( res => res == BigInt(0))
 
 object MemoisationRegex {
   import VerifiedRegex._

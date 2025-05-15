@@ -18,7 +18,9 @@ import ch.epfl.lexer.VerifiedLexer.Lexer
 
 import ch.epfl.lexer.benchmark.RegexUtils._
 
+
 import stainless.collection.List
+
 object Main {
   def main(args: Array[String]): Unit = {
     // testAmyLexer()
@@ -40,6 +42,19 @@ object Main {
     // addNumberOfCharsInFileName("src/main/scala/ch/epfl/example/res/Rec.amy")
     // addNumberOfCharsInFileName("src/main/scala/ch/epfl/example/res/Ultimate_duplicated_commented.amy")
     // addNumberOfCharsInFileName("src/main/scala/ch/epfl/example/res/NestedMatch_duplicated_commented.amy")
+    
+    // import benchmark.RegexBenchmarkUtils.*
+    // import benchmark.ScalaRegexUtils
+    // comment_Accepting_strings_multiline_realString.foreach((size, st) => {
+    //   println(f"Size: ${size}")
+    //   println(f"String: $st")
+    //   println("")
+    //   println(f"Matches?: ${ScalaRegexUtils.multiCommentRegex.matches(st)}")
+    // })
+
+    // import benchmark.lexer.LexerBenchmarkUtils
+    // val (tokens, suffix) = Lexer.lex(AmyLexer.rules, LexerBenchmarkUtils.generatedFileContents("generated_code_012325chars.amy"))
+    // assert(suffix.isEmpty)
   }
 }
 

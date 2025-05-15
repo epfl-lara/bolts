@@ -5,13 +5,23 @@ package ch.epfl.lexer
 import stainless.annotation._
 import stainless.collection._
 import stainless.equations._
-import stainless.lang.{ghost => ghostExpr, _}
 import stainless.proof.check
-import scala.annotation.tailrec
-import stainless.lang.StaticChecks._
 import stainless.lang.Quantifiers.Exists
 import stainless.lang.Quantifiers.Forall
 import ch.epfl.lexer.ListUtils.lemmaSubseqRefl
+
+import scala.annotation.tailrec
+
+// import stainless.lang.StaticChecks._
+import stainless.lang.{ghost => ghostExpr, decreases => _, _}
+import ch.epfl.lexer.OptimisedChecks.*
+import Predef.{assert => _, Ensuring => _, require => _}
+
+@tailrec
+def dummyUtils(x: BigInt): BigInt = {
+  if (x == BigInt(0)) then x
+  else dummyUtils(x - BigInt(1))
+}.ensuring( res => res == BigInt(0))
 
 object SetUtils {
 

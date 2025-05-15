@@ -6,14 +6,20 @@ package ch.epfl.lexer
 import stainless.annotation._
 import stainless.collection._
 import stainless.equations._
-import stainless.lang.{ghost => ghostExpr, _}
 import stainless.proof.check
 import scala.annotation.tailrec
 import stainless.lang.Quantifiers._
 
-import stainless.lang.StaticChecks._
-// import ch.epfl.lexer.OptimisedChecks.*
+// import stainless.lang.StaticChecks._
+import stainless.lang.{ghost => ghostExpr, decreases => _, _}
+import ch.epfl.lexer.OptimisedChecks.*
+import Predef.{assert => _, Ensuring => _, require => _}
 
+@tailrec
+def dummy(x: BigInt): BigInt = {
+  if (x == BigInt(0)) then x
+  else dummy(x - BigInt(1))
+}.ensuring( res => res == BigInt(0))
 
 object VerifiedLexer {
   import VerifiedRegex._
@@ -123,6 +129,23 @@ object VerifiedLexer {
       if (res._1.size > 0) res._2.size < input.size && !res._1.isEmpty
       else res._2 == input
     )
+
+    // @tailrec
+    // def lexTr[C]( 
+    //   rules: List[Rule[C]],
+    //   input: List[C],
+    //   acc: List[Token[C]] = Nil[Token[C]]()
+    //   ): (List[Token[C]], List[C]) = {
+    //     decreases(input.size)
+    //     require(!rules.isEmpty)
+    //     require(rulesInvariant(rules))
+    //     maxPrefixZipper(rules, input) match {
+    //       case Some((token, suffix)) => {
+    //         lexTr(rules, suffix, acc :+ token)
+    //       }
+    //       case None() => (acc, input)
+    //     }
+    // }.ensuring(res => res == lex(rules, input))
 
     def lexRegex[C](
         rules: List[Rule[C]],
