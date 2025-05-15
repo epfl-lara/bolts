@@ -293,7 +293,7 @@ object VerifiedLexer {
       } else {
         ghostExpr(longestMatchIsAcceptedByMatchOrIsEmpty(rule.regex, input))
         ghostExpr(ForallOf((a: List[C]) => rule.transformation.witness(rule.transformation.f(a)) == a)(longestPrefix))
-        Some[(Token[C], List[C])]((Token(rule.transformation.apply(longestPrefix), rule, longestPrefix.size, longestPrefix), suffix))
+        Some[(Token[C], List[C])]((Token(rule.transformation.apply(longestPrefix), rule, ListUtils.sizeTr(longestPrefix), longestPrefix), suffix))
       }
 
     }.ensuring (res =>
@@ -318,7 +318,7 @@ object VerifiedLexer {
         ghostExpr(rule.transformation.lemmaInv())
         ghostExpr(assert(Forall((a: List[C]) => rule.transformation.witness(rule.transformation.f(a)) == a)))
         ghostExpr(ForallOf((a: List[C]) => rule.transformation.witness(rule.transformation.f(a)) == a)(longestPrefix))
-        Some[(Token[C], List[C])]((Token(rule.transformation.apply(longestPrefix), rule, longestPrefix.size, longestPrefix), suffix))
+        Some[(Token[C], List[C])]((Token(rule.transformation.apply(longestPrefix), rule, ListUtils.sizeTr(longestPrefix), longestPrefix), suffix))
       }
 
     }.ensuring (res => res == maxPrefixOneRule(rule, input))
