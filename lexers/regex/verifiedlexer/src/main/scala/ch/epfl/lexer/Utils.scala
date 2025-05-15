@@ -13,7 +13,8 @@ import ch.epfl.lexer.ListUtils.lemmaSubseqRefl
 import scala.annotation.tailrec
 
 // import stainless.lang.StaticChecks._
-import stainless.lang.{ghost => ghostExpr, decreases => _, _}
+// import stainless.lang.{ghost => ghostExpr, decreases => _, _}
+import stainless.lang.{ghost => _, decreases => _, _}
 import ch.epfl.lexer.OptimisedChecks.*
 import Predef.{assert => _, Ensuring => _, require => _}
 
