@@ -522,6 +522,13 @@ object SetUtils {
 }
 
 object ListUtils {
+
+  @tailrec final def sizeTr[B](l: List[B], acc: BigInt = 0): BigInt = {
+    l match {
+      case Nil()        => acc
+      case Cons(hd, tl) => sizeTr(tl, acc + 1)
+    }
+  }
   @ghost
   def isPrefix[B](prefix: List[B], l: List[B]): Boolean = {
     decreases(prefix)
@@ -608,6 +615,19 @@ object ListUtils {
 
 
   // -------------------- LEMMAS --------------------
+
+  @ghost
+  @opaque
+  @inlineOnce
+  def lemmaSizeTrEqualsSize[B](l: List[B], acc: BigInt): Unit = {
+    decreases(l)
+    l match {
+      case Cons(hd, tl) => {
+        lemmaSizeTrEqualsSize(tl, acc + 1)
+      }
+      case Nil() => ()
+    }
+  }.ensuring(_ => sizeTr(l, acc) == l.size + acc)
 
   @ghost 
   @opaque
