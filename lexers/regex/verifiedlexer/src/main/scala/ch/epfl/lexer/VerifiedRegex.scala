@@ -357,7 +357,6 @@ object VerifiedRegex {
   }
 
   def lostCause[C](r: Regex[C]): Boolean = {
-    require(validRegex(r))
     r match {
       case EmptyExpr()        => false
       case EmptyLang()        => true
@@ -479,6 +478,7 @@ object ZipperRegex {
       require(!isEmpty)
       Context(exprs.tail)
     }
+    @ghost
     inline def concat(that: Context[C]): Context[C] = { 
       ghostExpr(ListUtils.lemmaConcatPreservesForall(exprs, that.exprs, validRegex))
       Context(exprs ++ that.exprs)
@@ -664,7 +664,7 @@ object ZipperRegex {
     if (input.isEmpty) !lostCauseZipper(z) else prefixMatchZipper(derivationStepZipper(z, input.head), input.tail)
   }
 
-  def appendTo[C](z: Zipper[C], c: Context[C]): Zipper[C] = {
+  @ghost def appendTo[C](z: Zipper[C], c: Context[C]): Zipper[C] = {
     z.map(cz => cz.concat(c))
   }
 
