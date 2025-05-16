@@ -258,6 +258,7 @@ object MemoisationZipper {
 object VerifiedRegex {
   sealed trait Regex[C]:
     lazy val nullable: Boolean = this.nullableFct
+    lazy val lostCause: Boolean = this.lostCauseFct
   end Regex
   case class ElementMatch[C](c: C) extends Regex[C]
   case class Star[C](reg: Regex[C]) extends Regex[C]
@@ -361,19 +362,19 @@ object VerifiedRegex {
       case EmptyLang()        => false
       case ElementMatch(c)    => false
       case Star(r)            => true
-      case Union(rOne, rTwo)  => rOne.nullableFct || rTwo.nullableFct
-      case Concat(rOne, rTwo) => rOne.nullableFct && rTwo.nullableFct
+      case Union(rOne, rTwo)  => rOne.nullable || rTwo.nullable
+      case Concat(rOne, rTwo) => rOne.nullable && rTwo.nullable
     }
   }
 
-  def lostCause[C](r: Regex[C]): Boolean = {
+  extension[C] (r: Regex[C]) def lostCauseFct: Boolean = {
     r match {
       case EmptyExpr()        => false
       case EmptyLang()        => true
       case ElementMatch(c)    => false
       case Star(r)            => false
-      case Union(rOne, rTwo)  => lostCause(rOne) && lostCause(rTwo)
-      case Concat(rOne, rTwo) => lostCause(rOne) || lostCause(rTwo)
+      case Union(rOne, rTwo)  => rOne.lostCause && rTwo.lostCause
+      case Concat(rOne, rTwo) => rOne.lostCause || rTwo.lostCause
     }
   }.ensuring(res => res == getLanguageWitness(r).isEmpty)
 
@@ -381,7 +382,7 @@ object VerifiedRegex {
    * Return a witness of the language denoted by the given regex. If it returns None, the regex denotes the empty language.
    * That's used to compute the prefix set of a regex.
    */
-  @ghost
+  @ghost 
   def getLanguageWitness[C](r: Regex[C]): Option[List[C]] = {
     r match {
       case EmptyExpr()        => Some(List())
@@ -503,6 +504,7 @@ object ZipperRegex {
 
   @ghost
   def unfocusZipperList[C](zl: List[Context[C]]): List[Regex[C]] = {
+    decreases(zl)
     zl match {
       case Cons(hd, tl) => Cons(generalisedConcat(hd.exprs), unfocusZipperList(tl))
       case Nil()        => Nil()
@@ -624,7 +626,7 @@ object ZipperRegex {
   }
 
   def lostCauseContext[C](c: Context[C]): Boolean = {
-    c.exists(r => lostCause(r))
+    c.exists(r => r.lostCause)
   }.ensuring(res => res == getLanguageWitness(c).isEmpty)
 
   @ghost
@@ -638,7 +640,7 @@ object ZipperRegex {
             case None() => None()
         case None() => None()
       case Nil() => Some(List())
-  }.ensuring(res => res.isEmpty == c.exists(r => lostCause(r)))
+  }.ensuring(res => res.isEmpty == c.exists(r => r.lostCause))
 
   def lostCauseZipper[C](z: Zipper[C]): Boolean = {
     ghostExpr({
@@ -938,7 +940,7 @@ object ZipperRegex {
   @opaque
   def lemmaLostCauseFixPointDerivDown[C](expr: Regex[C], ctx: Context[C], a: C): Unit = {
     require(validRegex(expr))
-    require(lostCause(expr) || lostCauseContext(ctx))
+    require(expr.lostCause || lostCauseContext(ctx))
     decreases(regexDepth(expr))
     expr match {
       case ElementMatch(c) if c == a => ()
@@ -971,10 +973,10 @@ object ZipperRegex {
     assert(z.contains(nullableCtx))
     assert(nullableCtx.forall(r => r.nullable))
     if(lostCauseContext(nullableCtx)){
-      assert(nullableCtx.exists(r => lostCause(r)))
-      val lostCauseRegex = ListUtils.getWitness(nullableCtx.exprs, (r: Regex[C]) => lostCause(r))
+      assert(nullableCtx.exists(r => r.lostCause))
+      val lostCauseRegex = ListUtils.getWitness(nullableCtx.exprs, (r: Regex[C]) => r.lostCause)
       assert(nullableCtx.exprs.contains(lostCauseRegex))
-      assert(lostCause(lostCauseRegex))
+      assert(lostCauseRegex.lostCause)
       ListSpecs.forallContained(nullableCtx.exprs, (r: Regex[C]) => r.nullable, lostCauseRegex)
       ListSpecs.forallContained(nullableCtx.exprs, validRegex, lostCauseRegex)
       assert(lostCauseRegex.nullable)
@@ -3121,7 +3123,7 @@ object VerifiedRegexMatcher {
   def prefixMatch[C](r: Regex[C], prefix: List[C]): Boolean = {
     require(validRegex(r))
     decreases(prefix.size)
-    if (prefix.isEmpty) !lostCause(r) else prefixMatch(derivativeStep(r, prefix.head), prefix.tail)
+    if (prefix.isEmpty) !r.lostCause else prefixMatch(derivativeStep(r, prefix.head), prefix.tail)
   }
 
   def matchRMem[C](r: Regex[C], input: List[C])(implicit cache: Cache[C]): Boolean = {
@@ -3446,7 +3448,7 @@ object VerifiedRegexMatcher {
     ghostExpr(ListUtils.lemmaSamePrefixThenSameSuffix(testedP, testedSuffix, testedP, ListUtils.getSuffix(totalInput, testedP), totalInput))
     ghostExpr(check(ListUtils.getSuffix(totalInput, testedP) == testedSuffix))
 
-    if (lostCause(r)) {
+    if (r.lostCause) {
       (Nil[C](), totalInput)
     } else if (testedPSize == totalInputSize) {
       ghostExpr(ListUtils.lemmaIsPrefixRefl(totalInput, totalInput))
@@ -3511,7 +3513,7 @@ object VerifiedRegexMatcher {
     ghostExpr(ListUtils.lemmaSamePrefixThenSameSuffix(testedP, testedSuffix, testedP, ListUtils.getSuffix(totalInput, testedP), totalInput))
     ghostExpr(check(ListUtils.getSuffix(totalInput, testedP) == testedSuffix))
 
-    if (lostCause(r)) {
+    if (r.lostCause) {
       (Nil[C](), totalInput)
     } else if (testedPSize == totalInputSize) {
       ghostExpr(ListUtils.lemmaIsPrefixRefl(totalInput, totalInput))
@@ -4043,7 +4045,7 @@ object VerifiedRegexMatcher {
       case EmptyExpr() => ()
       case EmptyLang() => ()
     }
-  }.ensuring(_ => !lostCause(r))
+  }.ensuring(_ => !r.lostCause)
 
 
   @ghost
@@ -4051,7 +4053,7 @@ object VerifiedRegexMatcher {
   @opaque
   def lemmaDerivativeStepFixPointLostCause[C](r: Regex[C], c: C): Unit = {
     require(validRegex(r))
-    require(lostCause(r))
+    require(r.lostCause)
     decreases(regexDepth(r))
     r match {
       case EmptyLang() => ()
@@ -4062,27 +4064,27 @@ object VerifiedRegexMatcher {
           lemmaDerivativeStepFixPointLostCause(r2, c)
       case Star(rInner) => ()
       case Concat(r1, r2) => 
-        assert(lostCause(r1) || lostCause(r2))
+        assert(r1.lostCause || r2.lostCause)
         if(r1.nullable) {
           lemmaNullableThenNotLostCause(r1)
-          assert(!lostCause(r1))
+          assert(!r1.lostCause)
           lemmaDerivativeStepFixPointLostCause(r2, c)
         } else {
-          if(lostCause(r1)) {
+          if(r1.lostCause) {
             lemmaDerivativeStepFixPointLostCause(r1, c)
           } else {
             lemmaDerivativeStepFixPointLostCause(r2, c)
           }
         }
     }
-  }.ensuring(_ => lostCause(derivativeStep(r, c)))
+  }.ensuring(_ => derivativeStep(r, c).lostCause)
 
   @ghost
   @inlineOnce
   @opaque
   def lemmaLostCauseCannotMatch[C](r: Regex[C], s: List[C]): Unit = {
     require(validRegex(r))
-    require(lostCause(r))
+    require(r.lostCause)
     // require(s.nonEmpty)
     decreases(regexDepth(r) + s.size)
     if (s.isEmpty) {
@@ -4109,7 +4111,7 @@ object VerifiedRegexMatcher {
             val (s1, s2) = findConcatSeparation(r1, r2, Nil(), s, s).get
             assert(matchR(r1, s1))
             assert(matchR(r2, s2))
-            if(lostCause(r1)) {
+            if(r1.lostCause) {
               lemmaLostCauseCannotMatch(r1, s1)
             } else {
               lemmaLostCauseCannotMatch(r2, s2)
@@ -4166,7 +4168,7 @@ object VerifiedRegexMatcher {
   @opaque
   def lemmaNotLostCauseThenExistAWitness[C](r: Regex[C]): Unit = {
     require(validRegex(r))
-    require(!lostCause(r))
+    require(!r.lostCause)
     lemmaGetWitnessMatches(r)
     assert(getLanguageWitness(r).isDefined && matchR(r, getLanguageWitness(r).get))
     ExistsThe(getLanguageWitness(r))(s => s.isDefined && matchR(r, s.get))
@@ -4276,7 +4278,7 @@ object VerifiedRegexMatcher {
     lemmaMatchRIsSameAsWholeDerivativeAndNil(baseR, testedP)
     assert(matchR(r, Nil()))
     assert(r.nullable)
-    if(lostCause(r)){
+    if(r.lostCause){
       lemmaLostCauseCannotMatch(r, Nil())
       check(false)
     }
@@ -4298,7 +4300,7 @@ object VerifiedRegexMatcher {
     require(derivative(baseR, testedP) == r)
     decreases(knownP.size - testedP.size)
 
-    if(lostCause(r)){
+    if(r.lostCause){
       // Here derivative(r, testedP) cannot be lost cause, because we know baseR matches knownP and knownP is larger than testedP
       lemmaMatchRIsSameAsWholeDerivativeAndNil(baseR, testedP)
       ListUtils.lemmaPrefixFromSameListAndStrictlySmallerThenPrefixFromEachOther(knownP, testedP, input)
