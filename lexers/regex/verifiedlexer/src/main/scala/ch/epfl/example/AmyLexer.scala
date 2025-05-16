@@ -18,12 +18,19 @@ import ch.epfl.lexer.benchmark.RegexUtils.*
 import ch.epfl.lexer.benchmark.RegexUtils.digitRegex
 import stainless.lang.Quantifiers.*
 
-import stainless.lang.{ghost => ghostExpr}
-import stainless.lang.unfold
+import scala.annotation.tailrec
+// import stainless.lang.StaticChecks._
+// import stainless.lang.{ghost => ghostExpr, _}
+import stainless.lang.{ghost => _, decreases => _, unfold => _, _}
+import ch.epfl.lexer.OptimisedChecks.*
+import Predef.{assert => _, Ensuring => _, require => _, _}
 
-import stainless.lang.Exception
-import ch.epfl.lexer.example.ExampleAmyLexer.Types.WhitespaceValue
-import ch.epfl.lexer.example.ExampleAmyLexer.Types.KeywordValueInjection
+@tailrec
+def dummyAmyLexerExample(x: BigInt): BigInt = {
+  if (x == BigInt(0)) then x
+  else dummyAmyLexerExample(x - BigInt(1))
+}.ensuring( res => res == BigInt(0))
+
 
 object ExampleAmyLexer:
     object Types:
@@ -444,6 +451,7 @@ object ExampleAmyLexer:
 
     object DemoPrintableTokens:
         import ch.epfl.lexer.benchmark.RegexUtils.*
+        import Types.*
         @extern def main(): Unit = {
             // Check validity of the rules
             val rules = AmyLexer.rules
