@@ -366,12 +366,23 @@ object VerifiedRegex {
     }
   }
 
-  inline def lostCause[C](r: Regex[C]): Boolean = getLanguageWitness(r).isEmpty
+  def lostCause[C](r: Regex[C]): Boolean = {
+    require(validRegex(r))
+    r match {
+      case EmptyExpr()        => false
+      case EmptyLang()        => true
+      case ElementMatch(c)    => false
+      case Star(r)            => false
+      case Union(rOne, rTwo)  => lostCause(rOne) && lostCause(rTwo)
+      case Concat(rOne, rTwo) => lostCause(rOne) || lostCause(rTwo)
+    }
+  }.ensuring(res => res == getLanguageWitness(r).isEmpty)
 
   /**
    * Return a witness of the language denoted by the given regex. If it returns None, the regex denotes the empty language.
    * That's used to compute the prefix set of a regex.
    */
+  @ghost
   def getLanguageWitness[C](r: Regex[C]): Option[List[C]] = {
     r match {
       case EmptyExpr()        => Some(List())
@@ -613,9 +624,10 @@ object ZipperRegex {
   }
 
   def lostCauseContext[C](c: Context[C]): Boolean = {
-    getLanguageWitness(c).isEmpty
-  }.ensuring(res => res == c.exists(r => lostCause(r)))
+    c.exists(r => lostCause(r))
+  }.ensuring(res => res == getLanguageWitness(c).isEmpty)
 
+  @ghost
   def getLanguageWitness[C](c: Context[C]): Option[List[C]] = {
     decreases(c.exprs.size)
     c.exprs match
