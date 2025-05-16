@@ -52,9 +52,12 @@ object Main {
     //   println(f"Matches?: ${ScalaRegexUtils.multiCommentRegex.matches(st)}")
     // })
 
-    // import benchmark.lexer.LexerBenchmarkUtils
-    // val (tokens, suffix) = Lexer.lex(AmyLexer.rules, LexerBenchmarkUtils.generatedFileContents("generated_code_012325chars.amy"))
-    // assert(suffix.isEmpty)
+    import ch.epfl.lexer.benchmark.lexer.LexerBenchmarkUtils
+    val input = LexerBenchmarkUtils.generatedFileContents("generated_code_012325chars.amy")
+    while (true) {
+      val (tokens, suffix) = Lexer.lex(AmyLexer.rules, input)
+      // assert(suffix.isEmpty)
+    }
   }
 }
 
