@@ -12,4 +12,5 @@ object OptimisedChecks {
   inline def decreases(inline r1: Any, inline r2: Any, inline r3: Any): Unit = ()
   inline def decreases(inline r1: Any, inline r2: Any, inline r3: Any, inline r4: Any, inline r5: Any): Unit = ()
   inline def ghostExpr(inline expr: Any): Unit = ()
+  inline def unfold[T](inline expr: T): Unit = ()
 }

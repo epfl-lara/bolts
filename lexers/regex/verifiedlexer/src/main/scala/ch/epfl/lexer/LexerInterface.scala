@@ -13,8 +13,9 @@ import stainless.collection.Nil
 
 import scala.annotation.tailrec
 
-// import stainless.lang.StaticChecks.*
-import stainless.lang.{ghost => ghostExpr, decreases => _, _}
+// import stainless.lang.StaticChecks._
+// import stainless.lang.{ghost => ghostExpr, _}
+import stainless.lang.{ghost => _, decreases => _, unfold => _, _}
 import ch.epfl.lexer.OptimisedChecks.*
 import Predef.{assert => _, Ensuring => _, require => _}
 
