@@ -2666,9 +2666,10 @@ object ZipperRegex {
       findLongestMatchInnerZipper(z, Nil(), 0, input, input, ListUtils.sizeTr(input))._2,
       input
     ))
-    assert(input.splitAtIndex(length)._2 == findLongestMatchInnerZipper(z, Nil(), 0, input, input, ListUtils.sizeTr(input))._2)
+    ghostExpr(ListUtils.lemmaSplitAtIndexTrEqualsSplitAtIndex(input, length))
+    assert(ListUtils.splitAtIndexTr(input, length)._2 == findLongestMatchInnerZipper(z, Nil(), 0, input, input, ListUtils.sizeTr(input))._2)
     
-    input.splitAtIndex(length)
+    ListUtils.splitAtIndexTr(input, length)
   }.ensuring (res => res == findLongestMatchZipper(z, input) && res._1 ++ res._2 == input)
   
   def findLongestMatchInnerZipperFast[C](z: Zipper[C], @ghost testedP: List[C], testedPSize: BigInt, testedSuffix: List[C], @ghost totalInput: List[C], totalInputSize: BigInt): BigInt = {
