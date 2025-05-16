@@ -1,3 +1,4 @@
+package ch.epfl.lexer
 package benchmark.lexer
 
 import java.util.concurrent.TimeUnit
