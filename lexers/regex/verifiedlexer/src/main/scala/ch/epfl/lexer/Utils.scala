@@ -540,6 +540,15 @@ object ListUtils {
       case Cons(hd, tl) => sizeTr(tl, acc + 1)
     }
   }
+
+  @tailrec final def splitAtIndexTr[B](l: List[B], i: BigInt, acc: List[B] = Nil[B]()): (List[B], List[B]) = {
+    require(i >= 0)
+    l match {
+      case Nil()        => (acc, Nil())
+      case Cons(hd, tl) => if (i == 0) then (acc, l) else splitAtIndexTr(tl, i - 1, acc ++ List(hd))
+    }
+  }
+
   @ghost
   def isPrefix[B](prefix: List[B], l: List[B]): Boolean = {
     decreases(prefix)
@@ -627,6 +636,26 @@ object ListUtils {
 
   // -------------------- LEMMAS --------------------
 
+  @ghost 
+  @inlineOnce
+  @opaque
+  def lemmaSplitAtIndexTrEqualsSplitAtIndex[B](l: List[B], i: BigInt, acc: List[B] = Nil[B]()): Unit = {
+    require(i >= 0)
+    decreases(l)
+    l match {
+      case Nil()        => () // (acc, Nil())
+      case Cons(hd, tl) => if (i == 0) then 
+                              // (acc, l) 
+                              ()
+                            else 
+                              // splitAtIndexTr(tl, i - 1, acc ++ List(hd))
+                              lemmaSplitAtIndexTrEqualsSplitAtIndex(tl, i - 1, acc ++ List(hd))
+                              assert(splitAtIndexTr(tl, i - 1, acc ++ List(hd)) == ((acc ++ List(hd)) ++ tl.splitAtIndex(i - 1)._1, tl.splitAtIndex(i - 1)._2))
+                              ListUtils.lemmaTwoListsConcatAssociativity(acc, List(hd), tl.splitAtIndex(i - 1)._1)
+                              assert(splitAtIndexTr(tl, i - 1, acc ++ List(hd)) == (acc ++ (List(hd) ++ tl.splitAtIndex(i - 1)._1), tl.splitAtIndex(i - 1)._2))
+    }
+   
+  }.ensuring(_ => splitAtIndexTr(l, i, acc) == (acc ++ l.splitAtIndex(i)._1, l.splitAtIndex(i)._2))
   @ghost
   @opaque
   @inlineOnce
