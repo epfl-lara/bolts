@@ -128,6 +128,11 @@ object Vector {
     rec(l, Vector.empty)
   }.ensuring(_.list == l)
 
+  @pure 
+  def singleton[T](t: T): Vector[T] = {
+    empty :+ t
+  }.ensuring(_.list == List(t))
+
   @pure @extern
   def fromScala[T](v: scala.collection.immutable.Vector[T]): Vector[T] = Vector(v)
 }
