@@ -3471,6 +3471,14 @@ object VerifiedRegexMatcher {
     ZipperRegex.findLongestMatchZipper(zipper, input)
   }.ensuring (res => res == findLongestMatch(r, input))
 
+  def findLongestMatchWithZipperVector[C](r: Regex[C], input: Vector[C]): (Vector[C], Vector[C]) = {
+    require(validRegex(r))
+    val zipper = ZipperRegex.focus(r)
+    ghostExpr(ZipperRegex.longestMatchSameAsRegex(r, zipper, input.list))
+    ghostExpr(ListUtils.lemmaSizeTrEqualsSize(input.list, 0))
+    ZipperRegex.findLongestMatchZipperFast(zipper, input)
+  }.ensuring (res => (res._1.list, res._2.list) == findLongestMatch(r, input.list))
+
 
   def findLongestMatch[C](r: Regex[C], input: List[C]): (List[C], List[C]) = {
     require(validRegex(r))
