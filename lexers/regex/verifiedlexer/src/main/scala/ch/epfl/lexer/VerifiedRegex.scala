@@ -264,6 +264,7 @@ object VerifiedRegex {
 
   def generalisedUnion[C](l: List[Regex[C]]): Regex[C] = {
     require(l.forall(validRegex))
+    decreases(l.size)
     l match {
       case Cons(hd, tl) if tl.isEmpty => hd
       case Cons(hd, tl) => Union(hd, generalisedUnion(tl))
@@ -273,6 +274,7 @@ object VerifiedRegex {
 
   def generalisedConcat[C](l: List[Regex[C]]): Regex[C] = {
     require(l.forall(validRegex))
+    decreases(l.size)
     l match {
       case Cons(hd, tl) if tl.isEmpty => hd
       case Cons(hd, tl) => Concat(hd, generalisedConcat(tl))
@@ -689,7 +691,7 @@ object ZipperRegex {
     if (input.isEmpty) !lostCauseZipper(z) else prefixMatchZipper(derivationStepZipper(z, input.head), input.tail)
   }
 
-  def prefixMatchZipperVector[C](z: Zipper[C], input: Vector[C], i: BigInt): Boolean = {
+  def prefixMatchZipperVector[C](z: Zipper[C], input: Vector[C], i: BigInt = 0): Boolean = {
     require(i >= 0 && i <= input.size)
     decreases(input.size - i)
     if (i == input.size) !lostCauseZipper(z) else prefixMatchZipperVector(derivationStepZipper(z, input(i)), input, i + 1)
@@ -698,7 +700,7 @@ object ZipperRegex {
   @ghost
   @inlineOnce
   @opaque
-  def lemmaprefixMatchZipperVectorEquivalent[C](z: Zipper[C], input: Vector[C], i: BigInt): Unit = {
+  def lemmaprefixMatchZipperVectorEquivalent[C](z: Zipper[C], input: Vector[C], i: BigInt = 0): Unit = {
     require(i >= 0 && i <= input.size)
     decreases(input.size - i)
     if i == input.size then
@@ -3029,6 +3031,7 @@ object ZipperRegex {
 
   @ghost
   def lemmaMatchZipperIsSameAsWholeDerivativeAndNil[C](z: Zipper[C], input: List[C]): Unit = {
+    decreases(input)
     input match {
       case Cons(hd, tl) => lemmaMatchZipperIsSameAsWholeDerivativeAndNil(derivationStepZipper(z, hd), tl)
       case Nil()        => ()
@@ -3161,6 +3164,13 @@ object VerifiedRegexMatcher {
     decreases(prefix.size)
     if (prefix.isEmpty) !r.lostCause else prefixMatch(derivativeStep(r, prefix.head), prefix.tail)
   }
+
+  def prefixMatchZipperVector[C](r: Regex[C], prefix: Vector[C]): Boolean = {
+    require(validRegex(r))
+    ghostExpr(ZipperRegex.lemmaprefixMatchZipperVectorEquivalent(ZipperRegex.focus(r), prefix))
+    ghostExpr(ZipperRegex.theoremZipperRegexEquiv(ZipperRegex.focus(r), ZipperRegex.focus(r).toList, r, prefix.list))
+    ZipperRegex.prefixMatchZipperVector(ZipperRegex.focus(r), prefix)
+  }.ensuring (res => res == prefixMatch(r, prefix.list))
 
   def matchRMem[C](r: Regex[C], input: List[C])(implicit cache: Cache[C]): Boolean = {
     require(validRegex(r))
@@ -4452,6 +4462,7 @@ object VerifiedRegexMatcher {
   @ghost
   def lemmaMatchRIsSameAsWholeDerivativeAndNil[C](r: Regex[C], input: List[C]): Unit = {
     require(validRegex(r))
+    decreases(input.size)
     input match {
       case Cons(hd, tl) => lemmaMatchRIsSameAsWholeDerivativeAndNil(derivativeStep(r, hd), tl)
       case Nil()        => ()
@@ -4462,7 +4473,7 @@ object VerifiedRegexMatcher {
   def lemmaDerivativeOnLWithANewCharIsANewDerivativeStep[C](baseR: Regex[C], r: Regex[C], input: List[C], c: C): Unit = {
     require(validRegex(baseR))
     require(derivative(baseR, input) == r)
-
+    decreases(input.size)
     input match {
       case Cons(hd, tl) => lemmaDerivativeOnLWithANewCharIsANewDerivativeStep(derivativeStep(baseR, hd), r, tl, c)
       case Nil()        => ()
@@ -4535,7 +4546,7 @@ object VerifiedRegexMatcher {
   def lemmaRegexUnionAcceptsThenOneOfTheTwoAccepts[C](r1: Regex[C], r2: Regex[C], s: List[C]): Unit = {
     require(validRegex(r1) && validRegex(r2))
     require(matchR(Union(r1, r2), s))
-
+    decreases(s)
     s match {
       case Cons(hd, tl) => {
         lemmaRegexUnionAcceptsThenOneOfTheTwoAccepts(derivativeStep(r1, hd), derivativeStep(r2, hd), tl)
