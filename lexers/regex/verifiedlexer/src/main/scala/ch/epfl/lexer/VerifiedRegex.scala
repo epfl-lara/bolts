@@ -20,6 +20,8 @@ import stainless.lang.Quantifiers.Exists
 import stainless.lang.Quantifiers.ExistsThe
 import stainless.lang.Quantifiers.pickWitness
 
+import ch.epfl.lexer.Vector
+
 import scala.annotation.tailrec
 
 // import stainless.lang.StaticChecks._

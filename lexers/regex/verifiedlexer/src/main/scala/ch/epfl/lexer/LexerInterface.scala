@@ -13,6 +13,8 @@ import stainless.collection.Nil
 
 import scala.annotation.tailrec
 
+import ch.epfl.lexer.Vector
+
 // import stainless.lang.StaticChecks._
 // import stainless.lang.{ghost => ghostExpr, _}
 import stainless.lang.{ghost => _, decreases => _, unfold => _, _}
