@@ -639,6 +639,30 @@ object ListUtils {
   @ghost 
   @inlineOnce
   @opaque
+  def lemmaDropApply[B](l: List[B], i: BigInt): Unit = {
+    require(i >= 0 && i < l.size)
+    decreases(l)
+    l match {
+      case Nil()        => ()
+      case Cons(hd, tl) => if (i == 0) then () else lemmaDropApply(tl, i - 1)
+    }
+  }.ensuring(_ => l.drop(i).head == l(i))
+
+  @ghost
+  @inlineOnce
+  @opaque
+  def lemmaDropTail[B](l: List[B], i: BigInt): Unit = {
+    require(i >= 0 && i < l.size)
+    decreases(l)
+    l match {
+      case Nil()        => ()
+      case Cons(hd, tl) => if (i == 0) then () else lemmaDropTail(tl, i - 1)
+    }
+  }.ensuring(_ => l.drop(i).tail == l.drop(i + 1))
+
+  @ghost 
+  @inlineOnce
+  @opaque
   def lemmaSplitAtIndexTrEqualsSplitAtIndex[B](l: List[B], i: BigInt, acc: List[B] = Nil[B]()): Unit = {
     require(i >= 0)
     decreases(l)
@@ -851,6 +875,21 @@ object ListUtils {
       case Nil()        => ()
     }
   }.ensuring (_ => p2.contains(s1.head))
+
+  @inlineOnce
+  @opaque
+  @ghost
+  def lemmaConcatSameAndSameSizesThenSameLists[B](l11: List[B], l12: List[B], l21: List[B], l22: List[B]): Unit = {
+    require(l11 ++ l12 == l21 ++ l22)
+    require(l11.size == l21.size)
+    decreases(l11)
+
+    lemmaConcatTwoListThenFirstIsPrefix(l11, l12)
+    lemmaConcatTwoListThenFirstIsPrefix(l21, l22)
+    lemmaIsPrefixSameLengthThenSameList(l11, l21, l11 ++ l12)
+    lemmaSamePrefixThenSameSuffix(l11, l12, l21, l22, l11 ++ l12)
+    
+  }.ensuring (_ => l11 == l21 && l12 == l22)
 
   @inlineOnce
   @opaque

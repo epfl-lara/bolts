@@ -9,6 +9,7 @@ import scala.compiletime.uninitialized
 import ch.epfl.lexer.VerifiedLexer.Lexer
 import ch.epfl.lexer.example.ExampleAmyLexer.AmyLexer
 import ch.epfl.lexer.benchmark.RegexUtils.*
+import ch.epfl.lexer.Vector
 import ch.epfl.benchmark.original.OriginalAmyLexer
 
 import java.io.File
@@ -39,13 +40,13 @@ class LexerBenchmark {
   )
   var file: String = uninitialized
 
-  @Benchmark
-  @BenchmarkMode(Array(Mode.AverageTime))
-  @OutputTimeUnit(TimeUnit.MICROSECONDS)
-  def lex_Regex(): Unit = {
-    val (tokens, suffix) = Lexer.lexRegex(AmyLexer.rules, LexerBenchmarkUtils.exampleFileContents(file))
-    assert(suffix.isEmpty)
-  }
+  // @Benchmark
+  // @BenchmarkMode(Array(Mode.AverageTime))
+  // @OutputTimeUnit(TimeUnit.MICROSECONDS)
+  // def lex_Regex(): Unit = {
+  //   val (tokens, suffix) = Lexer.lexRegex(AmyLexer.rules, LexerBenchmarkUtils.exampleFileContents(file))
+  //   assert(suffix.isEmpty)
+  // }
 
   @Benchmark
   @BenchmarkMode(Array(Mode.AverageTime))
@@ -155,7 +156,7 @@ object LexerBenchmarkUtils {
         "Ultimate_3811chars.amy",
         "Ultimate_duplicated_commented_7629chars.amy",
   )
-  val exampleFileContents: Map[String, StainlessList[Char]] = exampleFileNames.map(name => {
+  val exampleFileContents: Map[String, Vector[Char]] = exampleFileNames.map(name => {
     val source = scala.io.Source.fromFile(s"src/main/scala/ch/epfl/example/res/$name")
     val lines = try source.mkString.toStainless finally source.close()
     (name -> lines)
@@ -198,7 +199,7 @@ object LexerBenchmarkUtils {
             "generated_code_012325chars.amy",
           )
 
-  val generatedFileContents: Map[String, StainlessList[Char]] = generatedFileNames.map(name => {
+  val generatedFileContents: Map[String, Vector[Char]] = generatedFileNames.map(name => {
     val source = scala.io.Source.fromFile(s"src/main/scala/ch/epfl/benchmark/res/$name")
     val lines = try source.mkString.toStainless finally source.close()
     (name -> lines)

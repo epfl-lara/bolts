@@ -13,8 +13,10 @@ import ch.epfl.map.Hashable
 import ch.epfl.lexer.VerifiedRegex._
 import ch.epfl.lexer.ZipperRegex._
 import ch.epfl.lexer.Token
+import ch.epfl.lexer.Vector
 
 import scala.annotation.tailrec
+
 
 @extern
 object RegexUtils {
@@ -27,7 +29,7 @@ object RegexUtils {
   extension (s: String) infix def ~ (s2: String): Regex[Char] = r(s) ~ r(s2)
   extension (s: String) def * : Regex[Char] = r(s).*
   extension (s: String) def anyOf: Regex[Char] = s.toCharArray().toList.foldRight[Regex[Char]](EmptyLang())((c, acc) => Union(ElementMatch(c), acc))
-  extension (s: String) def toStainless: stainless.collection.List[Char] = toStainlessList(s.toCharArray().toList)
+  extension (s: String) def toStainless: Vector[Char] = Vector.fromScala(s.toCharArray().toVector)
   extension (r: Regex[Char]) def asString(): String = r match {
     case EmptyLang() => "∅"
     case EmptyExpr() => "ε"
@@ -44,17 +46,10 @@ object RegexUtils {
   val specialCharRegexWithoutSlashAndStar: Regex[Char] = anyOf("+-!?=()[]{}<>|\\&%$§§°`^@#~;:,.éàèçù\'\"`")
 
   extension (t: Token[Char]) def asString(): String = 
-    def replaceSpecialCharacters(l: List[Char]): List[String] = 
-      // t.characters.map(c => if c == '\t' then "\\t" else if c == '\n' then "\\n" else f"$c")
-      l match {
-        case Nil() => Nil()
-        case Cons(h, tl) if h == '\t'  => Cons("\\t", replaceSpecialCharacters(tl))
-        case Cons(h, tl) if h == '\n'  => Cons("\\n", replaceSpecialCharacters(tl))
-        case Cons(h, tl) if h == '\r'  => Cons("\\r", replaceSpecialCharacters(tl))
-        case Cons(h, tl) if h == '\b'  => Cons("\\b", replaceSpecialCharacters(tl))
-        case Cons(h, tl) => Cons(f"$h", replaceSpecialCharacters(tl))
-      }
-    s"Token(${t.rule.tag}, \"${replaceSpecialCharacters(t.characters).mkString("")}\")"
+    def replaceSpecialCharacters(l: Vector[Char]): Vector[String] = 
+      t.characters.map(c => if c == '\t' then "\\t" else if c == '\n' then "\\n" else f"$c")
+      
+    s"Token(${t.rule.tag}, \"${replaceSpecialCharacters(t.characters).toScala.mkString("")}\")"
   extension [A] (l: stainless.collection.List[A]) def mkString(inter: String) : String = l match {
     case stainless.collection.Nil() => ""
     case stainless.collection.Cons(h, t) => h.toString + (if t.isEmpty then "" else inter + t.mkString(inter))
@@ -63,9 +58,10 @@ object RegexUtils {
   extension (z: Zipper[Char]) def asStringZipper(): String = s"Set(${z.map(c => c.asStringContext()).mkString(", ")})"
 
 
-  @tailrec
-  def toStainlessList(l: scala.collection.immutable.List[Char], acc: stainless.collection.List[Char] = stainless.collection.Nil[Char]()): stainless.collection.List[Char] = l match {
+  
+  extension (l: scala.collection.immutable.List[Char]) @tailrec def toStainlessList(acc: stainless.collection.List[Char] = stainless.collection.Nil[Char]()): stainless.collection.List[Char] = l match {
     case l: scala.collection.immutable.List[Char] if l.isEmpty => acc
-    case l: scala.collection.immutable.List[Char] => toStainlessList(l.tail, acc :+ l.head)
+    case l: scala.collection.immutable.List[Char] => l.tail.toStainlessList(acc :+ l.head)
   }
+  extension (s: String) def toStainlessList: stainless.collection.List[Char] = s.toCharArray().toList.toStainlessList()
 }

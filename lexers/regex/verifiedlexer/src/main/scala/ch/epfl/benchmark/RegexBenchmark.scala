@@ -10,6 +10,7 @@ import ch.epfl.lexer.benchmark.RegexUtils.*
 import scala.util.Random
 import scala.compiletime.uninitialized
 import ch.epfl.lexer.VerifiedRegexMatcher.matchZipper
+import ch.epfl.lexer.VerifiedRegexMatcher.matchZipperVector
 import ch.epfl.lexer.VerifiedRegexMatcher.matchR
 import ch.epfl.lexer.VerifiedRegexMatcher.matchRMem
 import ch.epfl.lexer.VerifiedRegexMatcher.matchZipperMem
@@ -55,9 +56,9 @@ class RegexBenchmark {
   @Benchmark
   @BenchmarkMode(Array(Mode.AverageTime))
   @OutputTimeUnit(TimeUnit.MICROSECONDS)
-  def abStarAccepting_Regex(): Unit = {
+  def abStarAccepting_Regex_list(): Unit = {
     val r = RegexBenchmarkUtils.abStar
-    val s = RegexBenchmarkUtils.abStar_Accepting_strings(size.toInt)
+    val s = RegexBenchmarkUtils.abStar_Accepting_strings_list(size.toInt)
     val res = matchR(r, s)
     assert(res)
   }
@@ -65,9 +66,9 @@ class RegexBenchmark {
   @Benchmark
   @BenchmarkMode(Array(Mode.AverageTime))
   @OutputTimeUnit(TimeUnit.MICROSECONDS)
-  def abStarAccepting_Zipper(): Unit = {
+  def abStarAccepting_Zipper_list(): Unit = {
     val r = RegexBenchmarkUtils.abStar
-    val s = RegexBenchmarkUtils.abStar_Accepting_strings(size.toInt)
+    val s = RegexBenchmarkUtils.abStar_Accepting_strings_list(size.toInt)
     val res = matchZipper(r, s)
     assert(res)
   }
@@ -75,9 +76,19 @@ class RegexBenchmark {
   @Benchmark
   @BenchmarkMode(Array(Mode.AverageTime))
   @OutputTimeUnit(TimeUnit.MICROSECONDS)
-  def abStarAccepting_RegexMem(): Unit = {
+  def abStarAccepting_Zipper_vector(): Unit = {
     val r = RegexBenchmarkUtils.abStar
-    val s = RegexBenchmarkUtils.abStar_Accepting_strings(size.toInt)
+    val v = RegexBenchmarkUtils.abStar_Accepting_strings(size.toInt)
+    val res = matchZipperVector(r, v)
+    assert(res)
+  }
+
+  @Benchmark
+  @BenchmarkMode(Array(Mode.AverageTime))
+  @OutputTimeUnit(TimeUnit.MICROSECONDS)
+  def abStarAccepting_RegexMem_list(): Unit = {
+    val r = RegexBenchmarkUtils.abStar
+    val s = RegexBenchmarkUtils.abStar_Accepting_strings_list(size.toInt)
     val res = matchRMem(r, s)(RegexBenchmarkUtils.regexCache)
     assert(res)
   }
@@ -85,9 +96,9 @@ class RegexBenchmark {
   @Benchmark
   @BenchmarkMode(Array(Mode.AverageTime))
   @OutputTimeUnit(TimeUnit.MICROSECONDS)
-  def abStarAccepting_ZipperMem(): Unit = {
+  def abStarAccepting_ZipperMem_list(): Unit = {
     val r = RegexBenchmarkUtils.abStar
-    val s = RegexBenchmarkUtils.abStar_Accepting_strings(size.toInt)
+    val s = RegexBenchmarkUtils.abStar_Accepting_strings_list(size.toInt)
     val res = matchZipperMem(r, s)(RegexBenchmarkUtils.zipperCacheUp, RegexBenchmarkUtils.zipperCacheDown)
     assert(res)
   }
@@ -97,9 +108,9 @@ class RegexBenchmark {
   @Benchmark
   @BenchmarkMode(Array(Mode.AverageTime))
   @OutputTimeUnit(TimeUnit.MICROSECONDS)
-  def emailAccepting_Regex(): Unit = {
+  def emailAccepting_Regex_list(): Unit = {
     val r = RegexBenchmarkUtils.emailRegex
-    val s = RegexBenchmarkUtils.email_Accepting_strings(size.toInt)
+    val s = RegexBenchmarkUtils.email_Accepting_strings_list(size.toInt)
     val res = matchR(r, s)
     assert(res)
   }
@@ -107,9 +118,9 @@ class RegexBenchmark {
   @Benchmark
   @BenchmarkMode(Array(Mode.AverageTime))
   @OutputTimeUnit(TimeUnit.MICROSECONDS)
-  def emailAccepting_Zipper(): Unit = {
+  def emailAccepting_Zipper_list(): Unit = {
     val r = RegexBenchmarkUtils.emailRegex
-    val s = RegexBenchmarkUtils.email_Accepting_strings(size.toInt)
+    val s = RegexBenchmarkUtils.email_Accepting_strings_list(size.toInt)
     val res = matchZipper(r, s)
     assert(res)
   }
@@ -117,9 +128,19 @@ class RegexBenchmark {
   @Benchmark
   @BenchmarkMode(Array(Mode.AverageTime))
   @OutputTimeUnit(TimeUnit.MICROSECONDS)
-  def emailAccepting_ZipperMem(): Unit = {
+  def emailAccepting_Zipper_vector(): Unit = {
     val r = RegexBenchmarkUtils.emailRegex
-    val s = RegexBenchmarkUtils.email_Accepting_strings(size.toInt)
+    val v = RegexBenchmarkUtils.email_Accepting_strings(size.toInt)
+    val res = matchZipperVector(r, v)
+    assert(res)
+  }
+
+  @Benchmark
+  @BenchmarkMode(Array(Mode.AverageTime))
+  @OutputTimeUnit(TimeUnit.MICROSECONDS)
+  def emailAccepting_ZipperMem_list(): Unit = {
+    val r = RegexBenchmarkUtils.emailRegex
+    val s = RegexBenchmarkUtils.email_Accepting_strings_list(size.toInt)
     val res = matchZipper(r, s)
     assert(res)
   }
@@ -127,9 +148,9 @@ class RegexBenchmark {
   @Benchmark
   @BenchmarkMode(Array(Mode.AverageTime))
   @OutputTimeUnit(TimeUnit.MICROSECONDS)
-  def emailAccepting_RegexMem(): Unit = {
+  def emailAccepting_RegexMem_list(): Unit = {
     val r = RegexBenchmarkUtils.emailRegex
-    val s = RegexBenchmarkUtils.email_Accepting_strings(size.toInt)
+    val s = RegexBenchmarkUtils.email_Accepting_strings_list(size.toInt)
     val res = matchRMem(r, s)(RegexBenchmarkUtils.regexCache)
     assert(res)
   }
@@ -173,19 +194,28 @@ class LexerRegexBenchmark {
     @Benchmark
     @BenchmarkMode(Array(Mode.AverageTime))
     @OutputTimeUnit(TimeUnit.MICROSECONDS)
-    def commentAccepting_Regex(): Unit = {
+    def commentAccepting_Regex_list(): Unit = {
       val r = RegexBenchmarkUtils.singleLineCommentRegex
-      val s = RegexBenchmarkUtils.comment_Accepting_strings(size.toInt)
+      val s = RegexBenchmarkUtils.comment_Accepting_strings_list(size.toInt)
       val res = matchR(r, s)
       assert(res)
     }
     @Benchmark
     @BenchmarkMode(Array(Mode.AverageTime))
     @OutputTimeUnit(TimeUnit.MICROSECONDS)
-    def commentAccepting_Zipper(): Unit = {
+    def commentAccepting_Zipper_list(): Unit = {
       val r = RegexBenchmarkUtils.singleLineCommentRegex
-      val s = RegexBenchmarkUtils.comment_Accepting_strings(size.toInt)
+      val s = RegexBenchmarkUtils.comment_Accepting_strings_list(size.toInt)
       val res = matchZipper(r, s)
+      assert(res)
+    }
+    @Benchmark
+    @BenchmarkMode(Array(Mode.AverageTime))
+    @OutputTimeUnit(TimeUnit.MICROSECONDS)
+    def commentAccepting_Zipper_vector(): Unit = {
+      val r = RegexBenchmarkUtils.singleLineCommentRegex
+      val v = RegexBenchmarkUtils.comment_Accepting_strings(size.toInt)
+      val res = matchZipperVector(r, v)
       assert(res)
     }
     @Benchmark
@@ -202,19 +232,28 @@ class LexerRegexBenchmark {
     @Benchmark
     @BenchmarkMode(Array(Mode.AverageTime))
     @OutputTimeUnit(TimeUnit.MICROSECONDS)
-    def commentAccepting_Regex_multiline(): Unit = {
+    def commentAccepting_Regex_multiline_list(): Unit = {
       val r = RegexBenchmarkUtils.multiCommentRegex
-      val s = RegexBenchmarkUtils.comment_Accepting_strings_multiline(size.toInt)
+      val s = RegexBenchmarkUtils.comment_Accepting_strings_multiline_list(size.toInt)
       val res = matchR(r, s)
       assert(res)
     }
     @Benchmark
     @BenchmarkMode(Array(Mode.AverageTime))
     @OutputTimeUnit(TimeUnit.MICROSECONDS)
-    def commentAccepting_Zipper_multiline(): Unit = {
+    def commentAccepting_Zipper_multiline_list(): Unit = {
       val r = RegexBenchmarkUtils.multiCommentRegex
-      val s = RegexBenchmarkUtils.comment_Accepting_strings_multiline(size.toInt)
+      val s = RegexBenchmarkUtils.comment_Accepting_strings_multiline_list(size.toInt)
       val res = matchZipper(r, s)
+      assert(res)
+    }
+    @Benchmark
+    @BenchmarkMode(Array(Mode.AverageTime))
+    @OutputTimeUnit(TimeUnit.MICROSECONDS)
+    def commentAccepting_Zipper_multiline_vector(): Unit = {
+      val r = RegexBenchmarkUtils.multiCommentRegex
+      val v = RegexBenchmarkUtils.comment_Accepting_strings_multiline(size.toInt)
+      val res = matchZipperVector(r, v)
       assert(res)
     }
 
@@ -257,7 +296,8 @@ object RegexBenchmarkUtils {
   val string_sizes = List(5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60, 65, 70, 75, 80, 85, 90, 95, 100, 110, 120, 130, 140, 150, 200)
   val abStar: Regex[Char] = ("a" | "b").*
 
-  val abStar_Accepting_strings: Map[Int, StainlessList[Char]] = string_sizes.map(n => (n, (1 to n).map(_ => random_a_or_b()).mkString.toStainless)).toMap
+  val abStar_Accepting_strings: Map[Int, Vector[Char]] = string_sizes.map(n => (n, (1 to n).map(_ => random_a_or_b()).mkString.toStainless)).toMap
+  val abStar_Accepting_strings_list: Map[Int, StainlessList[Char]] = string_sizes.map(n => (n, (1 to n).map(_ => random_a_or_b()).mkString.toStainlessList)).toMap
 
   val regexCache: MemoisationRegex.Cache[Char] = MemoisationRegex.empty(RegexCharHashable)
   val zipperCacheUp: MemoisationZipper.CacheUp[Char] = MemoisationZipper.emptyUp(ContextCharHashable)
@@ -266,7 +306,8 @@ object RegexBenchmarkUtils {
   val possibleEmailChars = "abcdedfghijklmnopqrstuvwxyz."
   val emailRegex = possibleEmailChars.anyOf.+ ~ "@".r ~ possibleEmailChars.anyOf.+ ~ ".".r ~ possibleEmailChars.anyOf.+
 
-  val email_Accepting_strings: Map[Int, StainlessList[Char]] = string_sizes.map(n => (n, random_email_strings(n).toStainless)).toMap
+  val email_Accepting_strings: Map[Int, Vector[Char]] = string_sizes.map(n => (n, random_email_strings(n).toStainless)).toMap
+  val email_Accepting_strings_list: Map[Int, StainlessList[Char]] = string_sizes.map(n => (n, random_email_strings(n).toStainlessList)).toMap
   def random_a_or_b(): String = {
     if (r.nextBoolean()) "a" else "b"
   }
@@ -323,11 +364,13 @@ object RegexBenchmarkUtils {
     res
   }
 
-  val comment_Accepting_strings: Map[Int, StainlessList[Char]] = string_sizes.map(n => (n, random_inline_comment(n).toStainless)).toMap
-  val comment_Accepting_strings_multiline: Map[Int, StainlessList[Char]] = string_sizes.map(n => (n, random_multiline_comment(n).toStainless)).toMap
+  val comment_Accepting_strings: Map[Int, Vector[Char]] = string_sizes.map(n => (n, random_inline_comment(n).toStainless)).toMap
+  val comment_Accepting_strings_list: Map[Int, StainlessList[Char]] = string_sizes.map(n => (n, random_inline_comment(n).toStainlessList)).toMap
+  val comment_Accepting_strings_multiline: Map[Int, Vector[Char]] = string_sizes.map(n => (n, random_multiline_comment(n).toStainless)).toMap
+  val comment_Accepting_strings_multiline_list: Map[Int, StainlessList[Char]] = string_sizes.map(n => (n, random_multiline_comment(n).toStainlessList)).toMap
 
-  val comment_Accepting_strings_realString: Map[Int, String] = comment_Accepting_strings.map { case (k, v) => (k, v.mkString("")) }
-  val comment_Accepting_strings_multiline_realString: Map[Int, String] = comment_Accepting_strings_multiline.map { case (k, v) => (k, v.mkString("")) }
+  val comment_Accepting_strings_realString: Map[Int, String] = comment_Accepting_strings.map { case (k, v) => (k, v.toScala.mkString("")) }
+  val comment_Accepting_strings_multiline_realString: Map[Int, String] = comment_Accepting_strings_multiline.map { case (k, v) => (k, v.toScala.mkString("")) }
 }
 
 object ScalaRegexUtils {
