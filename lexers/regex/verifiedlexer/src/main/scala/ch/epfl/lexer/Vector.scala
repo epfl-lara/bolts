@@ -139,7 +139,7 @@ object Vector {
     Vector(scala.collection.immutable.Vector.empty[T])
   }.ensuring(_.list == Nil[T]())
 
-  @pure 
+  @pure @opaque 
   def fromList[T](l: List[T]): Vector[T] = {
     def rec(l: List[T], v: Vector[T]): Vector[T] = {
       l match {
