@@ -599,6 +599,7 @@ object ZipperRegex {
   }
 
   def derivationZipper[C](z: Zipper[C], input: List[C]): Zipper[C] = {
+    decreases(input.size)
     input match {
       case Cons(hd, tl) => derivationZipper(derivationStepZipper(z, hd), tl)
       case Nil()        => z
@@ -3041,7 +3042,7 @@ object ZipperRegex {
   @ghost
   def lemmaDerivativeOnLWithANewCharIsANewDerivativeStep[C](baseZ: Zipper[C], z: Zipper[C], input: List[C], c: C): Unit = {
     require(derivationZipper(baseZ, input) == z)
-
+    decreases(input.size)
     input match {
       case Cons(hd, tl) => lemmaDerivativeOnLWithANewCharIsANewDerivativeStep(derivationStepZipper(baseZ, hd), z, tl, c)
       case Nil()        => ()
@@ -3130,6 +3131,7 @@ object VerifiedRegexMatcher {
 
   def derivative[C](r: Regex[C], input: List[C]): Regex[C] = {
     require(validRegex(r))
+    decreases(input)
     input match {
       case Cons(hd, tl) => derivative(derivativeStep(r, hd), tl)
       case Nil()        => r
@@ -3168,7 +3170,8 @@ object VerifiedRegexMatcher {
   def prefixMatchZipperVector[C](r: Regex[C], prefix: Vector[C]): Boolean = {
     require(validRegex(r))
     ghostExpr(ZipperRegex.lemmaprefixMatchZipperVectorEquivalent(ZipperRegex.focus(r), prefix))
-    ghostExpr(ZipperRegex.theoremZipperRegexEquiv(ZipperRegex.focus(r), ZipperRegex.focus(r).toList, r, prefix.list))
+    // ghostExpr(ZipperRegex.theoremZipperRegexEquiv(ZipperRegex.focus(r), ZipperRegex.focus(r).toList, r, prefix.list))
+    ghostExpr(ZipperRegex.prefixMatchZipperRegexEquiv(ZipperRegex.focus(r), ZipperRegex.focus(r).toList, r, prefix.list))
     ZipperRegex.prefixMatchZipperVector(ZipperRegex.focus(r), prefix)
   }.ensuring (res => res == prefixMatch(r, prefix.list))
 
@@ -4532,7 +4535,7 @@ object VerifiedRegexMatcher {
   ): Unit = {
     require(validRegex(r1) && validRegex(r2))
     require(matchR(r1, s))
-
+    decreases(s)
     s match {
       case Cons(hd, tl) => {
         lemmaRegexAcceptsStringThenUnionWithAnotherAcceptsToo(derivativeStep(r1, hd), derivativeStep(r2, hd), tl)
@@ -4563,7 +4566,7 @@ object VerifiedRegexMatcher {
   ): Unit = {
     require(validRegex(r1) && validRegex(r2))
     require(matchR(Union(r1, r2), s))
-
+    decreases(s)
     s match {
       case Cons(hd, tl) => {
         lemmaReversedUnionAcceptsSameString(derivativeStep(r1, hd), derivativeStep(r2, hd), tl)
@@ -4585,7 +4588,7 @@ object VerifiedRegexMatcher {
     require(validRegex(r2))
     require(matchR(r1, s))
     require(r2.nullable)
-
+    decreases(s)
     val newR = Concat(r2, r1)
 
     s match {
