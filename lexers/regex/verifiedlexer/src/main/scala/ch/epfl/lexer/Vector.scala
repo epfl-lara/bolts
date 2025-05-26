@@ -5,6 +5,7 @@ import stainless.annotation._
 
 import stainless.lang._
 import StaticChecks._
+import stainless.lang.{ghost => ghostExpr}
 
 case class Vector[T](@pure @extern underlying: scala.collection.immutable.Vector[T]) {
 
@@ -139,14 +140,38 @@ object Vector {
     Vector(scala.collection.immutable.Vector.empty[T])
   }.ensuring(_.list == Nil[T]())
 
-  @pure 
-  def fromList[T](l: List[T]): Vector[T] = {
-    def rec(l: List[T], v: Vector[T]): Vector[T] = {
-      l match {
-        case Nil() => v
-        case Cons(x, xs) => rec(xs, v :+ x)
+  @inlineOnce
+  @opaque
+  @ghost
+  def lemmaTwoListsConcatAssociativity[B](
+      l1: List[B],
+      l2: List[B],
+      l3: List[B]
+  ): Unit = {
+    decreases(l1)
+    l1 match {
+      case Cons(hd, tl) => {
+        lemmaTwoListsConcatAssociativity(tl, l2, l3)
       }
+      case Nil() => ()
     }
+
+  }.ensuring (_ => (l1 ++ l2) ++ l3 == l1 ++ (l2 ++ l3))
+  
+  @pure @opaque 
+  def fromList[T](l: List[T]): Vector[T] = {
+    
+    def rec(ll: List[T], v: Vector[T]): Vector[T] = {
+      ll match {
+        case Nil() => v
+        case Cons(x, xs) => 
+          assert(rec(xs, v :+ x).list == (v :+ x).list ++ xs)
+          assert((v :+ x).list == v.list ++ List(x))
+          ghostExpr(lemmaTwoListsConcatAssociativity(v.list, List(x), xs))
+          assert((v.list ++ List(x)) ++ xs == v.list ++ (x :: xs))
+          rec(xs, v :+ x)
+      }
+    }.ensuring(res => res.list == v.list ++ ll)
     rec(l, Vector.empty)
   }.ensuring(_.list == l)
 
