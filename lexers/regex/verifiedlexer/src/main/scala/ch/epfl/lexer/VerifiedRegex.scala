@@ -2789,8 +2789,8 @@ object ZipperRegex {
   def findLongestMatchZipperFastMem[C](z: Zipper[C], input: Vector[C])(implicit cacheUp: CacheUp[C], cacheDown: CacheDown[C]): (Vector[C], Vector[C]) = {
     require(cacheUp.valid)
     require(cacheDown.valid)
-    val prefixLength = findLongestMatchInnerZipperFastMem(z, Nil(), 0, input.list, input, input.size)
-    ghostExpr(unfold(findLongestMatchInnerZipperFastMem(z, Nil(), 0, input.list, input, input.size)))
+    val prefixLength = findLongestMatchInnerZipperFastMem(cacheUp, cacheDown, z, Nil(), 0, input.list, input, input.size)
+    ghostExpr(unfold(findLongestMatchInnerZipperFastMem(cacheUp, cacheDown, z, Nil(), 0, input.list, input, input.size)))
     ghostExpr(unfold(findLongestMatchInnerZipperFast(z, Nil(), 0, input.list, input, input.size)))
     ghostExpr(unfold(findLongestMatchInnerZipper(z, Nil(), 0, input.list, input.list, input.size)))
     ghostExpr(Vector.listEqImpliesEq(input.splitAt(prefixLength)._1 ++ input.splitAt(prefixLength)._2, input))
@@ -2803,7 +2803,7 @@ object ZipperRegex {
     input.splitAt(prefixLength)
   }.ensuring (res => cacheUp.valid && cacheDown.valid && res == findLongestMatchZipperFast(z, input))
   
-  def findLongestMatchInnerZipperFastMem[C](z: Zipper[C], @ghost testedP: List[C], testedPSize: BigInt, @ghost testedSuffix: List[C], totalInput: Vector[C], totalInputSize: BigInt)(implicit cacheUp: CacheUp[C], cacheDown: CacheDown[C]): BigInt = {
+  def findLongestMatchInnerZipperFastMem[C](cacheUp: CacheUp[C], cacheDown: CacheDown[C], z: Zipper[C], @ghost testedP: List[C], testedPSize: BigInt, @ghost testedSuffix: List[C], totalInput: Vector[C], totalInputSize: BigInt): BigInt = {
     require(testedP ++ testedSuffix == totalInput.list)
     require(testedPSize == testedP.size)
     require(totalInputSize == totalInput.size)
@@ -2854,7 +2854,7 @@ object ZipperRegex {
       ghostExpr(ListUtils.lemmaAddHeadSuffixToPrefixStillPrefix(testedP, totalInput.list))
       ghostExpr(ListUtils.lemmaMoveElementToOtherListKeepsConcatEq(testedP, totalInput(testedPSize), testedSuffix.tail, totalInput.list))
       if (nullableZipper(z)) {
-        val recursive = findLongestMatchInnerZipperFastMem(derivationStepZipperMem(z, totalInput(testedPSize)), testedP ++ List(totalInput(testedPSize)), testedPSize + 1, testedSuffix.tail, totalInput, totalInputSize)
+        val recursive = findLongestMatchInnerZipperFastMem(cacheUp, cacheDown, derivationStepZipperMem(z, totalInput(testedPSize))(cacheUp, cacheDown), testedP ++ List(totalInput(testedPSize)), testedPSize + 1, testedSuffix.tail, totalInput, totalInputSize)
         if (recursive == 0) {
           // (testedP, testedSuffix)
           testedPSize
@@ -2862,7 +2862,7 @@ object ZipperRegex {
           recursive
         }
       } else {
-        findLongestMatchInnerZipperFastMem(derivationStepZipperMem(z, totalInput(testedPSize)), testedP ++ List(totalInput(testedPSize)), testedPSize + 1, testedSuffix.tail, totalInput, totalInputSize)
+        findLongestMatchInnerZipperFastMem(cacheUp, cacheDown, derivationStepZipperMem(z, totalInput(testedPSize))(cacheUp, cacheDown), testedP ++ List(totalInput(testedPSize)), testedPSize + 1, testedSuffix.tail, totalInput, totalInputSize)
       }
     }
   }.ensuring (res => cacheUp.valid && cacheDown.valid && res == findLongestMatchInnerZipperFast(z, testedP, testedPSize, testedSuffix, totalInput, totalInputSize))
