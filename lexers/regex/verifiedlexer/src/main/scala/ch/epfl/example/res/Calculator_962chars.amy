@@ -1,0 +1,25 @@
+object Calculator
+  abstract class CalcExpr
+  case class Number(n: Int(32)) extends CalcExpr
+  case class Add(x: CalcExpr, y: CalcExpr) extends CalcExpr
+  case class Sub(x: CalcExpr, y: CalcExpr) extends CalcExpr
+  case class Mul(x: CalcExpr, y: CalcExpr) extends CalcExpr
+  case class Div(x: CalcExpr, y: CalcExpr) extends CalcExpr
+
+  def calculate(expr: CalcExpr): Int(32) = {
+    expr match {
+      case Number(n) => n
+      case Add(a, b) => calculate(a) + calculate(b)
+      case Sub(a, b) => calculate(a) - calculate(b)
+      case Mul(a, b) => calculate(a) * calculate(b)
+      case Div(a, b) =>
+        val divisor: Int(32) = calculate(b);
+        if (divisor == 0) { error("Division by zero") }
+        else { calculate(a) / divisor }
+    }
+  }
+
+  val expr: CalcExpr = Sub(Mul(Number(10), Number(5)), Div(Number(20), Number(4)));
+  val result: Int(32) = calculate(expr);
+  Std.printString("Calculator result: " ++ Std.intToString(result))
+end Calculator

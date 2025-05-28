@@ -5,29 +5,73 @@ import ch.epfl.lexer.VerifiedRegex._
 import ch.epfl.lexer.VerifiedRegexMatcher._
 import ch.epfl.lexer.MemoisationRegex._
 import ch.epfl.lexer.ZipperRegex._
-import ch.epfl.benchmark.RegexUtils._
+import ch.epfl.lexer.benchmark.RegexUtils._
 import stainless.annotation._
 import stainless.lang._
 import stainless.collection._
+import stainless.lang.Quantifiers.*
 import ch.epfl.map.Hashable
 import ch.epfl.lexer.RegexBenchmark.testSimp
-import scala.collection.View.Empty
 
+import ch.epfl.lexer.example.ExampleAmyLexer.*
+import ch.epfl.lexer.VerifiedLexer.Lexer
+
+import ch.epfl.lexer.benchmark.RegexUtils._
+
+import stainless.collection.List
 object Main {
   def main(args: Array[String]): Unit = {
-    testZippers1()
-    testZippers2()
-    testZippers3()
-    println("Running zipper match test...")
-    testZipperMatch()
-    // RegexBenchmark.benchmark01()
-    // RegexBenchmark.benchmark02()
-    // RegexBenchmark.benchmark03()
-    // RegexBenchmark.benchmark03Simp()
-    // testRegex()
-    // println("\n\n\n")
-    // testSimp()
+    // testAmyLexer()
+    tokeniseAmyFile("src/main/scala/ch/epfl/example/res/Factorial_275chars.amy","src/main/scala/ch/epfl/example/res/Factorial_275chars.amy.tokens")
+
+    // DemoPrintableTokens.main()
+    // addNumberOfCharsInFileName("src/main/scala/ch/epfl/example/res/ADT.amy")
+    // addNumberOfCharsInFileName("src/main/scala/ch/epfl/example/res/BinaryTree.amy")
+    // addNumberOfCharsInFileName("src/main/scala/ch/epfl/example/res/Calculator.amy")
+    // addNumberOfCharsInFileName("src/main/scala/ch/epfl/example/res/Comments.amy")
+    // addNumberOfCharsInFileName("src/main/scala/ch/epfl/example/res/Compute.amy")
+    // addNumberOfCharsInFileName("src/main/scala/ch/epfl/example/res/ExpressionTree.amy")
+    // addNumberOfCharsInFileName("src/main/scala/ch/epfl/example/res/FullBenchmark.amy")
+    // addNumberOfCharsInFileName("src/main/scala/ch/epfl/example/res/Hello.amy")
+    // addNumberOfCharsInFileName("src/main/scala/ch/epfl/example/res/IOAndError.amy")
+    // addNumberOfCharsInFileName("src/main/scala/ch/epfl/example/res/ListProcessing.amy")
+    // addNumberOfCharsInFileName("src/main/scala/ch/epfl/example/res/MutualRec.amy")
+    // addNumberOfCharsInFileName("src/main/scala/ch/epfl/example/res/NestedMatch.amy")
+    // addNumberOfCharsInFileName("src/main/scala/ch/epfl/example/res/Rec.amy")
+    // addNumberOfCharsInFileName("src/main/scala/ch/epfl/example/res/Ultimate_duplicated_commented.amy")
+    // addNumberOfCharsInFileName("src/main/scala/ch/epfl/example/res/NestedMatch_duplicated_commented.amy")
   }
+}
+
+
+def addNumberOfCharsInFileName(path: String): Unit = {
+  val file = new java.io.File(path)
+  val parent = file.getParent
+  val name = file.getName
+  val contentSize = scala.io.Source.fromFile(path).mkString.length
+  val newName = s"$parent/${name.replace(".amy", "")}_${contentSize}chars.amy"
+  val newFile = new java.io.File(newName)
+  file.renameTo(newFile)
+}
+
+def tokeniseAmyFile(filepath: String, destFilePath: String): Unit = {
+  val fileContent: String = scala.io.Source.fromFile(filepath).mkString
+  println(s"File content for file '$filepath':\n$fileContent")
+  val (tokens, suffix) = Lexer.lex(AmyLexer.rules, fileContent.toStainless)
+  assert(suffix.isEmpty)
+  val tokenStrings = tokens.map(t => t.asString())
+  val tokenString = tokenStrings.toScala.mkString("\n")
+  // Write to file
+  val writer = new java.io.PrintWriter(new java.io.File(destFilePath))
+  writer.write(tokenString)
+  writer.close()
+}
+
+def testAmyLexer(): Unit = {
+  val s = "abstract case class def else extends if match object val error _ end"
+  val (tokens, suffix) = Lexer.lex(AmyLexer.rules, s.toStainless)
+  println(s"Tokens for '$s': ${tokens.map(t => t.asString()).toScala.mkString(", ")}")
+  assert(suffix.isEmpty)
 }
 
 def testZippers1(): Unit = {
@@ -73,8 +117,8 @@ def testZipperMatch(): Unit = {
   println(s"z1 = ${z1.asStringZipper()}")
   val s1 = "abababababababababbbababbababbbabab"
   println(s"Matching against '$s1'")
-  val matchResR1 = matchR(r1, s1.toStainless)
-  val matchResZ1 = ZipperRegex.matchZipper(z1, s1.toStainless)
+  val matchResR1 = matchR(r1, s1.toStainlessList)
+  val matchResZ1 = ZipperRegex.matchZipper(z1, s1.toStainlessList)
   println(s"matchResR1 = $matchResR1")
   println(s"matchResZ1 = $matchResZ1")
   assert(matchResR1 == matchResZ1)
@@ -86,8 +130,8 @@ def testZipperMatch(): Unit = {
   println(s"z2 = ${z2.asStringZipper()}")
   val s2 = "samuel.chassot@epfl.ch"
   println(s"Matching against '$s2'")
-  val matchResR2 = matchR(r2, s2.toStainless)
-  val matchResZ2 = ZipperRegex.matchZipper(z2, s2.toStainless)
+  val matchResR2 = matchR(r2, s2.toStainlessList)
+  val matchResZ2 = ZipperRegex.matchZipper(z2, s2.toStainlessList)
   println(s"matchResR2 = $matchResR2")
   println(s"matchResZ2 = $matchResZ2")
   assert(matchResR2 == matchResZ2)
@@ -95,8 +139,8 @@ def testZipperMatch(): Unit = {
   println("\n\n-----------------------------------------------------------\n\n")
   val s22 = "samuel.chassot@epfl"
   println(s"Matching against '$s22'")
-  val matchResR22 = matchR(r2, s22.toStainless)
-  val matchResZ22 = ZipperRegex.matchZipper(z2, s22.toStainless)
+  val matchResR22 = matchR(r2, s22.toStainlessList)
+  val matchResZ22 = ZipperRegex.matchZipper(z2, s22.toStainlessList)
   println(s"matchResR22 = $matchResR22")
   println(s"matchResZ22 = $matchResZ22")
   assert(matchResR22 == matchResZ22)
@@ -109,14 +153,14 @@ def testRegex(): Unit = {
   println(f"r1 = ${r1}")
   println(f"list = ${"ab".toStainless}")
   println(f"matching a with r1 without cache: ${matchR(r1, Cons('a', Nil()))}")
-  println(f"matching a with r1: ${matchRMem(r1, "a".toStainless)(cache)}")
-  println(f"matching abababababababababbbababbababbbabab with r1: ${matchRMem(r1, "abababababababababbbababbababbbabab".toStainless)(cache)}")
-  println(f"matching abchihihi with r1: ${matchRMem(r1, "abchihihi".toStainless)(cache)}")
+  println(f"matching a with r1: ${matchRMem(r1, "a".toStainlessList)(cache)}")
+  println(f"matching abababababababababbbababbababbbabab with r1: ${matchRMem(r1, "abababababababababbbababbababbbabab".toStainlessList)(cache)}")
+  println(f"matching abchihihi with r1: ${matchRMem(r1, "abchihihi".toStainlessList)(cache)}")
 
   val r2 = "abcdedfghijklmnopqrstuvwxyz.".anyOf.+ ~ "@".r ~ "abcdedfghijklmnopqrstuvwxyz".anyOf.+ ~ ".".r ~ "abcdedfghijklmnopqrstuvwxyz".anyOf.+
   println(f"r2 = ${r2}")
   val s21 = "samuel.chassot@gmail.com"
-  println(f"matching $s21 with r2: ${matchRMem(r2, s21.toStainless)(cache)}")
+  println(f"matching $s21 with r2: ${matchRMem(r2, s21.toStainlessList)(cache)}")
 
   println(s"r1 = $r1\nremoveUselessConcat(r1) = ${removeUselessConcat(r1)}")
 
@@ -145,12 +189,12 @@ object RegexBenchmark {
   def benchmark01(): Unit = {
     val r = ("a".r | "b".r).*
     val s = "abababababababababbbababbababbbabab"
-    val match11 = matchRMem(r, s.toStainless)(cache)
+    val match11 = matchRMem(r, s.toStainlessList)(cache)
     println(s"Matching $s with r -> $match11")
     assert(match11)
 
     val s2 = "abchihihi"
-    val match12 = matchRMem(r, s2.toStainless)(cache)
+    val match12 = matchRMem(r, s2.toStainlessList)(cache)
     println(s"Matching $s2 with r -> $match12")
     assert(!match12)
   }
@@ -158,12 +202,12 @@ object RegexBenchmark {
   def benchmark02(): Unit = {
     val r = "abcdedfghijklmnopqrstuvwxyz.".anyOf.+ ~ "@".r ~ "abcdedfghijklmnopqrstuvwxyz".anyOf.+ ~ ".".r ~ "abcdedfghijklmnopqrstuvwxyz".anyOf.+
     val s = "example.example@domain.com"
-    val match21 = matchRMem(r, s.toStainless)(cache)
+    val match21 = matchRMem(r, s.toStainlessList)(cache)
     println(s"Matching $s with r -> $match21")
     assert(match21)
 
     val s2 = "example.example@domain"
-    val match22 = matchRMem(r, s2.toStainless)(cache)
+    val match22 = matchRMem(r, s2.toStainlessList)(cache)
     println(s"Matching $s2 with r -> $match22")
     assert(!match22)
   }
@@ -172,13 +216,13 @@ object RegexBenchmark {
     val r = ("a".r | "b".r).*
     println(s"r = $r")
     val s = "ababa"
-    val match31 = matchRMem(r, s.toStainless)(cache)
+    val match31 = matchRMem(r, s.toStainlessList)(cache)
     println(s"Matching $s with r -> $match31")
     assert(match31)
 
     val s2 = "ababaabbabbababaaaabababbababbbababa"
     println(s"Matching $s2 with r...")
-    val match32 = matchRMem(r, s2.toStainless)(cache)
+    val match32 = matchRMem(r, s2.toStainlessList)(cache)
     println(s"Done -> $match32")
     assert(match32)
   }
