@@ -27,6 +27,8 @@ def dummy(x: BigInt): BigInt = {
 object VerifiedLexer {
   import VerifiedRegex._
   import VerifiedRegexMatcher._
+  import ch.epfl.lexer.MemoisationZipper.CacheUp
+  import ch.epfl.lexer.MemoisationZipper.CacheDown
 
   case object Lexer extends LexerInterface {
 
@@ -202,6 +204,28 @@ object VerifiedLexer {
        res._2.list == lexList(rules, input.list)._2)
     )
 
+    def lexMem[C](
+        rules: List[Rule[C]],
+        input: Vector[C]
+    )(implicit cacheUp: CacheUp[C], cacheDown: CacheDown[C]): (Vector[Token[C]], Vector[C]) = {
+      require(!rules.isEmpty)
+      require(rulesInvariant(rules))
+      require(cacheUp.valid)
+      require(cacheDown.valid)
+      decreases(input.size)
+      maxPrefixZipperVectorMem(rules, input) match {
+        case Some((token, suffix)) => {
+          val (followingTokens, nextSuffix) = lexMem(rules, suffix)
+          assert(token.characters.list ++ suffix.list == input.list)
+          ghostExpr(Vector.listEqImpliesEq(token.characters ++ suffix, input))
+          assert(token.characters ++ suffix == input)
+          (followingTokens.prepend(token), nextSuffix)
+        }
+        case None() => (Vector.empty, input)
+      }
+    }.ensuring (res => res == lex(rules, input))
+
+    @ghost
     def lexRegexList[C](
         rules: List[Rule[C]],
         input: List[C]
@@ -472,6 +496,31 @@ object VerifiedLexer {
                        else true)
                        )
 
+    def maxPrefixZipperVectorMem[C](
+            rulesArg: List[Rule[C]],
+            input: Vector[C]
+        )(implicit cacheUp: CacheUp[C], cacheDown: CacheDown[C]): Option[(Token[C], Vector[C])] = {
+          require(rulesValidInductive(rulesArg))
+          require(!rulesArg.isEmpty)
+          require(cacheUp.valid)
+          require(cacheDown.valid)
+          decreases(rulesArg.size)
+
+          ghostExpr(ListUtils.lemmaIsPrefixRefl(input.list, input.list))
+          rulesArg match {
+            case Cons(hd, Nil()) => maxPrefixOneRuleZipperVectorMem(hd, input)
+            case Cons(hd, tl) => {
+              val currentRulePref = maxPrefixOneRuleZipperVectorMem(hd, input)
+              val othersPrefix = maxPrefixZipperVectorMem(tl, input)
+              (currentRulePref, othersPrefix) match {
+                case (None(), None())   => None()
+                case (c, None())        => c
+                case (None(), o)        => o
+                case (Some(c), Some(o)) => if c._1.size >= o._1.size then Some(c) else Some(o)
+              }
+            }
+          }
+        }.ensuring (res => res == maxPrefixZipperVector(rulesArg, input))
 
     /** Finds the biggest prefix matching any rule in the input list of characters If nothing matched a rule, returns None Else, returns the matched
       * prefix and the remaining suffix
@@ -545,6 +594,28 @@ object VerifiedLexer {
                        (if res.isDefined then res.get._1 == maxPrefixOneRule(rule, input.list).get._1 && 
                           res.get._2.list == maxPrefixOneRule(rule, input.list).get._2
                        else true))
+
+     def maxPrefixOneRuleZipperVectorMem[C](
+        rule: Rule[C],
+        input: Vector[C]
+    )(implicit cacheUp: CacheUp[C], cacheDown: CacheDown[C]): Option[(Token[C], Vector[C])] = {
+      require(ruleValid(rule))
+      require(cacheUp.valid)
+      require(cacheDown.valid)
+
+      val (longestPrefix, suffix) = findLongestMatchWithZipperVector(rule.regex, input)
+      if (longestPrefix.isEmpty) {
+        None[(Token[C], Vector[C])]()
+      } else {
+        ghostExpr(longestMatchIsAcceptedByMatchOrIsEmpty(rule.regex, input.list))
+        ghostExpr(rule.transformation.lemmaInv())
+        ghostExpr(assert(Forall((a: Vector[C]) => rule.transformation.witness(rule.transformation.f(a)) == a)))
+        ghostExpr(ForallOf((a: Vector[C]) => rule.transformation.witness(rule.transformation.f(a)) == a)(longestPrefix))
+        ghostExpr(Vector.listEqImpliesEq(Vector.fromList(findLongestMatch(rule.regex, input.list)._1), longestPrefix))
+        Some[(Token[C], Vector[C])]((Token(rule.transformation.apply(longestPrefix), rule, longestPrefix.size, longestPrefix), suffix))
+      }
+
+    }.ensuring (res => res == maxPrefixOneRuleZipperVector(rule, input))
 
     // Proofs --------------------------------------------------------------------------------------------------------------------------------
 
