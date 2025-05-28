@@ -11,6 +11,11 @@ import ch.epfl.lexer.example.ExampleAmyLexer.AmyLexer
 import ch.epfl.lexer.benchmark.RegexUtils.*
 import ch.epfl.lexer.Vector
 import ch.epfl.benchmark.original.OriginalAmyLexer
+import ch.epfl.lexer.MemoisationZipper
+import ch.epfl.lexer.VerifiedRegex.Regex
+import ch.epfl.map.Hashable
+import ch.epfl.lexer.ZipperRegex.Context
+
 
 import java.io.File
 
@@ -179,12 +184,47 @@ class LexerBenchmarkGenerated {
   @Benchmark
   @BenchmarkMode(Array(Mode.AverageTime))
   @OutputTimeUnit(TimeUnit.MICROSECONDS)
+  def lex_ZipperMem(): Unit = {
+    val (tokens, suffix) = Lexer.lexMem(AmyLexer.rules, LexerBenchmarkUtils.generatedFileContents(file))(
+      LexerBenchmarkUtils.zipperCacheUp,
+      LexerBenchmarkUtils.zipperCacheDown
+    )
+    assert(suffix.isEmpty)
+  }
+
+  @Benchmark
+  @BenchmarkMode(Array(Mode.AverageTime))
+  @OutputTimeUnit(TimeUnit.MICROSECONDS)
   def lex_OriginalSilex(): Unit = {
     val tokens = OriginalAmyLexer.run(LexerBenchmarkUtils.generatedFilesJavaIo(file))
   }
 
 
 }
+
+
+
+object RegexCharHashable extends Hashable[(Regex[Char], Char)] {
+  override def hash(k: (Regex[Char], Char)): Long = {
+    val (r, c) = k
+    r.hashCode() * 31 + c.hashCode()
+  }
+}
+
+object ContextCharHashable extends Hashable[(Context[Char], Char)] {
+  override def hash(k: (Context[Char], Char)): Long = {
+    val (ctx, c) = k
+    ctx.hashCode() * 31 + c.hashCode()
+  }
+}
+
+object RegexContextCharHashable extends Hashable[(Regex[Char], Context[Char], Char)] {
+  override def hash(k: (Regex[Char], Context[Char], Char)): Long = {
+    val (r, ctx, c) = k
+    r.hashCode() * 63 + ctx.hashCode() * 31 + c.hashCode()
+  }
+}
+
 
 object LexerBenchmarkUtils {
   val exampleFileNames: Seq[String] = Seq(
@@ -309,4 +349,7 @@ object LexerBenchmarkUtils {
     val file = new java.io.File(s"src/main/scala/ch/epfl/benchmark/res/$name")
     (name -> file)
   }).toMap
+
+  val zipperCacheUp: MemoisationZipper.CacheUp[Char] = MemoisationZipper.emptyUp(ContextCharHashable)
+  val zipperCacheDown: MemoisationZipper.CacheDown[Char] = MemoisationZipper.emptyDown(RegexContextCharHashable)
 }
