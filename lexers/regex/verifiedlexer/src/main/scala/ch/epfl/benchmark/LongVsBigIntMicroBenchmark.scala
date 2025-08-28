@@ -10,22 +10,39 @@ class LongVsBigIntMicroBenchmark {
   
   @Param(
     Array(
-    "1", 
-    "2", 
-    "4", 
-    "8", 
-    "16", 
-    "32", 
-    "64", 
-    "128", 
-    "256", 
-    "512", 
-    "1024", 
-    "2048", 
-    "4096", 
-    "8192", 
-    "16384"
-    )
+      "1", 
+      "2", 
+      "4", 
+      "8", 
+      "16", 
+      "32", 
+      "64", 
+      "128", 
+      "256", 
+      "512", 
+      "768", 
+      "1024", 
+      "1300", 
+      "1700", 
+      "2000", 
+      "2300", 
+      "2500", 
+      "2800", 
+      "3000", 
+      "3500", 
+      "4000", 
+      "4500", 
+      "5000", 
+      "5500", 
+      "6000", 
+      "6500", 
+      "7000", 
+      "7500", 
+      "8000", 
+      "8500", 
+      "9000", 
+      "9500", 
+      "10000")
   )
   var size: String = uninitialized
 
@@ -59,7 +76,7 @@ object LongVsBigIntMicroBenchmarkUtils {
   val seed = 0x0ddba11
   val r = new Random(seed)
 
-  val sizes = List(1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024, 2048, 4096, 8192, 16384)
+  val sizes = List(1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 768, 1024, 1300, 1700, 2000, 2300, 2500, 2800, 3000, 3500, 4000, 4500, 5000, 5500, 6000, 6500, 7000, 7500, 8000, 8500, 9000, 9500, 10000)
 
   val randomLongs: Map[Int, Seq[Long]] = sizes.map(size => size -> Seq.fill(size)(r.nextLong())).toMap
   val randomBigInts: Map[Int, Seq[BigInt]] = randomLongs.mapValues(_.map(BigInt(_))).toMap
