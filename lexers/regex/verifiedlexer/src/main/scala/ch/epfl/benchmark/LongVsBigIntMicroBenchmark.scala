@@ -2,7 +2,6 @@ package ch.epfl.lexer
 package benchmark
 
 import java.util.concurrent.TimeUnit
-import org.openjdk.jmh.annotations.*
 
 @State(Scope.Benchmark)
 class LongVsBigIntMicroBenchmark {
@@ -31,6 +30,10 @@ class LongVsBigIntMicroBenchmark {
 }
 
 object LongVsBigIntMicroBenchmarkUtils {
-  val randomLongs = Seq.fill(100)(scala.util.Random.nextLong())
+
+  val seed = 0x0ddba11
+  val r = new Random(seed)
+
+  val randomLongs = Seq.fill(100)(r.nextLong())
   val randomBigInts = randomLongs.map(BigInt(_))
 }
