@@ -204,6 +204,7 @@ object VerifiedLexer {
       require(cacheUp.valid)
       require(cacheDown.valid)
       decreases(input.size)
+      unfold(lex(rules, input))
       maxPrefixZipperVectorMem(rules, input) match {
         case Some((token, suffix)) => {
           val (followingTokens, nextSuffix) = lexMem(rules, suffix)
@@ -511,7 +512,7 @@ object VerifiedLexer {
               }
             }
           }
-        }.ensuring (res => res == maxPrefixZipperVector(rulesArg, input))
+        }.ensuring (res => res == maxPrefixZipperVector(rulesArg, input) && cacheUp.valid && cacheDown.valid)
 
     /** Finds the biggest prefix matching any rule in the input list of characters If nothing matched a rule, returns None Else, returns the matched
       * prefix and the remaining suffix
@@ -594,7 +595,8 @@ object VerifiedLexer {
       require(cacheUp.valid)
       require(cacheDown.valid)
 
-      val (longestPrefix, suffix) = findLongestMatchWithZipperVector(rule.regex, input)
+      val (longestPrefix, suffix) = findLongestMatchWithZipperVectorMem(rule.regex, input)
+      assert((longestPrefix, suffix) == findLongestMatchWithZipperVector(rule.regex, input))
       if (longestPrefix.isEmpty) {
         None[(Token[C], Vector[C])]()
       } else {
