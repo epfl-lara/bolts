@@ -1,0 +1,808 @@
+copying runtime jar...
+[info] welcome to sbt 1.9.8 (Ubuntu Java 17.0.16)
+[info] loading settings for project verifiedlexer-build-build-build from metals.sbt ...
+[info] loading project definition from /localhome/chassot/bolts/lexers/regex/verifiedlexer/project/project/project
+[info] loading settings for project verifiedlexer-build-build from metals.sbt ...
+[info] loading project definition from /localhome/chassot/bolts/lexers/regex/verifiedlexer/project/project
+[success] Generated .bloop/verifiedlexer-build-build.json
+[success] Total time: 3 s, completed Aug 28, 2025, 2:39:59 PM
+[info] loading settings for project verifiedlexer-build from plugins.sbt ...
+[info] loading project definition from /localhome/chassot/bolts/lexers/regex/verifiedlexer/project
+[success] Generated .bloop/verifiedlexer-build.json
+[success] Total time: 1 s, completed Aug 28, 2025, 2:40:01 PM
+[info] loading settings for project verifiedlexer from build.sbt ...
+[info] set current project to VerifiedLexer (in build file:/localhome/chassot/bolts/lexers/regex/verifiedlexer/)
+[info] compiling 62 Scala sources to /localhome/chassot/bolts/lexers/regex/verifiedlexer/target/scala-3.5.2/classes ...
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/main/scala/ch/epfl/lexer/Utils.scala:1168:4 
+[warn] 1168 |    newList match {
+[warn]      |    ^^^^^^^
+[warn]      |    match may not be exhaustive.
+[warn]      |
+[warn]      |    It would fail on pattern case: stainless.collection.Cons(_, _)
+[warn]      |
+[warn]      | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/main/scala/ch/epfl/lexer/VerifiedLexer.scala:369:8 
+[warn] 369 |        maxPrefWithoutSep match {
+[warn]     |        ^^^^^^^^^^^^^^^^^
+[warn]     |        match may not be exhaustive.
+[warn]     |
+[warn]     |        It would fail on pattern case: stainless.lang.Some(_)
+[warn]     |
+[warn]     | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/main/scala/ch/epfl/lexer/VerifiedLexer.scala:468:6 
+[warn] 468 |      rulesArg match {
+[warn]     |      ^^^^^^^^
+[warn]     |      match may not be exhaustive.
+[warn]     |
+[warn]     |      It would fail on pattern case: stainless.collection.Nil()
+[warn]     |
+[warn]     | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/main/scala/ch/epfl/lexer/VerifiedLexer.scala:501:10 
+[warn] 501 |          rulesArg match {
+[warn]     |          ^^^^^^^^
+[warn]     |          match may not be exhaustive.
+[warn]     |
+[warn]     |          It would fail on pattern case: stainless.collection.Nil()
+[warn]     |
+[warn]     | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/main/scala/ch/epfl/lexer/VerifiedLexer.scala:1280:6 
+[warn] 1280 |      rules match {
+[warn]      |      ^^^^^
+[warn]      |      match may not be exhaustive.
+[warn]      |
+[warn]      |      It would fail on pattern case: stainless.collection.Cons(_, _)
+[warn]      |
+[warn]      | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/main/scala/ch/epfl/lexer/VerifiedLexer.scala:2425:6 
+[warn] 2425 |      l1 match {
+[warn]      |      ^^
+[warn]      |match may not be exhaustive.
+[warn]      |
+[warn]      |It would fail on pattern case: _: stainless.collection.List[ch.epfl.lexer.Token[C]]
+[warn]      |
+[warn]      | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/main/scala/ch/epfl/lexer/VerifiedRegex.scala:340:4 
+[warn] 340 |    r match {
+[warn]     |    ^
+[warn]     |    match may not be exhaustive.
+[warn]     |
+[warn]     |    It would fail on pattern case: Concat(_, _)
+[warn]     |
+[warn]     | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/main/scala/ch/epfl/map/ListLongMap.scala:157:4 
+[warn] 157 |    l match {
+[warn]     |    ^
+[warn]     |    match may not be exhaustive.
+[warn]     |
+[warn]     |    It would fail on pattern case: stainless.collection.Cons(_, _)
+[warn]     |
+[warn]     | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/main/scala/ch/epfl/map/ListLongMap.scala:191:4 
+[warn] 191 |    l match {
+[warn]     |    ^
+[warn]     |    match may not be exhaustive.
+[warn]     |
+[warn]     |    It would fail on pattern case: stainless.collection.Cons(_, _)
+[warn]     |
+[warn]     | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/main/scala/ch/epfl/map/ListLongMap.scala:206:4 
+[warn] 206 |    l match {
+[warn]     |    ^
+[warn]     |    match may not be exhaustive.
+[warn]     |
+[warn]     |    It would fail on pattern case: stainless.collection.Cons(_, _)
+[warn]     |
+[warn]     | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/main/scala/ch/epfl/map/ListLongMap.scala:222:4 
+[warn] 222 |    l match {
+[warn]     |    ^
+[warn]     |    match may not be exhaustive.
+[warn]     |
+[warn]     |    It would fail on pattern case: stainless.collection.Cons(_, _)
+[warn]     |
+[warn]     | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/main/scala/ch/epfl/map/ListLongMap.scala:243:4 
+[warn] 243 |    l match {
+[warn]     |    ^
+[warn]     |    match may not be exhaustive.
+[warn]     |
+[warn]     |    It would fail on pattern case: stainless.collection.Cons(_, _)
+[warn]     |
+[warn]     | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/main/scala/ch/epfl/map/ListLongMap.scala:274:4 
+[warn] 274 |    l match {
+[warn]     |    ^
+[warn]     |    match may not be exhaustive.
+[warn]     |
+[warn]     |    It would fail on pattern case: stainless.collection.Cons(_, _)
+[warn]     |
+[warn]     | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/main/scala/ch/epfl/map/ListMap.scala:195:4 
+[warn] 195 |    l match {
+[warn]     |    ^
+[warn]     |    match may not be exhaustive.
+[warn]     |
+[warn]     |    It would fail on pattern case: stainless.collection.Cons(_, _)
+[warn]     |
+[warn]     | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/main/scala/ch/epfl/map/ListMap.scala:229:4 
+[warn] 229 |    l match {
+[warn]     |    ^
+[warn]     |    match may not be exhaustive.
+[warn]     |
+[warn]     |    It would fail on pattern case: stainless.collection.Cons(_, _)
+[warn]     |
+[warn]     | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/main/scala/ch/epfl/map/ListMap.scala:256:4 
+[warn] 256 |    l match {
+[warn]     |    ^
+[warn]     |    match may not be exhaustive.
+[warn]     |
+[warn]     |    It would fail on pattern case: stainless.collection.Cons(_, _)
+[warn]     |
+[warn]     | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/main/scala/ch/epfl/map/ListMap.scala:308:4 
+[warn] 308 |    l match {
+[warn]     |    ^
+[warn]     |    match may not be exhaustive.
+[warn]     |
+[warn]     |    It would fail on pattern case: stainless.collection.Cons(_, _)
+[warn]     |
+[warn]     | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/main/scala/ch/epfl/map/ListMap.scala:380:4 
+[warn] 380 |    l match {
+[warn]     |    ^
+[warn]     |    match may not be exhaustive.
+[warn]     |
+[warn]     |    It would fail on pattern case: stainless.collection.Cons(_, _)
+[warn]     |
+[warn]     | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/main/scala/ch/epfl/map/MutableLongMap.scala:347:4 
+[warn] 347 |    c match {
+[warn]     |    ^
+[warn]     |    match may not be exhaustive.
+[warn]     |
+[warn]     |    It would fail on pattern case: EmptyCell()
+[warn]     |
+[warn]     | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/main/scala/ch/epfl/map/MutableLongMap.scala:596:8 
+[warn] 596 |        seekEntryRes match {
+[warn]     |        ^^^^^^^^^^^^
+[warn]     |match may not be exhaustive.
+[warn]     |
+[warn]     |It would fail on pattern case: ch.epfl.map.MutableLongMap.Intermediate(_, _, _)
+[warn]     |
+[warn]     | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/main/scala/ch/epfl/map/MutableLongMap.scala:1106:6 
+[warn] 1106 |      intermediate match {
+[warn]      |      ^^^^^^^^^^^^
+[warn]      |match may not be exhaustive.
+[warn]      |
+[warn]      |It would fail on pattern case: _: ch.epfl.map.MutableLongMap.SeekEntryResult
+[warn]      |
+[warn]      | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/main/scala/ch/epfl/map/MutableLongMap.scala:1156:6 
+[warn] 1156 |      intermediate match {
+[warn]      |      ^^^^^^^^^^^^
+[warn]      |match may not be exhaustive.
+[warn]      |
+[warn]      |It would fail on pattern case: _: ch.epfl.map.MutableLongMap.SeekEntryResult
+[warn]      |
+[warn]      | longer explanation available when compiling with `-explain`
+[warn] there was 1 deprecation warning; re-run with -deprecation for details
+[warn] 23 warnings found
+[info] done compiling
+[info] running org.openjdk.jmh.generators.bytecode.JmhBytecodeGenerator /localhome/chassot/bolts/lexers/regex/verifiedlexer/target/scala-3.5.2/classes /localhome/chassot/bolts/lexers/regex/verifiedlexer/target/scala-3.5.2/src_managed/jmh /localhome/chassot/bolts/lexers/regex/verifiedlexer/target/scala-3.5.2/resource_managed/jmh default
+Processing 1049 classes from /localhome/chassot/bolts/lexers/regex/verifiedlexer/target/scala-3.5.2/classes with "reflection" generator
+Writing out Java source to /localhome/chassot/bolts/lexers/regex/verifiedlexer/target/scala-3.5.2/src_managed/jmh and resources to /localhome/chassot/bolts/lexers/regex/verifiedlexer/target/scala-3.5.2/resource_managed/jmh
+[info] compiling 62 Java sources to /localhome/chassot/bolts/lexers/regex/verifiedlexer/target/scala-3.5.2/classes ...
+[info] done compiling
+[info] running (fork) org.openjdk.jmh.Main -i 1 -wi 2 -f1 -t1 benchmark.lexer.LongVsBigIntMicroBenchmark
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.16, OpenJDK 64-Bit Server VM, 17.0.16+8-Ubuntu-0ubuntu124.04.1
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 2 iterations, 10 s each
+[info] # Measurement: 1 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: benchmark.lexer.LongVsBigIntMicroBenchmark.compareIds_bigints
+[info] # Parameters: (size = 1)
+[info] # Run progress: 0.00% complete, ETA 00:15:00
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 0.014 us/op
+[info] # Warmup Iteration   2: 0.014 us/op
+[info] Iteration   1: 0.014 us/op
+[info] Result "benchmark.lexer.LongVsBigIntMicroBenchmark.compareIds_bigints":
+[info]   0.014 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.16, OpenJDK 64-Bit Server VM, 17.0.16+8-Ubuntu-0ubuntu124.04.1
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 2 iterations, 10 s each
+[info] # Measurement: 1 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: benchmark.lexer.LongVsBigIntMicroBenchmark.compareIds_bigints
+[info] # Parameters: (size = 2)
+[info] # Run progress: 3.33% complete, ETA 00:14:36
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 0.042 us/op
+[info] # Warmup Iteration   2: 0.040 us/op
+[info] Iteration   1: 0.040 us/op
+[info] Result "benchmark.lexer.LongVsBigIntMicroBenchmark.compareIds_bigints":
+[info]   0.040 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.16, OpenJDK 64-Bit Server VM, 17.0.16+8-Ubuntu-0ubuntu124.04.1
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 2 iterations, 10 s each
+[info] # Measurement: 1 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: benchmark.lexer.LongVsBigIntMicroBenchmark.compareIds_bigints
+[info] # Parameters: (size = 4)
+[info] # Run progress: 6.67% complete, ETA 00:14:06
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 0.073 us/op
+[info] # Warmup Iteration   2: 0.073 us/op
+[info] Iteration   1: 0.071 us/op
+[info] Result "benchmark.lexer.LongVsBigIntMicroBenchmark.compareIds_bigints":
+[info]   0.071 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.16, OpenJDK 64-Bit Server VM, 17.0.16+8-Ubuntu-0ubuntu124.04.1
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 2 iterations, 10 s each
+[info] # Measurement: 1 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: benchmark.lexer.LongVsBigIntMicroBenchmark.compareIds_bigints
+[info] # Parameters: (size = 8)
+[info] # Run progress: 10.00% complete, ETA 00:13:35
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 0.213 us/op
+[info] # Warmup Iteration   2: 0.211 us/op
+[info] Iteration   1: 0.210 us/op
+[info] Result "benchmark.lexer.LongVsBigIntMicroBenchmark.compareIds_bigints":
+[info]   0.210 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.16, OpenJDK 64-Bit Server VM, 17.0.16+8-Ubuntu-0ubuntu124.04.1
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 2 iterations, 10 s each
+[info] # Measurement: 1 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: benchmark.lexer.LongVsBigIntMicroBenchmark.compareIds_bigints
+[info] # Parameters: (size = 16)
+[info] # Run progress: 13.33% complete, ETA 00:13:05
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 0.661 us/op
+[info] # Warmup Iteration   2: 0.654 us/op
+[info] Iteration   1: 0.653 us/op
+[info] Result "benchmark.lexer.LongVsBigIntMicroBenchmark.compareIds_bigints":
+[info]   0.653 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.16, OpenJDK 64-Bit Server VM, 17.0.16+8-Ubuntu-0ubuntu124.04.1
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 2 iterations, 10 s each
+[info] # Measurement: 1 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: benchmark.lexer.LongVsBigIntMicroBenchmark.compareIds_bigints
+[info] # Parameters: (size = 32)
+[info] # Run progress: 16.67% complete, ETA 00:12:35
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 2.031 us/op
+[info] # Warmup Iteration   2: 2.003 us/op
+[info] Iteration   1: 2.001 us/op
+[info] Result "benchmark.lexer.LongVsBigIntMicroBenchmark.compareIds_bigints":
+[info]   2.001 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.16, OpenJDK 64-Bit Server VM, 17.0.16+8-Ubuntu-0ubuntu124.04.1
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 2 iterations, 10 s each
+[info] # Measurement: 1 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: benchmark.lexer.LongVsBigIntMicroBenchmark.compareIds_bigints
+[info] # Parameters: (size = 64)
+[info] # Run progress: 20.00% complete, ETA 00:12:04
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 7.185 us/op
+[info] # Warmup Iteration   2: 7.354 us/op
+[info] Iteration   1: 7.092 us/op
+[info] Result "benchmark.lexer.LongVsBigIntMicroBenchmark.compareIds_bigints":
+[info]   7.092 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.16, OpenJDK 64-Bit Server VM, 17.0.16+8-Ubuntu-0ubuntu124.04.1
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 2 iterations, 10 s each
+[info] # Measurement: 1 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: benchmark.lexer.LongVsBigIntMicroBenchmark.compareIds_bigints
+[info] # Parameters: (size = 128)
+[info] # Run progress: 23.33% complete, ETA 00:11:34
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 28.960 us/op
+[info] # Warmup Iteration   2: 28.641 us/op
+[info] Iteration   1: 28.495 us/op
+[info] Result "benchmark.lexer.LongVsBigIntMicroBenchmark.compareIds_bigints":
+[info]   28.495 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.16, OpenJDK 64-Bit Server VM, 17.0.16+8-Ubuntu-0ubuntu124.04.1
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 2 iterations, 10 s each
+[info] # Measurement: 1 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: benchmark.lexer.LongVsBigIntMicroBenchmark.compareIds_bigints
+[info] # Parameters: (size = 256)
+[info] # Run progress: 26.67% complete, ETA 00:11:04
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 108.892 us/op
+[info] # Warmup Iteration   2: 107.278 us/op
+[info] Iteration   1: 107.413 us/op
+[info] Result "benchmark.lexer.LongVsBigIntMicroBenchmark.compareIds_bigints":
+[info]   107.413 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.16, OpenJDK 64-Bit Server VM, 17.0.16+8-Ubuntu-0ubuntu124.04.1
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 2 iterations, 10 s each
+[info] # Measurement: 1 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: benchmark.lexer.LongVsBigIntMicroBenchmark.compareIds_bigints
+[info] # Parameters: (size = 512)
+[info] # Run progress: 30.00% complete, ETA 00:10:34
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 724.985 us/op
+[info] # Warmup Iteration   2: 903.007 us/op
+[info] Iteration   1: 903.671 us/op
+[info] Result "benchmark.lexer.LongVsBigIntMicroBenchmark.compareIds_bigints":
+[info]   903.671 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.16, OpenJDK 64-Bit Server VM, 17.0.16+8-Ubuntu-0ubuntu124.04.1
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 2 iterations, 10 s each
+[info] # Measurement: 1 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: benchmark.lexer.LongVsBigIntMicroBenchmark.compareIds_bigints
+[info] # Parameters: (size = 1024)
+[info] # Run progress: 33.33% complete, ETA 00:10:04
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 1827.409 us/op
+[info] # Warmup Iteration   2: 1990.711 us/op
+[info] Iteration   1: 1829.115 us/op
+[info] Result "benchmark.lexer.LongVsBigIntMicroBenchmark.compareIds_bigints":
+[info]   1829.115 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.16, OpenJDK 64-Bit Server VM, 17.0.16+8-Ubuntu-0ubuntu124.04.1
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 2 iterations, 10 s each
+[info] # Measurement: 1 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: benchmark.lexer.LongVsBigIntMicroBenchmark.compareIds_bigints
+[info] # Parameters: (size = 2048)
+[info] # Run progress: 36.67% complete, ETA 00:09:33
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 6701.455 us/op
+[info] # Warmup Iteration   2: 7685.134 us/op
+[info] Iteration   1: 8545.522 us/op
+[info] Result "benchmark.lexer.LongVsBigIntMicroBenchmark.compareIds_bigints":
+[info]   8545.522 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.16, OpenJDK 64-Bit Server VM, 17.0.16+8-Ubuntu-0ubuntu124.04.1
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 2 iterations, 10 s each
+[info] # Measurement: 1 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: benchmark.lexer.LongVsBigIntMicroBenchmark.compareIds_bigints
+[info] # Parameters: (size = 4096)
+[info] # Run progress: 40.00% complete, ETA 00:09:03
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 26481.645 us/op
+[info] # Warmup Iteration   2: 26114.068 us/op
+[info] Iteration   1: 26208.859 us/op
+[info] Result "benchmark.lexer.LongVsBigIntMicroBenchmark.compareIds_bigints":
+[info]   26208.859 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.16, OpenJDK 64-Bit Server VM, 17.0.16+8-Ubuntu-0ubuntu124.04.1
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 2 iterations, 10 s each
+[info] # Measurement: 1 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: benchmark.lexer.LongVsBigIntMicroBenchmark.compareIds_bigints
+[info] # Parameters: (size = 8192)
+[info] # Run progress: 43.33% complete, ETA 00:08:33
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 101941.130 us/op
+[info] # Warmup Iteration   2: 100602.271 us/op
+[info] Iteration   1: 112118.290 us/op
+[info] Result "benchmark.lexer.LongVsBigIntMicroBenchmark.compareIds_bigints":
+[info]   112118.290 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.16, OpenJDK 64-Bit Server VM, 17.0.16+8-Ubuntu-0ubuntu124.04.1
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 2 iterations, 10 s each
+[info] # Measurement: 1 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: benchmark.lexer.LongVsBigIntMicroBenchmark.compareIds_bigints
+[info] # Parameters: (size = 16384)
+[info] # Run progress: 46.67% complete, ETA 00:08:03
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 415467.873 us/op
+[info] # Warmup Iteration   2: 410169.051 us/op
+[info] Iteration   1: 410823.722 us/op
+[info] Result "benchmark.lexer.LongVsBigIntMicroBenchmark.compareIds_bigints":
+[info]   410823.722 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.16, OpenJDK 64-Bit Server VM, 17.0.16+8-Ubuntu-0ubuntu124.04.1
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 2 iterations, 10 s each
+[info] # Measurement: 1 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: benchmark.lexer.LongVsBigIntMicroBenchmark.compareIds_longs
+[info] # Parameters: (size = 1)
+[info] # Run progress: 50.00% complete, ETA 00:07:34
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 0.015 us/op
+[info] # Warmup Iteration   2: 0.015 us/op
+[info] Iteration   1: 0.015 us/op
+[info] Result "benchmark.lexer.LongVsBigIntMicroBenchmark.compareIds_longs":
+[info]   0.015 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.16, OpenJDK 64-Bit Server VM, 17.0.16+8-Ubuntu-0ubuntu124.04.1
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 2 iterations, 10 s each
+[info] # Measurement: 1 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: benchmark.lexer.LongVsBigIntMicroBenchmark.compareIds_longs
+[info] # Parameters: (size = 2)
+[info] # Run progress: 53.33% complete, ETA 00:07:03
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 0.037 us/op
+[info] # Warmup Iteration   2: 0.035 us/op
+[info] Iteration   1: 0.035 us/op
+[info] Result "benchmark.lexer.LongVsBigIntMicroBenchmark.compareIds_longs":
+[info]   0.035 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.16, OpenJDK 64-Bit Server VM, 17.0.16+8-Ubuntu-0ubuntu124.04.1
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 2 iterations, 10 s each
+[info] # Measurement: 1 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: benchmark.lexer.LongVsBigIntMicroBenchmark.compareIds_longs
+[info] # Parameters: (size = 4)
+[info] # Run progress: 56.67% complete, ETA 00:06:33
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 0.050 us/op
+[info] # Warmup Iteration   2: 0.049 us/op
+[info] Iteration   1: 0.051 us/op
+[info] Result "benchmark.lexer.LongVsBigIntMicroBenchmark.compareIds_longs":
+[info]   0.051 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.16, OpenJDK 64-Bit Server VM, 17.0.16+8-Ubuntu-0ubuntu124.04.1
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 2 iterations, 10 s each
+[info] # Measurement: 1 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: benchmark.lexer.LongVsBigIntMicroBenchmark.compareIds_longs
+[info] # Parameters: (size = 8)
+[info] # Run progress: 60.00% complete, ETA 00:06:03
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 0.143 us/op
+[info] # Warmup Iteration   2: 0.142 us/op
+[info] Iteration   1: 0.147 us/op
+[info] Result "benchmark.lexer.LongVsBigIntMicroBenchmark.compareIds_longs":
+[info]   0.147 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.16, OpenJDK 64-Bit Server VM, 17.0.16+8-Ubuntu-0ubuntu124.04.1
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 2 iterations, 10 s each
+[info] # Measurement: 1 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: benchmark.lexer.LongVsBigIntMicroBenchmark.compareIds_longs
+[info] # Parameters: (size = 16)
+[info] # Run progress: 63.33% complete, ETA 00:05:32
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 0.572 us/op
+[info] # Warmup Iteration   2: 0.564 us/op
+[info] Iteration   1: 0.565 us/op
+[info] Result "benchmark.lexer.LongVsBigIntMicroBenchmark.compareIds_longs":
+[info]   0.565 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.16, OpenJDK 64-Bit Server VM, 17.0.16+8-Ubuntu-0ubuntu124.04.1
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 2 iterations, 10 s each
+[info] # Measurement: 1 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: benchmark.lexer.LongVsBigIntMicroBenchmark.compareIds_longs
+[info] # Parameters: (size = 32)
+[info] # Run progress: 66.67% complete, ETA 00:05:02
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 1.879 us/op
+[info] # Warmup Iteration   2: 1.853 us/op
+[info] Iteration   1: 1.854 us/op
+[info] Result "benchmark.lexer.LongVsBigIntMicroBenchmark.compareIds_longs":
+[info]   1.854 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.16, OpenJDK 64-Bit Server VM, 17.0.16+8-Ubuntu-0ubuntu124.04.1
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 2 iterations, 10 s each
+[info] # Measurement: 1 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: benchmark.lexer.LongVsBigIntMicroBenchmark.compareIds_longs
+[info] # Parameters: (size = 64)
+[info] # Run progress: 70.00% complete, ETA 00:04:32
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 6.729 us/op
+[info] # Warmup Iteration   2: 6.655 us/op
+[info] Iteration   1: 6.663 us/op
+[info] Result "benchmark.lexer.LongVsBigIntMicroBenchmark.compareIds_longs":
+[info]   6.663 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.16, OpenJDK 64-Bit Server VM, 17.0.16+8-Ubuntu-0ubuntu124.04.1
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 2 iterations, 10 s each
+[info] # Measurement: 1 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: benchmark.lexer.LongVsBigIntMicroBenchmark.compareIds_longs
+[info] # Parameters: (size = 128)
+[info] # Run progress: 73.33% complete, ETA 00:04:02
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 26.376 us/op
+[info] # Warmup Iteration   2: 26.167 us/op
+[info] Iteration   1: 25.600 us/op
+[info] Result "benchmark.lexer.LongVsBigIntMicroBenchmark.compareIds_longs":
+[info]   25.600 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.16, OpenJDK 64-Bit Server VM, 17.0.16+8-Ubuntu-0ubuntu124.04.1
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 2 iterations, 10 s each
+[info] # Measurement: 1 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: benchmark.lexer.LongVsBigIntMicroBenchmark.compareIds_longs
+[info] # Parameters: (size = 256)
+[info] # Run progress: 76.67% complete, ETA 00:03:31
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 101.059 us/op
+[info] # Warmup Iteration   2: 101.759 us/op
+[info] Iteration   1: 99.617 us/op
+[info] Result "benchmark.lexer.LongVsBigIntMicroBenchmark.compareIds_longs":
+[info]   99.617 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.16, OpenJDK 64-Bit Server VM, 17.0.16+8-Ubuntu-0ubuntu124.04.1
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 2 iterations, 10 s each
+[info] # Measurement: 1 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: benchmark.lexer.LongVsBigIntMicroBenchmark.compareIds_longs
+[info] # Parameters: (size = 512)
+[info] # Run progress: 80.00% complete, ETA 00:03:01
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 408.434 us/op
+[info] # Warmup Iteration   2: 404.237 us/op
+[info] Iteration   1: 405.425 us/op
+[info] Result "benchmark.lexer.LongVsBigIntMicroBenchmark.compareIds_longs":
+[info]   405.425 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.16, OpenJDK 64-Bit Server VM, 17.0.16+8-Ubuntu-0ubuntu124.04.1
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 2 iterations, 10 s each
+[info] # Measurement: 1 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: benchmark.lexer.LongVsBigIntMicroBenchmark.compareIds_longs
+[info] # Parameters: (size = 1024)
+[info] # Run progress: 83.33% complete, ETA 00:02:31
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 1724.038 us/op
+[info] # Warmup Iteration   2: 1934.969 us/op
+[info] Iteration   1: 1957.608 us/op
+[info] Result "benchmark.lexer.LongVsBigIntMicroBenchmark.compareIds_longs":
+[info]   1957.608 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.16, OpenJDK 64-Bit Server VM, 17.0.16+8-Ubuntu-0ubuntu124.04.1
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 2 iterations, 10 s each
+[info] # Measurement: 1 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: benchmark.lexer.LongVsBigIntMicroBenchmark.compareIds_longs
+[info] # Parameters: (size = 2048)
+[info] # Run progress: 86.67% complete, ETA 00:02:00
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 6437.136 us/op
+[info] # Warmup Iteration   2: 7843.760 us/op
+[info] Iteration   1: 8870.219 us/op
+[info] Result "benchmark.lexer.LongVsBigIntMicroBenchmark.compareIds_longs":
+[info]   8870.219 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.16, OpenJDK 64-Bit Server VM, 17.0.16+8-Ubuntu-0ubuntu124.04.1
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 2 iterations, 10 s each
+[info] # Measurement: 1 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: benchmark.lexer.LongVsBigIntMicroBenchmark.compareIds_longs
+[info] # Parameters: (size = 4096)
+[info] # Run progress: 90.00% complete, ETA 00:01:30
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 22759.221 us/op
+[info] # Warmup Iteration   2: 30245.301 us/op
+[info] Iteration   1: 36224.172 us/op
+[info] Result "benchmark.lexer.LongVsBigIntMicroBenchmark.compareIds_longs":
+[info]   36224.172 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.16, OpenJDK 64-Bit Server VM, 17.0.16+8-Ubuntu-0ubuntu124.04.1
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 2 iterations, 10 s each
+[info] # Measurement: 1 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: benchmark.lexer.LongVsBigIntMicroBenchmark.compareIds_longs
+[info] # Parameters: (size = 8192)
+[info] # Run progress: 93.33% complete, ETA 00:01:00
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 89737.162 us/op
+[info] # Warmup Iteration   2: 92016.265 us/op
+[info] Iteration   1: 158062.445 us/op
+[info] Result "benchmark.lexer.LongVsBigIntMicroBenchmark.compareIds_longs":
+[info]   158062.445 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.16, OpenJDK 64-Bit Server VM, 17.0.16+8-Ubuntu-0ubuntu124.04.1
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 2 iterations, 10 s each
+[info] # Measurement: 1 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: benchmark.lexer.LongVsBigIntMicroBenchmark.compareIds_longs
+[info] # Parameters: (size = 16384)
+[info] # Run progress: 96.67% complete, ETA 00:00:30
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 371213.299 us/op
+[info] # Warmup Iteration   2: 363888.622 us/op
+[info] Iteration   1: 363872.421 us/op
+[info] Result "benchmark.lexer.LongVsBigIntMicroBenchmark.compareIds_longs":
+[info]   363872.421 us/op
+[info] # Run complete. Total time: 00:15:07
+[info] REMEMBER: The numbers below are just data. To gain reusable insights, you need to follow up on
+[info] why the numbers are the way they are. Use profilers (see -prof, -lprof), design factorial
+[info] experiments, perform baseline and negative tests that provide experimental control, make sure
+[info] the benchmarking environment is safe on JVM/OS/HW level, ask for reviews from the domain experts.
+[info] Do not assume the numbers tell you what you want them to tell.
+[info] Benchmark                                      (size)  Mode  Cnt       Score   Error  Units
+[info] LongVsBigIntMicroBenchmark.compareIds_bigints       1  avgt            0.014          us/op
+[info] LongVsBigIntMicroBenchmark.compareIds_bigints       2  avgt            0.040          us/op
+[info] LongVsBigIntMicroBenchmark.compareIds_bigints       4  avgt            0.071          us/op
+[info] LongVsBigIntMicroBenchmark.compareIds_bigints       8  avgt            0.210          us/op
+[info] LongVsBigIntMicroBenchmark.compareIds_bigints      16  avgt            0.653          us/op
+[info] LongVsBigIntMicroBenchmark.compareIds_bigints      32  avgt            2.001          us/op
+[info] LongVsBigIntMicroBenchmark.compareIds_bigints      64  avgt            7.092          us/op
+[info] LongVsBigIntMicroBenchmark.compareIds_bigints     128  avgt           28.495          us/op
+[info] LongVsBigIntMicroBenchmark.compareIds_bigints     256  avgt          107.413          us/op
+[info] LongVsBigIntMicroBenchmark.compareIds_bigints     512  avgt          903.671          us/op
+[info] LongVsBigIntMicroBenchmark.compareIds_bigints    1024  avgt         1829.115          us/op
+[info] LongVsBigIntMicroBenchmark.compareIds_bigints    2048  avgt         8545.522          us/op
+[info] LongVsBigIntMicroBenchmark.compareIds_bigints    4096  avgt        26208.859          us/op
+[info] LongVsBigIntMicroBenchmark.compareIds_bigints    8192  avgt       112118.290          us/op
+[info] LongVsBigIntMicroBenchmark.compareIds_bigints   16384  avgt       410823.722          us/op
+[info] LongVsBigIntMicroBenchmark.compareIds_longs         1  avgt            0.015          us/op
+[info] LongVsBigIntMicroBenchmark.compareIds_longs         2  avgt            0.035          us/op
+[info] LongVsBigIntMicroBenchmark.compareIds_longs         4  avgt            0.051          us/op
+[info] LongVsBigIntMicroBenchmark.compareIds_longs         8  avgt            0.147          us/op
+[info] LongVsBigIntMicroBenchmark.compareIds_longs        16  avgt            0.565          us/op
+[info] LongVsBigIntMicroBenchmark.compareIds_longs        32  avgt            1.854          us/op
+[info] LongVsBigIntMicroBenchmark.compareIds_longs        64  avgt            6.663          us/op
+[info] LongVsBigIntMicroBenchmark.compareIds_longs       128  avgt           25.600          us/op
+[info] LongVsBigIntMicroBenchmark.compareIds_longs       256  avgt           99.617          us/op
+[info] LongVsBigIntMicroBenchmark.compareIds_longs       512  avgt          405.425          us/op
+[info] LongVsBigIntMicroBenchmark.compareIds_longs      1024  avgt         1957.608          us/op
+[info] LongVsBigIntMicroBenchmark.compareIds_longs      2048  avgt         8870.219          us/op
+[info] LongVsBigIntMicroBenchmark.compareIds_longs      4096  avgt        36224.172          us/op
+[info] LongVsBigIntMicroBenchmark.compareIds_longs      8192  avgt       158062.445          us/op
+[info] LongVsBigIntMicroBenchmark.compareIds_longs     16384  avgt       363872.421          us/op
+[success] Total time: 925 s (15:25), completed Aug 28, 2025, 2:55:26 PM
