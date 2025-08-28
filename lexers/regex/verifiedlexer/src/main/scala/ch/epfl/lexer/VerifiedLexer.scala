@@ -6,7 +6,6 @@ package ch.epfl.lexer
 import stainless.annotation._
 import stainless.collection._
 import stainless.equations._
-import stainless.proof.check
 import scala.annotation.tailrec
 import stainless.lang.Quantifiers._
 
@@ -14,6 +13,7 @@ import ch.epfl.lexer.Vector
 
 // import stainless.lang.StaticChecks._
 // import stainless.lang.{ghost => ghostExpr, _}
+// import stainless.proof.check
 import stainless.lang.{ghost => _, decreases => _, unfold => _, _}
 import ch.epfl.lexer.OptimisedChecks.*
 import Predef.{assert => _, Ensuring => _, require => _}

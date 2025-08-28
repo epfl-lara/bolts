@@ -6,7 +6,6 @@ package ch.epfl.lexer
 import stainless.equations._
 import stainless.collection._
 import stainless.annotation._
-import stainless.proof._
 import ch.epfl.map.MutableLongMap._
 import ch.epfl.map.ListLongMap
 import ch.epfl.map.ListMap
@@ -26,7 +25,8 @@ import scala.annotation.tailrec
 
 // import stainless.lang.StaticChecks._
 // import stainless.lang.{ghost => ghostExpr, _}
-import stainless.lang.{ghost => _, decreases => _, unfold => _, _}
+// import stainless.proof.check
+import stainless.lang.{ghost => _, decreases => _, unfold => _,  _}
 import ch.epfl.lexer.OptimisedChecks.*
 import Predef.{assert => _, Ensuring => _, require => _}
 
