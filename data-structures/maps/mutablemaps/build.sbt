@@ -6,11 +6,4 @@ run / fork := true
 
 stainlessEnabled := false
 
-
-ThisBuild / scalacOptions ++= Seq(
-  "-source:3.7-migration", // enable migration mode
-  "-rewrite"               // apply rewrites automatically
-)
-
-
 enablePlugins(StainlessPlugin, JmhPlugin)
