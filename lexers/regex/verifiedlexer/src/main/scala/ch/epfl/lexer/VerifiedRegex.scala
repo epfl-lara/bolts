@@ -757,7 +757,7 @@ object ZipperRegex {
 
   @extern
   def derivationStepZipperMem[C](z: Zipper[C], a: C)(implicit cacheUp: CacheUp[C], cacheDown: CacheDown[C]): Zipper[C] = {
-    ghostExpr(SetUtils.lemmaFlatMapWithExtEqualFunctionsOnSetThenSame(z, (c: Context[C]) => derivationStepZipperUpMem(c, a)(snapshot(cacheUp), snapshot(cacheDown)), (c: Context[C]) => derivationStepZipperUp(c, a)))
+    ghostExpr(SetUtils.lemmaFlatMapWithExtEqualFunctionsOnSetThenSame(z, (c: Context[C]) => derivationStepZipperUpMem(c, a)(using snapshot(cacheUp), snapshot(cacheDown)), (c: Context[C]) => derivationStepZipperUp(c, a)))
     
     def derivUpMem(c: Context[C]): Zipper[C] = derivationStepZipperUpMem(c, a)
     
@@ -2854,7 +2854,7 @@ object ZipperRegex {
       ghostExpr(ListUtils.lemmaAddHeadSuffixToPrefixStillPrefix(testedP, totalInput.list))
       ghostExpr(ListUtils.lemmaMoveElementToOtherListKeepsConcatEq(testedP, totalInput(testedPSize), testedSuffix.tail, totalInput.list))
       if (nullableZipper(z)) {
-        val recursive = findLongestMatchInnerZipperFastMem(cacheUp, cacheDown, derivationStepZipperMem(z, totalInput(testedPSize))(cacheUp, cacheDown), testedP ++ List(totalInput(testedPSize)), testedPSize + 1, testedSuffix.tail, totalInput, totalInputSize)
+        val recursive = findLongestMatchInnerZipperFastMem(cacheUp, cacheDown, derivationStepZipperMem(z, totalInput(testedPSize))(using cacheUp, cacheDown), testedP ++ List(totalInput(testedPSize)), testedPSize + 1, testedSuffix.tail, totalInput, totalInputSize)
         if (recursive == 0) {
           // (testedP, testedSuffix)
           testedPSize
@@ -2862,7 +2862,7 @@ object ZipperRegex {
           recursive
         }
       } else {
-        findLongestMatchInnerZipperFastMem(cacheUp, cacheDown, derivationStepZipperMem(z, totalInput(testedPSize))(cacheUp, cacheDown), testedP ++ List(totalInput(testedPSize)), testedPSize + 1, testedSuffix.tail, totalInput, totalInputSize)
+        findLongestMatchInnerZipperFastMem(cacheUp, cacheDown, derivationStepZipperMem(z, totalInput(testedPSize))(using cacheUp, cacheDown), testedP ++ List(totalInput(testedPSize)), testedPSize + 1, testedSuffix.tail, totalInput, totalInputSize)
       }
     }
   }.ensuring (res => cacheUp.valid && cacheDown.valid && res == findLongestMatchInnerZipperFast(z, testedP, testedPSize, testedSuffix, totalInput, totalInputSize))
@@ -3170,11 +3170,11 @@ object VerifiedRegexMatcher {
           case EmptyExpr()       => EmptyLang()
           case EmptyLang()       => EmptyLang()
           case ElementMatch(c)   => if (a == c) EmptyExpr() else EmptyLang()
-          case Union(rOne, rTwo) => Union(derivativeStepMem(rOne, a)(cache), derivativeStepMem(rTwo, a)(cache))
-          case Star(rInner)      => Concat(derivativeStepMem(rInner, a)(cache), Star(rInner))
+          case Union(rOne, rTwo) => Union(derivativeStepMem(rOne, a)(using cache), derivativeStepMem(rTwo, a)(using cache))
+          case Star(rInner)      => Concat(derivativeStepMem(rInner, a)(using cache), Star(rInner))
           case Concat(rOne, rTwo) => {
-            if (rOne.nullable) Union(Concat(derivativeStepMem(rOne, a)(cache), rTwo), derivativeStepMem(rTwo, a)(cache))
-            else Union(Concat(derivativeStepMem(rOne, a)(cache), rTwo), EmptyLang())
+            if (rOne.nullable) Union(Concat(derivativeStepMem(rOne, a)(using cache), rTwo), derivativeStepMem(rTwo, a)(using cache))
+            else Union(Concat(derivativeStepMem(rOne, a)(using cache), rTwo), EmptyLang())
           }
         }
         cache.update(r, a, res)
@@ -3226,7 +3226,7 @@ object VerifiedRegexMatcher {
     require(validRegex(r))
     require(cache.valid)
     input match {
-      case Cons(hd, tl) => derivative(derivativeStepMem(r, hd)(cache: Cache[C]), tl)
+      case Cons(hd, tl) => derivative(derivativeStepMem(r, hd)(using cache: Cache[C]), tl)
       case Nil()        => r
     }
   }.ensuring (res => validRegex(res) && res == derivative(r, input))
@@ -3263,7 +3263,7 @@ object VerifiedRegexMatcher {
     require(validRegex(r))
     require(cache.valid)
     decreases(input.size)
-    if (input.isEmpty) r.nullable else matchRMem(derivativeStepMem(r, input.head)(cache: Cache[C]), input.tail)
+    if (input.isEmpty) r.nullable else matchRMem(derivativeStepMem(r, input.head)(using cache: Cache[C]), input.tail)
   }.ensuring (res => res == matchR(r, input))
 
   def matchZipper[C](r: Regex[C], input: List[C]): Boolean = {
@@ -3650,7 +3650,7 @@ object VerifiedRegexMatcher {
     require(cache.valid)
     ghostExpr(ListUtils.lemmaSizeTrEqualsSize(input, 0))
     ghostExpr(ListUtils.lemmaSizeTrEqualsSize(Nil[C](), 0))
-    findLongestMatchInnerMem(r, Nil(), 0, input, input, ListUtils.sizeTr(input))(cache)
+    findLongestMatchInnerMem(r, Nil(), 0, input, input, ListUtils.sizeTr(input))(using cache)
   }.ensuring (res => res == findLongestMatch(r, input) && cache.valid)
 
   def findLongestMatchInnerMem[C](r: Regex[C], testedP: List[C], testedPSize: BigInt, testedSuffix: List[C], totalInput: List[C], totalInputSize: BigInt)(implicit cache: Cache[C]): (List[C], List[C]) = {

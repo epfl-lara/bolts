@@ -185,7 +185,7 @@ class LexerBenchmarkGenerated {
   @OutputTimeUnit(TimeUnit.MICROSECONDS)
   def lex_ZipperMem(): Unit = {
     val (tokens, suffix) = Lexer.lexMem(AmyLexer.rules, LexerBenchmarkUtils.generatedFileContents(file))(
-      LexerBenchmarkUtils.zipperCacheUp,
+      using LexerBenchmarkUtils.zipperCacheUp,
       LexerBenchmarkUtils.zipperCacheDown
     )
     assert(suffix.isEmpty)

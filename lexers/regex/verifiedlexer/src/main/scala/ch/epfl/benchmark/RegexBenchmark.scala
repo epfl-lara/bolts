@@ -89,7 +89,7 @@ class RegexBenchmark {
   def abStarAccepting_RegexMem_list(): Unit = {
     val r = RegexBenchmarkUtils.abStar
     val s = RegexBenchmarkUtils.abStar_Accepting_strings_list(size.toInt)
-    val res = matchRMem(r, s)(RegexBenchmarkUtils.regexCache)
+    val res = matchRMem(r, s)(using RegexBenchmarkUtils.regexCache)
     assert(res)
   }
 
@@ -99,7 +99,7 @@ class RegexBenchmark {
   def abStarAccepting_ZipperMem_list(): Unit = {
     val r = RegexBenchmarkUtils.abStar
     val s = RegexBenchmarkUtils.abStar_Accepting_strings_list(size.toInt)
-    val res = matchZipperMem(r, s)(RegexBenchmarkUtils.zipperCacheUp, RegexBenchmarkUtils.zipperCacheDown)
+    val res = matchZipperMem(r, s)(using RegexBenchmarkUtils.zipperCacheUp, RegexBenchmarkUtils.zipperCacheDown)
     assert(res)
   }
 
@@ -151,7 +151,7 @@ class RegexBenchmark {
   def emailAccepting_RegexMem_list(): Unit = {
     val r = RegexBenchmarkUtils.emailRegex
     val s = RegexBenchmarkUtils.email_Accepting_strings_list(size.toInt)
-    val res = matchRMem(r, s)(RegexBenchmarkUtils.regexCache)
+    val res = matchRMem(r, s)(using RegexBenchmarkUtils.regexCache)
     assert(res)
   }
 

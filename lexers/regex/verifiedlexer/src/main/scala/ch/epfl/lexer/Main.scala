@@ -153,14 +153,14 @@ def testRegex(): Unit = {
   println(f"r1 = ${r1}")
   println(f"list = ${"ab".toStainless}")
   println(f"matching a with r1 without cache: ${matchR(r1, Cons('a', Nil()))}")
-  println(f"matching a with r1: ${matchRMem(r1, "a".toStainlessList)(cache)}")
-  println(f"matching abababababababababbbababbababbbabab with r1: ${matchRMem(r1, "abababababababababbbababbababbbabab".toStainlessList)(cache)}")
-  println(f"matching abchihihi with r1: ${matchRMem(r1, "abchihihi".toStainlessList)(cache)}")
+  println(f"matching a with r1: ${matchRMem(r1, "a".toStainlessList)(using cache)}")
+  println(f"matching abababababababababbbababbababbbabab with r1: ${matchRMem(r1, "abababababababababbbababbababbbabab".toStainlessList)(using cache)}")
+  println(f"matching abchihihi with r1: ${matchRMem(r1, "abchihihi".toStainlessList)(using cache)}")
 
   val r2 = "abcdedfghijklmnopqrstuvwxyz.".anyOf.+ ~ "@".r ~ "abcdedfghijklmnopqrstuvwxyz".anyOf.+ ~ ".".r ~ "abcdedfghijklmnopqrstuvwxyz".anyOf.+
   println(f"r2 = ${r2}")
   val s21 = "samuel.chassot@gmail.com"
-  println(f"matching $s21 with r2: ${matchRMem(r2, s21.toStainlessList)(cache)}")
+  println(f"matching $s21 with r2: ${matchRMem(r2, s21.toStainlessList)(using cache)}")
 
   println(s"r1 = $r1\nremoveUselessConcat(r1) = ${removeUselessConcat(r1)}")
 
@@ -189,12 +189,12 @@ object RegexBenchmark {
   def benchmark01(): Unit = {
     val r = ("a".r | "b".r).*
     val s = "abababababababababbbababbababbbabab"
-    val match11 = matchRMem(r, s.toStainlessList)(cache)
+    val match11 = matchRMem(r, s.toStainlessList)(using cache)
     println(s"Matching $s with r -> $match11")
     assert(match11)
 
     val s2 = "abchihihi"
-    val match12 = matchRMem(r, s2.toStainlessList)(cache)
+    val match12 = matchRMem(r, s2.toStainlessList)(using cache)
     println(s"Matching $s2 with r -> $match12")
     assert(!match12)
   }
@@ -202,12 +202,12 @@ object RegexBenchmark {
   def benchmark02(): Unit = {
     val r = "abcdedfghijklmnopqrstuvwxyz.".anyOf.+ ~ "@".r ~ "abcdedfghijklmnopqrstuvwxyz".anyOf.+ ~ ".".r ~ "abcdedfghijklmnopqrstuvwxyz".anyOf.+
     val s = "example.example@domain.com"
-    val match21 = matchRMem(r, s.toStainlessList)(cache)
+    val match21 = matchRMem(r, s.toStainlessList)(using cache)
     println(s"Matching $s with r -> $match21")
     assert(match21)
 
     val s2 = "example.example@domain"
-    val match22 = matchRMem(r, s2.toStainlessList)(cache)
+    val match22 = matchRMem(r, s2.toStainlessList)(using cache)
     println(s"Matching $s2 with r -> $match22")
     assert(!match22)
   }
@@ -216,13 +216,13 @@ object RegexBenchmark {
     val r = ("a".r | "b".r).*
     println(s"r = $r")
     val s = "ababa"
-    val match31 = matchRMem(r, s.toStainlessList)(cache)
+    val match31 = matchRMem(r, s.toStainlessList)(using cache)
     println(s"Matching $s with r -> $match31")
     assert(match31)
 
     val s2 = "ababaabbabbababaaaabababbababbbababa"
     println(s"Matching $s2 with r...")
-    val match32 = matchRMem(r, s2.toStainlessList)(cache)
+    val match32 = matchRMem(r, s2.toStainlessList)(using cache)
     println(s"Done -> $match32")
     assert(match32)
   }
