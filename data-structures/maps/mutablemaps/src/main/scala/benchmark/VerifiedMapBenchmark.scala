@@ -49,7 +49,7 @@ class ArrayFillBenchmark {
       "33554432"
     )
   )
-  var size: String = _
+  var size: String = scala.compiletime.uninitialized
 
   @Benchmark
   @BenchmarkMode(Array(Mode.AverageTime))
@@ -108,7 +108,7 @@ class LongListMapBenchmark {
   import BenchmarkUtil.*
   // ------------------------------------------------ CREATE + UPDATE + LOOKUPS --------------------------------------------------------------------
   @Param(Array("1", "2", "3", "4", "5", "6", "7", "8", "9"))
-  var n: String = _
+  var n: String = scala.compiletime.uninitialized
 
   @Benchmark
   @BenchmarkMode(Array(Mode.AverageTime))
@@ -221,7 +221,7 @@ class MutableLongMapBenchmark {
       "65536"
     )
   )
-  var nKeys: String = _
+  var nKeys: String = scala.compiletime.uninitialized
 
   // ------------------------------------------------ RETRIEVE N KEYS FROM 2^^15 MAP ---------------------------------------------------
 
@@ -590,7 +590,7 @@ class MutableLongMapBenchmarkBig {
       "8388608"
     )
   )
-  var nKeys: String = _
+  var nKeys: String = scala.compiletime.uninitialized
 
   // ------------------------------------------------ RETRIEVE N KEYS FROM 2^^22 MAP ---------------------------------------------------
 

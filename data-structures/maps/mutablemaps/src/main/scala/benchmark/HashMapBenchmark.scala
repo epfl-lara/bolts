@@ -57,7 +57,7 @@ class MutableHashMapBenchmarkBig {
       "8388608"
     )
   )
-  var nKeys: String = _
+  var nKeys: String = scala.compiletime.uninitialized
 
   // ------------------------------------------------ RETRIEVE N KEYS FROM 2^^22 MAP ---------------------------------------------------
 
