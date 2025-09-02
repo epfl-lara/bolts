@@ -23,7 +23,15 @@ object Main {
   def main(args: Array[String]): Unit = {
     // testAmyLexer()
     // tokeniseAmyFile("src/main/scala/ch/epfl/example/res/Factorial_275chars.amy","src/main/scala/ch/epfl/example/res/Factorial_275chars.amy.tokens")
-    tokeniseAmyFileMem("src/main/scala/ch/epfl/example/res/Ultimate_duplicated_commented_7629chars.amy","src/main/scala/ch/epfl/example/res/Ultimate_duplicated_commented_7629chars.amytokens")
+
+    Thread.sleep(10000)
+    val filepath = "/Users/samuel/EPFL/bolts/lexers/regex/verifiedlexer/src/main/scala/ch/epfl/benchmark/res/generated_code_041791chars.amy"
+    val input: String = scala.io.Source.fromFile(filepath).mkString
+    println(f"Lexing: $input")
+    val (tokens, suffix) = Lexer.lexMem(AmyLexer.rules, input.toStainless)(using LexerBenchmarkUtils.zipperCacheUp, LexerBenchmarkUtils.zipperCacheDown)
+    assert(suffix.isEmpty)
+    println("Done!")
+//    tokeniseAmyFileMem("src/main/scala/ch/epfl/example/res/Ultimate_duplicated_commented_7629chars.amy","src/main/scala/ch/epfl/example/res/Ultimate_duplicated_commented_7629chars.amytokens")
 
     // DemoPrintableTokens.main()
     // addNumberOfCharsInFileName("src/main/scala/ch/epfl/example/res/ADT.amy")
@@ -41,6 +49,25 @@ object Main {
     // addNumberOfCharsInFileName("src/main/scala/ch/epfl/example/res/Rec.amy")
     // addNumberOfCharsInFileName("src/main/scala/ch/epfl/example/res/Ultimate_duplicated_commented.amy")
     // addNumberOfCharsInFileName("src/main/scala/ch/epfl/example/res/NestedMatch_duplicated_commented.amy")
+<<<<<<< Updated upstream
+=======
+    
+    // import benchmark.RegexBenchmarkUtils.*
+    // import benchmark.ScalaRegexUtils
+    // comment_Accepting_strings_multiline_realString.foreach((size, st) => {
+    //   println(f"Size: ${size}")
+    //   println(f"String: $st")
+    //   println("")
+    //   println(f"Matches?: ${ScalaRegexUtils.multiCommentRegex.matches(st)}")
+    // })
+
+//    import ch.epfl.lexer.benchmark.lexer.LexerBenchmarkUtils
+//    val input = LexerBenchmarkUtils.generatedFileContents("generated_code_012325chars.amy")
+//    while (true) {
+//      val (tokens, suffix) = Lexer.lex(AmyLexer.rules, input)
+//      // assert(suffix.isEmpty)
+//    }
+>>>>>>> Stashed changes
   }
 }
 
@@ -67,6 +94,7 @@ def tokeniseAmyFile(filepath: String, destFilePath: String): Unit = {
   val writer = new java.io.PrintWriter(new java.io.File(destFilePath))
   writer.write(tokenString)
   writer.close()
+  println("Done!")
 }
 
 def tokeniseAmyFileMem(filepath: String, destFilePath: String): Unit = {
@@ -81,6 +109,7 @@ def tokeniseAmyFileMem(filepath: String, destFilePath: String): Unit = {
   val writer = new java.io.PrintWriter(new java.io.File(destFilePath))
   writer.write(tokenString)
   writer.close()
+  println("Done!")
 }
 
 def testAmyLexer(): Unit = {
