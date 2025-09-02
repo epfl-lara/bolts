@@ -17,6 +17,7 @@ import ch.epfl.lexer.example.ExampleAmyLexer.*
 import ch.epfl.lexer.VerifiedLexer.Lexer
 
 import ch.epfl.lexer.benchmark.RegexUtils._
+import _root_.benchmark.lexer.LexerBenchmarkUtils
 
 import stainless.collection.List
 object Main {
@@ -206,44 +207,6 @@ def testRegex(): Unit = {
 
   println(s"r1 = $r1\nremoveUselessConcat(r1) = ${removeUselessConcat(r1)}")
 
-}
-
-object KeyHashable extends Hashable[(Regex[Char], Char)] {
-  override def hash(x: (Regex[Char], Char)): Long = CharHashable.hash(x._2) + RegexHashable(CharHashable).hash(x._1)
-}
-
-object CharHashable extends Hashable[Char] {
-  override def hash(x: Char): Long = x.toLong
-}
-
-case class RegexHashable[C](hc: Hashable[C]) extends Hashable[Regex[C]] {
-  override def hash(x: Regex[C]): Long = x match {
-    case ElementMatch(c) => 2L * hc.hash(c)
-    case Concat(l, r)    => 3L * hash(l) + 5L * hash(r)
-    case Union(l, r)     => 7L * hash(l) + 11L * hash(r)
-    case Star(r)         => 13L * hash(r)
-    case _               => 17L
-  }
-}
-
-object ContextCharHashable extends Hashable[(Context[Char], Char)] {
-  override def hash(k: (Context[Char], Char)): Long = {
-    val (ctx, c) = k
-    ctx.hashCode() * 31 + c.hashCode()
-  }
-}
-
-object RegexContextCharHashable extends Hashable[(Regex[Char], Context[Char], Char)] {
-  override def hash(k: (Regex[Char], Context[Char], Char)): Long = {
-    val (r, ctx, c) = k
-    r.hashCode() * 63 + ctx.hashCode() * 31 + c.hashCode()
-  }
-}
-
-object LexerBenchmarkUtils {
-
-  val zipperCacheUp: MemoisationZipper.CacheUp[Char] = MemoisationZipper.emptyUp(ContextCharHashable)
-  val zipperCacheDown: MemoisationZipper.CacheDown[Char] = MemoisationZipper.emptyDown(RegexContextCharHashable)
 }
 
 object RegexBenchmark {

@@ -14,7 +14,9 @@ import ch.epfl.lexer.MemoisationZipper
 import ch.epfl.lexer.VerifiedRegex.Regex
 import ch.epfl.map.Hashable
 import ch.epfl.lexer.ZipperRegex.Context
-
+import ch.epfl.lexer.benchmark.ContextCharHashable
+import ch.epfl.lexer.benchmark.RegexCharHashable
+import ch.epfl.lexer.benchmark.RegexContextCharHashable
 
 import java.io.File
 
@@ -199,29 +201,6 @@ class LexerBenchmarkGenerated {
   }
 
 
-}
-
-
-
-object RegexCharHashable extends Hashable[(Regex[Char], Char)] {
-  override def hash(k: (Regex[Char], Char)): Long = {
-    val (r, c) = k
-    r.hashCode() * 31 + c.hashCode()
-  }
-}
-
-object ContextCharHashable extends Hashable[(Context[Char], Char)] {
-  override def hash(k: (Context[Char], Char)): Long = {
-    val (ctx, c) = k
-    ctx.hashCode() * 31 + c.hashCode()
-  }
-}
-
-object RegexContextCharHashable extends Hashable[(Regex[Char], Context[Char], Char)] {
-  override def hash(k: (Regex[Char], Context[Char], Char)): Long = {
-    val (r, ctx, c) = k
-    r.hashCode() * 63 + ctx.hashCode() * 31 + c.hashCode()
-  }
 }
 
 
