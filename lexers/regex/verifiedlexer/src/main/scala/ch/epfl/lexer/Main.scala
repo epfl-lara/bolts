@@ -70,6 +70,8 @@ object Main {
 }
 
 
+
+
 def addNumberOfCharsInFileName(path: String): Unit = {
   val file = new java.io.File(path)
   val parent = file.getParent
@@ -210,6 +212,10 @@ def testRegex(): Unit = {
 }
 
 object RegexBenchmark {
+
+  object KeyHashable extends Hashable[(Regex[Char], Char)] {
+    override def hash(c: (Regex[Char], Char)): Long = c._1.typeId * 31 + c._2.hashCode()
+  }
   val cache: Cache[Char] = Cache(MutableHashMap.getEmptyHashMap(_ => EmptyLang(), KeyHashable))
   def benchmark01(): Unit = {
     val r = ("a".r | "b".r).*
