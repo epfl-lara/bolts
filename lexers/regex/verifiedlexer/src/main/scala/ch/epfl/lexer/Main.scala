@@ -194,6 +194,15 @@ def testZipperMatch(): Unit = {
   assert(matchResR22 == false)
 }
 
+
+
+
+
+
+ object KeyHashable extends Hashable[(Regex[Char], Char)] {
+    override def hash(c: (Regex[Char], Char)): Long = c._1.typeId * 31 + c._2.hashCode()
+  }
+
 def testRegex(): Unit = {
   val cache: Cache[Char] = Cache(MutableHashMap.getEmptyHashMap(_ => EmptyLang(), KeyHashable))
   val r1 = ("a".r | "b".r).*
@@ -214,10 +223,6 @@ def testRegex(): Unit = {
 }
 
 object RegexBenchmark {
-
-  object KeyHashable extends Hashable[(Regex[Char], Char)] {
-    override def hash(c: (Regex[Char], Char)): Long = c._1.typeId * 31 + c._2.hashCode()
-  }
   val cache: Cache[Char] = Cache(MutableHashMap.getEmptyHashMap(_ => EmptyLang(), KeyHashable))
   def benchmark01(): Unit = {
     val r = ("a".r | "b".r).*
