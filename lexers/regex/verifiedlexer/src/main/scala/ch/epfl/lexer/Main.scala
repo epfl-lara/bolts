@@ -17,7 +17,7 @@ import ch.epfl.lexer.example.ExampleAmyLexer.*
 import ch.epfl.lexer.VerifiedLexer.Lexer
 
 import ch.epfl.lexer.benchmark.RegexUtils._
-import _root_.benchmark.lexer.LexerBenchmarkUtils
+import ch.epfl.lexer.benchmark.lexer.LexerBenchmarkUtils
 
 
 import stainless.collection.List
