@@ -373,7 +373,7 @@ object VerifiedRegex {
 
   extension[C] (r: Regex[C]) def typeIdFct: Long = {
     r match {
-      case EmptyExpr()        => 0
+      case EmptyExpr()        => 1
       case EmptyLang()        => 2
       case ElementMatch(c)    => 3
       case Star(r)            => 5 
