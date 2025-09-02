@@ -31,7 +31,7 @@ object Main {
     val (tokens, suffix) = Lexer.lexMem(AmyLexer.rules, input.toStainless)(using LexerBenchmarkUtils.zipperCacheUp, LexerBenchmarkUtils.zipperCacheDown)
     assert(suffix.isEmpty)
     println("Done!")
-//    tokeniseAmyFileMem("src/main/scala/ch/epfl/example/res/Ultimate_duplicated_commented_7629chars.amy","src/main/scala/ch/epfl/example/res/Ultimate_duplicated_commented_7629chars.amytokens")
+    //    tokeniseAmyFileMem("src/main/scala/ch/epfl/example/res/Ultimate_duplicated_commented_7629chars.amy","src/main/scala/ch/epfl/example/res/Ultimate_duplicated_commented_7629chars.amytokens")
 
     // DemoPrintableTokens.main()
     // addNumberOfCharsInFileName("src/main/scala/ch/epfl/example/res/ADT.amy")
@@ -49,8 +49,6 @@ object Main {
     // addNumberOfCharsInFileName("src/main/scala/ch/epfl/example/res/Rec.amy")
     // addNumberOfCharsInFileName("src/main/scala/ch/epfl/example/res/Ultimate_duplicated_commented.amy")
     // addNumberOfCharsInFileName("src/main/scala/ch/epfl/example/res/NestedMatch_duplicated_commented.amy")
-<<<<<<< Updated upstream
-=======
     
     // import benchmark.RegexBenchmarkUtils.*
     // import benchmark.ScalaRegexUtils
@@ -67,7 +65,6 @@ object Main {
 //      val (tokens, suffix) = Lexer.lex(AmyLexer.rules, input)
 //      // assert(suffix.isEmpty)
 //    }
->>>>>>> Stashed changes
   }
 }
 
