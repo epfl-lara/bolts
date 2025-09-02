@@ -437,7 +437,7 @@ object MutableLongMap {
       if (key == 0) (extraKeys & 1) != 0
       else if (key == Long.MinValue) (extraKeys & 2) != 0
       else {
-        val seekEntryRes = seekEntry(key)(_keys, mask)
+        val seekEntryRes = seekEntry(key)(using _keys, mask)
         seekEntryRes match {
           case Found(index) => {
             ghostExpr(lemmaArrayContainsFromImpliesContainsFromZero(_keys, key, index))
@@ -506,7 +506,7 @@ object MutableLongMap {
         else if (key == Long.MinValue && (extraKeys & 2) != 0) minValue
         else defaultEntry(key)
       } else {
-        val seekEntryRes = seekEntry(key)(_keys, mask)
+        val seekEntryRes = seekEntry(key)(using _keys, mask)
         ghostExpr(lemmaSeekEntryGivesInRangeIndex(_keys, _values, mask, extraKeys, zeroValue, minValue, key))
         seekEntryRes match {
           case Found(index) => {
@@ -592,7 +592,7 @@ object MutableLongMap {
         }
 
       } else {
-        val seekEntryRes = seekEntryOrOpen(key)(_keys, mask)
+        val seekEntryRes = seekEntryOrOpen(key)(using _keys, mask)
         seekEntryRes match {
           case Undefined() => {
             // the key is not in the array, it was not able to find an empty space, the map is maybe full
@@ -761,13 +761,13 @@ object MutableLongMap {
           true
         }
       } else {
-        val seekEntryRes = seekEntry(key)(_keys, mask)
+        val seekEntryRes = seekEntry(key)(using _keys, mask)
         seekEntryRes match {
           case Found(index) => {
             // _vacant += 1
             ghostExpr(lemmaRemoveValidKeyDecreasesNumberOfValidKeysInArray(_keys, index, Long.MinValue))
             ghostExpr(lemmaPutNonValidKeyPreservesNoDuplicate(_keys, Long.MinValue, index, 0, List()))
-            ghostExpr(lemmaPutLongMinValuePreservesForallSeekEntryOrOpen(_keys, index)(mask))
+            ghostExpr(lemmaPutLongMinValuePreservesForallSeekEntryOrOpen(_keys, index)(using mask))
             ghostExpr(lemmaArrayNoDuplicateRemoveOneThenNotContain(_keys, index, key))
             ghostExpr(
               lemmaRemoveValidKeyToArrayThenRemoveKeyFromListMap(
@@ -836,10 +836,10 @@ object MutableLongMap {
       require(key != 0)
       require(key != Long.MinValue)
       require(
-        seekEntryOrOpen(key)(_keys, mask) == MissingZero(
+        seekEntryOrOpen(key)(using _keys, mask) == MissingZero(
           index
         ) || seekEntryOrOpen(key)(
-          _keys,
+          using _keys,
           mask
         ) == MissingVacant(index)
       )
@@ -897,7 +897,7 @@ object MutableLongMap {
 
       ghostExpr(lemmaPutNewValidKeyPreservesNoDuplicate(_keys, key, index, 0, List()))
       ghostExpr(lemmaAddValidKeyIncreasesNumberOfValidKeysInArray(_keys, index, key))
-      ghostExpr(lemmaPutValidKeyPreservesForallSeekEntryOrOpen(key, _keys, index)(mask))
+      ghostExpr(lemmaPutValidKeyPreservesForallSeekEntryOrOpen(key, _keys, index)(using mask))
 
       ghostExpr(
         lemmaAddValidKeyToArrayThenAddPairToListMap(
@@ -943,7 +943,7 @@ object MutableLongMap {
       // class invariant
       simpleValid &&
       arrayCountValidKeys(_keys, 0, _keys.length) == _size &&
-      arrayForallSeekEntryOrOpenFound(0)(_keys, mask) &&
+      arrayForallSeekEntryOrOpenFound(0)(using _keys, mask) &&
       arrayNoDuplicates(_keys, 0)
     }
 
@@ -1066,7 +1066,7 @@ object MutableLongMap {
       if (i >= _keys.length) true
       else if (validKeyInArray(_keys(i))) {
         lemmaArrayContainsFromImpliesContainsFromZero(_keys, _keys(i), i)
-        LongMapFixedSize.seekEntryOrOpen(_keys(i))(_keys, mask) == Found(i) &&
+        LongMapFixedSize.seekEntryOrOpen(_keys(i))(using _keys, mask) == Found(i) &&
         arrayForallSeekEntryOrOpenFound(i + 1)
       } else arrayForallSeekEntryOrOpenFound(i + 1)
     }
@@ -1102,7 +1102,7 @@ object MutableLongMap {
       decreases(1)
 
       val intermediate =
-        seekKeyOrZeroOrLongMinValue(0, toIndex(k, mask))(k, _keys, mask)
+        seekKeyOrZeroOrLongMinValue(0, toIndex(k, mask))(using k, _keys, mask)
       intermediate match {
         case Intermediate(undefined, index, x) if (undefined) => Undefined()
         case Intermediate(undefined, index, x) if (!undefined) => {
@@ -1117,7 +1117,7 @@ object MutableLongMap {
             // reuse the spot
             assert(_keys(index) == Long.MinValue)
             assert(index >= 0 && index < mask + 1)
-            val res = seekKeyOrZeroReturnVacant(x, index, index)(k, _keys, mask)
+            val res = seekKeyOrZeroReturnVacant(x, index, index)(using k, _keys, mask)
             res match {
               case MissingVacant(index) => MissingZero(index)
               case _                    => res
@@ -1152,7 +1152,7 @@ object MutableLongMap {
       require(validKeyInArray(k))
 
       val intermediate =
-        seekKeyOrZeroOrLongMinValue(0, toIndex(k, mask))(k, _keys, mask)
+        seekKeyOrZeroOrLongMinValue(0, toIndex(k, mask))(using k, _keys, mask)
       intermediate match {
         case Intermediate(undefined, index, x) if (undefined) => Undefined()
         case Intermediate(undefined, index, x) if (!undefined) => {
@@ -1167,7 +1167,7 @@ object MutableLongMap {
             // reuse the spot
             assert(_keys(index) == Long.MinValue)
             assert(index >= 0 && index < mask + 1)
-            val res = seekKeyOrZeroReturnVacant(x, index, index)(k, _keys, mask)
+            val res = seekKeyOrZeroReturnVacant(x, index, index)(using k, _keys, mask)
             res
           }
         }
@@ -1285,7 +1285,7 @@ object MutableLongMap {
       require(mask >= 0)
       require(extraKeys >= 0)
       require(extraKeys <= 3)
-      require(arrayForallSeekEntryOrOpenFound(0)(_keys, mask))
+      require(arrayForallSeekEntryOrOpenFound(0)(using _keys, mask))
       require(arrayNoDuplicates(_keys, 0))
 
       require(from >= 0 && from <= _keys.length)
@@ -1341,7 +1341,7 @@ object MutableLongMap {
 
       require(extraKeys >= 0)
       require(extraKeys <= 3)
-      require(arrayForallSeekEntryOrOpenFound(0)(_keys, mask))
+      require(arrayForallSeekEntryOrOpenFound(0)(using _keys, mask))
       require(arrayNoDuplicates(_keys, 0))
 
       require(from >= 0 && from <= _keys.length)
@@ -1393,14 +1393,14 @@ object MutableLongMap {
       require(mask >= 0)
       require(extraKeys >= 0)
       require(extraKeys <= 3)
-      require(arrayForallSeekEntryOrOpenFound(0)(_keys, mask))
+      require(arrayForallSeekEntryOrOpenFound(0)(using _keys, mask))
       require(arrayNoDuplicates(_keys, 0))
 
       require(i >= 0 && i < _keys.length)
       require(validKeyInArray(k))
       require(_keys(i) == Long.MinValue || _keys(i) == 0)
       require(!arrayContainsKey(_keys, k, 0))
-      require(arrayForallSeekEntryOrOpenFound(0)(_keys.updated(i, k), mask))
+      require(arrayForallSeekEntryOrOpenFound(0)(using _keys.updated(i, k), mask))
       require(arrayNoDuplicates(_keys.updated(i, k), 0))
 
       val mapNoExtraKeysBefore =
@@ -1558,14 +1558,14 @@ object MutableLongMap {
       require(mask >= 0)
       require(extraKeys >= 0)
       require(extraKeys <= 3)
-      require(arrayForallSeekEntryOrOpenFound(0)(_keys, mask))
+      require(arrayForallSeekEntryOrOpenFound(0)(using _keys, mask))
       require(arrayNoDuplicates(_keys, 0))
 
       require(i >= 0 && i < _keys.length)
       require(validKeyInArray(k))
       require(_keys(i) == Long.MinValue || _keys(i) == 0)
       require(!arrayContainsKey(_keys, k, 0))
-      require(arrayForallSeekEntryOrOpenFound(0)(_keys.updated(i, k), mask))
+      require(arrayForallSeekEntryOrOpenFound(0)(using _keys.updated(i, k), mask))
       require(arrayNoDuplicates(_keys.updated(i, k), 0))
 
       require(i >= 0 && i < _keys.length)
@@ -1795,7 +1795,7 @@ object MutableLongMap {
       require(mask >= 0)
       require(extraKeys >= 0)
       require(extraKeys <= 3)
-      require(arrayForallSeekEntryOrOpenFound(0)(_keys, mask))
+      require(arrayForallSeekEntryOrOpenFound(0)(using _keys, mask))
       require(arrayNoDuplicates(_keys, 0))
 
       require(i >= 0 && i < _keys.length)
@@ -1937,7 +1937,7 @@ object MutableLongMap {
       require(mask >= 0)
       require(extraKeys >= 0)
       require(extraKeys <= 3)
-      require(arrayForallSeekEntryOrOpenFound(0)(_keys, mask))
+      require(arrayForallSeekEntryOrOpenFound(0)(using _keys, mask))
       require(arrayNoDuplicates(_keys, 0))
 
       require(i >= 0 && i < _keys.length)
@@ -2172,7 +2172,7 @@ object MutableLongMap {
       require(extraKeysAfter <= 3)
       require((extraKeysBefore & 2) == (extraKeysAfter & 2)) // Long.MinValue key does not change
       require((extraKeysAfter & 1) != 0) // 0 key must be defined after
-      require(arrayForallSeekEntryOrOpenFound(0)(_keys, mask))
+      require(arrayForallSeekEntryOrOpenFound(0)(using _keys, mask))
       require(arrayNoDuplicates(_keys, 0))
 
       val mapNoExtraKeysBefore =
@@ -2412,7 +2412,7 @@ object MutableLongMap {
       require(extraKeysAfter <= 3)
       require((extraKeysBefore & 1) == (extraKeysAfter & 1)) // zero key does not change
       require((extraKeysAfter & 2) != 0) // MinValue key must be defined after
-      require(arrayForallSeekEntryOrOpenFound(0)(_keys, mask))
+      require(arrayForallSeekEntryOrOpenFound(0)(using _keys, mask))
       require(arrayNoDuplicates(_keys, 0))
 
       val mapNoExtraKeysBefore =
@@ -2590,13 +2590,13 @@ object MutableLongMap {
       require(mask >= 0)
       require(extraKeys >= 0)
       require(extraKeys <= 3)
-      require(arrayForallSeekEntryOrOpenFound(0)(_keys, mask))
+      require(arrayForallSeekEntryOrOpenFound(0)(using _keys, mask))
       require(arrayNoDuplicates(_keys, 0))
 
       require(i >= 0 && i < _keys.length)
       require(validKeyInArray(k))
       require(_keys(i) == k)
-      require(arrayForallSeekEntryOrOpenFound(0)(_keys.updated(i, Long.MinValue), mask))
+      require(arrayForallSeekEntryOrOpenFound(0)(using _keys.updated(i, Long.MinValue), mask))
       require(arrayNoDuplicates(_keys.updated(i, Long.MinValue), 0))
 
       lemmaArrayContainsFromImpliesContainsFromZero(_keys, k, i)
@@ -2739,7 +2739,7 @@ object MutableLongMap {
       require(extraKeysAfter <= 3)
       require((extraKeysBefore & 1) == (extraKeysAfter & 1)) // zero key does not change
       require((extraKeysAfter & 2) == 0) // MinValue key must be removed after
-      require(arrayForallSeekEntryOrOpenFound(0)(_keys, mask))
+      require(arrayForallSeekEntryOrOpenFound(0)(using _keys, mask))
       require(arrayNoDuplicates(_keys, 0))
 
       val mapNoExtraKeysBefore =
@@ -2931,7 +2931,7 @@ object MutableLongMap {
       require(extraKeysAfter <= 3)
       require((extraKeysBefore & 2) == (extraKeysAfter & 2)) // MinValue key does not change
       require((extraKeysAfter & 1) == 0) // 0 key must be removed after
-      require(arrayForallSeekEntryOrOpenFound(0)(_keys, mask))
+      require(arrayForallSeekEntryOrOpenFound(0)(using _keys, mask))
       require(arrayNoDuplicates(_keys, 0))
 
       val mapNoExtraKeysBefore =
@@ -3132,13 +3132,13 @@ object MutableLongMap {
       require(mask >= 0)
       require(extraKeys >= 0)
       require(extraKeys <= 3)
-      require(arrayForallSeekEntryOrOpenFound(0)(_keys, mask))
+      require(arrayForallSeekEntryOrOpenFound(0)(using _keys, mask))
       require(arrayNoDuplicates(_keys, 0))
 
       require(i >= 0 && i < _keys.length)
       require(validKeyInArray(k))
       require(_keys(i) == k)
-      require(arrayForallSeekEntryOrOpenFound(0)(_keys.updated(i, Long.MinValue), mask))
+      require(arrayForallSeekEntryOrOpenFound(0)(using _keys.updated(i, Long.MinValue), mask))
       require(arrayNoDuplicates(_keys.updated(i, Long.MinValue), 0))
 
       decreases(_keys.length - from)
@@ -3556,7 +3556,7 @@ object MutableLongMap {
       require(extraKeysBefore <= 3)
       require(extraKeysAfter >= 0)
       require(extraKeysAfter <= 3)
-      require(arrayForallSeekEntryOrOpenFound(0)(_keys, mask))
+      require(arrayForallSeekEntryOrOpenFound(0)(using _keys, mask))
       require(arrayNoDuplicates(_keys, 0))
       require(from >= 0 && from <= _keys.length)
 
@@ -3626,7 +3626,7 @@ object MutableLongMap {
 
       require(extraKeys >= 0)
       require(extraKeys <= 3)
-      require(arrayForallSeekEntryOrOpenFound(0)(_keys, mask))
+      require(arrayForallSeekEntryOrOpenFound(0)(using _keys, mask))
       require(arrayNoDuplicates(_keys, 0))
 
       require(
@@ -3721,7 +3721,7 @@ object MutableLongMap {
 
       require(extraKeys >= 0)
       require(extraKeys <= 3)
-      require(arrayForallSeekEntryOrOpenFound(0)(_keys, mask))
+      require(arrayForallSeekEntryOrOpenFound(0)(using _keys, mask))
       require(arrayNoDuplicates(_keys, 0))
 
       require(
@@ -3767,7 +3767,7 @@ object MutableLongMap {
 
       require(extraKeys >= 0)
       require(extraKeys <= 3)
-      require(arrayForallSeekEntryOrOpenFound(0)(_keys, mask))
+      require(arrayForallSeekEntryOrOpenFound(0)(using _keys, mask))
       require(arrayNoDuplicates(_keys, 0))
 
       require(i >= 0 && i < _keys.length)
@@ -3812,7 +3812,7 @@ object MutableLongMap {
 
       require(extraKeys >= 0)
       require(extraKeys <= 3)
-      require(arrayForallSeekEntryOrOpenFound(0)(_keys, mask))
+      require(arrayForallSeekEntryOrOpenFound(0)(using _keys, mask))
       require(arrayNoDuplicates(_keys, 0))
 
       require(validKeyInArray(k))
@@ -3883,7 +3883,7 @@ object MutableLongMap {
 
       require(extraKeys >= 0)
       require(extraKeys <= 3)
-      require(arrayForallSeekEntryOrOpenFound(0)(_keys, mask))
+      require(arrayForallSeekEntryOrOpenFound(0)(using _keys, mask))
       require(arrayNoDuplicates(_keys, 0))
 
       require(from >= 0 && from < _keys.length)
@@ -4006,7 +4006,7 @@ object MutableLongMap {
 
       require(extraKeys >= 0)
       require(extraKeys <= 3)
-      require(arrayForallSeekEntryOrOpenFound(0)(_keys, mask))
+      require(arrayForallSeekEntryOrOpenFound(0)(using _keys, mask))
       require(arrayNoDuplicates(_keys, 0))
 
       require(from >= 0 && from < _keys.length)
@@ -4036,7 +4036,7 @@ object MutableLongMap {
 
       require(extraKeys >= 0)
       require(extraKeys <= 3)
-      require(arrayForallSeekEntryOrOpenFound(0)(_keys, mask))
+      require(arrayForallSeekEntryOrOpenFound(0)(using _keys, mask))
       require(arrayNoDuplicates(_keys, 0))
 
       require(from >= 0 && from < _keys.length)
@@ -4173,7 +4173,7 @@ object MutableLongMap {
 
       require(extraKeys >= 0)
       require(extraKeys <= 3)
-      require(arrayForallSeekEntryOrOpenFound(0)(_keys, mask))
+      require(arrayForallSeekEntryOrOpenFound(0)(using _keys, mask))
       require(arrayNoDuplicates(_keys, 0))
 
       require((extraKeys & 2) == 0)
@@ -4292,7 +4292,7 @@ object MutableLongMap {
 
       require(extraKeys >= 0)
       require(extraKeys <= 3)
-      require(arrayForallSeekEntryOrOpenFound(0)(_keys, mask))
+      require(arrayForallSeekEntryOrOpenFound(0)(using _keys, mask))
       require(arrayNoDuplicates(_keys, 0))
 
       require((extraKeys & 1) == 0)
@@ -4411,7 +4411,7 @@ object MutableLongMap {
 
       require(extraKeys >= 0)
       require(extraKeys <= 3)
-      require(arrayForallSeekEntryOrOpenFound(0)(_keys, mask))
+      require(arrayForallSeekEntryOrOpenFound(0)(using _keys, mask))
       require(arrayNoDuplicates(_keys, 0))
 
       require((extraKeys & 1) != 0 && (extraKeys & 2) != 0)
@@ -4541,7 +4541,7 @@ object MutableLongMap {
 
       require(extraKeys >= 0)
       require(extraKeys <= 3)
-      require(arrayForallSeekEntryOrOpenFound(0)(_keys, mask))
+      require(arrayForallSeekEntryOrOpenFound(0)(using _keys, mask))
       require(arrayNoDuplicates(_keys, 0))
 
       require(from >= 0 && from < _keys.length)
@@ -4628,7 +4628,7 @@ object MutableLongMap {
 
       require(extraKeys >= 0)
       require(extraKeys <= 3)
-      require(arrayForallSeekEntryOrOpenFound(0)(_keys, mask))
+      require(arrayForallSeekEntryOrOpenFound(0)(using _keys, mask))
       require(arrayNoDuplicates(_keys, 0))
 
       require(from >= 0 && from < _keys.length)
@@ -4682,7 +4682,7 @@ object MutableLongMap {
 
       require(extraKeys >= 0)
       require(extraKeys <= 3)
-      require(arrayForallSeekEntryOrOpenFound(0)(_keys, mask))
+      require(arrayForallSeekEntryOrOpenFound(0)(using _keys, mask))
       require(arrayNoDuplicates(_keys, 0))
 
       require(from >= 0 && from < _keys.length)
@@ -4757,7 +4757,7 @@ object MutableLongMap {
 
       require(extraKeys >= 0)
       require(extraKeys <= 3)
-      require(arrayForallSeekEntryOrOpenFound(0)(_keys, mask))
+      require(arrayForallSeekEntryOrOpenFound(0)(using _keys, mask))
       require(arrayNoDuplicates(_keys, 0))
 
       require(from > 0 && from < _keys.length)
@@ -4853,7 +4853,7 @@ object MutableLongMap {
 
       require(extraKeys >= 0)
       require(extraKeys <= 3)
-      require(arrayForallSeekEntryOrOpenFound(0)(_keys, mask))
+      require(arrayForallSeekEntryOrOpenFound(0)(using _keys, mask))
       require(arrayNoDuplicates(_keys, 0))
 
       require(from >= 0 && from < _keys.length)
@@ -5122,7 +5122,7 @@ object MutableLongMap {
       if (i < _keys.length) {
         lemmaArrayForallSeekEntryOrOpenFoundAlwaysTrueFor0Array(_keys, mask, i + 1)
       }
-    }.ensuring (_ => arrayForallSeekEntryOrOpenFound(i)(_keys, mask))
+    }.ensuring (_ => arrayForallSeekEntryOrOpenFound(i)(using _keys, mask))
 
     @opaque
     @inlineOnce
@@ -5144,7 +5144,7 @@ object MutableLongMap {
       require(mask >= 0)
       require(extraKeys >= 0)
       require(extraKeys <= 3)
-      require(arrayForallSeekEntryOrOpenFound(0)(_keys, mask))
+      require(arrayForallSeekEntryOrOpenFound(0)(using _keys, mask))
       require(arrayNoDuplicates(_keys, 0))
       require(
         getCurrentListMap(_keys, _values, mask, extraKeys, zeroValue, minValue, 0, defaultEntry)
@@ -5163,13 +5163,13 @@ object MutableLongMap {
         defaultEntry
       )
       assert(arrayContainsKey(_keys, k, 0))
-      assert(arrayForallSeekEntryOrOpenFound(0)(_keys, mask))
+      assert(arrayForallSeekEntryOrOpenFound(0)(using _keys, mask))
       val i = arrayScanForKey(_keys, k, 0)
       lemmaArrayForallSeekEntryOrOpenFoundFromSmallerThenFromBigger(_keys, mask, 0, i)
       lemmaSeekEntryOrOpenFindsThenSeekEntryFinds(k, i, _keys, mask)
 
     }.ensuring (_ =>
-      (seekEntry(k)(_keys, mask) match {
+      (seekEntry(k)(using _keys, mask) match {
         case Found(index) => inRange(index, mask) && _keys(index) == k
         case _            => false
       })
@@ -5195,7 +5195,7 @@ object MutableLongMap {
       require(mask >= 0)
       require(extraKeys >= 0)
       require(extraKeys <= 3)
-      require(arrayForallSeekEntryOrOpenFound(0)(_keys, mask))
+      require(arrayForallSeekEntryOrOpenFound(0)(using _keys, mask))
       require(arrayNoDuplicates(_keys, 0))
       require(validKeyInArray(k))
       require(
@@ -5219,7 +5219,7 @@ object MutableLongMap {
           lemmaArrayForallSeekEntryOrOpenFoundFromSmallerThenFromBigger(_keys, mask, 0, i)
           check(false)
         } else {
-          seekEntry(k)(_keys, mask) match {
+          seekEntry(k)(using _keys, mask) match {
             case Found(index) => {
               // found but not in array --> Contradiction
               lemmaValidKeyInArrayIsInListMap(
@@ -5240,7 +5240,7 @@ object MutableLongMap {
       }
 
     }.ensuring (_ =>
-      (seekEntry(k)(_keys, mask) match {
+      (seekEntry(k)(using _keys, mask) match {
         case MissingZero(_) => true
         case Undefined()    => true
         case _              => false
@@ -5267,7 +5267,7 @@ object MutableLongMap {
       require(mask >= 0)
       require(extraKeys >= 0)
       require(extraKeys <= 3)
-      require(arrayForallSeekEntryOrOpenFound(0)(_keys, mask))
+      require(arrayForallSeekEntryOrOpenFound(0)(using _keys, mask))
       require(arrayNoDuplicates(_keys, 0))
       require(
         getCurrentListMap(_keys, _values, mask, extraKeys, zeroValue, minValue, 0, defaultEntry)
@@ -5287,10 +5287,10 @@ object MutableLongMap {
       )
       val i = arrayScanForKey(_keys, k, 0)
       lemmaArrayForallSeekEntryOrOpenFoundFromSmallerThenFromBigger(_keys, mask, 0, i)
-      assert(arrayForallSeekEntryOrOpenFound(i)(_keys, mask))
+      assert(arrayForallSeekEntryOrOpenFound(i)(using _keys, mask))
 
     }.ensuring (_ =>
-      (seekEntryOrOpen(k)(_keys, mask) match {
+      (seekEntryOrOpen(k)(using _keys, mask) match {
         case Found(index) => inRange(index, mask) && _keys(index) == k
         case _            => false
       })
@@ -5316,7 +5316,7 @@ object MutableLongMap {
       require(mask >= 0)
       require(extraKeys >= 0)
       require(extraKeys <= 3)
-      require(arrayForallSeekEntryOrOpenFound(0)(_keys, mask))
+      require(arrayForallSeekEntryOrOpenFound(0)(using _keys, mask))
       require(arrayNoDuplicates(_keys, 0))
       require(validKeyInArray(k))
       require(
@@ -5324,7 +5324,7 @@ object MutableLongMap {
           .contains(k)
       )
 
-      val seekEntryRes = seekEntryOrOpen(k)(_keys, mask)
+      val seekEntryRes = seekEntryOrOpen(k)(using _keys, mask)
       seekEntryRes match {
         case Found(index) => {
           assert(_keys(index) == k)
@@ -5382,7 +5382,7 @@ object MutableLongMap {
       }
 
     }.ensuring (_ => {
-      val seekEntryRes = seekEntryOrOpen(k)(_keys, mask)
+      val seekEntryRes = seekEntryOrOpen(k)(using _keys, mask)
       seekEntryRes match {
         case MissingZero(index) =>
           inRange(index, mask) && _keys(index) == 0 && !arrayContainsKey(_keys, k, 0)
@@ -5416,12 +5416,12 @@ object MutableLongMap {
       require(mask >= 0)
       require(extraKeys >= 0)
       require(extraKeys <= 3)
-      require(arrayForallSeekEntryOrOpenFound(0)(_keys, mask))
+      require(arrayForallSeekEntryOrOpenFound(0)(using _keys, mask))
       require(arrayNoDuplicates(_keys, 0))
       require(validKeyInArray(k))
 
     }.ensuring (_ =>
-      seekEntryOrOpen(k)(_keys, mask) match {
+      seekEntryOrOpen(k)(using _keys, mask) match {
         case Undefined()          => true
         case Found(index)         => inRange(index, mask)
         case MissingVacant(index) => inRange(index, mask)
@@ -5449,13 +5449,13 @@ object MutableLongMap {
       require(mask >= 0)
       require(extraKeys >= 0)
       require(extraKeys <= 3)
-      require(arrayForallSeekEntryOrOpenFound(0)(_keys, mask))
+      require(arrayForallSeekEntryOrOpenFound(0)(using _keys, mask))
       require(arrayNoDuplicates(_keys, 0))
 
       require(validKeyInArray(k))
 
     }.ensuring (_ =>
-      (seekEntry(k)(_keys, mask) match {
+      (seekEntry(k)(using _keys, mask) match {
         case Found(index) => inRange(index, mask)
         case _            => true
       })
@@ -5485,14 +5485,14 @@ object MutableLongMap {
       require(i != j)
       require(validKeyInArray(a(i)))
       require(validKeyInArray(a(j)))
-      require(arrayForallSeekEntryOrOpenFound(0)(a, mask))
+      require(arrayForallSeekEntryOrOpenFound(0)(using a, mask))
       require(arrayNoDuplicates(a, 0))
       require(x >= 0 && x <= MAX_ITER)
       require(index >= 0 && index < a.length)
       require(vacantIndex >= 0 && vacantIndex < a.length)
       require(a(vacantIndex) == Long.MinValue)
       require(
-        seekKeyOrZeroReturnVacant(x, index, vacantIndex)(a(j), a, mask) == Found(j)
+        seekKeyOrZeroReturnVacant(x, index, vacantIndex)(using a(j), a, mask) == Found(j)
       )
 
       decreases(MAX_ITER - x)
@@ -5511,11 +5511,11 @@ object MutableLongMap {
 
     }.ensuring (_ =>
       seekKeyOrZeroReturnVacant(x, index, vacantIndex)(
-        a.updated(i, Long.MinValue).apply(j),
+        using a.updated(i, Long.MinValue).apply(j),
         a.updated(i, Long.MinValue),
         mask
       ) == seekKeyOrZeroReturnVacant(x, index, vacantIndex)(
-        a(j),
+        using a(j),
         a,
         mask
       )
@@ -5543,7 +5543,7 @@ object MutableLongMap {
       require(i != j)
       require(validKeyInArray(a(i)))
       require(validKeyInArray(a(j)))
-      require(arrayForallSeekEntryOrOpenFound(0)(a, mask))
+      require(arrayForallSeekEntryOrOpenFound(0)(using a, mask))
       require(arrayNoDuplicates(a, 0))
       require(x >= 0 && x <= MAX_ITER)
       require(resX >= 0 && resX <= MAX_ITER)
@@ -5552,7 +5552,7 @@ object MutableLongMap {
 
       require(
         seekKeyOrZeroOrLongMinValue(0, toIndex(a(j), mask))(
-          a(j),
+          using a(j),
           a,
           mask
         ) == Intermediate(
@@ -5562,7 +5562,7 @@ object MutableLongMap {
         )
       )
       require(
-        seekKeyOrZeroOrLongMinValue(x, index)(a(j), a, mask) == Intermediate(
+        seekKeyOrZeroOrLongMinValue(x, index)(using a(j), a, mask) == Intermediate(
           false,
           resIndex,
           resX
@@ -5570,12 +5570,12 @@ object MutableLongMap {
       )
 
       require(
-        seekKeyOrZeroOrLongMinValue(0, toIndex(a(j), mask))(a(j), a, mask) ==
+        seekKeyOrZeroOrLongMinValue(0, toIndex(a(j), mask))(using a(j), a, mask) ==
           seekKeyOrZeroOrLongMinValue(
             0,
             toIndex(a.updated(i, Long.MinValue).apply(j), mask)
           )(
-            a.updated(i, Long.MinValue).apply(j),
+            using a.updated(i, Long.MinValue).apply(j),
             a.updated(i, Long.MinValue),
             mask
           )
@@ -5584,7 +5584,7 @@ object MutableLongMap {
       decreases(MAX_ITER - x)
       lemmaArrayForallSeekEntryOrOpenFoundFromSmallerThenFromBigger(a, mask, 0, j)
 
-      check(seekEntry(a(j))(a, mask) == Found(j))
+      check(seekEntry(a(j))(using a, mask) == Found(j))
       val newArray = a.updated(i, Long.MinValue)
       assert(a(j) == newArray(j))
 
@@ -5596,25 +5596,25 @@ object MutableLongMap {
         } else {
           assert(a(index) == Long.MinValue)
           check(
-            seekEntryOrOpen(a(j))(a, mask) == seekKeyOrZeroReturnVacant(
+            seekEntryOrOpen(a(j))(using a, mask) == seekKeyOrZeroReturnVacant(
               x,
               index,
               index
             )(
-              a(j),
+              using a(j),
               a,
               mask
             )
           )
           check(
             seekEntryOrOpen(newArray(j))(
-              newArray,
+              using newArray,
               mask
             ) == seekKeyOrZeroReturnVacant(
               x,
               index,
               index
-            )(newArray(j), newArray, mask)
+            )(using newArray(j), newArray, mask)
           )
           lemmaPutLongMinValuePreservesForallSeekEntryOrOpenKey1Helper(a, i, j, x, index, index)
         }
@@ -5631,10 +5631,10 @@ object MutableLongMap {
       }
 
     }.ensuring (_ =>
-      seekEntryOrOpen(a(j))(a, mask) == seekEntryOrOpen(
+      seekEntryOrOpen(a(j))(using a, mask) == seekEntryOrOpen(
         a.updated(i, Long.MinValue).apply(j)
       )(
-        a.updated(i, Long.MinValue),
+        using a.updated(i, Long.MinValue),
         mask
       )
     )
@@ -5664,7 +5664,7 @@ object MutableLongMap {
       require(i != j)
       require(validKeyInArray(a(i)))
       require(validKeyInArray(a(j)))
-      require(arrayForallSeekEntryOrOpenFound(0)(a, mask))
+      require(arrayForallSeekEntryOrOpenFound(0)(using a, mask))
       require(arrayNoDuplicates(a, 0))
       require(x >= 0 && x <= MAX_ITER)
       require(intermediateBeforeX >= 0 && intermediateBeforeX <= MAX_ITER)
@@ -5673,7 +5673,7 @@ object MutableLongMap {
 
       require(
         seekKeyOrZeroOrLongMinValue(0, toIndex(a(j), mask))(
-          a(j),
+          using a(j),
           a,
           mask
         ) == Intermediate(
@@ -5687,7 +5687,7 @@ object MutableLongMap {
           0,
           toIndex(a.updated(i, Long.MinValue).apply(j), mask)
         )(
-          a.updated(i, Long.MinValue).apply(j),
+          using a.updated(i, Long.MinValue).apply(j),
           a.updated(i, Long.MinValue),
           mask
         ) ==
@@ -5695,7 +5695,7 @@ object MutableLongMap {
       )
 
       require(
-        seekKeyOrZeroOrLongMinValue(x, index)(a(j), a, mask) == Intermediate(
+        seekKeyOrZeroOrLongMinValue(x, index)(using a(j), a, mask) == Intermediate(
           false,
           intermediateBeforeIndex,
           intermediateBeforeX
@@ -5703,7 +5703,7 @@ object MutableLongMap {
       )
       require(
         seekKeyOrZeroOrLongMinValue(x, index)(
-          a.updated(i, Long.MinValue).apply(j),
+          using a.updated(i, Long.MinValue).apply(j),
           a.updated(i, Long.MinValue),
           mask
         ) ==
@@ -5721,7 +5721,7 @@ object MutableLongMap {
       decreases(MAX_ITER - x)
 
       lemmaArrayForallSeekEntryOrOpenFoundFromSmallerThenFromBigger(a, mask, 0, j)
-      check(seekEntryOrOpen(a(j))(a, mask) == Found(j))
+      check(seekEntryOrOpen(a(j))(using a, mask) == Found(j))
 
       if (a(index) == Long.MinValue) {
         check(false)
@@ -5775,7 +5775,7 @@ object MutableLongMap {
       require(i != j)
       require(validKeyInArray(a(i)))
       require(validKeyInArray(a(j)))
-      require(arrayForallSeekEntryOrOpenFound(0)(a, mask))
+      require(arrayForallSeekEntryOrOpenFound(0)(using a, mask))
       require(arrayNoDuplicates(a, 0))
       require(x >= 0 && x <= MAX_ITER)
       require(vacantBefore >= 0 && vacantBefore < a.length)
@@ -5785,7 +5785,7 @@ object MutableLongMap {
       require(vacantAfter == i)
       require(index >= 0 && index < a.length)
       require(
-        seekKeyOrZeroReturnVacant(x, index, vacantBefore)(a(j), a, mask) == Found(j)
+        seekKeyOrZeroReturnVacant(x, index, vacantBefore)(using a(j), a, mask) == Found(j)
       )
 
       decreases(MAX_ITER - x)
@@ -5807,7 +5807,7 @@ object MutableLongMap {
 
     }.ensuring (_ =>
       seekKeyOrZeroReturnVacant(x, index, vacantAfter)(
-        a.updated(i, Long.MinValue).apply(j),
+        using a.updated(i, Long.MinValue).apply(j),
         a.updated(i, Long.MinValue),
         mask
       ) == Found(j)
@@ -5838,7 +5838,7 @@ object MutableLongMap {
       require(i != j)
       require(validKeyInArray(a(i)))
       require(validKeyInArray(a(j)))
-      require(arrayForallSeekEntryOrOpenFound(0)(a, mask))
+      require(arrayForallSeekEntryOrOpenFound(0)(using a, mask))
       require(arrayNoDuplicates(a, 0))
       require(x >= 0 && x <= MAX_ITER)
       require(intermediateBeforeX >= 0 && intermediateBeforeX <= MAX_ITER)
@@ -5852,7 +5852,7 @@ object MutableLongMap {
 
       require(
         seekKeyOrZeroOrLongMinValue(0, toIndex(a(j), mask))(
-          a(j),
+          using a(j),
           a,
           mask
         ) == Intermediate(
@@ -5862,7 +5862,7 @@ object MutableLongMap {
         )
       )
       require(
-        seekKeyOrZeroOrLongMinValue(x, index)(a(j), a, mask) == Intermediate(
+        seekKeyOrZeroOrLongMinValue(x, index)(using a(j), a, mask) == Intermediate(
           false,
           intermediateBeforeIndex,
           intermediateBeforeX
@@ -5873,7 +5873,7 @@ object MutableLongMap {
           0,
           toIndex(a.updated(i, Long.MinValue).apply(j), mask)
         )(
-          a.updated(i, Long.MinValue).apply(j),
+          using a.updated(i, Long.MinValue).apply(j),
           a.updated(i, Long.MinValue),
           mask
         ) ==
@@ -5886,49 +5886,49 @@ object MutableLongMap {
             0,
             toIndex(a.updated(i, Long.MinValue).apply(j), mask)
           )(
-            a.updated(i, Long.MinValue).apply(j),
+            using a.updated(i, Long.MinValue).apply(j),
             a.updated(i, Long.MinValue),
             mask
           ) ==
             seekKeyOrZeroOrLongMinValue(x, index)(
-              a.updated(i, Long.MinValue).apply(j),
+              using a.updated(i, Long.MinValue).apply(j),
               a.updated(i, Long.MinValue),
               mask
             )
         else
           seekKeyOrZeroReturnVacant(x, index, intermediateAfterIndex)(
-            a.updated(i, Long.MinValue).apply(j),
+            using a.updated(i, Long.MinValue).apply(j),
             a.updated(i, Long.MinValue),
             mask
           ) == seekEntryOrOpen(
             a.updated(i, Long.MinValue).apply(j)
-          )(a.updated(i, Long.MinValue), mask)
+          )(using a.updated(i, Long.MinValue), mask)
       )
       require(x <= intermediateBeforeX)
       require(intermediateAfterIndex == i)
       decreases(MAX_ITER - x)
 
       lemmaArrayForallSeekEntryOrOpenFoundFromSmallerThenFromBigger(a, mask, 0, j)
-      check(seekEntryOrOpen(a(j))(a, mask) == Found(j))
+      check(seekEntryOrOpen(a(j))(using a, mask) == Found(j))
       check(a(intermediateBeforeIndex) == Long.MinValue || a(intermediateBeforeIndex) == a(j))
 
       if (a(index) == a.updated(i, Long.MinValue).apply(index) && a(index) == a(j)) {
         check(
-          seekEntryOrOpen(a(j))(a, mask) == seekEntryOrOpen(
+          seekEntryOrOpen(a(j))(using a, mask) == seekEntryOrOpen(
             a.updated(i, Long.MinValue).apply(j)
           )(
-            a.updated(i, Long.MinValue),
+            using a.updated(i, Long.MinValue),
             mask
           )
         )
       } else if (a(index) == Long.MinValue) {
         check(
-          seekEntryOrOpen(a(j))(a, mask) == seekKeyOrZeroReturnVacant(
+          seekEntryOrOpen(a(j))(using a, mask) == seekKeyOrZeroReturnVacant(
             x,
             index,
             index
           )(
-            a(j),
+            using a(j),
             a,
             mask
           )
@@ -5943,16 +5943,16 @@ object MutableLongMap {
           index,
           intermediateBeforeIndex,
           intermediateAfterIndex
-        )(mask)
+        )(using mask)
       } else if (x == intermediateAfterX) {
         check(index == intermediateAfterIndex)
         check(a.updated(i, Long.MinValue).apply(index) == Long.MinValue)
         check(
           seekEntryOrOpen(a.updated(i, Long.MinValue).apply(j))(
-            a.updated(i, Long.MinValue),
+            using a.updated(i, Long.MinValue),
             mask
           ) == seekKeyOrZeroReturnVacant(x, index, intermediateAfterIndex)(
-            a.updated(i, Long.MinValue).apply(j),
+            using a.updated(i, Long.MinValue).apply(j),
             a.updated(i, Long.MinValue),
             mask
           )
@@ -5984,10 +5984,10 @@ object MutableLongMap {
       }
 
     }.ensuring (_ =>
-      seekEntryOrOpen(a(j))(a, mask) == seekEntryOrOpen(
+      seekEntryOrOpen(a(j))(using a, mask) == seekEntryOrOpen(
         a.updated(i, Long.MinValue).apply(j)
       )(
-        a.updated(i, Long.MinValue),
+        using a.updated(i, Long.MinValue),
         mask
       )
     )
@@ -6008,25 +6008,25 @@ object MutableLongMap {
       require(i != j)
       require(validKeyInArray(a(i)))
       require(validKeyInArray(a(j)))
-      require(arrayForallSeekEntryOrOpenFound(0)(a, mask))
+      require(arrayForallSeekEntryOrOpenFound(0)(using a, mask))
       require(arrayNoDuplicates(a, 0))
       val intermediateBefore =
-        seekKeyOrZeroOrLongMinValue(0, toIndex(a(j), mask))(a(j), a, mask)
+        seekKeyOrZeroOrLongMinValue(0, toIndex(a(j), mask))(using a(j), a, mask)
 
       lemmaArrayForallSeekEntryOrOpenFoundFromSmallerThenFromBigger(a, mask, 0, j)
-      check(seekEntryOrOpen(a(j))(a, mask) == Found(j))
+      check(seekEntryOrOpen(a(j))(using a, mask) == Found(j))
       intermediateBefore match {
         case Intermediate(undefined, intermediateBeforeIndex, intermediateBeforeX) => {
           if (undefined) {
             check(false)
           } else {
             if (
-              seekKeyOrZeroOrLongMinValue(0, toIndex(a(j), mask))(a(j), a, mask) ==
+              seekKeyOrZeroOrLongMinValue(0, toIndex(a(j), mask))(using a(j), a, mask) ==
                 seekKeyOrZeroOrLongMinValue(
                   0,
                   toIndex(a.updated(i, Long.MinValue).apply(j), mask)
                 )(
-                  a.updated(i, Long.MinValue).apply(j),
+                  using a.updated(i, Long.MinValue).apply(j),
                   a.updated(i, Long.MinValue),
                   mask
                 )
@@ -6039,12 +6039,12 @@ object MutableLongMap {
                 toIndex(a(j), mask),
                 intermediateBeforeX,
                 intermediateBeforeIndex
-              )(mask)
+              )(using mask)
             } else {
               val intermediateAfter = seekKeyOrZeroOrLongMinValue(
                 0,
                 toIndex(a.updated(i, Long.MinValue).apply(j), mask)
-              )(a.updated(i, Long.MinValue).apply(j), a.updated(i, Long.MinValue), mask)
+              )(using a.updated(i, Long.MinValue).apply(j), a.updated(i, Long.MinValue), mask)
 
               intermediateAfter match {
                 case Intermediate(undefined, intermediateAfterIndex, intermediateAfterX) => {
@@ -6065,14 +6065,14 @@ object MutableLongMap {
                   check(a.updated(i, Long.MinValue).apply(intermediateAfterIndex) == Long.MinValue)
                   check(
                     seekEntryOrOpen(a.updated(i, Long.MinValue).apply(j))(
-                      a.updated(i, Long.MinValue),
+                      using a.updated(i, Long.MinValue),
                       mask
                     ) ==
                       seekKeyOrZeroReturnVacant(
                         intermediateAfterX,
                         intermediateAfterIndex,
                         intermediateAfterIndex
-                      )(a(j), a.updated(i, Long.MinValue), mask)
+                      )(using a(j), a.updated(i, Long.MinValue), mask)
                   )
                   lemmaPutLongMinValuePreservesForallSeekEntryOrOpenKey2Helper(
                     a,
@@ -6084,7 +6084,7 @@ object MutableLongMap {
                     intermediateBeforeIndex,
                     intermediateAfterX,
                     intermediateAfterIndex
-                  )(mask)
+                  )(using mask)
                 }
                 case _ => check(false)
               }
@@ -6095,10 +6095,10 @@ object MutableLongMap {
       }
 
     }.ensuring (_ =>
-      seekEntryOrOpen(a(j))(a, mask) == seekEntryOrOpen(
+      seekEntryOrOpen(a(j))(using a, mask) == seekEntryOrOpen(
         a.updated(i, Long.MinValue).apply(j)
       )(
-        a.updated(i, Long.MinValue),
+        using a.updated(i, Long.MinValue),
         mask
       )
     )
@@ -6122,7 +6122,7 @@ object MutableLongMap {
       require(startIndex < a.length)
       require(validKeyInArray(a(i)))
       require(arrayNoDuplicates(a, 0))
-      require(arrayForallSeekEntryOrOpenFound(0)(a, mask))
+      require(arrayForallSeekEntryOrOpenFound(0)(using a, mask))
 
       decreases(a.length - startIndex)
 
@@ -6130,14 +6130,14 @@ object MutableLongMap {
       val newArray = a.updated(i, Long.MinValue)
 
       if (startIndex != i && validKeyInArray(a(startIndex))) {
-        lemmaPutLongMinValuePreservesForallSeekEntryOrOpenKey2(a, i, startIndex)(mask)
+        lemmaPutLongMinValuePreservesForallSeekEntryOrOpenKey2(a, i, startIndex)(using mask)
         lemmaArrayForallSeekEntryOrOpenFoundFromSmallerThenFromBigger(a, mask, 0, startIndex)
       }
       if (startIndex < a.length - 1) {
         lemmaPutLongMinValuePreservesForallSeekEntryOrOpenStartIndex(a, i, startIndex + 1)
       }
 
-    }.ensuring (_ => arrayForallSeekEntryOrOpenFound(startIndex)(a.updated(i, Long.MinValue), mask))
+    }.ensuring (_ => arrayForallSeekEntryOrOpenFound(startIndex)(using a.updated(i, Long.MinValue), mask))
 
     @opaque
     @inlineOnce
@@ -6152,12 +6152,12 @@ object MutableLongMap {
       require(i < a.length)
       require(validKeyInArray(a(i)))
       require(arrayNoDuplicates(a, 0))
-      require(arrayForallSeekEntryOrOpenFound(0)(a, mask))
+      require(arrayForallSeekEntryOrOpenFound(0)(using a, mask))
 
       assert(a(i) != 0 && a(i) != Long.MinValue)
-      lemmaPutLongMinValuePreservesForallSeekEntryOrOpenStartIndex(a, i, 0)(mask)
+      lemmaPutLongMinValuePreservesForallSeekEntryOrOpenStartIndex(a, i, 0)(using mask)
 
-    }.ensuring (_ => arrayForallSeekEntryOrOpenFound(0)(a.updated(i, Long.MinValue), mask))
+    }.ensuring (_ => arrayForallSeekEntryOrOpenFound(0)(using a.updated(i, Long.MinValue), mask))
 
     @opaque
     @inlineOnce
@@ -6183,14 +6183,14 @@ object MutableLongMap {
       require(validKeyInArray(k))
       require(!arrayContainsKey(a, k, 0))
       require(
-        seekEntryOrOpen(k)(a, mask) == MissingZero(i) || seekEntryOrOpen(k)(
-          a,
+        seekEntryOrOpen(k)(using a, mask) == MissingZero(i) || seekEntryOrOpen(k)(
+          using a,
           mask
         ) == MissingVacant(
           i
         )
       )
-      require(arrayForallSeekEntryOrOpenFound(0)(a, mask))
+      require(arrayForallSeekEntryOrOpenFound(0)(using a, mask))
       require(arrayNoDuplicates(a, 0))
       require(index >= 0 && index < mask + 1)
       require(x <= MAX_ITER && x >= 0)
@@ -6199,7 +6199,7 @@ object MutableLongMap {
       require(a.updated(i, k).apply(vacantSpotIndex) == Long.MinValue)
       require(
         seekKeyOrZeroReturnVacant(x, index, vacantSpotIndex)(
-          a(j),
+          using a(j),
           a,
           mask
         ) == Found(j)
@@ -6208,7 +6208,7 @@ object MutableLongMap {
       decreases(MAX_ITER - x)
 
       val resBefore =
-        seekKeyOrZeroReturnVacant(x, index, vacantSpotIndex)(a(j), a, mask)
+        seekKeyOrZeroReturnVacant(x, index, vacantSpotIndex)(using a(j), a, mask)
 
       if (x >= MAX_ITER) {
         check(false)
@@ -6229,13 +6229,13 @@ object MutableLongMap {
           vacantSpotIndex
         )
         check(
-          seekKeyOrZeroReturnVacant(x, index, vacantSpotIndex)(a(j), a, mask) ==
+          seekKeyOrZeroReturnVacant(x, index, vacantSpotIndex)(using a(j), a, mask) ==
             seekKeyOrZeroReturnVacant(
               x + 1,
               nextIndex(index, x + 1, mask),
               vacantSpotIndex
             )(
-              a(j),
+              using a(j),
               a,
               mask
             )
@@ -6243,7 +6243,7 @@ object MutableLongMap {
 
         if (
           seekKeyOrZeroReturnVacant(x, index, vacantSpotIndex)(
-            a.updated(i, k).apply(j),
+            using a.updated(i, k).apply(j),
             a.updated(i, k),
             mask
           ) == Undefined()
@@ -6252,7 +6252,7 @@ object MutableLongMap {
         }
         if (
           seekKeyOrZeroReturnVacant(x, index, vacantSpotIndex)(
-            a.updated(i, k).apply(j),
+            using a.updated(i, k).apply(j),
             a.updated(i, k),
             mask
           ) == Found(index)
@@ -6293,7 +6293,7 @@ object MutableLongMap {
         }
         if (
           seekKeyOrZeroReturnVacant(x, index, vacantSpotIndex)(
-            a.updated(i, k).apply(j),
+            using a.updated(i, k).apply(j),
             a.updated(i, k),
             mask
           ) == MissingVacant(vacantSpotIndex)
@@ -6305,9 +6305,9 @@ object MutableLongMap {
       }
 
     }.ensuring (_ =>
-      seekKeyOrZeroReturnVacant(x, index, vacantSpotIndex)(a(j), a, mask) ==
+      seekKeyOrZeroReturnVacant(x, index, vacantSpotIndex)(using a(j), a, mask) ==
         seekKeyOrZeroReturnVacant(x, index, vacantSpotIndex)(
-          a.updated(i, k).apply(j),
+          using a.updated(i, k).apply(j),
           a.updated(i, k),
           mask
         )
@@ -6331,32 +6331,32 @@ object MutableLongMap {
       require(validKeyInArray(k))
       require(!arrayContainsKey(a, k, 0))
       require(
-        seekEntryOrOpen(k)(a, mask) == MissingZero(i) || seekEntryOrOpen(k)(
-          a,
+        seekEntryOrOpen(k)(using a, mask) == MissingZero(i) || seekEntryOrOpen(k)(
+          using a,
           mask
         ) == MissingVacant(
           i
         )
       )
-      require(arrayForallSeekEntryOrOpenFound(0)(a, mask))
+      require(arrayForallSeekEntryOrOpenFound(0)(using a, mask))
       require(arrayNoDuplicates(a, 0))
       require(
-        seekKeyOrZeroOrLongMinValue(0, toIndex(a(j), mask))(a(j), a, mask) ==
+        seekKeyOrZeroOrLongMinValue(0, toIndex(a(j), mask))(using a(j), a, mask) ==
           seekKeyOrZeroOrLongMinValue(0, toIndex(a.updated(i, k).apply(j), mask))(
-            a.updated(i, k).apply(j),
+            using a.updated(i, k).apply(j),
             a.updated(i, k),
             mask
           )
       )
 
       lemmaArrayForallSeekEntryOrOpenFoundFromSmallerThenFromBigger(a, mask, 0, j)
-      check(seekEntryOrOpen(a(j))(a, mask) == Found(j))
+      check(seekEntryOrOpen(a(j))(using a, mask) == Found(j))
 
       val intermediateBefore =
-        seekKeyOrZeroOrLongMinValue(0, toIndex(a(j), mask))(a(j), a, mask)
+        seekKeyOrZeroOrLongMinValue(0, toIndex(a(j), mask))(using a(j), a, mask)
       val intermediateAfter =
         seekKeyOrZeroOrLongMinValue(0, toIndex(a.updated(i, k).apply(j), mask))(
-          a.updated(i, k).apply(j),
+          using a.updated(i, k).apply(j),
           a.updated(i, k),
           mask
         )
@@ -6365,26 +6365,26 @@ object MutableLongMap {
         case Intermediate(undefined, index, x) if (undefined) => {}
         case Intermediate(undefined, index, x) if (!undefined) => {
           if (a(index) == a(j)) {} else if (a(index) == 0) {
-            check(seekEntryOrOpen(a(j))(a, mask) == MissingZero(index))
-            check(arrayForallSeekEntryOrOpenFound(0)(a, mask))
+            check(seekEntryOrOpen(a(j))(using a, mask) == MissingZero(index))
+            check(arrayForallSeekEntryOrOpenFound(0)(using a, mask))
             lemmaArrayForallSeekEntryOrOpenFoundFromSmallerThenFromBigger(a, mask, 0, j)
             check(false)
           } else {
             check(
-              seekEntryOrOpen(a(j))(a, mask) == seekKeyOrZeroReturnVacant(
+              seekEntryOrOpen(a(j))(using a, mask) == seekKeyOrZeroReturnVacant(
                 x,
                 index,
                 index
               )(
-                a(j),
+                using a(j),
                 a,
                 mask
               )
             )
             check(
-              seekEntryOrOpen(a.updated(i, k).apply(j))(a.updated(i, k), mask) ==
+              seekEntryOrOpen(a.updated(i, k).apply(j))(using a.updated(i, k), mask) ==
                 seekKeyOrZeroReturnVacant(x, index, index)(
-                  a.updated(i, k).apply(j),
+                  using a.updated(i, k).apply(j),
                   a.updated(i, k),
                   mask
                 )
@@ -6397,15 +6397,15 @@ object MutableLongMap {
               x,
               index,
               index
-            )(mask)
+            )(using mask)
 
           }
         }
       }
 
     }.ensuring (_ =>
-      seekEntryOrOpen(a(j))(a, mask) == seekEntryOrOpen(a.updated(i, k).apply(j))(
-        a.updated(i, k),
+      seekEntryOrOpen(a(j))(using a, mask) == seekEntryOrOpen(a.updated(i, k).apply(j))(
+        using a.updated(i, k),
         mask
       )
     )
@@ -6435,14 +6435,14 @@ object MutableLongMap {
       require(validKeyInArray(k))
       require(!arrayContainsKey(a, k, 0))
       require(
-        seekEntryOrOpen(k)(a, mask) == MissingZero(i) || seekEntryOrOpen(k)(
-          a,
+        seekEntryOrOpen(k)(using a, mask) == MissingZero(i) || seekEntryOrOpen(k)(
+          using a,
           mask
         ) == MissingVacant(
           i
         )
       )
-      require(arrayForallSeekEntryOrOpenFound(0)(a, mask))
+      require(arrayForallSeekEntryOrOpenFound(0)(using a, mask))
       require(arrayNoDuplicates(a, 0))
       require(resX <= MAX_ITER)
       require(x <= resX)
@@ -6451,7 +6451,7 @@ object MutableLongMap {
       require(resIndex >= 0 && resIndex < a.length)
       require(a(resIndex) == a(j))
       require(
-        seekKeyOrZeroOrLongMinValue(x, index)(a(j), a, mask) == Intermediate(
+        seekKeyOrZeroOrLongMinValue(x, index)(using a(j), a, mask) == Intermediate(
           false,
           resIndex,
           resX
@@ -6459,10 +6459,10 @@ object MutableLongMap {
       )
       require(
         seekKeyOrZeroOrLongMinValue(0, toIndex(a(j), mask))(
-          a(j),
+          using a(j),
           a,
           mask
-        ) == seekKeyOrZeroOrLongMinValue(x, index)(a(j), a, mask)
+        ) == seekKeyOrZeroOrLongMinValue(x, index)(using a(j), a, mask)
       )
 
       decreases(MAX_ITER - x)
@@ -6487,7 +6487,7 @@ object MutableLongMap {
 
     }.ensuring (_ =>
       seekKeyOrZeroOrLongMinValue(x, index)(
-        a.updated(i, k).apply(j),
+        using a.updated(i, k).apply(j),
         a.updated(i, k),
         mask
       ) == Intermediate(false, resIndex, resX)
@@ -6518,14 +6518,14 @@ object MutableLongMap {
       require(validKeyInArray(k))
       require(!arrayContainsKey(a, k, 0))
       require(
-        seekEntryOrOpen(k)(a, mask) == MissingZero(i) || seekEntryOrOpen(k)(
-          a,
+        seekEntryOrOpen(k)(using a, mask) == MissingZero(i) || seekEntryOrOpen(k)(
+          using a,
           mask
         ) == MissingVacant(
           i
         )
       )
-      require(arrayForallSeekEntryOrOpenFound(0)(a, mask))
+      require(arrayForallSeekEntryOrOpenFound(0)(using a, mask))
       require(arrayNoDuplicates(a, 0))
       require(x <= MAX_ITER)
       require(x >= 0)
@@ -6537,27 +6537,27 @@ object MutableLongMap {
       require(vacantAfter != vacantBefore)
       require(
         seekEntryOrOpen(a.updated(i, k).apply(j))(
-          a.updated(i, k),
+          using a.updated(i, k),
           mask
         ) == seekKeyOrZeroReturnVacant(x, index, vacantAfter)(
-          a.updated(i, k).apply(j),
+          using a.updated(i, k).apply(j),
           a.updated(i, k),
           mask
         )
       )
       require(
-        seekEntryOrOpen(a(j))(a, mask) == seekKeyOrZeroReturnVacant(
+        seekEntryOrOpen(a(j))(using a, mask) == seekKeyOrZeroReturnVacant(
           x,
           index,
           vacantBefore
         )(
-          a(j),
+          using a(j),
           a,
           mask
         )
       )
       require(
-        seekKeyOrZeroReturnVacant(x, index, vacantBefore)(a(j), a, mask) == Found(j)
+        seekKeyOrZeroReturnVacant(x, index, vacantBefore)(using a(j), a, mask) == Found(j)
       )
 
       decreases(MAX_ITER - x)
@@ -6565,14 +6565,14 @@ object MutableLongMap {
       if (a(index) == a(j)) {
         check(
           seekKeyOrZeroReturnVacant(x, index, vacantAfter)(
-            a.updated(i, k).apply(j),
+            using a.updated(i, k).apply(j),
             a.updated(i, k),
             mask
           ) == Found(index)
         )
         check(
           seekKeyOrZeroReturnVacant(x, index, vacantAfter)(
-            a.updated(i, k).apply(j),
+            using a.updated(i, k).apply(j),
             a.updated(i, k),
             mask
           ) == Found(j)
@@ -6590,7 +6590,7 @@ object MutableLongMap {
         )
         check(
           seekKeyOrZeroReturnVacant(x, index, vacantAfter)(
-            a.updated(i, k).apply(j),
+            using a.updated(i, k).apply(j),
             a.updated(i, k),
             mask
           ) == Found(j)
@@ -6599,10 +6599,10 @@ object MutableLongMap {
 
     }.ensuring (_ =>
       seekKeyOrZeroReturnVacant(x, index, vacantAfter)(
-        a.updated(i, k).apply(j),
+        using a.updated(i, k).apply(j),
         a.updated(i, k),
         mask
-      ) == seekKeyOrZeroReturnVacant(x, index, vacantBefore)(a(j), a, mask)
+      ) == seekKeyOrZeroReturnVacant(x, index, vacantBefore)(using a(j), a, mask)
     )
 
     @opaque
@@ -6630,14 +6630,14 @@ object MutableLongMap {
       require(validKeyInArray(k))
       require(!arrayContainsKey(a, k, 0))
       require(
-        seekEntryOrOpen(k)(a, mask) == MissingZero(i) || seekEntryOrOpen(k)(
-          a,
+        seekEntryOrOpen(k)(using a, mask) == MissingZero(i) || seekEntryOrOpen(k)(
+          using a,
           mask
         ) == MissingVacant(
           i
         )
       )
-      require(arrayForallSeekEntryOrOpenFound(0)(a, mask))
+      require(arrayForallSeekEntryOrOpenFound(0)(using a, mask))
       require(arrayNoDuplicates(a, 0))
       require(x <= MAX_ITER)
       require(x >= 0)
@@ -6646,7 +6646,7 @@ object MutableLongMap {
       require(resIntermediateIndex >= 0 && resIntermediateIndex < a.length)
       require(
         seekKeyOrZeroOrLongMinValue(0, toIndex(a(j), mask))(
-          a(j),
+          using a(j),
           a,
           mask
         ) == Intermediate(
@@ -6659,26 +6659,26 @@ object MutableLongMap {
       require(a(resIntermediateIndex) == Long.MinValue)
       require(
         if (x <= resIntermediateX)
-          seekKeyOrZeroOrLongMinValue(x, index)(a(j), a, mask) == Intermediate(
+          seekKeyOrZeroOrLongMinValue(x, index)(using a(j), a, mask) == Intermediate(
             false,
             resIntermediateIndex,
             resIntermediateX
           )
         else
           seekKeyOrZeroReturnVacant(x, index, resIntermediateIndex)(
-            a(j),
+            using a(j),
             a,
             mask
           ) == Found(j)
       )
       require(
         seekKeyOrZeroOrLongMinValue(0, toIndex(a.updated(i, k).apply(j), mask))(
-          a.updated(i, k).apply(j),
+          using a.updated(i, k).apply(j),
           a.updated(i, k),
           mask
         ) ==
           seekKeyOrZeroOrLongMinValue(x, index)(
-            a.updated(i, k).apply(j),
+            using a.updated(i, k).apply(j),
             a.updated(i, k),
             mask
           )
@@ -6687,14 +6687,14 @@ object MutableLongMap {
       decreases(MAX_ITER - x)
 
       lemmaArrayForallSeekEntryOrOpenFoundFromSmallerThenFromBigger(a, mask, 0, j)
-      check(seekEntryOrOpen(a(j))(a, mask) == Found(j))
+      check(seekEntryOrOpen(a(j))(using a, mask) == Found(j))
       check(
         seekKeyOrZeroReturnVacant(
           resIntermediateX,
           resIntermediateIndex,
           resIntermediateIndex
         )(
-          a(j),
+          using a(j),
           a,
           mask
         ) == Found(j)
@@ -6702,7 +6702,7 @@ object MutableLongMap {
 
       val intermediateAfter =
         seekKeyOrZeroOrLongMinValue(x, index)(
-          a.updated(i, k).apply(j),
+          using a.updated(i, k).apply(j),
           a.updated(i, k),
           mask
         )
@@ -6715,14 +6715,14 @@ object MutableLongMap {
             if (nextX <= resIntermediateX) {
               check(
                 if (nextX <= resIntermediateX)
-                  seekKeyOrZeroOrLongMinValue(nextX, nextIndexVal)(a(j), a, mask) == Intermediate(
+                  seekKeyOrZeroOrLongMinValue(nextX, nextIndexVal)(using a(j), a, mask) == Intermediate(
                     false,
                     resIntermediateIndex,
                     resIntermediateX
                   )
                 else
                   seekKeyOrZeroReturnVacant(nextX, nextIndexVal, resIntermediateIndex)(
-                    a(j),
+                    using a(j),
                     a,
                     mask
                   ) == Found(j)
@@ -6730,7 +6730,7 @@ object MutableLongMap {
             } else {
               if (
                 seekKeyOrZeroReturnVacant(x, index, resIntermediateIndex)(
-                  a(j),
+                  using a(j),
                   a,
                   mask
                 ) == Found(j)
@@ -6741,7 +6741,7 @@ object MutableLongMap {
                     nextIndexVal,
                     resIntermediateIndex
                   )(
-                    a(j),
+                    using a(j),
                     a,
                     mask
                   ) == Found(j)
@@ -6753,7 +6753,7 @@ object MutableLongMap {
                     nextIndexVal,
                     resIntermediateIndex
                   )(
-                    a(j),
+                    using a(j),
                     a,
                     mask
                   ) == Found(j)
@@ -6775,7 +6775,7 @@ object MutableLongMap {
             assert(index == indexIntermediateAfter)
             assert(
               seekKeyOrZeroReturnVacant(x, index, resIntermediateIndex)(
-                a(j),
+                using a(j),
                 a,
                 mask
               ) == Found(j)
@@ -6783,7 +6783,7 @@ object MutableLongMap {
             if (a.updated(i, k).apply(index) == a.updated(i, k).apply(j)) {
               assert(!undefined)
               check(
-                seekEntryOrOpen(a.updated(i, k).apply(j))(a.updated(i, k), mask) == Found(
+                seekEntryOrOpen(a.updated(i, k).apply(j))(using a.updated(i, k), mask) == Found(
                   index
                 )
               )
@@ -6791,17 +6791,17 @@ object MutableLongMap {
               if (a.updated(i, k).apply(index) == 0) {
                 check(
                   seekEntryOrOpen(a(j))(
-                    a,
+                    using a,
                     mask
                   ) == seekKeyOrZeroReturnVacant(
                     x,
                     index,
                     resIntermediateIndex
-                  )(a(j), a, mask)
+                  )(using a(j), a, mask)
                 )
                 check(
                   seekKeyOrZeroReturnVacant(x, index, resIntermediateIndex)(
-                    a(j),
+                    using a(j),
                     a,
                     mask
                   ) == MissingVacant(resIntermediateIndex)
@@ -6811,27 +6811,27 @@ object MutableLongMap {
               check(a.updated(i, k).apply(index) == Long.MinValue)
               check(
                 seekEntryOrOpen(a.updated(i, k).apply(j))(
-                  a.updated(i, k),
+                  using a.updated(i, k),
                   mask
                 ) == seekKeyOrZeroReturnVacant(x, index, index)(
-                  a.updated(i, k).apply(j),
+                  using a.updated(i, k).apply(j),
                   a.updated(i, k),
                   mask
                 )
               )
               check(
                 seekEntryOrOpen(a(j))(
-                  a,
+                  using a,
                   mask
                 ) == seekKeyOrZeroReturnVacant(
                   x,
                   index,
                   resIntermediateIndex
-                )(a(j), a, mask)
+                )(using a(j), a, mask)
               )
               check(
                 seekKeyOrZeroReturnVacant(x, index, resIntermediateIndex)(
-                  a(j),
+                  using a(j),
                   a,
                   mask
                 ) == Found(j)
@@ -6853,7 +6853,7 @@ object MutableLongMap {
         case _ => check(false)
       }
 
-    }.ensuring (_ => seekEntryOrOpen(a.updated(i, k).apply(j))(a.updated(i, k), mask) == Found(j))
+    }.ensuring (_ => seekEntryOrOpen(a.updated(i, k).apply(j))(using a.updated(i, k), mask) == Found(j))
 
     @opaque
     @inlineOnce
@@ -6880,14 +6880,14 @@ object MutableLongMap {
       require(validKeyInArray(k))
       require(!arrayContainsKey(a, k, 0))
       require(
-        seekEntryOrOpen(k)(a, mask) == MissingVacant(i) || seekEntryOrOpen(k)(
-          a,
+        seekEntryOrOpen(k)(using a, mask) == MissingVacant(i) || seekEntryOrOpen(k)(
+          using a,
           mask
         ) == MissingZero(
           i
         )
       )
-      require(arrayForallSeekEntryOrOpenFound(0)(a, mask))
+      require(arrayForallSeekEntryOrOpenFound(0)(using a, mask))
       require(arrayNoDuplicates(a, 0))
       require(x <= resX)
       require(x >= 0)
@@ -6896,7 +6896,7 @@ object MutableLongMap {
       require(resIndex >= 0 && resIndex < a.length)
       require(
         seekKeyOrZeroOrLongMinValue(0, toIndex(a(j), mask))(
-          a(j),
+          using a(j),
           a,
           mask
         ) == Intermediate(
@@ -6906,7 +6906,7 @@ object MutableLongMap {
         )
       )
       require(
-        seekKeyOrZeroOrLongMinValue(x, index)(a(j), a, mask) == Intermediate(
+        seekKeyOrZeroOrLongMinValue(x, index)(using a(j), a, mask) == Intermediate(
           false,
           resIndex,
           resX
@@ -6914,25 +6914,25 @@ object MutableLongMap {
       )
       require(
         seekKeyOrZeroOrLongMinValue(0, toIndex(a(j), mask))(
-          a(j),
+          using a(j),
           a,
           mask
         ) != seekKeyOrZeroOrLongMinValue(
           0,
           toIndex(a.updated(i, k).apply(j), mask)
         )(
-          a.updated(i, k).apply(j),
+          using a.updated(i, k).apply(j),
           a.updated(i, k),
           mask
         )
       )
       require(
         seekKeyOrZeroOrLongMinValue(x, index)(
-          a(j),
+          using a(j),
           a,
           mask
         ) != seekKeyOrZeroOrLongMinValue(x, index)(
-          a.updated(i, k).apply(j),
+          using a.updated(i, k).apply(j),
           a.updated(i, k),
           mask
         )
@@ -6977,43 +6977,43 @@ object MutableLongMap {
       require(validKeyInArray(k))
       require(!arrayContainsKey(a, k, 0))
       require(
-        seekEntryOrOpen(k)(a, mask) == MissingZero(i) || seekEntryOrOpen(k)(
-          a,
+        seekEntryOrOpen(k)(using a, mask) == MissingZero(i) || seekEntryOrOpen(k)(
+          using a,
           mask
         ) == MissingVacant(
           i
         )
       )
-      require(arrayForallSeekEntryOrOpenFound(0)(a, mask))
+      require(arrayForallSeekEntryOrOpenFound(0)(using a, mask))
       require(arrayNoDuplicates(a, 0))
 
       lemmaArrayForallSeekEntryOrOpenFoundFromSmallerThenFromBigger(a, mask, 0, j)
-      check(seekEntryOrOpen(a(j))(a, mask) == Found(j))
+      check(seekEntryOrOpen(a(j))(using a, mask) == Found(j))
       val newArray = a.updated(i, k)
 
       if (
-        seekKeyOrZeroOrLongMinValue(0, toIndex(a(j), mask))(a(j), a, mask) ==
+        seekKeyOrZeroOrLongMinValue(0, toIndex(a(j), mask))(using a(j), a, mask) ==
           seekKeyOrZeroOrLongMinValue(0, toIndex(newArray.apply(j), mask))(
-            newArray.apply(j),
+            using newArray.apply(j),
             newArray,
             mask
           )
       ) {
-        lemmaPutValidKeyPreservesForallSeekEntryOrOpenKey1(a, i, k, j)(mask)
+        lemmaPutValidKeyPreservesForallSeekEntryOrOpenKey1(a, i, k, j)(using mask)
         check(
-          seekEntryOrOpen(a(j))(a, mask) == seekEntryOrOpen(newArray.apply(j))(
-            newArray,
+          seekEntryOrOpen(a(j))(using a, mask) == seekEntryOrOpen(newArray.apply(j))(
+            using newArray,
             mask
           )
         )
       } else {
         val intermediateBefore =
-          seekKeyOrZeroOrLongMinValue(0, toIndex(a(j), mask))(a(j), a, mask)
+          seekKeyOrZeroOrLongMinValue(0, toIndex(a(j), mask))(using a(j), a, mask)
         intermediateBefore match {
           case Intermediate(undefined, index, x) if (undefined) => {
-            check(seekEntryOrOpen(a(j))(a, mask) == Undefined())
+            check(seekEntryOrOpen(a(j))(using a, mask) == Undefined())
             lemmaArrayForallSeekEntryOrOpenFoundFromSmallerThenFromBigger(a, mask, 0, j)
-            check(seekEntryOrOpen(a(j))(a, mask) == Found(j))
+            check(seekEntryOrOpen(a(j))(using a, mask) == Found(j))
             check(false)
           }
           case Intermediate(undefinedBefore, indexBefore, xBefore) if (!undefinedBefore) => {
@@ -7030,7 +7030,7 @@ object MutableLongMap {
                 0,
                 indexBefore,
                 xBefore
-              )(mask)
+              )(using mask)
               check(false)
             }
             check(a(indexBefore) == 0 || a(indexBefore) == Long.MinValue)
@@ -7048,7 +7048,7 @@ object MutableLongMap {
               0,
               indexBefore,
               xBefore
-            )(mask)
+            )(using mask)
             lemmaPutValidKeyPreservesVacantIsAtI(
               a,
               i,
@@ -7058,22 +7058,22 @@ object MutableLongMap {
               0,
               indexBefore,
               xBefore
-            )(mask)
+            )(using mask)
           }
           case _ => {
             check(false)
             check(
-              seekEntryOrOpen(a(j))(a, mask) == seekEntryOrOpen(
+              seekEntryOrOpen(a(j))(using a, mask) == seekEntryOrOpen(
                 newArray.apply(j)
-              )(newArray, mask)
+              )(using newArray, mask)
             )
           }
         }
       }
 
     }.ensuring (_ =>
-      seekEntryOrOpen(a(j))(a, mask) == seekEntryOrOpen(a.updated(i, k).apply(j))(
-        a.updated(i, k),
+      seekEntryOrOpen(a(j))(using a, mask) == seekEntryOrOpen(a.updated(i, k).apply(j))(
+        using a.updated(i, k),
         mask
       )
     )
@@ -7097,11 +7097,11 @@ object MutableLongMap {
       require(i < a.length)
       require(validKeyInArray(k))
       require(!arrayContainsKey(a, k, 0))
-      require(seekEntryOrOpen(k)(a, mask) == MissingZero(i))
-      require(arrayForallSeekEntryOrOpenFound(0)(a, mask))
+      require(seekEntryOrOpen(k)(using a, mask) == MissingZero(i))
+      require(arrayForallSeekEntryOrOpenFound(0)(using a, mask))
       require(
         seekKeyOrZeroOrLongMinValue(0, toIndex(k, mask))(
-          k,
+          using k,
           a,
           mask
         ) == Intermediate(
@@ -7116,7 +7116,7 @@ object MutableLongMap {
       require(x >= 0)
       require(index >= 0 && index < a.length)
       require(
-        seekKeyOrZeroOrLongMinValue(x, index)(k, a, mask) == Intermediate(
+        seekKeyOrZeroOrLongMinValue(x, index)(using k, a, mask) == Intermediate(
           false,
           resIndex,
           resX
@@ -7130,7 +7130,7 @@ object MutableLongMap {
         if (resIndex != index) {
           if (a(index) == 0 || a(index) == Long.MinValue) {
             check(
-              seekKeyOrZeroOrLongMinValue(x, index)(k, a, mask) == Intermediate(
+              seekKeyOrZeroOrLongMinValue(x, index)(using k, a, mask) == Intermediate(
                 false,
                 index,
                 resX
@@ -7139,16 +7139,16 @@ object MutableLongMap {
             check(false)
           } else {
             check(
-              seekKeyOrZeroOrLongMinValue(x, index)(k, a, mask) ==
+              seekKeyOrZeroOrLongMinValue(x, index)(using k, a, mask) ==
                 seekKeyOrZeroOrLongMinValue(
                   x + 1,
                   nextIndex(index, x + 1, mask)
-                )(k, a, mask)
+                )(using k, a, mask)
             )
             seekKeyOrZeroOrLongMinValue(
               x + 1,
               nextIndex(index, x + 1, mask)
-            )(k, a, mask) match {
+            )(using k, a, mask) match {
               case Intermediate(undefined, tempIndex, tempX) => assert(tempX >= x + 1)
               case _                                         => check(false)
             }
@@ -7160,24 +7160,24 @@ object MutableLongMap {
       } else {
         check(
           seekKeyOrZeroOrLongMinValue(x, index)(
-            k,
+            using k,
             a,
             mask
           ) == seekKeyOrZeroOrLongMinValue(
             x + 1,
             nextIndex(index, x + 1, mask)
-          )(k, a, mask)
+          )(using k, a, mask)
         )
         check(
           seekKeyOrZeroOrLongMinValue(x, index)(
-            k,
+            using k,
             a.updated(i, k),
             mask
           ) == seekKeyOrZeroOrLongMinValue(
             x + 1,
             nextIndex(index, x + 1, mask)
           )(
-            k,
+            using k,
             a.updated(i, k),
             mask
           )
@@ -7195,10 +7195,10 @@ object MutableLongMap {
 
     }.ensuring (_ =>
       seekKeyOrZeroOrLongMinValue(x, index)(
-        k,
+        using k,
         a.updated(i, k),
         mask
-      ) == seekKeyOrZeroOrLongMinValue(x, index)(k, a, mask)
+      ) == seekKeyOrZeroOrLongMinValue(x, index)(using k, a, mask)
     )
 
     def lemmaPutValidKeyAtRightPlaceThenFindsHelper2(
@@ -7216,11 +7216,11 @@ object MutableLongMap {
       require(i < a.length)
       require(validKeyInArray(k))
       require(!arrayContainsKey(a, k, 0))
-      require(seekEntryOrOpen(k)(a, mask) == MissingVacant(i))
-      require(arrayForallSeekEntryOrOpenFound(0)(a, mask))
+      require(seekEntryOrOpen(k)(using a, mask) == MissingVacant(i))
+      require(arrayForallSeekEntryOrOpenFound(0)(using a, mask))
       require(
         seekKeyOrZeroOrLongMinValue(0, toIndex(k, mask))(
-          k,
+          using k,
           a,
           mask
         ) == Intermediate(
@@ -7235,7 +7235,7 @@ object MutableLongMap {
       require(x >= 0)
       require(index >= 0 && index < a.length)
       require(
-        seekKeyOrZeroOrLongMinValue(x, index)(k, a, mask) == Intermediate(
+        seekKeyOrZeroOrLongMinValue(x, index)(using k, a, mask) == Intermediate(
           false,
           resIndex,
           resX
@@ -7248,7 +7248,7 @@ object MutableLongMap {
         if (resIndex != index) {
           if (a(index) == 0 || a(index) == Long.MinValue) {
             check(
-              seekKeyOrZeroOrLongMinValue(x, index)(k, a, mask) == Intermediate(
+              seekKeyOrZeroOrLongMinValue(x, index)(using k, a, mask) == Intermediate(
                 false,
                 index,
                 resX
@@ -7259,7 +7259,7 @@ object MutableLongMap {
             seekKeyOrZeroOrLongMinValue(
               x + 1,
               nextIndex(index, x + 1, mask)
-            )(k, a, mask) match {
+            )(using k, a, mask) match {
               case Intermediate(undefined, tempIndex, tempX) => assert(tempX >= x + 1)
               case _                                         => check(false)
             }
@@ -7282,10 +7282,10 @@ object MutableLongMap {
 
     }.ensuring (_ =>
       seekKeyOrZeroOrLongMinValue(x, index)(
-        k,
+        using k,
         a.updated(i, k),
         mask
-      ) == seekKeyOrZeroOrLongMinValue(x, index)(k, a, mask)
+      ) == seekKeyOrZeroOrLongMinValue(x, index)(using k, a, mask)
     )
 
     @opaque
@@ -7302,21 +7302,21 @@ object MutableLongMap {
       require(validKeyInArray(k))
       require(!arrayContainsKey(a, k, 0))
       require(
-        seekEntryOrOpen(k)(a, mask) == MissingZero(i) || seekEntryOrOpen(k)(
-          a,
+        seekEntryOrOpen(k)(using a, mask) == MissingZero(i) || seekEntryOrOpen(k)(
+          using a,
           mask
         ) == MissingVacant(
           i
         )
       )
-      require(arrayForallSeekEntryOrOpenFound(0)(a, mask))
+      require(arrayForallSeekEntryOrOpenFound(0)(using a, mask))
 
       val intermediateBefore =
-        seekKeyOrZeroOrLongMinValue(0, toIndex(k, mask))(k, a, mask)
+        seekKeyOrZeroOrLongMinValue(0, toIndex(k, mask))(using k, a, mask)
       val intermediateAfter =
-        seekKeyOrZeroOrLongMinValue(0, toIndex(k, mask))(k, a.updated(i, k), mask)
+        seekKeyOrZeroOrLongMinValue(0, toIndex(k, mask))(using k, a.updated(i, k), mask)
 
-      if (seekEntryOrOpen(k)(a, mask) == MissingZero(i)) {
+      if (seekEntryOrOpen(k)(using a, mask) == MissingZero(i)) {
         intermediateBefore match {
           case Intermediate(undefined, index, x) if (undefined)                 => check(false)
           case Intermediate(undefined, index, x) if (a(index) == Long.MinValue) => check(false)
@@ -7325,7 +7325,7 @@ object MutableLongMap {
             check(a(index) == 0)
             check(index == i)
             lemmaPutValidKeyAtRightPlaceThenFindsHelper1(a, i, k, 0, toIndex(k, mask), index, x)(
-              mask
+              using mask
             )
             check(a.updated(i, k).apply(index) == k)
           }
@@ -7333,13 +7333,13 @@ object MutableLongMap {
         }
         check(intermediateAfter == intermediateBefore)
       } else {
-        assert(seekEntryOrOpen(k)(a, mask) == MissingVacant(i))
+        assert(seekEntryOrOpen(k)(using a, mask) == MissingVacant(i))
         intermediateBefore match {
           case Intermediate(undefined, index, x) if (undefined) => check(false)
           case Intermediate(undefined, index, x) if (a(index) == Long.MinValue) => {
             check(index == i)
             lemmaPutValidKeyAtRightPlaceThenFindsHelper2(a, i, k, 0, toIndex(k, mask), index, x)(
-              mask
+              using mask
             )
 
           }
@@ -7350,7 +7350,7 @@ object MutableLongMap {
 
       }
 
-    }.ensuring (_ => seekEntryOrOpen(k)(a.updated(i, k), mask) == Found(i))
+    }.ensuring (_ => seekEntryOrOpen(k)(using a.updated(i, k), mask) == Found(i))
 
     @opaque
     @inlineOnce
@@ -7374,16 +7374,16 @@ object MutableLongMap {
       require(arrayNoDuplicates(a, 0))
       require(!arrayContainsKey(a, k, 0))
       require(
-        seekEntryOrOpen(k)(a, mask) == MissingZero(i) || seekEntryOrOpen(k)(
-          a,
+        seekEntryOrOpen(k)(using a, mask) == MissingZero(i) || seekEntryOrOpen(k)(
+          using a,
           mask
         ) == MissingVacant(
           i
         )
       )
-      require(arrayForallSeekEntryOrOpenFound(0)(a, mask))
+      require(arrayForallSeekEntryOrOpenFound(0)(using a, mask))
 
-      require(arrayForallSeekEntryOrOpenFound(0)(a, mask))
+      require(arrayForallSeekEntryOrOpenFound(0)(using a, mask))
 
       decreases(a.length - startIndex)
 
@@ -7392,12 +7392,12 @@ object MutableLongMap {
         if (startIndex < a.length - 1) {
           lemmaPutValidKeyPreservesForallSeekEntryOrOpenStartIndex(a, i, k, startIndex + 1)
         }
-        lemmaPutValidKeyAtRightPlaceThenFinds(a, i, k)(mask)
-        check(seekEntryOrOpen(k)(newArray, mask) == Found(i))
+        lemmaPutValidKeyAtRightPlaceThenFinds(a, i, k)(using mask)
+        check(seekEntryOrOpen(k)(using newArray, mask) == Found(i))
       } else {
         if (validKeyInArray(a(startIndex))) {
           lemmaPutNewValidKeyPreservesNoDuplicate(a, k, i, 0, Nil())
-          lemmaPutValidKeyPreservesForallSeekEntryOrOpenKey2(a, i, k, startIndex)(mask)
+          lemmaPutValidKeyPreservesForallSeekEntryOrOpenKey2(a, i, k, startIndex)(using mask)
           lemmaArrayForallSeekEntryOrOpenFoundFromSmallerThenFromBigger(a, mask, 0, startIndex)
           if (startIndex < a.length - 1) {
             lemmaPutValidKeyPreservesForallSeekEntryOrOpenStartIndex(a, i, k, startIndex + 1)
@@ -7409,7 +7409,7 @@ object MutableLongMap {
           }
         }
       }
-    }.ensuring (_ => arrayForallSeekEntryOrOpenFound(startIndex)(a.updated(i, k), mask))
+    }.ensuring (_ => arrayForallSeekEntryOrOpenFound(startIndex)(using a.updated(i, k), mask))
 
     @opaque
     @inlineOnce
@@ -7425,19 +7425,19 @@ object MutableLongMap {
       require(validKeyInArray(k))
       require(!arrayContainsKey(a, k, 0))
       require(
-        seekEntryOrOpen(k)(a, mask) == MissingZero(i) || seekEntryOrOpen(k)(
-          a,
+        seekEntryOrOpen(k)(using a, mask) == MissingZero(i) || seekEntryOrOpen(k)(
+          using a,
           mask
         ) == MissingVacant(
           i
         )
       )
-      require(arrayForallSeekEntryOrOpenFound(0)(a, mask))
+      require(arrayForallSeekEntryOrOpenFound(0)(using a, mask))
       require(arrayNoDuplicates(a, 0))
 
-      lemmaPutValidKeyPreservesForallSeekEntryOrOpenStartIndex(a, i, k, 0)(mask)
+      lemmaPutValidKeyPreservesForallSeekEntryOrOpenStartIndex(a, i, k, 0)(using mask)
 
-    }.ensuring (_ => arrayForallSeekEntryOrOpenFound(0)(a.updated(i, k), mask))
+    }.ensuring (_ => arrayForallSeekEntryOrOpenFound(0)(using a.updated(i, k), mask))
 
     @opaque
     @inlineOnce
@@ -7451,12 +7451,12 @@ object MutableLongMap {
     ): Unit = {
       require(validMask(mask))
       require(a.length == mask + 1)
-      require(arrayForallSeekEntryOrOpenFound(0)(a, mask))
+      require(arrayForallSeekEntryOrOpenFound(0)(using a, mask))
       require(validKeyInArray(k))
-      require(seekEntryOrOpen(k)(a, mask) == Found(i))
+      require(seekEntryOrOpen(k)(using a, mask) == Found(i))
 
     }.ensuring (_ =>
-      (seekEntry(k)(a, mask) match {
+      (seekEntry(k)(using a, mask) match {
         case Found(index) => index == i
         case _            => false
       })
@@ -7474,15 +7474,15 @@ object MutableLongMap {
     ): Unit = {
       require(validMask(mask))
       require(a.length == mask + 1)
-      require(arrayForallSeekEntryOrOpenFound(0)(a, mask))
+      require(arrayForallSeekEntryOrOpenFound(0)(using a, mask))
       require(validKeyInArray(k))
-      require(seekEntryOrOpen(k)(a, mask) match {
+      require(seekEntryOrOpen(k)(using a, mask) match {
         case Found(_) => false
         case _        => true
       })
 
     }.ensuring (_ =>
-      seekEntry(k)(a, mask) match {
+      seekEntry(k)(using a, mask) match {
         case Found(_) => false
         case _        => true
       }
@@ -7998,14 +7998,14 @@ object MutableLongMap {
       require(a.length == mask + 1)
       require(from >= 0 && from <= a.length)
       require(newFrom >= from && newFrom <= a.length)
-      require(arrayForallSeekEntryOrOpenFound(from)(a, mask))
+      require(arrayForallSeekEntryOrOpenFound(from)(using a, mask))
 
       decreases(newFrom - from)
 
       if (from < newFrom) {
         lemmaArrayForallSeekEntryOrOpenFoundFromSmallerThenFromBigger(a, mask, from + 1, newFrom)
       }
-    }.ensuring (_ => arrayForallSeekEntryOrOpenFound(newFrom)(a, mask))
+    }.ensuring (_ => arrayForallSeekEntryOrOpenFound(newFrom)(using a, mask))
 
     @opaque
     @inlineOnce
