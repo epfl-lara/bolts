@@ -22,7 +22,8 @@ import stainless.collection.List
 object Main {
   def main(args: Array[String]): Unit = {
     // testAmyLexer()
-    tokeniseAmyFile("src/main/scala/ch/epfl/example/res/Factorial_275chars.amy","src/main/scala/ch/epfl/example/res/Factorial_275chars.amy.tokens")
+    // tokeniseAmyFile("src/main/scala/ch/epfl/example/res/Factorial_275chars.amy","src/main/scala/ch/epfl/example/res/Factorial_275chars.amy.tokens")
+    tokeniseAmyFileMem("src/main/scala/ch/epfl/example/res/Ultimate_duplicated_commented_7629chars.amy","src/main/scala/ch/epfl/example/res/Ultimate_duplicated_commented_7629chars.amytokens")
 
     // DemoPrintableTokens.main()
     // addNumberOfCharsInFileName("src/main/scala/ch/epfl/example/res/ADT.amy")
@@ -56,8 +57,23 @@ def addNumberOfCharsInFileName(path: String): Unit = {
 
 def tokeniseAmyFile(filepath: String, destFilePath: String): Unit = {
   val fileContent: String = scala.io.Source.fromFile(filepath).mkString
+  println("Lexing with no memoization")
   println(s"File content for file '$filepath':\n$fileContent")
   val (tokens, suffix) = Lexer.lex(AmyLexer.rules, fileContent.toStainless)
+  assert(suffix.isEmpty)
+  val tokenStrings = tokens.map(t => t.asString())
+  val tokenString = tokenStrings.toScala.mkString("\n")
+  // Write to file
+  val writer = new java.io.PrintWriter(new java.io.File(destFilePath))
+  writer.write(tokenString)
+  writer.close()
+}
+
+def tokeniseAmyFileMem(filepath: String, destFilePath: String): Unit = {
+  val fileContent: String = scala.io.Source.fromFile(filepath).mkString
+  println("Lexing with memoization")
+  println(s"File content for file '$filepath':\n$fileContent")
+  val (tokens, suffix) = Lexer.lexMem(AmyLexer.rules, fileContent.toStainless)(using LexerBenchmarkUtils.zipperCacheUp, LexerBenchmarkUtils.zipperCacheDown)
   assert(suffix.isEmpty)
   val tokenStrings = tokens.map(t => t.asString())
   val tokenString = tokenStrings.toScala.mkString("\n")
@@ -182,6 +198,26 @@ case class RegexHashable[C](hc: Hashable[C]) extends Hashable[Regex[C]] {
     case Star(r)         => 13L * hash(r)
     case _               => 17L
   }
+}
+
+object ContextCharHashable extends Hashable[(Context[Char], Char)] {
+  override def hash(k: (Context[Char], Char)): Long = {
+    val (ctx, c) = k
+    ctx.hashCode() * 31 + c.hashCode()
+  }
+}
+
+object RegexContextCharHashable extends Hashable[(Regex[Char], Context[Char], Char)] {
+  override def hash(k: (Regex[Char], Context[Char], Char)): Long = {
+    val (r, ctx, c) = k
+    r.hashCode() * 63 + ctx.hashCode() * 31 + c.hashCode()
+  }
+}
+
+object LexerBenchmarkUtils {
+
+  val zipperCacheUp: MemoisationZipper.CacheUp[Char] = MemoisationZipper.emptyUp(ContextCharHashable)
+  val zipperCacheDown: MemoisationZipper.CacheDown[Char] = MemoisationZipper.emptyDown(RegexContextCharHashable)
 }
 
 object RegexBenchmark {

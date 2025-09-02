@@ -6,4 +6,12 @@ run / fork := true
 
 stainlessEnabled := false
 
+Compile / mainClass := Some("ch.epfl.lexer.Main")
+assembly / mainClass := Some("ch.epfl.lexer.Main")
+
+assembly / assemblyMergeStrategy := {
+  case PathList("META-INF", xs @ _*) => MergeStrategy.discard
+  case x => MergeStrategy.first
+}
+
 enablePlugins(StainlessPlugin, JmhPlugin)
