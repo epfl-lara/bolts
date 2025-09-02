@@ -261,6 +261,7 @@ object VerifiedRegex {
   sealed trait Regex[C]:
     lazy val nullable: Boolean = this.nullableFct
     lazy val lostCause: Boolean = this.lostCauseFct
+    lazy val typeId: Long = this.typeIdFct
   end Regex
   case class ElementMatch[C](c: C) extends Regex[C]
   case class Star[C](reg: Regex[C]) extends Regex[C]
@@ -381,6 +382,17 @@ object VerifiedRegex {
       case Concat(rOne, rTwo) => rOne.lostCause || rTwo.lostCause
     }
   }.ensuring(res => res == getLanguageWitness(r).isEmpty)
+
+  extension[C] (r: Regex[C]) def typeIdFct: Long = {
+    r match {
+      case EmptyExpr()        => 0
+      case EmptyLang()        => 2
+      case ElementMatch(c)    => 3
+      case Star(r)            => 5 
+      case Union(rOne, rTwo)  => 7 
+      case Concat(rOne, rTwo) => 11 
+    }
+  }
 
   /**
    * Return a witness of the language denoted by the given regex. If it returns None, the regex denotes the empty language.

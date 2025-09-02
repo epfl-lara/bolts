@@ -42,7 +42,7 @@ trap 'asprof stop -f "$OUT" "$PID" >/dev/null 2>&1 || true' INT TERM
 if [[ -n "$DUR" ]]; then
   echo "Profiling for ${DUR}s → $OUT"
   if attach; then
-    asprof --reverse -d "$DUR" -o flamegraph -f "$OUT" "$PID" || true
+    asprof -d "$DUR" -o flamegraph -f "$OUT" "$PID" || true
   else
     echo "Target finished before attach; no profile written."
   fi

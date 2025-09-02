@@ -17,6 +17,7 @@ import ch.epfl.lexer.example.ExampleAmyLexer.*
 import ch.epfl.lexer.VerifiedLexer.Lexer
 
 import ch.epfl.lexer.benchmark.RegexUtils._
+import _root_.benchmark.lexer.LexerBenchmarkUtils
 
 
 import stainless.collection.List
@@ -25,7 +26,15 @@ object Main {
   def main(args: Array[String]): Unit = {
     // testAmyLexer()
     // tokeniseAmyFile("src/main/scala/ch/epfl/example/res/Factorial_275chars.amy","src/main/scala/ch/epfl/example/res/Factorial_275chars.amy.tokens")
-    tokeniseAmyFileMem("src/main/scala/ch/epfl/example/res/Ultimate_duplicated_commented_7629chars.amy","src/main/scala/ch/epfl/example/res/Ultimate_duplicated_commented_7629chars.amytokens")
+
+    Thread.sleep(10000)
+    val filepath = "/Users/samuel/EPFL/bolts/lexers/regex/verifiedlexer/src/main/scala/ch/epfl/benchmark/res/generated_code_041791chars.amy"
+    val input: String = scala.io.Source.fromFile(filepath).mkString
+    println(f"Lexing: $input")
+    val (tokens, suffix) = Lexer.lexMem(AmyLexer.rules, input.toStainless)(using LexerBenchmarkUtils.zipperCacheUp, LexerBenchmarkUtils.zipperCacheDown)
+    assert(suffix.isEmpty)
+    println("Done!")
+    //    tokeniseAmyFileMem("src/main/scala/ch/epfl/example/res/Ultimate_duplicated_commented_7629chars.amy","src/main/scala/ch/epfl/example/res/Ultimate_duplicated_commented_7629chars.amytokens")
 
     // DemoPrintableTokens.main()
     // addNumberOfCharsInFileName("src/main/scala/ch/epfl/example/res/ADT.amy")
@@ -53,12 +62,12 @@ object Main {
     //   println(f"Matches?: ${ScalaRegexUtils.multiCommentRegex.matches(st)}")
     // })
 
-    import ch.epfl.lexer.benchmark.lexer.LexerBenchmarkUtils
-    val input = LexerBenchmarkUtils.generatedFileContents("generated_code_012325chars.amy")
-    while (true) {
-      val (tokens, suffix) = Lexer.lex(AmyLexer.rules, input)
-      // assert(suffix.isEmpty)
-    }
+//    import ch.epfl.lexer.benchmark.lexer.LexerBenchmarkUtils
+//    val input = LexerBenchmarkUtils.generatedFileContents("generated_code_012325chars.amy")
+//    while (true) {
+//      val (tokens, suffix) = Lexer.lex(AmyLexer.rules, input)
+//      // assert(suffix.isEmpty)
+//    }
   }
 }
 
@@ -85,6 +94,7 @@ def tokeniseAmyFile(filepath: String, destFilePath: String): Unit = {
   val writer = new java.io.PrintWriter(new java.io.File(destFilePath))
   writer.write(tokenString)
   writer.close()
+  println("Done!")
 }
 
 def tokeniseAmyFileMem(filepath: String, destFilePath: String): Unit = {
@@ -99,6 +109,7 @@ def tokeniseAmyFileMem(filepath: String, destFilePath: String): Unit = {
   val writer = new java.io.PrintWriter(new java.io.File(destFilePath))
   writer.write(tokenString)
   writer.close()
+  println("Done!")
 }
 
 def testAmyLexer(): Unit = {
@@ -198,44 +209,6 @@ def testRegex(): Unit = {
 
   println(s"r1 = $r1\nremoveUselessConcat(r1) = ${removeUselessConcat(r1)}")
 
-}
-
-object KeyHashable extends Hashable[(Regex[Char], Char)] {
-  override def hash(x: (Regex[Char], Char)): Long = CharHashable.hash(x._2) + RegexHashable(CharHashable).hash(x._1)
-}
-
-object CharHashable extends Hashable[Char] {
-  override def hash(x: Char): Long = x.toLong
-}
-
-case class RegexHashable[C](hc: Hashable[C]) extends Hashable[Regex[C]] {
-  override def hash(x: Regex[C]): Long = x match {
-    case ElementMatch(c) => 2L * hc.hash(c)
-    case Concat(l, r)    => 3L * hash(l) + 5L * hash(r)
-    case Union(l, r)     => 7L * hash(l) + 11L * hash(r)
-    case Star(r)         => 13L * hash(r)
-    case _               => 17L
-  }
-}
-
-object ContextCharHashable extends Hashable[(Context[Char], Char)] {
-  override def hash(k: (Context[Char], Char)): Long = {
-    val (ctx, c) = k
-    ctx.hashCode() * 31 + c.hashCode()
-  }
-}
-
-object RegexContextCharHashable extends Hashable[(Regex[Char], Context[Char], Char)] {
-  override def hash(k: (Regex[Char], Context[Char], Char)): Long = {
-    val (r, ctx, c) = k
-    r.hashCode() * 63 + ctx.hashCode() * 31 + c.hashCode()
-  }
-}
-
-object LexerBenchmarkUtils {
-
-  val zipperCacheUp: MemoisationZipper.CacheUp[Char] = MemoisationZipper.emptyUp(ContextCharHashable)
-  val zipperCacheDown: MemoisationZipper.CacheDown[Char] = MemoisationZipper.emptyDown(RegexContextCharHashable)
 }
 
 object RegexBenchmark {
