@@ -198,7 +198,7 @@ object VerifiedLexer {
     def lexMem[C](
         rules: List[Rule[C]],
         input: Vector[C]
-    )(implicit cacheUp: CacheUp[C], cacheDown: CacheDown[C]): (Vector[Token[C]], Vector[C]) = {
+    )(using cacheUp: CacheUp[C], cacheDown: CacheDown[C]): (Vector[Token[C]], Vector[C]) = {
       require(!rules.isEmpty)
       require(rulesInvariant(rules))
       require(cacheUp.valid)
@@ -491,7 +491,7 @@ object VerifiedLexer {
     def maxPrefixZipperVectorMem[C](
             rulesArg: List[Rule[C]],
             input: Vector[C]
-        )(implicit cacheUp: CacheUp[C], cacheDown: CacheDown[C]): Option[(Token[C], Vector[C])] = {
+        )(using cacheUp: CacheUp[C], cacheDown: CacheDown[C]): Option[(Token[C], Vector[C])] = {
           require(rulesValidInductive(rulesArg))
           require(!rulesArg.isEmpty)
           require(cacheUp.valid)
@@ -590,7 +590,7 @@ object VerifiedLexer {
      def maxPrefixOneRuleZipperVectorMem[C](
         rule: Rule[C],
         input: Vector[C]
-    )(implicit cacheUp: CacheUp[C], cacheDown: CacheDown[C]): Option[(Token[C], Vector[C])] = {
+    )(using cacheUp: CacheUp[C], cacheDown: CacheDown[C]): Option[(Token[C], Vector[C])] = {
       require(ruleValid(rule))
       require(cacheUp.valid)
       require(cacheDown.valid)
