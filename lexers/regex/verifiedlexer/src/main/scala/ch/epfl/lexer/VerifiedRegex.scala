@@ -249,7 +249,7 @@ object VerifiedRegex {
   sealed trait Regex[C]:
     lazy val nullable: Boolean = this.nullableFct
     lazy val lostCause: Boolean = this.lostCauseFct
-    lazy val typeId: Long = this.typeIdFct
+    lazy val hash: Long = this.hashFct
   end Regex
   case class ElementMatch[C](c: C) extends Regex[C]
   case class Star[C](reg: Regex[C]) extends Regex[C]
@@ -371,14 +371,14 @@ object VerifiedRegex {
     }
   }.ensuring(res => res == getLanguageWitness(r).isEmpty)
 
-  extension[C] (r: Regex[C]) def typeIdFct: Long = {
+  extension[C] (r: Regex[C]) def hashFct: Long = {
     r match {
       case EmptyExpr()        => 1
       case EmptyLang()        => 2
       case ElementMatch(c)    => 3
-      case Star(r)            => 5 
-      case Union(rOne, rTwo)  => 7 
-      case Concat(rOne, rTwo) => 11 
+      case Star(r)            => 5 * r.hash
+      case Union(rOne, rTwo)  => 7 * rOne.hash + 13 * rTwo.hash
+      case Concat(rOne, rTwo) => 11 * rOne.hash + 17 * rTwo.hash
     }
   }
 

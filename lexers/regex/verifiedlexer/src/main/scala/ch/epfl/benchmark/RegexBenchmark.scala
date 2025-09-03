@@ -271,12 +271,12 @@ class LexerRegexBenchmark {
 object RegexCharHashable extends Hashable[(Regex[Char], Char)] {
   override def hash(k: (Regex[Char], Char)): Long = {
     val (r, c) = k
-    r.typeId * 13 + c.hashCode() * 17
+    r.hash * 13 + c.hashCode() * 17
   }
 }
 object ContextHashable extends Hashable[Context[Char]] {
   override def hash(ctx: Context[Char]): Long = {
-    ctx.exprs.foldLeft(19L)((acc, expr) => acc * expr.typeId)
+    ctx.exprs.foldLeft(19L)((acc, expr) => acc * expr.hash)
   }
 }
 
@@ -290,7 +290,7 @@ object ContextCharHashable extends Hashable[(Context[Char], Char)] {
 object RegexContextCharHashable extends Hashable[(Regex[Char], Context[Char], Char)] {
   override def hash(k: (Regex[Char], Context[Char], Char)): Long = {
     val (r, ctx, c) = k
-    r.typeId * 31 + ContextHashable.hash(ctx) * 37 + c.hashCode() * 43
+    r.hash * 31 + ContextHashable.hash(ctx) * 37 + c.hashCode() * 43
   }
 }
 

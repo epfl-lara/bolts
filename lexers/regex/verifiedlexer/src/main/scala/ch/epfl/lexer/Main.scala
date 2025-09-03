@@ -198,7 +198,7 @@ def testZipperMatch(): Unit = {
 
 
  object KeyHashable extends Hashable[(Regex[Char], Char)] {
-    override def hash(c: (Regex[Char], Char)): Long = c._1.typeId * 31 + c._2.hashCode()
+    override def hash(c: (Regex[Char], Char)): Long = c._1.hash * 31 + c._2.hashCode()
   }
 
 def testRegex(): Unit = {
