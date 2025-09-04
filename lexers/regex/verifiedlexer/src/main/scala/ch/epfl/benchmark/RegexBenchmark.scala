@@ -377,9 +377,9 @@ object RegexBenchmarkUtils {
     res
   }
 
-  val singleLineCommentRegex = "//".r ~ (letterRegex | digitRegex | " ".r | "\t".r | specialCharRegex).*
+  val singleLineCommentRegex = "//".r ~ (azAZ | digits | " ".r | "\t".r | specialChars).*
   val multiCommentRegex = "/*".r ~ 
-                          (letterRegex | digitRegex | whiteSpaceRegex | specialCharRegexWithoutSlashAndStar | "/".r | ("*".r ~ "*".r.* ~ (letterRegex | digitRegex | whiteSpaceRegex | specialCharRegexWithoutSlashAndStar | "/".r))).* ~  
+                          (azAZ | digits | whiteSpaces | specialCharsString.replace("/", "").replace("*", "").r | "/".r | ("*".r ~ "*".r.* ~ (azAZ | digits | whiteSpaces | specialCharsString.replace("/", "").replace("*", "").r | "/".r))).* ~  
                           "*".r.* ~
                           "*/".r
 

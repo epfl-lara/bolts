@@ -34,6 +34,8 @@ object ExamplePythonLexer:
         case class NewLineValue(value: Vector[Char]) extends TokenValue
         case class IdentValue(value: Vector[Char]) extends TokenValue
         case class DedentValue(value: Vector[Char]) extends TokenValue
+        case class CommentValue(value: Vector[Char]) extends TokenValue
+        case class SpaceValue(value: Vector[Char]) extends TokenValue
 
         case class KeywordValue(value: Vector[Char]) extends TokenValue
         case class IdentifierValue(value: Vector[Char]) extends TokenValue
@@ -75,6 +77,8 @@ object ExamplePythonLexer:
 
         case class OperatorValue(op: Vector[Char]) extends TokenValue
         case class DelimiterValue(del: Vector[Char]) extends TokenValue
+
+        case class IndentationValue(value: Vector[Char]) extends TokenValue
 
         case class EOFValue(value: Vector[Char]) extends TokenValue
         case class ErrorTokenValue(msg: Vector[Char]) extends TokenValue
@@ -132,6 +136,42 @@ object ExamplePythonLexer:
                 Injection(toValue, toCharacters)
             }
         end NewLineValueInjection
+
+        case object CommentValueInjection:
+            def toValue(v: Vector[Char]): TokenValue = CommentValue(v)
+            def toCharacters(t: TokenValue): Vector[Char] = t match
+                case CommentValue(value) => value
+                case _ => Vector.empty
+            
+            val injection: Injection[Vector[Char], TokenValue] = {
+                ghostExpr{
+                    assert({
+                        unfold(semiInverseBody(toCharacters, toValue))
+                        semiInverseBody(toCharacters, toValue)
+                    })
+                    unfold(semiInverse(toCharacters, toValue))
+                }
+                Injection(toValue, toCharacters)
+            }
+        end CommentValueInjection
+
+        case object SpaceValueInjection:
+            def toValue(v: Vector[Char]): TokenValue = SpaceValue(v)
+            def toCharacters(t: TokenValue): Vector[Char] = t match
+                case SpaceValue(value) => value
+                case _ => Vector.empty
+
+            val injection: Injection[Vector[Char], TokenValue] = {
+                ghostExpr{
+                    assert({
+                        unfold(semiInverseBody(toCharacters, toValue))
+                        semiInverseBody(toCharacters, toValue)
+                    })
+                    unfold(semiInverse(toCharacters, toValue))
+                }
+                Injection(toValue, toCharacters)
+            }
+        end SpaceValueInjection
 
         case object KeywordValueInjection:
             def toValue(v: Vector[Char]): TokenValue = KeywordValue(v)
@@ -207,7 +247,7 @@ object ExamplePythonLexer:
 
 
         case object IntegerValueInjection:
-            def toValue(v: Vector[Char]): TokenValue = IntegerValue(IntegerValueUtils.charsToInt(v), v)
+            def toValue(v: Vector[Char]): TokenValue = IntegerValue(IntegerValueUtils.charsToBigInt(v), v)
             def toCharacters(t: TokenValue): Vector[Char] = t match
                     case IntegerValue(_, text) => text
                     case _ => Vector.empty
@@ -296,6 +336,24 @@ object ExamplePythonLexer:
                 Injection(toValue, toCharacters)
             }
         end DelimiterValueInjection
+
+        case object IndentationValueInjection:
+            def toValue(v: Vector[Char]): TokenValue = IndentationValue(v)
+            def toCharacters(t: TokenValue): Vector[Char] = t match
+                case IndentationValue(value) => value
+                case _ => Vector.empty
+            
+            val injection: Injection[Vector[Char], TokenValue] = {
+                ghostExpr{
+                    assert({
+                        unfold(semiInverseBody(toCharacters, toValue))
+                        semiInverseBody(toCharacters, toValue)
+                    })
+                    unfold(semiInverse(toCharacters, toValue))
+                }
+                Injection(toValue, toCharacters)
+            }
+        end IndentationValueInjection
 
         case object EOFValueInjection:
             def toValue(v: Vector[Char]): TokenValue = EOFValue(v)
@@ -397,7 +455,7 @@ object ExamplePythonLexer:
 
         // either only zeroes or 1-9 followed by 0-9 (with some _ in between)
         @extern def decimalIntRegex(): Regex[Char] = 
-             ("0".r ~ (opt("_".r) ~ "0".r).*) | (digitsString.replace("0", "").r ~ (opt("_".r) ~ digits).*)
+             ("0".r ~ (opt("_".r) ~ "0".r).*) | (anyOf(digitsString.replace("0", "")) ~ (opt("_".r) ~ digits).*)
 
         val decimalIntRule =
             Rule(
@@ -476,8 +534,8 @@ object ExamplePythonLexer:
             val prefixRegex = if isBytes then bytesPrefix() else stringPrefix()
             val charsRegex = if isBytes then interval(0x00, 0x7F) else all
             val escapedChars = "\\".r ~ charsRegex
-            val nonDelimiterNonEscape = allString.replace(f"$delimiter", "").replace("\\", "").r
-            val nonDelimiter = allString.replace(f"$delimiter", "").r
+            val nonDelimiterNonEscape = anyOf(allString.replace(f"$delimiter", "").replace("\\", ""))
+            val nonDelimiter = anyOf(allString.replace(f"$delimiter", ""))
             
             val re: Regex[Char] = 
                 prefixRegex ~ 
@@ -502,7 +560,7 @@ object ExamplePythonLexer:
             val prefixRegex = if isBytes then bytesPrefix() else stringPrefix()
             val charsRegex = if isBytes then interval(0x00, 0x7F) else all
             val escapedChars = "\\".r ~ charsRegex
-            val nonDelimiterNonEscapeNonNewLine = allString.replace(f"$delimiter", "").replace("\\", "").replace("\n", "").r
+            val nonDelimiterNonEscapeNonNewLine = anyOf(allString.replace(f"$delimiter", "").replace("\\", "").replace("\n", ""))
             
             val re: Regex[Char] = 
                 prefixRegex ~ 
@@ -533,7 +591,53 @@ object ExamplePythonLexer:
         @extern def commentRegex(): Regex[Char] = "#".r ~ (anyOf(allString.replace("\n", "").replace("\r", "")).*)
         @extern def explicitLineJoinRegex(): Regex[Char] = "\\".r ~ "\n".r
 
-        
+        val commentRule =
+            Rule(
+            regex = commentRegex(),
+            tag = "comment",
+            isSeparator = true,
+            transformation = CommentValueInjection.injection
+            )
+
+        val explicitLineJoinRule =
+            Rule(
+            regex = explicitLineJoinRegex(),
+            tag = "explicitLineJoin",
+            isSeparator = true,
+            transformation = NewLineValueInjection.injection
+            )
+        // @extern def indentationRegex(): Regex[Char] = 
+        //     " ".r.* ~ opt(commentRegex()) ~
+        //     (physicalNewLineRegex() ~ " ".* ~ opt(commentRegex())).* ~
+        //     physicalNewLineRegex() ~ " ".*
+
+        @extern def indentationRegex(): Regex[Char] = 
+            (physicalNewLineRegex() ~ " ".r.+)
+
+        val indentationRule = Rule(
+            regex = indentationRegex(),
+            tag = "indentation",
+            isSeparator = false,
+            transformation = IndentationValueInjection.injection
+        )
+
+        val spaceRule =
+            Rule(
+            regex = (" ".r | "\t".r).+,
+            tag = "space",
+            isSeparator = true,
+            transformation = SpaceValueInjection.injection
+            )
+
+        val newLineRule =
+            Rule(
+            regex = physicalNewLineRegex(),
+            tag = "newLine",
+            isSeparator = true,
+            transformation = NewLineValueInjection.injection
+            )
+
+        @extern def eofRegex(): Regex[Char] = "\t".r.*
 
         val rules: List[Rule[Char]] = List(
             keywordRule,
@@ -551,7 +655,12 @@ object ExamplePythonLexer:
             shortStringDqRule,
             shortStringSqRule,
             shortBytesDqRule,
-            shortBytesSqRule
+            shortBytesSqRule,
+            commentRule,
+            explicitLineJoinRule,
+            indentationRule,
+            spaceRule,
+            newLineRule
         )
     end PythonLexer
 

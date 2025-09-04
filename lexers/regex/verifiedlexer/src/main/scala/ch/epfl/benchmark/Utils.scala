@@ -43,7 +43,7 @@ object RegexUtils {
   val AZString: String = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
   val azString: String = "abcdefghijklmnopqrstuvwxyz"
   val digitsString: String = "0123456789"
-  val whiteSpacesString: String = " \n\t"
+  val whiteSpacesString: String = " \n\t\r"
   val specialCharsString: String = "+-/*!?=()[]{}<>|\\&%$§§°`^@#~;:,.éàèçù\'\"`"
   val allString: String = AZString + azString + digitsString + whiteSpacesString + specialCharsString
 
