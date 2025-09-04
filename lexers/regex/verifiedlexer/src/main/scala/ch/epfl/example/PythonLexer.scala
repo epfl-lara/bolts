@@ -15,7 +15,7 @@ import stainless.annotation.extern
 import stainless.annotation.pure
 
 import ch.epfl.lexer.benchmark.RegexUtils.*
-import ch.epfl.lexer.benchmark.RegexUtils.digitRegex
+import ch.epfl.lexer.benchmark.RegexUtils.digits
 import stainless.lang.Quantifiers.*
 
 import stainless.lang.{ghost => ghostExpr}
@@ -26,6 +26,7 @@ import stainless.lang.Exception
 // import ch.epfl.lexer.example.ExampleAmyLexer.Types.KeywordValueInjection
 
 import ch.epfl.lexer.Vector
+import javax.lang.model.element.Element
 
 object ExamplePythonLexer:
     object Types:
@@ -38,10 +39,10 @@ object ExamplePythonLexer:
         case class IdentifierValue(value: Vector[Char]) extends TokenValue
 
         case class StringLiteralValue(value: Vector[Char]) extends TokenValue
-        case class ByteLiteralValue(value: Vector[Char]) extends TokenValue
+        case class BytesLiteralValue(value: Vector[Char]) extends TokenValue
 
-        case class IntegerValue(value: Int, text: Vector[Char]) extends TokenValue:
-            require(IntegerValueUtils.charsToInt(text) == value)
+        case class IntegerValue(value: BigInt, text: Vector[Char]) extends TokenValue:
+            require(IntegerValueUtils.charsToBigInt(text) == value)
         end IntegerValue
             
         object IntegerValueUtils:
@@ -50,13 +51,23 @@ object ExamplePythonLexer:
                     val sb = new StringBuilder()
                     def loop(from: BigInt): Unit =
                         if from < v.size then
-                            sb.append(v(from).toString)
-                            if from + 1 < v.size then
-                                sb.append(inter)
+                            if v(from) != "_" then
+                                sb.append(v(from).toString)
+                                if from + 1 < v.size then
+                                    sb.append(inter)
                             loop(from + 1)
                     loop(0)
                     sb.toString()
-            @extern def charsToInt(v: Vector[Char]): Int = v.mkString("").toInt
+            @extern def charsToBigInt(v: Vector[Char]): BigInt = 
+                val vStr = v.mkString("")
+                if vStr.contains("0b") || vStr.contains("0B") then
+                    BigInt(vStr.stripPrefix("0b").stripPrefix("0B"), 2)
+                else if vStr.contains("0o") || vStr.contains("0O") then
+                    BigInt(vStr.stripPrefix("0o").stripPrefix("0O"), 8)
+                else if vStr.contains("0x") || vStr.contains("0X") then
+                    BigInt(vStr.stripPrefix("0x").stripPrefix("0X"), 16)
+                else
+                    BigInt(vStr)
         end IntegerValueUtils
 
         case class FloatLiteralValue(text: Vector[Char]) extends TokenValue
@@ -176,10 +187,10 @@ object ExamplePythonLexer:
             }
         end StringLiteralValueInjection
 
-        case object ByteLiteralValueInjection:
-            def toValue(v: Vector[Char]): TokenValue = ByteLiteralValue(v)
+        case object BytesLiteralValueInjection:
+            def toValue(v: Vector[Char]): TokenValue = BytesLiteralValue(v)
             def toCharacters(t: TokenValue): Vector[Char] = t match
-                case ByteLiteralValue(value) => value
+                case BytesLiteralValue(value) => value
                 case _ => Vector.empty
             
             val injection: Injection[Vector[Char], TokenValue] = {
@@ -192,7 +203,7 @@ object ExamplePythonLexer:
                 }
                 Injection(toValue, toCharacters)
             }
-        end ByteLiteralValueInjection
+        end BytesLiteralValueInjection
 
 
         case object IntegerValueInjection:
@@ -358,22 +369,189 @@ object ExamplePythonLexer:
             ".r |".r | ":".r | ".".r | ";".r | "=".r | "->".r | "+=".r | "-=".r | "*=".r | 
             "/=".r | "//=".r | "%=".r | "@=".r | "&=".r | "|=".r | "^=".r | ">>=".r |
             "<<=".r | "**=".r | "!".r
-           
+
+        @extern def openingDelimiterRegex(): Regex[Char] = 
+            "(".r | "[".r | "{".r
+
+        @extern def closingDelimiterRegex(): Regex[Char] = 
+            ")".r | "]".r | "}".r
 
         val delimiterRule =
             Rule(
-            regex = delimiterRegex(),
+            regex = delimiterRegex() | openingDelimiterRegex() | closingDelimiterRegex(),
             tag = "delimiter",
             isSeparator = false,
             transformation = DelimiterValueInjection.injection
             )
+
+        @extern def identifierRegex(): Regex[Char] = 
+            (az | AZ | "_".r) ~ (az | AZ | digits | "_".r).*
+
+        val identifierRule =
+            Rule(
+            regex = identifierRegex(),
+            tag = "identifier",
+            isSeparator = false,
+            transformation = IdentifierValueInjection.injection
+            )
+
+        // either only zeroes or 1-9 followed by 0-9 (with some _ in between)
+        @extern def decimalIntRegex(): Regex[Char] = 
+             ("0".r ~ (opt("_".r) ~ "0".r).*) | (digitsString.replace("0", "").r ~ (opt("_".r) ~ digits).*)
+
+        val decimalIntRule =
+            Rule(
+            regex = decimalIntRegex(),
+            tag = "decimalInt",
+            isSeparator = false,
+            transformation = IntegerValueInjection.injection
+            )
+
+        @extern def binaryIntLitRegex(): Regex[Char] = 
+            "0".r ~ ("B".r | "b".r) ~ (opt("_".r) ~ ("0".r | "1".r)).*
+
+        val binaryIntLitRule =
+            Rule(
+            regex = binaryIntLitRegex(),
+            tag = "binaryInt",
+            isSeparator = false,
+            transformation = IntegerValueInjection.injection
+            )
+
+        @extern def octIntLitRegex(): Regex[Char] = 
+            "0".r ~ ("O".r | "o".r) ~ (opt("_".r) ~ anyOf("01234567").*)
+
+        val octIntLitRule =
+            Rule(
+            regex = octIntLitRegex(),
+            tag = "octalInt",
+            isSeparator = false,
+            transformation = IntegerValueInjection.injection
+            )
+
+        @extern def hexIntLitRegex(): Regex[Char] = 
+            "0".r ~ ("X".r | "x".r) ~ (opt("_".r) ~ (digits | anyOf("abcdefABCDEF")).*)
+
+        val hexIntLitRule =
+            Rule(
+            regex = hexIntLitRegex(),
+            tag = "hexadecimalInt",
+            isSeparator = false,
+            transformation = IntegerValueInjection.injection
+            )
+
+        
+        @extern def digitPartRegex = digits ~ (opt("_".r) ~ digits).* // "[0-9]" ~ many("_?" ~ "[0-9]")
+        @extern def fractionRegex = ".".r ~ digitPartRegex 
+        @extern def pointFloatRegex = (opt(digitPartRegex) ~ fractionRegex) | (digitPartRegex ~ ".".r)
+        @extern def exponentRegex = anyOf("eE") ~ opt(anyOf("+-")) ~ digitPartRegex // """[eE][\+\-]?""" ~ digitPartRegex
+        @extern def exponentFloatRegex = (digitPartRegex | pointFloatRegex) ~ exponentRegex
+        @extern def floatLiteralRegex = pointFloatRegex ~ opt(exponentRegex) | digitPartRegex ~ exponentRegex
+
+        val floatLiteralRule =
+            Rule(
+            regex = floatLiteralRegex,
+            tag = "floatLiteral",
+            isSeparator = false,
+            transformation = FloatLiteralValueInjection.injection
+            )
+
+        @extern def imaginaryLiteralRegex = ((pointFloatRegex | opt(exponentRegex)) | (digitPartRegex ~ exponentRegex) | digitPartRegex) ~ anyOf("jJ")
+
+        val imaginaryLiteralRule =
+            Rule(
+            regex = imaginaryLiteralRegex,
+            tag = "imaginaryLiteral",
+            isSeparator = false,
+            transformation = FloatLiteralValueInjection.injection
+            )
+
+
+        @extern def stringPrefix() = "RF".r | "Rf".r | "rF".r | "rf".r | "FR".r | "fR".r | "Fr".r | "fr".r | "F".r | "f".r | "U".r | "R".r | "u".r | "r".r | epsilon
+        @extern def bytesPrefix() = "RB".r | "Rb".r | "rB".r | "rb".r | "BR".r | "bR".r | "Br".r | "br".r | "B".r | "b".r
+
+        @extern def longStringRuleGen(delimiter: Char, isBytes: Boolean = false): Rule[Char] =
+            val delimiterR = ElementMatch(delimiter)
+            val delimiterFull = delimiterR ~ delimiterR ~ delimiterR
+            val prefixRegex = if isBytes then bytesPrefix() else stringPrefix()
+            val charsRegex = if isBytes then interval(0x00, 0x7F) else all
+            val escapedChars = "\\".r ~ charsRegex
+            val nonDelimiterNonEscape = allString.replace(f"$delimiter", "").replace("\\", "").r
+            val nonDelimiter = allString.replace(f"$delimiter", "").r
+            
+            val re: Regex[Char] = 
+                prefixRegex ~ 
+                delimiterFull ~ 
+                (
+                    nonDelimiterNonEscape |
+                    escapedChars |
+                    (delimiterR ~ nonDelimiter) |
+                    (delimiterR ~ delimiterR ~ nonDelimiter)
+                ).* ~ 
+                delimiterFull
+
+            Rule(
+                regex = re,
+                tag = if (isBytes) f"longBytesString_delimiter_$delimiter" else f"longString_delimiter_$delimiter",
+                isSeparator = false,
+                transformation = if (isBytes) BytesLiteralValueInjection.injection else StringLiteralValueInjection.injection
+            )
+
+        @extern def shortStringRuleGen(delimiter: Char, isBytes: Boolean = false): Rule[Char] =
+            val delimiterR = ElementMatch(delimiter)
+            val prefixRegex = if isBytes then bytesPrefix() else stringPrefix()
+            val charsRegex = if isBytes then interval(0x00, 0x7F) else all
+            val escapedChars = "\\".r ~ charsRegex
+            val nonDelimiterNonEscapeNonNewLine = allString.replace(f"$delimiter", "").replace("\\", "").replace("\n", "").r
+            
+            val re: Regex[Char] = 
+                prefixRegex ~ 
+                delimiterR ~ 
+                (
+                    nonDelimiterNonEscapeNonNewLine | 
+                    escapedChars 
+                ).* ~ 
+                delimiterR
+
+            Rule(
+                regex = re,
+                tag = if (isBytes) f"shortBytesString_delimiter_$delimiter" else f"shortString_delimiter_$delimiter",
+                isSeparator = false,
+                transformation = if (isBytes) BytesLiteralValueInjection.injection else StringLiteralValueInjection.injection
+            )
+
+        val longStringDqRule = longStringRuleGen('"')
+        val longStringSqRule = longStringRuleGen('\'')
+        val longBytesDqRule = longStringRuleGen('"', true)
+        val longBytesSqRule = longStringRuleGen('\'', true)
+        val shortStringDqRule = shortStringRuleGen('"')
+        val shortStringSqRule = shortStringRuleGen('\'')
+        val shortBytesDqRule = shortStringRuleGen('"', true)
+        val shortBytesSqRule = shortStringRuleGen('\'', true)
+
+        @extern def physicalNewLineRegex(): Regex[Char] = "\n".r | "\r\n".r | "\r".r
+        @extern def commentRegex(): Regex[Char] = "#".r ~ (anyOf(allString.replace("\n", "").replace("\r", "")).*)
+        @extern def explicitLineJoinRegex(): Regex[Char] = "\\".r ~ "\n".r
 
         
 
         val rules: List[Rule[Char]] = List(
             keywordRule,
             operatorRule,
-            delimiterRule
+            delimiterRule,
+            identifierRule,
+            decimalIntRule,
+            binaryIntLitRule,
+            floatLiteralRule,
+            imaginaryLiteralRule,
+            longStringDqRule,
+            longStringSqRule,
+            longBytesDqRule,
+            longBytesSqRule,
+            shortStringDqRule,
+            shortStringSqRule,
+            shortBytesDqRule,
+            shortBytesSqRule
         )
     end PythonLexer
 

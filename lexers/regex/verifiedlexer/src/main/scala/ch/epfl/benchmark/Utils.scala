@@ -29,6 +29,7 @@ object RegexUtils {
   extension (s: String) infix def ~ (s2: String): Regex[Char] = r(s) ~ r(s2)
   extension (s: String) def * : Regex[Char] = r(s).*
   extension (s: String) def anyOf: Regex[Char] = s.toCharArray().toList.foldRight[Regex[Char]](EmptyLang())((c, acc) => Union(ElementMatch(c), acc))
+  def opt(r: Regex[Char]): Regex[Char] = r | epsilon
   extension (s: String) def toStainless: Vector[Char] = Vector.fromScala(s.toCharArray().toVector)
   extension (r: Regex[Char]) def asString(): String = r match {
     case EmptyLang() => "∅"
@@ -39,11 +40,35 @@ object RegexUtils {
     case Star(r1) => s"${r1.asString()}*"
   }
 
-  val letterRegex: Regex[Char] = anyOf("abcdefghijklmnopqrstuvwxyz") | anyOf("ABCDEFGHIJKLMNOPQRSTUVWXYZ")
-  val digitRegex: Regex[Char] = anyOf("0123456789")
-  val whiteSpaceRegex: Regex[Char] = anyOf(" \n\t")
-  val specialCharRegex: Regex[Char] = anyOf("+-/*!?=()[]{}<>|\\&%$§§°`^@#~;:,.éàèçù\'\"`")
-  val specialCharRegexWithoutSlashAndStar: Regex[Char] = anyOf("+-!?=()[]{}<>|\\&%$§§°`^@#~;:,.éàèçù\'\"`")
+  val AZString: String = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+  val azString: String = "abcdefghijklmnopqrstuvwxyz"
+  val digitsString: String = "0123456789"
+  val whiteSpacesString: String = " \n\t"
+  val specialCharsString: String = "+-/*!?=()[]{}<>|\\&%$§§°`^@#~;:,.éàèçù\'\"`"
+  val allString: String = AZString + azString + digitsString + whiteSpacesString + specialCharsString
+
+  val AZ: Regex[Char] = anyOf(AZString)
+  val az: Regex[Char] = anyOf(azString)
+  val azAZ: Regex[Char] = az | AZ
+  val digits: Regex[Char] = anyOf(digitsString)
+  val whiteSpaces: Regex[Char] = anyOf(whiteSpacesString)
+  val epsilon: Regex[Char] = EmptyExpr()
+  val specialChars: Regex[Char] = anyOf(specialCharsString)
+  val all: Regex[Char] = anyOf(allString)
+
+  /**
+    * Creates a regex that matches any character in the interval [start, end].
+    *
+    * @param start the start character (inclusive)
+    * @param end the end character (inclusive)
+    * @return a regex that matches any character in the interval [start, end]
+    */
+  @tailrec
+  def interval(start: Char, end: Char, acc: Regex[Char] = EmptyExpr()): Regex[Char] = {
+    require(start <= end)
+    if start == end then Union(ElementMatch(start), acc)
+    else interval((start + 1).toChar, end, Union(ElementMatch(start), acc))
+  }
 
   extension (t: Token[Char]) def asString(): String = 
     def replaceSpecialCharacters(l: Vector[Char]): Vector[String] = 
