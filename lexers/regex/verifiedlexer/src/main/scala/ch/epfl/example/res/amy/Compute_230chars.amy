@@ -1,0 +1,12 @@
+object NestedScope
+  def compute(a: Int(32), b: Int(32)): Int(32) = {
+    val x: Int(32) = a + b;
+    val y: Int(32) = {
+      val z: Int(32) = x * 2;
+      z - a
+    };
+    y + b
+  }
+
+  Std.printInt(compute(5, 7))
+end NestedScope
