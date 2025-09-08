@@ -290,18 +290,47 @@ object VerifiedLexer {
       require(cacheUp.valid)
       require(cacheDown.valid)
       decreases(input.size)
+      lexTailRecMem(
+        rules,
+        input,
+        Vector.empty,
+        input,
+        Vector.empty
+      )
+    }.ensuring (res => res == lex(rules, input))
+
+    def lexTailRecMem[C](
+        rules: List[Rule[C]],
+        @ghost totalInput: Vector[C],
+        @ghost treated: Vector[C],
+        input: Vector[C],
+        acc: Vector[Token[C]],
+    )(using cacheUp: CacheUp[C], cacheDown: CacheDown[C]): (Vector[Token[C]], Vector[C]) = {
+      decreases(input.size)
+      require(!rules.isEmpty)
+      require(rulesInvariant(rules))
+      require(cacheUp.valid)
+      require(cacheDown.valid)
+      require(totalInput == treated ++ input)
+      require(lexRec(rules, treated) == (acc, Vector.empty[C]))
+      require(lexRec(rules, totalInput) == (acc ++ lexRec(rules, input)._1, lexRec(rules, input)._2))
+      unfold(lexTailRec(rules, totalInput, treated, input, acc))
       unfold(lex(rules, input))
       maxPrefixZipperVectorMem(rules, input) match {
         case Some((token, suffix)) => {
-          val (followingTokens, nextSuffix) = lexMem(rules, suffix)
-          assert(token.characters.list ++ suffix.list == input.list)
-          ghostExpr(Vector.listEqImpliesEq(token.characters ++ suffix, input))
-          assert(token.characters ++ suffix == input)
-          (followingTokens.prepend(token), nextSuffix)
+          lexTailRecMem(
+            rules,
+            totalInput,
+            treated ++ token.characters,
+            suffix,
+            acc.append(token)
+          )
         }
-        case None() => (Vector.empty, input)
+        case None() => {
+          (acc, input)
+        }
       }
-    }.ensuring (res => res == lex(rules, input))
+    }.ensuring (res => res == lexTailRec(rules, totalInput, treated, input, acc) )
 
     @ghost
     def lexRegexList[C](
