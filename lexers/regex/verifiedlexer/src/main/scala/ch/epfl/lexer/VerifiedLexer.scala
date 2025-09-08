@@ -178,16 +178,13 @@ object VerifiedLexer {
       decreases(input.size)
       require(!rules.isEmpty)
       require(rulesInvariant(rules))
-      maxPrefixZipperVector(rules, input) match {
-        case Some((token, suffix)) => {
-          val (followingTokens, nextSuffix) = lex(rules, suffix)
-          assert(token.characters.list ++ suffix.list == input.list)
-          ghostExpr(Vector.listEqImpliesEq(token.characters ++ suffix, input))
-          assert(token.characters ++ suffix == input)
-          (followingTokens.prepend(token), nextSuffix)
-        }
-        case None() => (Vector.empty, input)
-      }
+      lexTailRec(
+        rules,
+        input,
+        Vector.empty,
+        input,
+        Vector.empty
+      )
     }.ensuring (res =>
       (if (res._1.size > 0) res._2.size < input.size && !res._1.isEmpty
       else res._2 == input) &&
@@ -204,7 +201,7 @@ object VerifiedLexer {
       require(rulesInvariant(rules))
       maxPrefixZipperVector(rules, input) match {
         case Some((token, suffix)) => {
-          val (followingTokens, nextSuffix) = lex(rules, suffix)
+          val (followingTokens, nextSuffix) = lexRec(rules, suffix)
           assert(token.characters.list ++ suffix.list == input.list)
           ghostExpr(Vector.listEqImpliesEq(token.characters ++ suffix, input))
           assert(token.characters ++ suffix == input)
