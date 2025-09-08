@@ -44,7 +44,7 @@ object RegexUtils {
   val azString: String = "abcdefghijklmnopqrstuvwxyz"
   val digitsString: String = "0123456789"
   val whiteSpacesString: String = " \n\t\r"
-  val specialCharsString: String = "+-/*!?=()[]{}<>|\\&%$§§°`^@#~;:,.éàèçù\'\"`"
+  val specialCharsString: String = "+-_/*!?=()[]{}<>|\\&%$§§°`^@#~;:,.éàèçù\'\"`"
   val allString: String = AZString + azString + digitsString + whiteSpacesString + specialCharsString
 
   val AZ: Regex[Char] = anyOf(AZString)

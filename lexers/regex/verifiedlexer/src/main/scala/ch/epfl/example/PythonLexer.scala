@@ -424,7 +424,7 @@ object ExamplePythonLexer:
             )
 
         @extern def delimiterRegex(): Regex[Char] = 
-            ".r |".r | ":".r | ".".r | ";".r | "=".r | "->".r | "+=".r | "-=".r | "*=".r | 
+            ".r |".r | ":".r | ".".r | ",".r | ";".r | "=".r | "->".r | "+=".r | "-=".r | "*=".r | 
             "/=".r | "//=".r | "%=".r | "@=".r | "&=".r | "|=".r | "^=".r | ">>=".r |
             "<<=".r | "**=".r | "!".r
 
@@ -526,7 +526,7 @@ object ExamplePythonLexer:
 
 
         @extern def stringPrefix() = "RF".r | "Rf".r | "rF".r | "rf".r | "FR".r | "fR".r | "Fr".r | "fr".r | "F".r | "f".r | "U".r | "R".r | "u".r | "r".r | epsilon
-        @extern def bytesPrefix() = "RB".r | "Rb".r | "rB".r | "rb".r | "BR".r | "bR".r | "Br".r | "br".r | "B".r | "b".r
+        @extern def bytesPrefix() = "RB".r | "Rb".r | "rB".r | "rb".r | "BR".r | "bR".r | "Br".r | "br".r | "B".r | "b".r 
 
         @extern def longStringRuleGen(delimiter: Char, isBytes: Boolean = false): Rule[Char] =
             val delimiterR = ElementMatch(delimiter)

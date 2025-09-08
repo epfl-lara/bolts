@@ -26,10 +26,11 @@ object Main {
     // testAmyLexer()
     testPythonLexer()
 
-    tokenisePythonFileMem("src/main/scala/ch/epfl/example/res/python/Simple_26chars.py","src/main/scala/ch/epfl/example/res/python/Simple_26chars.py.tokens")
-    tokenisePythonFileMem("src/main/scala/ch/epfl/example/res/python/Factorial_168chars.py","src/main/scala/ch/epfl/example/res/python/Factorial_168chars.py.tokens")
-    tokenisePythonFileMem("src/main/scala/ch/epfl/example/res/python/BigString_113chars.py","src/main/scala/ch/epfl/example/res/python/BigString_113chars.py.tokens")
+    // tokenisePythonFileMem("src/main/scala/ch/epfl/example/res/python/Simple_26chars.py","src/main/scala/ch/epfl/example/res/python/Simple_26chars.py.tokens")
+    // tokenisePythonFileMem("src/main/scala/ch/epfl/example/res/python/Factorial_168chars.py","src/main/scala/ch/epfl/example/res/python/Factorial_168chars.py.tokens")
+    // tokenisePythonFileMem("src/main/scala/ch/epfl/example/res/python/BigString_113chars.py","src/main/scala/ch/epfl/example/res/python/BigString_113chars.py.tokens")
 
+    tokenisePythonFileMem("src/main/scala/ch/epfl/example/res/python/EventSim20x_42063chars.py","src/main/scala/ch/epfl/example/res/python/EventSim20x_42063chars.py.tokens")
   }
 }
 
@@ -81,6 +82,7 @@ def tokenisePythonFileMem(filepath: String, destFilePath: String): Unit = {
   println("Lexing with memoization")
   println(s"File content for file '$filepath':\n$fileContent")
   val (tokens, suffix) = Lexer.lexMem(PythonLexer.rules, fileContent.toStainless)(using LexerBenchmarkUtils.zipperCacheUp, LexerBenchmarkUtils.zipperCacheDown)
+  println(f"Suffix tokens for file '$filepath':\n${suffix}")
   assert(suffix.isEmpty)
   val tokenStrings = tokens.map(t => t.asString())
   val tokenString = tokenStrings.toScala.mkString("\n")
