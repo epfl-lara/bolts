@@ -290,6 +290,10 @@ object VerifiedLexer {
       require(cacheUp.valid)
       require(cacheDown.valid)
       decreases(input.size)
+
+      ghostExpr(Vector.listEqImpliesEq(Vector.empty[C] ++ input, input))
+      ghostExpr(Vector.listEqImpliesEq(Vector.empty[Token[C]] ++ lexRec(rules, input)._1, lexRec(rules, input)._1))
+
       lexTailRecMem(
         rules,
         input,
