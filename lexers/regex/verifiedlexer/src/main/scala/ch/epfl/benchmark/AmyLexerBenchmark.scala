@@ -66,6 +66,17 @@ class AmyLexerBenchmark {
   @Benchmark
   @BenchmarkMode(Array(Mode.AverageTime))
   @OutputTimeUnit(TimeUnit.MICROSECONDS)
+  def lex_ZipperMem(): Unit = {
+    val (tokens, suffix) = Lexer.lexMem(AmyLexer.rules, AmyLexerBenchmarkUtils.exampleFileContents(file))(
+      using AmyLexerBenchmarkUtils.zipperCacheUp,
+      AmyLexerBenchmarkUtils.zipperCacheDown
+    )
+    assert(suffix.isEmpty)
+  }
+
+  @Benchmark
+  @BenchmarkMode(Array(Mode.AverageTime))
+  @OutputTimeUnit(TimeUnit.MICROSECONDS)
   def lex_OriginalSilex(): Unit = {
     val tokens = OriginalAmyLexer.run(AmyLexerBenchmarkUtils.exampleFilesJavaIo(file))
   }
