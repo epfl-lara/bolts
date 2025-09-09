@@ -224,7 +224,7 @@ object VerifiedLexer {
       (res._1.list == lexList(rules, input.list)._1 && 
        res._2.list == lexList(rules, input.list)._2)
     )
-
+    @tailrec
     def lexTailRec[C](
         rules: List[Rule[C]],
         @ghost totalInput: Vector[C],
@@ -313,6 +313,7 @@ object VerifiedLexer {
       )
     }.ensuring (res => res == lex(rules, input))
 
+    @tailrec
     def lexTailRecMem[C](
         rules: List[Rule[C]],
         @ghost totalInput: Vector[C],
