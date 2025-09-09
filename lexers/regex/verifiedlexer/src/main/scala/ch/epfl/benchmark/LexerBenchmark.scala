@@ -226,13 +226,13 @@ object LexerBenchmarkUtils {
         "Ultimate_duplicated_commented_7629chars.amy",
   )
   val exampleFileContents: Map[String, Vector[Char]] = exampleFileNames.map(name => {
-    val source = scala.io.Source.fromFile(s"src/main/scala/ch/epfl/example/res/$name")
+    val source = scala.io.Source.fromFile(s"src/main/scala/ch/epfl/example/res/amy/$name")
     val lines = try source.mkString.toStainless finally source.close()
     (name -> lines)
   }).toMap
 
   val exampleFilesJavaIo: Map[String, java.io.File] = exampleFileNames.map(name => {
-    val file = new java.io.File(s"src/main/scala/ch/epfl/example/res/$name")
+    val file = new java.io.File(s"src/main/scala/ch/epfl/example/res/amy/$name")
     (name -> file)
   }).toMap
 

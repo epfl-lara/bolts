@@ -15,7 +15,7 @@ import stainless.annotation.extern
 import stainless.annotation.pure
 
 import ch.epfl.lexer.benchmark.RegexUtils.*
-import ch.epfl.lexer.benchmark.RegexUtils.digitRegex
+import ch.epfl.lexer.benchmark.RegexUtils.digits
 import stainless.lang.Quantifiers.*
 
 import ch.epfl.lexer.Vector
@@ -388,17 +388,17 @@ object ExampleAmyLexer:
             Rule(regex = operatorRegex(), tag = "operator", isSeparator = false, transformation = OperatorValueInjection.injection)
 
         // elem(_.isLetter) ~ many(elem(_.isLetterOrDigit) | elem('_'))
-        @extern def identifierRegex(): Regex[Char] = letterRegex ~ (letterRegex | digitRegex | "_".r).*
+        @extern def identifierRegex(): Regex[Char] = azAZ ~ (azAZ | digits | "_".r).*
         val identifierRule =
             Rule(regex = identifierRegex(), tag = "identifier", isSeparator = false, transformation = IdentifierValueInjection.injection)
 
         // many1(elem(_.isDigit))
-        @extern def integerLiteralRegex(): Regex[Char] = digitRegex.+
+        @extern def integerLiteralRegex(): Regex[Char] = digits.+
         val integerLiteralRule =
             Rule(regex = integerLiteralRegex(), tag = "integer_literal", isSeparator = false, transformation = IdentifierValueInjection.injection)
 
         // elem('"') ~ many(elem(c => c != '"' && c != '\n')) ~ elem('"')
-        @extern def stringLiteralRegex(): Regex[Char] = "\"".r ~ (letterRegex | digitRegex | " ".r | "\t".r | specialCharRegex).* ~ "\"".r
+        @extern def stringLiteralRegex(): Regex[Char] = "\"".r ~ (azAZ | digits | " ".r | "\t".r | specialChars).* ~ "\"".r
         val stringLiteralRule =
             Rule(regex = stringLiteralRegex(), tag = "string_literal", isSeparator = false, transformation = StringLiteralValueInjection.injection)
 
@@ -408,12 +408,12 @@ object ExampleAmyLexer:
             Rule(regex = delimiterRegex(), tag = "delimiter", isSeparator = false, transformation = DelimiterValueInjection.injection)
 
         // many1(elem(_.isWhitespace))
-        @extern def whiteSpacesRegex(): Regex[Char] = whiteSpaceRegex.+
+        @extern def whiteSpacesRegex(): Regex[Char] = whiteSpaces.+
         val whitespaceRule =
             Rule(regex = whiteSpacesRegex(), tag = "whitespace", isSeparator = true, transformation = WhitespaceValueInjection.injection)
 
         // word("//") ~ many(elem(_ != '\n'))
-        @extern def singleCommentRegex(): Regex[Char] = "//".r ~ (letterRegex | digitRegex | " ".r | "\t".r | specialCharRegex).*
+        @extern def singleCommentRegex(): Regex[Char] = "//".r ~ (azAZ | digits | " ".r | "\t".r | specialChars).*
         val singleCommentRule =
             Rule(regex = singleCommentRegex(), tag = "comment", isSeparator = true, transformation = CommentValueInjection.injection)
 
@@ -423,7 +423,7 @@ object ExampleAmyLexer:
         // word("*/")
         @extern def multiCommentRegex(): Regex[Char] = 
             "/*".r ~ 
-                (letterRegex | digitRegex | whiteSpaceRegex | specialCharRegexWithoutSlashAndStar | "/".r | ("*".r ~ "*".r.* ~ (letterRegex | digitRegex | whiteSpaceRegex | specialCharRegexWithoutSlashAndStar | "/".r))).* ~  
+                (azAZ | digits | whiteSpaces | specialCharsString.replace("/", "").replace("*", "").r | "/".r | ("*".r ~ "*".r.* ~ (azAZ | digits | whiteSpaces | specialCharsString.replace("/", "").replace("*", "").r | "/".r))).* ~  
                 "*".r.* ~
             "*/".r
         val multiCommentRule =

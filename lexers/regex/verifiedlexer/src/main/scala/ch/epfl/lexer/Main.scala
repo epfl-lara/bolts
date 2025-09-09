@@ -14,6 +14,7 @@ import ch.epfl.map.Hashable
 import ch.epfl.lexer.RegexBenchmark.testSimp
 
 import ch.epfl.lexer.example.ExampleAmyLexer.*
+import ch.epfl.lexer.example.ExamplePythonLexer.*
 import ch.epfl.lexer.VerifiedLexer.Lexer
 
 import ch.epfl.lexer.benchmark.RegexUtils._
@@ -25,61 +26,25 @@ import stainless.collection.List
 object Main {
   def main(args: Array[String]): Unit = {
     // testAmyLexer()
-    // tokeniseAmyFile("src/main/scala/ch/epfl/example/res/Factorial_275chars.amy","src/main/scala/ch/epfl/example/res/Factorial_275chars.amy.tokens")
+    testPythonLexer()
 
-    Thread.sleep(10000)
-    val filepath = "/Users/samuel/EPFL/bolts/lexers/regex/verifiedlexer/src/main/scala/ch/epfl/benchmark/res/generated_code_041791chars.amy"
-    val input: String = scala.io.Source.fromFile(filepath).mkString
-    println(f"Lexing: $input")
-    val (tokens, suffix) = Lexer.lexMem(AmyLexer.rules, input.toStainless)(using LexerBenchmarkUtils.zipperCacheUp, LexerBenchmarkUtils.zipperCacheDown)
-    assert(suffix.isEmpty)
-    println("Done!")
-    //    tokeniseAmyFileMem("src/main/scala/ch/epfl/example/res/Ultimate_duplicated_commented_7629chars.amy","src/main/scala/ch/epfl/example/res/Ultimate_duplicated_commented_7629chars.amytokens")
+    // tokenisePythonFileMem("src/main/scala/ch/epfl/example/res/python/Simple_26chars.py","src/main/scala/ch/epfl/example/res/python/Simple_26chars.py.tokens")
+    // tokenisePythonFileMem("src/main/scala/ch/epfl/example/res/python/Factorial_168chars.py","src/main/scala/ch/epfl/example/res/python/Factorial_168chars.py.tokens")
+    // tokenisePythonFileMem("src/main/scala/ch/epfl/example/res/python/BigString_113chars.py","src/main/scala/ch/epfl/example/res/python/BigString_113chars.py.tokens")
 
-    // DemoPrintableTokens.main()
-    // addNumberOfCharsInFileName("src/main/scala/ch/epfl/example/res/ADT.amy")
-    // addNumberOfCharsInFileName("src/main/scala/ch/epfl/example/res/BinaryTree.amy")
-    // addNumberOfCharsInFileName("src/main/scala/ch/epfl/example/res/Calculator.amy")
-    // addNumberOfCharsInFileName("src/main/scala/ch/epfl/example/res/Comments.amy")
-    // addNumberOfCharsInFileName("src/main/scala/ch/epfl/example/res/Compute.amy")
-    // addNumberOfCharsInFileName("src/main/scala/ch/epfl/example/res/ExpressionTree.amy")
-    // addNumberOfCharsInFileName("src/main/scala/ch/epfl/example/res/FullBenchmark.amy")
-    // addNumberOfCharsInFileName("src/main/scala/ch/epfl/example/res/Hello.amy")
-    // addNumberOfCharsInFileName("src/main/scala/ch/epfl/example/res/IOAndError.amy")
-    // addNumberOfCharsInFileName("src/main/scala/ch/epfl/example/res/ListProcessing.amy")
-    // addNumberOfCharsInFileName("src/main/scala/ch/epfl/example/res/MutualRec.amy")
-    // addNumberOfCharsInFileName("src/main/scala/ch/epfl/example/res/NestedMatch.amy")
-    // addNumberOfCharsInFileName("src/main/scala/ch/epfl/example/res/Rec.amy")
-    // addNumberOfCharsInFileName("src/main/scala/ch/epfl/example/res/Ultimate_duplicated_commented.amy")
-    // addNumberOfCharsInFileName("src/main/scala/ch/epfl/example/res/NestedMatch_duplicated_commented.amy")
-    
-    // import benchmark.RegexBenchmarkUtils.*
-    // import benchmark.ScalaRegexUtils
-    // comment_Accepting_strings_multiline_realString.foreach((size, st) => {
-    //   println(f"Size: ${size}")
-    //   println(f"String: $st")
-    //   println("")
-    //   println(f"Matches?: ${ScalaRegexUtils.multiCommentRegex.matches(st)}")
-    // })
-
-//    import ch.epfl.lexer.benchmark.lexer.LexerBenchmarkUtils
-//    val input = LexerBenchmarkUtils.generatedFileContents("generated_code_012325chars.amy")
-//    while (true) {
-//      val (tokens, suffix) = Lexer.lex(AmyLexer.rules, input)
-//      // assert(suffix.isEmpty)
-//    }
+    tokenisePythonFileMem("src/main/scala/ch/epfl/example/res/python/EventSim20x_42063chars.py","src/main/scala/ch/epfl/example/res/python/EventSim20x_42063chars.py.tokens")
   }
 }
 
 
 
 
-def addNumberOfCharsInFileName(path: String): Unit = {
+def addNumberOfCharsInFileName(path: String, extension: String): Unit = {
   val file = new java.io.File(path)
   val parent = file.getParent
   val name = file.getName
   val contentSize = scala.io.Source.fromFile(path).mkString.length
-  val newName = s"$parent/${name.replace(".amy", "")}_${contentSize}chars.amy"
+  val newName = s"$parent/${name.replace(f".$extension", "")}_${contentSize}chars.$extension"
   val newFile = new java.io.File(newName)
   file.renameTo(newFile)
 }
@@ -114,9 +79,33 @@ def tokeniseAmyFileMem(filepath: String, destFilePath: String): Unit = {
   println("Done!")
 }
 
+def tokenisePythonFileMem(filepath: String, destFilePath: String): Unit = {
+  val fileContent: String = scala.io.Source.fromFile(filepath).mkString
+  println("Lexing with memoization")
+  println(s"File content for file '$filepath':\n$fileContent")
+  val (tokens, suffix) = Lexer.lexMem(PythonLexer.rules, fileContent.toStainless)(using LexerBenchmarkUtils.zipperCacheUp, LexerBenchmarkUtils.zipperCacheDown)
+  println(f"Suffix tokens for file '$filepath':\n${suffix}")
+  assert(suffix.isEmpty)
+  val tokenStrings = tokens.map(t => t.asString())
+  val tokenString = tokenStrings.toScala.mkString("\n")
+  // Write to file
+  val writer = new java.io.PrintWriter(new java.io.File(destFilePath))
+  writer.write(tokenString)
+  writer.close()
+  println("Done!")
+}
+
 def testAmyLexer(): Unit = {
   val s = "abstract case class def else extends if match object val error _ end"
   val (tokens, suffix) = Lexer.lex(AmyLexer.rules, s.toStainless)
+  println(s"Tokens for '$s': ${tokens.map(t => t.asString()).toScala.mkString(", ")}")
+  assert(suffix.isEmpty)
+}
+
+def testPythonLexer(): Unit = {
+  val s = "class def True False 12343.432 1"
+  assert(Lexer.rulesInvariant(PythonLexer.rules))
+  val (tokens, suffix) = Lexer.lex(PythonLexer.rules, s.toStainless)
   println(s"Tokens for '$s': ${tokens.map(t => t.asString()).toScala.mkString(", ")}")
   assert(suffix.isEmpty)
 }
