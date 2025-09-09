@@ -7,10 +7,9 @@ import scala.util.Random
 import stainless.collection.{List => StainlessList}
 import scala.compiletime.uninitialized
 import ch.epfl.lexer.VerifiedLexer.Lexer
-import ch.epfl.lexer.example.ExampleAmyLexer.AmyLexer
+import ch.epfl.lexer.example.ExamplePythonLexer.PythonLexer
 import ch.epfl.lexer.benchmark.RegexUtils.*
 import ch.epfl.lexer.Vector
-import ch.epfl.benchmark.original.OriginalAmyLexer
 import ch.epfl.lexer.MemoisationZipper
 import ch.epfl.lexer.VerifiedRegex.Regex
 import ch.epfl.map.Hashable
@@ -26,22 +25,23 @@ class PythonLexerBenchmark {
 
   @Param(
     Array(
+      "Micro_1chars.py",
       "AsyncDemo_426chars.py",
-        "BigString_113chars.py",
-        "CommandMatcher_660chars.py",
-        "EventSim20x_42063chars.py",
-        "EventSim_2002chars.py",
-        "Factorial_168chars.py",
-        "FizzBuzz_245chars.py",
-        "MultiLineString_323chars.py",
-        "ParseNumbers_708chars.py",
-        "Pipeline_413chars.py",
-        "PrimeSieve_458chars.py",
-        "Simple_26chars.py",
-        "TimedFib_679chars.py",
-        "TinyPlus_164chars.py",
-        "Vector2D_802chars.py",
-        "WordStats_346chars.py",
+      "BigString_113chars.py",
+      "CommandMatcher_660chars.py",
+      "EventSim20x_42063chars.py",
+      "EventSim_2002chars.py",
+      "Factorial_168chars.py",
+      "FizzBuzz_245chars.py",
+      "MultiLineString_323chars.py",
+      "ParseNumbers_708chars.py",
+      "Pipeline_413chars.py",
+      "PrimeSieve_458chars.py",
+      "Simple_26chars.py",
+      "TimedFib_679chars.py",
+      "TinyPlus_164chars.py",
+      "Vector2D_802chars.py",
+      "WordStats_346chars.py",
     )
   )
   var file: String = uninitialized
@@ -51,22 +51,13 @@ class PythonLexerBenchmark {
   @BenchmarkMode(Array(Mode.AverageTime))
   @OutputTimeUnit(TimeUnit.MICROSECONDS)
   def lex_ZipperMem(): Unit = {
-    val (tokens, suffix) = Lexer.lexMem(AmyLexer.rules, AmyLexerBenchmarkUtils.exampleFileContents(file))(
-      using AmyLexerBenchmarkUtils.zipperCacheUp,
-      AmyLexerBenchmarkUtils.zipperCacheDown
+    val (tokens, suffix) = Lexer.lexMem(PythonLexer.rules, PythonLexerBenchmarkUtils.exampleFileContents(file))(
+      using PythonLexerBenchmarkUtils.zipperCacheUp,
+      PythonLexerBenchmarkUtils.zipperCacheDown
     )
     assert(suffix.isEmpty)
   }
 
-  @Benchmark
-  @BenchmarkMode(Array(Mode.AverageTime))
-  @OutputTimeUnit(TimeUnit.MICROSECONDS)
-  def lex_CPython(): Unit = {
-    // Use preloaded bytes (already ensured to end with '\n') to avoid I/O in the timed section.
-    val data = PythonLexerBenchmarkUtils.exampleFileBytes(file)
-    CPythonInterface.lexUtf8(data)
-  }
- 
 }
 
 object CPythonInterface {
@@ -95,6 +86,7 @@ object CPythonInterface {
 
 object PythonLexerBenchmarkUtils {
   val exampleFileNames: Seq[String] = Seq(
+        "Micro_1chars.py",
         "AsyncDemo_426chars.py",
         "BigString_113chars.py",
         "CommandMatcher_660chars.py",
@@ -122,22 +114,6 @@ object PythonLexerBenchmarkUtils {
     val file = new java.io.File(s"src/main/scala/ch/epfl/example/res/python/$name")
     (name -> file)
   }).toMap
-
-  // Preloaded UTF-8 bytes (with ensured trailing newline) for CPython's tokenizer
-  val exampleFileBytes: Map[String, Array[Byte]] = {
-    import java.nio.file.{Files, Paths}
-    exampleFileNames.map { name =>
-      val path  = Paths.get(s"src/main/scala/ch/epfl/example/res/python/$name")
-      val raw   = Files.readAllBytes(path)
-      val bytes =
-        if (raw.isEmpty || raw(raw.length - 1) != '\n') {
-          val out = java.util.Arrays.copyOf(raw, raw.length + 1)
-          out(raw.length) = '\n'.toByte
-          out
-        } else raw
-      name -> bytes
-    }.toMap
-  }
 
   val zipperCacheUp: MemoisationZipper.CacheUp[Char] = MemoisationZipper.emptyUp(ContextCharHashable)
   val zipperCacheDown: MemoisationZipper.CacheDown[Char] = MemoisationZipper.emptyDown(RegexContextCharHashable)

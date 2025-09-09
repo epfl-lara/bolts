@@ -1,0 +1,940 @@
+copying runtime jar...
+[info] welcome to sbt 1.9.8 (Ubuntu Java 17.0.16)
+[info] loading settings for project verifiedlexer-build-build-build from metals.sbt ...
+[info] loading project definition from /localhome/chassot/bolts/lexers/regex/verifiedlexer/project/project/project
+[info] loading settings for project verifiedlexer-build-build from metals.sbt ...
+[info] loading project definition from /localhome/chassot/bolts/lexers/regex/verifiedlexer/project/project
+[success] Generated .bloop/verifiedlexer-build-build.json
+[success] Total time: 4 s, completed Sep 9, 2025, 1:30:13 PM
+[info] loading settings for project verifiedlexer-build from metals.sbt,plugins.sbt ...
+[info] loading project definition from /localhome/chassot/bolts/lexers/regex/verifiedlexer/project
+[success] Generated .bloop/verifiedlexer-build.json
+[success] Total time: 4 s, completed Sep 9, 2025, 1:30:18 PM
+[info] loading settings for project verifiedlexer from build.sbt ...
+[info] set current project to VerifiedLexer (in build file:/localhome/chassot/bolts/lexers/regex/verifiedlexer/)
+[info] compiling 64 Scala sources to /localhome/chassot/bolts/lexers/regex/verifiedlexer/target/scala-3.7.2/classes ...
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/main/scala/ch/epfl/lexer/Utils.scala:1179:4 
+[warn] 1179 |    newList match {
+[warn]      |    ^^^^^^^
+[warn]      |    match may not be exhaustive.
+[warn]      |
+[warn]      |    It would fail on pattern case: stainless.collection.Cons(_, _)
+[warn]      |
+[warn]      | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/main/scala/ch/epfl/lexer/VerifiedLexer.scala:501:8 
+[warn] 501 |        maxPrefWithoutSep match {
+[warn]     |        ^^^^^^^^^^^^^^^^^
+[warn]     |        match may not be exhaustive.
+[warn]     |
+[warn]     |        It would fail on pattern case: stainless.lang.Some(_)
+[warn]     |
+[warn]     | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/main/scala/ch/epfl/lexer/VerifiedLexer.scala:601:6 
+[warn] 601 |      rulesArg match {
+[warn]     |      ^^^^^^^^
+[warn]     |      match may not be exhaustive.
+[warn]     |
+[warn]     |      It would fail on pattern case: stainless.collection.Nil()
+[warn]     |
+[warn]     | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/main/scala/ch/epfl/lexer/VerifiedLexer.scala:634:10 
+[warn] 634 |          rulesArg match {
+[warn]     |          ^^^^^^^^
+[warn]     |          match may not be exhaustive.
+[warn]     |
+[warn]     |          It would fail on pattern case: stainless.collection.Nil()
+[warn]     |
+[warn]     | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/main/scala/ch/epfl/lexer/VerifiedLexer.scala:1414:6 
+[warn] 1414 |      rules match {
+[warn]      |      ^^^^^
+[warn]      |      match may not be exhaustive.
+[warn]      |
+[warn]      |      It would fail on pattern case: stainless.collection.Cons(_, _)
+[warn]      |
+[warn]      | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/main/scala/ch/epfl/lexer/VerifiedLexer.scala:3120:6 
+[warn] 3120 |      l1 match {
+[warn]      |      ^^
+[warn]      |match may not be exhaustive.
+[warn]      |
+[warn]      |It would fail on pattern case: _: stainless.collection.List[ch.epfl.lexer.Token[C]]
+[warn]      |
+[warn]      | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/main/scala/ch/epfl/lexer/VerifiedRegex.scala:355:4 
+[warn] 355 |    r match {
+[warn]     |    ^
+[warn]     |    match may not be exhaustive.
+[warn]     |
+[warn]     |    It would fail on pattern case: Concat(_, _)
+[warn]     |
+[warn]     | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/main/scala/ch/epfl/map/ListLongMap.scala:157:4 
+[warn] 157 |    l match {
+[warn]     |    ^
+[warn]     |    match may not be exhaustive.
+[warn]     |
+[warn]     |    It would fail on pattern case: stainless.collection.Cons(_, _)
+[warn]     |
+[warn]     | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/main/scala/ch/epfl/map/ListLongMap.scala:191:4 
+[warn] 191 |    l match {
+[warn]     |    ^
+[warn]     |    match may not be exhaustive.
+[warn]     |
+[warn]     |    It would fail on pattern case: stainless.collection.Cons(_, _)
+[warn]     |
+[warn]     | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/main/scala/ch/epfl/map/ListLongMap.scala:206:4 
+[warn] 206 |    l match {
+[warn]     |    ^
+[warn]     |    match may not be exhaustive.
+[warn]     |
+[warn]     |    It would fail on pattern case: stainless.collection.Cons(_, _)
+[warn]     |
+[warn]     | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/main/scala/ch/epfl/map/ListLongMap.scala:222:4 
+[warn] 222 |    l match {
+[warn]     |    ^
+[warn]     |    match may not be exhaustive.
+[warn]     |
+[warn]     |    It would fail on pattern case: stainless.collection.Cons(_, _)
+[warn]     |
+[warn]     | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/main/scala/ch/epfl/map/ListLongMap.scala:243:4 
+[warn] 243 |    l match {
+[warn]     |    ^
+[warn]     |    match may not be exhaustive.
+[warn]     |
+[warn]     |    It would fail on pattern case: stainless.collection.Cons(_, _)
+[warn]     |
+[warn]     | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/main/scala/ch/epfl/map/ListLongMap.scala:274:4 
+[warn] 274 |    l match {
+[warn]     |    ^
+[warn]     |    match may not be exhaustive.
+[warn]     |
+[warn]     |    It would fail on pattern case: stainless.collection.Cons(_, _)
+[warn]     |
+[warn]     | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/main/scala/ch/epfl/map/ListMap.scala:195:4 
+[warn] 195 |    l match {
+[warn]     |    ^
+[warn]     |    match may not be exhaustive.
+[warn]     |
+[warn]     |    It would fail on pattern case: stainless.collection.Cons(_, _)
+[warn]     |
+[warn]     | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/main/scala/ch/epfl/map/ListMap.scala:229:4 
+[warn] 229 |    l match {
+[warn]     |    ^
+[warn]     |    match may not be exhaustive.
+[warn]     |
+[warn]     |    It would fail on pattern case: stainless.collection.Cons(_, _)
+[warn]     |
+[warn]     | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/main/scala/ch/epfl/map/ListMap.scala:256:4 
+[warn] 256 |    l match {
+[warn]     |    ^
+[warn]     |    match may not be exhaustive.
+[warn]     |
+[warn]     |    It would fail on pattern case: stainless.collection.Cons(_, _)
+[warn]     |
+[warn]     | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/main/scala/ch/epfl/map/ListMap.scala:308:4 
+[warn] 308 |    l match {
+[warn]     |    ^
+[warn]     |    match may not be exhaustive.
+[warn]     |
+[warn]     |    It would fail on pattern case: stainless.collection.Cons(_, _)
+[warn]     |
+[warn]     | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/main/scala/ch/epfl/map/ListMap.scala:380:4 
+[warn] 380 |    l match {
+[warn]     |    ^
+[warn]     |    match may not be exhaustive.
+[warn]     |
+[warn]     |    It would fail on pattern case: stainless.collection.Cons(_, _)
+[warn]     |
+[warn]     | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/main/scala/ch/epfl/map/MutableLongMap.scala:347:4 
+[warn] 347 |    c match {
+[warn]     |    ^
+[warn]     |    match may not be exhaustive.
+[warn]     |
+[warn]     |    It would fail on pattern case: EmptyCell()
+[warn]     |
+[warn]     | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/main/scala/ch/epfl/map/MutableLongMap.scala:596:8 
+[warn] 596 |        seekEntryRes match {
+[warn]     |        ^^^^^^^^^^^^
+[warn]     |match may not be exhaustive.
+[warn]     |
+[warn]     |It would fail on pattern case: ch.epfl.map.MutableLongMap.Intermediate(_, _, _)
+[warn]     |
+[warn]     | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/main/scala/ch/epfl/map/MutableLongMap.scala:1106:6 
+[warn] 1106 |      intermediate match {
+[warn]      |      ^^^^^^^^^^^^
+[warn]      |match may not be exhaustive.
+[warn]      |
+[warn]      |It would fail on pattern case: _: ch.epfl.map.MutableLongMap.SeekEntryResult
+[warn]      |
+[warn]      | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/main/scala/ch/epfl/map/MutableLongMap.scala:1156:6 
+[warn] 1156 |      intermediate match {
+[warn]      |      ^^^^^^^^^^^^
+[warn]      |match may not be exhaustive.
+[warn]      |
+[warn]      |It would fail on pattern case: _: ch.epfl.map.MutableLongMap.SeekEntryResult
+[warn]      |
+[warn]      | longer explanation available when compiling with `-explain`
+[warn] there was 1 deprecation warning; re-run with -deprecation for details
+[warn] 23 warnings found
+[info] done compiling
+[info] running org.openjdk.jmh.generators.bytecode.JmhBytecodeGenerator /localhome/chassot/bolts/lexers/regex/verifiedlexer/target/scala-3.7.2/classes /localhome/chassot/bolts/lexers/regex/verifiedlexer/target/scala-3.7.2/src_managed/jmh /localhome/chassot/bolts/lexers/regex/verifiedlexer/target/scala-3.7.2/resource_managed/jmh default
+Processing 1083 classes from /localhome/chassot/bolts/lexers/regex/verifiedlexer/target/scala-3.7.2/classes with "reflection" generator
+Writing out Java source to /localhome/chassot/bolts/lexers/regex/verifiedlexer/target/scala-3.7.2/src_managed/jmh and resources to /localhome/chassot/bolts/lexers/regex/verifiedlexer/target/scala-3.7.2/resource_managed/jmh
+[info] compiling 56 Java sources to /localhome/chassot/bolts/lexers/regex/verifiedlexer/target/scala-3.7.2/classes ...
+[info] done compiling
+[info] running (fork) org.openjdk.jmh.Main -i 1 -wi 2 -f1 -t1 ch.epfl.lexer.benchmark.lexer.PythonLexerBenchmark
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.16, OpenJDK 64-Bit Server VM, 17.0.16+8-Ubuntu-0ubuntu124.04.1
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 2 iterations, 10 s each
+[info] # Measurement: 1 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.lexer.benchmark.lexer.PythonLexerBenchmark.lex_CPython
+[info] # Parameters: (file = Micro_1chars.py)
+[info] # Run progress: 0.00% complete, ETA 00:17:00
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 20125.512 us/op
+[info] # Warmup Iteration   2: 19843.763 us/op
+[info] Iteration   1: 19654.765 us/op
+[info] Result "ch.epfl.lexer.benchmark.lexer.PythonLexerBenchmark.lex_CPython":
+[info]   19654.765 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.16, OpenJDK 64-Bit Server VM, 17.0.16+8-Ubuntu-0ubuntu124.04.1
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 2 iterations, 10 s each
+[info] # Measurement: 1 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.lexer.benchmark.lexer.PythonLexerBenchmark.lex_CPython
+[info] # Parameters: (file = AsyncDemo_426chars.py)
+[info] # Run progress: 2.94% complete, ETA 00:16:37
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 20257.173 us/op
+[info] # Warmup Iteration   2: 20089.728 us/op
+[info] Iteration   1: 20047.081 us/op
+[info] Result "ch.epfl.lexer.benchmark.lexer.PythonLexerBenchmark.lex_CPython":
+[info]   20047.081 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.16, OpenJDK 64-Bit Server VM, 17.0.16+8-Ubuntu-0ubuntu124.04.1
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 2 iterations, 10 s each
+[info] # Measurement: 1 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.lexer.benchmark.lexer.PythonLexerBenchmark.lex_CPython
+[info] # Parameters: (file = BigString_113chars.py)
+[info] # Run progress: 5.88% complete, ETA 00:16:06
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 20065.798 us/op
+[info] # Warmup Iteration   2: 19678.196 us/op
+[info] Iteration   1: 19835.041 us/op
+[info] Result "ch.epfl.lexer.benchmark.lexer.PythonLexerBenchmark.lex_CPython":
+[info]   19835.041 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.16, OpenJDK 64-Bit Server VM, 17.0.16+8-Ubuntu-0ubuntu124.04.1
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 2 iterations, 10 s each
+[info] # Measurement: 1 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.lexer.benchmark.lexer.PythonLexerBenchmark.lex_CPython
+[info] # Parameters: (file = CommandMatcher_660chars.py)
+[info] # Run progress: 8.82% complete, ETA 00:15:36
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 20438.536 us/op
+[info] # Warmup Iteration   2: 20324.531 us/op
+[info] Iteration   1: 20067.625 us/op
+[info] Result "ch.epfl.lexer.benchmark.lexer.PythonLexerBenchmark.lex_CPython":
+[info]   20067.625 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.16, OpenJDK 64-Bit Server VM, 17.0.16+8-Ubuntu-0ubuntu124.04.1
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 2 iterations, 10 s each
+[info] # Measurement: 1 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.lexer.benchmark.lexer.PythonLexerBenchmark.lex_CPython
+[info] # Parameters: (file = EventSim20x_42063chars.py)
+[info] # Run progress: 11.76% complete, ETA 00:15:06
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 37642.054 us/op
+[info] # Warmup Iteration   2: 37232.410 us/op
+[info] Iteration   1: 37526.660 us/op
+[info] Result "ch.epfl.lexer.benchmark.lexer.PythonLexerBenchmark.lex_CPython":
+[info]   37526.660 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.16, OpenJDK 64-Bit Server VM, 17.0.16+8-Ubuntu-0ubuntu124.04.1
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 2 iterations, 10 s each
+[info] # Measurement: 1 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.lexer.benchmark.lexer.PythonLexerBenchmark.lex_CPython
+[info] # Parameters: (file = EventSim_2002chars.py)
+[info] # Run progress: 14.71% complete, ETA 00:14:35
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 21057.538 us/op
+[info] # Warmup Iteration   2: 20639.611 us/op
+[info] Iteration   1: 20780.837 us/op
+[info] Result "ch.epfl.lexer.benchmark.lexer.PythonLexerBenchmark.lex_CPython":
+[info]   20780.837 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.16, OpenJDK 64-Bit Server VM, 17.0.16+8-Ubuntu-0ubuntu124.04.1
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 2 iterations, 10 s each
+[info] # Measurement: 1 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.lexer.benchmark.lexer.PythonLexerBenchmark.lex_CPython
+[info] # Parameters: (file = Factorial_168chars.py)
+[info] # Run progress: 17.65% complete, ETA 00:14:05
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 20262.860 us/op
+[info] # Warmup Iteration   2: 19981.032 us/op
+[info] Iteration   1: 19969.121 us/op
+[info] Result "ch.epfl.lexer.benchmark.lexer.PythonLexerBenchmark.lex_CPython":
+[info]   19969.121 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.16, OpenJDK 64-Bit Server VM, 17.0.16+8-Ubuntu-0ubuntu124.04.1
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 2 iterations, 10 s each
+[info] # Measurement: 1 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.lexer.benchmark.lexer.PythonLexerBenchmark.lex_CPython
+[info] # Parameters: (file = FizzBuzz_245chars.py)
+[info] # Run progress: 20.59% complete, ETA 00:13:35
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 20191.244 us/op
+[info] # Warmup Iteration   2: 19945.670 us/op
+[info] Iteration   1: 19858.170 us/op
+[info] Result "ch.epfl.lexer.benchmark.lexer.PythonLexerBenchmark.lex_CPython":
+[info]   19858.170 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.16, OpenJDK 64-Bit Server VM, 17.0.16+8-Ubuntu-0ubuntu124.04.1
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 2 iterations, 10 s each
+[info] # Measurement: 1 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.lexer.benchmark.lexer.PythonLexerBenchmark.lex_CPython
+[info] # Parameters: (file = MultiLineString_323chars.py)
+[info] # Run progress: 23.53% complete, ETA 00:13:05
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 20192.567 us/op
+[info] # Warmup Iteration   2: 19944.097 us/op
+[info] Iteration   1: 19843.863 us/op
+[info] Result "ch.epfl.lexer.benchmark.lexer.PythonLexerBenchmark.lex_CPython":
+[info]   19843.863 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.16, OpenJDK 64-Bit Server VM, 17.0.16+8-Ubuntu-0ubuntu124.04.1
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 2 iterations, 10 s each
+[info] # Measurement: 1 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.lexer.benchmark.lexer.PythonLexerBenchmark.lex_CPython
+[info] # Parameters: (file = ParseNumbers_708chars.py)
+[info] # Run progress: 26.47% complete, ETA 00:12:34
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 20349.226 us/op
+[info] # Warmup Iteration   2: 20145.874 us/op
+[info] Iteration   1: 20001.807 us/op
+[info] Result "ch.epfl.lexer.benchmark.lexer.PythonLexerBenchmark.lex_CPython":
+[info]   20001.807 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.16, OpenJDK 64-Bit Server VM, 17.0.16+8-Ubuntu-0ubuntu124.04.1
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 2 iterations, 10 s each
+[info] # Measurement: 1 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.lexer.benchmark.lexer.PythonLexerBenchmark.lex_CPython
+[info] # Parameters: (file = Pipeline_413chars.py)
+[info] # Run progress: 29.41% complete, ETA 00:12:04
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 20382.351 us/op
+[info] # Warmup Iteration   2: 19893.985 us/op
+[info] Iteration   1: 19937.321 us/op
+[info] Result "ch.epfl.lexer.benchmark.lexer.PythonLexerBenchmark.lex_CPython":
+[info]   19937.321 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.16, OpenJDK 64-Bit Server VM, 17.0.16+8-Ubuntu-0ubuntu124.04.1
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 2 iterations, 10 s each
+[info] # Measurement: 1 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.lexer.benchmark.lexer.PythonLexerBenchmark.lex_CPython
+[info] # Parameters: (file = PrimeSieve_458chars.py)
+[info] # Run progress: 32.35% complete, ETA 00:11:34
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 20277.203 us/op
+[info] # Warmup Iteration   2: 20146.406 us/op
+[info] Iteration   1: 19988.004 us/op
+[info] Result "ch.epfl.lexer.benchmark.lexer.PythonLexerBenchmark.lex_CPython":
+[info]   19988.004 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.16, OpenJDK 64-Bit Server VM, 17.0.16+8-Ubuntu-0ubuntu124.04.1
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 2 iterations, 10 s each
+[info] # Measurement: 1 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.lexer.benchmark.lexer.PythonLexerBenchmark.lex_CPython
+[info] # Parameters: (file = Simple_26chars.py)
+[info] # Run progress: 35.29% complete, ETA 00:11:04
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 20035.728 us/op
+[info] # Warmup Iteration   2: 19889.816 us/op
+[info] Iteration   1: 19905.512 us/op
+[info] Result "ch.epfl.lexer.benchmark.lexer.PythonLexerBenchmark.lex_CPython":
+[info]   19905.512 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.16, OpenJDK 64-Bit Server VM, 17.0.16+8-Ubuntu-0ubuntu124.04.1
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 2 iterations, 10 s each
+[info] # Measurement: 1 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.lexer.benchmark.lexer.PythonLexerBenchmark.lex_CPython
+[info] # Parameters: (file = TimedFib_679chars.py)
+[info] # Run progress: 38.24% complete, ETA 00:10:34
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 20733.199 us/op
+[info] # Warmup Iteration   2: 20243.643 us/op
+[info] Iteration   1: 20135.246 us/op
+[info] Result "ch.epfl.lexer.benchmark.lexer.PythonLexerBenchmark.lex_CPython":
+[info]   20135.246 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.16, OpenJDK 64-Bit Server VM, 17.0.16+8-Ubuntu-0ubuntu124.04.1
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 2 iterations, 10 s each
+[info] # Measurement: 1 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.lexer.benchmark.lexer.PythonLexerBenchmark.lex_CPython
+[info] # Parameters: (file = TinyPlus_164chars.py)
+[info] # Run progress: 41.18% complete, ETA 00:10:03
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 20106.346 us/op
+[info] # Warmup Iteration   2: 19906.222 us/op
+[info] Iteration   1: 20035.780 us/op
+[info] Result "ch.epfl.lexer.benchmark.lexer.PythonLexerBenchmark.lex_CPython":
+[info]   20035.780 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.16, OpenJDK 64-Bit Server VM, 17.0.16+8-Ubuntu-0ubuntu124.04.1
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 2 iterations, 10 s each
+[info] # Measurement: 1 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.lexer.benchmark.lexer.PythonLexerBenchmark.lex_CPython
+[info] # Parameters: (file = Vector2D_802chars.py)
+[info] # Run progress: 44.12% complete, ETA 00:09:33
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 20400.544 us/op
+[info] # Warmup Iteration   2: 20335.240 us/op
+[info] Iteration   1: 20221.022 us/op
+[info] Result "ch.epfl.lexer.benchmark.lexer.PythonLexerBenchmark.lex_CPython":
+[info]   20221.022 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.16, OpenJDK 64-Bit Server VM, 17.0.16+8-Ubuntu-0ubuntu124.04.1
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 2 iterations, 10 s each
+[info] # Measurement: 1 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.lexer.benchmark.lexer.PythonLexerBenchmark.lex_CPython
+[info] # Parameters: (file = WordStats_346chars.py)
+[info] # Run progress: 47.06% complete, ETA 00:09:03
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 20402.629 us/op
+[info] # Warmup Iteration   2: 20149.976 us/op
+[info] Iteration   1: 20286.304 us/op
+[info] Result "ch.epfl.lexer.benchmark.lexer.PythonLexerBenchmark.lex_CPython":
+[info]   20286.304 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.16, OpenJDK 64-Bit Server VM, 17.0.16+8-Ubuntu-0ubuntu124.04.1
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 2 iterations, 10 s each
+[info] # Measurement: 1 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.lexer.benchmark.lexer.PythonLexerBenchmark.lex_ZipperMem
+[info] # Parameters: (file = Micro_1chars.py)
+[info] # Run progress: 50.00% complete, ETA 00:08:33
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 9.062 us/op
+[info] # Warmup Iteration   2: 8.646 us/op
+[info] Iteration   1: 8.310 us/op
+[info] Result "ch.epfl.lexer.benchmark.lexer.PythonLexerBenchmark.lex_ZipperMem":
+[info]   8.310 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.16, OpenJDK 64-Bit Server VM, 17.0.16+8-Ubuntu-0ubuntu124.04.1
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 2 iterations, 10 s each
+[info] # Measurement: 1 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.lexer.benchmark.lexer.PythonLexerBenchmark.lex_ZipperMem
+[info] # Parameters: (file = AsyncDemo_426chars.py)
+[info] # Run progress: 52.94% complete, ETA 00:08:03
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 1516.337 us/op
+[info] # Warmup Iteration   2: 1369.288 us/op
+[info] Iteration   1: 1346.470 us/op
+[info] Result "ch.epfl.lexer.benchmark.lexer.PythonLexerBenchmark.lex_ZipperMem":
+[info]   1346.470 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.16, OpenJDK 64-Bit Server VM, 17.0.16+8-Ubuntu-0ubuntu124.04.1
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 2 iterations, 10 s each
+[info] # Measurement: 1 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.lexer.benchmark.lexer.PythonLexerBenchmark.lex_ZipperMem
+[info] # Parameters: (file = BigString_113chars.py)
+[info] # Run progress: 55.88% complete, ETA 00:07:32
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 199.040 us/op
+[info] # Warmup Iteration   2: 182.860 us/op
+[info] Iteration   1: 177.919 us/op
+[info] Result "ch.epfl.lexer.benchmark.lexer.PythonLexerBenchmark.lex_ZipperMem":
+[info]   177.919 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.16, OpenJDK 64-Bit Server VM, 17.0.16+8-Ubuntu-0ubuntu124.04.1
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 2 iterations, 10 s each
+[info] # Measurement: 1 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.lexer.benchmark.lexer.PythonLexerBenchmark.lex_ZipperMem
+[info] # Parameters: (file = CommandMatcher_660chars.py)
+[info] # Run progress: 58.82% complete, ETA 00:07:02
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 2156.362 us/op
+[info] # Warmup Iteration   2: 1965.566 us/op
+[info] Iteration   1: 1938.952 us/op
+[info] Result "ch.epfl.lexer.benchmark.lexer.PythonLexerBenchmark.lex_ZipperMem":
+[info]   1938.952 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.16, OpenJDK 64-Bit Server VM, 17.0.16+8-Ubuntu-0ubuntu124.04.1
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 2 iterations, 10 s each
+[info] # Measurement: 1 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.lexer.benchmark.lexer.PythonLexerBenchmark.lex_ZipperMem
+[info] # Parameters: (file = EventSim20x_42063chars.py)
+[info] # Run progress: 61.76% complete, ETA 00:06:32
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 125605.436 us/op
+[info] # Warmup Iteration   2: 110556.298 us/op
+[info] Iteration   1: 111639.497 us/op
+[info] Result "ch.epfl.lexer.benchmark.lexer.PythonLexerBenchmark.lex_ZipperMem":
+[info]   111639.497 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.16, OpenJDK 64-Bit Server VM, 17.0.16+8-Ubuntu-0ubuntu124.04.1
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 2 iterations, 10 s each
+[info] # Measurement: 1 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.lexer.benchmark.lexer.PythonLexerBenchmark.lex_ZipperMem
+[info] # Parameters: (file = EventSim_2002chars.py)
+[info] # Run progress: 64.71% complete, ETA 00:06:02
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 5850.427 us/op
+[info] # Warmup Iteration   2: 5120.212 us/op
+[info] Iteration   1: 5119.203 us/op
+[info] Result "ch.epfl.lexer.benchmark.lexer.PythonLexerBenchmark.lex_ZipperMem":
+[info]   5119.203 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.16, OpenJDK 64-Bit Server VM, 17.0.16+8-Ubuntu-0ubuntu124.04.1
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 2 iterations, 10 s each
+[info] # Measurement: 1 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.lexer.benchmark.lexer.PythonLexerBenchmark.lex_ZipperMem
+[info] # Parameters: (file = Factorial_168chars.py)
+[info] # Run progress: 67.65% complete, ETA 00:05:32
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 729.157 us/op
+[info] # Warmup Iteration   2: 664.556 us/op
+[info] Iteration   1: 658.439 us/op
+[info] Result "ch.epfl.lexer.benchmark.lexer.PythonLexerBenchmark.lex_ZipperMem":
+[info]   658.439 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.16, OpenJDK 64-Bit Server VM, 17.0.16+8-Ubuntu-0ubuntu124.04.1
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 2 iterations, 10 s each
+[info] # Measurement: 1 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.lexer.benchmark.lexer.PythonLexerBenchmark.lex_ZipperMem
+[info] # Parameters: (file = FizzBuzz_245chars.py)
+[info] # Run progress: 70.59% complete, ETA 00:05:02
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 1109.847 us/op
+[info] # Warmup Iteration   2: 996.501 us/op
+[info] Iteration   1: 992.025 us/op
+[info] Result "ch.epfl.lexer.benchmark.lexer.PythonLexerBenchmark.lex_ZipperMem":
+[info]   992.025 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.16, OpenJDK 64-Bit Server VM, 17.0.16+8-Ubuntu-0ubuntu124.04.1
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 2 iterations, 10 s each
+[info] # Measurement: 1 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.lexer.benchmark.lexer.PythonLexerBenchmark.lex_ZipperMem
+[info] # Parameters: (file = MultiLineString_323chars.py)
+[info] # Run progress: 73.53% complete, ETA 00:04:31
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 481.854 us/op
+[info] # Warmup Iteration   2: 435.258 us/op
+[info] Iteration   1: 429.064 us/op
+[info] Result "ch.epfl.lexer.benchmark.lexer.PythonLexerBenchmark.lex_ZipperMem":
+[info]   429.064 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.16, OpenJDK 64-Bit Server VM, 17.0.16+8-Ubuntu-0ubuntu124.04.1
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 2 iterations, 10 s each
+[info] # Measurement: 1 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.lexer.benchmark.lexer.PythonLexerBenchmark.lex_ZipperMem
+[info] # Parameters: (file = ParseNumbers_708chars.py)
+[info] # Run progress: 76.47% complete, ETA 00:04:01
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 1645.285 us/op
+[info] # Warmup Iteration   2: 1471.727 us/op
+[info] Iteration   1: 1464.349 us/op
+[info] Result "ch.epfl.lexer.benchmark.lexer.PythonLexerBenchmark.lex_ZipperMem":
+[info]   1464.349 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.16, OpenJDK 64-Bit Server VM, 17.0.16+8-Ubuntu-0ubuntu124.04.1
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 2 iterations, 10 s each
+[info] # Measurement: 1 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.lexer.benchmark.lexer.PythonLexerBenchmark.lex_ZipperMem
+[info] # Parameters: (file = Pipeline_413chars.py)
+[info] # Run progress: 79.41% complete, ETA 00:03:31
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 1377.286 us/op
+[info] # Warmup Iteration   2: 1247.951 us/op
+[info] Iteration   1: 1230.560 us/op
+[info] Result "ch.epfl.lexer.benchmark.lexer.PythonLexerBenchmark.lex_ZipperMem":
+[info]   1230.560 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.16, OpenJDK 64-Bit Server VM, 17.0.16+8-Ubuntu-0ubuntu124.04.1
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 2 iterations, 10 s each
+[info] # Measurement: 1 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.lexer.benchmark.lexer.PythonLexerBenchmark.lex_ZipperMem
+[info] # Parameters: (file = PrimeSieve_458chars.py)
+[info] # Run progress: 82.35% complete, ETA 00:03:01
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: <failure>
+[info] java.lang.AssertionError: assertion failed
+[info] 	at scala.runtime.Scala3RunTime$.assertFailed(Scala3RunTime.scala:11)
+[info] 	at ch.epfl.lexer.benchmark.lexer.PythonLexerBenchmark.lex_ZipperMem(PythonLexerBenchmark.scala:58)
+[info] 	at ch.epfl.lexer.benchmark.lexer.jmh_generated.PythonLexerBenchmark_lex_ZipperMem_jmhTest.lex_ZipperMem_avgt_jmhStub(PythonLexerBenchmark_lex_ZipperMem_jmhTest.java:190)
+[info] 	at ch.epfl.lexer.benchmark.lexer.jmh_generated.PythonLexerBenchmark_lex_ZipperMem_jmhTest.lex_ZipperMem_AverageTime(PythonLexerBenchmark_lex_ZipperMem_jmhTest.java:152)
+[info] 	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+[info] 	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77)
+[info] 	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+[info] 	at java.base/java.lang.reflect.Method.invoke(Method.java:569)
+[info] 	at org.openjdk.jmh.runner.BenchmarkHandler$BenchmarkTask.call(BenchmarkHandler.java:470)
+[info] 	at org.openjdk.jmh.runner.BenchmarkHandler$BenchmarkTask.call(BenchmarkHandler.java:453)
+[info] 	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:264)
+[info] 	at java.base/java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:539)
+[info] 	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:264)
+[info] 	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1136)
+[info] 	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:635)
+[info] 	at java.base/java.lang.Thread.run(Thread.java:840)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.16, OpenJDK 64-Bit Server VM, 17.0.16+8-Ubuntu-0ubuntu124.04.1
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 2 iterations, 10 s each
+[info] # Measurement: 1 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.lexer.benchmark.lexer.PythonLexerBenchmark.lex_ZipperMem
+[info] # Parameters: (file = Simple_26chars.py)
+[info] # Run progress: 85.29% complete, ETA 00:02:25
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 128.502 us/op
+[info] # Warmup Iteration   2: 121.672 us/op
+[info] Iteration   1: 119.227 us/op
+[info] Result "ch.epfl.lexer.benchmark.lexer.PythonLexerBenchmark.lex_ZipperMem":
+[info]   119.227 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.16, OpenJDK 64-Bit Server VM, 17.0.16+8-Ubuntu-0ubuntu124.04.1
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 2 iterations, 10 s each
+[info] # Measurement: 1 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.lexer.benchmark.lexer.PythonLexerBenchmark.lex_ZipperMem
+[info] # Parameters: (file = TimedFib_679chars.py)
+[info] # Run progress: 88.24% complete, ETA 00:01:56
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: <failure>
+[info] java.lang.NumberFormatException: For input string: "1_000"
+[info] 	at java.base/java.lang.NumberFormatException.forInputString(NumberFormatException.java:67)
+[info] 	at java.base/java.lang.Integer.parseInt(Integer.java:668)
+[info] 	at java.base/java.math.BigInteger.<init>(BigInteger.java:538)
+[info] 	at java.base/java.math.BigInteger.<init>(BigInteger.java:676)
+[info] 	at scala.math.BigInt$.apply(BigInt.scala:94)
+[info] 	at ch.epfl.lexer.example.ExamplePythonLexer$Types$IntegerValueUtils$.charsToBigInt(PythonLexer.scala:72)
+[info] 	at ch.epfl.lexer.example.ExamplePythonLexer$Types$IntegerValueInjection$.toValue(PythonLexer.scala:250)
+[info] 	at ch.epfl.lexer.example.ExamplePythonLexer$Types$IntegerValueInjection$.$init$$$anonfun$19(PythonLexer.scala:263)
+[info] 	at stainless.lang.Quantifiers$Injection.apply(Quantifiers.scala:119)
+[info] 	at ch.epfl.lexer.VerifiedLexer$Lexer$.maxPrefixOneRuleZipperVectorMem(VerifiedLexer.scala:740)
+[info] 	at ch.epfl.lexer.VerifiedLexer$Lexer$.maxPrefixZipperVectorMem(VerifiedLexer.scala:637)
+[info] 	at ch.epfl.lexer.VerifiedLexer$Lexer$.maxPrefixZipperVectorMem(VerifiedLexer.scala:638)
+[info] 	at ch.epfl.lexer.VerifiedLexer$Lexer$.maxPrefixZipperVectorMem(VerifiedLexer.scala:638)
+[info] 	at ch.epfl.lexer.VerifiedLexer$Lexer$.maxPrefixZipperVectorMem(VerifiedLexer.scala:638)
+[info] 	at ch.epfl.lexer.VerifiedLexer$Lexer$.maxPrefixZipperVectorMem(VerifiedLexer.scala:638)
+[info] 	at ch.epfl.lexer.VerifiedLexer$Lexer$.lexTailRecMem(VerifiedLexer.scala:334)
+[info] 	at ch.epfl.lexer.VerifiedLexer$Lexer$.lexMem(VerifiedLexer.scala:313)
+[info] 	at ch.epfl.lexer.benchmark.lexer.PythonLexerBenchmark.lex_ZipperMem(PythonLexerBenchmark.scala:56)
+[info] 	at ch.epfl.lexer.benchmark.lexer.jmh_generated.PythonLexerBenchmark_lex_ZipperMem_jmhTest.lex_ZipperMem_avgt_jmhStub(PythonLexerBenchmark_lex_ZipperMem_jmhTest.java:190)
+[info] 	at ch.epfl.lexer.benchmark.lexer.jmh_generated.PythonLexerBenchmark_lex_ZipperMem_jmhTest.lex_ZipperMem_AverageTime(PythonLexerBenchmark_lex_ZipperMem_jmhTest.java:152)
+[info] 	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+[info] 	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77)
+[info] 	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+[info] 	at java.base/java.lang.reflect.Method.invoke(Method.java:569)
+[info] 	at org.openjdk.jmh.runner.BenchmarkHandler$BenchmarkTask.call(BenchmarkHandler.java:470)
+[info] 	at org.openjdk.jmh.runner.BenchmarkHandler$BenchmarkTask.call(BenchmarkHandler.java:453)
+[info] 	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:264)
+[info] 	at java.base/java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:539)
+[info] 	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:264)
+[info] 	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1136)
+[info] 	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:635)
+[info] 	at java.base/java.lang.Thread.run(Thread.java:840)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.16, OpenJDK 64-Bit Server VM, 17.0.16+8-Ubuntu-0ubuntu124.04.1
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 2 iterations, 10 s each
+[info] # Measurement: 1 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.lexer.benchmark.lexer.PythonLexerBenchmark.lex_ZipperMem
+[info] # Parameters: (file = TinyPlus_164chars.py)
+[info] # Run progress: 91.18% complete, ETA 00:01:24
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 358.544 us/op
+[info] # Warmup Iteration   2: 322.284 us/op
+[info] Iteration   1: 318.629 us/op
+[info] Result "ch.epfl.lexer.benchmark.lexer.PythonLexerBenchmark.lex_ZipperMem":
+[info]   318.629 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.16, OpenJDK 64-Bit Server VM, 17.0.16+8-Ubuntu-0ubuntu124.04.1
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 2 iterations, 10 s each
+[info] # Measurement: 1 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.lexer.benchmark.lexer.PythonLexerBenchmark.lex_ZipperMem
+[info] # Parameters: (file = Vector2D_802chars.py)
+[info] # Run progress: 94.12% complete, ETA 00:00:56
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: <failure>
+[info] java.lang.AssertionError: assertion failed
+[info] 	at scala.runtime.Scala3RunTime$.assertFailed(Scala3RunTime.scala:11)
+[info] 	at ch.epfl.lexer.benchmark.lexer.PythonLexerBenchmark.lex_ZipperMem(PythonLexerBenchmark.scala:58)
+[info] 	at ch.epfl.lexer.benchmark.lexer.jmh_generated.PythonLexerBenchmark_lex_ZipperMem_jmhTest.lex_ZipperMem_avgt_jmhStub(PythonLexerBenchmark_lex_ZipperMem_jmhTest.java:190)
+[info] 	at ch.epfl.lexer.benchmark.lexer.jmh_generated.PythonLexerBenchmark_lex_ZipperMem_jmhTest.lex_ZipperMem_AverageTime(PythonLexerBenchmark_lex_ZipperMem_jmhTest.java:152)
+[info] 	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+[info] 	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77)
+[info] 	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+[info] 	at java.base/java.lang.reflect.Method.invoke(Method.java:569)
+[info] 	at org.openjdk.jmh.runner.BenchmarkHandler$BenchmarkTask.call(BenchmarkHandler.java:470)
+[info] 	at org.openjdk.jmh.runner.BenchmarkHandler$BenchmarkTask.call(BenchmarkHandler.java:453)
+[info] 	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:264)
+[info] 	at java.base/java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:539)
+[info] 	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:264)
+[info] 	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1136)
+[info] 	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:635)
+[info] 	at java.base/java.lang.Thread.run(Thread.java:840)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.16, OpenJDK 64-Bit Server VM, 17.0.16+8-Ubuntu-0ubuntu124.04.1
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 2 iterations, 10 s each
+[info] # Measurement: 1 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.lexer.benchmark.lexer.PythonLexerBenchmark.lex_ZipperMem
+[info] # Parameters: (file = WordStats_346chars.py)
+[info] # Run progress: 97.06% complete, ETA 00:00:27
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 871.325 us/op
+[info] # Warmup Iteration   2: 784.620 us/op
+[info] Iteration   1: 779.895 us/op
+[info] Result "ch.epfl.lexer.benchmark.lexer.PythonLexerBenchmark.lex_ZipperMem":
+[info]   779.895 us/op
+[info] # Run complete. Total time: 00:15:38
+[info] REMEMBER: The numbers below are just data. To gain reusable insights, you need to follow up on
+[info] why the numbers are the way they are. Use profilers (see -prof, -lprof), design factorial
+[info] experiments, perform baseline and negative tests that provide experimental control, make sure
+[info] the benchmarking environment is safe on JVM/OS/HW level, ask for reviews from the domain experts.
+[info] Do not assume the numbers tell you what you want them to tell.
+[info] Benchmark                                                (file)  Mode  Cnt       Score   Error  Units
+[info] PythonLexerBenchmark.lex_CPython                Micro_1chars.py  avgt        19654.765          us/op
+[info] PythonLexerBenchmark.lex_CPython          AsyncDemo_426chars.py  avgt        20047.081          us/op
+[info] PythonLexerBenchmark.lex_CPython          BigString_113chars.py  avgt        19835.041          us/op
+[info] PythonLexerBenchmark.lex_CPython     CommandMatcher_660chars.py  avgt        20067.625          us/op
+[info] PythonLexerBenchmark.lex_CPython      EventSim20x_42063chars.py  avgt        37526.660          us/op
+[info] PythonLexerBenchmark.lex_CPython          EventSim_2002chars.py  avgt        20780.837          us/op
+[info] PythonLexerBenchmark.lex_CPython          Factorial_168chars.py  avgt        19969.121          us/op
+[info] PythonLexerBenchmark.lex_CPython           FizzBuzz_245chars.py  avgt        19858.170          us/op
+[info] PythonLexerBenchmark.lex_CPython    MultiLineString_323chars.py  avgt        19843.863          us/op
+[info] PythonLexerBenchmark.lex_CPython       ParseNumbers_708chars.py  avgt        20001.807          us/op
+[info] PythonLexerBenchmark.lex_CPython           Pipeline_413chars.py  avgt        19937.321          us/op
+[info] PythonLexerBenchmark.lex_CPython         PrimeSieve_458chars.py  avgt        19988.004          us/op
+[info] PythonLexerBenchmark.lex_CPython              Simple_26chars.py  avgt        19905.512          us/op
+[info] PythonLexerBenchmark.lex_CPython           TimedFib_679chars.py  avgt        20135.246          us/op
+[info] PythonLexerBenchmark.lex_CPython           TinyPlus_164chars.py  avgt        20035.780          us/op
+[info] PythonLexerBenchmark.lex_CPython           Vector2D_802chars.py  avgt        20221.022          us/op
+[info] PythonLexerBenchmark.lex_CPython          WordStats_346chars.py  avgt        20286.304          us/op
+[info] PythonLexerBenchmark.lex_ZipperMem              Micro_1chars.py  avgt            8.310          us/op
+[info] PythonLexerBenchmark.lex_ZipperMem        AsyncDemo_426chars.py  avgt         1346.470          us/op
+[info] PythonLexerBenchmark.lex_ZipperMem        BigString_113chars.py  avgt          177.919          us/op
+[info] PythonLexerBenchmark.lex_ZipperMem   CommandMatcher_660chars.py  avgt         1938.952          us/op
+[info] PythonLexerBenchmark.lex_ZipperMem    EventSim20x_42063chars.py  avgt       111639.497          us/op
+[info] PythonLexerBenchmark.lex_ZipperMem        EventSim_2002chars.py  avgt         5119.203          us/op
+[info] PythonLexerBenchmark.lex_ZipperMem        Factorial_168chars.py  avgt          658.439          us/op
+[info] PythonLexerBenchmark.lex_ZipperMem         FizzBuzz_245chars.py  avgt          992.025          us/op
+[info] PythonLexerBenchmark.lex_ZipperMem  MultiLineString_323chars.py  avgt          429.064          us/op
+[info] PythonLexerBenchmark.lex_ZipperMem     ParseNumbers_708chars.py  avgt         1464.349          us/op
+[info] PythonLexerBenchmark.lex_ZipperMem         Pipeline_413chars.py  avgt         1230.560          us/op
+[info] PythonLexerBenchmark.lex_ZipperMem            Simple_26chars.py  avgt          119.227          us/op
+[info] PythonLexerBenchmark.lex_ZipperMem         TinyPlus_164chars.py  avgt          318.629          us/op
+[info] PythonLexerBenchmark.lex_ZipperMem        WordStats_346chars.py  avgt          779.895          us/op
+[success] Total time: 954 s (15:54), completed Sep 9, 2025, 1:46:12 PM
