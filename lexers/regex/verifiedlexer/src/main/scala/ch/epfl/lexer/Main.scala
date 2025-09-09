@@ -18,7 +18,7 @@ import ch.epfl.lexer.example.ExamplePythonLexer.*
 import ch.epfl.lexer.VerifiedLexer.Lexer
 
 import ch.epfl.lexer.benchmark.RegexUtils._
-import ch.epfl.lexer.benchmark.lexer.LexerBenchmarkUtils
+import ch.epfl.lexer.benchmark.lexer.AmyLexerBenchmarkUtils
 
 
 import stainless.collection.List
@@ -68,7 +68,7 @@ def tokeniseAmyFileMem(filepath: String, destFilePath: String): Unit = {
   val fileContent: String = scala.io.Source.fromFile(filepath).mkString
   println("Lexing with memoization")
   println(s"File content for file '$filepath':\n$fileContent")
-  val (tokens, suffix) = Lexer.lexMem(AmyLexer.rules, fileContent.toStainless)(using LexerBenchmarkUtils.zipperCacheUp, LexerBenchmarkUtils.zipperCacheDown)
+  val (tokens, suffix) = Lexer.lexMem(AmyLexer.rules, fileContent.toStainless)(using AmyLexerBenchmarkUtils.zipperCacheUp, AmyLexerBenchmarkUtils.zipperCacheDown)
   assert(suffix.isEmpty)
   val tokenStrings = tokens.map(t => t.asString())
   val tokenString = tokenStrings.toScala.mkString("\n")
@@ -83,7 +83,7 @@ def tokenisePythonFileMem(filepath: String, destFilePath: String): Unit = {
   val fileContent: String = scala.io.Source.fromFile(filepath).mkString
   println("Lexing with memoization")
   println(s"File content for file '$filepath':\n$fileContent")
-  val (tokens, suffix) = Lexer.lexMem(PythonLexer.rules, fileContent.toStainless)(using LexerBenchmarkUtils.zipperCacheUp, LexerBenchmarkUtils.zipperCacheDown)
+  val (tokens, suffix) = Lexer.lexMem(PythonLexer.rules, fileContent.toStainless)(using AmyLexerBenchmarkUtils.zipperCacheUp, AmyLexerBenchmarkUtils.zipperCacheDown)
   println(f"Suffix tokens for file '$filepath':\n${suffix}")
   assert(suffix.isEmpty)
   val tokenStrings = tokens.map(t => t.asString())

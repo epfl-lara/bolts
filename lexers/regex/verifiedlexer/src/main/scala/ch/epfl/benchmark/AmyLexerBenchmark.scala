@@ -22,7 +22,7 @@ import ch.epfl.lexer.benchmark.RegexContextCharHashable
 import java.io.File
 
 @State(Scope.Benchmark)
-class LexerBenchmark {
+class AmyLexerBenchmark {
 
   @Param(
     Array(
@@ -51,7 +51,7 @@ class LexerBenchmark {
   // @BenchmarkMode(Array(Mode.AverageTime))
   // @OutputTimeUnit(TimeUnit.MICROSECONDS)
   // def lex_Regex(): Unit = {
-  //   val (tokens, suffix) = Lexer.lexRegex(AmyLexer.rules, LexerBenchmarkUtils.exampleFileContents(file))
+  //   val (tokens, suffix) = Lexer.lexRegex(AmyLexer.rules, AmyLexerBenchmarkUtils.exampleFileContents(file))
   //   assert(suffix.isEmpty)
   // }
 
@@ -59,7 +59,7 @@ class LexerBenchmark {
   @BenchmarkMode(Array(Mode.AverageTime))
   @OutputTimeUnit(TimeUnit.MICROSECONDS)
   def lex_Zipper(): Unit = {
-    val (tokens, suffix) = Lexer.lex(AmyLexer.rules, LexerBenchmarkUtils.exampleFileContents(file))
+    val (tokens, suffix) = Lexer.lex(AmyLexer.rules, AmyLexerBenchmarkUtils.exampleFileContents(file))
     assert(suffix.isEmpty)
   }
 
@@ -67,13 +67,13 @@ class LexerBenchmark {
   @BenchmarkMode(Array(Mode.AverageTime))
   @OutputTimeUnit(TimeUnit.MICROSECONDS)
   def lex_OriginalSilex(): Unit = {
-    val tokens = OriginalAmyLexer.run(LexerBenchmarkUtils.exampleFilesJavaIo(file))
+    val tokens = OriginalAmyLexer.run(AmyLexerBenchmarkUtils.exampleFilesJavaIo(file))
   }
  
 }
 
 @State(Scope.Benchmark)
-class LexerBenchmarkGenerated {
+class AmyLexerBenchmarkGenerated {
   @Param(
     Array(
           "generated_code_000529chars.amy",
@@ -169,7 +169,7 @@ class LexerBenchmarkGenerated {
   //       file == "generated_code_001275chars.amy" ||
   //       file == "generated_code_001700chars.amy" ||
   //       file == "generated_code_002125chars.amy" then 
-  //     val (tokens, suffix) = Lexer.lexRegex(AmyLexer.rules, LexerBenchmarkUtils.generatedFileContents(file))
+  //     val (tokens, suffix) = Lexer.lexRegex(AmyLexer.rules, AmyLexerBenchmarkUtils.generatedFileContents(file))
   //     assert(suffix.isEmpty)
   //   else 
   //     ()
@@ -179,7 +179,7 @@ class LexerBenchmarkGenerated {
   @BenchmarkMode(Array(Mode.AverageTime))
   @OutputTimeUnit(TimeUnit.MICROSECONDS)
   def lex_Zipper(): Unit = {
-    val (tokens, suffix) = Lexer.lex(AmyLexer.rules, LexerBenchmarkUtils.generatedFileContents(file))
+    val (tokens, suffix) = Lexer.lex(AmyLexer.rules, AmyLexerBenchmarkUtils.generatedFileContents(file))
     assert(suffix.isEmpty)
   }
 
@@ -187,9 +187,9 @@ class LexerBenchmarkGenerated {
   @BenchmarkMode(Array(Mode.AverageTime))
   @OutputTimeUnit(TimeUnit.MICROSECONDS)
   def lex_ZipperMem(): Unit = {
-    val (tokens, suffix) = Lexer.lexMem(AmyLexer.rules, LexerBenchmarkUtils.generatedFileContents(file))(
-      using LexerBenchmarkUtils.zipperCacheUp,
-      LexerBenchmarkUtils.zipperCacheDown
+    val (tokens, suffix) = Lexer.lexMem(AmyLexer.rules, AmyLexerBenchmarkUtils.generatedFileContents(file))(
+      using AmyLexerBenchmarkUtils.zipperCacheUp,
+      AmyLexerBenchmarkUtils.zipperCacheDown
     )
     assert(suffix.isEmpty)
   }
@@ -198,14 +198,14 @@ class LexerBenchmarkGenerated {
   @BenchmarkMode(Array(Mode.AverageTime))
   @OutputTimeUnit(TimeUnit.MICROSECONDS)
   def lex_OriginalSilex(): Unit = {
-    val tokens = OriginalAmyLexer.run(LexerBenchmarkUtils.generatedFilesJavaIo(file))
+    val tokens = OriginalAmyLexer.run(AmyLexerBenchmarkUtils.generatedFilesJavaIo(file))
   }
 
 
 }
 
 
-object LexerBenchmarkUtils {
+object AmyLexerBenchmarkUtils {
   val exampleFileNames: Seq[String] = Seq(
         "ADT_864chars.amy",
         "BinaryTree_952chars.amy",
