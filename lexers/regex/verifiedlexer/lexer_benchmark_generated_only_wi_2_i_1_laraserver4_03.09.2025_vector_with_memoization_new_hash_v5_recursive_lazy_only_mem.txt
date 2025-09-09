@@ -1,0 +1,1785 @@
+copying runtime jar...
+[info] welcome to sbt 1.9.8 (Ubuntu Java 17.0.16)
+[info] loading settings for project verifiedlexer-build-build-build from metals.sbt ...
+[info] loading project definition from /localhome/chassot/bolts/lexers/regex/verifiedlexer/project/project/project
+[info] loading settings for project verifiedlexer-build-build from metals.sbt ...
+[info] loading project definition from /localhome/chassot/bolts/lexers/regex/verifiedlexer/project/project
+[success] Generated .bloop/verifiedlexer-build-build.json
+[success] Total time: 3 s, completed Sep 3, 2025, 2:07:07 PM
+[info] loading settings for project verifiedlexer-build from metals.sbt,plugins.sbt ...
+[info] loading project definition from /localhome/chassot/bolts/lexers/regex/verifiedlexer/project
+[success] Generated .bloop/verifiedlexer-build.json
+[success] Total time: 2 s, completed Sep 3, 2025, 2:07:09 PM
+[info] loading settings for project verifiedlexer from build.sbt ...
+[info] set current project to VerifiedLexer (in build file:/localhome/chassot/bolts/lexers/regex/verifiedlexer/)
+[info] compiling 62 Scala sources to /localhome/chassot/bolts/lexers/regex/verifiedlexer/target/scala-3.7.2/classes ...
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/main/scala/ch/epfl/lexer/Utils.scala:1179:4 
+[warn] 1179 |    newList match {
+[warn]      |    ^^^^^^^
+[warn]      |    match may not be exhaustive.
+[warn]      |
+[warn]      |    It would fail on pattern case: stainless.collection.Cons(_, _)
+[warn]      |
+[warn]      | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/main/scala/ch/epfl/lexer/VerifiedLexer.scala:379:8 
+[warn] 379 |        maxPrefWithoutSep match {
+[warn]     |        ^^^^^^^^^^^^^^^^^
+[warn]     |        match may not be exhaustive.
+[warn]     |
+[warn]     |        It would fail on pattern case: stainless.lang.Some(_)
+[warn]     |
+[warn]     | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/main/scala/ch/epfl/lexer/VerifiedLexer.scala:478:6 
+[warn] 478 |      rulesArg match {
+[warn]     |      ^^^^^^^^
+[warn]     |      match may not be exhaustive.
+[warn]     |
+[warn]     |      It would fail on pattern case: stainless.collection.Nil()
+[warn]     |
+[warn]     | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/main/scala/ch/epfl/lexer/VerifiedLexer.scala:511:10 
+[warn] 511 |          rulesArg match {
+[warn]     |          ^^^^^^^^
+[warn]     |          match may not be exhaustive.
+[warn]     |
+[warn]     |          It would fail on pattern case: stainless.collection.Nil()
+[warn]     |
+[warn]     | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/main/scala/ch/epfl/lexer/VerifiedLexer.scala:1291:6 
+[warn] 1291 |      rules match {
+[warn]      |      ^^^^^
+[warn]      |      match may not be exhaustive.
+[warn]      |
+[warn]      |      It would fail on pattern case: stainless.collection.Cons(_, _)
+[warn]      |
+[warn]      | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/main/scala/ch/epfl/lexer/VerifiedLexer.scala:2436:6 
+[warn] 2436 |      l1 match {
+[warn]      |      ^^
+[warn]      |match may not be exhaustive.
+[warn]      |
+[warn]      |It would fail on pattern case: _: stainless.collection.List[ch.epfl.lexer.Token[C]]
+[warn]      |
+[warn]      | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/main/scala/ch/epfl/lexer/VerifiedRegex.scala:353:4 
+[warn] 353 |    r match {
+[warn]     |    ^
+[warn]     |    match may not be exhaustive.
+[warn]     |
+[warn]     |    It would fail on pattern case: Concat(_, _)
+[warn]     |
+[warn]     | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/main/scala/ch/epfl/map/ListLongMap.scala:157:4 
+[warn] 157 |    l match {
+[warn]     |    ^
+[warn]     |    match may not be exhaustive.
+[warn]     |
+[warn]     |    It would fail on pattern case: stainless.collection.Cons(_, _)
+[warn]     |
+[warn]     | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/main/scala/ch/epfl/map/ListLongMap.scala:191:4 
+[warn] 191 |    l match {
+[warn]     |    ^
+[warn]     |    match may not be exhaustive.
+[warn]     |
+[warn]     |    It would fail on pattern case: stainless.collection.Cons(_, _)
+[warn]     |
+[warn]     | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/main/scala/ch/epfl/map/ListLongMap.scala:206:4 
+[warn] 206 |    l match {
+[warn]     |    ^
+[warn]     |    match may not be exhaustive.
+[warn]     |
+[warn]     |    It would fail on pattern case: stainless.collection.Cons(_, _)
+[warn]     |
+[warn]     | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/main/scala/ch/epfl/map/ListLongMap.scala:222:4 
+[warn] 222 |    l match {
+[warn]     |    ^
+[warn]     |    match may not be exhaustive.
+[warn]     |
+[warn]     |    It would fail on pattern case: stainless.collection.Cons(_, _)
+[warn]     |
+[warn]     | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/main/scala/ch/epfl/map/ListLongMap.scala:243:4 
+[warn] 243 |    l match {
+[warn]     |    ^
+[warn]     |    match may not be exhaustive.
+[warn]     |
+[warn]     |    It would fail on pattern case: stainless.collection.Cons(_, _)
+[warn]     |
+[warn]     | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/main/scala/ch/epfl/map/ListLongMap.scala:274:4 
+[warn] 274 |    l match {
+[warn]     |    ^
+[warn]     |    match may not be exhaustive.
+[warn]     |
+[warn]     |    It would fail on pattern case: stainless.collection.Cons(_, _)
+[warn]     |
+[warn]     | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/main/scala/ch/epfl/map/ListMap.scala:195:4 
+[warn] 195 |    l match {
+[warn]     |    ^
+[warn]     |    match may not be exhaustive.
+[warn]     |
+[warn]     |    It would fail on pattern case: stainless.collection.Cons(_, _)
+[warn]     |
+[warn]     | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/main/scala/ch/epfl/map/ListMap.scala:229:4 
+[warn] 229 |    l match {
+[warn]     |    ^
+[warn]     |    match may not be exhaustive.
+[warn]     |
+[warn]     |    It would fail on pattern case: stainless.collection.Cons(_, _)
+[warn]     |
+[warn]     | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/main/scala/ch/epfl/map/ListMap.scala:256:4 
+[warn] 256 |    l match {
+[warn]     |    ^
+[warn]     |    match may not be exhaustive.
+[warn]     |
+[warn]     |    It would fail on pattern case: stainless.collection.Cons(_, _)
+[warn]     |
+[warn]     | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/main/scala/ch/epfl/map/ListMap.scala:308:4 
+[warn] 308 |    l match {
+[warn]     |    ^
+[warn]     |    match may not be exhaustive.
+[warn]     |
+[warn]     |    It would fail on pattern case: stainless.collection.Cons(_, _)
+[warn]     |
+[warn]     | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/main/scala/ch/epfl/map/ListMap.scala:380:4 
+[warn] 380 |    l match {
+[warn]     |    ^
+[warn]     |    match may not be exhaustive.
+[warn]     |
+[warn]     |    It would fail on pattern case: stainless.collection.Cons(_, _)
+[warn]     |
+[warn]     | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/main/scala/ch/epfl/map/MutableLongMap.scala:347:4 
+[warn] 347 |    c match {
+[warn]     |    ^
+[warn]     |    match may not be exhaustive.
+[warn]     |
+[warn]     |    It would fail on pattern case: EmptyCell()
+[warn]     |
+[warn]     | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/main/scala/ch/epfl/map/MutableLongMap.scala:596:8 
+[warn] 596 |        seekEntryRes match {
+[warn]     |        ^^^^^^^^^^^^
+[warn]     |match may not be exhaustive.
+[warn]     |
+[warn]     |It would fail on pattern case: ch.epfl.map.MutableLongMap.Intermediate(_, _, _)
+[warn]     |
+[warn]     | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/main/scala/ch/epfl/map/MutableLongMap.scala:1106:6 
+[warn] 1106 |      intermediate match {
+[warn]      |      ^^^^^^^^^^^^
+[warn]      |match may not be exhaustive.
+[warn]      |
+[warn]      |It would fail on pattern case: _: ch.epfl.map.MutableLongMap.SeekEntryResult
+[warn]      |
+[warn]      | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/main/scala/ch/epfl/map/MutableLongMap.scala:1156:6 
+[warn] 1156 |      intermediate match {
+[warn]      |      ^^^^^^^^^^^^
+[warn]      |match may not be exhaustive.
+[warn]      |
+[warn]      |It would fail on pattern case: _: ch.epfl.map.MutableLongMap.SeekEntryResult
+[warn]      |
+[warn]      | longer explanation available when compiling with `-explain`
+[warn] there was 1 deprecation warning; re-run with -deprecation for details
+[warn] 23 warnings found
+[info] done compiling
+[info] compiling 43 Java sources to /localhome/chassot/bolts/lexers/regex/verifiedlexer/target/scala-3.7.2/classes ...
+[info] done compiling
+[info] running (fork) org.openjdk.jmh.Main -i 1 -wi 2 -f1 -t1 benchmark.lexer.LexerBenchmarkGenerated
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.16, OpenJDK 64-Bit Server VM, 17.0.16+8-Ubuntu-0ubuntu124.04.1
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 2 iterations, 10 s each
+[info] # Measurement: 1 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.lexer.benchmark.lexer.LexerBenchmarkGenerated.lex_ZipperMem
+[info] # Parameters: (file = generated_code_000529chars.amy)
+[info] # Run progress: 0.00% complete, ETA 00:39:30
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 266.290 us/op
+[info] # Warmup Iteration   2: 248.025 us/op
+[info] Iteration   1: 229.172 us/op
+[info] Result "ch.epfl.lexer.benchmark.lexer.LexerBenchmarkGenerated.lex_ZipperMem":
+[info]   229.172 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.16, OpenJDK 64-Bit Server VM, 17.0.16+8-Ubuntu-0ubuntu124.04.1
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 2 iterations, 10 s each
+[info] # Measurement: 1 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.lexer.benchmark.lexer.LexerBenchmarkGenerated.lex_ZipperMem
+[info] # Parameters: (file = generated_code_001058chars.amy)
+[info] # Run progress: 1.27% complete, ETA 00:39:22
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 423.919 us/op
+[info] # Warmup Iteration   2: 372.557 us/op
+[info] Iteration   1: 359.749 us/op
+[info] Result "ch.epfl.lexer.benchmark.lexer.LexerBenchmarkGenerated.lex_ZipperMem":
+[info]   359.749 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.16, OpenJDK 64-Bit Server VM, 17.0.16+8-Ubuntu-0ubuntu124.04.1
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 2 iterations, 10 s each
+[info] # Measurement: 1 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.lexer.benchmark.lexer.LexerBenchmarkGenerated.lex_ZipperMem
+[info] # Parameters: (file = generated_code_001587chars.amy)
+[info] # Run progress: 2.53% complete, ETA 00:38:51
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 577.718 us/op
+[info] # Warmup Iteration   2: 499.659 us/op
+[info] Iteration   1: 497.430 us/op
+[info] Result "ch.epfl.lexer.benchmark.lexer.LexerBenchmarkGenerated.lex_ZipperMem":
+[info]   497.430 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.16, OpenJDK 64-Bit Server VM, 17.0.16+8-Ubuntu-0ubuntu124.04.1
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 2 iterations, 10 s each
+[info] # Measurement: 1 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.lexer.benchmark.lexer.LexerBenchmarkGenerated.lex_ZipperMem
+[info] # Parameters: (file = generated_code_002116chars.amy)
+[info] # Run progress: 3.80% complete, ETA 00:38:20
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 697.279 us/op
+[info] # Warmup Iteration   2: 633.626 us/op
+[info] Iteration   1: 624.300 us/op
+[info] Result "ch.epfl.lexer.benchmark.lexer.LexerBenchmarkGenerated.lex_ZipperMem":
+[info]   624.300 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.16, OpenJDK 64-Bit Server VM, 17.0.16+8-Ubuntu-0ubuntu124.04.1
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 2 iterations, 10 s each
+[info] # Measurement: 1 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.lexer.benchmark.lexer.LexerBenchmarkGenerated.lex_ZipperMem
+[info] # Parameters: (file = generated_code_002645chars.amy)
+[info] # Run progress: 5.06% complete, ETA 00:37:50
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 896.743 us/op
+[info] # Warmup Iteration   2: 778.973 us/op
+[info] Iteration   1: 771.505 us/op
+[info] Result "ch.epfl.lexer.benchmark.lexer.LexerBenchmarkGenerated.lex_ZipperMem":
+[info]   771.505 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.16, OpenJDK 64-Bit Server VM, 17.0.16+8-Ubuntu-0ubuntu124.04.1
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 2 iterations, 10 s each
+[info] # Measurement: 1 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.lexer.benchmark.lexer.LexerBenchmarkGenerated.lex_ZipperMem
+[info] # Parameters: (file = generated_code_003174chars.amy)
+[info] # Run progress: 6.33% complete, ETA 00:37:20
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 1079.680 us/op
+[info] # Warmup Iteration   2: 938.965 us/op
+[info] Iteration   1: 908.733 us/op
+[info] Result "ch.epfl.lexer.benchmark.lexer.LexerBenchmarkGenerated.lex_ZipperMem":
+[info]   908.733 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.16, OpenJDK 64-Bit Server VM, 17.0.16+8-Ubuntu-0ubuntu124.04.1
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 2 iterations, 10 s each
+[info] # Measurement: 1 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.lexer.benchmark.lexer.LexerBenchmarkGenerated.lex_ZipperMem
+[info] # Parameters: (file = generated_code_003703chars.amy)
+[info] # Run progress: 7.59% complete, ETA 00:36:50
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 1298.995 us/op
+[info] # Warmup Iteration   2: 1072.437 us/op
+[info] Iteration   1: 1028.404 us/op
+[info] Result "ch.epfl.lexer.benchmark.lexer.LexerBenchmarkGenerated.lex_ZipperMem":
+[info]   1028.404 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.16, OpenJDK 64-Bit Server VM, 17.0.16+8-Ubuntu-0ubuntu124.04.1
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 2 iterations, 10 s each
+[info] # Measurement: 1 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.lexer.benchmark.lexer.LexerBenchmarkGenerated.lex_ZipperMem
+[info] # Parameters: (file = generated_code_004232chars.amy)
+[info] # Run progress: 8.86% complete, ETA 00:36:19
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 1264.034 us/op
+[info] # Warmup Iteration   2: 1066.289 us/op
+[info] Iteration   1: 1071.044 us/op
+[info] Result "ch.epfl.lexer.benchmark.lexer.LexerBenchmarkGenerated.lex_ZipperMem":
+[info]   1071.044 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.16, OpenJDK 64-Bit Server VM, 17.0.16+8-Ubuntu-0ubuntu124.04.1
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 2 iterations, 10 s each
+[info] # Measurement: 1 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.lexer.benchmark.lexer.LexerBenchmarkGenerated.lex_ZipperMem
+[info] # Parameters: (file = generated_code_004761chars.amy)
+[info] # Run progress: 10.13% complete, ETA 00:35:49
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 1416.776 us/op
+[info] # Warmup Iteration   2: 1192.335 us/op
+[info] Iteration   1: 1213.911 us/op
+[info] Result "ch.epfl.lexer.benchmark.lexer.LexerBenchmarkGenerated.lex_ZipperMem":
+[info]   1213.911 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.16, OpenJDK 64-Bit Server VM, 17.0.16+8-Ubuntu-0ubuntu124.04.1
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 2 iterations, 10 s each
+[info] # Measurement: 1 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.lexer.benchmark.lexer.LexerBenchmarkGenerated.lex_ZipperMem
+[info] # Parameters: (file = generated_code_005290chars.amy)
+[info] # Run progress: 11.39% complete, ETA 00:35:19
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 1854.142 us/op
+[info] # Warmup Iteration   2: 1456.363 us/op
+[info] Iteration   1: 1356.285 us/op
+[info] Result "ch.epfl.lexer.benchmark.lexer.LexerBenchmarkGenerated.lex_ZipperMem":
+[info]   1356.285 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.16, OpenJDK 64-Bit Server VM, 17.0.16+8-Ubuntu-0ubuntu124.04.1
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 2 iterations, 10 s each
+[info] # Measurement: 1 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.lexer.benchmark.lexer.LexerBenchmarkGenerated.lex_ZipperMem
+[info] # Parameters: (file = generated_code_005819chars.amy)
+[info] # Run progress: 12.66% complete, ETA 00:34:49
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 1641.121 us/op
+[info] # Warmup Iteration   2: 1470.353 us/op
+[info] Iteration   1: 1460.622 us/op
+[info] Result "ch.epfl.lexer.benchmark.lexer.LexerBenchmarkGenerated.lex_ZipperMem":
+[info]   1460.622 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.16, OpenJDK 64-Bit Server VM, 17.0.16+8-Ubuntu-0ubuntu124.04.1
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 2 iterations, 10 s each
+[info] # Measurement: 1 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.lexer.benchmark.lexer.LexerBenchmarkGenerated.lex_ZipperMem
+[info] # Parameters: (file = generated_code_006348chars.amy)
+[info] # Run progress: 13.92% complete, ETA 00:34:19
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 1790.188 us/op
+[info] # Warmup Iteration   2: 1623.438 us/op
+[info] Iteration   1: 1628.048 us/op
+[info] Result "ch.epfl.lexer.benchmark.lexer.LexerBenchmarkGenerated.lex_ZipperMem":
+[info]   1628.048 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.16, OpenJDK 64-Bit Server VM, 17.0.16+8-Ubuntu-0ubuntu124.04.1
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 2 iterations, 10 s each
+[info] # Measurement: 1 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.lexer.benchmark.lexer.LexerBenchmarkGenerated.lex_ZipperMem
+[info] # Parameters: (file = generated_code_006877chars.amy)
+[info] # Run progress: 15.19% complete, ETA 00:33:49
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 1786.884 us/op
+[info] # Warmup Iteration   2: 1641.119 us/op
+[info] Iteration   1: 1638.165 us/op
+[info] Result "ch.epfl.lexer.benchmark.lexer.LexerBenchmarkGenerated.lex_ZipperMem":
+[info]   1638.165 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.16, OpenJDK 64-Bit Server VM, 17.0.16+8-Ubuntu-0ubuntu124.04.1
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 2 iterations, 10 s each
+[info] # Measurement: 1 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.lexer.benchmark.lexer.LexerBenchmarkGenerated.lex_ZipperMem
+[info] # Parameters: (file = generated_code_007406chars.amy)
+[info] # Run progress: 16.46% complete, ETA 00:33:19
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 2048.176 us/op
+[info] # Warmup Iteration   2: 1852.405 us/op
+[info] Iteration   1: 1759.646 us/op
+[info] Result "ch.epfl.lexer.benchmark.lexer.LexerBenchmarkGenerated.lex_ZipperMem":
+[info]   1759.646 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.16, OpenJDK 64-Bit Server VM, 17.0.16+8-Ubuntu-0ubuntu124.04.1
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 2 iterations, 10 s each
+[info] # Measurement: 1 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.lexer.benchmark.lexer.LexerBenchmarkGenerated.lex_ZipperMem
+[info] # Parameters: (file = generated_code_007935chars.amy)
+[info] # Run progress: 17.72% complete, ETA 00:32:48
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 2307.406 us/op
+[info] # Warmup Iteration   2: 2034.162 us/op
+[info] Iteration   1: 1984.376 us/op
+[info] Result "ch.epfl.lexer.benchmark.lexer.LexerBenchmarkGenerated.lex_ZipperMem":
+[info]   1984.376 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.16, OpenJDK 64-Bit Server VM, 17.0.16+8-Ubuntu-0ubuntu124.04.1
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 2 iterations, 10 s each
+[info] # Measurement: 1 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.lexer.benchmark.lexer.LexerBenchmarkGenerated.lex_ZipperMem
+[info] # Parameters: (file = generated_code_008464chars.amy)
+[info] # Run progress: 18.99% complete, ETA 00:32:18
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 2416.500 us/op
+[info] # Warmup Iteration   2: 2187.361 us/op
+[info] Iteration   1: 2171.878 us/op
+[info] Result "ch.epfl.lexer.benchmark.lexer.LexerBenchmarkGenerated.lex_ZipperMem":
+[info]   2171.878 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.16, OpenJDK 64-Bit Server VM, 17.0.16+8-Ubuntu-0ubuntu124.04.1
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 2 iterations, 10 s each
+[info] # Measurement: 1 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.lexer.benchmark.lexer.LexerBenchmarkGenerated.lex_ZipperMem
+[info] # Parameters: (file = generated_code_008993chars.amy)
+[info] # Run progress: 20.25% complete, ETA 00:31:48
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 2377.200 us/op
+[info] # Warmup Iteration   2: 2166.569 us/op
+[info] Iteration   1: 2121.310 us/op
+[info] Result "ch.epfl.lexer.benchmark.lexer.LexerBenchmarkGenerated.lex_ZipperMem":
+[info]   2121.310 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.16, OpenJDK 64-Bit Server VM, 17.0.16+8-Ubuntu-0ubuntu124.04.1
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 2 iterations, 10 s each
+[info] # Measurement: 1 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.lexer.benchmark.lexer.LexerBenchmarkGenerated.lex_ZipperMem
+[info] # Parameters: (file = generated_code_009522chars.amy)
+[info] # Run progress: 21.52% complete, ETA 00:31:17
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 2526.422 us/op
+[info] # Warmup Iteration   2: 2295.844 us/op
+[info] Iteration   1: 2282.631 us/op
+[info] Result "ch.epfl.lexer.benchmark.lexer.LexerBenchmarkGenerated.lex_ZipperMem":
+[info]   2282.631 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.16, OpenJDK 64-Bit Server VM, 17.0.16+8-Ubuntu-0ubuntu124.04.1
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 2 iterations, 10 s each
+[info] # Measurement: 1 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.lexer.benchmark.lexer.LexerBenchmarkGenerated.lex_ZipperMem
+[info] # Parameters: (file = generated_code_010051chars.amy)
+[info] # Run progress: 22.78% complete, ETA 00:30:47
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 2720.315 us/op
+[info] # Warmup Iteration   2: 2463.400 us/op
+[info] Iteration   1: 2459.168 us/op
+[info] Result "ch.epfl.lexer.benchmark.lexer.LexerBenchmarkGenerated.lex_ZipperMem":
+[info]   2459.168 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.16, OpenJDK 64-Bit Server VM, 17.0.16+8-Ubuntu-0ubuntu124.04.1
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 2 iterations, 10 s each
+[info] # Measurement: 1 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.lexer.benchmark.lexer.LexerBenchmarkGenerated.lex_ZipperMem
+[info] # Parameters: (file = generated_code_010580chars.amy)
+[info] # Run progress: 24.05% complete, ETA 00:30:17
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 2860.143 us/op
+[info] # Warmup Iteration   2: 2506.577 us/op
+[info] Iteration   1: 2474.291 us/op
+[info] Result "ch.epfl.lexer.benchmark.lexer.LexerBenchmarkGenerated.lex_ZipperMem":
+[info]   2474.291 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.16, OpenJDK 64-Bit Server VM, 17.0.16+8-Ubuntu-0ubuntu124.04.1
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 2 iterations, 10 s each
+[info] # Measurement: 1 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.lexer.benchmark.lexer.LexerBenchmarkGenerated.lex_ZipperMem
+[info] # Parameters: (file = generated_code_011109chars.amy)
+[info] # Run progress: 25.32% complete, ETA 00:29:47
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 2961.981 us/op
+[info] # Warmup Iteration   2: 2666.985 us/op
+[info] Iteration   1: 2665.243 us/op
+[info] Result "ch.epfl.lexer.benchmark.lexer.LexerBenchmarkGenerated.lex_ZipperMem":
+[info]   2665.243 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.16, OpenJDK 64-Bit Server VM, 17.0.16+8-Ubuntu-0ubuntu124.04.1
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 2 iterations, 10 s each
+[info] # Measurement: 1 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.lexer.benchmark.lexer.LexerBenchmarkGenerated.lex_ZipperMem
+[info] # Parameters: (file = generated_code_011638chars.amy)
+[info] # Run progress: 26.58% complete, ETA 00:29:16
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 3038.007 us/op
+[info] # Warmup Iteration   2: 2779.732 us/op
+[info] Iteration   1: 2694.551 us/op
+[info] Result "ch.epfl.lexer.benchmark.lexer.LexerBenchmarkGenerated.lex_ZipperMem":
+[info]   2694.551 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.16, OpenJDK 64-Bit Server VM, 17.0.16+8-Ubuntu-0ubuntu124.04.1
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 2 iterations, 10 s each
+[info] # Measurement: 1 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.lexer.benchmark.lexer.LexerBenchmarkGenerated.lex_ZipperMem
+[info] # Parameters: (file = generated_code_012167chars.amy)
+[info] # Run progress: 27.85% complete, ETA 00:28:46
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 3513.395 us/op
+[info] # Warmup Iteration   2: 3150.481 us/op
+[info] Iteration   1: 3144.527 us/op
+[info] Result "ch.epfl.lexer.benchmark.lexer.LexerBenchmarkGenerated.lex_ZipperMem":
+[info]   3144.527 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.16, OpenJDK 64-Bit Server VM, 17.0.16+8-Ubuntu-0ubuntu124.04.1
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 2 iterations, 10 s each
+[info] # Measurement: 1 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.lexer.benchmark.lexer.LexerBenchmarkGenerated.lex_ZipperMem
+[info] # Parameters: (file = generated_code_012696chars.amy)
+[info] # Run progress: 29.11% complete, ETA 00:28:16
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 3533.218 us/op
+[info] # Warmup Iteration   2: 3098.228 us/op
+[info] Iteration   1: 2981.626 us/op
+[info] Result "ch.epfl.lexer.benchmark.lexer.LexerBenchmarkGenerated.lex_ZipperMem":
+[info]   2981.626 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.16, OpenJDK 64-Bit Server VM, 17.0.16+8-Ubuntu-0ubuntu124.04.1
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 2 iterations, 10 s each
+[info] # Measurement: 1 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.lexer.benchmark.lexer.LexerBenchmarkGenerated.lex_ZipperMem
+[info] # Parameters: (file = generated_code_013225chars.amy)
+[info] # Run progress: 30.38% complete, ETA 00:27:45
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 3878.970 us/op
+[info] # Warmup Iteration   2: 3404.858 us/op
+[info] Iteration   1: 3122.796 us/op
+[info] Result "ch.epfl.lexer.benchmark.lexer.LexerBenchmarkGenerated.lex_ZipperMem":
+[info]   3122.796 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.16, OpenJDK 64-Bit Server VM, 17.0.16+8-Ubuntu-0ubuntu124.04.1
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 2 iterations, 10 s each
+[info] # Measurement: 1 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.lexer.benchmark.lexer.LexerBenchmarkGenerated.lex_ZipperMem
+[info] # Parameters: (file = generated_code_013754chars.amy)
+[info] # Run progress: 31.65% complete, ETA 00:27:15
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 3430.325 us/op
+[info] # Warmup Iteration   2: 3095.185 us/op
+[info] Iteration   1: 3079.086 us/op
+[info] Result "ch.epfl.lexer.benchmark.lexer.LexerBenchmarkGenerated.lex_ZipperMem":
+[info]   3079.086 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.16, OpenJDK 64-Bit Server VM, 17.0.16+8-Ubuntu-0ubuntu124.04.1
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 2 iterations, 10 s each
+[info] # Measurement: 1 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.lexer.benchmark.lexer.LexerBenchmarkGenerated.lex_ZipperMem
+[info] # Parameters: (file = generated_code_014283chars.amy)
+[info] # Run progress: 32.91% complete, ETA 00:26:45
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 3774.208 us/op
+[info] # Warmup Iteration   2: 3189.890 us/op
+[info] Iteration   1: 3148.243 us/op
+[info] Result "ch.epfl.lexer.benchmark.lexer.LexerBenchmarkGenerated.lex_ZipperMem":
+[info]   3148.243 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.16, OpenJDK 64-Bit Server VM, 17.0.16+8-Ubuntu-0ubuntu124.04.1
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 2 iterations, 10 s each
+[info] # Measurement: 1 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.lexer.benchmark.lexer.LexerBenchmarkGenerated.lex_ZipperMem
+[info] # Parameters: (file = generated_code_014812chars.amy)
+[info] # Run progress: 34.18% complete, ETA 00:26:15
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 3880.286 us/op
+[info] # Warmup Iteration   2: 3525.683 us/op
+[info] Iteration   1: 3489.307 us/op
+[info] Result "ch.epfl.lexer.benchmark.lexer.LexerBenchmarkGenerated.lex_ZipperMem":
+[info]   3489.307 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.16, OpenJDK 64-Bit Server VM, 17.0.16+8-Ubuntu-0ubuntu124.04.1
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 2 iterations, 10 s each
+[info] # Measurement: 1 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.lexer.benchmark.lexer.LexerBenchmarkGenerated.lex_ZipperMem
+[info] # Parameters: (file = generated_code_015341chars.amy)
+[info] # Run progress: 35.44% complete, ETA 00:25:44
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 5033.599 us/op
+[info] # Warmup Iteration   2: 3764.073 us/op
+[info] Iteration   1: 3681.452 us/op
+[info] Result "ch.epfl.lexer.benchmark.lexer.LexerBenchmarkGenerated.lex_ZipperMem":
+[info]   3681.452 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.16, OpenJDK 64-Bit Server VM, 17.0.16+8-Ubuntu-0ubuntu124.04.1
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 2 iterations, 10 s each
+[info] # Measurement: 1 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.lexer.benchmark.lexer.LexerBenchmarkGenerated.lex_ZipperMem
+[info] # Parameters: (file = generated_code_015870chars.amy)
+[info] # Run progress: 36.71% complete, ETA 00:25:14
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 4582.221 us/op
+[info] # Warmup Iteration   2: 3774.612 us/op
+[info] Iteration   1: 3642.238 us/op
+[info] Result "ch.epfl.lexer.benchmark.lexer.LexerBenchmarkGenerated.lex_ZipperMem":
+[info]   3642.238 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.16, OpenJDK 64-Bit Server VM, 17.0.16+8-Ubuntu-0ubuntu124.04.1
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 2 iterations, 10 s each
+[info] # Measurement: 1 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.lexer.benchmark.lexer.LexerBenchmarkGenerated.lex_ZipperMem
+[info] # Parameters: (file = generated_code_016399chars.amy)
+[info] # Run progress: 37.97% complete, ETA 00:24:44
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 4543.816 us/op
+[info] # Warmup Iteration   2: 3812.307 us/op
+[info] Iteration   1: 3972.733 us/op
+[info] Result "ch.epfl.lexer.benchmark.lexer.LexerBenchmarkGenerated.lex_ZipperMem":
+[info]   3972.733 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.16, OpenJDK 64-Bit Server VM, 17.0.16+8-Ubuntu-0ubuntu124.04.1
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 2 iterations, 10 s each
+[info] # Measurement: 1 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.lexer.benchmark.lexer.LexerBenchmarkGenerated.lex_ZipperMem
+[info] # Parameters: (file = generated_code_016928chars.amy)
+[info] # Run progress: 39.24% complete, ETA 00:24:14
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 4499.405 us/op
+[info] # Warmup Iteration   2: 4049.569 us/op
+[info] Iteration   1: 4031.079 us/op
+[info] Result "ch.epfl.lexer.benchmark.lexer.LexerBenchmarkGenerated.lex_ZipperMem":
+[info]   4031.079 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.16, OpenJDK 64-Bit Server VM, 17.0.16+8-Ubuntu-0ubuntu124.04.1
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 2 iterations, 10 s each
+[info] # Measurement: 1 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.lexer.benchmark.lexer.LexerBenchmarkGenerated.lex_ZipperMem
+[info] # Parameters: (file = generated_code_017457chars.amy)
+[info] # Run progress: 40.51% complete, ETA 00:23:43
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 5152.338 us/op
+[info] # Warmup Iteration   2: 4455.177 us/op
+[info] Iteration   1: 4435.943 us/op
+[info] Result "ch.epfl.lexer.benchmark.lexer.LexerBenchmarkGenerated.lex_ZipperMem":
+[info]   4435.943 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.16, OpenJDK 64-Bit Server VM, 17.0.16+8-Ubuntu-0ubuntu124.04.1
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 2 iterations, 10 s each
+[info] # Measurement: 1 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.lexer.benchmark.lexer.LexerBenchmarkGenerated.lex_ZipperMem
+[info] # Parameters: (file = generated_code_017986chars.amy)
+[info] # Run progress: 41.77% complete, ETA 00:23:13
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 4821.222 us/op
+[info] # Warmup Iteration   2: 3998.473 us/op
+[info] Iteration   1: 4101.450 us/op
+[info] Result "ch.epfl.lexer.benchmark.lexer.LexerBenchmarkGenerated.lex_ZipperMem":
+[info]   4101.450 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.16, OpenJDK 64-Bit Server VM, 17.0.16+8-Ubuntu-0ubuntu124.04.1
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 2 iterations, 10 s each
+[info] # Measurement: 1 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.lexer.benchmark.lexer.LexerBenchmarkGenerated.lex_ZipperMem
+[info] # Parameters: (file = generated_code_018515chars.amy)
+[info] # Run progress: 43.04% complete, ETA 00:22:43
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 4980.599 us/op
+[info] # Warmup Iteration   2: 4317.674 us/op
+[info] Iteration   1: 4249.091 us/op
+[info] Result "ch.epfl.lexer.benchmark.lexer.LexerBenchmarkGenerated.lex_ZipperMem":
+[info]   4249.091 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.16, OpenJDK 64-Bit Server VM, 17.0.16+8-Ubuntu-0ubuntu124.04.1
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 2 iterations, 10 s each
+[info] # Measurement: 1 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.lexer.benchmark.lexer.LexerBenchmarkGenerated.lex_ZipperMem
+[info] # Parameters: (file = generated_code_019044chars.amy)
+[info] # Run progress: 44.30% complete, ETA 00:22:13
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 5248.223 us/op
+[info] # Warmup Iteration   2: 4675.216 us/op
+[info] Iteration   1: 4707.592 us/op
+[info] Result "ch.epfl.lexer.benchmark.lexer.LexerBenchmarkGenerated.lex_ZipperMem":
+[info]   4707.592 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.16, OpenJDK 64-Bit Server VM, 17.0.16+8-Ubuntu-0ubuntu124.04.1
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 2 iterations, 10 s each
+[info] # Measurement: 1 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.lexer.benchmark.lexer.LexerBenchmarkGenerated.lex_ZipperMem
+[info] # Parameters: (file = generated_code_019573chars.amy)
+[info] # Run progress: 45.57% complete, ETA 00:21:42
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 5525.783 us/op
+[info] # Warmup Iteration   2: 5034.189 us/op
+[info] Iteration   1: 4971.180 us/op
+[info] Result "ch.epfl.lexer.benchmark.lexer.LexerBenchmarkGenerated.lex_ZipperMem":
+[info]   4971.180 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.16, OpenJDK 64-Bit Server VM, 17.0.16+8-Ubuntu-0ubuntu124.04.1
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 2 iterations, 10 s each
+[info] # Measurement: 1 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.lexer.benchmark.lexer.LexerBenchmarkGenerated.lex_ZipperMem
+[info] # Parameters: (file = generated_code_020102chars.amy)
+[info] # Run progress: 46.84% complete, ETA 00:21:12
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 5491.177 us/op
+[info] # Warmup Iteration   2: 4751.301 us/op
+[info] Iteration   1: 4754.180 us/op
+[info] Result "ch.epfl.lexer.benchmark.lexer.LexerBenchmarkGenerated.lex_ZipperMem":
+[info]   4754.180 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.16, OpenJDK 64-Bit Server VM, 17.0.16+8-Ubuntu-0ubuntu124.04.1
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 2 iterations, 10 s each
+[info] # Measurement: 1 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.lexer.benchmark.lexer.LexerBenchmarkGenerated.lex_ZipperMem
+[info] # Parameters: (file = generated_code_020631chars.amy)
+[info] # Run progress: 48.10% complete, ETA 00:20:42
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 5366.328 us/op
+[info] # Warmup Iteration   2: 4816.152 us/op
+[info] Iteration   1: 4849.262 us/op
+[info] Result "ch.epfl.lexer.benchmark.lexer.LexerBenchmarkGenerated.lex_ZipperMem":
+[info]   4849.262 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.16, OpenJDK 64-Bit Server VM, 17.0.16+8-Ubuntu-0ubuntu124.04.1
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 2 iterations, 10 s each
+[info] # Measurement: 1 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.lexer.benchmark.lexer.LexerBenchmarkGenerated.lex_ZipperMem
+[info] # Parameters: (file = generated_code_021160chars.amy)
+[info] # Run progress: 49.37% complete, ETA 00:20:11
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 5533.365 us/op
+[info] # Warmup Iteration   2: 5047.481 us/op
+[info] Iteration   1: 5075.604 us/op
+[info] Result "ch.epfl.lexer.benchmark.lexer.LexerBenchmarkGenerated.lex_ZipperMem":
+[info]   5075.604 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.16, OpenJDK 64-Bit Server VM, 17.0.16+8-Ubuntu-0ubuntu124.04.1
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 2 iterations, 10 s each
+[info] # Measurement: 1 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.lexer.benchmark.lexer.LexerBenchmarkGenerated.lex_ZipperMem
+[info] # Parameters: (file = generated_code_021689chars.amy)
+[info] # Run progress: 50.63% complete, ETA 00:19:41
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 5734.283 us/op
+[info] # Warmup Iteration   2: 4908.837 us/op
+[info] Iteration   1: 4871.333 us/op
+[info] Result "ch.epfl.lexer.benchmark.lexer.LexerBenchmarkGenerated.lex_ZipperMem":
+[info]   4871.333 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.16, OpenJDK 64-Bit Server VM, 17.0.16+8-Ubuntu-0ubuntu124.04.1
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 2 iterations, 10 s each
+[info] # Measurement: 1 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.lexer.benchmark.lexer.LexerBenchmarkGenerated.lex_ZipperMem
+[info] # Parameters: (file = generated_code_022218chars.amy)
+[info] # Run progress: 51.90% complete, ETA 00:19:11
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 6117.931 us/op
+[info] # Warmup Iteration   2: 5466.017 us/op
+[info] Iteration   1: 5111.368 us/op
+[info] Result "ch.epfl.lexer.benchmark.lexer.LexerBenchmarkGenerated.lex_ZipperMem":
+[info]   5111.368 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.16, OpenJDK 64-Bit Server VM, 17.0.16+8-Ubuntu-0ubuntu124.04.1
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 2 iterations, 10 s each
+[info] # Measurement: 1 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.lexer.benchmark.lexer.LexerBenchmarkGenerated.lex_ZipperMem
+[info] # Parameters: (file = generated_code_022747chars.amy)
+[info] # Run progress: 53.16% complete, ETA 00:18:40
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 6201.264 us/op
+[info] # Warmup Iteration   2: 5497.106 us/op
+[info] Iteration   1: 5512.982 us/op
+[info] Result "ch.epfl.lexer.benchmark.lexer.LexerBenchmarkGenerated.lex_ZipperMem":
+[info]   5512.982 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.16, OpenJDK 64-Bit Server VM, 17.0.16+8-Ubuntu-0ubuntu124.04.1
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 2 iterations, 10 s each
+[info] # Measurement: 1 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.lexer.benchmark.lexer.LexerBenchmarkGenerated.lex_ZipperMem
+[info] # Parameters: (file = generated_code_023276chars.amy)
+[info] # Run progress: 54.43% complete, ETA 00:18:10
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 5719.570 us/op
+[info] # Warmup Iteration   2: 5089.326 us/op
+[info] Iteration   1: 5118.061 us/op
+[info] Result "ch.epfl.lexer.benchmark.lexer.LexerBenchmarkGenerated.lex_ZipperMem":
+[info]   5118.061 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.16, OpenJDK 64-Bit Server VM, 17.0.16+8-Ubuntu-0ubuntu124.04.1
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 2 iterations, 10 s each
+[info] # Measurement: 1 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.lexer.benchmark.lexer.LexerBenchmarkGenerated.lex_ZipperMem
+[info] # Parameters: (file = generated_code_023805chars.amy)
+[info] # Run progress: 55.70% complete, ETA 00:17:40
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 6253.754 us/op
+[info] # Warmup Iteration   2: 5534.082 us/op
+[info] Iteration   1: 5613.616 us/op
+[info] Result "ch.epfl.lexer.benchmark.lexer.LexerBenchmarkGenerated.lex_ZipperMem":
+[info]   5613.616 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.16, OpenJDK 64-Bit Server VM, 17.0.16+8-Ubuntu-0ubuntu124.04.1
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 2 iterations, 10 s each
+[info] # Measurement: 1 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.lexer.benchmark.lexer.LexerBenchmarkGenerated.lex_ZipperMem
+[info] # Parameters: (file = generated_code_024334chars.amy)
+[info] # Run progress: 56.96% complete, ETA 00:17:10
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 6141.382 us/op
+[info] # Warmup Iteration   2: 5337.098 us/op
+[info] Iteration   1: 5476.136 us/op
+[info] Result "ch.epfl.lexer.benchmark.lexer.LexerBenchmarkGenerated.lex_ZipperMem":
+[info]   5476.136 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.16, OpenJDK 64-Bit Server VM, 17.0.16+8-Ubuntu-0ubuntu124.04.1
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 2 iterations, 10 s each
+[info] # Measurement: 1 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.lexer.benchmark.lexer.LexerBenchmarkGenerated.lex_ZipperMem
+[info] # Parameters: (file = generated_code_024863chars.amy)
+[info] # Run progress: 58.23% complete, ETA 00:16:39
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 6879.187 us/op
+[info] # Warmup Iteration   2: 6137.314 us/op
+[info] Iteration   1: 6149.503 us/op
+[info] Result "ch.epfl.lexer.benchmark.lexer.LexerBenchmarkGenerated.lex_ZipperMem":
+[info]   6149.503 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.16, OpenJDK 64-Bit Server VM, 17.0.16+8-Ubuntu-0ubuntu124.04.1
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 2 iterations, 10 s each
+[info] # Measurement: 1 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.lexer.benchmark.lexer.LexerBenchmarkGenerated.lex_ZipperMem
+[info] # Parameters: (file = generated_code_025392chars.amy)
+[info] # Run progress: 59.49% complete, ETA 00:16:09
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 6194.389 us/op
+[info] # Warmup Iteration   2: 5509.101 us/op
+[info] Iteration   1: 5576.969 us/op
+[info] Result "ch.epfl.lexer.benchmark.lexer.LexerBenchmarkGenerated.lex_ZipperMem":
+[info]   5576.969 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.16, OpenJDK 64-Bit Server VM, 17.0.16+8-Ubuntu-0ubuntu124.04.1
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 2 iterations, 10 s each
+[info] # Measurement: 1 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.lexer.benchmark.lexer.LexerBenchmarkGenerated.lex_ZipperMem
+[info] # Parameters: (file = generated_code_025921chars.amy)
+[info] # Run progress: 60.76% complete, ETA 00:15:39
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 6343.962 us/op
+[info] # Warmup Iteration   2: 5770.990 us/op
+[info] Iteration   1: 5768.746 us/op
+[info] Result "ch.epfl.lexer.benchmark.lexer.LexerBenchmarkGenerated.lex_ZipperMem":
+[info]   5768.746 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.16, OpenJDK 64-Bit Server VM, 17.0.16+8-Ubuntu-0ubuntu124.04.1
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 2 iterations, 10 s each
+[info] # Measurement: 1 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.lexer.benchmark.lexer.LexerBenchmarkGenerated.lex_ZipperMem
+[info] # Parameters: (file = generated_code_026450chars.amy)
+[info] # Run progress: 62.03% complete, ETA 00:15:08
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 7896.976 us/op
+[info] # Warmup Iteration   2: 6608.324 us/op
+[info] Iteration   1: 6664.806 us/op
+[info] Result "ch.epfl.lexer.benchmark.lexer.LexerBenchmarkGenerated.lex_ZipperMem":
+[info]   6664.806 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.16, OpenJDK 64-Bit Server VM, 17.0.16+8-Ubuntu-0ubuntu124.04.1
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 2 iterations, 10 s each
+[info] # Measurement: 1 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.lexer.benchmark.lexer.LexerBenchmarkGenerated.lex_ZipperMem
+[info] # Parameters: (file = generated_code_026979chars.amy)
+[info] # Run progress: 63.29% complete, ETA 00:14:38
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 7502.631 us/op
+[info] # Warmup Iteration   2: 6291.332 us/op
+[info] Iteration   1: 6268.736 us/op
+[info] Result "ch.epfl.lexer.benchmark.lexer.LexerBenchmarkGenerated.lex_ZipperMem":
+[info]   6268.736 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.16, OpenJDK 64-Bit Server VM, 17.0.16+8-Ubuntu-0ubuntu124.04.1
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 2 iterations, 10 s each
+[info] # Measurement: 1 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.lexer.benchmark.lexer.LexerBenchmarkGenerated.lex_ZipperMem
+[info] # Parameters: (file = generated_code_027508chars.amy)
+[info] # Run progress: 64.56% complete, ETA 00:14:08
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 7686.917 us/op
+[info] # Warmup Iteration   2: 6603.282 us/op
+[info] Iteration   1: 6692.722 us/op
+[info] Result "ch.epfl.lexer.benchmark.lexer.LexerBenchmarkGenerated.lex_ZipperMem":
+[info]   6692.722 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.16, OpenJDK 64-Bit Server VM, 17.0.16+8-Ubuntu-0ubuntu124.04.1
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 2 iterations, 10 s each
+[info] # Measurement: 1 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.lexer.benchmark.lexer.LexerBenchmarkGenerated.lex_ZipperMem
+[info] # Parameters: (file = generated_code_028037chars.amy)
+[info] # Run progress: 65.82% complete, ETA 00:13:38
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 6890.283 us/op
+[info] # Warmup Iteration   2: 6106.750 us/op
+[info] Iteration   1: 6154.057 us/op
+[info] Result "ch.epfl.lexer.benchmark.lexer.LexerBenchmarkGenerated.lex_ZipperMem":
+[info]   6154.057 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.16, OpenJDK 64-Bit Server VM, 17.0.16+8-Ubuntu-0ubuntu124.04.1
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 2 iterations, 10 s each
+[info] # Measurement: 1 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.lexer.benchmark.lexer.LexerBenchmarkGenerated.lex_ZipperMem
+[info] # Parameters: (file = generated_code_028566chars.amy)
+[info] # Run progress: 67.09% complete, ETA 00:13:07
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 8158.984 us/op
+[info] # Warmup Iteration   2: 6832.502 us/op
+[info] Iteration   1: 6857.251 us/op
+[info] Result "ch.epfl.lexer.benchmark.lexer.LexerBenchmarkGenerated.lex_ZipperMem":
+[info]   6857.251 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.16, OpenJDK 64-Bit Server VM, 17.0.16+8-Ubuntu-0ubuntu124.04.1
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 2 iterations, 10 s each
+[info] # Measurement: 1 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.lexer.benchmark.lexer.LexerBenchmarkGenerated.lex_ZipperMem
+[info] # Parameters: (file = generated_code_029095chars.amy)
+[info] # Run progress: 68.35% complete, ETA 00:12:37
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 8075.953 us/op
+[info] # Warmup Iteration   2: 7274.717 us/op
+[info] Iteration   1: 7196.981 us/op
+[info] Result "ch.epfl.lexer.benchmark.lexer.LexerBenchmarkGenerated.lex_ZipperMem":
+[info]   7196.981 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.16, OpenJDK 64-Bit Server VM, 17.0.16+8-Ubuntu-0ubuntu124.04.1
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 2 iterations, 10 s each
+[info] # Measurement: 1 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.lexer.benchmark.lexer.LexerBenchmarkGenerated.lex_ZipperMem
+[info] # Parameters: (file = generated_code_029624chars.amy)
+[info] # Run progress: 69.62% complete, ETA 00:12:07
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 7241.743 us/op
+[info] # Warmup Iteration   2: 6598.746 us/op
+[info] Iteration   1: 6611.888 us/op
+[info] Result "ch.epfl.lexer.benchmark.lexer.LexerBenchmarkGenerated.lex_ZipperMem":
+[info]   6611.888 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.16, OpenJDK 64-Bit Server VM, 17.0.16+8-Ubuntu-0ubuntu124.04.1
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 2 iterations, 10 s each
+[info] # Measurement: 1 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.lexer.benchmark.lexer.LexerBenchmarkGenerated.lex_ZipperMem
+[info] # Parameters: (file = generated_code_030153chars.amy)
+[info] # Run progress: 70.89% complete, ETA 00:11:36
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 7549.838 us/op
+[info] # Warmup Iteration   2: 6735.899 us/op
+[info] Iteration   1: 6691.450 us/op
+[info] Result "ch.epfl.lexer.benchmark.lexer.LexerBenchmarkGenerated.lex_ZipperMem":
+[info]   6691.450 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.16, OpenJDK 64-Bit Server VM, 17.0.16+8-Ubuntu-0ubuntu124.04.1
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 2 iterations, 10 s each
+[info] # Measurement: 1 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.lexer.benchmark.lexer.LexerBenchmarkGenerated.lex_ZipperMem
+[info] # Parameters: (file = generated_code_030682chars.amy)
+[info] # Run progress: 72.15% complete, ETA 00:11:06
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 7972.861 us/op
+[info] # Warmup Iteration   2: 7133.176 us/op
+[info] Iteration   1: 7226.985 us/op
+[info] Result "ch.epfl.lexer.benchmark.lexer.LexerBenchmarkGenerated.lex_ZipperMem":
+[info]   7226.985 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.16, OpenJDK 64-Bit Server VM, 17.0.16+8-Ubuntu-0ubuntu124.04.1
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 2 iterations, 10 s each
+[info] # Measurement: 1 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.lexer.benchmark.lexer.LexerBenchmarkGenerated.lex_ZipperMem
+[info] # Parameters: (file = generated_code_031211chars.amy)
+[info] # Run progress: 73.42% complete, ETA 00:10:36
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 8957.254 us/op
+[info] # Warmup Iteration   2: 8094.337 us/op
+[info] Iteration   1: 7645.732 us/op
+[info] Result "ch.epfl.lexer.benchmark.lexer.LexerBenchmarkGenerated.lex_ZipperMem":
+[info]   7645.732 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.16, OpenJDK 64-Bit Server VM, 17.0.16+8-Ubuntu-0ubuntu124.04.1
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 2 iterations, 10 s each
+[info] # Measurement: 1 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.lexer.benchmark.lexer.LexerBenchmarkGenerated.lex_ZipperMem
+[info] # Parameters: (file = generated_code_031740chars.amy)
+[info] # Run progress: 74.68% complete, ETA 00:10:06
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 8129.451 us/op
+[info] # Warmup Iteration   2: 7308.246 us/op
+[info] Iteration   1: 7393.471 us/op
+[info] Result "ch.epfl.lexer.benchmark.lexer.LexerBenchmarkGenerated.lex_ZipperMem":
+[info]   7393.471 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.16, OpenJDK 64-Bit Server VM, 17.0.16+8-Ubuntu-0ubuntu124.04.1
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 2 iterations, 10 s each
+[info] # Measurement: 1 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.lexer.benchmark.lexer.LexerBenchmarkGenerated.lex_ZipperMem
+[info] # Parameters: (file = generated_code_032269chars.amy)
+[info] # Run progress: 75.95% complete, ETA 00:09:35
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 7972.554 us/op
+[info] # Warmup Iteration   2: 7141.375 us/op
+[info] Iteration   1: 7150.773 us/op
+[info] Result "ch.epfl.lexer.benchmark.lexer.LexerBenchmarkGenerated.lex_ZipperMem":
+[info]   7150.773 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.16, OpenJDK 64-Bit Server VM, 17.0.16+8-Ubuntu-0ubuntu124.04.1
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 2 iterations, 10 s each
+[info] # Measurement: 1 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.lexer.benchmark.lexer.LexerBenchmarkGenerated.lex_ZipperMem
+[info] # Parameters: (file = generated_code_032798chars.amy)
+[info] # Run progress: 77.22% complete, ETA 00:09:05
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 8664.204 us/op
+[info] # Warmup Iteration   2: 7679.439 us/op
+[info] Iteration   1: 7507.850 us/op
+[info] Result "ch.epfl.lexer.benchmark.lexer.LexerBenchmarkGenerated.lex_ZipperMem":
+[info]   7507.850 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.16, OpenJDK 64-Bit Server VM, 17.0.16+8-Ubuntu-0ubuntu124.04.1
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 2 iterations, 10 s each
+[info] # Measurement: 1 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.lexer.benchmark.lexer.LexerBenchmarkGenerated.lex_ZipperMem
+[info] # Parameters: (file = generated_code_033327chars.amy)
+[info] # Run progress: 78.48% complete, ETA 00:08:35
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 8302.732 us/op
+[info] # Warmup Iteration   2: 7331.899 us/op
+[info] Iteration   1: 7815.339 us/op
+[info] Result "ch.epfl.lexer.benchmark.lexer.LexerBenchmarkGenerated.lex_ZipperMem":
+[info]   7815.339 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.16, OpenJDK 64-Bit Server VM, 17.0.16+8-Ubuntu-0ubuntu124.04.1
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 2 iterations, 10 s each
+[info] # Measurement: 1 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.lexer.benchmark.lexer.LexerBenchmarkGenerated.lex_ZipperMem
+[info] # Parameters: (file = generated_code_033856chars.amy)
+[info] # Run progress: 79.75% complete, ETA 00:08:04
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 8837.777 us/op
+[info] # Warmup Iteration   2: 8450.132 us/op
+[info] Iteration   1: 8112.422 us/op
+[info] Result "ch.epfl.lexer.benchmark.lexer.LexerBenchmarkGenerated.lex_ZipperMem":
+[info]   8112.422 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.16, OpenJDK 64-Bit Server VM, 17.0.16+8-Ubuntu-0ubuntu124.04.1
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 2 iterations, 10 s each
+[info] # Measurement: 1 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.lexer.benchmark.lexer.LexerBenchmarkGenerated.lex_ZipperMem
+[info] # Parameters: (file = generated_code_034385chars.amy)
+[info] # Run progress: 81.01% complete, ETA 00:07:34
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 8953.108 us/op
+[info] # Warmup Iteration   2: 7643.769 us/op
+[info] Iteration   1: 7764.289 us/op
+[info] Result "ch.epfl.lexer.benchmark.lexer.LexerBenchmarkGenerated.lex_ZipperMem":
+[info]   7764.289 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.16, OpenJDK 64-Bit Server VM, 17.0.16+8-Ubuntu-0ubuntu124.04.1
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 2 iterations, 10 s each
+[info] # Measurement: 1 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.lexer.benchmark.lexer.LexerBenchmarkGenerated.lex_ZipperMem
+[info] # Parameters: (file = generated_code_034914chars.amy)
+[info] # Run progress: 82.28% complete, ETA 00:07:04
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 9809.663 us/op
+[info] # Warmup Iteration   2: 8193.143 us/op
+[info] Iteration   1: 8196.595 us/op
+[info] Result "ch.epfl.lexer.benchmark.lexer.LexerBenchmarkGenerated.lex_ZipperMem":
+[info]   8196.595 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.16, OpenJDK 64-Bit Server VM, 17.0.16+8-Ubuntu-0ubuntu124.04.1
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 2 iterations, 10 s each
+[info] # Measurement: 1 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.lexer.benchmark.lexer.LexerBenchmarkGenerated.lex_ZipperMem
+[info] # Parameters: (file = generated_code_035443chars.amy)
+[info] # Run progress: 83.54% complete, ETA 00:06:33
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 8653.516 us/op
+[info] # Warmup Iteration   2: 7713.946 us/op
+[info] Iteration   1: 7726.845 us/op
+[info] Result "ch.epfl.lexer.benchmark.lexer.LexerBenchmarkGenerated.lex_ZipperMem":
+[info]   7726.845 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.16, OpenJDK 64-Bit Server VM, 17.0.16+8-Ubuntu-0ubuntu124.04.1
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 2 iterations, 10 s each
+[info] # Measurement: 1 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.lexer.benchmark.lexer.LexerBenchmarkGenerated.lex_ZipperMem
+[info] # Parameters: (file = generated_code_035972chars.amy)
+[info] # Run progress: 84.81% complete, ETA 00:06:03
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 9257.569 us/op
+[info] # Warmup Iteration   2: 8678.920 us/op
+[info] Iteration   1: 8258.078 us/op
+[info] Result "ch.epfl.lexer.benchmark.lexer.LexerBenchmarkGenerated.lex_ZipperMem":
+[info]   8258.078 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.16, OpenJDK 64-Bit Server VM, 17.0.16+8-Ubuntu-0ubuntu124.04.1
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 2 iterations, 10 s each
+[info] # Measurement: 1 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.lexer.benchmark.lexer.LexerBenchmarkGenerated.lex_ZipperMem
+[info] # Parameters: (file = generated_code_036501chars.amy)
+[info] # Run progress: 86.08% complete, ETA 00:05:33
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 9815.585 us/op
+[info] # Warmup Iteration   2: 9216.081 us/op
+[info] Iteration   1: 8540.057 us/op
+[info] Result "ch.epfl.lexer.benchmark.lexer.LexerBenchmarkGenerated.lex_ZipperMem":
+[info]   8540.057 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.16, OpenJDK 64-Bit Server VM, 17.0.16+8-Ubuntu-0ubuntu124.04.1
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 2 iterations, 10 s each
+[info] # Measurement: 1 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.lexer.benchmark.lexer.LexerBenchmarkGenerated.lex_ZipperMem
+[info] # Parameters: (file = generated_code_037030chars.amy)
+[info] # Run progress: 87.34% complete, ETA 00:05:03
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 10063.356 us/op
+[info] # Warmup Iteration   2: 8950.760 us/op
+[info] Iteration   1: 8899.444 us/op
+[info] Result "ch.epfl.lexer.benchmark.lexer.LexerBenchmarkGenerated.lex_ZipperMem":
+[info]   8899.444 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.16, OpenJDK 64-Bit Server VM, 17.0.16+8-Ubuntu-0ubuntu124.04.1
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 2 iterations, 10 s each
+[info] # Measurement: 1 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.lexer.benchmark.lexer.LexerBenchmarkGenerated.lex_ZipperMem
+[info] # Parameters: (file = generated_code_037559chars.amy)
+[info] # Run progress: 88.61% complete, ETA 00:04:32
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 9771.240 us/op
+[info] # Warmup Iteration   2: 8168.561 us/op
+[info] Iteration   1: 8286.616 us/op
+[info] Result "ch.epfl.lexer.benchmark.lexer.LexerBenchmarkGenerated.lex_ZipperMem":
+[info]   8286.616 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.16, OpenJDK 64-Bit Server VM, 17.0.16+8-Ubuntu-0ubuntu124.04.1
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 2 iterations, 10 s each
+[info] # Measurement: 1 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.lexer.benchmark.lexer.LexerBenchmarkGenerated.lex_ZipperMem
+[info] # Parameters: (file = generated_code_038088chars.amy)
+[info] # Run progress: 89.87% complete, ETA 00:04:02
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 10311.316 us/op
+[info] # Warmup Iteration   2: 9230.393 us/op
+[info] Iteration   1: 9161.028 us/op
+[info] Result "ch.epfl.lexer.benchmark.lexer.LexerBenchmarkGenerated.lex_ZipperMem":
+[info]   9161.028 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.16, OpenJDK 64-Bit Server VM, 17.0.16+8-Ubuntu-0ubuntu124.04.1
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 2 iterations, 10 s each
+[info] # Measurement: 1 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.lexer.benchmark.lexer.LexerBenchmarkGenerated.lex_ZipperMem
+[info] # Parameters: (file = generated_code_038617chars.amy)
+[info] # Run progress: 91.14% complete, ETA 00:03:32
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 10533.742 us/op
+[info] # Warmup Iteration   2: 9613.874 us/op
+[info] Iteration   1: 9846.520 us/op
+[info] Result "ch.epfl.lexer.benchmark.lexer.LexerBenchmarkGenerated.lex_ZipperMem":
+[info]   9846.520 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.16, OpenJDK 64-Bit Server VM, 17.0.16+8-Ubuntu-0ubuntu124.04.1
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 2 iterations, 10 s each
+[info] # Measurement: 1 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.lexer.benchmark.lexer.LexerBenchmarkGenerated.lex_ZipperMem
+[info] # Parameters: (file = generated_code_039146chars.amy)
+[info] # Run progress: 92.41% complete, ETA 00:03:01
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 11622.692 us/op
+[info] # Warmup Iteration   2: 9895.739 us/op
+[info] Iteration   1: 9727.989 us/op
+[info] Result "ch.epfl.lexer.benchmark.lexer.LexerBenchmarkGenerated.lex_ZipperMem":
+[info]   9727.989 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.16, OpenJDK 64-Bit Server VM, 17.0.16+8-Ubuntu-0ubuntu124.04.1
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 2 iterations, 10 s each
+[info] # Measurement: 1 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.lexer.benchmark.lexer.LexerBenchmarkGenerated.lex_ZipperMem
+[info] # Parameters: (file = generated_code_039675chars.amy)
+[info] # Run progress: 93.67% complete, ETA 00:02:31
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 10476.801 us/op
+[info] # Warmup Iteration   2: 9609.701 us/op
+[info] Iteration   1: 9202.597 us/op
+[info] Result "ch.epfl.lexer.benchmark.lexer.LexerBenchmarkGenerated.lex_ZipperMem":
+[info]   9202.597 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.16, OpenJDK 64-Bit Server VM, 17.0.16+8-Ubuntu-0ubuntu124.04.1
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 2 iterations, 10 s each
+[info] # Measurement: 1 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.lexer.benchmark.lexer.LexerBenchmarkGenerated.lex_ZipperMem
+[info] # Parameters: (file = generated_code_040204chars.amy)
+[info] # Run progress: 94.94% complete, ETA 00:02:01
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 11093.383 us/op
+[info] # Warmup Iteration   2: 9967.154 us/op
+[info] Iteration   1: 9707.130 us/op
+[info] Result "ch.epfl.lexer.benchmark.lexer.LexerBenchmarkGenerated.lex_ZipperMem":
+[info]   9707.130 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.16, OpenJDK 64-Bit Server VM, 17.0.16+8-Ubuntu-0ubuntu124.04.1
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 2 iterations, 10 s each
+[info] # Measurement: 1 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.lexer.benchmark.lexer.LexerBenchmarkGenerated.lex_ZipperMem
+[info] # Parameters: (file = generated_code_040733chars.amy)
+[info] # Run progress: 96.20% complete, ETA 00:01:30
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 10403.966 us/op
+[info] # Warmup Iteration   2: 9473.104 us/op
+[info] Iteration   1: 9311.698 us/op
+[info] Result "ch.epfl.lexer.benchmark.lexer.LexerBenchmarkGenerated.lex_ZipperMem":
+[info]   9311.698 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.16, OpenJDK 64-Bit Server VM, 17.0.16+8-Ubuntu-0ubuntu124.04.1
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 2 iterations, 10 s each
+[info] # Measurement: 1 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.lexer.benchmark.lexer.LexerBenchmarkGenerated.lex_ZipperMem
+[info] # Parameters: (file = generated_code_041262chars.amy)
+[info] # Run progress: 97.47% complete, ETA 00:01:00
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 10027.431 us/op
+[info] # Warmup Iteration   2: 9018.160 us/op
+[info] Iteration   1: 8898.315 us/op
+[info] Result "ch.epfl.lexer.benchmark.lexer.LexerBenchmarkGenerated.lex_ZipperMem":
+[info]   8898.315 us/op
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.16, OpenJDK 64-Bit Server VM, 17.0.16+8-Ubuntu-0ubuntu124.04.1
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 2 iterations, 10 s each
+[info] # Measurement: 1 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.lexer.benchmark.lexer.LexerBenchmarkGenerated.lex_ZipperMem
+[info] # Parameters: (file = generated_code_041791chars.amy)
+[info] # Run progress: 98.73% complete, ETA 00:00:30
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 11219.361 us/op
+[info] # Warmup Iteration   2: 9919.601 us/op
+[info] Iteration   1: 9925.153 us/op
+[info] Result "ch.epfl.lexer.benchmark.lexer.LexerBenchmarkGenerated.lex_ZipperMem":
+[info]   9925.153 us/op
+[info] # Run complete. Total time: 00:39:54
+[info] REMEMBER: The numbers below are just data. To gain reusable insights, you need to follow up on
+[info] why the numbers are the way they are. Use profilers (see -prof, -lprof), design factorial
+[info] experiments, perform baseline and negative tests that provide experimental control, make sure
+[info] the benchmarking environment is safe on JVM/OS/HW level, ask for reviews from the domain experts.
+[info] Do not assume the numbers tell you what you want them to tell.
+[info] Benchmark                                                      (file)  Mode  Cnt     Score   Error  Units
+[info] LexerBenchmarkGenerated.lex_ZipperMem  generated_code_000529chars.amy  avgt        229.172          us/op
+[info] LexerBenchmarkGenerated.lex_ZipperMem  generated_code_001058chars.amy  avgt        359.749          us/op
+[info] LexerBenchmarkGenerated.lex_ZipperMem  generated_code_001587chars.amy  avgt        497.430          us/op
+[info] LexerBenchmarkGenerated.lex_ZipperMem  generated_code_002116chars.amy  avgt        624.300          us/op
+[info] LexerBenchmarkGenerated.lex_ZipperMem  generated_code_002645chars.amy  avgt        771.505          us/op
+[info] LexerBenchmarkGenerated.lex_ZipperMem  generated_code_003174chars.amy  avgt        908.733          us/op
+[info] LexerBenchmarkGenerated.lex_ZipperMem  generated_code_003703chars.amy  avgt       1028.404          us/op
+[info] LexerBenchmarkGenerated.lex_ZipperMem  generated_code_004232chars.amy  avgt       1071.044          us/op
+[info] LexerBenchmarkGenerated.lex_ZipperMem  generated_code_004761chars.amy  avgt       1213.911          us/op
+[info] LexerBenchmarkGenerated.lex_ZipperMem  generated_code_005290chars.amy  avgt       1356.285          us/op
+[info] LexerBenchmarkGenerated.lex_ZipperMem  generated_code_005819chars.amy  avgt       1460.622          us/op
+[info] LexerBenchmarkGenerated.lex_ZipperMem  generated_code_006348chars.amy  avgt       1628.048          us/op
+[info] LexerBenchmarkGenerated.lex_ZipperMem  generated_code_006877chars.amy  avgt       1638.165          us/op
+[info] LexerBenchmarkGenerated.lex_ZipperMem  generated_code_007406chars.amy  avgt       1759.646          us/op
+[info] LexerBenchmarkGenerated.lex_ZipperMem  generated_code_007935chars.amy  avgt       1984.376          us/op
+[info] LexerBenchmarkGenerated.lex_ZipperMem  generated_code_008464chars.amy  avgt       2171.878          us/op
+[info] LexerBenchmarkGenerated.lex_ZipperMem  generated_code_008993chars.amy  avgt       2121.310          us/op
+[info] LexerBenchmarkGenerated.lex_ZipperMem  generated_code_009522chars.amy  avgt       2282.631          us/op
+[info] LexerBenchmarkGenerated.lex_ZipperMem  generated_code_010051chars.amy  avgt       2459.168          us/op
+[info] LexerBenchmarkGenerated.lex_ZipperMem  generated_code_010580chars.amy  avgt       2474.291          us/op
+[info] LexerBenchmarkGenerated.lex_ZipperMem  generated_code_011109chars.amy  avgt       2665.243          us/op
+[info] LexerBenchmarkGenerated.lex_ZipperMem  generated_code_011638chars.amy  avgt       2694.551          us/op
+[info] LexerBenchmarkGenerated.lex_ZipperMem  generated_code_012167chars.amy  avgt       3144.527          us/op
+[info] LexerBenchmarkGenerated.lex_ZipperMem  generated_code_012696chars.amy  avgt       2981.626          us/op
+[info] LexerBenchmarkGenerated.lex_ZipperMem  generated_code_013225chars.amy  avgt       3122.796          us/op
+[info] LexerBenchmarkGenerated.lex_ZipperMem  generated_code_013754chars.amy  avgt       3079.086          us/op
+[info] LexerBenchmarkGenerated.lex_ZipperMem  generated_code_014283chars.amy  avgt       3148.243          us/op
+[info] LexerBenchmarkGenerated.lex_ZipperMem  generated_code_014812chars.amy  avgt       3489.307          us/op
+[info] LexerBenchmarkGenerated.lex_ZipperMem  generated_code_015341chars.amy  avgt       3681.452          us/op
+[info] LexerBenchmarkGenerated.lex_ZipperMem  generated_code_015870chars.amy  avgt       3642.238          us/op
+[info] LexerBenchmarkGenerated.lex_ZipperMem  generated_code_016399chars.amy  avgt       3972.733          us/op
+[info] LexerBenchmarkGenerated.lex_ZipperMem  generated_code_016928chars.amy  avgt       4031.079          us/op
+[info] LexerBenchmarkGenerated.lex_ZipperMem  generated_code_017457chars.amy  avgt       4435.943          us/op
+[info] LexerBenchmarkGenerated.lex_ZipperMem  generated_code_017986chars.amy  avgt       4101.450          us/op
+[info] LexerBenchmarkGenerated.lex_ZipperMem  generated_code_018515chars.amy  avgt       4249.091          us/op
+[info] LexerBenchmarkGenerated.lex_ZipperMem  generated_code_019044chars.amy  avgt       4707.592          us/op
+[info] LexerBenchmarkGenerated.lex_ZipperMem  generated_code_019573chars.amy  avgt       4971.180          us/op
+[info] LexerBenchmarkGenerated.lex_ZipperMem  generated_code_020102chars.amy  avgt       4754.180          us/op
+[info] LexerBenchmarkGenerated.lex_ZipperMem  generated_code_020631chars.amy  avgt       4849.262          us/op
+[info] LexerBenchmarkGenerated.lex_ZipperMem  generated_code_021160chars.amy  avgt       5075.604          us/op
+[info] LexerBenchmarkGenerated.lex_ZipperMem  generated_code_021689chars.amy  avgt       4871.333          us/op
+[info] LexerBenchmarkGenerated.lex_ZipperMem  generated_code_022218chars.amy  avgt       5111.368          us/op
+[info] LexerBenchmarkGenerated.lex_ZipperMem  generated_code_022747chars.amy  avgt       5512.982          us/op
+[info] LexerBenchmarkGenerated.lex_ZipperMem  generated_code_023276chars.amy  avgt       5118.061          us/op
+[info] LexerBenchmarkGenerated.lex_ZipperMem  generated_code_023805chars.amy  avgt       5613.616          us/op
+[info] LexerBenchmarkGenerated.lex_ZipperMem  generated_code_024334chars.amy  avgt       5476.136          us/op
+[info] LexerBenchmarkGenerated.lex_ZipperMem  generated_code_024863chars.amy  avgt       6149.503          us/op
+[info] LexerBenchmarkGenerated.lex_ZipperMem  generated_code_025392chars.amy  avgt       5576.969          us/op
+[info] LexerBenchmarkGenerated.lex_ZipperMem  generated_code_025921chars.amy  avgt       5768.746          us/op
+[info] LexerBenchmarkGenerated.lex_ZipperMem  generated_code_026450chars.amy  avgt       6664.806          us/op
+[info] LexerBenchmarkGenerated.lex_ZipperMem  generated_code_026979chars.amy  avgt       6268.736          us/op
+[info] LexerBenchmarkGenerated.lex_ZipperMem  generated_code_027508chars.amy  avgt       6692.722          us/op
+[info] LexerBenchmarkGenerated.lex_ZipperMem  generated_code_028037chars.amy  avgt       6154.057          us/op
+[info] LexerBenchmarkGenerated.lex_ZipperMem  generated_code_028566chars.amy  avgt       6857.251          us/op
+[info] LexerBenchmarkGenerated.lex_ZipperMem  generated_code_029095chars.amy  avgt       7196.981          us/op
+[info] LexerBenchmarkGenerated.lex_ZipperMem  generated_code_029624chars.amy  avgt       6611.888          us/op
+[info] LexerBenchmarkGenerated.lex_ZipperMem  generated_code_030153chars.amy  avgt       6691.450          us/op
+[info] LexerBenchmarkGenerated.lex_ZipperMem  generated_code_030682chars.amy  avgt       7226.985          us/op
+[info] LexerBenchmarkGenerated.lex_ZipperMem  generated_code_031211chars.amy  avgt       7645.732          us/op
+[info] LexerBenchmarkGenerated.lex_ZipperMem  generated_code_031740chars.amy  avgt       7393.471          us/op
+[info] LexerBenchmarkGenerated.lex_ZipperMem  generated_code_032269chars.amy  avgt       7150.773          us/op
+[info] LexerBenchmarkGenerated.lex_ZipperMem  generated_code_032798chars.amy  avgt       7507.850          us/op
+[info] LexerBenchmarkGenerated.lex_ZipperMem  generated_code_033327chars.amy  avgt       7815.339          us/op
+[info] LexerBenchmarkGenerated.lex_ZipperMem  generated_code_033856chars.amy  avgt       8112.422          us/op
+[info] LexerBenchmarkGenerated.lex_ZipperMem  generated_code_034385chars.amy  avgt       7764.289          us/op
+[info] LexerBenchmarkGenerated.lex_ZipperMem  generated_code_034914chars.amy  avgt       8196.595          us/op
+[info] LexerBenchmarkGenerated.lex_ZipperMem  generated_code_035443chars.amy  avgt       7726.845          us/op
+[info] LexerBenchmarkGenerated.lex_ZipperMem  generated_code_035972chars.amy  avgt       8258.078          us/op
+[info] LexerBenchmarkGenerated.lex_ZipperMem  generated_code_036501chars.amy  avgt       8540.057          us/op
+[info] LexerBenchmarkGenerated.lex_ZipperMem  generated_code_037030chars.amy  avgt       8899.444          us/op
+[info] LexerBenchmarkGenerated.lex_ZipperMem  generated_code_037559chars.amy  avgt       8286.616          us/op
+[info] LexerBenchmarkGenerated.lex_ZipperMem  generated_code_038088chars.amy  avgt       9161.028          us/op
+[info] LexerBenchmarkGenerated.lex_ZipperMem  generated_code_038617chars.amy  avgt       9846.520          us/op
+[info] LexerBenchmarkGenerated.lex_ZipperMem  generated_code_039146chars.amy  avgt       9727.989          us/op
+[info] LexerBenchmarkGenerated.lex_ZipperMem  generated_code_039675chars.amy  avgt       9202.597          us/op
+[info] LexerBenchmarkGenerated.lex_ZipperMem  generated_code_040204chars.amy  avgt       9707.130          us/op
+[info] LexerBenchmarkGenerated.lex_ZipperMem  generated_code_040733chars.amy  avgt       9311.698          us/op
+[info] LexerBenchmarkGenerated.lex_ZipperMem  generated_code_041262chars.amy  avgt       8898.315          us/op
+[info] LexerBenchmarkGenerated.lex_ZipperMem  generated_code_041791chars.amy  avgt       9925.153          us/op
+[success] Total time: 2409 s (40:09), completed Sep 3, 2025, 2:47:18 PM
