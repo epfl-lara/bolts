@@ -265,10 +265,11 @@ object VerifiedLexer {
           assert(lexRec(rules, treated ++ token.characters)._1 == (acc.append(token)))
           assert(lexRec(rules, treated ++ token.characters) == (acc.append(token), Vector.empty[C]))
           assert(lexRec(rules, treated ++ token.characters) == (acc.append(token), Vector.empty[C]))
+          @ghost val newTreated = treated ++ token.characters
           lexTailRec(
             rules,
             totalInput,
-            treated ++ token.characters,
+            newTreated,
             suffix,
             acc.append(token)
           )
@@ -322,10 +323,11 @@ object VerifiedLexer {
       unfold(lex(rules, input))
       maxPrefixZipperVectorMem(rules, input) match {
         case Some((token, suffix)) => {
+          @ghost val newTreated = treated ++ token.characters
           lexTailRecMem(
             rules,
             totalInput,
-            treated ++ token.characters,
+            newTreated,
             suffix,
             acc.append(token)
           )
