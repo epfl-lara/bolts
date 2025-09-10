@@ -4,6 +4,29 @@ from io import BytesIO
 import tokenize
 import pyperf
 
+#!/usr/bin/env python3
+import pyperf
+
+
+paths = [
+    "src/main/scala/ch/epfl/example/res/python/Micro_1chars.py",
+    "src/main/scala/ch/epfl/example/res/python/AsyncDemo_426chars.py",
+    "src/main/scala/ch/epfl/example/res/python/BigString_113chars.py",
+    "src/main/scala/ch/epfl/example/res/python/CommandMatcher_660chars.py",
+    "src/main/scala/ch/epfl/example/res/python/EventSim20x_42063chars.py",
+    "src/main/scala/ch/epfl/example/res/python/EventSim_2002chars.py",
+    "src/main/scala/ch/epfl/example/res/python/Factorial_168chars.py",
+    "src/main/scala/ch/epfl/example/res/python/FizzBuzz_245chars.py",
+    "src/main/scala/ch/epfl/example/res/python/MultiLineString_323chars.py",
+    "src/main/scala/ch/epfl/example/res/python/ParseNumbers_708chars.py",
+    "src/main/scala/ch/epfl/example/res/python/Pipeline_413chars.py",
+    "src/main/scala/ch/epfl/example/res/python/PrimeSieve_458chars.py",
+    "src/main/scala/ch/epfl/example/res/python/Simple_26chars.py",
+    "src/main/scala/ch/epfl/example/res/python/TimedFib_679chars.py",
+    "src/main/scala/ch/epfl/example/res/python/TinyPlus_164chars.py",
+    "src/main/scala/ch/epfl/example/res/python/Vector2D_802chars.py",
+    "src/main/scala/ch/epfl/example/res/python/WordStats_346chars.py",
+]
 
 def _load_bytes(path: str) -> bytes:
     with open(path, "rb") as f:
@@ -23,17 +46,10 @@ def _make_bench(data: bytes):
     return _run
 
 
-def main() -> None:
-    runner = pyperf.Runner()
-    # IMPORTANT: add *our* args to pyperf's parser, then parse
-    runner.argparser.add_argument("paths", nargs="+", help="Python files to tokenize")
-    args = runner.parse_args()
+runner = pyperf.Runner()
 
-    for path in args.paths:
-        data = _load_bytes(path)
-        name = f"tokenize:{os.path.basename(path)}"
-        runner.bench_func(name, _make_bench(data))
+for path in paths:
+    data = _load_bytes(path)
+    name = f"tokenize:{os.path.basename(path)}"
+    runner.bench_func(name, _make_bench(data))
 
-
-if __name__ == "__main__":
-    main()

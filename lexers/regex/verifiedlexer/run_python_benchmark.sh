@@ -1,0 +1,1 @@
+python3 src/main/scala/ch/epfl/benchmark/PythonLexerBenchmark.py -o cpython_lexer_bench_results.json    
