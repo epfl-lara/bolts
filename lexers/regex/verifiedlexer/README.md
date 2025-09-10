@@ -26,3 +26,13 @@ mutablemap
 Now the project is ready to run, both the main class and the benchmarks.
 
 If it does not work, please refer to [this manual]("https://epfl-lara.github.io/stainless/installation.html#usage-within-an-existing-project").
+
+## Run benchmarks
+
+### JSON Lexer Benchmark
+
+Run the following command in the sbt shell:
+
+```
+sbt "Jmh/run -i 4 -wi 3 -f1 -t1 ch.epfl.lexer.benchmark.lexer.JsonLexerBenchmark"
+```
