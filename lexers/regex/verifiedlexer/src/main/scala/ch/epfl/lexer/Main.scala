@@ -15,6 +15,7 @@ import ch.epfl.lexer.RegexBenchmark.testSimp
 
 import ch.epfl.lexer.example.ExampleAmyLexer.*
 import ch.epfl.lexer.example.ExamplePythonLexer.*
+import ch.epfl.lexer.example.ExampleJsonLexer.*
 import ch.epfl.lexer.VerifiedLexer.Lexer
 
 import ch.epfl.lexer.benchmark.RegexUtils._
@@ -22,17 +23,26 @@ import ch.epfl.lexer.benchmark.lexer.AmyLexerBenchmarkUtils
 
 
 import stainless.collection.List
+import ch.epfl.lexer.VerifiedRegexMatcher.matchZipperVector
+import ch.epfl.lexer.benchmark.lexer.JsonLexerBenchmarkUtils
 
 object Main {
   def main(args: Array[String]): Unit = {
-    // testAmyLexer()
-    testPythonLexer()
+    println(f"intRe.match(12) = ${matchZipperVector(JsonLexer.intRe, "12".toStainless)}")
+    println(f"intRe.match(\" \") = ${matchZipperVector(JsonLexer.wsCharRe, " ".toStainless)}")
+    testJsonLexer()
 
-    // tokenisePythonFileMem("src/main/scala/ch/epfl/example/res/python/Simple_26chars.py","src/main/scala/ch/epfl/example/res/python/Simple_26chars.py.tokens")
-    // tokenisePythonFileMem("src/main/scala/ch/epfl/example/res/python/Factorial_168chars.py","src/main/scala/ch/epfl/example/res/python/Factorial_168chars.py.tokens")
-    // tokenisePythonFileMem("src/main/scala/ch/epfl/example/res/python/BigString_113chars.py","src/main/scala/ch/epfl/example/res/python/BigString_113chars.py.tokens")
+    // val timeBefore = System.nanoTime()
+    // val tokens = tokeniseJsonFileMem("src/main/scala/ch/epfl/example/res/json/2420.json","src/main/scala/ch/epfl/example/res/json/2420.json.tokens")
+    // val timeAfter = System.nanoTime()
+    // println(f"Time taken for 2420.json: ${(timeAfter - timeBefore) / 1e6} ms")
+    // println(f"Tokens per second: ${tokens.size.toDouble / ((timeAfter - timeBefore) / 1e9)}")
 
-    tokenisePythonFileMem("src/main/scala/ch/epfl/example/res/python/EventSim20x_42063chars.py","src/main/scala/ch/epfl/example/res/python/EventSim20x_42063chars.py.tokens")
+    for i <- 1 to 12 do
+      val tokens1 = tokeniseJsonFileMem(s"src/main/scala/ch/epfl/example/res/json/82.json", s"src/main/scala/ch/epfl/example/res/json/82.tokens")
+
+    timeTokenizeJsonFileMem(s"src/main/scala/ch/epfl/example/res/json/242.json")
+
   }
 }
 
@@ -95,6 +105,36 @@ def tokenisePythonFileMem(filepath: String, destFilePath: String): Unit = {
   println("Done!")
 }
 
+def tokeniseJsonFileMem(filepath: String, destFilePath: String): Vector[Token[Char]] = {
+  val fileContent: String = scala.io.Source.fromFile(filepath).mkString
+  println("Lexing with memoization")
+  println(s"File content for file '$filepath':\n$fileContent")
+  val (tokens, suffix) = Lexer.lexMem(JsonLexer.rules, fileContent.toStainless)(using AmyLexerBenchmarkUtils.zipperCacheUp, AmyLexerBenchmarkUtils.zipperCacheDown)
+  println(f"Suffix tokens for file '$filepath':\n${suffix}")
+  assert(suffix.isEmpty)
+  val tokenStrings = tokens.map(t => t.asString())
+  val tokenString = tokenStrings.toScala.mkString("\n")
+  // Write to file
+  val writer = new java.io.PrintWriter(new java.io.File(destFilePath))
+  writer.write(tokenString)
+  writer.close()
+  println("Done!")
+  tokens
+}
+
+def timeTokenizeJsonFileMem(filepath: String): Unit = {
+  val fileContent: String = scala.io.Source.fromFile(filepath).mkString
+  val timeBefore = System.nanoTime()
+  val (tokens, suffix) = Lexer.lexMem(JsonLexer.rules, fileContent.toStainless)(using JsonLexerBenchmarkUtils.zipperCacheUp, JsonLexerBenchmarkUtils.zipperCacheDown)
+  val timeAfter = System.nanoTime()
+  assert(suffix.isEmpty)
+  val duration = timeAfter - timeBefore
+  println(s"Time taken to lex JSON file with memoization: ${duration / 1e6} ms")
+  println(s"Number of tokens: ${tokens.size}")
+  println(s"Tokens per second: ${tokens.size.toDouble / (duration / 1e9)}")
+
+}
+
 def testAmyLexer(): Unit = {
   val s = "abstract case class def else extends if match object val error _ end"
   val (tokens, suffix) = Lexer.lex(AmyLexer.rules, s.toStainless)
@@ -106,6 +146,14 @@ def testPythonLexer(): Unit = {
   val s = "class def True False 12343.432 1"
   assert(Lexer.rulesInvariant(PythonLexer.rules))
   val (tokens, suffix) = Lexer.lex(PythonLexer.rules, s.toStainless)
+  println(s"Tokens for '$s': ${tokens.map(t => t.asString()).toScala.mkString(", ")}")
+  assert(suffix.isEmpty)
+}
+
+def testJsonLexer(): Unit = {
+  val s = "{\"key\": 12}"
+  assert(Lexer.rulesInvariant(JsonLexer.rules))
+  val (tokens, suffix) = Lexer.lex(JsonLexer.rules, s.toStainless)
   println(s"Tokens for '$s': ${tokens.map(t => t.asString()).toScala.mkString(", ")}")
   assert(suffix.isEmpty)
 }
