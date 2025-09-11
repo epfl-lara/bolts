@@ -41,7 +41,7 @@ object Main {
     for i <- 1 to 12 do
       val tokens1 = tokeniseJsonFileMem(s"src/main/scala/ch/epfl/example/res/json/82.json", s"src/main/scala/ch/epfl/example/res/json/82.tokens")
 
-    timeTokenizeJsonFileMem(s"src/main/scala/ch/epfl/example/res/json/242.json")
+    timeTokenizeJsonFileMem(s"src/main/scala/ch/epfl/example/res/json/2420.json")
 
   }
 }
