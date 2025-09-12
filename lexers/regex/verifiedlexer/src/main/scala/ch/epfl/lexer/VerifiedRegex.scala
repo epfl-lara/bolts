@@ -1692,7 +1692,6 @@ object ZipperRegex {
                       theoremZipperRegexEquiv(zTail, List(Context(tlExp)), generalisedConcat(tlExp), s)
                       assert(matchR(generalisedConcat(tlExp), s) == matchZipper(zTail, s))
 
-
                       check(matchR(r, s) == matchZipper(z, s))
                     
                   }
