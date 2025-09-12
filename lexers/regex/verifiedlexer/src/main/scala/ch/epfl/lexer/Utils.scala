@@ -522,6 +522,23 @@ object SetUtils {
 }
 
 object ListUtils {
+
+  @tailrec final def sizeTr[B](l: List[B], acc: BigInt = 0): BigInt = {
+    l match {
+      case Nil()        => acc
+      case Cons(hd, tl) => sizeTr(tl, acc + 1)
+    }
+  }
+
+  @tailrec final def splitAtIndexTr[B](l: List[B], i: BigInt, acc: List[B] = Nil[B]()): (List[B], List[B]) = {
+    require(i >= 0)
+    l match {
+      case Nil()        => (acc, Nil())
+      case Cons(hd, tl) => if (i == 0) then (acc, l) else splitAtIndexTr(tl, i - 1, acc ++ List(hd))
+    }
+  }
+
+  @ghost
   def isPrefix[B](prefix: List[B], l: List[B]): Boolean = {
     decreases(prefix)
     (prefix, l) match {
@@ -531,6 +548,7 @@ object ListUtils {
     }
   }.ensuring (res => if (res) l.size >= prefix.size else true)
 
+  @ghost
   def removeLast[B](l: List[B]): List[B] = {
     require(!l.isEmpty)
     decreases(l)
@@ -541,6 +559,7 @@ object ListUtils {
     res
   }.ensuring (res => res ++ List(l.last) == l)
 
+  @ghost
   def reverseList[B](l: List[B]): List[B] = {
     decreases(l)
     l match {
@@ -548,7 +567,7 @@ object ListUtils {
       case Nil()        => Nil()
     }
   }
-
+  @ghost
   def getSuffix[B](l: List[B], p: List[B]): List[B] = {
     require(l.size >= p.size)
     require(isPrefix(p, l))
@@ -559,6 +578,7 @@ object ListUtils {
     }
   }.ensuring (res => p ++ res == l)
 
+  @ghost
   def getIndex[B](l: List[B], e: B): BigInt = {
     require(l.contains(e))
     decreases(l)
@@ -569,6 +589,7 @@ object ListUtils {
     }
   }.ensuring (res => res >= 0)
 
+  @ghost
   def consecutiveSubseq[B](l1: List[B], lTot: List[B]): Boolean = {
     decreases(lTot)
     lTot match {
@@ -577,6 +598,7 @@ object ListUtils {
     }
   }
 
+  @ghost
   def consecutiveSubseqAtHead[B](l1: List[B], lTot: List[B]): Boolean = {
     decreases(lTot)
     (l1, lTot) match {
@@ -602,6 +624,63 @@ object ListUtils {
 
 
   // -------------------- LEMMAS --------------------
+
+  @ghost 
+  @inlineOnce
+  @opaque
+  def lemmaDropApply[B](l: List[B], i: BigInt): Unit = {
+    require(i >= 0 && i < l.size)
+    decreases(l)
+    l match {
+      case Nil()        => ()
+      case Cons(hd, tl) => if (i == 0) then () else lemmaDropApply(tl, i - 1)
+    }
+  }.ensuring(_ => l.drop(i).head == l(i))
+
+  @ghost
+  @inlineOnce
+  @opaque
+  def lemmaDropTail[B](l: List[B], i: BigInt): Unit = {
+    require(i >= 0 && i < l.size)
+    decreases(l)
+    l match {
+      case Nil()        => ()
+      case Cons(hd, tl) => if (i == 0) then () else lemmaDropTail(tl, i - 1)
+    }
+  }.ensuring(_ => l.drop(i).tail == l.drop(i + 1))
+
+  @ghost 
+  @inlineOnce
+  @opaque
+  def lemmaSplitAtIndexTrEqualsSplitAtIndex[B](l: List[B], i: BigInt, acc: List[B] = Nil[B]()): Unit = {
+    require(i >= 0)
+    decreases(l)
+    l match {
+      case Nil()        => () // (acc, Nil())
+      case Cons(hd, tl) => if (i == 0) then 
+                              // (acc, l) 
+                              ()
+                            else 
+                              // splitAtIndexTr(tl, i - 1, acc ++ List(hd))
+                              lemmaSplitAtIndexTrEqualsSplitAtIndex(tl, i - 1, acc ++ List(hd))
+                              assert(splitAtIndexTr(tl, i - 1, acc ++ List(hd)) == ((acc ++ List(hd)) ++ tl.splitAtIndex(i - 1)._1, tl.splitAtIndex(i - 1)._2))
+                              ListUtils.lemmaTwoListsConcatAssociativity(acc, List(hd), tl.splitAtIndex(i - 1)._1)
+                              assert(splitAtIndexTr(tl, i - 1, acc ++ List(hd)) == (acc ++ (List(hd) ++ tl.splitAtIndex(i - 1)._1), tl.splitAtIndex(i - 1)._2))
+    }
+   
+  }.ensuring(_ => splitAtIndexTr(l, i, acc) == (acc ++ l.splitAtIndex(i)._1, l.splitAtIndex(i)._2))
+  @ghost
+  @opaque
+  @inlineOnce
+  def lemmaSizeTrEqualsSize[B](l: List[B], acc: BigInt): Unit = {
+    decreases(l)
+    l match {
+      case Cons(hd, tl) => {
+        lemmaSizeTrEqualsSize(tl, acc + 1)
+      }
+      case Nil() => ()
+    }
+  }.ensuring(_ => sizeTr(l, acc) == l.size + acc)
 
   @ghost 
   @opaque
@@ -785,6 +864,21 @@ object ListUtils {
       case Nil()        => ()
     }
   }.ensuring (_ => p2.contains(s1.head))
+
+  @inlineOnce
+  @opaque
+  @ghost
+  def lemmaConcatSameAndSameSizesThenSameLists[B](l11: List[B], l12: List[B], l21: List[B], l22: List[B]): Unit = {
+    require(l11 ++ l12 == l21 ++ l22)
+    require(l11.size == l21.size)
+    decreases(l11)
+
+    lemmaConcatTwoListThenFirstIsPrefix(l11, l12)
+    lemmaConcatTwoListThenFirstIsPrefix(l21, l22)
+    lemmaIsPrefixSameLengthThenSameList(l11, l21, l11 ++ l12)
+    lemmaSamePrefixThenSameSuffix(l11, l12, l21, l22, l11 ++ l12)
+    
+  }.ensuring (_ => l11 == l21 && l12 == l22)
 
   @inlineOnce
   @opaque
