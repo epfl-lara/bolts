@@ -54,6 +54,15 @@ class JsonLexerBenchmark {
     assert(suffix.isEmpty)
   }
 
+  @Benchmark
+  @BenchmarkMode(Array(Mode.AverageTime))
+  @OutputTimeUnit(TimeUnit.MICROSECONDS)
+  def separability_pred(): Unit = {
+    val tokens = JsonLexerBenchmarkUtils.exampleFileTokens(file)
+    val separable =  Lexer.separableTokens(tokens, JsonLexer.rules)
+    assert(separable)
+  }
+
 }
 
 object JsonLexerBenchmarkUtils {
@@ -78,11 +87,18 @@ object JsonLexerBenchmarkUtils {
     (name -> lines)
   }).toMap
 
-  val exampleFilesJavaIo: Map[String, java.io.File] = exampleFileNames.map(name => {
-    val file = new java.io.File(s"src/main/scala/ch/epfl/example/res/json/$name")
-    (name -> file)
-  }).toMap
+  val exampleFileTokens: Map[String, Vector[(Token[Char])]] = exampleFileContents.map { case (name, content) =>
+    val (tokens, suffix) = Lexer.lexMem(JsonLexer.rules, content)(
+      using zipperCacheUpInternal,
+      zipperCacheDownInternal
+    )
+    assert(suffix.isEmpty)
+    (name -> tokens)
+  }
 
   val zipperCacheUp: MemoisationZipper.CacheUp[Char] = MemoisationZipper.emptyUp(ContextCharHashable)
   val zipperCacheDown: MemoisationZipper.CacheDown[Char] = MemoisationZipper.emptyDown(RegexContextCharHashable)
+
+  val zipperCacheUpInternal: MemoisationZipper.CacheUp[Char] = MemoisationZipper.emptyUp(ContextCharHashable)
+  val zipperCacheDownInternal: MemoisationZipper.CacheDown[Char] = MemoisationZipper.emptyDown(RegexContextCharHashable)
 }
