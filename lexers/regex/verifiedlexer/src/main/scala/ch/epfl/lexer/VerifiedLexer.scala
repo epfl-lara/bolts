@@ -154,6 +154,13 @@ object VerifiedLexer {
       rulesProduceEachTokenIndividually(rules, tokens) &&
       tokensListTwoByTwoPredicateSeparable(tokens, from = 0, rules)
 
+    def separableTokensMem[C](tokens: Vector[Token[C]], rules: List[Rule[C]])(using cacheUp: CacheUp[C], cacheDown: CacheDown[C]): Boolean = { 
+      !rules.isEmpty &&
+      rulesInvariant(rules) &&
+      rulesProduceEachTokenIndividually(rules, tokens) &&
+      tokensListTwoByTwoPredicateSeparableMem(tokens, from = 0, rules)
+    }.ensuring(res => res == separableTokens(tokens, rules))
+
     
 
     override def tokensListTwoByTwoPredicateSeparable[C](v: Vector[Token[C]], from: BigInt, rules: List[Rule[C]]): Boolean = {
@@ -190,6 +197,36 @@ object VerifiedLexer {
       res == tokensListTwoByTwoPredicateSeparableList(v.dropList(from), rules)
     })
 
+    def tokensListTwoByTwoPredicateSeparableMem[C](v: Vector[Token[C]], from: BigInt, rules: List[Rule[C]])(using cacheUp: CacheUp[C], cacheDown: CacheDown[C]): Boolean = {
+      require(from >= 0 && from <= v.size)
+      require(!rules.isEmpty)
+      require(rulesInvariant(rules))
+      require(rulesProduceEachTokenIndividually(rules, v))
+      
+      decreases(v.size - from)
+      if from < v.size - 1 then
+        ghostExpr({
+          ListUtils.lemmaDropApply(v.list, from)
+          ListUtils.lemmaDropApply(v.list, from + 1)
+          ListUtils.lemmaDropTail(v.list, from)
+          ListUtils.lemmaDropTail(v.list, from + 1)
+
+          assert(v.contains(v(from)))
+          assert(v.list.contains(v(from)))
+          assert(v.contains(v(from + 1)))
+          assert(v.list.contains(v(from + 1)))
+          lemmaRulesProduceEachTokenIndividuallyThenForAnyToken(rules, v.list, v(from))
+          lemmaRulesProduceEachTokenIndividuallyThenForAnyToken(rules, v.list, v(from + 1))
+          check(rulesProduceIndivualToken(rules, v(from)))
+          check(rulesProduceIndivualToken(rules, v(from + 1)))
+
+          check(v(from + 1).characters.size > 0)
+        })
+        separableTokensPredicate(v(from), v(from + 1), rules) && tokensListTwoByTwoPredicateSeparable(v, from + 1, rules)
+      else
+        true
+    }.ensuring(res => res == tokensListTwoByTwoPredicateSeparable(v, from, rules))
+
      override def separableTokensPredicate[C](t1: Token[C], t2: Token[C], rules: List[Rule[C]]): Boolean = {
       require(!rules.isEmpty)
       require(rulesInvariant(rules))
@@ -199,6 +236,16 @@ object VerifiedLexer {
 
       !VerifiedRegexMatcher.prefixMatchZipperVector(rulesRegex(rules), t1.characters ++ Vector.singleton(t2.characters(0)))
     }
+
+    def separableTokensPredicateMem[C](t1: Token[C], t2: Token[C], rules: List[Rule[C]])(using cacheUp: CacheUp[C], cacheDown: CacheDown[C]): Boolean = {
+      require(!rules.isEmpty)
+      require(rulesInvariant(rules))
+      require(rulesProduceIndivualToken(rules, t1))
+      require(rulesProduceIndivualToken(rules, t2))
+      require(!t2.characters.isEmpty)
+
+      !VerifiedRegexMatcher.prefixMatchZipperVectorMem(rulesRegex(rules), t1.characters ++ Vector.singleton(t2.characters(0)))
+    }.ensuring(res => res == separableTokensPredicate(t1, t2, rules))
 
      override def rulesInvariant[C](rules: List[Rule[C]]): Boolean =
       rulesValid(rules) && noDuplicateTag(rules, Nil())
