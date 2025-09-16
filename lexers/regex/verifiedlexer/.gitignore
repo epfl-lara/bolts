@@ -37,3 +37,5 @@ stainless/
 project/lib
 
 stainless-stack-trace.txt
+
+.venv
