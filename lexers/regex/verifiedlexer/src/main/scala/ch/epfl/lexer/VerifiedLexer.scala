@@ -55,9 +55,11 @@ object VerifiedLexer {
       rs.forall(ruleValid)
     }.ensuring(res => res == rulesValidInductive(rs))
 
-    override def rulesProduceIndivualToken[C](rs: List[Rule[C]], t: Token[C]): Boolean = {
+    @pure
+    override def rulesProduceIndividualToken[C](rs: List[Rule[C]], t: Token[C]): Boolean = {
       require(!rs.isEmpty)
       require(rulesInvariant(rs))
+      decreases(0)
       val (producedTs, suffix) = lex(rs, print(Vector.singleton(t)))
       producedTs.size == 1 && producedTs(0) == t && suffix.isEmpty
     }.ensuring(res => {
@@ -71,16 +73,16 @@ object VerifiedLexer {
       require(!rs.isEmpty)
       require(rulesInvariant(rs))
       ts match {
-        case Cons(hd, tl) => rulesProduceIndivualToken(rs, hd) && rulesProduceEachTokenIndividuallyList(rs, tl)
+        case Cons(hd, tl) => rulesProduceIndividualToken(rs, hd) && rulesProduceEachTokenIndividuallyList(rs, tl)
         case Nil()        => true
       }
-    }.ensuring(res => res == ts.forall(t => rulesProduceIndivualToken(rs, t)))
+    }.ensuring(res => res == ts.forall(t => rulesProduceIndividualToken(rs, t)))
 
      override def rulesProduceEachTokenIndividually[C](rs: List[Rule[C]], ts: Vector[Token[C]]): Boolean = {
       decreases(ts)
       require(!rs.isEmpty)
       require(rulesInvariant(rs))
-      ts.forall(t => rulesProduceIndivualToken(rs, t))
+      ts.forall(t => rulesProduceIndividualToken(rs, t))
     }
 
     def rulesRegex[C](rules: List[Rule[C]]): Regex[C] = {
@@ -114,8 +116,8 @@ object VerifiedLexer {
           ghostExpr({
             lemmaRulesProduceEachTokenIndividuallyThenForAnyToken(rules, l, hd)
             lemmaRulesProduceEachTokenIndividuallyThenForAnyToken(rules, l, next)
-            check(rulesProduceIndivualToken(rules, hd))
-            check(rulesProduceIndivualToken(rules, next))
+            check(rulesProduceIndividualToken(rules, hd))
+            check(rulesProduceIndividualToken(rules, next))
 
             check(next.characters.size > 0)
           })
@@ -146,8 +148,8 @@ object VerifiedLexer {
           assert(v.list.contains(v(from + 1)))
           lemmaRulesProduceEachTokenIndividuallyThenForAnyToken(rules, v.list, v(from))
           lemmaRulesProduceEachTokenIndividuallyThenForAnyToken(rules, v.list, v(from + 1))
-          check(rulesProduceIndivualToken(rules, v(from)))
-          check(rulesProduceIndivualToken(rules, v(from + 1)))
+          check(rulesProduceIndividualToken(rules, v(from)))
+          check(rulesProduceIndividualToken(rules, v(from + 1)))
 
           check(v(from + 1).characters.size > 0)
         })
@@ -192,8 +194,8 @@ object VerifiedLexer {
           assert(v.list.contains(v(from + 1)))
           lemmaRulesProduceEachTokenIndividuallyThenForAnyToken(rules, v.list, v(from))
           lemmaRulesProduceEachTokenIndividuallyThenForAnyToken(rules, v.list, v(from + 1))
-          check(rulesProduceIndivualToken(rules, v(from)))
-          check(rulesProduceIndivualToken(rules, v(from + 1)))
+          check(rulesProduceIndividualToken(rules, v(from)))
+          check(rulesProduceIndividualToken(rules, v(from + 1)))
 
           check(v(from + 1).characters.size > 0)
         })
@@ -226,8 +228,8 @@ object VerifiedLexer {
           assert(v.list.contains(v(from + 1)))
           lemmaRulesProduceEachTokenIndividuallyThenForAnyToken(rules, v.list, v(from))
           lemmaRulesProduceEachTokenIndividuallyThenForAnyToken(rules, v.list, v(from + 1))
-          check(rulesProduceIndivualToken(rules, v(from)))
-          check(rulesProduceIndivualToken(rules, v(from + 1)))
+          check(rulesProduceIndividualToken(rules, v(from)))
+          check(rulesProduceIndividualToken(rules, v(from + 1)))
 
           check(v(from + 1).characters.size > 0)
         })
@@ -239,8 +241,8 @@ object VerifiedLexer {
      override def separableTokensPredicate[C](t1: Token[C], t2: Token[C], rules: List[Rule[C]]): Boolean = {
       require(!rules.isEmpty)
       require(rulesInvariant(rules))
-      require(rulesProduceIndivualToken(rules, t1))
-      require(rulesProduceIndivualToken(rules, t2))
+      require(rulesProduceIndividualToken(rules, t1))
+      require(rulesProduceIndividualToken(rules, t2))
       require(!t2.characters.isEmpty)
 
       !VerifiedRegexMatcher.prefixMatchZipperVector(rulesRegex(rules), t1.characters ++ Vector.singleton(t2.characters(0)))
@@ -249,8 +251,8 @@ object VerifiedLexer {
     def separableTokensPredicateMem[C](t1: Token[C], t2: Token[C], rules: List[Rule[C]])(using cacheUp: CacheUp[C], cacheDown: CacheDown[C]): Boolean = {
       require(!rules.isEmpty)
       require(rulesInvariant(rules))
-      require(rulesProduceIndivualToken(rules, t1))
-      require(rulesProduceIndivualToken(rules, t2))
+      require(rulesProduceIndividualToken(rules, t1))
+      require(rulesProduceIndividualToken(rules, t2))
       require(!t2.characters.isEmpty)
 
       !VerifiedRegexMatcher.prefixMatchZipperVectorMem(rulesRegex(rules), t1.characters ++ Vector.singleton(t2.characters(0)))
@@ -306,7 +308,8 @@ object VerifiedLexer {
       (if (res._1.size > 0) res._2.size < input.size && !res._1.isEmpty
       else res._2 == input) &&
       (res._1.list == lexList(rules, input.list)._1 && 
-       res._2.list == lexList(rules, input.list)._2)
+       res._2.list == lexList(rules, input.list)._2) && 
+       rulesProduceEachTokenIndividually(rules, res._1)
     )
 
     def lexRec[C](
@@ -543,7 +546,7 @@ object VerifiedLexer {
       require(!rules.isEmpty)
       require(rulesInvariant(rules))
       require(rulesProduceEachTokenIndividuallyList(rules, l))
-      require(rulesProduceIndivualToken(rules, separatorToken))
+      require(rulesProduceIndividualToken(rules, separatorToken))
       require(separatorToken.rule.isSeparator)
       require(l.forall(!_.rule.isSeparator))
       require(sepAndNonSepRulesDisjointChars(rules, rules))
@@ -553,7 +556,7 @@ object VerifiedLexer {
         case Cons(hd, tl) => {
           ghostExpr({
             assert(l.contains(hd))
-            ListSpecs.forallContained(l, t => rulesProduceIndivualToken(rules, t), hd)
+            ListSpecs.forallContained(l, t => rulesProduceIndividualToken(rules, t), hd)
           })
           val suffix = printWithSeparatorTokenWhenNeededList(rules, tl, separatorToken)
           val maxPrefWithoutSep = maxPrefix(rules, hd.characters.list ++ suffix)
@@ -568,7 +571,7 @@ object VerifiedLexer {
                 assert(printList(List(hd)) == hd.characters.list)
                 ghostExpr(Vector.listEqImpliesEq(print(Vector.singleton(hd)), hd.characters))
                 assert(print(Vector.singleton(hd)) == hd.characters)
-                assert(rulesProduceIndivualToken(rules, hd))
+                assert(rulesProduceIndividualToken(rules, hd))
                 assert(!lex(rules, Vector.fromList(hd.characters.list))._1.isEmpty)
                 lemmaLexIsDefinedWithStrThenLexWithSuffixIsDefined(rules, hd.characters.list, suffix)
               })
@@ -586,7 +589,7 @@ object VerifiedLexer {
       require(!rules.isEmpty)
       require(rulesInvariant(rules))
       require(rulesProduceEachTokenIndividually(rules, v))
-      require(rulesProduceIndivualToken(rules, separatorToken))
+      require(rulesProduceIndividualToken(rules, separatorToken))
       require(separatorToken.rule.isSeparator)
       require(v.forall(!_.rule.isSeparator))
       require(sepAndNonSepRulesDisjointChars(rules, rules))
@@ -602,7 +605,7 @@ object VerifiedLexer {
           ListUtils.lemmaDropTail(v.list, from)
           assert(v.contains(v(from)))
           assert(v.list.contains(v(from)))
-          ListSpecs.forallContained(v.list, t => rulesProduceIndivualToken(rules, t), v(from))
+          ListSpecs.forallContained(v.list, t => rulesProduceIndividualToken(rules, t), v(from))
         })
         val suffix = printWithSeparatorTokenWhenNeeded(rules, v, separatorToken, from + 1)
         val maxPrefWithoutSep = maxPrefixZipperVector(rules, v(from).characters ++ suffix)
@@ -617,7 +620,7 @@ object VerifiedLexer {
               assert(printList(List(v(from))) == v(from).characters.list)
               ghostExpr(Vector.listEqImpliesEq(print(Vector.singleton(v(from))), v(from).characters))
               assert(print(Vector.singleton(v(from))) == v(from).characters)
-              assert(rulesProduceIndivualToken(rules, v(from)))
+              assert(rulesProduceIndividualToken(rules, v(from)))
               assert(!lex(rules, Vector.fromList(v(from).characters.list))._1.isEmpty)
               lemmaLexIsDefinedWithStrThenLexWithSuffixIsDefined(rules, v(from).characters.list, suffix.list)
             })
@@ -971,6 +974,17 @@ object VerifiedLexer {
         true
     }
 
+    @ghost override def lexThenRulesProduceEachTokenIndividually[C](rules: List[Rule[C]], input: List[C]): Boolean = {
+      if (!rules.isEmpty && rulesInvariant(rules)) then
+        val (tokens, suffix) = lex(rules, Vector.fromList(input))
+        assert(lex(rules, Vector.fromList(input)) == (tokens, suffix))
+        assert(rulesProduceEachTokenIndividually(rules, tokens))
+        lemmaLexThenRulesProducesEachTokenIndividually(rules, input, tokens.list)
+        rulesProduceEachTokenIndividually(rules, tokens)
+      else 
+        true
+    }
+
     // Invertability -------------------------------------------------------------------------------------------------------------------------
 
     @ghost
@@ -1012,7 +1026,7 @@ object VerifiedLexer {
           assert(printList(List(hd)) == hd.characters.list)
           ghostExpr(Vector.listEqImpliesEq(print(Vector.singleton(hd)), hd.characters))
           assert(print(Vector.singleton(hd)) == hd.characters)
-          assert(rulesProduceIndivualToken(rules, hd))
+          assert(rulesProduceIndividualToken(rules, hd))
           assert(!lex(rules, Vector.fromList(hd.characters.list))._1.isEmpty)
           // ----- end
           lemmaLexIsDefinedWithStrThenLexWithSuffixIsDefined(rules, hd.characters.list, suffix.list)
@@ -1118,7 +1132,7 @@ object VerifiedLexer {
       require(!rules.isEmpty)
       require(rulesInvariant(rules))
       require(rulesProduceEachTokenIndividually(rules, Vector.fromList(tokens)))
-      require(rulesProduceIndivualToken(rules, separatorToken))
+      require(rulesProduceIndividualToken(rules, separatorToken))
       require(separatorToken.rule.isSeparator)
       require(tokens.forall(!_.rule.isSeparator))
       require(sepAndNonSepRulesDisjointChars(rules, rules))
@@ -1150,12 +1164,12 @@ object VerifiedLexer {
           assert(print(Vector.singleton(hd)).list == printList(List(hd)))
           assert(printList(List(hd)) == hd.characters.list)
           assert(print(Vector.singleton(hd)) == hd.characters)
-          assert(rulesProduceIndivualToken(rules, hd))
+          assert(rulesProduceIndividualToken(rules, hd))
           assert(!lex(rules, Vector.fromList(hd.characters.list))._1.isEmpty)
           // ----- end
 
           check(hd.characters == hd.originalCharacters)
-          ListSpecs.forallContained(tokens, t => rulesProduceIndivualToken(rules, t), hd)
+          ListSpecs.forallContained(tokens, t => rulesProduceIndividualToken(rules, t), hd)
           Vector.listEqImpliesEq(hd.characters, hd.originalCharacters)
           assert(maxPrefixZipperVector(rules, hd.originalCharacters).isDefined)
 
@@ -1181,17 +1195,17 @@ object VerifiedLexer {
             }
             val nextToken = tl.head
             lemmaRulesProduceEachTokenIndividuallyThenForAnyToken(rules, tokens, nextToken)
-            check(rulesProduceIndivualToken(rules, nextToken))
+            check(rulesProduceIndividualToken(rules, nextToken))
 
             Vector.listEqImpliesEq(separatorToken.characters, separatorToken.originalCharacters)
             Vector.listEqImpliesEq(separatorToken.characters, Vector.fromList(separatorToken.characters.list))
             ghostExpr(unfold(print(Vector.singleton(separatorToken))))
-            unfold(rulesProduceIndivualToken(rules, separatorToken))
+            unfold(rulesProduceIndividualToken(rules, separatorToken))
             Vector.listEqImpliesEq(print(Vector.singleton(separatorToken)), separatorToken.characters)
             // assert(print(Vector.singleton(separatorToken)).list == printList(List(separatorToken)))
             // assert(printList(List(separatorToken)) == separatorToken.characters.list)
             // assert(print(Vector.singleton(separatorToken)) == separatorToken.characters)
-            // assert(rulesProduceIndivualToken(rules, separatorToken))
+            // assert(rulesProduceIndividualToken(rules, separatorToken))
             // assert(!lex(rules, Vector.fromList(separatorToken.characters.list))._1.isEmpty)
             // assert(maxPrefixZipperVector(rules, separatorToken.originalCharacters).isDefined)
             // check(maxPrefix(rules, separatorToken.originalCharacters.list).isDefined)
@@ -1212,12 +1226,12 @@ object VerifiedLexer {
             Vector.listEqImpliesEq(nextToken.characters, Vector.fromList(nextToken.characters.list))
             Vector.listEqImpliesEq(print(Vector.singleton(nextToken)), nextToken.characters)
             unfold(print(Vector.singleton(nextToken)))
-            unfold(rulesProduceIndivualToken(rules, nextToken))
-            ListSpecs.forallContained(tokens, (t: Token[C]) => rulesProduceIndivualToken(rules, t), nextToken)
+            unfold(rulesProduceIndividualToken(rules, nextToken))
+            ListSpecs.forallContained(tokens, (t: Token[C]) => rulesProduceIndividualToken(rules, t), nextToken)
             // assert(print(Vector.singleton(nextToken)).list == printList(List(nextToken)))
             // assert(printList(List(nextToken)) == nextToken.characters.list)
             // assert(print(Vector.singleton(nextToken)) == nextToken.characters)
-            // assert(rulesProduceIndivualToken(rules, nextToken))
+            // assert(rulesProduceIndividualToken(rules, nextToken))
             // assert(!lex(rules, Vector.fromList(nextToken.characters.list))._1.isEmpty)
             // check(maxPrefixZipperVector(rules, nextToken.characters).isDefined)
             // assert(maxPrefix(rules, nextToken.characters.list).isDefined)
@@ -1261,7 +1275,7 @@ object VerifiedLexer {
           rulesInvariant(rules) && 
           rulesProduceEachTokenIndividually(rules, Vector.fromList(tokens)) &&
           sepAndNonSepRulesDisjointChars(rules, rules) && 
-          rulesProduceIndivualToken(rules, separatorToken) &&
+          rulesProduceIndividualToken(rules, separatorToken) &&
           tokens.forall(t => !t.rule.isSeparator) &&
           separatorToken.rule.isSeparator
           ) 
@@ -1279,7 +1293,7 @@ object VerifiedLexer {
       require(!rules.isEmpty)
       require(rulesInvariant(rules))
       require(rulesProduceEachTokenIndividually(rules, Vector.fromList(tokens)))
-      require(rulesProduceIndivualToken(rules, separatorToken))
+      require(rulesProduceIndividualToken(rules, separatorToken))
       require(separatorToken.rule.isSeparator)
       require(tokens.forall(!_.rule.isSeparator))
       require(sepAndNonSepRulesDisjointChars(rules, rules))
@@ -1295,7 +1309,7 @@ object VerifiedLexer {
           assert(print(Vector.singleton(hd)).list == printList(List(hd)))
           assert(printList(List(hd)) == hd.characters.list)
           assert(print(Vector.singleton(hd)) == hd.characters)
-          assert(rulesProduceIndivualToken(rules, hd))
+          assert(rulesProduceIndividualToken(rules, hd))
           assert(!lex(rules, Vector.fromList(hd.characters.list))._1.isEmpty)
           // ----- end
 
@@ -1363,7 +1377,7 @@ object VerifiedLexer {
           assert(print(Vector.singleton(hd)).list == printList(List(hd)))
           assert(printList(List(hd)) == hd.characters.list)
           assert(print(Vector.singleton(hd)) == hd.characters)
-          assert(rulesProduceIndivualToken(rules, hd))
+          assert(rulesProduceIndividualToken(rules, hd))
           assert(!lex(rules, Vector.fromList(hd.characters.list))._1.isEmpty)
           // ----- end
 
@@ -1405,15 +1419,15 @@ object VerifiedLexer {
           Vector.listEqImpliesEq(separatorToken.characters, separatorToken.originalCharacters)
           Vector.listEqImpliesEq(separatorToken.characters, Vector.fromList(separatorToken.characters.list))
           unfold(print(Vector.singleton(separatorToken)))
-          unfold(rulesProduceIndivualToken(rules, separatorToken))
+          unfold(rulesProduceIndividualToken(rules, separatorToken))
           Vector.listEqImpliesEq(print(Vector.singleton(separatorToken)), separatorToken.characters)
           Vector.listEqImpliesEq(nextT.characters, nextT.originalCharacters)
           Vector.listEqImpliesEq(Vector.fromList(nextT.characters.list), nextT.characters)
           Vector.listEqImpliesEq(nextT.characters, Vector.fromList(nextT.characters.list))
           Vector.listEqImpliesEq(print(Vector.singleton(nextT)), nextT.characters)
           unfold(print(Vector.singleton(nextT)))
-          unfold(rulesProduceIndivualToken(rules, nextT))
-          ListSpecs.forallContained(tokens, (t: Token[C]) => rulesProduceIndivualToken(rules, t), nextT)
+          unfold(rulesProduceIndividualToken(rules, nextT))
+          ListSpecs.forallContained(tokens, (t: Token[C]) => rulesProduceIndividualToken(rules, t), nextT)
 
           assert(suffixAfterSeparator == nextT.characters.list ++ separatorToken.characters.list ++ printWithSeparatorTokenList(tl, separatorToken))
           lemmaNonSepRuleNotContainsCharContainedInASepRule(rules, rules, rule, separatorRule, separatorToken.characters.list.head)
@@ -1421,7 +1435,7 @@ object VerifiedLexer {
           lemmaMaxPrefWithOtherTypeUsedCharAtStartOfSuffixReturnSame(rules, hd, rule, suffix, separatorRule)
 
           lemmaRulesProduceEachTokenIndividuallyThenForAnyToken(rules, tokens, nextT)
-          assert(rulesProduceIndivualToken(rules, nextT))
+          assert(rulesProduceIndividualToken(rules, nextT))
           lemmaMaxPrefReturnTokenSoItsTagBelongsToTheRuleWithinToken(rules, nextT.characters.list, nextT)
           val nextTRule = nextT.rule
           assert(!nextTRule.isSeparator)
@@ -1454,7 +1468,7 @@ object VerifiedLexer {
           rulesInvariant(rules) && 
           rulesProduceEachTokenIndividually(rules, Vector.fromList(tokens)) &&
           sepAndNonSepRulesDisjointChars(rules, rules) && 
-          rulesProduceIndivualToken(rules, separatorToken) &&
+          rulesProduceIndividualToken(rules, separatorToken) &&
           tokens.forall(t => !t.rule.isSeparator) &&
           separatorToken.rule.isSeparator
           ) 
@@ -1530,6 +1544,39 @@ object VerifiedLexer {
     }.ensuring (res => res.isEmpty || rules.contains(res.get) && res.get.tag == tag)
 
     // Lemmas --------------------------------------------------------------------------------------------------------------------------------
+
+    @ghost
+    @opaque
+    @inlineOnce
+    def lemmaLexThenRulesProducesEachTokenIndividually[C](rules: List[Rule[C]], input: List[C], tokens: List[Token[C]]): Unit = {
+      require(!rules.isEmpty)
+      require(rulesInvariant(rules))
+      require(lexList(rules, input)._1 == tokens)
+      decreases(tokens)
+
+      tokens match {
+        case Nil() => ()
+        case Cons(hd, tl) => {
+          assert(maxPrefix(rules, input).isDefined)
+          val (token, suffix) = maxPrefix(rules, input).get
+          assert(token == hd)
+          assert(token.characters == hd.characters)
+          assert(token.characters.list == hd.characters.list)
+          assert(hd.characters.list ++ suffix == input)
+          val tokenRule = token.rule
+          assert(matchR(tokenRule.regex, token.characters.list))
+          if (!rulesProduceIndividualToken(rules, hd)) {
+            ghostExpr(Vector.listEqImpliesEq(hd.characters, Vector.fromList(hd.characters.list)))
+            ghostExpr(Vector.listEqImpliesEq(token.characters, Vector.fromList(token.characters.list)))
+            lemmaLexThenLexPrefix(rules, hd.characters.list, suffix, List(hd), lexList(rules, suffix)._1, lexList(rules, input)._2)
+            check(false)
+          }
+          assert(rulesProduceIndividualToken(rules, hd))
+          lemmaLexThenRulesProducesEachTokenIndividually(rules, suffix, tl)
+        }
+      }
+    }.ensuring(_ => rulesProduceEachTokenIndividually(rules, Vector.fromList(tokens)))
+
     @ghost
     @opaque
     @inlineOnce
@@ -2097,7 +2144,7 @@ object VerifiedLexer {
       require(!rules.isEmpty)
       require(rulesInvariant(rules))
       require(rulesProduceEachTokenIndividually(rules, Vector.fromList(tokens)))
-      require(rulesProduceIndivualToken(rules, separatorToken))
+      require(rulesProduceIndividualToken(rules, separatorToken))
       require(separatorToken.rule.isSeparator)
       require(tokens.forall(!_.rule.isSeparator))
       require(sepAndNonSepRulesDisjointChars(rules, rules))
@@ -2137,7 +2184,7 @@ object VerifiedLexer {
               assert(print(Vector.singleton(hd)).list == printList(List(hd)))
               assert(printList(List(hd)) == hd.characters.list)
               assert(print(Vector.singleton(hd)) == hd.characters)
-              assert(rulesProduceIndivualToken(rules, hd))
+              assert(rulesProduceIndividualToken(rules, hd))
               assert(!lex(rules, Vector.fromList(hd.characters.list))._1.isEmpty)
               // ----- end
               
@@ -2153,7 +2200,7 @@ object VerifiedLexer {
               assert(print(Vector.singleton(hd)).list == printList(List(hd)))
               assert(printList(List(hd)) == hd.characters.list)
               assert(print(Vector.singleton(hd)) == hd.characters)
-              assert(rulesProduceIndivualToken(rules, hd))
+              assert(rulesProduceIndividualToken(rules, hd))
               assert(!lex(rules, Vector.fromList(hd.characters.list))._1.isEmpty)
               // ----- end
               lemmaLexIsDefinedWithStrThenLexWithSuffixIsDefined(rules, hd.characters.list, suffix)
@@ -3216,7 +3263,7 @@ object VerifiedLexer {
         case Cons(hd, tl)            => lemmaRulesProduceEachTokenIndividuallyThenForAnyToken(rules, tl, t)
         case Nil()                   => ()
       }
-    }.ensuring (_ => rulesProduceIndivualToken(rules, t))
+    }.ensuring (_ => rulesProduceIndividualToken(rules, t))
 
     @ghost
     @opaque

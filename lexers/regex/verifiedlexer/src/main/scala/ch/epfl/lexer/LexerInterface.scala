@@ -95,6 +95,12 @@ trait LexerInterface {
       (if (ListUtils.getIndex(rules, otherR) < ListUtils.getIndex(rules, r)) !VerifiedRegexMatcher.matchR(otherR.regex, otherP)
       else tokens.size > 0 && otherP.size <= tokens.head.characters.size || !VerifiedRegexMatcher.matchR(otherR.regex, otherP))
     }
+
+    @law @ghost def lexThenRulesProduceEachTokenIndividually[C](rules: List[Rule[C]], input: List[C]): Boolean = 
+      (!rules.isEmpty && rulesInvariant(rules)) ==> {
+        val (tokens, suffix) = lex(rules, Vector.fromList(input))
+        rulesProduceEachTokenIndividually(rules, tokens)
+      }
   // -------------- Invertibility properties String -> tokens -> String ----------------
 
   @law @ghost def invertibleThroughLexing[C](rules: List[Rule[C]], input: List[C]): Boolean = 
@@ -146,7 +152,7 @@ trait LexerInterface {
     * @param tokens
     */
   def rulesProduceEachTokenIndividually[C](rules: List[Rule[C]], tokens: Vector[Token[C]]): Boolean
-  def rulesProduceIndivualToken[C](rules: List[Rule[C]], token: Token[C]): Boolean
+  def rulesProduceIndividualToken[C](rules: List[Rule[C]], token: Token[C]): Boolean
 
   @law @ghost def separableTokensThenInvertibleThroughPrinting[C](rules: List[Rule[C]], tokens: List[Token[C]]): Boolean = 
     (!rules.isEmpty && 
@@ -217,7 +223,7 @@ trait LexerInterface {
       rulesInvariant(rules) && 
       rulesProduceEachTokenIndividually(rules, Vector.fromList(tokens)) &&
       sepAndNonSepRulesDisjointChars(rules, rules) && 
-      rulesProduceIndivualToken(rules, separatorToken) &&
+      rulesProduceIndividualToken(rules, separatorToken) &&
       tokens.forall(t => !t.rule.isSeparator) &&
       separatorToken.rule.isSeparator
     ) ==>
@@ -228,7 +234,7 @@ trait LexerInterface {
       rulesInvariant(rules) && 
       rulesProduceEachTokenIndividually(rules, Vector.fromList(tokens)) &&
       sepAndNonSepRulesDisjointChars(rules, rules) && 
-      rulesProduceIndivualToken(rules, separatorToken) &&
+      rulesProduceIndividualToken(rules, separatorToken) &&
       tokens.forall(t => !t.rule.isSeparator) &&
       separatorToken.rule.isSeparator
     ) ==>

@@ -5368,6 +5368,7 @@ object VerifiedRegexMatcher {
   @ghost
   def lemmaEmptyLangDerivativeIsAFixPoint[C](r: Regex[C], s: List[C]): Unit = {
     require(r == EmptyLang[C]())
+    decreases(s)
     s match {
       case Cons(hd, tl) => lemmaEmptyLangDerivativeIsAFixPoint(derivativeStep(r, hd), tl)
       case Nil()        => ()
