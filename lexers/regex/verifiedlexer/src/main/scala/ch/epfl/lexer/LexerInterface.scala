@@ -108,6 +108,17 @@ trait LexerInterface {
   // -------------- Invertibility properties with local condition ----------------
 
   /**
+    * Predicate that indicates whether the tokens are seaprable by a lexer represented by the rules
+    * 
+    * Calls the tokensListTwoByTwoPredicate with the separableTokensPredicate
+    *
+    * @param tokens
+    * @param rules
+    * @return
+    */
+  def separableTokens[C](tokens: Vector[Token[C]], rules: List[Rule[C]]): Boolean = tokensListTwoByTwoPredicate(tokens, 0, rules, separableTokensPredicate)
+
+  /**
     * Predicate over a vector of tokens, that applies a binary predicate to each pair of neighbouring tokens
     *
     * @param l
