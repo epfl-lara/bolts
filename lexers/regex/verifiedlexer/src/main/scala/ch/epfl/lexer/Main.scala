@@ -42,6 +42,8 @@ object Main {
       val tokens1 = tokeniseJsonFileMem(s"src/main/scala/ch/epfl/example/res/json/82.json", s"src/main/scala/ch/epfl/example/res/json/82.tokens")
 
     timeTokenizeJsonFileMem(s"src/main/scala/ch/epfl/example/res/json/2420.json")
+    val tokens = tokeniseJsonFileMem(s"src/main/scala/ch/epfl/example/res/json/2420.json", s"src/main/scala/ch/epfl/example/res/json/2420.json.tokens")
+    assert(Lexer.separableTokens(tokens, JsonLexer.rules))
 
   }
 }
@@ -124,6 +126,7 @@ def tokeniseJsonFileMem(filepath: String, destFilePath: String): Vector[Token[Ch
 
 def timeTokenizeJsonFileMem(filepath: String): Unit = {
   val fileContent: String = scala.io.Source.fromFile(filepath).mkString
+  println("CacheUp = " + JsonLexerBenchmarkUtils.zipperCacheUp)
   val timeBefore = System.nanoTime()
   val (tokens, suffix) = Lexer.lexMem(JsonLexer.rules, fileContent.toStainless)(using JsonLexerBenchmarkUtils.zipperCacheUp, JsonLexerBenchmarkUtils.zipperCacheDown)
   val timeAfter = System.nanoTime()
