@@ -59,7 +59,10 @@ class JsonLexerBenchmark {
   @OutputTimeUnit(TimeUnit.MICROSECONDS)
   def separability_pred(): Unit = {
     val tokens = JsonLexerBenchmarkUtils.exampleFileTokens(file)
-    val separable =  Lexer.separableTokens(tokens, JsonLexer.rules)
+    val separable =  Lexer.separableTokensMem(tokens, JsonLexer.rules)(
+      using JsonLexerBenchmarkUtils.zipperCacheUp,
+      JsonLexerBenchmarkUtils.zipperCacheDown
+    )
     assert(separable)
   }
 
