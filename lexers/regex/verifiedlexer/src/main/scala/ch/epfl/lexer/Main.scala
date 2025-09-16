@@ -44,7 +44,7 @@ object Main {
     timeTokenizeJsonFileMem(s"src/main/scala/ch/epfl/example/res/json/2420.json")
     val tokens = tokeniseJsonFileMem(s"src/main/scala/ch/epfl/example/res/json/2420.json", s"src/main/scala/ch/epfl/example/res/json/2420.json.tokens")
     val timeBefore = System.nanoTime()
-    assert(Lexer.separableTokens(tokens, JsonLexer.rules))
+    assert(Lexer.separableTokensMem(tokens, JsonLexer.rules)(using JsonLexerBenchmarkUtils.zipperCacheUp, JsonLexerBenchmarkUtils.zipperCacheDown))
     val timeAfter = System.nanoTime()
     println(f"Time taken to check separability: ${(timeAfter - timeBefore) / 1e6} ms")
 
