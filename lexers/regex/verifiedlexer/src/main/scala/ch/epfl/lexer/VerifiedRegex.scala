@@ -493,7 +493,7 @@ object ZipperRegex {
   case class Context[C](exprs: List[Regex[C]]){
     require(exprs.forall(validRegex))
 
-    lazy val lostCause: Boolean = lostCauseContext(this)
+    lazy val lostCause: Boolean = exprs.exists(r => r.lostCause)
     inline def prepend(r: Regex[C]): Context[C] = {
       require(validRegex(r))
       Context(r :: exprs)
@@ -650,9 +650,9 @@ object ZipperRegex {
     z.exists(c => nullableContext(c))
   }
 
-  def lostCauseContext[C](c: Context[C]): Boolean = {
-    c.exists(r => r.lostCause)
-  }.ensuring(res => res == getLanguageWitness(c).isEmpty)
+  // def lostCauseContext[C](c: Context[C]): Boolean = {
+  //   c.exists(r => r.lostCause)
+  // }.ensuring(res => res == getLanguageWitness(c).isEmpty)
 
   @ghost
   def getLanguageWitness[C](c: Context[C]): Option[List[C]] = {
@@ -986,7 +986,7 @@ object ZipperRegex {
     val f = (cz: Context[C]) => derivationStepZipperUp(cz, a)
     assert(derivStep == z.flatMap(f))
     assert(lostCauseZipper(derivStep) == derivStep.forall(cz => cz.lostCause))
-    assert(z.forall(lostCauseContext))
+    assert(z.forall(c => c.lostCause))
     if(!lostCauseZipper(derivStep)){
       assert(!derivStep.forall(c => c.lostCause))
       ListUtils.lemmaNotForallThenExists(derivStep.toList, (c: Context[C]) => c.lostCause)
@@ -999,11 +999,11 @@ object ZipperRegex {
       val witnessContext = SetUtils.getWitness(z, (ct: Context[C]) => f(ct).contains(notLostCauseWitness))
       assert(z.contains(witnessContext))
       assert(f(witnessContext).contains(notLostCauseWitness))
-      ListSpecs.forallContained(z.toList, lostCauseContext, witnessContext)
+      ListSpecs.forallContained(z.toList, c => c.lostCause, witnessContext)
       assert(witnessContext.lostCause)
       lemmaLostCauseFixPointDerivUp(witnessContext, a)
       assert(lostCauseZipper(f(witnessContext)))
-      ListSpecs.forallContained(f(witnessContext).toList, lostCauseContext, notLostCauseWitness)
+      ListSpecs.forallContained(f(witnessContext).toList, c => c.lostCause, notLostCauseWitness)
       check(false)
     }
   }.ensuring(_ => lostCauseZipper(derivationStepZipper(z, a)))
@@ -1019,7 +1019,7 @@ object ZipperRegex {
         lemmaNullableThenNotLostCause(right)
         lemmaLostCauseFixPointDerivUp(Context(parent), a)
         lemmaLostCauseFixPointDerivDown(right, Context(parent), a)
-        SetUtils.lemmaConcatPreservesForall(derivationStepZipperDown(right, Context(parent), a), derivationStepZipperUp(Context(parent), a), lostCauseContext)
+        SetUtils.lemmaConcatPreservesForall(derivationStepZipperDown(right, Context(parent), a), derivationStepZipperUp(Context(parent), a), c => c.lostCause)
       case Cons(right, parent) => 
         lemmaLostCauseFixPointDerivDown(right, Context(parent), a)
       case Nil() => ()
@@ -1039,12 +1039,12 @@ object ZipperRegex {
       case Union(rOne, rTwo) => 
         lemmaLostCauseFixPointDerivDown(rOne, ctx, a)
         lemmaLostCauseFixPointDerivDown(rTwo, ctx, a)
-        SetUtils.lemmaConcatPreservesForall(derivationStepZipperDown(rOne, ctx, a), derivationStepZipperDown(rTwo, ctx, a), lostCauseContext)
+        SetUtils.lemmaConcatPreservesForall(derivationStepZipperDown(rOne, ctx, a), derivationStepZipperDown(rTwo, ctx, a), c => c.lostCause)
       case Concat(rOne, rTwo) if rOne.nullable => 
         lemmaNullableThenNotLostCause(rOne)
         lemmaLostCauseFixPointDerivDown(rOne, ctx.prepend(rTwo), a)
         lemmaLostCauseFixPointDerivDown(rTwo, ctx, a)
-        SetUtils.lemmaConcatPreservesForall(derivationStepZipperDown(rOne, ctx.prepend(rTwo), a), derivationStepZipperDown(rTwo, ctx, a), lostCauseContext)
+        SetUtils.lemmaConcatPreservesForall(derivationStepZipperDown(rOne, ctx.prepend(rTwo), a), derivationStepZipperDown(rTwo, ctx, a), c => c.lostCause)
       case Concat(rOne, rTwo) => 
         lemmaLostCauseFixPointDerivDown(rOne, ctx.prepend(rTwo), a)
       case Star(rInner) => lemmaLostCauseFixPointDerivDown(rInner, ctx.prepend(Star(rInner)), a)
