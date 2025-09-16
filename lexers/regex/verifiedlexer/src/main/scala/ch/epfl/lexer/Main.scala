@@ -26,6 +26,10 @@ import stainless.collection.List
 import ch.epfl.lexer.VerifiedRegexMatcher.matchZipperVector
 import ch.epfl.lexer.benchmark.lexer.JsonLexerBenchmarkUtils
 
+import ch.epfl.lexer.benchmark.ContextCharHashable
+import ch.epfl.lexer.benchmark.RegexCharHashable
+import ch.epfl.lexer.benchmark.RegexContextCharHashable
+
 object Main {
   def main(args: Array[String]): Unit = {
     println(f"intRe.match(12) = ${matchZipperVector(JsonLexer.intRe, "12".toStainless)}")
@@ -44,7 +48,7 @@ object Main {
     timeTokenizeJsonFileMem(s"src/main/scala/ch/epfl/example/res/json/2420.json")
     val tokens = tokeniseJsonFileMem(s"src/main/scala/ch/epfl/example/res/json/2420.json", s"src/main/scala/ch/epfl/example/res/json/2420.json.tokens")
     val timeBefore = System.nanoTime()
-    assert(Lexer.separableTokensMem(tokens, JsonLexer.rules)(using JsonLexerBenchmarkUtils.zipperCacheUp, JsonLexerBenchmarkUtils.zipperCacheDown))
+    assert(Lexer.separableTokensMem(tokens, JsonLexer.rules)(using MemoisationZipper.emptyUp(ContextCharHashable), MemoisationZipper.emptyDown(RegexContextCharHashable)))
     val timeAfter = System.nanoTime()
     println(f"Time taken to check separability: ${(timeAfter - timeBefore) / 1e6} ms")
 
