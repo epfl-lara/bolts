@@ -130,6 +130,11 @@ object Vector {
     require(0 <= i && i < v.size)
   }.ensuring(_ => v.list.apply(i) == v(i))
 
+  @pure @extern @inlineOnce @ghost
+  def applyThenContains[T](v1: Vector[T], i: BigInt): Unit = {
+    require(0 <= i && i < v1.size)
+  }.ensuring(_ => v1.contains(v1(i)))
+
   @pure @extern
   def fill[T](n: Int)(t: T): Vector[T] = {
     Vector(scala.collection.immutable.Vector.fill(n)(t))
