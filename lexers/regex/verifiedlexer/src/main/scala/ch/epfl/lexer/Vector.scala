@@ -3,9 +3,12 @@ package ch.epfl.lexer
 import stainless.collection._
 import stainless.annotation._
 
-import stainless.lang._
-import StaticChecks._
-import stainless.lang.{ghost => ghostExpr}
+// import stainless.lang.StaticChecks._
+// import stainless.lang.{ghost => ghostExpr, _}
+// import stainless.proof.check
+import stainless.lang.{ghost => _, decreases => _, unfold => _, _}
+import ch.epfl.lexer.OptimisedChecks.*
+import Predef.{assert => _, Ensuring => _, require => _}
 
 case class Vector[T](@pure @extern underlying: scala.collection.immutable.Vector[T]) {
 
