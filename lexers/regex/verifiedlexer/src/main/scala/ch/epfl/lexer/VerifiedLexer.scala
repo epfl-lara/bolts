@@ -265,7 +265,7 @@ object VerifiedLexer {
       }
     }.ensuring (res =>
       if (res._1.size > 0) res._2.size < input.size && !res._1.isEmpty
-      else res._2 == input && res._1.forall(t => rulesProduceIndivualToken(rules, t)))
+      else res._2 == input)
 
     /** Main function of the lexer
       *
