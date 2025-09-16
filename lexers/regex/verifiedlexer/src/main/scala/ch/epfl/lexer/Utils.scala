@@ -649,6 +649,27 @@ object ListUtils {
     }
   }.ensuring(_ => l.drop(i).tail == l.drop(i + 1))
 
+
+  @ghost
+  @inlineOnce
+  @opaque
+  def lemmaDropSubSeq[B](l: List[B], i: BigInt): Unit = {
+    require(i >= 0 && i <= l.size)
+    decreases(l)
+    l match {
+      case Nil()        => ()
+      case Cons(hd, tl) => 
+        if (i <= 0) {
+          assert(l.drop(i) == l)
+          ListUtils.lemmaSubseqRefl(l)
+          assert(ListSpecs.subseq(l.drop(i), l))
+        } else {
+          lemmaDropSubSeq(tl, i - 1)
+           assert(ListSpecs.subseq(tl.drop(i - 1), tl))
+        }
+    }
+  }.ensuring(_ => ListSpecs.subseq(l.drop(i), l))
+
   @ghost 
   @inlineOnce
   @opaque
