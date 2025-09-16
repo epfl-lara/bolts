@@ -222,7 +222,7 @@ object VerifiedLexer {
 
           check(v(from + 1).characters.size > 0)
         })
-        separableTokensPredicate(v(from), v(from + 1), rules) && tokensListTwoByTwoPredicateSeparable(v, from + 1, rules)
+        separableTokensPredicateMem(v(from), v(from + 1), rules) && tokensListTwoByTwoPredicateSeparableMem(v, from + 1, rules)
       else
         true
     }.ensuring(res => res == tokensListTwoByTwoPredicateSeparable(v, from, rules))
