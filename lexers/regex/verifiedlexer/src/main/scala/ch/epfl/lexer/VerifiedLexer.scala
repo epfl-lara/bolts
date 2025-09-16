@@ -155,6 +155,9 @@ object VerifiedLexer {
       tokensListTwoByTwoPredicateSeparable(tokens, from = 0, rules)
 
     def separableTokensMem[C](tokens: Vector[Token[C]], rules: List[Rule[C]])(using cacheUp: CacheUp[C], cacheDown: CacheDown[C]): Boolean = { 
+      require(!rules.isEmpty)
+      require(rulesInvariant(rules))
+      require(rulesProduceEachTokenIndividually(rules, tokens))
       tokensListTwoByTwoPredicateSeparableMem(tokens, from = 0, rules)
     }.ensuring(res => res == separableTokens(tokens, rules))
 
