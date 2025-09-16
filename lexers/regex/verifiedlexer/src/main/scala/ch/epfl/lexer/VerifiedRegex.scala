@@ -492,6 +492,8 @@ object ZipperRegex {
     */
   case class Context[C](exprs: List[Regex[C]]){
     require(exprs.forall(validRegex))
+
+    lazy val lostCause: Boolean = lostCauseContext(this)
     inline def prepend(r: Regex[C]): Context[C] = {
       require(validRegex(r))
       Context(r :: exprs)
@@ -638,7 +640,7 @@ object ZipperRegex {
   }
 
   def derivationStepZipperSimp[C](z: Zipper[C], a: C): Zipper[C] = {
-    z.flatMap(c => derivationStepZipperUp(c, a)).filter(c => !lostCauseContext(c))
+    z.flatMap(c => derivationStepZipperUp(c, a)).filter(c => !c.lostCause)
   }
 
   def nullableContext[C](c: Context[C]): Boolean = {
@@ -667,41 +669,41 @@ object ZipperRegex {
 
   def lostCauseZipper[C](z: Zipper[C]): Boolean = {
     ghostExpr({
-      if !z.forall(c => lostCauseContext(c)) then
-        ListUtils.lemmaNotForallThenExists(z.toList, (c: Context[C]) => lostCauseContext(c))
-        assert(z.exists(c => !lostCauseContext(c)))
+      if !z.forall(c => c.lostCause) then
+        ListUtils.lemmaNotForallThenExists(z.toList, (c: Context[C]) => c.lostCause)
+        assert(z.exists(c => !c.lostCause))
         assert(getLanguageWitness(z).isDefined)
       else  
-        assert(z.forall(c => lostCauseContext(c)))
-        ListUtils.lemmaForallThenNotExists(z.toList, (c: Context[C]) => lostCauseContext(c))
-        assert(!z.exists(c => !lostCauseContext(c)))
+        assert(z.forall(c => c.lostCause))
+        ListUtils.lemmaForallThenNotExists(z.toList, (c: Context[C]) => c.lostCause)
+        assert(!z.exists(c => !c.lostCause))
         assert(getLanguageWitness(z).isEmpty)
     })
-    z.forall(c => lostCauseContext(c))
+    z.forall(c => c.lostCause)
   }.ensuring(res => res == getLanguageWitness(z).isEmpty)
   
   @ghost
   def getLanguageWitness[C](z: Zipper[C]): Option[List[C]] = {
-    if z.exists(c => !lostCauseContext(c)) then
-      val notLostCauseWitness = SetUtils.getWitness(z, (c: Context[C]) => !lostCauseContext(c))
+    if z.exists(c => !c.lostCause) then
+      val notLostCauseWitness = SetUtils.getWitness(z, (c: Context[C]) => !c.lostCause)
       getLanguageWitness(notLostCauseWitness)
     else
       None()
-  }.ensuring(res => res.isDefined == z.exists(c => !lostCauseContext(c)))
+  }.ensuring(res => res.isDefined == z.exists(c => !c.lostCause))
 
   def matchZipper[C](z: Zipper[C], input: List[C]): Boolean = {
     decreases(input.size)
     if (input.isEmpty) nullableZipper(z) else matchZipper(derivationStepZipper(z, input.head), input.tail)
   }
 
-  @tailrec
+  // @tailrec
   def matchZipperVector[C](z: Zipper[C], input: Vector[C], i: BigInt = 0): Boolean = {
     require(i >= 0 && i <= input.size)
     decreases(input.size  - i)
     if i == input.size then nullableZipper(z) else matchZipperVector(derivationStepZipper(z, input(i)), input, i + 1)
   }
 
-  @tailrec
+  // @tailrec
   def matchZipperVectorMem[C](z: Zipper[C], input: Vector[C], i: BigInt = 0)(using cacheUp: MemoisationZipper.CacheUp[C], cacheDown: MemoisationZipper.CacheDown[C]): Boolean = {
     require(i >= 0 && i <= input.size)
     decreases(input.size  - i)
@@ -813,7 +815,7 @@ object ZipperRegex {
     
     def derivUpMem(c: Context[C]): Zipper[C] = derivationStepZipperUpMem(c, a)
 
-    z.flatMap(derivUpMem).filter(c => !lostCauseContext(c)) // rejected by stainless because of effects in the lambda's body
+    z.flatMap(derivUpMem).filter(c => !c.lostCause) // rejected by stainless because of effects in the lambda's body
   }.ensuring(res => res == derivationStepZipperSimp(z, a))
 
   def matchZipperMem[C](z: Zipper[C], input: List[C])(using cacheUp: CacheUp[C], cacheDown: CacheDown[C]): Boolean = {
@@ -830,10 +832,10 @@ object ZipperRegex {
   def lemmaGetWitnessMatchesZipper[C](z: Zipper[C]): Unit = {
     require(!lostCauseZipper(z))
     assert(getLanguageWitness(z).isDefined)
-    assert(!z.forall(c => lostCauseContext(c)))
-    ListUtils.lemmaNotForallThenExists(z.toList, (c: Context[C]) => lostCauseContext(c))
-    assert(z.exists(c => !lostCauseContext(c)))
-    val notLostCauseWitness = SetUtils.getWitness(z, (c: Context[C]) => !lostCauseContext(c))
+    assert(!z.forall(c => c.lostCause))
+    ListUtils.lemmaNotForallThenExists(z.toList, (c: Context[C]) => c.lostCause)
+    assert(z.exists(c => !c.lostCause))
+    val notLostCauseWitness = SetUtils.getWitness(z, (c: Context[C]) => !c.lostCause)
     lemmaGetWitnessMatchesContext(notLostCauseWitness)
     assert(matchZipper(Set(notLostCauseWitness), getLanguageWitness(notLostCauseWitness).get))
     assert(z.contains(notLostCauseWitness))
@@ -847,7 +849,7 @@ object ZipperRegex {
   @inlineOnce
   @opaque
   def lemmaGetWitnessMatchesContext[C](c: Context[C]): Unit = {
-    require(!lostCauseContext(c))
+    require(!c.lostCause)
     decreases(c.exprs.size)
     c.exprs match
       case Cons(hd, tl) => VerifiedRegex.getLanguageWitness(hd) match
@@ -983,22 +985,22 @@ object ZipperRegex {
     val derivStep = derivationStepZipper(z, a)
     val f = (cz: Context[C]) => derivationStepZipperUp(cz, a)
     assert(derivStep == z.flatMap(f))
-    assert(lostCauseZipper(derivStep) == derivStep.forall(cz => lostCauseContext(cz)))
+    assert(lostCauseZipper(derivStep) == derivStep.forall(cz => cz.lostCause))
     assert(z.forall(lostCauseContext))
     if(!lostCauseZipper(derivStep)){
-      assert(!derivStep.forall(c => lostCauseContext(c)))
-      ListUtils.lemmaNotForallThenExists(derivStep.toList, (c: Context[C]) => lostCauseContext(c))
-      assert(derivStep.exists(c => !lostCauseContext(c)))
-      val notLostCauseWitness = ListUtils.getWitness(derivStep.toList, (c: Context[C]) => !lostCauseContext(c))
+      assert(!derivStep.forall(c => c.lostCause))
+      ListUtils.lemmaNotForallThenExists(derivStep.toList, (c: Context[C]) => c.lostCause)
+      assert(derivStep.exists(c => !c.lostCause))
+      val notLostCauseWitness = ListUtils.getWitness(derivStep.toList, (c: Context[C]) => !c.lostCause)
       assert(derivStep.contains(notLostCauseWitness))
-      assert(!lostCauseContext(notLostCauseWitness))
+      assert(!notLostCauseWitness.lostCause)
       SetUtils.lemmaFlatMapPost(z, f, notLostCauseWitness)
       assert(z.exists(ct => f(ct).contains(notLostCauseWitness)))
       val witnessContext = SetUtils.getWitness(z, (ct: Context[C]) => f(ct).contains(notLostCauseWitness))
       assert(z.contains(witnessContext))
       assert(f(witnessContext).contains(notLostCauseWitness))
       ListSpecs.forallContained(z.toList, lostCauseContext, witnessContext)
-      assert(lostCauseContext(witnessContext))
+      assert(witnessContext.lostCause)
       lemmaLostCauseFixPointDerivUp(witnessContext, a)
       assert(lostCauseZipper(f(witnessContext)))
       ListSpecs.forallContained(f(witnessContext).toList, lostCauseContext, notLostCauseWitness)
@@ -1010,7 +1012,7 @@ object ZipperRegex {
   @inlineOnce
   @opaque
   def lemmaLostCauseFixPointDerivUp[C](ctx: Context[C], a: C): Unit = {
-    require(lostCauseContext(ctx))
+    require(ctx.lostCause)
     decreases(ctx.exprs.size)
     ctx.exprs match {
       case Cons(right, parent) if right.nullable => 
@@ -1030,7 +1032,7 @@ object ZipperRegex {
   @opaque
   def lemmaLostCauseFixPointDerivDown[C](expr: Regex[C], ctx: Context[C], a: C): Unit = {
     require(validRegex(expr))
-    require(expr.lostCause || lostCauseContext(ctx))
+    require(expr.lostCause || ctx.lostCause)
     decreases(regexDepth(expr))
     expr match {
       case ElementMatch(c) if c == a => ()
@@ -1062,7 +1064,7 @@ object ZipperRegex {
     lemmaContextForallValidExprs(nullableCtx, nullableCtx.exprs)
     assert(z.contains(nullableCtx))
     assert(nullableCtx.forall(r => r.nullable))
-    if(lostCauseContext(nullableCtx)){
+    if(nullableCtx.lostCause){
       assert(nullableCtx.exists(r => r.lostCause))
       val lostCauseRegex = ListUtils.getWitness(nullableCtx.exprs, (r: Regex[C]) => r.lostCause)
       assert(nullableCtx.exprs.contains(lostCauseRegex))
@@ -1073,12 +1075,12 @@ object ZipperRegex {
       lemmaNullableThenNotLostCause(lostCauseRegex)
       check(false)
     }
-    assert(!lostCauseContext(nullableCtx))
+    assert(!nullableCtx.lostCause)
     if (lostCauseZipper(z)) {
-      assert(z.forall(c => lostCauseContext(c)))
-      assert(z.toList.forall(c => lostCauseContext(c)))
+      assert(z.forall(c => c.lostCause))
+      assert(z.toList.forall(c => c.lostCause))
       assert(z.contains(nullableCtx))
-      ListSpecs.forallContained(z.toList, (c: Context[C]) => lostCauseContext(c), nullableCtx)
+      ListSpecs.forallContained(z.toList, (c: Context[C]) => c.lostCause, nullableCtx)
       check(false)
     }
   }.ensuring(_ => !lostCauseZipper(z))
@@ -1110,26 +1112,26 @@ object ZipperRegex {
       val witness = SetUtils.getWitness(z, (c: Context[C]) => matchZipper(Set(c), s))
       assert(z.contains(witness))
       assert(matchZipper(Set(witness), s))
-      if (lostCauseContext(witness)) {
+      if (witness.lostCause) {
         lemmaLostCauseCannotMatch(Set(witness), s)
         check(false)
       }
 
-      assert(!lostCauseContext(witness))
-      z.filterPost(c => !lostCauseContext(c))(witness)
-      assert(z.filter(c => !lostCauseContext(c)).contains(witness))
-      SetUtils.lemmaContainsThenExists(z.filter(c => !lostCauseContext(c)), witness, c => matchZipper(Set(c), s))
-      assert(z.filter(c => !lostCauseContext(c)).exists(c => matchZipper(Set(c), s)))
-      lemmaExistsMatchingContextThenMatchingString(z.filter(c => !lostCauseContext(c)).toList, s)
-      assert(matchZipper(z.filter(c => !lostCauseContext(c)), s))
+      assert(!witness.lostCause)
+      z.filterPost(c => !c.lostCause)(witness)
+      assert(z.filter(c => !c.lostCause).contains(witness))
+      SetUtils.lemmaContainsThenExists(z.filter(c => !c.lostCause), witness, c => matchZipper(Set(c), s))
+      assert(z.filter(c => !c.lostCause).exists(c => matchZipper(Set(c), s)))
+      lemmaExistsMatchingContextThenMatchingString(z.filter(c => !c.lostCause).toList, s)
+      assert(matchZipper(z.filter(c => !c.lostCause), s))
     } else {
-      if (matchZipper(z.filter(c => !lostCauseContext(c)), s)) {
-        lemmaZipperMatchesExistsMatchingContext(z.filter(c => !lostCauseContext(c)).toList, s)
-        assert(z.filter(c => !lostCauseContext(c)).exists(c => matchZipper(Set(c), s)))
-        val witness = SetUtils.getWitness(z.filter(c => !lostCauseContext(c)), (c: Context[C]) => matchZipper(Set(c), s))
-        assert(z.filter(c => !lostCauseContext(c)).contains(witness))
+      if (matchZipper(z.filter(c => !c.lostCause), s)) {
+        lemmaZipperMatchesExistsMatchingContext(z.filter(c => !c.lostCause).toList, s)
+        assert(z.filter(c => !c.lostCause).exists(c => matchZipper(Set(c), s)))
+        val witness = SetUtils.getWitness(z.filter(c => !c.lostCause), (c: Context[C]) => matchZipper(Set(c), s))
+        assert(z.filter(c => !c.lostCause).contains(witness))
         assert(matchZipper(Set(witness), s))
-        z.filterPost(c => !lostCauseContext(c))(witness)
+        z.filterPost(c => !c.lostCause)(witness)
         assert(z.contains(witness))
         SetUtils.lemmaContainsThenExists(z, witness, c => matchZipper(Set(c), s))
         assert(z.exists(c => matchZipper(Set(c), s)))
@@ -1138,12 +1140,12 @@ object ZipperRegex {
         check(false)
 
       }
-      assert(!matchZipper(z.filter(c => !lostCauseContext(c)), s))
+      assert(!matchZipper(z.filter(c => !c.lostCause), s))
 
     }
 
 
-  }.ensuring(_ => matchZipper(z, s) == matchZipper(z.filter(c => !lostCauseContext(c)), s))
+  }.ensuring(_ => matchZipper(z, s) == matchZipper(z.filter(c => !c.lostCause), s))
 
   @ghost
   @opaque
