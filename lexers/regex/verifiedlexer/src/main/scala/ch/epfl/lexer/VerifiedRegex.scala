@@ -735,6 +735,12 @@ object ZipperRegex {
     if (i == input.size) !lostCauseZipper(z) else prefixMatchZipperVector(derivationStepZipper(z, input(i)), input, i + 1)
   }
 
+  def prefixMatchZipperVectorMem[C](z: Zipper[C], input: Vector[C], i: BigInt = 0)(using cacheUp: CacheUp[C], cacheDown: CacheDown[C]): Boolean = {
+    require(i >= 0 && i <= input.size)
+    decreases(input.size - i)
+    if (i == input.size) !lostCauseZipper(z) else prefixMatchZipperVectorMem(derivationStepZipperMem(z, input(i)), input, i + 1)
+  }.ensuring(res => res == prefixMatchZipperVector(z, input, i))
+
   @ghost
   @inlineOnce
   @opaque
@@ -3362,6 +3368,14 @@ object VerifiedRegexMatcher {
     ZipperRegex.prefixMatchZipperVector(ZipperRegex.focus(r), prefix)
   }.ensuring (res => res == prefixMatch(r, prefix.list))
 
+  def prefixMatchZipperVectorMem[C](r: Regex[C], prefix: Vector[C])(using cacheUp: MemoisationZipper.CacheUp[C], cacheDown: MemoisationZipper.CacheDown[C]): Boolean = {
+    require(validRegex(r))
+    ghostExpr(ZipperRegex.lemmaprefixMatchZipperVectorEquivalent(ZipperRegex.focus(r), prefix))
+    // ghostExpr(ZipperRegex.theoremZipperRegexEquiv(ZipperRegex.focus(r), ZipperRegex.focus(r).toList, r, prefix.list))
+    ghostExpr(ZipperRegex.prefixMatchZipperRegexEquiv(ZipperRegex.focus(r), ZipperRegex.focus(r).toList, r, prefix.list))
+    ZipperRegex.prefixMatchZipperVectorMem(ZipperRegex.focus(r), prefix)
+  }.ensuring (res => res == prefixMatch(r, prefix.list))
+  
   def matchRMem[C](r: Regex[C], input: List[C])(using cache: Cache[C]): Boolean = {
     require(validRegex(r))
     require(cache.valid)
