@@ -171,7 +171,7 @@ object VerifiedLexer {
     }.ensuring(res => res == separableTokens(tokens, rules))
 
     
-
+    @tailrec
     override def tokensListTwoByTwoPredicateSeparable[C](v: Vector[Token[C]], from: BigInt, rules: List[Rule[C]]): Boolean = {
       require(from >= 0 && from <= v.size)
       require(!rules.isEmpty)

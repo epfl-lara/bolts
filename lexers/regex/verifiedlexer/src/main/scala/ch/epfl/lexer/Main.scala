@@ -43,7 +43,10 @@ object Main {
 
     timeTokenizeJsonFileMem(s"src/main/scala/ch/epfl/example/res/json/2420.json")
     val tokens = tokeniseJsonFileMem(s"src/main/scala/ch/epfl/example/res/json/2420.json", s"src/main/scala/ch/epfl/example/res/json/2420.json.tokens")
+    val timeBefore = System.nanoTime()
     assert(Lexer.separableTokens(tokens, JsonLexer.rules))
+    val timeAfter = System.nanoTime()
+    println(f"Time taken to check separability: ${(timeAfter - timeBefore) / 1e6} ms")
 
   }
 }
@@ -110,7 +113,7 @@ def tokenisePythonFileMem(filepath: String, destFilePath: String): Unit = {
 def tokeniseJsonFileMem(filepath: String, destFilePath: String): Vector[Token[Char]] = {
   val fileContent: String = scala.io.Source.fromFile(filepath).mkString
   println("Lexing with memoization")
-  println(s"File content for file '$filepath':\n$fileContent")
+  // println(s"File content for file '$filepath':\n$fileContent")
   val (tokens, suffix) = Lexer.lexMem(JsonLexer.rules, fileContent.toStainless)(using AmyLexerBenchmarkUtils.zipperCacheUp, AmyLexerBenchmarkUtils.zipperCacheDown)
   println(f"Suffix tokens for file '$filepath':\n${suffix}")
   assert(suffix.isEmpty)
