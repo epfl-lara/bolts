@@ -190,26 +190,6 @@ object VerifiedLexer {
       res == tokensListTwoByTwoPredicateSeparableList(v.dropList(from), rules)
     })
 
-    // This lemma could be incorporated into the function's postcondition above
-    // @ghost @opaque @inlineOnce @pure
-    // def tokensListTwoByTwoPredicateVectorEquivList[C](v: Vector[Token[C]], from: BigInt, l: List[Token[C]], rules: List[Rule[C]], pred: (Token[C], Token[C], List[Rule[C]]) => Boolean): Unit = {
-    //   require(from >= 0 && from <= v.size)
-    //   require(l == v.dropList(from))
-    //   decreases(v.size - from)
-    //   if from < v.size - 1 then
-    //     ListUtils.lemmaDropApply(v.list, from)
-    //     ListUtils.lemmaDropApply(v.list, from + 1)
-    //     ListUtils.lemmaDropTail(v.list, from)
-    //     ListUtils.lemmaDropTail(v.list, from + 1)
-    //     assert(v.list.apply(from) == l.head)
-    //     assert(v(from) == l.head)
-    //     assert(v(from + 1) == l.tail.head)
-    //     tokensListTwoByTwoPredicateVectorEquivList(v, from + 1, l.tail, rules, pred)
-    //     // pred(v(from), v(from + 1), rules) && tokensListTwoByTwoPredicate(v, from + 1, rules, pred)
-    //   else
-    //     ()
-    // }.ensuring(_ => tokensListTwoByTwoPredicate(v, from, rules, pred) == tokensListTwoByTwoPredicateList(l, rules, pred))
-
      override def separableTokensPredicate[C](t1: Token[C], t2: Token[C], rules: List[Rule[C]]): Boolean = {
       require(!rules.isEmpty)
       require(rulesInvariant(rules))
