@@ -87,7 +87,7 @@ object JsonLexerBenchmarkUtils {
     (name -> lines)
   }).toMap
 
-  val exampleFileTokens: Map[String, Vector[(Token[Char])]] = exampleFileContents.map { case (name, content) =>
+  lazy val exampleFileTokens: Map[String, Vector[(Token[Char])]] = exampleFileContents.map { case (name, content) =>
     val (tokens, suffix) = Lexer.lexMem(JsonLexer.rules, content)(
       using zipperCacheUpInternal,
       zipperCacheDownInternal
