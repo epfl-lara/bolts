@@ -460,7 +460,7 @@ object ExampleAmyLexer:
             assert(suffix.isEmpty)
             println(f"Tokens: ${tokens.map(t => t.asString()).toScala.mkString(", ")}")
 
-            val printable = Lexer.tokensListTwoByTwoPredicate(tokens, from = 0, AmyLexer.rules, Lexer.separableTokensPredicate)
+            val printable = Lexer.separableTokens(tokens, AmyLexer.rules)
             println(f"Now we can see that the produced list is printable wrt our criterion: list is printable = $printable")
 
             // details 
@@ -476,7 +476,7 @@ object ExampleAmyLexer:
             )
 
             println(f"Modified tokens: ${modifiedTokens.map(t => t.asString()).toScala.mkString(", ")}")
-            println(f"Modified tokens printable: ${Lexer.tokensListTwoByTwoPredicate(modifiedTokens, from = 0, AmyLexer.rules, Lexer.separableTokensPredicate)}")
+            println(f"Modified tokens printable: ${Lexer.separableTokens(modifiedTokens, AmyLexer.rules)}")
 
             val prettyPrinted = Lexer.print(modifiedTokens)
             println(f"Pretty printed: ${prettyPrinted.toScala.mkString("")}")
@@ -489,7 +489,7 @@ object ExampleAmyLexer:
             val modifiedTokens2 = modifiedTokens.prepend(Token(Types.KeywordValue.Abstract, AmyLexer.keywordRule, "abstract".toStainless.size, "abstract".toStainless))
             println(f"Modified tokens unprintable: ${modifiedTokens2.map(t => t.asString()).toScala.mkString(", ")}")
 
-            println(f"Modified tokens unprintable: printable = ${Lexer.tokensListTwoByTwoPredicate(modifiedTokens2, from = 0, AmyLexer.rules, Lexer.separableTokensPredicate)}")
+            println(f"Modified tokens unprintable: printable = ${Lexer.separableTokens(modifiedTokens2, AmyLexer.rules)}")
 
 
             // and indeed if we print them and tokenise them again, we don't get the same tokens
