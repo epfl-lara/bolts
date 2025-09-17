@@ -85,6 +85,17 @@ trait LexerInterface {
       else tokens.size > 0 && otherP.size <= tokens.head.characters.size || !VerifiedRegexMatcher.matchR(otherR.regex, otherP))
     }
 
+    /**
+      * Means that tokens.forall(t => lex(rules, t.characters) == (t, Nil()))
+      * 
+      * This proves that each token can be produced individually by the lexer, i.e., the tokens are compatible with the rules
+      * 
+      * This is necessary to prove invertibility properties
+      *
+      * @param rules
+      * @param input
+      * @return
+      */
     @law @ghost def lexThenRulesProduceEachTokenIndividually[C](rules: List[Rule[C]], input: List[C]): Boolean = 
       (!rules.isEmpty && rulesInvariant(rules)) ==> {
         val (tokens, suffix) = lex(rules, Vector.fromList(input))
