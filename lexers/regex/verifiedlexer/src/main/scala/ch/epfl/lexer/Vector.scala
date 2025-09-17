@@ -66,7 +66,13 @@ case class Vector[T](@pure @extern underlying: scala.collection.immutable.Vector
     require(0 <= i && i <= size)
     val (l, r) = underlying.splitAt(i.toInt)
     (Vector(l), Vector(r))
-  }.ensuring(res => this.list.splitAtIndex(i) == (res._1.list, res._2.list))  
+  }.ensuring(res => this.list.splitAtIndex(i) == (res._1.list, res._2.list)) 
+
+  @pure @extern @inlineOnce
+  def slice(from: BigInt, to: BigInt): Vector[T] = {
+    require(0 <= from && from <= to && to <= size)
+    Vector(underlying.slice(from.toInt, to.toInt))
+  }.ensuring(res => res.list == list.slice(from, to))
 
 
   @pure @inlineOnce
@@ -88,6 +94,12 @@ case class Vector[T](@pure @extern underlying: scala.collection.immutable.Vector
     require(!isEmpty)
     underlying.head
   }.ensuring(_ == list.head)
+
+  @pure @extern @inlineOnce
+  def last: T = {
+    require(!isEmpty)
+    underlying.last
+  }.ensuring(_ == list.last)
 
   @pure @extern @inlineOnce
   def tail: Vector[T] = {

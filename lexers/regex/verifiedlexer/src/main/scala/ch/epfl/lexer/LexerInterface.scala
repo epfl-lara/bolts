@@ -20,6 +20,7 @@ import stainless.lang.StaticChecks.*
 trait TokenValue
 
 case class Token[C](value: TokenValue, rule: Rule[C], size: BigInt, @ghost originalCharacters: Vector[C]) {
+  require(!originalCharacters.isEmpty)
   require(originalCharacters == rule.transformation.witness(value))
   require(size == originalCharacters.size)
   def characters: Vector[C] = {
@@ -31,8 +32,10 @@ case class Token[C](value: TokenValue, rule: Rule[C], size: BigInt, @ghost origi
 }
 case class Rule[C](regex: Regex[C], tag: String, isSeparator: Boolean, transformation: Injection[Vector[C], TokenValue])
 
-trait LexerInterface {
 
+
+
+trait LexerInterface {
   /** Main function of the lexer
     *
     * It lexes the input list of characters using the set of rules

@@ -625,6 +625,38 @@ object ListUtils {
 
   // -------------------- LEMMAS --------------------
 
+
+  @ghost
+  @inlineOnce
+  @opaque
+  def lemmaSliceSubseq[B](l: List[B], i: BigInt, j: BigInt): Unit = {
+    require(i >= 0 && j >= i && j <= l.size)
+    decreases(l)
+    l match {
+      case Nil()        => ()
+      case Cons(hd, tl) => if (i == 0 && j == 0) then () 
+                          else if (i > 0) then lemmaSliceSubseq(tl, i - 1, j - 1)
+                          else lemmaSliceSubseq(tl, i, j - 1)
+    }
+  }.ensuring(_ => ListSpecs.subseq(l.slice(i, j), l))
+
+  @ghost
+  @inlineOnce
+  @opaque
+  def lemmaDropSubseq[B](l: List[B], i: BigInt): Unit = {
+    decreases(l)
+    (l, i) match {
+      case (Nil(), _) => ()
+      case (Cons(h, t), i) =>
+        if (i <= BigInt(0)) {
+          lemmaSubseqRefl(l)
+          ()
+        } else {
+          lemmaDropSubseq(t, i - 1)
+        }
+    }
+  }.ensuring(_ => ListSpecs.subseq(l.drop(i), l))
+
   @ghost 
   @inlineOnce
   @opaque
@@ -753,6 +785,29 @@ object ListUtils {
       case Nil() => ()
     }
   }.ensuring (_ => l.content.forall(p))
+
+  @inlineOnce
+  @opaque
+  @ghost
+  def lemmaForallSubseq[B](l1: List[B], l2: List[B], p: B => Boolean): Unit = {
+    require(l2.forall(p))
+    require(ListSpecs.subseq(l1, l2))
+    decreases(l2)
+    (l1, l2) match {
+      case (Nil(), _) => ()
+      case (Cons(x, xs), Cons(y, ys)) =>
+        if (x == y && ListSpecs.subseq(xs, ys)) {
+          lemmaForallSubseq(xs, ys, p)
+          assert(ys.forall(p))
+          assert(p(y))
+          assert(p(x))
+        } else {
+          assert(ListSpecs.subseq(l1, ys))
+          lemmaForallSubseq(l1, ys, p)
+        }
+      case _ => ()
+    }
+  }.ensuring (_ => l1.forall(p))
 
   @inlineOnce
   @opaque
