@@ -224,7 +224,12 @@ object VerifiedLexer {
 
           check(v(from + 1).characters.size > 0)
         })
-        separableTokensPredicateMem(v(from), v(from + 1), rules) && tokensListTwoByTwoPredicateSeparableMem(v, from + 1, rules)
+        // the following pattern is needed to avoid antialiasing issues with mutable caches
+        val tokensSep = separableTokensPredicateMem(v(from), v(from + 1), rules)
+        if tokensSep then
+          tokensListTwoByTwoPredicateSeparableMem(v, from + 1, rules)
+        else 
+          false
       else
         true
     }.ensuring(res => res == tokensListTwoByTwoPredicateSeparable(v, from, rules))
