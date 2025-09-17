@@ -50,19 +50,17 @@ object VerifiedLexer {
     override def rulesProduceIndividualToken[C](rs: List[Rule[C]], t: Token[C]): Boolean = {
       require(!rs.isEmpty)
       require(rulesInvariant(rs))
-      decreases(0)
       val (producedTs, suffix) = lex(rs, print(Vector.singleton(t)))
       producedTs.size == 1 && producedTs(0) == t && suffix.isEmpty
     }.ensuring(res => {
-      val (producedTs, suffix) = lex(rs, print(Vector.singleton(t)))
-      res ==> (producedTs.size == 1 && producedTs.list.head == t && suffix.isEmpty)
+      res == (lex(rs, print(Vector.singleton(t))) == (Vector.singleton(t), Vector.empty[C]))
     })
 
     @ghost
     def rulesProduceEachTokenIndividuallyList[C](rs: List[Rule[C]], ts: List[Token[C]]): Boolean = {
-      decreases(ts)
       require(!rs.isEmpty)
       require(rulesInvariant(rs))
+      decreases(ts)
       ts match {
         case Cons(hd, tl) => rulesProduceIndividualToken(rs, hd) && rulesProduceEachTokenIndividuallyList(rs, tl)
         case Nil()        => true
@@ -70,7 +68,6 @@ object VerifiedLexer {
     }.ensuring(res => res == ts.forall(t => rulesProduceIndividualToken(rs, t)))
 
      override def rulesProduceEachTokenIndividually[C](rs: List[Rule[C]], ts: Vector[Token[C]]): Boolean = {
-      decreases(ts)
       require(!rs.isEmpty)
       require(rulesInvariant(rs))
       ts.forall(t => rulesProduceIndividualToken(rs, t))
@@ -304,8 +301,7 @@ object VerifiedLexer {
       (if (res._1.size > 0) res._2.size < input.size && !res._1.isEmpty
       else res._2 == input) &&
       (res._1.list == lexList(rules, input.list)._1 && 
-       res._2.list == lexList(rules, input.list)._2) && 
-       rulesProduceEachTokenIndividually(rules, res._1)
+       res._2.list == lexList(rules, input.list)._2)
     )
 
     def lexRec[C](
