@@ -206,7 +206,7 @@ copying runtime jar...
 [info] # Threads: 1 thread, will synchronize iterations
 [info] # Benchmark mode: Average time, time/op
 [info] # Benchmark: ch.epfl.lexer.benchmark.lexer.JsonLexerBenchmark.lex_ZipperMem
-[info] # Parameters: (file = 102.json)
+[info] # Parameters: (file = 102_23677chars.json)
 [info] # Run progress: 0.00% complete, ETA 01:26:40
 [info] # Fork: 1 of 1
 [info] # Warmup Iteration   1: 41482.775 us/op
@@ -244,7 +244,7 @@ copying runtime jar...
 [info] # Threads: 1 thread, will synchronize iterations
 [info] # Benchmark mode: Average time, time/op
 [info] # Benchmark: ch.epfl.lexer.benchmark.lexer.JsonLexerBenchmark.lex_ZipperMem
-[info] # Parameters: (file = 122.json)
+[info] # Parameters: (file = 122_28308chars.json)
 [info] # Run progress: 3.85% complete, ETA 01:23:36
 [info] # Fork: 1 of 1
 [info] # Warmup Iteration   1: 48576.055 us/op
@@ -282,7 +282,7 @@ copying runtime jar...
 [info] # Threads: 1 thread, will synchronize iterations
 [info] # Benchmark mode: Average time, time/op
 [info] # Benchmark: ch.epfl.lexer.benchmark.lexer.JsonLexerBenchmark.lex_ZipperMem
-[info] # Parameters: (file = 142.json)
+[info] # Parameters: (file = 142_32958chars.json)
 [info] # Run progress: 7.69% complete, ETA 01:20:17
 [info] # Fork: 1 of 1
 [info] # Warmup Iteration   1: 54288.460 us/op
@@ -320,7 +320,7 @@ copying runtime jar...
 [info] # Threads: 1 thread, will synchronize iterations
 [info] # Benchmark mode: Average time, time/op
 [info] # Benchmark: ch.epfl.lexer.benchmark.lexer.JsonLexerBenchmark.lex_ZipperMem
-[info] # Parameters: (file = 162.json)
+[info] # Parameters: (file = 162_37599chars.json)
 [info] # Run progress: 11.54% complete, ETA 01:16:57
 [info] # Fork: 1 of 1
 [info] # Warmup Iteration   1: 65294.313 us/op
@@ -358,7 +358,7 @@ copying runtime jar...
 [info] # Threads: 1 thread, will synchronize iterations
 [info] # Benchmark mode: Average time, time/op
 [info] # Benchmark: ch.epfl.lexer.benchmark.lexer.JsonLexerBenchmark.lex_ZipperMem
-[info] # Parameters: (file = 182.json)
+[info] # Parameters: (file = 182_42231chars.json)
 [info] # Run progress: 15.38% complete, ETA 01:13:36
 [info] # Fork: 1 of 1
 [info] # Warmup Iteration   1: 71228.814 us/op
@@ -396,7 +396,7 @@ copying runtime jar...
 [info] # Threads: 1 thread, will synchronize iterations
 [info] # Benchmark mode: Average time, time/op
 [info] # Benchmark: ch.epfl.lexer.benchmark.lexer.JsonLexerBenchmark.lex_ZipperMem
-[info] # Parameters: (file = 2.json)
+[info] # Parameters: (file = 2_456chars.json)
 [info] # Run progress: 19.23% complete, ETA 01:10:17
 [info] # Fork: 1 of 1
 [info] # Warmup Iteration   1: 866.703 us/op
@@ -434,7 +434,7 @@ copying runtime jar...
 [info] # Threads: 1 thread, will synchronize iterations
 [info] # Benchmark mode: Average time, time/op
 [info] # Benchmark: ch.epfl.lexer.benchmark.lexer.JsonLexerBenchmark.lex_ZipperMem
-[info] # Parameters: (file = 202.json)
+[info] # Parameters: (file = 202_46879chars.json)
 [info] # Run progress: 23.08% complete, ETA 01:06:54
 [info] # Fork: 1 of 1
 [info] # Warmup Iteration   1: 80505.013 us/op
@@ -472,7 +472,7 @@ copying runtime jar...
 [info] # Threads: 1 thread, will synchronize iterations
 [info] # Benchmark mode: Average time, time/op
 [info] # Benchmark: ch.epfl.lexer.benchmark.lexer.JsonLexerBenchmark.lex_ZipperMem
-[info] # Parameters: (file = 22.json)
+[info] # Parameters: (file = 22_5115chars.json)
 [info] # Run progress: 26.92% complete, ETA 01:03:34
 [info] # Fork: 1 of 1
 [info] # Warmup Iteration   1: 9226.851 us/op
@@ -510,7 +510,7 @@ copying runtime jar...
 [info] # Threads: 1 thread, will synchronize iterations
 [info] # Benchmark mode: Average time, time/op
 [info] # Benchmark: ch.epfl.lexer.benchmark.lexer.JsonLexerBenchmark.lex_ZipperMem
-[info] # Parameters: (file = 222.json)
+[info] # Parameters: (file = 222_51521chars.json)
 [info] # Run progress: 30.77% complete, ETA 01:00:13
 [info] # Fork: 1 of 1
 [info] # Warmup Iteration   1: 96366.521 us/op
@@ -548,7 +548,7 @@ copying runtime jar...
 [info] # Threads: 1 thread, will synchronize iterations
 [info] # Benchmark mode: Average time, time/op
 [info] # Benchmark: ch.epfl.lexer.benchmark.lexer.JsonLexerBenchmark.lex_ZipperMem
-[info] # Parameters: (file = 242.json)
+[info] # Parameters: (file = 242_56154chars.json)
 [info] # Run progress: 34.62% complete, ETA 00:56:53
 [info] # Fork: 1 of 1
 [info] # Warmup Iteration   1: 90516.406 us/op
@@ -586,7 +586,7 @@ copying runtime jar...
 [info] # Threads: 1 thread, will synchronize iterations
 [info] # Benchmark mode: Average time, time/op
 [info] # Benchmark: ch.epfl.lexer.benchmark.lexer.JsonLexerBenchmark.lex_ZipperMem
-[info] # Parameters: (file = 42.json)
+[info] # Parameters: (file = 42_9755chars.json)
 [info] # Run progress: 38.46% complete, ETA 00:53:33
 [info] # Fork: 1 of 1
 [info] # Warmup Iteration   1: 16478.348 us/op
@@ -624,7 +624,7 @@ copying runtime jar...
 [info] # Threads: 1 thread, will synchronize iterations
 [info] # Benchmark mode: Average time, time/op
 [info] # Benchmark: ch.epfl.lexer.benchmark.lexer.JsonLexerBenchmark.lex_ZipperMem
-[info] # Parameters: (file = 62.json)
+[info] # Parameters: (file = 62_14377chars.json)
 [info] # Run progress: 42.31% complete, ETA 00:50:12
 [info] # Fork: 1 of 1
 [info] # Warmup Iteration   1: 26302.424 us/op
@@ -662,7 +662,7 @@ copying runtime jar...
 [info] # Threads: 1 thread, will synchronize iterations
 [info] # Benchmark mode: Average time, time/op
 [info] # Benchmark: ch.epfl.lexer.benchmark.lexer.JsonLexerBenchmark.lex_ZipperMem
-[info] # Parameters: (file = 82.json)
+[info] # Parameters: (file = 82_19037chars.json)
 [info] # Run progress: 46.15% complete, ETA 00:46:50
 [info] # Fork: 1 of 1
 [info] # Warmup Iteration   1: 32517.253 us/op
@@ -700,7 +700,7 @@ copying runtime jar...
 [info] # Threads: 1 thread, will synchronize iterations
 [info] # Benchmark mode: Average time, time/op
 [info] # Benchmark: ch.epfl.lexer.benchmark.lexer.JsonLexerBenchmark.separability_pred
-[info] # Parameters: (file = 102.json)
+[info] # Parameters: (file = 102_23677chars.json)
 [info] # Run progress: 50.00% complete, ETA 00:43:30
 [info] # Fork: 1 of 1
 [info] # Warmup Iteration   1: 10076.686 us/op
@@ -738,7 +738,7 @@ copying runtime jar...
 [info] # Threads: 1 thread, will synchronize iterations
 [info] # Benchmark mode: Average time, time/op
 [info] # Benchmark: ch.epfl.lexer.benchmark.lexer.JsonLexerBenchmark.separability_pred
-[info] # Parameters: (file = 122.json)
+[info] # Parameters: (file = 122_28308chars.json)
 [info] # Run progress: 53.85% complete, ETA 00:40:08
 [info] # Fork: 1 of 1
 [info] # Warmup Iteration   1: 11678.945 us/op
@@ -776,7 +776,7 @@ copying runtime jar...
 [info] # Threads: 1 thread, will synchronize iterations
 [info] # Benchmark mode: Average time, time/op
 [info] # Benchmark: ch.epfl.lexer.benchmark.lexer.JsonLexerBenchmark.separability_pred
-[info] # Parameters: (file = 142.json)
+[info] # Parameters: (file = 142_32958chars.json)
 [info] # Run progress: 57.69% complete, ETA 00:36:47
 [info] # Fork: 1 of 1
 [info] # Warmup Iteration   1: 13885.994 us/op
@@ -814,7 +814,7 @@ copying runtime jar...
 [info] # Threads: 1 thread, will synchronize iterations
 [info] # Benchmark mode: Average time, time/op
 [info] # Benchmark: ch.epfl.lexer.benchmark.lexer.JsonLexerBenchmark.separability_pred
-[info] # Parameters: (file = 162.json)
+[info] # Parameters: (file = 162_37599chars.json)
 [info] # Run progress: 61.54% complete, ETA 00:33:27
 [info] # Fork: 1 of 1
 [info] # Warmup Iteration   1: 15914.032 us/op
@@ -852,7 +852,7 @@ copying runtime jar...
 [info] # Threads: 1 thread, will synchronize iterations
 [info] # Benchmark mode: Average time, time/op
 [info] # Benchmark: ch.epfl.lexer.benchmark.lexer.JsonLexerBenchmark.separability_pred
-[info] # Parameters: (file = 182.json)
+[info] # Parameters: (file = 182_42231chars.json)
 [info] # Run progress: 65.38% complete, ETA 00:30:06
 [info] # Fork: 1 of 1
 [info] # Warmup Iteration   1: 17934.848 us/op
@@ -890,7 +890,7 @@ copying runtime jar...
 [info] # Threads: 1 thread, will synchronize iterations
 [info] # Benchmark mode: Average time, time/op
 [info] # Benchmark: ch.epfl.lexer.benchmark.lexer.JsonLexerBenchmark.separability_pred
-[info] # Parameters: (file = 2.json)
+[info] # Parameters: (file = 2_456chars.json)
 [info] # Run progress: 69.23% complete, ETA 00:26:45
 [info] # Fork: 1 of 1
 [info] # Warmup Iteration   1: 189.390 us/op
@@ -928,7 +928,7 @@ copying runtime jar...
 [info] # Threads: 1 thread, will synchronize iterations
 [info] # Benchmark mode: Average time, time/op
 [info] # Benchmark: ch.epfl.lexer.benchmark.lexer.JsonLexerBenchmark.separability_pred
-[info] # Parameters: (file = 202.json)
+[info] # Parameters: (file = 202_46879chars.json)
 [info] # Run progress: 73.08% complete, ETA 00:23:24
 [info] # Fork: 1 of 1
 [info] # Warmup Iteration   1: 18942.124 us/op
@@ -966,7 +966,7 @@ copying runtime jar...
 [info] # Threads: 1 thread, will synchronize iterations
 [info] # Benchmark mode: Average time, time/op
 [info] # Benchmark: ch.epfl.lexer.benchmark.lexer.JsonLexerBenchmark.separability_pred
-[info] # Parameters: (file = 22.json)
+[info] # Parameters: (file = 22_5115chars.json)
 [info] # Run progress: 76.92% complete, ETA 00:20:03
 [info] # Fork: 1 of 1
 [info] # Warmup Iteration   1: 2193.888 us/op
@@ -1004,7 +1004,7 @@ copying runtime jar...
 [info] # Threads: 1 thread, will synchronize iterations
 [info] # Benchmark mode: Average time, time/op
 [info] # Benchmark: ch.epfl.lexer.benchmark.lexer.JsonLexerBenchmark.separability_pred
-[info] # Parameters: (file = 222.json)
+[info] # Parameters: (file = 222_51521chars.json)
 [info] # Run progress: 80.77% complete, ETA 00:16:43
 [info] # Fork: 1 of 1
 [info] # Warmup Iteration   1: 21797.389 us/op
@@ -1042,7 +1042,7 @@ copying runtime jar...
 [info] # Threads: 1 thread, will synchronize iterations
 [info] # Benchmark mode: Average time, time/op
 [info] # Benchmark: ch.epfl.lexer.benchmark.lexer.JsonLexerBenchmark.separability_pred
-[info] # Parameters: (file = 242.json)
+[info] # Parameters: (file = 242_56154chars.json)
 [info] # Run progress: 84.62% complete, ETA 00:13:22
 [info] # Fork: 1 of 1
 [info] # Warmup Iteration   1: 24274.175 us/op
@@ -1080,7 +1080,7 @@ copying runtime jar...
 [info] # Threads: 1 thread, will synchronize iterations
 [info] # Benchmark mode: Average time, time/op
 [info] # Benchmark: ch.epfl.lexer.benchmark.lexer.JsonLexerBenchmark.separability_pred
-[info] # Parameters: (file = 42.json)
+[info] # Parameters: (file = 42_9755chars.json)
 [info] # Run progress: 88.46% complete, ETA 00:10:01
 [info] # Fork: 1 of 1
 [info] # Warmup Iteration   1: 3882.002 us/op
@@ -1118,7 +1118,7 @@ copying runtime jar...
 [info] # Threads: 1 thread, will synchronize iterations
 [info] # Benchmark mode: Average time, time/op
 [info] # Benchmark: ch.epfl.lexer.benchmark.lexer.JsonLexerBenchmark.separability_pred
-[info] # Parameters: (file = 62.json)
+[info] # Parameters: (file = 62_14377chars.json)
 [info] # Run progress: 92.31% complete, ETA 00:06:41
 [info] # Fork: 1 of 1
 [info] # Warmup Iteration   1: 5859.270 us/op
@@ -1156,7 +1156,7 @@ copying runtime jar...
 [info] # Threads: 1 thread, will synchronize iterations
 [info] # Benchmark mode: Average time, time/op
 [info] # Benchmark: ch.epfl.lexer.benchmark.lexer.JsonLexerBenchmark.separability_pred
-[info] # Parameters: (file = 82.json)
+[info] # Parameters: (file = 82_19037chars.json)
 [info] # Run progress: 96.15% complete, ETA 00:03:20
 [info] # Fork: 1 of 1
 [info] # Warmup Iteration   1: 8316.013 us/op
@@ -1190,30 +1190,30 @@ copying runtime jar...
 [info] the benchmarking environment is safe on JVM/OS/HW level, ask for reviews from the domain experts.
 [info] Do not assume the numbers tell you what you want them to tell.
 [info] Benchmark                               (file)  Mode  Cnt      Score      Error  Units
-[info] JsonLexerBenchmark.lex_ZipperMem      102.json  avgt   10  35981.325 ±  599.211  us/op
-[info] JsonLexerBenchmark.lex_ZipperMem      122.json  avgt   10  42694.918 ± 1154.272  us/op
-[info] JsonLexerBenchmark.lex_ZipperMem      142.json  avgt   10  48079.772 ± 1385.602  us/op
-[info] JsonLexerBenchmark.lex_ZipperMem      162.json  avgt   10  56432.218 ± 1483.416  us/op
-[info] JsonLexerBenchmark.lex_ZipperMem      182.json  avgt   10  62008.582 ±  994.884  us/op
-[info] JsonLexerBenchmark.lex_ZipperMem        2.json  avgt   10    659.970 ±   20.938  us/op
-[info] JsonLexerBenchmark.lex_ZipperMem      202.json  avgt   10  70666.477 ± 2258.280  us/op
-[info] JsonLexerBenchmark.lex_ZipperMem       22.json  avgt   10   7839.284 ±  191.300  us/op
-[info] JsonLexerBenchmark.lex_ZipperMem      222.json  avgt   10  78711.751 ± 1178.192  us/op
-[info] JsonLexerBenchmark.lex_ZipperMem      242.json  avgt   10  78394.077 ± 1767.092  us/op
-[info] JsonLexerBenchmark.lex_ZipperMem       42.json  avgt   10  14327.826 ±  512.815  us/op
-[info] JsonLexerBenchmark.lex_ZipperMem       62.json  avgt   10  21324.393 ±  525.802  us/op
-[info] JsonLexerBenchmark.lex_ZipperMem       82.json  avgt   10  28541.615 ±  660.448  us/op
-[info] JsonLexerBenchmark.separability_pred  102.json  avgt   10   8024.700 ±   49.515  us/op
-[info] JsonLexerBenchmark.separability_pred  122.json  avgt   10   9164.341 ±  167.010  us/op
-[info] JsonLexerBenchmark.separability_pred  142.json  avgt   10  11130.677 ±  151.434  us/op
-[info] JsonLexerBenchmark.separability_pred  162.json  avgt   10  12988.923 ±  275.603  us/op
-[info] JsonLexerBenchmark.separability_pred  182.json  avgt   10  14294.894 ±  425.518  us/op
-[info] JsonLexerBenchmark.separability_pred    2.json  avgt   10    153.240 ±    1.294  us/op
-[info] JsonLexerBenchmark.separability_pred  202.json  avgt   10  15234.794 ±  141.606  us/op
-[info] JsonLexerBenchmark.separability_pred   22.json  avgt   10   1717.927 ±   37.713  us/op
-[info] JsonLexerBenchmark.separability_pred  222.json  avgt   10  17514.651 ±  351.473  us/op
-[info] JsonLexerBenchmark.separability_pred  242.json  avgt   10  18400.392 ±  849.302  us/op
-[info] JsonLexerBenchmark.separability_pred   42.json  avgt   10   3114.891 ±   39.680  us/op
-[info] JsonLexerBenchmark.separability_pred   62.json  avgt   10   4659.089 ±  102.339  us/op
-[info] JsonLexerBenchmark.separability_pred   82.json  avgt   10   6501.347 ±  121.222  us/op
+[info] JsonLexerBenchmark.lex_ZipperMem      102_23677chars.json  avgt   10  35981.325 ±  599.211  us/op
+[info] JsonLexerBenchmark.lex_ZipperMem      122_28308chars.json  avgt   10  42694.918 ± 1154.272  us/op
+[info] JsonLexerBenchmark.lex_ZipperMem      142_32958chars.json  avgt   10  48079.772 ± 1385.602  us/op
+[info] JsonLexerBenchmark.lex_ZipperMem      162_37599chars.json  avgt   10  56432.218 ± 1483.416  us/op
+[info] JsonLexerBenchmark.lex_ZipperMem      182_42231chars.json  avgt   10  62008.582 ±  994.884  us/op
+[info] JsonLexerBenchmark.lex_ZipperMem        2_456chars.json  avgt   10    659.970 ±   20.938  us/op
+[info] JsonLexerBenchmark.lex_ZipperMem      202_46879chars.json  avgt   10  70666.477 ± 2258.280  us/op
+[info] JsonLexerBenchmark.lex_ZipperMem       22_5115chars.json  avgt   10   7839.284 ±  191.300  us/op
+[info] JsonLexerBenchmark.lex_ZipperMem      222_51521chars.json  avgt   10  78711.751 ± 1178.192  us/op
+[info] JsonLexerBenchmark.lex_ZipperMem      242_56154chars.json  avgt   10  78394.077 ± 1767.092  us/op
+[info] JsonLexerBenchmark.lex_ZipperMem       42_9755chars.json  avgt   10  14327.826 ±  512.815  us/op
+[info] JsonLexerBenchmark.lex_ZipperMem       62_14377chars.json  avgt   10  21324.393 ±  525.802  us/op
+[info] JsonLexerBenchmark.lex_ZipperMem       82_19037chars.json  avgt   10  28541.615 ±  660.448  us/op
+[info] JsonLexerBenchmark.separability_pred  102_23677chars.json  avgt   10   8024.700 ±   49.515  us/op
+[info] JsonLexerBenchmark.separability_pred  122_28308chars.json  avgt   10   9164.341 ±  167.010  us/op
+[info] JsonLexerBenchmark.separability_pred  142_32958chars.json  avgt   10  11130.677 ±  151.434  us/op
+[info] JsonLexerBenchmark.separability_pred  162_37599chars.json  avgt   10  12988.923 ±  275.603  us/op
+[info] JsonLexerBenchmark.separability_pred  182_42231chars.json  avgt   10  14294.894 ±  425.518  us/op
+[info] JsonLexerBenchmark.separability_pred    2_456chars.json  avgt   10    153.240 ±    1.294  us/op
+[info] JsonLexerBenchmark.separability_pred  202_46879chars.json  avgt   10  15234.794 ±  141.606  us/op
+[info] JsonLexerBenchmark.separability_pred   22_5115chars.json  avgt   10   1717.927 ±   37.713  us/op
+[info] JsonLexerBenchmark.separability_pred  222_51521chars.json  avgt   10  17514.651 ±  351.473  us/op
+[info] JsonLexerBenchmark.separability_pred  242_56154chars.json  avgt   10  18400.392 ±  849.302  us/op
+[info] JsonLexerBenchmark.separability_pred   42_9755chars.json  avgt   10   3114.891 ±   39.680  us/op
+[info] JsonLexerBenchmark.separability_pred   62_14377chars.json  avgt   10   4659.089 ±  102.339  us/op
+[info] JsonLexerBenchmark.separability_pred   82_19037chars.json  avgt   10   6501.347 ±  121.222  us/op
 [success] Total time: 5232 s (01:27:12), completed Sep 16, 2025, 4:21:34 PM
