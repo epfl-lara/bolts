@@ -1,6 +1,11 @@
 package ch.epfl.lexer.example
 
 import stainless.annotation.extern
+import stainless.lang.Option
+import stainless.lang.Some
+import stainless.lang.None
+
+
 import ch.epfl.lexer.{Token, Rule}
 
 import ch.epfl.lexer.Vector
@@ -12,6 +17,8 @@ import ch.epfl.lexer.MemoisationZipper
 import ch.epfl.lexer.example.ExampleUtils.ContextCharHashable
 import ch.epfl.lexer.example.ExampleUtils.RegexContextCharHashable
 import ch.epfl.lexer.VerifiedLexer.PrintableTokens
+import ch.epfl.lexer.VerifiedLexer.Lexer
+import ch.epfl.lexer.VerifiedLexer.PrintableTokensFromTokens
 
 object JsonManipulationExample:
 
@@ -29,10 +36,9 @@ object JsonManipulationExample:
 
   /** Returns the indices of all the open braces in the token list
     *
-    * Marked as extern because we don't want to prove it here, but we just need the indices to be valid
     * @param ts
     */
-  @extern def indicesOfOpenBraces(ts: Vector[Token[Char]]): Vector[BigInt] = {
+  def indicesOfOpenBraces(ts: Vector[Token[Char]]): Vector[BigInt] = {
     def rec(from: BigInt, acc: Vector[BigInt]): Vector[BigInt] = 
       if (from >= ts.size) then
         acc
@@ -47,10 +53,10 @@ object JsonManipulationExample:
   }.ensuring(res => res.forall(i => 0 <= i && i < ts.size))
 
   def lexAndCheckPrintable(input: Vector[Char]): Option[PrintableTokens[Char]] = 
-    val (tokens, _) = JsonLexer.lex(input, cacheUp, cacheDown)
-    val printableTokens = tokens.filter(t => t.value.isInstanceOf[KeywordValue] || t.value.isInstanceOf[StringValue])
-    PrintableTokens
-  end lexAndCheckPrintable
+    val (tokens, _) = Lexer.lexMem(JsonLexer.rules, input)(using cacheUp, cacheDown)
+    PrintableTokensFromTokens(JsonLexer.rules, tokens)
+
+  def parseID(obj: Vector[Token[Char]])
 
 
 
