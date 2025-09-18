@@ -25,21 +25,38 @@ class JsonLexerBenchmark {
 
   @Param(
     Array(
-    "102.json",
-    "122.json",
-    "142.json",
-    "162.json",
-    "182.json",
-    "2.json",
-    "202.json",
-    "22.json",
-    "222.json",
-    "242.json",
-    "42.json",
-    "62.json",
-    "82.json",
+    "102_23677chars.json",
+    "122_28308chars.json",
+    "142_32958chars.json",
+    "162_37599chars.json",
+    "182_42231chars.json",
+    "202_46879chars.json",
+    "222_51521chars.json",
+    "22_5115chars.json",
+    "242_56154chars.json",
+    "2_456chars.json",
+    "42_9755chars.json",
+    "62_14377chars.json",
+    "82_19037chars.json",
     )
   )
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
   var file: String = uninitialized
 
 
@@ -70,22 +87,22 @@ class JsonLexerBenchmark {
 
 object JsonLexerBenchmarkUtils {
   val exampleFileNames: Seq[String] = Seq(
-    "102.json",
-    "122.json",
-    "142.json",
-    "162.json",
-    "182.json",
-    "2.json",
-    "202.json",
-    "22.json",
-    "222.json",
-    "242.json",
-    "42.json",
-    "62.json",
-    "82.json",
+    "102_23677chars.json",
+    "122_28308chars.json",
+    "142_32958chars.json",
+    "162_37599chars.json",
+    "182_42231chars.json",
+    "202_46879chars.json",
+    "222_51521chars.json",
+    "22_5115chars.json",
+    "242_56154chars.json",
+    "2_456chars.json",
+    "42_9755chars.json",
+    "62_14377chars.json",
+    "82_19037chars.json",
   )
   val exampleFileContents: Map[String, Vector[Char]] = exampleFileNames.map(name => {
-    val source = scala.io.Source.fromFile(s"src/main/scala/ch/epfl/example/res/json/$name")
+    val source = scala.io.Source.fromFile(s"src/main/scala/ch/epfl/benchmark/res/json/$name")
     val lines = try source.mkString.toStainless finally source.close()
     (name -> lines)
   }).toMap

@@ -32,25 +32,19 @@ import ch.epfl.lexer.benchmark.RegexContextCharHashable
 
 object Main {
   def main(args: Array[String]): Unit = {
-    println(f"intRe.match(12) = ${matchZipperVector(JsonLexer.intRe, "12".toStainless)}")
-    println(f"intRe.match(\" \") = ${matchZipperVector(JsonLexer.wsCharRe, " ".toStainless)}")
-    testJsonLexer()
+    // println(f"intRe.match(12) = ${matchZipperVector(JsonLexer.intRe, "12".toStainless)}")
+    // println(f"intRe.match(\" \") = ${matchZipperVector(JsonLexer.wsCharRe, " ".toStainless)}")
+    // testJsonLexer()
 
+    // for i <- 1 to 12 do
+    //   val tokens1 = tokeniseJsonFileMem(s"src/main/scala/ch/epfl/benchmark/res/json/82_19037chars.json", s"src/main/scala/ch/epfl/benchmark/res/json/82_19037chars.tokens")
+
+    // timeTokenizeJsonFileMem(s"src/main/scala/ch/epfl/benchmark/res/json/2420_561544chars.json")
+    // val tokens = tokeniseJsonFileMem(s"src/main/scala/ch/epfl/benchmark/res/json/2420_561544chars.json", s"src/main/scala/ch/epfl/benchmark/res/json/2420_561544chars.json.tokens")
     // val timeBefore = System.nanoTime()
-    // val tokens = tokeniseJsonFileMem("src/main/scala/ch/epfl/example/res/json/2420.json","src/main/scala/ch/epfl/example/res/json/2420.json.tokens")
+    // assert(Lexer.separableTokensMem(tokens, JsonLexer.rules)(using MemoisationZipper.emptyUp(ContextCharHashable), MemoisationZipper.emptyDown(RegexContextCharHashable)))
     // val timeAfter = System.nanoTime()
-    // println(f"Time taken for 2420.json: ${(timeAfter - timeBefore) / 1e6} ms")
-    // println(f"Tokens per second: ${tokens.size.toDouble / ((timeAfter - timeBefore) / 1e9)}")
-
-    for i <- 1 to 12 do
-      val tokens1 = tokeniseJsonFileMem(s"src/main/scala/ch/epfl/example/res/json/82.json", s"src/main/scala/ch/epfl/example/res/json/82.tokens")
-
-    timeTokenizeJsonFileMem(s"src/main/scala/ch/epfl/example/res/json/2420.json")
-    val tokens = tokeniseJsonFileMem(s"src/main/scala/ch/epfl/example/res/json/2420.json", s"src/main/scala/ch/epfl/example/res/json/2420.json.tokens")
-    val timeBefore = System.nanoTime()
-    assert(Lexer.separableTokensMem(tokens, JsonLexer.rules)(using MemoisationZipper.emptyUp(ContextCharHashable), MemoisationZipper.emptyDown(RegexContextCharHashable)))
-    val timeAfter = System.nanoTime()
-    println(f"Time taken to check separability: ${(timeAfter - timeBefore) / 1e6} ms")
+    // println(f"Time taken to check separability: ${(timeAfter - timeBefore) / 1e6} ms")
 
   }
 }
