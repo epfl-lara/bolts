@@ -129,6 +129,15 @@ case class Vector[T](@pure @extern underlying: scala.collection.immutable.Vector
     }
   }.ensuring(res => res.list == list.slice(from, to))
 
+  @pure @extern @inlineOnce
+  def filter(f: T => Boolean): Vector[T] = {
+    if (size < MAX_INT) {
+      Vector(underlying.filter(f))
+    } else {
+      Vector(underlying.filter(f), overflowing.filter(f)).rebalance()
+    }
+  }.ensuring(res => res.list == list.filter(f))
+
 
   @pure @inlineOnce
   def isEmpty: Boolean = {
@@ -258,6 +267,7 @@ object Vector {
   def fromList[T](l: List[T]): Vector[T] = {
     
     def rec(ll: List[T], v: Vector[T]): Vector[T] = {
+      decreases(ll.size)
       ll match {
         case Nil() => v
         case Cons(x, xs) => 
