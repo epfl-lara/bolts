@@ -22,9 +22,29 @@ object VerifiedLexer {
   import ch.epfl.lexer.MemoisationZipper.CacheDown
 
   case class PrintableTokens[C](rules: List[Rule[C]], tokens: Vector[Token[C]]) {
+      require(!rules.isEmpty)
       require(Lexer.rulesInvariant(rules))
       require(Lexer.rulesProduceEachTokenIndividually(rules, tokens))
       require(Lexer.separableTokens(tokens, rules))
+
+      /** Safe constructor that returns None if the tokens are not printable with the given rules
+        *
+        * This should be used at runtime as invariants are erased
+        * @param rules
+        * @param tokens
+        * @return
+        */
+      def fromTokens(rules: List[Rule[C]], tokens: Vector[Token[C]]): Option[PrintableTokens[C]] = {
+        require(!rules.isEmpty)
+        require(Lexer.rulesInvariant(rules)) // this should checked at runtime before lexing
+        require(Lexer.rulesProduceEachTokenIndividually(rules, tokens)) // this is ensured by lexing
+
+        if (Lexer.separableTokens(tokens, rules)) {
+          Some(PrintableTokens(rules, tokens))
+        } else {
+          None()
+        }
+      }.ensuring(res => res.isEmpty || (res.get.rules == rules && res.get.tokens == tokens))
 
       def lemmaInvariant(): Unit = {
       }.ensuring(_ => Lexer.rulesInvariant(rules) && Lexer.rulesProduceEachTokenIndividually(rules, tokens) && Lexer.separableTokens(tokens, rules))
@@ -278,6 +298,7 @@ object VerifiedLexer {
       require(!rules.isEmpty)
       require(rulesInvariant(rules))
       require(rulesProduceEachTokenIndividually(rules, tokens))
+
       tokensListTwoByTwoPredicateSeparable(tokens, from = 0, rules)
 
     def separableTokensMem[C](tokens: Vector[Token[C]], rules: List[Rule[C]])(using cacheUp: CacheUp[C], cacheDown: CacheDown[C]): Boolean = { 
