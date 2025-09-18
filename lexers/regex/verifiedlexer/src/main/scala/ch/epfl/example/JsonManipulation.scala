@@ -11,6 +11,7 @@ import ch.epfl.lexer.example.ExampleJsonLexer.JsonLexer
 import ch.epfl.lexer.MemoisationZipper
 import ch.epfl.lexer.example.ExampleUtils.ContextCharHashable
 import ch.epfl.lexer.example.ExampleUtils.RegexContextCharHashable
+import ch.epfl.lexer.VerifiedLexer.PrintableTokens
 
 object JsonManipulationExample:
 
@@ -45,7 +46,13 @@ object JsonManipulationExample:
     rec(0, Vector.empty[BigInt])
   }.ensuring(res => res.forall(i => 0 <= i && i < ts.size))
 
-  
+  def lexAndCheckPrintable(input: Vector[Char]): Option[PrintableTokens[Char]] = 
+    val (tokens, _) = JsonLexer.lex(input, cacheUp, cacheDown)
+    val printableTokens = tokens.filter(t => t.value.isInstanceOf[KeywordValue] || t.value.isInstanceOf[StringValue])
+    PrintableTokens
+  end lexAndCheckPrintable
+
+
 
 
 end JsonManipulationExample
