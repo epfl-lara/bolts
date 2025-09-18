@@ -31,6 +31,7 @@ def dummyInt(x: BigInt): BigInt = {
 trait TokenValue
 
 case class Token[C](value: TokenValue, rule: Rule[C], size: BigInt, @ghost originalCharacters: Vector[C]) {
+  require(!originalCharacters.isEmpty)
   require(originalCharacters == rule.transformation.witness(value))
   require(size == originalCharacters.size)
   def characters: Vector[C] = {
@@ -42,8 +43,10 @@ case class Token[C](value: TokenValue, rule: Rule[C], size: BigInt, @ghost origi
 }
 case class Rule[C](regex: Regex[C], tag: String, isSeparator: Boolean, transformation: Injection[Vector[C], TokenValue])
 
-trait LexerInterface {
 
+
+
+trait LexerInterface {
   /** Main function of the lexer
     *
     * It lexes the input list of characters using the set of rules
@@ -96,6 +99,17 @@ trait LexerInterface {
       else tokens.size > 0 && otherP.size <= tokens.head.characters.size || !VerifiedRegexMatcher.matchR(otherR.regex, otherP))
     }
 
+    /**
+      * Means that tokens.forall(t => lex(rules, t.characters) == (t, Nil()))
+      * 
+      * This proves that each token can be produced individually by the lexer, i.e., the tokens are compatible with the rules
+      * 
+      * This is necessary to prove invertibility properties
+      *
+      * @param rules
+      * @param input
+      * @return
+      */
     @law @ghost def lexThenRulesProduceEachTokenIndividually[C](rules: List[Rule[C]], input: List[C]): Boolean = 
       (!rules.isEmpty && rulesInvariant(rules)) ==> {
         val (tokens, suffix) = lex(rules, Vector.fromList(input))

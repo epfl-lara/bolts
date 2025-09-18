@@ -30,8 +30,135 @@ object VerifiedLexer {
   import ch.epfl.lexer.MemoisationZipper.CacheUp
   import ch.epfl.lexer.MemoisationZipper.CacheDown
 
-  case object Lexer extends LexerInterface {
+  case class PrintableTokens[C](rules: List[Rule[C]], tokens: Vector[Token[C]]) {
+      require(Lexer.rulesInvariant(rules))
+      require(Lexer.rulesProduceEachTokenIndividually(rules, tokens))
+      require(Lexer.separableTokens(tokens, rules))
 
+      def lemmaInvariant(): Unit = {
+      }.ensuring(_ => Lexer.rulesInvariant(rules) && Lexer.rulesProduceEachTokenIndividually(rules, tokens) && Lexer.separableTokens(tokens, rules))
+
+      def print(): Vector[C] = {
+        ghostExpr({
+          Lexer.theoremInvertabilityWhenTokenListSeparable(rules, tokens.list)
+          Vector.listEqImpliesEq(Vector.fromList(tokens.list), tokens)
+          Vector.listEqImpliesEq(Lexer.lex(rules, Lexer.print(tokens))._2 , Vector.empty[C])
+          Vector.listEqImpliesEq(Lexer.lex(rules, Lexer.print(tokens))._1, tokens)
+        })
+        Lexer.print(tokens)
+      }.ensuring(res => Lexer.lex(rules, res) == (tokens, Vector.empty[C]))
+
+      def append(other: PrintableTokens[C]): Option[PrintableTokens[C]] = {
+        require(rules == other.rules)
+        other.lemmaInvariant()
+        this.lemmaInvariant()
+        if(other.tokens.isEmpty) {
+          assert(this.rules == other.rules)
+          ghostExpr(Vector.listEqImpliesEq(tokens ++ other.tokens, Vector.fromList(tokens.list ++ other.tokens.list)))
+          ghostExpr(Vector.listEqImpliesEq(other.tokens , Vector.empty[Token[C]]))
+          ghostExpr(Vector.listEqImpliesEq(this.tokens ++ Vector.empty[Token[C]], this.tokens))
+
+          ghostExpr(Vector.listEqImpliesEq(this.print(), Vector.fromList(Lexer.printList(this.tokens.list))))
+          ghostExpr(Lexer.lemmaPrintConcatSameAsConcatPrint(this.tokens.list, Nil[Token[C]]()))
+          ghostExpr(unfold(Lexer.printList(Nil[Token[C]]())))
+
+          ghostExpr(unfold(this.print()))
+          ghostExpr(unfold(other.print()))
+          ghostExpr(unfold(Lexer.print(other.tokens)))
+          ghostExpr(unfold(Lexer.printList(other.tokens.list)))
+          assert(Lexer.print(other.tokens) == Vector.empty[C])
+
+          ghostExpr(Vector.listEqImpliesEq(this.print() ++ Vector.empty[C], this.print()))
+
+          Some(this)
+        } else if(this.tokens.isEmpty) {
+          ghostExpr(Vector.listEqImpliesEq(tokens ++ other.tokens, Vector.fromList(tokens.list ++ other.tokens.list)))
+          assert(this.rules == other.rules)
+          ghostExpr(Vector.listEqImpliesEq(this.tokens , Vector.empty[Token[C]]))
+          ghostExpr(Vector.listEqImpliesEq(Vector.empty[Token[C]] ++ other.tokens, other.tokens))
+          assert(this.tokens == Vector.empty[Token[C]])
+          assert(other.tokens == Vector.empty[Token[C]] ++ other.tokens)
+          ghostExpr(Vector.listEqImpliesEq(other.print(), Vector.fromList(Lexer.printList(other.tokens.list))))
+          ghostExpr(Lexer.lemmaPrintConcatSameAsConcatPrint(Nil(), other.tokens.list))
+
+          ghostExpr(unfold(Lexer.printList(Nil[Token[C]]())))
+
+          ghostExpr(unfold(this.print()))
+          ghostExpr(unfold(other.print()))
+          ghostExpr(unfold(Lexer.print(other.tokens)))
+          ghostExpr(unfold(Lexer.printList(other.tokens.list)))
+          assert(Lexer.print(this.tokens) == Vector.empty[C])
+
+          ghostExpr(Vector.listEqImpliesEq(Vector.empty[C] ++ other.print(), other.print()))
+
+          Some(other) 
+        } else {
+          ghostExpr(Lexer.lemmaRulesProduceEachTokenIndividuallyThenForAnyToken(rules, this.tokens.list, this.tokens.last))
+          ghostExpr(Lexer.lemmaRulesProduceEachTokenIndividuallyThenForAnyToken(rules, other.tokens.list, other.tokens.head))
+          if (Lexer.separableTokensPredicate(tokens.last, other.tokens.head, rules)) {
+            ghostExpr(Vector.listEqImpliesEq(tokens ++ other.tokens, Vector.fromList(tokens.list ++ other.tokens.list)))
+            ghostExpr(Vector.listEqImpliesEq(tokens, Vector.fromList(tokens.list)))
+            ghostExpr(Vector.listEqImpliesEq(other.tokens, Vector.fromList(other.tokens.list)))
+
+            ghostExpr(Lexer.tokensListTwoByTwoPredicateConcatSeparableTokensList(tokens.list, other.tokens.list, rules))
+            assert(Lexer.tokensListTwoByTwoPredicateSeparable(this.tokens ++ other.tokens, 0, rules))
+
+            ghostExpr(Vector.listEqImpliesEq(this.print(), Vector.fromList(Lexer.printList(this.tokens.list))))
+            ghostExpr(Vector.listEqImpliesEq(other.print(), Vector.fromList(Lexer.printList(other.tokens.list))))
+            ghostExpr(Vector.listEqImpliesEq(this.print() ++ other.print(), Vector.fromList(Lexer.printList(this.tokens.list) ++ Lexer.printList(other.tokens.list))))
+            
+            
+            ghostExpr(Lexer.lemmaPrintConcatSameAsConcatPrint(this.tokens.list, other.tokens.list))
+            assert(this.print() ++ other.print() == Vector.fromList(Lexer.printList(this.tokens.list ++ other.tokens.list)))
+
+            ghostExpr(unfold(this.print()))
+            ghostExpr(unfold(other.print()))
+            ghostExpr(unfold(PrintableTokens(rules, tokens ++ other.tokens).print()))
+            ghostExpr(Vector.listEqImpliesEq(PrintableTokens(rules, tokens ++ other.tokens).tokens, this.tokens ++ other.tokens))
+
+            ghostExpr(Lexer.lemmaPrintConcatSameAsConcatPrint(this.tokens.list, other.tokens.list))
+            assert(Lexer.printList(this.tokens.list ++ other.tokens.list) == Lexer.printList(this.tokens.list) ++ Lexer.printList(other.tokens.list))
+            assert(Lexer.print(tokens ++ other.tokens).list == Lexer.printList(tokens.list) ++ Lexer.printList(other.tokens.list))
+
+            ghostExpr(Vector.listEqImpliesEq(Lexer.print(tokens ++ other.tokens), Lexer.print(tokens) ++ Lexer.print(other.tokens)))
+            ghostExpr(Vector.listEqImpliesEq(this.print() ++ other.print(), Vector.fromList(this.print().list ++ other.print().list)))
+            ghostExpr(Vector.listEqImpliesEq(this.print() ++ other.print(), Vector.fromList(PrintableTokens(rules, tokens ++ other.tokens).print().list)))
+
+            Some(PrintableTokens(rules, tokens ++ other.tokens))
+          } else {
+            None()
+          }
+        }
+      }.ensuring(res => res.isEmpty || (res.get.rules == rules && res.get.tokens == tokens ++ other.tokens && res.get.print() == this.print() ++ other.print()))
+
+      def slice(from: BigInt, to: BigInt): PrintableTokens[C] = {
+        require(0 <= from && from <= to && to <= tokens.size)
+        ghostExpr(Vector.listEqImpliesEq(tokens.slice(from, to), Vector.fromList(tokens.list.slice(from, to))))
+        lemmaInvariant()
+        assert(Lexer.rulesInvariant(rules))
+        ghostExpr(unfold(Lexer.rulesProduceEachTokenIndividually(rules, tokens)))
+        ghostExpr(unfold(Lexer.rulesProduceEachTokenIndividuallyList(rules, tokens.list)))
+        assert(tokens.forall(t => Lexer.rulesProduceIndividualToken(rules, t)))
+        ghostExpr(ListUtils.lemmaSliceSubseq(tokens.list, from, to))
+        ghostExpr(ListUtils.lemmaForallSubseq(tokens.slice(from, to).list, tokens.list, (t: Token[C]) => Lexer.rulesProduceIndividualToken(rules, t)))
+        ghostExpr(unfold(Lexer.rulesProduceEachTokenIndividually(rules, tokens.slice(from, to))))
+        ghostExpr(unfold(Lexer.rulesProduceEachTokenIndividuallyList(rules, tokens.slice(from, to).list)))
+        assert(tokens.slice(from, to).list.forall(t => Lexer.rulesProduceIndividualToken(rules, t)))
+        assert(tokens.slice(from, to).forall(t => Lexer.rulesProduceIndividualToken(rules, t)))
+        ghostExpr(unfold(Lexer.separableTokens(tokens.slice(from, to), rules)))
+        ghostExpr(unfold(Lexer.tokensListTwoByTwoPredicateSeparable(tokens, from = 0, rules)))
+
+        ghostExpr(Lexer.tokensListTwoByTwoPredicateSeparableTokensDropList(tokens.list, from, rules))
+        ghostExpr(ListUtils.lemmaDropSubseq(tokens.list, from))
+        ghostExpr(ListUtils.lemmaForallSubseq(tokens.list.drop(from), tokens.list, (t: Token[C]) => Lexer.rulesProduceIndividualToken(rules, t)))
+
+        ghostExpr(Lexer.tokensListTwoByTwoPredicateSeparableTokensTakeList(tokens.list.drop(from), to-from, rules))
+        assert(Lexer.separableTokens(tokens.slice(from, to), rules))
+        PrintableTokens(rules, tokens.slice(from, to))
+      }.ensuring(res => res.rules == rules && res.tokens == tokens.slice(from, to))
+    }
+
+  case object Lexer extends LexerInterface {
     def ruleValid[C](r: Rule[C]): Boolean = {
       validRegex(r.regex) && !r.regex.nullable && r.tag != ""
     }
@@ -59,19 +186,17 @@ object VerifiedLexer {
     override def rulesProduceIndividualToken[C](rs: List[Rule[C]], t: Token[C]): Boolean = {
       require(!rs.isEmpty)
       require(rulesInvariant(rs))
-      decreases(0)
       val (producedTs, suffix) = lex(rs, print(Vector.singleton(t)))
       producedTs.size == 1 && producedTs(0) == t && suffix.isEmpty
     }.ensuring(res => {
-      val (producedTs, suffix) = lex(rs, print(Vector.singleton(t)))
-      res ==> (producedTs.size == 1 && producedTs.list.head == t && suffix.isEmpty)
+      res == (lex(rs, print(Vector.singleton(t))) == (Vector.singleton(t), Vector.empty[C]))
     })
 
     @ghost
     def rulesProduceEachTokenIndividuallyList[C](rs: List[Rule[C]], ts: List[Token[C]]): Boolean = {
-      decreases(ts)
       require(!rs.isEmpty)
       require(rulesInvariant(rs))
+      decreases(ts)
       ts match {
         case Cons(hd, tl) => rulesProduceIndividualToken(rs, hd) && rulesProduceEachTokenIndividuallyList(rs, tl)
         case Nil()        => true
@@ -79,7 +204,6 @@ object VerifiedLexer {
     }.ensuring(res => res == ts.forall(t => rulesProduceIndividualToken(rs, t)))
 
      override def rulesProduceEachTokenIndividually[C](rs: List[Rule[C]], ts: Vector[Token[C]]): Boolean = {
-      decreases(ts)
       require(!rs.isEmpty)
       require(rulesInvariant(rs))
       ts.forall(t => rulesProduceIndividualToken(rs, t))
@@ -233,7 +357,12 @@ object VerifiedLexer {
 
           check(v(from + 1).characters.size > 0)
         })
-        separableTokensPredicateMem(v(from), v(from + 1), rules) && tokensListTwoByTwoPredicateSeparableMem(v, from + 1, rules)
+        // the following pattern is needed to avoid antialiasing issues with mutable caches
+        val tokensSep = separableTokensPredicateMem(v(from), v(from + 1), rules)
+        if tokensSep then
+          tokensListTwoByTwoPredicateSeparableMem(v, from + 1, rules)
+        else 
+          false
       else
         true
     }.ensuring(res => res == tokensListTwoByTwoPredicateSeparable(v, from, rules))
@@ -308,8 +437,7 @@ object VerifiedLexer {
       (if (res._1.size > 0) res._2.size < input.size && !res._1.isEmpty
       else res._2 == input) &&
       (res._1.list == lexList(rules, input.list)._1 && 
-       res._2.list == lexList(rules, input.list)._2) && 
-       rulesProduceEachTokenIndividually(rules, res._1)
+       res._2.list == lexList(rules, input.list)._2)
     )
 
     def lexRec[C](
@@ -484,7 +612,7 @@ object VerifiedLexer {
       *
       * @param l
       */
-    @ghost @inlineOnce
+    @ghost //@inlineOnce
     def printList[C](l: List[Token[C]]): List[C] = {
       decreases(l)
       l match {
@@ -1063,7 +1191,7 @@ object VerifiedLexer {
         }
       }
 
-    }.ensuring(_ => lex(rules, print(Vector.fromList(tokens)))._1.list == tokens)
+    }.ensuring(_ => lex(rules, print(Vector.fromList(tokens)))._1.list == tokens && lex(rules, print(Vector.fromList(tokens)))._2.isEmpty)
 
     @ghost
     override def separableTokensThenInvertibleThroughPrinting[C](rules: List[Rule[C]], tokens: List[Token[C]]): Boolean = {
@@ -1544,6 +1672,34 @@ object VerifiedLexer {
     }.ensuring (res => res.isEmpty || rules.contains(res.get) && res.get.tag == tag)
 
     // Lemmas --------------------------------------------------------------------------------------------------------------------------------
+
+    @ghost
+    @opaque
+    @inlineOnce
+    def lemmaPrintConcatSameAsConcatPrint[C](tokens1: List[Token[C]], tokens2: List[Token[C]]): Unit = {
+      decreases(tokens1)
+
+      tokens1 match {
+        case Cons(hd, tl) => {
+          if (tl.isEmpty) {
+            assert(printList(tokens1) == hd.characters.list)
+            assert(tokens1 ++ tokens2 == Cons(hd, tokens2))
+            unfold(printList(Cons(hd, tokens2)))
+            assert(printList(Cons(hd, tokens2)) == hd.characters.list ++ printList(tokens2))
+            assert(printList(tokens1 ++ tokens2) == hd.characters.list ++ printList(tokens2))
+          } else {
+            lemmaPrintConcatSameAsConcatPrint(tl, tokens2)
+            unfold(printList(Cons(hd, tl)))
+            unfold(printList(tokens1 ++ tokens2))
+            assert(printList(tokens1) == hd.characters.list ++ printList(tl))
+            assert(printList(tokens1 ++ tokens2) == hd.characters.list ++ printList(tl ++ tokens2))
+            ListUtils.lemmaTwoListsConcatAssociativity(hd.characters.list, printList(tl), printList(tokens2))
+          }
+        }
+        case Nil() => ()
+      }
+    }.ensuring(_ => printList(tokens1 ++ tokens2) == printList(tokens1) ++ printList(tokens2))
+
 
     @ghost
     @opaque
@@ -2570,13 +2726,14 @@ object VerifiedLexer {
       require(rulesInvariant(rules))
       require(rules.contains(r))
       require(rules.contains(rBis))
+      require(!p.isEmpty)
       require({
         ForallOf((a: Vector[C]) => r.transformation.witness(r.transformation.f(a)) == a)(Vector.fromList(p))
         maxPrefix(rules, input) == Some(Token(r.transformation.apply(Vector.fromList(p)), r, p.size, Vector.fromList(p)), ListUtils.getSuffix(input, p))
       })
+      require(matchR(r.regex, p))
       require(ListUtils.getIndex(rules, rBis) < ListUtils.getIndex(rules, r))
       require(ruleValid(r))
-      require(matchR(r.regex, p))
       decreases(rules)
 
       assert(ListUtils.getIndex(rules, rBis) < ListUtils.getIndex(rules, r))
@@ -2795,6 +2952,7 @@ object VerifiedLexer {
       require(rulesInvariant(rules))
       require(rules.contains(r))
       require(input == p ++ suffix)
+      require(!p.isEmpty)
       require({
         ForallOf((a: Vector[C]) => r.transformation.witness(r.transformation.f(a)) == a)(Vector.fromList(p))
         maxPrefix(rules, input) == Some(Token(r.transformation.apply(Vector.fromList(p)), r, p.size, Vector.fromList(p)), suffix)
@@ -3288,7 +3446,19 @@ object VerifiedLexer {
         }
     }.ensuring (_ => rulesProduceEachTokenIndividuallyList(rules, tokensBis))
 
-    
+    @ghost
+    @opaque
+    @inlineOnce
+    def lemmaRulesProduceEachTokenIndividuallyConcat[C](rules: List[Rule[C]], ts1: List[Token[C]], ts2: List[Token[C]]): Unit = {
+      require(!rules.isEmpty)
+      require(rulesInvariant(rules))
+      require(rulesProduceEachTokenIndividuallyList(rules, ts1))
+      require(rulesProduceEachTokenIndividuallyList(rules, ts2))
+
+      ListUtils.lemmaConcatPreservesForall(ts1, ts2, (t: Token[C]) => rulesProduceIndividualToken(rules, t))
+
+    }.ensuring (_ => rulesProduceEachTokenIndividuallyList(rules, ts1 ++ ts2))
+
     // Helper lemmas for tokensListTwoByTwoPredicate
     def tokensListTwoByTwoPredicateConcatList[C](l1: List[Token[C]], l2: List[Token[C]], rules: List[Rule[C]], p: (Token[C], Token[C], List[Rule[C]]) => Boolean): Unit = {
       require(tokensListTwoByTwoPredicateList(l1, rules, p) && tokensListTwoByTwoPredicateList(l2, rules, p))
@@ -3300,6 +3470,74 @@ object VerifiedLexer {
         case Cons(hd, tl) if tl.isEmpty =>  ()
       }
     }.ensuring(_ => tokensListTwoByTwoPredicateList(l1 ++ l2, rules, p))
+
+    def tokensListTwoByTwoPredicateConcatSeparableTokensList[C](l1: List[Token[C]], l2: List[Token[C]], rules: List[Rule[C]]): Unit = {
+      require(!rules.isEmpty)
+      require(rulesInvariant(rules))
+      require(rulesProduceEachTokenIndividuallyList(rules, l1) && rulesProduceEachTokenIndividuallyList(rules, l2))
+      require(tokensListTwoByTwoPredicateSeparableList(l1, rules) && tokensListTwoByTwoPredicateSeparableList(l2, rules))
+      require(!l1.isEmpty && !l2.isEmpty)
+      require({
+        lemmaRulesProduceEachTokenIndividuallyThenForAnyToken(rules, l1, l1.last)
+        lemmaRulesProduceEachTokenIndividuallyThenForAnyToken(rules, l2, l2.head)
+        separableTokensPredicate(l1.last, l2.head, rules)
+      })
+      decreases(l1.size)
+      l1 match {
+        case Cons(hd, tl) if !tl.isEmpty => tokensListTwoByTwoPredicateConcatSeparableTokensList(tl, l2, rules)
+        case Cons(hd, tl) if tl.isEmpty =>  ()
+      }
+    }.ensuring(_ => {
+      lemmaRulesProduceEachTokenIndividuallyConcat(rules, l1, l2)
+      tokensListTwoByTwoPredicateSeparableList(l1 ++ l2, rules)
+    })
+
+    def tokensListTwoByTwoPredicateSeparableTokensDropList[C](l: List[Token[C]], i: BigInt, rules: List[Rule[C]]): Unit = {
+      require(!rules.isEmpty)
+      require(rulesInvariant(rules))
+      require(rulesProduceEachTokenIndividuallyList(rules, l))
+      require(tokensListTwoByTwoPredicateSeparableList(l, rules))
+      decreases(l)
+      (l, i) match {
+        case (Nil(), _) => ()
+        case (Cons(hd, tl), i) =>
+          if (i <= BigInt(0)) {
+            ()
+          } else {
+            tokensListTwoByTwoPredicateSeparableTokensDropList(tl, i-1, rules)
+          }
+      }
+
+      
+    }.ensuring(_ => {
+      unfold(rulesProduceEachTokenIndividuallyList(rules, l.drop(i)))
+      ListUtils.lemmaDropSubseq(l, i)
+      ListUtils.lemmaForallSubseq(l.drop(i), l, (t: Token[C]) => Lexer.rulesProduceIndividualToken(rules, t))
+      tokensListTwoByTwoPredicateSeparableList(l.drop(i), rules)
+    })
+
+    def tokensListTwoByTwoPredicateSeparableTokensTakeList[C](l: List[Token[C]], i: BigInt, rules: List[Rule[C]]): Unit = {
+      require(!rules.isEmpty)
+      require(rulesInvariant(rules))
+      require(rulesProduceEachTokenIndividuallyList(rules, l))
+      require(tokensListTwoByTwoPredicateSeparableList(l, rules))
+      decreases(l)
+      (l, i) match {
+        case (Nil(), _) => ()
+        case (Cons(hd, tl), i) =>
+          if (i <= BigInt(0)) {
+            ()
+          } else {
+            tokensListTwoByTwoPredicateSeparableTokensTakeList(tl, i-1, rules)
+          }
+        }
+
+      
+    }.ensuring(_ => {
+      unfold(rulesProduceEachTokenIndividuallyList(rules, l.take(i)))
+      ListUtils.lemmaForallSubseq(l.take(i), l, (t: Token[C]) => Lexer.rulesProduceIndividualToken(rules, t))
+      tokensListTwoByTwoPredicateSeparableList(l.take(i), rules)
+    })
 
     def tokensListTwoByTwoPredicateInstantiate[C](l: List[Token[C]], rules: List[Rule[C]], p: (Token[C], Token[C], List[Rule[C]]) => Boolean, t1: Token[C], t2: Token[C], i: BigInt): Unit = {
       require(tokensListTwoByTwoPredicateList(l, rules, p))
@@ -3313,6 +3551,26 @@ object VerifiedLexer {
       }
       
     }.ensuring(_ => p(t1, t2, rules))
+
+    def tokensListTwoByTwoPredicateInstantiateSeparableTokens[C](l: List[Token[C]], rules: List[Rule[C]], t1: Token[C], t2: Token[C], i: BigInt): Unit = {
+      require(!rules.isEmpty)
+      require(rulesInvariant(rules))
+      require(rulesProduceEachTokenIndividuallyList(rules, l))
+      require(tokensListTwoByTwoPredicateSeparableList(l, rules))
+      require(i >= 0 && i+1 < l.size)
+      require(l(i) == t1 && l(i + 1) == t2)
+      decreases(i)
+      if(i == 0) {
+        check(separableTokensPredicate(t1, t2, rules))
+      } else {
+        tokensListTwoByTwoPredicateInstantiateSeparableTokens(l.tail, rules, t1, t2, i-1)
+      }
+
+    }.ensuring(_ => {
+      lemmaRulesProduceEachTokenIndividuallyThenForAnyToken(rules, l, t1)
+      lemmaRulesProduceEachTokenIndividuallyThenForAnyToken(rules, l, t2)
+      separableTokensPredicate(t1, t2, rules)
+    })
 
     @ghost
     @inlineOnce

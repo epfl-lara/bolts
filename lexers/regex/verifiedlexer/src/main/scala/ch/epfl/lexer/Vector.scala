@@ -10,19 +10,17 @@ import stainless.lang.{ghost => _, decreases => _, unfold => _, _}
 import ch.epfl.lexer.OptimisedChecks.*
 import Predef.{assert => _, Ensuring => _, require => _}
 
-case class Vector[T](@pure @extern underlying: scala.collection.immutable.Vector[T]) {
+case class Vector[T](@pure @extern underlying: scala.collection.immutable.Vector[T], overflowing: List[T] = Nil[T]()) {
+  val MAX_INT: BigInt = BigInt(2147483647) // Int.MaxValue
+
+  // we have an invariant stating that if size < MAX_INT then overflowing.isEmpty
 
   @ghost @pure @extern
-  def list: List[T] = List.fromScala(underlying.toList)
-
-  @pure @extern @inlineOnce
-  def isize: Int = {
-    underlying.size
-  }.ensuring(_ == list.isize)
+  def list: List[T] = List.fromScala(underlying.toList) ++ overflowing
 
   @pure @extern @inlineOnce
   def size: BigInt = {
-    BigInt(underlying.size)
+    BigInt(underlying.size) + overflowing.size
   }.ensuring(res => res == list.size)
 
   @pure
@@ -31,50 +29,113 @@ case class Vector[T](@pure @extern underlying: scala.collection.immutable.Vector
   @pure @extern @inlineOnce
   def apply(i: BigInt): T = {
     require(0 <= i && i < size)
-    underlying(i.toInt)
+    if (i < MAX_INT) {
+      underlying(i.toInt)
+    } else {
+      overflowing((i - MAX_INT))
+    }
   }.ensuring(_ == list.apply(i))
 
   @pure @extern @inlineOnce
   def contains(t: T): Boolean = {
-    underlying.contains(t)
+    if (size < MAX_INT) {
+      underlying.contains(t)
+    } else {
+      overflowing.contains(t) || underlying.contains(t)
+    }
   }.ensuring(res => res == list.contains(t))
 
   @pure @extern @inlineOnce
   def :+(t: T): Vector[T] = {
-    Vector(underlying :+ t)
-  }.ensuring(res => res.list == list :+ t && res.isize == (if (isize == Int.MaxValue) Int.MaxValue else isize + 1))
+    if (size < MAX_INT) {
+      Vector(underlying :+ t, overflowing)
+    } else {
+      Vector(underlying, overflowing :+ t)
+    }
+  }.ensuring(res => res.list == list :+ t)
 
   @pure @extern @inlineOnce
   def +:(t: T): Vector[T] = {
-    Vector(t +: underlying)
-  }.ensuring(res => res.list == t :: list && res.isize == (if (isize == Int.MaxValue) Int.MaxValue else isize + 1))
+    if (size < MAX_INT) {
+      Vector(t +: underlying, overflowing)
+    } else {
+      // Move the last element of underlying to overflowing
+      val last = underlying.last
+      Vector(t +: underlying.init, last :: overflowing)
+    }
+  }.ensuring(res => res.list == t :: list)
 
   @pure @extern @inlineOnce
   def ++(that: Vector[T]): Vector[T] = {
-    Vector(underlying ++ that.underlying)
-  }.ensuring(res => res.list == list ++ that.list && (res.isize == Int.MaxValue || res.isize == isize + that.isize)) 
+    if (size + that.size < MAX_INT) {
+      Vector(underlying ++ that.underlying, Nil[T]())
+    } else if (size < MAX_INT) {
+      // We know by the invariant that this.overflowing is empty
+      val space = MAX_INT - size
+      val (toAddToUnderlying, toAddToOverflowing): (scala.collection.immutable.Vector[T], scala.collection.immutable.Vector[T]) = that.underlying.splitAt(space.toInt)
+      Vector(underlying ++ scala.collection.immutable.Vector.from(toAddToUnderlying), List.fromScala(toAddToOverflowing.toList) ++ that.overflowing)
+    } else {
+      // We know by the invariant that this.underlying is full and this.overflowing is non-empty
+      Vector(underlying, overflowing ++ List.fromScala(that.underlying.toList) ++ that.overflowing)
+    }
+  }.ensuring(res => res.list == list ++ that.list) 
 
   @pure @extern @inlineOnce
   def forall(f: T => Boolean): Boolean = {
-    underlying.forall(f)
+    if (size < MAX_INT) {
+      underlying.forall(f)
+    } else {
+      underlying.forall(f) && overflowing.forall(f)
+    }
   }.ensuring(_ == list.forall(f))
 
   @pure @extern @inlineOnce
   def exists(f: T => Boolean): Boolean = {
-    underlying.exists(f)
+    if (size < MAX_INT) {
+      underlying.exists(f)
+    } else {
+      underlying.exists(f) || overflowing.exists(f)
+    }
   }.ensuring(_ == list.exists(f))
 
   @pure @extern @inlineOnce
   def splitAt(i: BigInt): (Vector[T], Vector[T]) = {
     require(0 <= i && i <= size)
-    val (l, r) = underlying.splitAt(i.toInt)
-    (Vector(l), Vector(r))
-  }.ensuring(res => this.list.splitAtIndex(i) == (res._1.list, res._2.list))  
+    if (size < MAX_INT) {
+      val (l, r) = underlying.splitAt(i.toInt)
+      (Vector(l), Vector(r))
+    } else {
+      if (i < MAX_INT) {
+        val (l1, r1) = underlying.splitAt(i.toInt)
+        (Vector(l1), Vector(r1, overflowing).rebalance())
+      } else {
+        val (l2, r2) = (overflowing.take(i - MAX_INT), overflowing.drop(i - MAX_INT))
+        (Vector(underlying, l2), Vector(scala.collection.immutable.Vector.empty[T] ,r2).rebalance())
+      }
+    }
+  }.ensuring(res => this.list.splitAtIndex(i) == (res._1.list, res._2.list)) 
+
+  @pure @extern @inlineOnce
+  def slice(from: BigInt, to: BigInt): Vector[T] = {
+    require(0 <= from && from <= to && to <= size)
+    if (size < MAX_INT) {
+      Vector(underlying.slice(from.toInt, to.toInt))
+    } else if (to <= MAX_INT) {
+      Vector(underlying.slice(from.toInt, to.toInt))
+    } else if (from >= MAX_INT) {
+      Vector(scala.collection.immutable.Vector.empty[T], overflowing.slice((from - MAX_INT), (to - MAX_INT))).rebalance()
+    } else {
+      // we know from < MAX_INT < to
+      val leftPart = underlying.slice(from.toInt, Int.MaxValue)
+      val rightPart = overflowing.slice(0, to - MAX_INT)
+      Vector(leftPart, rightPart).rebalance()
+    }
+  }.ensuring(res => res.list == list.slice(from, to))
 
 
   @pure @inlineOnce
   def isEmpty: Boolean = {
-    isize == 0
+    size == 0
   }.ensuring(_ == list.isEmpty)
 
   def append(t: T): Vector[T] = this :+ t
@@ -83,7 +144,7 @@ case class Vector[T](@pure @extern underlying: scala.collection.immutable.Vector
 
   @pure @extern @inlineOnce
   def map[B](f: T => B): Vector[B] = {
-    Vector(underlying.map(f))
+    Vector(underlying.map(f), overflowing.map(f))
   }.ensuring(res => res.list == list.map(f))
 
   @pure @extern @inlineOnce
@@ -93,9 +154,27 @@ case class Vector[T](@pure @extern underlying: scala.collection.immutable.Vector
   }.ensuring(_ == list.head)
 
   @pure @extern @inlineOnce
+  def last: T = {
+    require(!isEmpty)
+    if (size < MAX_INT) {
+      underlying.last
+    } else {
+      if (overflowing.isEmpty) {
+        underlying.last
+      } else {
+        overflowing.last
+      }
+    }
+  }.ensuring(_ == list.last)
+
+  @pure @extern @inlineOnce
   def tail: Vector[T] = {
     require(!isEmpty)
-    Vector(underlying.tail)
+    if (size < MAX_INT) {
+      Vector(underlying.tail)
+    } else  {
+      Vector(underlying.tail, overflowing).rebalance()
+    }
   }.ensuring(res => res.list == list.tail)
 
   // def indexOf(elem: T): BigInt = {
@@ -116,6 +195,18 @@ case class Vector[T](@pure @extern underlying: scala.collection.immutable.Vector
 
   @pure @extern
   def toScala: scala.collection.immutable.Vector[T] = underlying
+
+  @pure @extern
+  private def rebalance(): Vector[T] = {
+    if (size <= MAX_INT) {
+      Vector(underlying ++ scala.collection.immutable.Vector.from(overflowing.toScala), Nil[T]())
+    } else {
+      // Move elements from overflowing to underlying until underlying is full
+      val space = MAX_INT - BigInt(underlying.size)
+      val (toAddToUnderlying, toRemainInOverflowing) = (overflowing.take(space), overflowing.drop(space))
+      Vector(underlying ++ scala.collection.immutable.Vector.from(toAddToUnderlying.toScala), toRemainInOverflowing)
+    }
+  }.ensuring(res => res.list == list)
 
   @pure @ghost @inlineOnce
   def dropList(n: BigInt): List[T] = {
