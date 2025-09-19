@@ -30,8 +30,15 @@ import ch.epfl.lexer.benchmark.ContextCharHashable
 import ch.epfl.lexer.benchmark.RegexCharHashable
 import ch.epfl.lexer.benchmark.RegexContextCharHashable
 
+import ch.epfl.lexer.example.JsonManipulationExample
+import ch.epfl.benchmark.original.NoPosition.file
+import ch.epfl.lexer.MemoisationZipper.CacheUp
+import ch.epfl.lexer.MemoisationZipper.CacheDown
+
 object Main {
   def main(args: Array[String]): Unit = {
+    given CacheUp[Char] = MemoisationZipper.emptyUp(ContextCharHashable)
+    given CacheDown[Char] = MemoisationZipper.emptyDown(RegexContextCharHashable)
     // println(f"intRe.match(12) = ${matchZipperVector(JsonLexer.intRe, "12".toStainless)}")
     // println(f"intRe.match(\" \") = ${matchZipperVector(JsonLexer.wsCharRe, " ".toStainless)}")
     // testJsonLexer()
@@ -46,11 +53,14 @@ object Main {
     // val timeAfter = System.nanoTime()
     // println(f"Time taken to check separability: ${(timeAfter - timeBefore) / 1e6} ms")
 
+    val filePath = "src/main/scala/ch/epfl/example/res/json/example-for-ordering.json"
+    val tokensBefore = tokeniseJsonFileMem(filePath, filePath + ".tokens")
+
+    val printedAfter = JsonManipulationExample.main(filePath)
+    println("Printed after manipulation:")
+    println(printedAfter.get.underlying.foldLeft("")((acc, c) => acc + c))
   }
 }
-
-
-
 
 def addNumberOfCharsInFileName(path: String, extension: String): Unit = {
   val file = new java.io.File(path)
