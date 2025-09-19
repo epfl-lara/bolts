@@ -30,7 +30,7 @@ import ch.epfl.lexer.VerifiedLexer.PrintableTokensFromTokens
 import ch.epfl.lexer.VerifiedLexer.emptyPrintableTokens
 import ch.epfl.lexer.ListUtils
 import stainless.collection.ListSpecs
-import scala.caps.use
+
 object JsonManipulationExample:
 
   /**
@@ -154,11 +154,11 @@ object JsonManipulationExample:
       else 
         val t = obj.tokens(from)
         t.value match {
-          case StringLiteralValue(s) if s == Vector.fromList(List('i', 'd')) =>
+          case StringLiteralValue(s) if s == Vector.fromList(List('"', 'i', 'd', '"')) =>
             rec(from + 1, true)
           case IntegerValue(i, _) if returnNextInt =>
             i
-          case _ => rec(from + 1, false)
+          case _ => rec(from + 1, returnNextInt)
         }
     }
     rec(0, false)
@@ -216,7 +216,7 @@ object JsonManipulationExample:
     decreases(objs.size)
     if objs.isEmpty then Some(acc)
     else 
-      val newAccOpt = objs.head.append(acc)
+      val newAccOpt = acc.append(objs.head)
       newAccOpt match
         case Some(newAcc) => recombineSlices(objs.tail, newAcc)
         case None() => None()
