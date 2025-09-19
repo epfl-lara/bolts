@@ -146,8 +146,8 @@ object JsonManipulationExample:
     * @param obj
     * @return
     */
-  def parseID(obj: PrintableTokens[Char]): Int = {
-    def rec(from: BigInt, returnNextInt: Boolean): Int = {
+  def parseID(obj: PrintableTokens[Char]): BigInt = {
+    def rec(from: BigInt, returnNextInt: Boolean): BigInt = {
       require(0 <= from && from <= obj.size)
       decreases(obj.size - from)
       if from >= obj.size then -1
@@ -164,7 +164,7 @@ object JsonManipulationExample:
     rec(0, false)
   }
 
-  def sortObjectsByID(objs: Vector[(Int, PrintableTokens[Char])]): Vector[(Int, PrintableTokens[Char])] = {
+  def sortObjectsByID(objs: Vector[(BigInt, PrintableTokens[Char])]): Vector[(BigInt, PrintableTokens[Char])] = {
     decreases(objs.size)
     require(objs.forall(t => usesJsonRules(t._2)))
     if objs.size <= 1 then objs
@@ -176,36 +176,36 @@ object JsonManipulationExample:
       ghostExpr({
         assert(objs.contains(pivot))
         if (left.contains(pivot)){
-          ListSpecs.forallContained(left.list, (t: (Int, PrintableTokens[Char])) => t._1 < pivot._1, pivot)
+          ListSpecs.forallContained(left.list, (t: (BigInt, PrintableTokens[Char])) => t._1 < pivot._1, pivot)
           assert(false)
         }
         assert(!left.contains(pivot))
-        if(objs.forall((t: (Int, PrintableTokens[Char])) => t._1 < pivot._1)) {
-          ListSpecs.forallContained(objs.list, (t: (Int, PrintableTokens[Char])) => t._1 < pivot._1, pivot)
+        if(objs.forall((t: (BigInt, PrintableTokens[Char])) => t._1 < pivot._1)) {
+          ListSpecs.forallContained(objs.list, (t: (BigInt, PrintableTokens[Char])) => t._1 < pivot._1, pivot)
           assert(false)
         }
-        ListUtils.lemmaNotForallFilterShorter(objs.list, (t: (Int, PrintableTokens[Char])) => t._1 < pivot._1)
+        ListUtils.lemmaNotForallFilterShorter(objs.list, (t: (BigInt, PrintableTokens[Char])) => t._1 < pivot._1)
         assert(left.size < objs.size)
         if (right.contains(pivot)){
-          ListSpecs.forallContained(right.list, (t: (Int, PrintableTokens[Char])) => t._1 > pivot._1, pivot)
+          ListSpecs.forallContained(right.list, (t: (BigInt, PrintableTokens[Char])) => t._1 > pivot._1, pivot)
           assert(false)
         }
         assert(!right.contains(pivot))
-        if(objs.forall((t: (Int, PrintableTokens[Char])) => t._1 > pivot._1)) {
-          ListSpecs.forallContained(objs.list, (t: (Int, PrintableTokens[Char])) => t._1 > pivot._1, pivot)
+        if(objs.forall((t: (BigInt, PrintableTokens[Char])) => t._1 > pivot._1)) {
+          ListSpecs.forallContained(objs.list, (t: (BigInt, PrintableTokens[Char])) => t._1 > pivot._1, pivot)
           assert(false)
         }
-        ListUtils.lemmaNotForallFilterShorter(objs.list, (t: (Int, PrintableTokens[Char])) => t._1 > pivot._1)
+        ListUtils.lemmaNotForallFilterShorter(objs.list, (t: (BigInt, PrintableTokens[Char])) => t._1 > pivot._1)
         assert(right.size < objs.size)
 
-        ListSpecs.filterSubseq(objs.list, (t: (Int, PrintableTokens[Char])) => t._1 < pivot._1)
-        ListSpecs.filterSubseq(objs.list, (t: (Int, PrintableTokens[Char])) => t._1 == pivot._1)
-        ListSpecs.filterSubseq(objs.list, (t: (Int, PrintableTokens[Char])) => t._1 > pivot._1)
-        ListUtils.lemmaForallSubseq(objs.filter(t => t._1 < pivot._1).list, objs.list, (t: (Int, PrintableTokens[Char])) => usesJsonRules(t._2))
-        ListUtils.lemmaForallSubseq(objs.filter(t => t._1 == pivot._1).list, objs.list, (t: (Int, PrintableTokens[Char])) => usesJsonRules(t._2))
-        ListUtils.lemmaForallSubseq(objs.filter(t => t._1 > pivot._1).list, objs.list, (t: (Int, PrintableTokens[Char])) => usesJsonRules(t._2))
-        ListUtils.lemmaConcatPreservesForall(sortObjectsByID(left).list, middle.list, (t: (Int, PrintableTokens[Char])) => usesJsonRules(t._2))
-        ListUtils.lemmaConcatPreservesForall(sortObjectsByID(left).list ++ middle.list, sortObjectsByID(right).list, (t: (Int, PrintableTokens[Char])) => usesJsonRules(t._2))
+        ListSpecs.filterSubseq(objs.list, (t: (BigInt, PrintableTokens[Char])) => t._1 < pivot._1)
+        ListSpecs.filterSubseq(objs.list, (t: (BigInt, PrintableTokens[Char])) => t._1 == pivot._1)
+        ListSpecs.filterSubseq(objs.list, (t: (BigInt, PrintableTokens[Char])) => t._1 > pivot._1)
+        ListUtils.lemmaForallSubseq(objs.filter(t => t._1 < pivot._1).list, objs.list, (t: (BigInt, PrintableTokens[Char])) => usesJsonRules(t._2))
+        ListUtils.lemmaForallSubseq(objs.filter(t => t._1 == pivot._1).list, objs.list, (t: (BigInt, PrintableTokens[Char])) => usesJsonRules(t._2))
+        ListUtils.lemmaForallSubseq(objs.filter(t => t._1 > pivot._1).list, objs.list, (t: (BigInt, PrintableTokens[Char])) => usesJsonRules(t._2))
+        ListUtils.lemmaConcatPreservesForall(sortObjectsByID(left).list, middle.list, (t: (BigInt, PrintableTokens[Char])) => usesJsonRules(t._2))
+        ListUtils.lemmaConcatPreservesForall(sortObjectsByID(left).list ++ middle.list, sortObjectsByID(right).list, (t: (BigInt, PrintableTokens[Char])) => usesJsonRules(t._2))
       })
       sortObjectsByID(left) ++ middle ++ sortObjectsByID(right) 
   }.ensuring(res => res.forall(t => usesJsonRules(t._2)))
@@ -233,20 +233,20 @@ object JsonManipulationExample:
         val slices: Vector[PrintableTokens[Char]] = slicesMulti(printableTokens, tokensSize, 0 +: indices)
         // Now we have slices of PrintableTokens, all separable on their own, as provided by the specification of slice
 
-        def addId(pt: PrintableTokens[Char]): (Int, PrintableTokens[Char]) = (parseID(pt), pt)
+        def addId(pt: PrintableTokens[Char]): (BigInt, PrintableTokens[Char]) = (parseID(pt), pt)
         ghostExpr({
           def lemmaAddIdsPreservesRules(@induct s: List[PrintableTokens[Char]]): Unit = {
             require(s.forall(usesJsonRules))
           }.ensuring(_ => s.forall(pt => usesJsonRules(addId(pt)._2)))
           lemmaAddIdsPreservesRules(slices.list)
-          ListSpecs.mapPred(slices.list, addId, (t: (Int, PrintableTokens[Char])) => usesJsonRules(t._2))
+          ListSpecs.mapPred(slices.list, addId, (t: (BigInt, PrintableTokens[Char])) => usesJsonRules(t._2))
         })
         val slicesWithIds = slices.map(addId)
         val orderedSlices = sortObjectsByID(slicesWithIds)
         
-        def removeId(t: (Int, PrintableTokens[Char])): PrintableTokens[Char] = t._2
+        def removeId(t: (BigInt, PrintableTokens[Char])): PrintableTokens[Char] = t._2
         ghostExpr({
-          def lemmaRemoveIdsPreservesRules(@induct l: List[(Int, PrintableTokens[Char])]): Unit = {
+          def lemmaRemoveIdsPreservesRules(@induct l: List[(BigInt, PrintableTokens[Char])]): Unit = {
             require(l.forall(p => usesJsonRules(p._2)))
           }.ensuring(_ => l.forall(p => usesJsonRules(removeId(p))))
           lemmaRemoveIdsPreservesRules(orderedSlices.list)
