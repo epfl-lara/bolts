@@ -55,6 +55,9 @@ object Main {
 
     val filePath = "src/main/scala/ch/epfl/example/res/json/example-for-ordering.json"
     val tokensBefore = tokeniseJsonFileMem(filePath, filePath + ".tokens")
+    val printedBefore = Lexer.print(tokensBefore)
+    println("Printed before manipulation:")
+    println(printedBefore.underlying.foldLeft("")((acc, c) => acc + c))
 
     val printedAfter = JsonManipulationExample.main(filePath)
     println("Printed after manipulation:")
