@@ -58,7 +58,7 @@ object JsonManipulationExample:
     else 
       val t = ts(from)
       // ghostExpr(assert(acc.forall(i => 0 <= i && i < size)))
-      if isKeywordValue(t, KeywordValue.LeftBrace) || isKeywordValue(t, KeywordValue.LeftBrace) then
+      if isKeywordValue(t, KeywordValue.LeftBrace) || isKeywordValue(t, KeywordValue.RightBrace) then
         ghostExpr({
           assert(acc.forall(i => 0 <= i && i < size))
           ListUtils.lemmaConcatPreservesForall(acc.list, List(from), (i: BigInt) => 0 <= i && i < size)
@@ -109,10 +109,10 @@ object JsonManipulationExample:
       val from = indices(0)
       val to = indices(1)
       val slice = if (from <= to) then
-        pt.slice(from, to)
+        pt.slice(from, to + 1)
       else 
         // Should never happen but we do not prove it
-        pt.slice(to, from)
+        pt.slice(to, from + 1)
       ghostExpr({
         assert(usesJsonRules(slice))
         ListUtils.lemmaConcatPreservesForall(acc.list, List(slice), usesJsonRules)
@@ -213,7 +213,10 @@ object JsonManipulationExample:
         case None() => None()
     else 
       objs.head.append(sep) match
-        case Some(newAcc) => recombineSlicesWithSep(objs.tail, sep, newAcc)
+        case Some(newHead) => 
+          acc.append(newHead) match
+            case Some(newAcc) => recombineSlicesWithSep(objs.tail, sep, newAcc)
+            case None() => None()
         case None() => None()
   }.ensuring(res => res.isEmpty || usesJsonRules(res.get))
 
@@ -272,7 +275,7 @@ object JsonManipulationExample:
           // Now we have a PrintableTokens instance with our tokens, with the invariant that they are separable, as an R-Path
           val tokensSize = printableTokens.size
           val indices = indicesOfOpenBraces(printableTokens.tokens, tokensSize)
-          val slices: Vector[PrintableTokens[Char]] = slicesMulti(printableTokens, tokensSize, 0 +: indices)
+          val slices: Vector[PrintableTokens[Char]] = slicesMulti(printableTokens, tokensSize, indices)
           // Now we have slices of PrintableTokens, all separable on their own, as provided by the specification of slice
 
           def addId(pt: PrintableTokens[Char]): (BigInt, PrintableTokens[Char]) = (parseID(pt), pt)
@@ -283,6 +286,7 @@ object JsonManipulationExample:
             lemmaAddIdsPreservesRules(slices.list)
             ListSpecs.mapPred(slices.list, addId, (t: (BigInt, PrintableTokens[Char])) => usesJsonRules(t._2))
           })
+
           val slicesWithIds = slices.map(addId)
           val orderedSlices = sortObjectsByID(slicesWithIds)
           
@@ -321,20 +325,8 @@ object JsonManipulationExample:
             }
             case _ => None()
         }
-        case _ => {
-          // The produced tokens are not separable, or we have no tokens, so we stop
-          None()
-        }
+        case _ => None()// The produced tokens are not separable, or we have no tokens, so we stop
       }
     
   }
-
-
-
-
-
-
-
 end JsonManipulationExample
-
-
