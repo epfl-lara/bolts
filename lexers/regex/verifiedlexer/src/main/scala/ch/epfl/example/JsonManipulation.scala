@@ -258,9 +258,10 @@ object JsonManipulationExample:
         recombined match
           case Some(newTokens) => {
             // Now we have a new PrintableTokens, which checked only the separable predicate at the boundaries of slices
-            val printed = newTokens.print()
+            val printed: Vector[Char] = newTokens.print()
             // if we lex then again, we get the same tokens
-            // assert(Lexer.lex(newTokens.rules, printed)._1 == printed)
+            assert(JsonLexer.rules == newTokens.rules)
+            assert(Lexer.lex(JsonLexer.rules, printed) == (newTokens.tokens, Vector.empty[Char]))
             Some(printed)
           }
           case None() => {
