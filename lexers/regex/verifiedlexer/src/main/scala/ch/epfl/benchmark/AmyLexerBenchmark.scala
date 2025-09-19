@@ -330,13 +330,13 @@ object AmyLexerBenchmarkUtils {
           )
 
   val generatedFileContents: Map[String, Vector[Char]] = generatedFileNames.map(name => {
-    val source = scala.io.Source.fromFile(s"src/main/scala/ch/epfl/benchmark/res/$name")
+    val source = scala.io.Source.fromFile(s"src/main/scala/ch/epfl/benchmark/res/generated-amy/$name")
     val lines = try source.mkString.toStainless finally source.close()
     (name -> lines)
   }).toMap
 
   val generatedFilesJavaIo: Map[String, java.io.File] = generatedFileNames.map(name => {
-    val file = new java.io.File(s"src/main/scala/ch/epfl/benchmark/res/$name")
+    val file = new java.io.File(s"src/main/scala/ch/epfl/benchmark/res/generated-amy/$name")
     (name -> file)
   }).toMap
 
