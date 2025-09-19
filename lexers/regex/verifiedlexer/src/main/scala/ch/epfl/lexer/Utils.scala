@@ -823,6 +823,22 @@ object ListUtils {
   @inlineOnce
   @opaque
   @ghost
+  def lemmaNotForallFilterShorter[B](l: List[B], p: B => Boolean): Unit = {
+    require(!l.forall(p)) 
+    decreases(l)
+    l match {
+      case Nil() => ()
+      case Cons(h, t) if p(h) => lemmaNotForallFilterShorter(t, p)
+      case Cons(_, t) => ()
+    }
+
+
+  }.ensuring(_ => l.isEmpty ||l.filter(p).size < l.size)
+
+
+  @inlineOnce
+  @opaque
+  @ghost
   def lemmaConsecutiveSubseqThenSubseq[B](l1: List[B], l2: List[B]): Unit = {
     require(consecutiveSubseq(l1, l2))
     decreases(l2)

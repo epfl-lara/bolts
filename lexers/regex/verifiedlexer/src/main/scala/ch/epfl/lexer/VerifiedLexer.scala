@@ -49,6 +49,13 @@ object VerifiedLexer {
     }
   }.ensuring(res => res.isEmpty || (res.get.rules == rules && res.get.tokens == tokens))
 
+  def emptyPrintableTokens[C](rules: List[Rule[C]]): PrintableTokens[C] = {
+    require(!rules.isEmpty)
+    require(Lexer.rulesInvariant(rules)) // this should checked at runtime before lexing
+
+    PrintableTokens(rules, Vector.empty[Token[C]])
+  }.ensuring(res => res.rules == rules && res.tokens.isEmpty)
+
   case class PrintableTokens[C](rules: List[Rule[C]], tokens: Vector[Token[C]]) {
       require(!rules.isEmpty)
       require(Lexer.rulesInvariant(rules))
@@ -58,6 +65,7 @@ object VerifiedLexer {
       def lemmaInvariant(): Unit = {
       }.ensuring(_ => Lexer.rulesInvariant(rules) && Lexer.rulesProduceEachTokenIndividually(rules, tokens) && Lexer.separableTokens(tokens, rules))
 
+      def size: BigInt = tokens.size
       def print(): Vector[C] = {
         ghostExpr({
           Lexer.theoremInvertabilityWhenTokenListSeparable(rules, tokens.list)
@@ -153,6 +161,7 @@ object VerifiedLexer {
 
       def slice(from: BigInt, to: BigInt): PrintableTokens[C] = {
         require(0 <= from && from <= to && to <= tokens.size)
+
         ghostExpr(Vector.listEqImpliesEq(tokens.slice(from, to), Vector.fromList(tokens.list.slice(from, to))))
         lemmaInvariant()
         assert(Lexer.rulesInvariant(rules))

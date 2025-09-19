@@ -148,6 +148,7 @@ object MemoisationZipper {
   final case class CacheUp[C](private val cache: HashMap[(Context[C], C), Zipper[C]]) {
     require(validCacheMapUp(cache))
 
+    @ghost def lemmaInvariant(): Unit = {}.ensuring(_ => valid)
     @ghost def valid: Boolean = validCacheMapUp(cache)
 
     @ghost
@@ -205,6 +206,7 @@ object MemoisationZipper {
   final case class CacheDown[C](private val cache: HashMap[(Regex[C], Context[C], C), Zipper[C]]) {
     require(validCacheMapDown(cache))
 
+    @ghost def lemmaInvariant(): Unit = {}.ensuring(_ => valid)
     @ghost def valid: Boolean = validCacheMapDown(cache)
 
     @ghost

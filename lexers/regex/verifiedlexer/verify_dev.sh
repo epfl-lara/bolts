@@ -7,6 +7,7 @@ stainless-dotty\
  src/main/scala/ch/epfl/example/AmyLexer.scala\
  src/main/scala/ch/epfl/example/PythonLexer.scala\
  src/main/scala/ch/epfl/example/JSONLexer.scala\
+ src/main/scala/ch/epfl/example/JsonManipulation.scala\
  src/main/scala/ch/epfl/benchmark/Utils.scala\
  src/main/scala/ch/epfl/lexer/Vector.scala\
  --config-file=stainless.conf\
