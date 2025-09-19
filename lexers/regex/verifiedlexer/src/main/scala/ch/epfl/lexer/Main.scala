@@ -53,7 +53,7 @@ object Main {
     // val timeAfter = System.nanoTime()
     // println(f"Time taken to check separability: ${(timeAfter - timeBefore) / 1e6} ms")
 
-    val filePath = "src/main/scala/ch/epfl/example/res/json/example-for-ordering.json"
+    val filePath = "src/main/scala/ch/epfl/benchmark/res/json-manip/001.json"
     val tokensBefore = tokeniseJsonFileMem(filePath, filePath + ".tokens")
     val printedBefore = Lexer.print(tokensBefore)
     println("Printed before manipulation:")
