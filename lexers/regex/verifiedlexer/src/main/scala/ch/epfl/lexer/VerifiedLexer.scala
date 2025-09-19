@@ -212,6 +212,13 @@ object VerifiedLexer {
       res == (lex(rs, print(Vector.singleton(t))) == (Vector.singleton(t), Vector.empty[C]))
     })
 
+    def rulesProduceIndividualTokenMem[C](rs: List[Rule[C]], t: Token[C])(using cacheUp: CacheUp[C], cacheDown: CacheDown[C]): Boolean = {
+      require(!rs.isEmpty)
+      require(rulesInvariant(rs))
+      val (producedTs, suffix) = lexMem(rs, print(Vector.singleton(t)))
+      producedTs.size == 1 && producedTs(0) == t && suffix.isEmpty
+    }.ensuring(res => res == rulesProduceIndividualToken(rs, t))
+
     @ghost
     def rulesProduceEachTokenIndividuallyList[C](rs: List[Rule[C]], ts: List[Token[C]]): Boolean = {
       require(!rs.isEmpty)
@@ -228,6 +235,18 @@ object VerifiedLexer {
       require(rulesInvariant(rs))
       ts.forall(t => rulesProduceIndividualToken(rs, t))
     }
+
+    def rulesProduceEachTokenIndividuallyMem[C](rs: List[Rule[C]], ts: Vector[Token[C]])(using cacheUp: CacheUp[C], cacheDown: CacheDown[C]): Boolean = {
+      require(!rs.isEmpty)
+      require(rulesInvariant(rs))
+      decreases(ts.size)
+      if ts.isEmpty then true 
+      else 
+        val headPred = rulesProduceIndividualTokenMem(rs, ts.head)
+        assert(ts.tail.size < ts.size)
+        val recPred = rulesProduceEachTokenIndividuallyMem(rs, ts.tail)
+        headPred && recPred
+    }.ensuring(res => res == ts.forall(t => rulesProduceIndividualToken(rs, t)))
 
     def rulesRegex[C](rules: List[Rule[C]]): Regex[C] = {
       require(rulesValidInductive(rules))
