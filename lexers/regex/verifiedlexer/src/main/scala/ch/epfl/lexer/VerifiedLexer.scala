@@ -660,7 +660,23 @@ object VerifiedLexer {
       }
     }
 
-     override def print[C](v: Vector[Token[C]], from: BigInt = 0): Vector[C] = {
+    @ghost //@inlineOnce
+    def printListTailRec[C](l: List[Token[C]], acc: List[C] = Nil()): List[C] = {
+      decreases(l)
+      l match {
+        case Cons(hd, tl) => {
+          ListUtils.lemmaTwoListsConcatAssociativity(acc, hd.characters.list, printList(tl))
+          printListTailRec(tl, acc ++ hd.characters.list)
+        }
+        case Nil()        => acc
+      }
+    }.ensuring(res => res == acc ++ printList(l))
+
+    override def print[C](v: Vector[Token[C]]): Vector[C] = {
+      printTailRec(v)
+    }.ensuring(res => res.list == printList(v.list))
+
+    def printRec[C](v: Vector[Token[C]], from: BigInt = 0): Vector[C] = {
       require(from >= 0 && from <= v.size)
       decreases(v.size - from)
       if from >= v.size then
@@ -670,8 +686,21 @@ object VerifiedLexer {
           ListUtils.lemmaDropApply(v.list, from)
           ListUtils.lemmaDropTail(v.list, from)
         })
-        v(from).characters ++ print(v, from + 1)
+        v(from).characters ++ printRec(v, from + 1)
     }.ensuring(res => res.list == printList(v.dropList(from)))
+
+    def printTailRec[C](v: Vector[Token[C]], from: BigInt = 0, acc: Vector[C] = Vector.empty[C]): Vector[C] = {
+      require(from >= 0 && from <= v.size)
+      decreases(v.size - from)
+      if from >= v.size then
+        acc
+      else
+        ghostExpr({
+          ListUtils.lemmaDropApply(v.list, from)
+          ListUtils.lemmaDropTail(v.list, from)
+        })
+        printTailRec(v, from + 1, acc ++ v(from).characters)
+    }.ensuring(res => res.list == printListTailRec(v.dropList(from), acc.list))
 
     /** Prints back the tokens to a list of characters of the type C, by adding a separatorToken between each, and after the last
       *
