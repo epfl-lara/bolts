@@ -30,6 +30,7 @@ import ch.epfl.lexer.VerifiedLexer.PrintableTokensFromTokens
 import ch.epfl.lexer.VerifiedLexer.emptyPrintableTokens
 import ch.epfl.lexer.ListUtils
 import stainless.collection.ListSpecs
+import java.awt.RenderingHints.Key
 
 object JsonManipulationExample:
 
@@ -46,7 +47,7 @@ object JsonManipulationExample:
     *
     * @param ts
     */
-  @extern @pure def isOpeningBrace(t: Token[Char], kw: KeywordValue): Boolean = t.value == kw
+  @extern @pure def isKeywordValue(t: Token[Char], kw: KeywordValue): Boolean = t.value == kw
   def indicesOfOpenBraces(ts: Vector[Token[Char]], size: BigInt, from: BigInt = 0, acc: Vector[BigInt] = Vector.empty[BigInt]): Vector[BigInt] = {
     require(from >= 0 && from <= ts.size)  
     require(ts.size == size)
@@ -57,7 +58,7 @@ object JsonManipulationExample:
     else 
       val t = ts(from)
       // ghostExpr(assert(acc.forall(i => 0 <= i && i < size)))
-      if isOpeningBrace(t, KeywordValue.LeftBrace) then
+      if isKeywordValue(t, KeywordValue.LeftBrace) || isKeywordValue(t, KeywordValue.LeftBrace) then
         ghostExpr({
           assert(acc.forall(i => 0 <= i && i < size))
           ListUtils.lemmaConcatPreservesForall(acc.list, List(from), (i: BigInt) => 0 <= i && i < size)
@@ -82,20 +83,19 @@ object JsonManipulationExample:
     * @return
     */
   def lexAndCheckPrintable(input: Vector[Char])(using cacheUp: MemoisationZipper.CacheUp[Char], cacheDown: MemoisationZipper.CacheDown[Char]): Option[PrintableTokens[Char]] = {
-    if JsonLexer.rules.isEmpty || !Lexer.rulesInvariant(JsonLexer.rules) then 
-      None()
-    else 
-      ghostExpr({
-        cacheUp.lemmaInvariant()
-        cacheDown.lemmaInvariant()
-        assert(Lexer.lexThenRulesProduceEachTokenIndividually(JsonLexer.rules, input.list))
-        assert(!JsonLexer.rules.isEmpty)
-        assert(Lexer.rulesInvariant(JsonLexer.rules))
-        assert(cacheUp.valid)
-        assert(cacheDown.valid)
-      })
-      val (tokens, _) = Lexer.lexMem(JsonLexer.rules, input)
-      PrintableTokensFromTokens(JsonLexer.rules, tokens)
+    require(!JsonLexer.rules.isEmpty)
+    require(Lexer.rulesInvariant(JsonLexer.rules))
+    ghostExpr({
+      cacheUp.lemmaInvariant()
+      cacheDown.lemmaInvariant()
+      assert(Lexer.lexThenRulesProduceEachTokenIndividually(JsonLexer.rules, input.list))
+      assert(!JsonLexer.rules.isEmpty)
+      assert(Lexer.rulesInvariant(JsonLexer.rules))
+      assert(cacheUp.valid)
+      assert(cacheDown.valid)
+    })
+    val (tokens, _) = Lexer.lexMem(JsonLexer.rules, input)
+    PrintableTokensFromTokens(JsonLexer.rules, tokens)
   }.ensuring(res => res.isEmpty || usesJsonRules(res.get))
 
 
@@ -118,17 +118,7 @@ object JsonManipulationExample:
         ListUtils.lemmaConcatPreservesForall(acc.list, List(slice), usesJsonRules)
         assert((acc :+ slice).forall(usesJsonRules))
       })
-      slicesMulti(pt, size, indices.tail, acc :+ slice)
-    else if indices.size == 1 then
-      val from = indices(0)
-      val to = pt.size
-      val slice = pt.slice(from, to)
-      ghostExpr({
-        assert(usesJsonRules(slice))
-        ListUtils.lemmaConcatPreservesForall(acc.list, List(slice), usesJsonRules)
-        assert((acc :+ slice).forall(usesJsonRules))
-      })
-      slicesMulti(pt, size, indices.tail, acc :+ slice)
+      slicesMulti(pt, size, indices.tail.tail, acc :+ slice)
     else
       acc
   }.ensuring(res => res.forall(usesJsonRules))
@@ -210,70 +200,132 @@ object JsonManipulationExample:
       sortObjectsByID(left) ++ middle ++ sortObjectsByID(right) 
   }.ensuring(res => res.forall(t => usesJsonRules(t._2)))
 
-  def recombineSlices(objs: Vector[PrintableTokens[Char]], acc: PrintableTokens[Char]): Option[PrintableTokens[Char]] = {
+  def recombineSlicesWithSep(objs: Vector[PrintableTokens[Char]], sep: PrintableTokens[Char], acc: PrintableTokens[Char]): Option[PrintableTokens[Char]] = {
     require(objs.forall(usesJsonRules))
     require(usesJsonRules(acc))
+    require(usesJsonRules(sep))
     decreases(objs.size)
     if objs.isEmpty then Some(acc)
-    else 
+    else if objs.size == 1 then
       val newAccOpt = acc.append(objs.head)
       newAccOpt match
-        case Some(newAcc) => recombineSlices(objs.tail, newAcc)
+        case Some(newAcc) => recombineSlicesWithSep(objs.tail, sep, newAcc)
         case None() => None()
+    else 
+      objs.head.append(sep) match
+        case Some(newAcc) => recombineSlicesWithSep(objs.tail, sep, newAcc)
+        case None() => None()
+  }.ensuring(res => res.isEmpty || usesJsonRules(res.get))
+
+
+
+  def createCommaNewLineSeparator(using cacheUp: MemoisationZipper.CacheUp[Char], cacheDown: MemoisationZipper.CacheDown[Char]): Option[PrintableTokens[Char]] = {
+    require(!JsonLexer.rules.isEmpty)
+    require(Lexer.rulesInvariant(JsonLexer.rules))
+    val commaToken = Token(KeywordValueInjection.injection(Vector.singleton(',')), JsonLexer.commaRule, BigInt(1), Vector.singleton(','))
+    val newLineToken = Token(WhitespaceValueInjection.injection(Vector.singleton('\n')), JsonLexer.whitespaceRule, BigInt(1), Vector.singleton('\n'))
+    val sepSequence = Vector.singleton(commaToken) ++ Vector.singleton(newLineToken)
+    if !Lexer.rulesProduceEachTokenIndividuallyMem(JsonLexer.rules, sepSequence) then None()
+    else 
+      PrintableTokensFromTokens(JsonLexer.rules, sepSequence)
+  }.ensuring(res => res.isEmpty || usesJsonRules(res.get))
+
+  def createLeftBracketSeparator(using cacheUp: MemoisationZipper.CacheUp[Char], cacheDown: MemoisationZipper.CacheDown[Char]): Option[PrintableTokens[Char]] = {
+    require(!JsonLexer.rules.isEmpty)
+    require(Lexer.rulesInvariant(JsonLexer.rules))
+    val leftBracketToken = Token(KeywordValueInjection.injection(Vector.singleton('[')), JsonLexer.lBracketRule, BigInt(1), Vector.singleton('['))
+    val sepSequence = Vector.singleton(leftBracketToken)
+    if !Lexer.rulesProduceEachTokenIndividuallyMem(JsonLexer.rules, sepSequence) then None()
+    else 
+      PrintableTokensFromTokens(JsonLexer.rules, sepSequence)
+  }.ensuring(res => res.isEmpty || usesJsonRules(res.get))
+
+  def createRightBracketSeparator(using cacheUp: MemoisationZipper.CacheUp[Char], cacheDown: MemoisationZipper.CacheDown[Char]): Option[PrintableTokens[Char]] = {
+    require(!JsonLexer.rules.isEmpty)
+    require(Lexer.rulesInvariant(JsonLexer.rules))
+    val rightBracketToken = Token(KeywordValueInjection.injection(Vector.singleton(']')), JsonLexer.rBracketRule, BigInt(1), Vector.singleton(']'))
+    val sepSequence = Vector.singleton(rightBracketToken)
+    if !Lexer.rulesProduceEachTokenIndividuallyMem(JsonLexer.rules, sepSequence) then None()
+    else 
+      PrintableTokensFromTokens(JsonLexer.rules, sepSequence)
+  }.ensuring(res => res.isEmpty || usesJsonRules(res.get))
+
+  def encloseInSep(objs: PrintableTokens[Char], sepL: PrintableTokens[Char], sepR: PrintableTokens[Char]): Option[PrintableTokens[Char]] = {
+    require(usesJsonRules(objs))
+    require(usesJsonRules(sepL))
+    require(usesJsonRules(sepR))
+    sepL.append(objs) match
+      case Some(withLeft) => 
+        withLeft.append(sepR) match
+          case Some(enclosed) => Some(enclosed)
+          case None() => None()
+      case None() => None()
   }.ensuring(res => res.isEmpty || usesJsonRules(res.get))
 
   def main(path: String)(using cacheUp: MemoisationZipper.CacheUp[Char], cacheDown: MemoisationZipper.CacheDown[Char]): Option[Vector[Char]] = {
     val input: Vector[Char] = openFile(path)
 
-    lexAndCheckPrintable(input) match {
-      case Some(printableTokens) if printableTokens.size > 0 => {
-        // Now we have a PrintableTokens instance with our tokens, with the invariant that they are separable, as an R-Path
-        val tokensSize = printableTokens.size
-        val indices = indicesOfOpenBraces(printableTokens.tokens, tokensSize)
-        val slices: Vector[PrintableTokens[Char]] = slicesMulti(printableTokens, tokensSize, 0 +: indices)
-        // Now we have slices of PrintableTokens, all separable on their own, as provided by the specification of slice
+    if JsonLexer.rules.isEmpty || !Lexer.rulesInvariant(JsonLexer.rules) then None()
+    else
+      lexAndCheckPrintable(input) match {
+        case Some(printableTokens) if printableTokens.size > 0 => {
+          // Now we have a PrintableTokens instance with our tokens, with the invariant that they are separable, as an R-Path
+          val tokensSize = printableTokens.size
+          val indices = indicesOfOpenBraces(printableTokens.tokens, tokensSize)
+          val slices: Vector[PrintableTokens[Char]] = slicesMulti(printableTokens, tokensSize, 0 +: indices)
+          // Now we have slices of PrintableTokens, all separable on their own, as provided by the specification of slice
 
-        def addId(pt: PrintableTokens[Char]): (BigInt, PrintableTokens[Char]) = (parseID(pt), pt)
-        ghostExpr({
-          def lemmaAddIdsPreservesRules(@induct s: List[PrintableTokens[Char]]): Unit = {
-            require(s.forall(usesJsonRules))
-          }.ensuring(_ => s.forall(pt => usesJsonRules(addId(pt)._2)))
-          lemmaAddIdsPreservesRules(slices.list)
-          ListSpecs.mapPred(slices.list, addId, (t: (BigInt, PrintableTokens[Char])) => usesJsonRules(t._2))
-        })
-        val slicesWithIds = slices.map(addId)
-        val orderedSlices = sortObjectsByID(slicesWithIds)
-        
-        def removeId(t: (BigInt, PrintableTokens[Char])): PrintableTokens[Char] = t._2
-        ghostExpr({
-          def lemmaRemoveIdsPreservesRules(@induct l: List[(BigInt, PrintableTokens[Char])]): Unit = {
-            require(l.forall(p => usesJsonRules(p._2)))
-          }.ensuring(_ => l.forall(p => usesJsonRules(removeId(p))))
-          lemmaRemoveIdsPreservesRules(orderedSlices.list)
-          ListSpecs.mapPred(orderedSlices.list, removeId, (pt: PrintableTokens[Char]) => usesJsonRules(pt))
-          check(orderedSlices.map(removeId).forall(pt => usesJsonRules(pt)))
-        })
-        // Now that we have ordered our objects, we recombine them
-        val recombined: Option[PrintableTokens[Char]] = recombineSlices(orderedSlices.map(removeId), emptyPrintableTokens(JsonLexer.rules))
-        recombined match
-          case Some(newTokens) => {
-            // Now we have a new PrintableTokens, which checked only the separable predicate at the boundaries of slices
-            val printed: Vector[Char] = newTokens.print()
-            // if we lex then again, we get the same tokens
-            assert(JsonLexer.rules == newTokens.rules)
-            assert(Lexer.lex(JsonLexer.rules, printed) == (newTokens.tokens, Vector.empty[Char]))
-            Some(printed)
-          }
-          case None() => {
-            None()
-          }
-        
+          def addId(pt: PrintableTokens[Char]): (BigInt, PrintableTokens[Char]) = (parseID(pt), pt)
+          ghostExpr({
+            def lemmaAddIdsPreservesRules(@induct s: List[PrintableTokens[Char]]): Unit = {
+              require(s.forall(usesJsonRules))
+            }.ensuring(_ => s.forall(pt => usesJsonRules(addId(pt)._2)))
+            lemmaAddIdsPreservesRules(slices.list)
+            ListSpecs.mapPred(slices.list, addId, (t: (BigInt, PrintableTokens[Char])) => usesJsonRules(t._2))
+          })
+          val slicesWithIds = slices.map(addId)
+          val orderedSlices = sortObjectsByID(slicesWithIds)
+          
+          def removeId(t: (BigInt, PrintableTokens[Char])): PrintableTokens[Char] = t._2
+          ghostExpr({
+            def lemmaRemoveIdsPreservesRules(@induct l: List[(BigInt, PrintableTokens[Char])]): Unit = {
+              require(l.forall(p => usesJsonRules(p._2)))
+            }.ensuring(_ => l.forall(p => usesJsonRules(removeId(p))))
+            lemmaRemoveIdsPreservesRules(orderedSlices.list)
+            ListSpecs.mapPred(orderedSlices.list, removeId, (pt: PrintableTokens[Char]) => usesJsonRules(pt))
+            check(orderedSlices.map(removeId).forall(pt => usesJsonRules(pt)))
+          })
+          // Now that we have ordered our objects, we recombine them, with a comma and a new line in between
+          (createCommaNewLineSeparator, createLeftBracketSeparator, createRightBracketSeparator) match
+            case (Some(sep), Some(leftBr), Some(rightBr)) => {
+              // Now we have a PrintableTokens instance for the separator, and left and right brackets
+              // We can recombine the slices with the separator in between
+              assert(usesJsonRules(sep))
+              assert(usesJsonRules(leftBr))
+              assert(usesJsonRules(rightBr))
+              val recombined: Option[PrintableTokens[Char]] = recombineSlicesWithSep(orderedSlices.map(removeId), sep, emptyPrintableTokens(JsonLexer.rules))
+              recombined match
+                case Some(objs) => {
+                  encloseInSep(objs, leftBr, rightBr) match
+                    case Some(newTokens) => 
+                      // Now we have a PrintableTokens instance with all our objects, separated by comma and new line, and enclosed in brackets
+                      val printed: Vector[Char] = newTokens.print()
+                      // if we lex then again, we get the same tokens
+                      assert(usesJsonRules(newTokens))
+                      assert(JsonLexer.rules == newTokens.rules)
+                      assert(Lexer.lex(JsonLexer.rules, printed) == (newTokens.tokens, Vector.empty[Char]))
+                      Some(printed)
+                    case None() => None()
+                }
+                case None() => None()
+            }
+            case _ => None()
+        }
+        case _ => {
+          // The produced tokens are not separable, or we have no tokens, so we stop
+          None()
+        }
       }
-      case _ => {
-        // The produced tokens are not separable, or we have no tokens, so we stop
-        None()
-      }
-    }
     
   }
 
