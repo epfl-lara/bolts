@@ -58,11 +58,11 @@ trait LexerInterface {
     */
   def lex[C](rules: List[Rule[C]], input: Vector[C]): (Vector[Token[C]], Vector[C])
 
-  /** Prints back the tokens to a list of characters of the type C
+  /** Prints back the tokens to a vector of characters of the type C
     *
     * @param l
     */
-  def print[C](v: Vector[Token[C]], from: BigInt = 0): Vector[C]
+  def print[C](v: Vector[Token[C]]): Vector[C]
 
 
   /**
