@@ -42,15 +42,15 @@ class RegexBenchmark {
      "70", 
      "75", 
      "80",
-     "85",
-     "90",
-     "95", 
-     "100",
-     "110",
-     "120",
-     "130",
-     "140",
-     "150"
+    //  "85",
+    //  "90",
+    //  "95", 
+    //  "100",
+    //  "110",
+    //  "120",
+    //  "130",
+    //  "140",
+    //  "150"
     )
   )
   var size: String = uninitialized
@@ -95,15 +95,15 @@ class RegexBenchmark {
     assert(res)
   }
 
-  @Benchmark
-  @BenchmarkMode(Array(Mode.AverageTime))
-  @OutputTimeUnit(TimeUnit.MICROSECONDS)
-  def abStarAccepting_RegexMem_list(): Unit = {
-    val r = RegexBenchmarkUtils.abStar
-    val s = RegexBenchmarkUtils.abStar_Accepting_strings_list(size.toInt)
-    val res = matchRMem(r, s)(using RegexBenchmarkUtils.regexCache)
-    assert(res)
-  }
+  // @Benchmark
+  // @BenchmarkMode(Array(Mode.AverageTime))
+  // @OutputTimeUnit(TimeUnit.MICROSECONDS)
+  // def abStarAccepting_RegexMem_list(): Unit = {
+  //   val r = RegexBenchmarkUtils.abStar
+  //   val s = RegexBenchmarkUtils.abStar_Accepting_strings_list(size.toInt)
+  //   val res = matchRMem(r, s)(using RegexBenchmarkUtils.regexCache)
+  //   assert(res)
+  // }
 
   @Benchmark
   @BenchmarkMode(Array(Mode.AverageTime))
@@ -157,15 +157,15 @@ class RegexBenchmark {
     assert(res)
   }
 
-  @Benchmark
-  @BenchmarkMode(Array(Mode.AverageTime))
-  @OutputTimeUnit(TimeUnit.MICROSECONDS)
-  def emailAccepting_ZipperMem_list(): Unit = {
-    val r = RegexBenchmarkUtils.emailRegex
-    val s = RegexBenchmarkUtils.email_Accepting_strings_list(size.toInt)
-    val res = matchZipper(r, s)
-    assert(res)
-  }
+  // @Benchmark
+  // @BenchmarkMode(Array(Mode.AverageTime))
+  // @OutputTimeUnit(TimeUnit.MICROSECONDS)
+  // def emailAccepting_ZipperMem_list(): Unit = {
+  //   val r = RegexBenchmarkUtils.emailRegex
+  //   val s = RegexBenchmarkUtils.email_Accepting_strings_list(size.toInt)
+  //   val res = matchZipper(r, s)
+  //   assert(res)
+  // }
 
   @Benchmark
   @BenchmarkMode(Array(Mode.AverageTime))
