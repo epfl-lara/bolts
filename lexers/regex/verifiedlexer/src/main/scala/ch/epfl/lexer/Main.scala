@@ -35,6 +35,8 @@ import ch.epfl.benchmark.original.NoPosition.file
 import ch.epfl.lexer.MemoisationZipper.CacheUp
 import ch.epfl.lexer.MemoisationZipper.CacheDown
 
+import ch.epfl.lexer.benchmark.lexer.JsonManipulationBenchmarkUtils
+
 object Main {
   def main(args: Array[String]): Unit = {
     given CacheUp[Char] = MemoisationZipper.emptyUp(ContextCharHashable)
@@ -53,15 +55,29 @@ object Main {
     // val timeAfter = System.nanoTime()
     // println(f"Time taken to check separability: ${(timeAfter - timeBefore) / 1e6} ms")
 
-    val filePath = "src/main/scala/ch/epfl/benchmark/res/json-manip/0500_1038945chars.json"
-    val tokensBefore = tokeniseJsonFileMem(filePath, filePath + ".tokens")
-    val printedBefore = Lexer.print(tokensBefore)
-    println("Printed before manipulation:")
-    println(printedBefore.underlying.foldLeft("")((acc, c) => acc + c))
+    // For each file in src/main/scala/ch/epfl/benchmark/res/json-manip/, lex the content, and write a new file with
+    // the same name but with the count of tokens in the name, e.g. 0500_1038945chars.json -> 0500_1038945chars.json.12345tokens
 
-    val printedAfter = JsonManipulationExample.main(filePath)
-    println("Printed after manipulation:")
-    println(printedAfter.get.underlying.foldLeft("")((acc, c) => acc + c))
+    for name <- JsonManipulationBenchmarkUtils.fileNames do
+      val filePath = s"src/main/scala/ch/epfl/benchmark/res/json-manip/$name"
+      val tokens = tokeniseJsonFileMem(filePath, filePath + ".tokens")
+      val newFile = new java.io.File(filePath + s".${tokens.size}tokens")
+      if !newFile.exists() then
+        newFile.createNewFile()
+        println(s"Created new file: ${newFile.getName}")
+      else
+        println(s"File already exists: ${newFile.getName}")
+
+
+    // val filePath = "src/main/scala/ch/epfl/benchmark/res/json-manip/0500_1038945chars.json"
+    // val tokensBefore = tokeniseJsonFileMem(filePath, filePath + ".tokens")
+    // val printedBefore = Lexer.print(tokensBefore)
+    // println("Printed before manipulation:")
+    // println(printedBefore.underlying.foldLeft("")((acc, c) => acc + c))
+
+    // val printedAfter = JsonManipulationExample.main(filePath)
+    // println("Printed after manipulation:")
+    // println(printedAfter.get.underlying.foldLeft("")((acc, c) => acc + c))
   }
 }
 
