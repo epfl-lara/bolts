@@ -135,7 +135,7 @@ class JsonManipulationBenchmark {
       val tokens = orderedSlicesWithoutIdsJustTokens(i)
       recombined = recombined ++ tokens
       if i < length - 1 then {
-        recombined = recombined ++ sep
+        recombined = recombined ++ Vector.singleton(JsonManipulationBenchmarkUtils.commaToken) ++ Vector.singleton(JsonManipulationBenchmarkUtils.newLineToken)
       }
       i = i + 1
     }
@@ -219,6 +219,7 @@ object JsonManipulationBenchmarkUtils {
   val (commaNewLineSeparator, leftBracketSeparator, rightBracketSeparator) = (createCommaNewLineSeparator.get, createLeftBracketSeparator.get, createRightBracketSeparator.get)
 
   val commaToken = Token(KeywordValueInjection.injection(Vector.singleton(',')), JsonLexer.commaRule, BigInt(1), Vector.singleton(','))
+  val newLineToken = Token(WhitespaceValueInjection.injection(Vector.singleton('\n')), JsonLexer.whitespaceRule, BigInt(1), Vector.singleton('\n'))
   val leftBracketToken = Token(KeywordValueInjection.injection(Vector.singleton('[')), JsonLexer.lBracketRule, BigInt(1), Vector.singleton('['))
   val rightBracketToken = Token(KeywordValueInjection.injection(Vector.singleton(']')), JsonLexer.rBracketRule, BigInt(1), Vector.singleton(']'))
 
