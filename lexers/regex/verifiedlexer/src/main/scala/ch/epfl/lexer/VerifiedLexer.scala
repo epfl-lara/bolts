@@ -754,6 +754,8 @@ object VerifiedLexer {
       }
     }.ensuring(_ => rulesProduceEachTokenIndividuallyList(rules, withSeparatorTokenList(l, separatorToken)))
 
+
+    // TODO WIP
     @ghost
     @inlineOnce
     @opaque
