@@ -717,7 +717,133 @@ object VerifiedLexer {
       }
     }
 
+    @ghost
+    def withSeparatorTokenList[C](l: List[Token[C]], separatorToken: Token[C]): List[Token[C]] = {
+      require(separatorToken.rule.isSeparator)
+      decreases(l)
+      l match {
+        case Cons(hd, tl) => {
+          unfold(printList(hd :: separatorToken :: withSeparatorTokenList(tl, separatorToken)))
+          unfold(printList(separatorToken :: withSeparatorTokenList(tl, separatorToken)))
+          ListUtils.lemmaTwoListsConcatAssociativity(hd.characters.list, separatorToken.characters.list, printList(withSeparatorTokenList(tl, separatorToken)))
+          hd :: separatorToken :: withSeparatorTokenList(tl, separatorToken)
+        }
+        case Nil()        => Nil[Token[C]]()
+      }
+    }.ensuring(res => printList(res) == printWithSeparatorTokenList(l, separatorToken))
+
+    @ghost
+    @inlineOnce
+    @opaque
+    def withSeparatorTokenListPreservesRulesProduceTokens[C](rules: List[Rule[C]], l: List[Token[C]], separatorToken: Token[C]): Unit = {
+      require(!rules.isEmpty)
+      require(rulesInvariant(rules))
+      require(rulesProduceEachTokenIndividuallyList(rules, l))
+      require(rulesProduceIndividualToken(rules, separatorToken))
+      require(separatorToken.rule.isSeparator)
+      decreases(l)
+      l match {
+        case Cons(hd, tl) => 
+          ghostExpr({
+            assert(l.contains(hd))
+            ListSpecs.forallContained(l, t => rulesProduceIndividualToken(rules, t), hd)
+          })
+          rulesProduceIndividualToken(rules, hd)
+          withSeparatorTokenListPreservesRulesProduceTokens(rules, tl, separatorToken)
+        case Nil() => 
+      }
+    }.ensuring(_ => rulesProduceEachTokenIndividuallyList(rules, withSeparatorTokenList(l, separatorToken)))
+
+    @ghost
+    @inlineOnce
+    @opaque
+    def printWithSeparatorTokenImpliesSeparableTokensList[C](rules: List[Rule[C]], l: List[Token[C]], separatorToken: Token[C]): Unit = {
+      require(!rules.isEmpty)
+      require(rulesInvariant(rules))
+      require(rulesProduceEachTokenIndividuallyList(rules, l))
+      require(rulesProduceIndividualToken(rules, separatorToken))
+      require(separatorToken.rule.isSeparator)
+      require(l.forall(!_.rule.isSeparator))
+      require(sepAndNonSepRulesDisjointChars(rules, rules))
+      decreases(l)
+
+      withSeparatorTokenListPreservesRulesProduceTokens(rules, l, separatorToken)
+      withSeparatorTokenList(l, separatorToken) match {
+        case Cons(hd, Cons(sep, withSepTl)) => 
+          assert(withSepTl == withSeparatorTokenList(l.tail, separatorToken))
+          assert(l.head == hd)
+          assert(sep == separatorToken)
+          if (!separableTokensPredicate(hd, sep, rules)) {
+            val pref = hd.characters.list ++ List(sep.characters(0))
+            assert(VerifiedRegexMatcher.prefixMatch(rulesRegex(rules), pref))
+            lemmaPrefixMatchThenExistsStringThatMatches(rulesRegex(rules), pref)
+            assert(Exists((s: List[C]) => matchR(rulesRegex(rules), s) && ListUtils.isPrefix(pref, s)))
+            val witness = pickWitness[List[C]](s => matchR(rulesRegex(rules), s) && ListUtils.isPrefix(pref, s))
+            assert(matchR(rulesRegex(rules), witness))
+            matchRGenUnionSpec(rulesRegex(rules), rules.map(_.regex), witness)
+            assert(rules.map(_.regex).exists(rr => validRegex(rr) && matchR(rr, witness)))
+            val rr: Regex[C] = ListUtils.getWitness(rules.map(_.regex), rr => validRegex(rr) && matchR(rr, witness))
+            assert(rules.map(_.regex).contains(rr))
+            def lemma(lr: List[Rule[C]]): Unit = {
+              require(lr.map(_.regex).contains(rr))
+              decreases(lr)
+              lr match {
+                case Cons(h, t) => {
+                  if (h.regex != rr) {
+                    lemma(t)
+                  }
+                }
+              }
+            }.ensuring(_ => lr.exists(r => r.regex == rr))
+            lemma(rules)
+            assert(rules.exists(r => r.regex == rr))
+            val rule = ListUtils.getWitness(rules, r => r.regex == rr)
+            if(rule.isSeparator) {
+              assert(!rule.regex.usedCharacters.contains(hd.characters(0)))
+              lemmaRegexCannotMatchAStringContainingACharItDoesNotContain(rr, rr.usedCharacters, hd.characters(0))
+              check(false)
+            }
+            check(false)
+          }
+          assert(separableTokensPredicate(hd, sep, rules))
+          printWithSeparatorTokenImpliesSeparableTokensList(rules, l.tail, separatorToken)
+          if (withSepTl.isEmpty) {
+            assert(tokensListTwoByTwoPredicateSeparableList(withSeparatorTokenList(l, separatorToken), rules))
+          } else {
+            assert(separableTokensPredicate(sep, withSepTl.head, rules))
+            assert(tokensListTwoByTwoPredicateSeparableList(withSeparatorTokenList(l, separatorToken), rules))
+          }
+        case _ => 
+          assert(tokensListTwoByTwoPredicateSeparableList(withSeparatorTokenList(l, separatorToken), rules))
+      }
+    }.ensuring(_ => {
+      withSeparatorTokenListPreservesRulesProduceTokens(rules, l, separatorToken)
+      tokensListTwoByTwoPredicateSeparableList(withSeparatorTokenList(l, separatorToken), rules)
+    })
+
+
+    @ghost
+    def printWithSeparatorTokenListTailRec[C](l: List[Token[C]], separatorToken: Token[C], acc: List[C] = Nil[C]()): List[C] = {
+      require(separatorToken.rule.isSeparator)
+      decreases(l)
+      l match {
+        case Cons(hd, tl) => {
+          ListUtils.lemmaTwoListsConcatAssociativity(acc, hd.characters.list ++ separatorToken.characters.list, printWithSeparatorTokenList(tl, separatorToken))
+          ListUtils.lemmaTwoListsConcatAssociativity(acc, hd.characters.list, separatorToken.characters.list)
+          printWithSeparatorTokenListTailRec(tl, separatorToken, acc ++ hd.characters.list ++ separatorToken.characters.list)
+        }
+        case Nil()        => acc
+      }
+    }.ensuring(res => res == acc ++ printWithSeparatorTokenList(l, separatorToken))
+    
+
     override def printWithSeparatorToken[C](v: Vector[Token[C]], separatorToken: Token[C], from: BigInt = 0): Vector[C] = {
+      require(from >= 0 && from <= v.size)
+      require(separatorToken.rule.isSeparator)
+      printWithSeparatorTokenTailRec(v, separatorToken, from)
+    }.ensuring(res => res.list == printWithSeparatorTokenList(v.dropList(from), separatorToken))
+
+    def printWithSeparatorTokenRec[C](v: Vector[Token[C]], separatorToken: Token[C], from: BigInt = 0): Vector[C] = {
       require(from >= 0 && from <= v.size)
       require(separatorToken.rule.isSeparator)
       decreases(v.size - from)
@@ -728,8 +854,22 @@ object VerifiedLexer {
           ListUtils.lemmaDropApply(v.list, from)
           ListUtils.lemmaDropTail(v.list, from)
         })
-        v(from).characters ++ separatorToken.characters ++ printWithSeparatorToken(v, separatorToken, from + 1)
+        v(from).characters ++ separatorToken.characters ++ printWithSeparatorTokenRec(v, separatorToken, from + 1)
     }.ensuring(res => res.list == printWithSeparatorTokenList(v.dropList(from), separatorToken))
+
+    def printWithSeparatorTokenTailRec[C](v: Vector[Token[C]], separatorToken: Token[C], from: BigInt = 0, acc: Vector[C] = Vector.empty[C]): Vector[C] = {
+      require(from >= 0 && from <= v.size)
+      require(separatorToken.rule.isSeparator)
+      decreases(v.size - from)
+      if from >= v.size then
+        acc
+      else
+        ghostExpr({
+          ListUtils.lemmaDropApply(v.list, from)
+          ListUtils.lemmaDropTail(v.list, from)
+        })
+        printWithSeparatorTokenTailRec(v, separatorToken, from + 1, acc ++ v(from).characters ++ separatorToken.characters)
+    }.ensuring(res => res.list == printWithSeparatorTokenListTailRec(v.dropList(from), separatorToken, acc.list))
 
     /** Prints back the tokens to a list of characters of the type C, by adding a separatorToken between tokens when the maxPrefix would return
       * another token if printed back to back.

@@ -5144,6 +5144,7 @@ object VerifiedRegexMatcher {
 
   }.ensuring (_ => !matchR(r, s))
 
+
   @ghost
   def lemmaRegexCannotMatchAStringStartingWithACharItDoesNotContain[C](r: Regex[C], s: List[C], c: C): Unit = {
     require(validRegex(r))
@@ -5158,6 +5159,30 @@ object VerifiedRegexMatcher {
     }
 
   }.ensuring (_ => !matchR(r, s))
+
+
+  @ghost
+  def lemmaRegexCannotPrefixMatchAStringContainingACharItDoesNotContain[C](r: Regex[C], prefix: List[C], c: C): Unit = {
+    require(validRegex(r))
+    require(prefix.contains(c))
+    require(!r.usedCharacters.contains(c))
+
+    if (prefixMatch(r, prefix)){
+      lemmaPrefixMatchThenExistsStringThatMatches(r, prefix)
+      assert(Exists((s: List[C]) => matchR(r, s) && ListUtils.isPrefix(prefix, s)))
+      val s: List[C] = pickWitness[List[C]]((s: List[C]) => matchR(r, s) && ListUtils.isPrefix(prefix, s))
+      assert(matchR(r, s))
+      assert(ListUtils.isPrefix(prefix, s))
+      val suffix = ListUtils.getSuffix(s, prefix)
+      assert(s == prefix ++ suffix)
+      assert(prefix.contains(c))
+      assert(s.contains(c))
+      lemmaRegexCannotMatchAStringContainingACharItDoesNotContain(r, s, c)
+      check(false)
+    }
+
+  }.ensuring (_ => !prefixMatch(r, prefix))
+
 
   @ghost
   def lemmaRegexCannotMatchAStringStartingWithACharWhichIsNotInFirstChars[C](r: Regex[C], s: List[C], c: C): Unit = {
