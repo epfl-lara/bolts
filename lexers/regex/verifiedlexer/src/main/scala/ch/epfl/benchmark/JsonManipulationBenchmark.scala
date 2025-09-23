@@ -153,7 +153,7 @@ class JsonManipulationBenchmark {
 }
 
 object JsonManipulationBenchmarkUtils {
-  val exampleFileNames: Seq[String] = Seq(
+  val fileNames: Seq[String] = Seq(
     "0001_2079chars.json",
     "0002_4157chars.json",
     "0010_20776chars.json",
@@ -182,7 +182,7 @@ object JsonManipulationBenchmarkUtils {
     // "7000_14545249chars.json",
     // "9000_18700977chars.json",
   )
-  val fileContents: Map[String, Vector[Char]] = exampleFileNames.map(name => {
+  val fileContents: Map[String, Vector[Char]] = fileNames.map(name => {
     val source = scala.io.Source.fromFile(s"src/main/scala/ch/epfl/benchmark/res/json-manip/$name")
     val lines = try source.mkString.toStainless finally source.close()
     (name -> lines)
