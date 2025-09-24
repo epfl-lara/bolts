@@ -4,30 +4,30 @@
 [info] the benchmarking environment is safe on JVM/OS/HW level, ask for reviews from the domain experts.
 [info] Do not assume the numbers tell you what you want them to tell.
 [info] Benchmark                                          (file)  Mode  Cnt      Score      Error  Units
-[info] JsonLexerBenchmark.lex_ZipperMem      102_23677chars.json  avgt    5  38487.160 ± 1064.218  us/op
-[info] JsonLexerBenchmark.lex_ZipperMem      122_28308chars.json  avgt    5  44235.189 ± 2158.352  us/op
-[info] JsonLexerBenchmark.lex_ZipperMem      142_32958chars.json  avgt    5  52014.874 ± 5635.752  us/op
-[info] JsonLexerBenchmark.lex_ZipperMem      162_37599chars.json  avgt    5  58249.028 ± 1874.557  us/op
-[info] JsonLexerBenchmark.lex_ZipperMem      182_42231chars.json  avgt    5  65247.845 ± 1922.887  us/op
-[info] JsonLexerBenchmark.lex_ZipperMem      202_46879chars.json  avgt    5  73410.766 ± 3980.719  us/op
-[info] JsonLexerBenchmark.lex_ZipperMem      222_51521chars.json  avgt    5  81100.408 ± 2602.606  us/op
-[info] JsonLexerBenchmark.lex_ZipperMem        22_5115chars.json  avgt    5   8066.512 ±  272.225  us/op
-[info] JsonLexerBenchmark.lex_ZipperMem      242_56154chars.json  avgt    5  91114.375 ± 2327.662  us/op
-[info] JsonLexerBenchmark.lex_ZipperMem          2_456chars.json  avgt    5    741.657 ±   44.545  us/op
-[info] JsonLexerBenchmark.lex_ZipperMem        42_9755chars.json  avgt    5  14238.785 ±  749.969  us/op
-[info] JsonLexerBenchmark.lex_ZipperMem       62_14377chars.json  avgt    5  22794.675 ± 1668.667  us/op
-[info] JsonLexerBenchmark.lex_ZipperMem       82_19037chars.json  avgt    5  31605.170 ± 1219.546  us/op
-[info] JsonLexerBenchmark.separability_pred  102_23677chars.json  avgt    5   8550.708 ±  437.372  us/op
-[info] JsonLexerBenchmark.separability_pred  122_28308chars.json  avgt    5   9969.472 ±  228.122  us/op
-[info] JsonLexerBenchmark.separability_pred  142_32958chars.json  avgt    5  11958.531 ±  410.678  us/op
-[info] JsonLexerBenchmark.separability_pred  162_37599chars.json  avgt    5  14017.160 ±  426.562  us/op
-[info] JsonLexerBenchmark.separability_pred  182_42231chars.json  avgt    5  14519.529 ±  243.186  us/op
-[info] JsonLexerBenchmark.separability_pred  202_46879chars.json  avgt    5  17508.557 ±  782.919  us/op
-[info] JsonLexerBenchmark.separability_pred  222_51521chars.json  avgt    5  17718.200 ±  678.710  us/op
-[info] JsonLexerBenchmark.separability_pred    22_5115chars.json  avgt    5   1725.355 ±   51.863  us/op
-[info] JsonLexerBenchmark.separability_pred  242_56154chars.json  avgt    5  20732.672 ± 1207.952  us/op
-[info] JsonLexerBenchmark.separability_pred      2_456chars.json  avgt    5    156.385 ±    7.598  us/op
-[info] JsonLexerBenchmark.separability_pred    42_9755chars.json  avgt    5   3513.244 ±  148.336  us/op
-[info] JsonLexerBenchmark.separability_pred   62_14377chars.json  avgt    5   5376.512 ±  212.650  us/op
-[info] JsonLexerBenchmark.separability_pred   82_19037chars.json  avgt    5   6822.629 ±  250.212  us/op
-[success] Total time: 2628 s (43:48), completed Sep 22, 2025, 12:41:14 PM
+[info] JsonLexerBenchmark.lex_ZipperMem      102_23677chars.json  avgt    5  36999.318 ± 1439.629  us/op
+[info] JsonLexerBenchmark.lex_ZipperMem      122_28308chars.json  avgt    5  45760.817 ± 2044.280  us/op
+[info] JsonLexerBenchmark.lex_ZipperMem      142_32958chars.json  avgt    5  52408.094 ± 1154.966  us/op
+[info] JsonLexerBenchmark.lex_ZipperMem      162_37599chars.json  avgt    5  61450.770 ± 4116.365  us/op
+[info] JsonLexerBenchmark.lex_ZipperMem      182_42231chars.json  avgt    5  66854.274 ± 2487.335  us/op
+[info] JsonLexerBenchmark.lex_ZipperMem      202_46879chars.json  avgt    5  73540.961 ± 2310.358  us/op
+[info] JsonLexerBenchmark.lex_ZipperMem      222_51521chars.json  avgt    5  83443.573 ± 4959.627  us/op
+[info] JsonLexerBenchmark.lex_ZipperMem        22_5115chars.json  avgt    5   7747.783 ±  291.766  us/op
+[info] JsonLexerBenchmark.lex_ZipperMem      242_56154chars.json  avgt    5  93251.955 ± 8327.789  us/op
+[info] JsonLexerBenchmark.lex_ZipperMem          2_456chars.json  avgt    5    728.659 ±   18.592  us/op
+[info] JsonLexerBenchmark.lex_ZipperMem        42_9755chars.json  avgt    5  15126.980 ±  880.626  us/op
+[info] JsonLexerBenchmark.lex_ZipperMem       62_14377chars.json  avgt    5  22103.746 ±  346.854  us/op
+[info] JsonLexerBenchmark.lex_ZipperMem       82_19037chars.json  avgt    5  30303.484 ± 1262.304  us/op
+[info] JsonLexerBenchmark.separability_pred  102_23677chars.json  avgt    5   8552.633 ±  234.594  us/op
+[info] JsonLexerBenchmark.separability_pred  122_28308chars.json  avgt    5   9879.901 ±  263.161  us/op
+[info] JsonLexerBenchmark.separability_pred  142_32958chars.json  avgt    5  11340.337 ±  701.209  us/op
+[info] JsonLexerBenchmark.separability_pred  162_37599chars.json  avgt    5  14165.601 ±  896.732  us/op
+[info] JsonLexerBenchmark.separability_pred  182_42231chars.json  avgt    5  14668.013 ±  538.784  us/op
+[info] JsonLexerBenchmark.separability_pred  202_46879chars.json  avgt    5  17043.396 ±  488.635  us/op
+[info] JsonLexerBenchmark.separability_pred  222_51521chars.json  avgt    5  18901.179 ± 1353.367  us/op
+[info] JsonLexerBenchmark.separability_pred    22_5115chars.json  avgt    5   1872.531 ±   38.520  us/op
+[info] JsonLexerBenchmark.separability_pred  242_56154chars.json  avgt    5  19265.005 ±  228.407  us/op
+[info] JsonLexerBenchmark.separability_pred      2_456chars.json  avgt    5    163.390 ±   16.456  us/op
+[info] JsonLexerBenchmark.separability_pred    42_9755chars.json  avgt    5   3517.062 ±   94.719  us/op
+[info] JsonLexerBenchmark.separability_pred   62_14377chars.json  avgt    5   4901.786 ±  147.721  us/op
+[info] JsonLexerBenchmark.separability_pred   82_19037chars.json  avgt    5   6937.887 ±  306.187  us/op
+[success] Total time: 2628 s (43:48), completed Sep 23, 2025, 6:17:20 PM
