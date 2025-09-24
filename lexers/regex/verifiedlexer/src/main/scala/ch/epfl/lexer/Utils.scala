@@ -625,6 +625,17 @@ object ListUtils {
 
   // -------------------- LEMMAS --------------------
 
+  @ghost
+  @inlineOnce
+  @opaque
+  def lemmaMapContains[B, A](l: List[B], f: B => A, a: A): Unit = {
+    require(l.map(f).contains(a))
+    decreases(l)
+    l match {
+      case Nil()        => ()
+      case Cons(hd, tl) => if (f(hd) == a) then () else lemmaMapContains(tl, f, a)
+    }
+  }.ensuring(_ => l.exists(b => f(b) == a))
 
   @ghost
   @inlineOnce
