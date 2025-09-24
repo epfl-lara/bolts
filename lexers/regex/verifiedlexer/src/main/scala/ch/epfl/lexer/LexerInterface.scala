@@ -220,6 +220,24 @@ trait LexerInterface {
     */
   def printWithSeparatorToken[C](l: Vector[Token[C]], separatorToken: Token[C], from: BigInt = 0): Vector[C]
 
+  /**
+    * Returns the Vector of tokens v with the separator token interleaved between each pair, as
+    * t(0), sep, t(1), sep, ...., t(n), sep
+    * 
+    * printing this results in the same string as calling printWithSeparatorToken
+    *
+    * @param v
+    * @param separatorToken
+    * @param from
+    * @param acc
+    * @return
+    */
+  def withSeparatorToken[C](v: Vector[Token[C]], separatorToken: Token[C]): Vector[Token[C]] = {
+    require(separatorToken.rule.isSeparator)
+    ??? : Vector[Token[C]]
+  }.ensuring(res => print(res) == printWithSeparatorToken(v, separatorToken))
+
+
   /** Prints back the tokens to a list of characters of the type C, by adding a separatorToken between tokens when the maxPrefix would return
       * another token if printed back to back.
       * 
@@ -231,6 +249,16 @@ trait LexerInterface {
       */
   def printWithSeparatorTokenWhenNeeded[C](rules: List[Rule[C]], l: Vector[Token[C]], separatorToken: Token[C], from: BigInt = 0): Vector[C]
 
+  @law @ghost def interleavingSeparatorTokenMakesSeparableSequence[C](rules: List[Rule[C]], tokens: Vector[Token[C]], separatorToken: Token[C]): Boolean =
+    (!rules.isEmpty && 
+      rulesInvariant(rules) && 
+      rulesProduceEachTokenIndividually(rules, tokens) &&
+      sepAndNonSepRulesDisjointChars(rules, rules) && 
+      rulesProduceIndividualToken(rules, separatorToken) &&
+      tokens.forall(!_.rule.isSeparator) &&
+      separatorToken.rule.isSeparator
+    ) ==> 
+      (separableTokens(withSeparatorToken(tokens, separatorToken), rules))
 
   @law @ghost def invertibleThroughPrintingWithSeparatorWhenNeeded[C](rules: List[Rule[C]], tokens: List[Token[C]], separatorToken: Token[C]): Boolean =
     (!rules.isEmpty && 
