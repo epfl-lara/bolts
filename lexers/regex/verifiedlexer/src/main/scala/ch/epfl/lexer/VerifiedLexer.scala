@@ -12,7 +12,6 @@ import scala.annotation.tailrec
 import stainless.lang.Quantifiers._
 
 import stainless.lang.StaticChecks._
-import stainless.annotation.isabelle.lemma
 // import ch.epfl.lexer.OptimisedChecks.*
 
 
