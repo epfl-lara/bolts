@@ -205,11 +205,11 @@ class LexerRegexBenchmark {
       "90",
       "95", 
       "100",
-      "110",
-      "120",
-      "130",
-      "140",
-      "150"
+      // "110",
+      // "120",
+      // "130",
+      // "140",
+      // "150"
       )
     )
     var size: String = uninitialized
@@ -379,7 +379,7 @@ object RegexBenchmarkUtils {
 
   val singleLineCommentRegex = "//".r ~ (azAZ | digits | " ".r | "\t".r | specialChars).*
   val multiCommentRegex = "/*".r ~ 
-                          (azAZ | digits | whiteSpaces | specialCharsString.replace("/", "").replace("*", "").r | "/".r | ("*".r ~ "*".r.* ~ (azAZ | digits | whiteSpaces | specialCharsString.replace("/", "").replace("*", "").r | "/".r))).* ~  
+                          (azAZ | digits | whiteSpaces | anyOf(specialCharsString.replace("/", "").replace("*", "")) | "/".r | ("*".r ~ "*".r.* ~ (azAZ | digits | whiteSpaces | anyOf(specialCharsString.replace("/", "").replace("*", ""))))).* ~  
                           "*".r.* ~
                           "*/".r
 

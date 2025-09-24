@@ -29,6 +29,7 @@ import ch.epfl.lexer.benchmark.lexer.JsonLexerBenchmarkUtils
 import ch.epfl.lexer.benchmark.ContextCharHashable
 import ch.epfl.lexer.benchmark.RegexCharHashable
 import ch.epfl.lexer.benchmark.RegexContextCharHashable
+import ch.epfl.lexer.benchmark.RegexBenchmarkUtils
 
 import ch.epfl.lexer.example.JsonManipulationExample
 import ch.epfl.benchmark.original.NoPosition.file
@@ -52,16 +53,23 @@ object Main {
     // assert(Lexer.separableTokensMem(tokens, JsonLexer.rules)(using MemoisationZipper.emptyUp(ContextCharHashable), MemoisationZipper.emptyDown(RegexContextCharHashable)))
     // val timeAfter = System.nanoTime()
     // println(f"Time taken to check separability: ${(timeAfter - timeBefore) / 1e6} ms")
+    scala.collection.immutable.List(5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60, 65, 70, 75, 80,85,90,95, 100).foreach(i => {
+      val r = RegexBenchmarkUtils.multiCommentRegex
+      val v = RegexBenchmarkUtils.comment_Accepting_strings_multiline(i.toInt)
+      println(f"Trying to match ${r.asString()} \nagainst the string '${v.toString()}'")
+      val res = matchZipperVector(r, v)
+      assert(res)
+    })
 
-    val filePath = "src/main/scala/ch/epfl/benchmark/res/json-manip/0500_1038945chars.json"
-    val tokensBefore = tokeniseJsonFileMem(filePath, filePath + ".tokens")
-    val printedBefore = Lexer.print(tokensBefore)
-    println("Printed before manipulation:")
-    println(printedBefore.underlying.foldLeft("")((acc, c) => acc + c))
+    // val filePath = "src/main/scala/ch/epfl/benchmark/res/json-manip/0500_1038945chars.json"
+    // val tokensBefore = tokeniseJsonFileMem(filePath, filePath + ".tokens")
+    // val printedBefore = Lexer.print(tokensBefore)
+    // println("Printed before manipulation:")
+    // println(printedBefore.underlying.foldLeft("")((acc, c) => acc + c))
 
-    val printedAfter = JsonManipulationExample.main(filePath)
-    println("Printed after manipulation:")
-    println(printedAfter.get.underlying.foldLeft("")((acc, c) => acc + c))
+    // val printedAfter = JsonManipulationExample.main(filePath)
+    // println("Printed after manipulation:")
+    // println(printedAfter.get.underlying.foldLeft("")((acc, c) => acc + c))
   }
 }
 
