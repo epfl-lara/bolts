@@ -19,7 +19,7 @@ import ch.epfl.lexer.Vector
 // import stainless.lang.{ghost => ghostExpr, _}
 import stainless.lang.{ghost => _, decreases => _, unfold => _, _}
 import ch.epfl.lexer.OptimisedChecks.*
-import Predef.{assert => _, Ensuring => _, require => _}
+import Predef.{assert => _, Ensuring => _, require => _, ???}
 
 @tailrec
 def dummyInt(x: BigInt): BigInt = {
