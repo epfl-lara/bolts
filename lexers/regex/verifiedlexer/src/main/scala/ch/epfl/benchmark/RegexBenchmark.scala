@@ -205,8 +205,10 @@ class LexerRegexBenchmark {
       "90",
       "95", 
       "100",
-      // "110",
-      // "120",
+      "105",
+      "110",
+      "115",
+      "120",
       // "130",
       // "140",
       // "150"
@@ -342,7 +344,7 @@ object RegexBenchmarkUtils {
   val seed = 0x0ddba11
   val r = new Random(seed)
 
-  val string_sizes = List(5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60, 65, 70, 75, 80, 85, 90, 95, 100, 110, 120, 130, 140, 150, 200)
+  val string_sizes = List(5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60, 65, 70, 75, 80, 85, 90, 95, 100, 105, 110, 115, 120, 130, 140, 150, 200)
   val abStar: Regex[Char] = ("a" | "b").*
 
   val abStar_Accepting_strings: Map[Int, Vector[Char]] = string_sizes.map(n => (n, (1 to n).map(_ => random_a_or_b()).mkString.toStainless)).toMap
