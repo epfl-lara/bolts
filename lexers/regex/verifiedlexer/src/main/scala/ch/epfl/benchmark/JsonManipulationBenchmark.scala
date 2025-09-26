@@ -169,8 +169,8 @@ class JsonManipulationBenchmark {
     assert(recombined.size > 0)
     val withBrackets = Vector.singleton(JsonManipulationBenchmarkUtils.leftBracketToken) ++ recombined ++ Vector.singleton(JsonManipulationBenchmarkUtils.rightBracketToken)
     val printable = Lexer.separableTokensMem(withBrackets, JsonLexer.rules)(
-      using JsonManipulationBenchmarkUtils.zipperCacheUp,
-      JsonManipulationBenchmarkUtils.zipperCacheDown
+      using JsonManipulationBenchmarkUtils.zipperCacheUpInternal,
+      JsonManipulationBenchmarkUtils.zipperCacheDownInternal
     )
     assert(printable)
   }
