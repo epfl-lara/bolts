@@ -78,6 +78,15 @@ class JsonManipulationBenchmark {
     assert(suffix.isEmpty)
   }
 
+   
+  @Benchmark
+  @BenchmarkMode(Array(Mode.AverageTime))
+  @OutputTimeUnit(TimeUnit.MICROSECONDS)
+  def lexNonMem(): Unit = {
+    val (tokens, suffix) = Lexer.lex(JsonLexer.rules, JsonManipulationBenchmarkUtils.fileContents(file))
+    assert(suffix.isEmpty)
+  }
+
   @Benchmark
   @BenchmarkMode(Array(Mode.AverageTime))
   @OutputTimeUnit(TimeUnit.MICROSECONDS)
