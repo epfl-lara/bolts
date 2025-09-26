@@ -26,7 +26,7 @@ import ch.epfl.lexer.example.ExampleJsonLexer.JsonLexer
 import ch.epfl.lexer.MemoisationZipper
 import ch.epfl.lexer.VerifiedLexer.PrintableTokens
 import ch.epfl.lexer.VerifiedLexer.Lexer
-import ch.epfl.lexer.VerifiedLexer.PrintableTokensFromTokens
+import ch.epfl.lexer.VerifiedLexer.printableTokensFromTokens
 import ch.epfl.lexer.VerifiedLexer.emptyPrintableTokens
 import ch.epfl.lexer.ListUtils
 import stainless.collection.ListSpecs
@@ -95,7 +95,7 @@ object JsonManipulationExample:
       assert(cacheDown.valid)
     })
     val (tokens, _) = Lexer.lexMem(JsonLexer.rules, input)
-    PrintableTokensFromTokens(JsonLexer.rules, tokens)
+    printableTokensFromTokens(JsonLexer.rules, tokens)
   }.ensuring(res => res.isEmpty || usesJsonRules(res.get))
 
 
@@ -230,7 +230,7 @@ object JsonManipulationExample:
     val sepSequence = Vector.singleton(commaToken) ++ Vector.singleton(newLineToken)
     if !Lexer.rulesProduceEachTokenIndividuallyMem(JsonLexer.rules, sepSequence) then None()
     else 
-      PrintableTokensFromTokens(JsonLexer.rules, sepSequence)
+      printableTokensFromTokens(JsonLexer.rules, sepSequence)
   }.ensuring(res => res.isEmpty || usesJsonRules(res.get))
 
   def createLeftBracketSeparator(using cacheUp: MemoisationZipper.CacheUp[Char], cacheDown: MemoisationZipper.CacheDown[Char]): Option[PrintableTokens[Char]] = {
@@ -240,7 +240,7 @@ object JsonManipulationExample:
     val sepSequence = Vector.singleton(leftBracketToken)
     if !Lexer.rulesProduceEachTokenIndividuallyMem(JsonLexer.rules, sepSequence) then None()
     else 
-      PrintableTokensFromTokens(JsonLexer.rules, sepSequence)
+      printableTokensFromTokens(JsonLexer.rules, sepSequence)
   }.ensuring(res => res.isEmpty || usesJsonRules(res.get))
 
   def createRightBracketSeparator(using cacheUp: MemoisationZipper.CacheUp[Char], cacheDown: MemoisationZipper.CacheDown[Char]): Option[PrintableTokens[Char]] = {
@@ -250,7 +250,7 @@ object JsonManipulationExample:
     val sepSequence = Vector.singleton(rightBracketToken)
     if !Lexer.rulesProduceEachTokenIndividuallyMem(JsonLexer.rules, sepSequence) then None()
     else 
-      PrintableTokensFromTokens(JsonLexer.rules, sepSequence)
+      printableTokensFromTokens(JsonLexer.rules, sepSequence)
   }.ensuring(res => res.isEmpty || usesJsonRules(res.get))
 
   def encloseInSep(objs: PrintableTokens[Char], sepL: PrintableTokens[Char], sepR: PrintableTokens[Char]): Option[PrintableTokens[Char]] = {

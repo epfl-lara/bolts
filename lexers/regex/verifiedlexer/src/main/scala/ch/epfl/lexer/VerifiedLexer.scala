@@ -28,12 +28,24 @@ object VerifiedLexer {
     * @param tokens
     * @return
     */
-  def PrintableTokensFromTokens[C](rules: List[Rule[C]], tokens: Vector[Token[C]]): Option[PrintableTokens[C]] = {
+  def printableTokensFromTokens[C](rules: List[Rule[C]], tokens: Vector[Token[C]]): Option[PrintableTokens[C]] = {
     require(!rules.isEmpty)
     require(Lexer.rulesInvariant(rules)) // this should checked at runtime before lexing
     require(Lexer.rulesProduceEachTokenIndividually(rules, tokens)) // this is ensured by lexing
 
     if (Lexer.separableTokens(tokens, rules)) {
+      Some(PrintableTokens(rules, tokens))
+    } else {
+      None()
+    }
+  }.ensuring(res => res.isEmpty || (res.get.rules == rules && res.get.tokens == tokens))
+
+  def printableTokensFromTokensMem[C](rules: List[Rule[C]], tokens: Vector[Token[C]])(using cacheUp: CacheUp[C], cacheDown: CacheDown[C]): Option[PrintableTokens[C]] = {
+    require(!rules.isEmpty)
+    require(Lexer.rulesInvariant(rules)) // this should checked at runtime before lexing
+    require(Lexer.rulesProduceEachTokenIndividually(rules, tokens)) // this is ensured by lexing
+
+    if (Lexer.separableTokensMem(tokens, rules)) {
       Some(PrintableTokens(rules, tokens))
     } else {
       None()
