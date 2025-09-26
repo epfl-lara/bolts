@@ -18,7 +18,7 @@ import ch.epfl.lexer.ZipperRegex.Context
 import ch.epfl.lexer.benchmark.ContextCharHashable
 import ch.epfl.lexer.benchmark.RegexCharHashable
 import ch.epfl.lexer.benchmark.RegexContextCharHashable
-import ch.epfl.lexer.VerifiedLexer.printableTokensFromTokens
+import ch.epfl.lexer.VerifiedLexer.printableTokensFromTokensMem
 
 import ch.epfl.lexer.example.JsonManipulationExample.*
 import ch.epfl.lexer.example.ExampleJsonLexer.Types.*
@@ -85,7 +85,7 @@ class JsonManipulationBenchmark {
       using JsonManipulationBenchmarkUtils.zipperCacheUpInternal,
       JsonManipulationBenchmarkUtils.zipperCacheDownInternal
     )
-    val res = printableTokensFromTokens(JsonLexer.rules, tokens)
+    val res = printableTokensFromTokensMem(JsonLexer.rules, tokens)
     assert(res.isDefined)
     assert(res.get.size > 0)
   }
@@ -194,7 +194,7 @@ object JsonManipulationBenchmarkUtils {
       zipperCacheDownInternal
     )
     assert(suffix.isEmpty)
-    (name -> printableTokensFromTokens(JsonLexer.rules, tokens).get)
+    (name -> printableTokensFromTokensMem(JsonLexer.rules, tokens).get)
   }
 
   lazy val orderedSlicesWithoutIds: Map[String, Vector[PrintableTokens[Char]]] = filePrintableTokens.map { case (name, pt) =>
