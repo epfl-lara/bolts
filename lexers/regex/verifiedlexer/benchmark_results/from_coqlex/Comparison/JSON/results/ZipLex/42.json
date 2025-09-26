@@ -1,7 +1,9 @@
 {
-"fname":"42.json",
- "input_len":9755,
- "times":[0.013749019],
- "rest_len":0,
- "sem_tokens_len":"Some 3024"
+  "fname": "42.json",
+  "input_len": 9755,
+  "times": [
+    0.01512698
+  ],
+  "rest_len": 0,
+  "sem_tokens_len": "Some 3024"
 }
