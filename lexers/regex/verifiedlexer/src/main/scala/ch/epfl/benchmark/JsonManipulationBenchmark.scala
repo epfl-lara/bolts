@@ -18,7 +18,7 @@ import ch.epfl.lexer.ZipperRegex.Context
 import ch.epfl.lexer.benchmark.ContextCharHashable
 import ch.epfl.lexer.benchmark.RegexCharHashable
 import ch.epfl.lexer.benchmark.RegexContextCharHashable
-import ch.epfl.lexer.VerifiedLexer.PrintableTokensFromTokens
+import ch.epfl.lexer.VerifiedLexer.printableTokensFromTokensMem
 
 import ch.epfl.lexer.example.JsonManipulationExample.*
 import ch.epfl.lexer.example.ExampleJsonLexer.Types.*
@@ -82,10 +82,13 @@ class JsonManipulationBenchmark {
   @OutputTimeUnit(TimeUnit.MICROSECONDS)
   def lexAndCheckPrintable(): Unit = {
     val (tokens, _) = Lexer.lexMem(JsonLexer.rules, JsonManipulationBenchmarkUtils.fileContents(file))(
-      using JsonManipulationBenchmarkUtils.zipperCacheUpInternal,
-      JsonManipulationBenchmarkUtils.zipperCacheDownInternal
+      using JsonManipulationBenchmarkUtils.zipperCacheUp,
+      JsonManipulationBenchmarkUtils.zipperCacheDown
     )
-    val res = PrintableTokensFromTokens(JsonLexer.rules, tokens)
+    val res = printableTokensFromTokensMem(JsonLexer.rules, tokens)(
+      using JsonManipulationBenchmarkUtils.zipperCacheUp,
+      JsonManipulationBenchmarkUtils.zipperCacheDown
+    )
     assert(res.isDefined)
     assert(res.get.size > 0)
   }
@@ -194,7 +197,7 @@ object JsonManipulationBenchmarkUtils {
       zipperCacheDownInternal
     )
     assert(suffix.isEmpty)
-    (name -> PrintableTokensFromTokens(JsonLexer.rules, tokens).get)
+    (name -> printableTokensFromTokensMem(JsonLexer.rules, tokens).get)
   }
 
   lazy val orderedSlicesWithoutIds: Map[String, Vector[PrintableTokens[Char]]] = filePrintableTokens.map { case (name, pt) =>
