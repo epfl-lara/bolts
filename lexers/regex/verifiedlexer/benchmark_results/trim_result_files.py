@@ -34,6 +34,7 @@ def main(input_dir, output_dir):
 if __name__ == "__main__":
     if len(sys.argv) != 3:
         print("Usage: python trim_result_files.py <input_directory> <output_directory>")
+        print(f"Received {len(sys.argv)-1} arguments: {sys.argv[1:]}")
         sys.exit(1)
 
     input_directory = sys.argv[1]
