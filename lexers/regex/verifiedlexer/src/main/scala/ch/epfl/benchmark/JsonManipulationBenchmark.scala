@@ -82,10 +82,13 @@ class JsonManipulationBenchmark {
   @OutputTimeUnit(TimeUnit.MICROSECONDS)
   def lexAndCheckPrintable(): Unit = {
     val (tokens, _) = Lexer.lexMem(JsonLexer.rules, JsonManipulationBenchmarkUtils.fileContents(file))(
-      using JsonManipulationBenchmarkUtils.zipperCacheUpInternal,
-      JsonManipulationBenchmarkUtils.zipperCacheDownInternal
+      using JsonManipulationBenchmarkUtils.zipperCacheUp,
+      JsonManipulationBenchmarkUtils.zipperCacheDown
     )
-    val res = printableTokensFromTokensMem(JsonLexer.rules, tokens)
+    val res = printableTokensFromTokensMem(JsonLexer.rules, tokens)(
+      using JsonManipulationBenchmarkUtils.zipperCacheUp,
+      JsonManipulationBenchmarkUtils.zipperCacheDown
+    )
     assert(res.isDefined)
     assert(res.get.size > 0)
   }
