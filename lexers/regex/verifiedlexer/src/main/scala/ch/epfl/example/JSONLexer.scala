@@ -190,7 +190,7 @@ object ExampleJsonLexer:
 
         @extern def wsCharRe: Regex[Char] = (' '.r | '\t'.r | '\n'.r | '\r'.r).+
         @extern def expPartRe: Regex[Char] = ('e'.r | 'E'.r) ~ opt('-'.r | '+'.r) ~ digits.+
-        @extern def intRe: Regex[Char] = opt('-'.r) ~ ('0'.r | anyOf("123456789") ~ digits.*)
+        @extern def intRe: Regex[Char] = opt('-'.r) ~ ('0'.r.+ | anyOf("123456789") ~ digits.*)
         @extern def decimalRe: Regex[Char] = intRe ~ '.'.r ~ digits.+
         @extern def floatRe: Regex[Char] = decimalRe ~ opt(expPartRe)
         @extern def puncRe: Regex[Char] = anyOf("!#$%&()*+,-./:;<=>?@[]^_`{|}~\\")
