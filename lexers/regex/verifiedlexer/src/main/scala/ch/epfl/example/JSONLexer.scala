@@ -13,6 +13,7 @@ import stainless.collection.Nil
 
 import stainless.annotation.extern
 import stainless.annotation.pure
+import stainless.lang.decreases
 
 import ch.epfl.lexer.benchmark.RegexUtils.*
 import ch.epfl.lexer.benchmark.RegexUtils.digits
@@ -32,18 +33,29 @@ object ExampleJsonLexer:
         end IntegerValue
             
         object IntegerValueUtils:
-            extension [A](v: Vector[A])
-                @extern @pure def mkString(inter: String): String = 
-                    val sb = new StringBuilder()
-                    def loop(from: BigInt): Unit =
-                        if from < v.size then
-                            sb.append(v(from).toString)
-                            if from + 1 < v.size then
-                                sb.append(inter)
-                            loop(from + 1)
-                    loop(0)
-                    sb.toString()
-            @extern def charsToInt(v: Vector[Char]): BigInt = BigInt(v.mkString(""))
+            @pure def charToBigInt(c: Char): BigInt = c match
+                case _ if c == '1' => 1
+                case _ if c == '2' => 2
+                case _ if c == '3' => 3
+                case _ if c == '4' => 4
+                case _ if c == '5' => 5
+                case _ if c == '6' => 6
+                case _ if c == '7' => 7
+                case _ if c == '8' => 8
+                case _ if c == '9' => 9
+                case _             => 0
+                
+            
+            @pure def toBigInt(v: Vector[Char], acc: BigInt = 0): BigInt = {
+                decreases(v.size)
+                if v.isEmpty then
+                    acc
+                else
+                    val head = v(0)
+                    val tail = v.tail
+                    toBigInt(tail, acc * 10 + charToBigInt(head))
+            }
+            @pure def charsToInt(v: Vector[Char]): BigInt = toBigInt(v)
         end IntegerValueUtils
 
         case class FloatLiteralValue(text: Vector[Char]) extends TokenValue
@@ -238,7 +250,7 @@ object ExampleJsonLexer:
     end JsonLexer
 
 
-    object DemoPrintableTokens:
+    object Demo:
         import ch.epfl.lexer.benchmark.RegexUtils.*
         import Types.*
         @extern def main(): Unit = {
@@ -250,6 +262,6 @@ object ExampleJsonLexer:
 
         }
 
-    end DemoPrintableTokens
+    end Demo
 
 end ExampleJsonLexer
