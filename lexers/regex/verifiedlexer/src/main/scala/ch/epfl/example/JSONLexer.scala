@@ -29,7 +29,7 @@ import ch.epfl.lexer.Vector
 object ExampleJsonLexer:
     object Types:
         case class IntegerValue(value: BigInt, text: Vector[Char]) extends TokenValue:
-            require(IntegerValueUtils.charsToInt(text) == value)
+            require(IntegerValueUtils.charsToBigInt(text) == value)
         end IntegerValue
             
         object IntegerValueUtils:
@@ -46,16 +46,11 @@ object ExampleJsonLexer:
                 case _             => 0
                 
             
-            @pure def toBigInt(v: Vector[Char], acc: BigInt = 0): BigInt = {
+            @pure def charsToBigInt(v: Vector[Char], acc: BigInt = 0): BigInt = {
                 decreases(v.size)
-                if v.isEmpty then
-                    acc
-                else
-                    val head = v(0)
-                    val tail = v.tail
-                    toBigInt(tail, acc * 10 + charToBigInt(head))
+                if v.isEmpty then acc
+                else charsToBigInt(v.tail, acc * 10 + charToBigInt(v(0)))
             }
-            @pure def charsToInt(v: Vector[Char]): BigInt = toBigInt(v)
         end IntegerValueUtils
 
         case class FloatLiteralValue(text: Vector[Char]) extends TokenValue
@@ -79,7 +74,7 @@ object ExampleJsonLexer:
         // Injection definition + proofs
 
         case object IntegerValueInjection:
-            def toValue(v: Vector[Char]): TokenValue = IntegerValue(IntegerValueUtils.charsToInt(v), v)
+            def toValue(v: Vector[Char]): TokenValue = IntegerValue(IntegerValueUtils.charsToBigInt(v), v)
             def toCharacters(t: TokenValue): Vector[Char] = t match
                     case IntegerValue(_, text) => text
                     case _ => Vector.empty
