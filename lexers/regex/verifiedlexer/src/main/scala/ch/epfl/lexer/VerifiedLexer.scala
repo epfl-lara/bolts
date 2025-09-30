@@ -2643,6 +2643,7 @@ object VerifiedLexer {
           lemmaMaxPrefReturnTokenSoItsTagBelongsToTheRuleWithinToken(rules, separatorToken.characters.list, separatorToken)
           val separatorRule = separatorToken.rule
 
+          check(maxPrefix(rules, hd.characters.list).get._1 == hd)
           lemmaMaxPrefReturnTokenSoItsTagBelongsToTheRuleWithinToken(rules, hd.characters.list, hd)
           val rule = hd.rule
 
