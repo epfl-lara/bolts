@@ -3,12 +3,21 @@ package ch.epfl.lexer
 import stainless.collection._
 import stainless.annotation._
 
+// BEGIN uncomment for verification ------------------------------------------
 // import stainless.lang.StaticChecks._
 // import stainless.lang.{ghost => ghostExpr, _}
-// import stainless.proof.check
+// END uncomment for verification --------------------------------------------
+// BEGIN imports for benchmarking -------------------------------------------
 import stainless.lang.{ghost => _, decreases => _, unfold => _, _}
 import ch.epfl.lexer.OptimisedChecks.*
 import Predef.{assert => _, Ensuring => _, require => _}
+
+@tailrec
+def dummyUtils(x: BigInt): BigInt = {
+  if (x == BigInt(0)) then x
+  else dummyUtils(x - BigInt(1))
+}.ensuring( res => res == BigInt(0))
+// END imports for benchmarking ---------------------------------------------
 
 case class Vector[T](@pure @extern underlying: scala.collection.immutable.Vector[T], overflowing: List[T] = Nil[T]()) {
   val MAX_INT: BigInt = BigInt(2147483647) // Int.MaxValue
