@@ -19,6 +19,7 @@ import ch.epfl.lexer.benchmark.ContextCharHashable
 import ch.epfl.lexer.benchmark.RegexCharHashable
 import ch.epfl.lexer.benchmark.RegexContextCharHashable
 import ch.epfl.lexer.VerifiedLexer.printableTokensFromTokensMem
+import ch.epfl.lexer.VerifiedLexer.printableTokensFromTokens
 
 import ch.epfl.lexer.example.JsonManipulationExample.*
 import ch.epfl.lexer.example.ExampleJsonLexer.Types.*
@@ -77,6 +78,15 @@ class JsonManipulationBenchmark {
     assert(suffix.isEmpty)
   }
 
+   
+  @Benchmark
+  @BenchmarkMode(Array(Mode.AverageTime))
+  @OutputTimeUnit(TimeUnit.MICROSECONDS)
+  def lexNonMem(): Unit = {
+    val (tokens, suffix) = Lexer.lex(JsonLexer.rules, JsonManipulationBenchmarkUtils.fileContents(file))
+    assert(suffix.isEmpty)
+  }
+
   @Benchmark
   @BenchmarkMode(Array(Mode.AverageTime))
   @OutputTimeUnit(TimeUnit.MICROSECONDS)
@@ -88,6 +98,29 @@ class JsonManipulationBenchmark {
     val res = printableTokensFromTokensMem(JsonLexer.rules, tokens)(
       using JsonManipulationBenchmarkUtils.zipperCacheUp,
       JsonManipulationBenchmarkUtils.zipperCacheDown
+    )
+    assert(res.isDefined)
+    assert(res.get.size > 0)
+  }
+
+  @Benchmark
+  @BenchmarkMode(Array(Mode.AverageTime))
+  @OutputTimeUnit(TimeUnit.MICROSECONDS)
+  def checkPrintableNonMem(): Unit = {
+    val tokens = JsonManipulationBenchmarkUtils.filePrintableTokens(file).tokens
+    val res = printableTokensFromTokens(JsonLexer.rules, tokens)
+    assert(res.isDefined)
+    assert(res.get.size > 0)
+  }
+
+  @Benchmark
+  @BenchmarkMode(Array(Mode.AverageTime))
+  @OutputTimeUnit(TimeUnit.MICROSECONDS)
+  def checkPrintableMemPreFilledCache(): Unit = {
+    val tokens = JsonManipulationBenchmarkUtils.filePrintableTokens(file).tokens
+    val res = printableTokensFromTokensMem(JsonLexer.rules, tokens)(
+      using JsonManipulationBenchmarkUtils.zipperCacheUpInternal,
+      JsonManipulationBenchmarkUtils.zipperCacheDownInternal
     )
     assert(res.isDefined)
     assert(res.get.size > 0)
@@ -145,8 +178,8 @@ class JsonManipulationBenchmark {
     assert(recombined.size > 0)
     val withBrackets = Vector.singleton(JsonManipulationBenchmarkUtils.leftBracketToken) ++ recombined ++ Vector.singleton(JsonManipulationBenchmarkUtils.rightBracketToken)
     val printable = Lexer.separableTokensMem(withBrackets, JsonLexer.rules)(
-      using JsonManipulationBenchmarkUtils.zipperCacheUp,
-      JsonManipulationBenchmarkUtils.zipperCacheDown
+      using JsonManipulationBenchmarkUtils.zipperCacheUpInternal,
+      JsonManipulationBenchmarkUtils.zipperCacheDownInternal
     )
     assert(printable)
   }

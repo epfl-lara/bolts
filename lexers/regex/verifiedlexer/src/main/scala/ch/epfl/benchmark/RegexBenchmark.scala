@@ -46,11 +46,11 @@ class RegexBenchmark {
      "90",
      "95", 
      "100",
-     "110",
-     "120",
-     "130",
-     "140",
-     "150"
+    //  "110",
+    //  "120",
+    //  "130",
+    //  "140",
+    //  "150"
     )
   )
   var size: String = uninitialized
@@ -95,15 +95,15 @@ class RegexBenchmark {
     assert(res)
   }
 
-  @Benchmark
-  @BenchmarkMode(Array(Mode.AverageTime))
-  @OutputTimeUnit(TimeUnit.MICROSECONDS)
-  def abStarAccepting_RegexMem_list(): Unit = {
-    val r = RegexBenchmarkUtils.abStar
-    val s = RegexBenchmarkUtils.abStar_Accepting_strings_list(size.toInt)
-    val res = matchRMem(r, s)(using RegexBenchmarkUtils.regexCache)
-    assert(res)
-  }
+  // @Benchmark
+  // @BenchmarkMode(Array(Mode.AverageTime))
+  // @OutputTimeUnit(TimeUnit.MICROSECONDS)
+  // def abStarAccepting_RegexMem_list(): Unit = {
+  //   val r = RegexBenchmarkUtils.abStar
+  //   val s = RegexBenchmarkUtils.abStar_Accepting_strings_list(size.toInt)
+  //   val res = matchRMem(r, s)(using RegexBenchmarkUtils.regexCache)
+  //   assert(res)
+  // }
 
   @Benchmark
   @BenchmarkMode(Array(Mode.AverageTime))
@@ -157,15 +157,15 @@ class RegexBenchmark {
     assert(res)
   }
 
-  @Benchmark
-  @BenchmarkMode(Array(Mode.AverageTime))
-  @OutputTimeUnit(TimeUnit.MICROSECONDS)
-  def emailAccepting_ZipperMem_list(): Unit = {
-    val r = RegexBenchmarkUtils.emailRegex
-    val s = RegexBenchmarkUtils.email_Accepting_strings_list(size.toInt)
-    val res = matchZipper(r, s)
-    assert(res)
-  }
+  // @Benchmark
+  // @BenchmarkMode(Array(Mode.AverageTime))
+  // @OutputTimeUnit(TimeUnit.MICROSECONDS)
+  // def emailAccepting_ZipperMem_list(): Unit = {
+  //   val r = RegexBenchmarkUtils.emailRegex
+  //   val s = RegexBenchmarkUtils.email_Accepting_strings_list(size.toInt)
+  //   val res = matchZipper(r, s)
+  //   assert(res)
+  // }
 
   @Benchmark
   @BenchmarkMode(Array(Mode.AverageTime))
@@ -205,11 +205,13 @@ class LexerRegexBenchmark {
       "90",
       "95", 
       "100",
+      "105",
       "110",
+      "115",
       "120",
-      "130",
-      "140",
-      "150"
+      // "130",
+      // "140",
+      // "150"
       )
     )
     var size: String = uninitialized
@@ -342,7 +344,7 @@ object RegexBenchmarkUtils {
   val seed = 0x0ddba11
   val r = new Random(seed)
 
-  val string_sizes = List(5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60, 65, 70, 75, 80, 85, 90, 95, 100, 110, 120, 130, 140, 150, 200)
+  val string_sizes = List(5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60, 65, 70, 75, 80, 85, 90, 95, 100, 105, 110, 115, 120, 130, 140, 150, 200)
   val abStar: Regex[Char] = ("a" | "b").*
 
   val abStar_Accepting_strings: Map[Int, Vector[Char]] = string_sizes.map(n => (n, (1 to n).map(_ => random_a_or_b()).mkString.toStainless)).toMap
@@ -379,7 +381,7 @@ object RegexBenchmarkUtils {
 
   val singleLineCommentRegex = "//".r ~ (azAZ | digits | " ".r | "\t".r | specialChars).*
   val multiCommentRegex = "/*".r ~ 
-                          (azAZ | digits | whiteSpaces | specialCharsString.replace("/", "").replace("*", "").r | "/".r | ("*".r ~ "*".r.* ~ (azAZ | digits | whiteSpaces | specialCharsString.replace("/", "").replace("*", "").r | "/".r))).* ~  
+                          (azAZ | digits | whiteSpaces | anyOf(specialCharsString.replace("/", "").replace("*", "")) | "/".r | ("*".r ~ "*".r.* ~ (azAZ | digits | whiteSpaces | anyOf(specialCharsString.replace("/", "").replace("*", ""))))).* ~  
                           "*".r.* ~
                           "*/".r
 
