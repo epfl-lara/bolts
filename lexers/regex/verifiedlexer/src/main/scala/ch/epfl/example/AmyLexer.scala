@@ -14,8 +14,8 @@ import stainless.collection.Nil
 import stainless.annotation.extern
 import stainless.annotation.pure
 
-import ch.epfl.lexer.benchmark.RegexUtils.*
-import ch.epfl.lexer.benchmark.RegexUtils.digits
+import ch.epfl.lexer.example.RegexUtils.*
+import ch.epfl.lexer.example.RegexUtils.digits
 import stainless.lang.Quantifiers.*
 
 import ch.epfl.lexer.Vector
@@ -454,7 +454,7 @@ object ExampleAmyLexer:
 
 
     object DemoPrintableTokens:
-        import ch.epfl.lexer.benchmark.RegexUtils.*
+        import ch.epfl.lexer.example.RegexUtils.*
         import Types.*
         @extern def main(): Unit = {
             // Check validity of the rules
