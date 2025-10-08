@@ -37,7 +37,6 @@ def dummyAmyLexerExample(x: BigInt): BigInt = {
 }.ensuring( res => res == BigInt(0))
 // END imports for benchmarking ---------------------------------------------
 
-
 object ExampleAmyLexer:
     object Types:
         case class IntegerValue(value: Int, text: Vector[Char]) extends TokenValue:
