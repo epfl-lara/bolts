@@ -219,7 +219,7 @@ object JsonManipulationBenchmarkUtils {
     // "9000_18700977chars.json",
   )
   val fileContents: Map[String, Vector[Char]] = fileNames.map(name => {
-    val source = scala.io.Source.fromFile(s"src/main/scala/com.ziplex/benchmark/res/json-manip/$name")
+    val source = scala.io.Source.fromFile(s"src/main/scala/com/ziplex/benchmark/res/json-manip/$name")
     val lines = try source.mkString.toStainless finally source.close()
     (name -> lines)
   }).toMap

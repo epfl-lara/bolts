@@ -17,13 +17,13 @@ import stainless.lang.None
 
 object Main {
   def main(args: Array[String]): Unit = {
-    tokenizeJsonFile("src/main/scala/com.ziplex/example/res/json/example-for-sorting.json", "src/main/scala/com.ziplex/example/res/json/example-for-sorting.json.tokens")
+    tokenizeJsonFile("src/main/scala/com/ziplex/example/res/json/example-for-sorting.json", "src/main/scala/com/ziplex/example/res/json/example-for-sorting.json.tokens")
     regexZipperExample()
     exampleJsonSorting()
   }
 
   def exampleJsonSorting(): Unit = {
-    val jsonFilePath = "src/main/scala/com.ziplex/example/res/json/example-for-sorting.json"
+    val jsonFilePath = "src/main/scala/com/ziplex/example/res/json/example-for-sorting.json"
     val sortedOpt = JsonManipulationExample.main(jsonFilePath)(using ExampleUtils.zipperCacheUp, ExampleUtils.zipperCacheDown)
     sortedOpt match {
       case Some(sorted) => println(s"Sorted JSON:\n$sorted")

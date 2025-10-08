@@ -105,13 +105,13 @@ object PythonLexerBenchmarkUtils {
         "WordStats_346chars.py",
   )
   val exampleFileContents: Map[String, Vector[Char]] = exampleFileNames.map(name => {
-    val source = scala.io.Source.fromFile(s"src/main/scala/com.ziplex/example/res/python/$name")
+    val source = scala.io.Source.fromFile(s"src/main/scala/com/ziplex/example/res/python/$name")
     val lines = try source.mkString.toStainless finally source.close()
     (name -> lines)
   }).toMap
 
   val exampleFilesJavaIo: Map[String, java.io.File] = exampleFileNames.map(name => {
-    val file = new java.io.File(s"src/main/scala/com.ziplex/example/res/python/$name")
+    val file = new java.io.File(s"src/main/scala/com/ziplex/example/res/python/$name")
     (name -> file)
   }).toMap
 
