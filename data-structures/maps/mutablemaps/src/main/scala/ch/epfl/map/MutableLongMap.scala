@@ -8,6 +8,7 @@ import stainless.equations._
 import stainless.proof.check
 import stainless.lang.Cell
 import scala.annotation.tailrec
+import MutableMapInterface.MutLongMap
 
 import MutableMapInterface.MutLongMap
 
