@@ -8,7 +8,7 @@ import stainless.collection.{List => StainlessList}
 import scala.compiletime.uninitialized
 import ch.epfl.lexer.VerifiedLexer.Lexer
 import ch.epfl.lexer.example.ExampleAmyLexer.AmyLexer
-import ch.epfl.lexer.benchmark.RegexUtils.*
+import ch.epfl.lexer.example.RegexUtils.*
 import ch.epfl.lexer.Vector
 import ch.epfl.benchmark.original.OriginalAmyLexer
 import ch.epfl.lexer.MemoisationZipper

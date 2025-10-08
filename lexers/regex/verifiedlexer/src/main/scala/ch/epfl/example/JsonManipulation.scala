@@ -25,7 +25,7 @@ import ch.epfl.lexer.ListUtils
 import stainless.collection.ListSpecs
 
 import scala.annotation.tailrec
-import ch.epfl.lexer.benchmark.RegexUtils.asString
+import ch.epfl.lexer.example.RegexUtils.asString
 
 // BEGIN uncomment for verification ------------------------------------------
 // import stainless.lang.Option

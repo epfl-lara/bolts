@@ -15,8 +15,8 @@ import stainless.annotation.extern
 import stainless.annotation.pure
 import stainless.lang.decreases
 
-import ch.epfl.lexer.benchmark.RegexUtils.*
-import ch.epfl.lexer.benchmark.RegexUtils.digits
+import ch.epfl.lexer.example.RegexUtils.*
+import ch.epfl.lexer.example.RegexUtils.digits
 import stainless.lang.Quantifiers.*
 
 import stainless.lang.Exception
@@ -260,7 +260,7 @@ object ExampleJsonLexer:
 
 
     object Demo:
-        import ch.epfl.lexer.benchmark.RegexUtils.*
+        import ch.epfl.lexer.example.RegexUtils.*
         import Types.*
         @extern def main(): Unit = {
             // Check validity of the rules

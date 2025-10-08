@@ -6,7 +6,7 @@ import org.openjdk.jmh.annotations.*
 import scala.util.Random
 import stainless.collection.{List => StainlessList}
 import ch.epfl.lexer.VerifiedRegex.Regex
-import ch.epfl.lexer.benchmark.RegexUtils.*
+import ch.epfl.lexer.example.RegexUtils.*
 import scala.util.Random
 import scala.compiletime.uninitialized
 import ch.epfl.lexer.VerifiedRegexMatcher.matchZipper
