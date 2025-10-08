@@ -1,0 +1,2678 @@
+copying runtime jar...
+[info] welcome to sbt 1.9.8 (Ubuntu Java 17.0.16)
+[info] loading settings for project verifiedlexer-build-build-build from metals.sbt ...
+[info] loading project definition from /localhome/chassot/bolts/lexers/regex/verifiedlexer/project/project/project
+[info] loading settings for project verifiedlexer-build-build from metals.sbt ...
+[info] loading project definition from /localhome/chassot/bolts/lexers/regex/verifiedlexer/project/project
+[success] Generated .bloop/verifiedlexer-build-build.json
+[success] Total time: 3 s, completed Sep 23, 2025, 6:17:27 PM
+[info] loading settings for project verifiedlexer-build from metals.sbt,plugins.sbt ...
+[info] loading project definition from /localhome/chassot/bolts/lexers/regex/verifiedlexer/project
+[success] Generated .bloop/verifiedlexer-build.json
+[success] Total time: 2 s, completed Sep 23, 2025, 6:17:29 PM
+[info] loading settings for project verifiedlexer from build.sbt ...
+[info] set current project to VerifiedLexer (in build file:/localhome/chassot/bolts/lexers/regex/verifiedlexer/)
+[info] compiling 69 Scala sources to /localhome/chassot/bolts/lexers/regex/verifiedlexer/target/scala-3.7.2/classes ...
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/main/scala/ch/epfl/lexer/Utils.scala:1271:4 
+[warn] 1271 |    newList match {
+[warn]      |    ^^^^^^^
+[warn]      |    match may not be exhaustive.
+[warn]      |
+[warn]      |    It would fail on pattern case: stainless.collection.Cons(_, _)
+[warn]      |
+[warn]      | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/main/scala/ch/epfl/lexer/VerifiedLexer.scala:818:8 
+[warn] 818 |        maxPrefWithoutSep match {
+[warn]     |        ^^^^^^^^^^^^^^^^^
+[warn]     |        match may not be exhaustive.
+[warn]     |
+[warn]     |        It would fail on pattern case: stainless.lang.Some(_)
+[warn]     |
+[warn]     | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/main/scala/ch/epfl/lexer/VerifiedLexer.scala:918:6 
+[warn] 918 |      rulesArg match {
+[warn]     |      ^^^^^^^^
+[warn]     |      match may not be exhaustive.
+[warn]     |
+[warn]     |      It would fail on pattern case: stainless.collection.Nil()
+[warn]     |
+[warn]     | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/main/scala/ch/epfl/lexer/VerifiedLexer.scala:951:10 
+[warn] 951 |          rulesArg match {
+[warn]     |          ^^^^^^^^
+[warn]     |          match may not be exhaustive.
+[warn]     |
+[warn]     |          It would fail on pattern case: stainless.collection.Nil()
+[warn]     |
+[warn]     | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/main/scala/ch/epfl/lexer/VerifiedLexer.scala:1742:6 
+[warn] 1742 |      rules match {
+[warn]      |      ^^^^^
+[warn]      |      match may not be exhaustive.
+[warn]      |
+[warn]      |      It would fail on pattern case: stainless.collection.Cons(_, _)
+[warn]      |
+[warn]      | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/main/scala/ch/epfl/lexer/VerifiedLexer.scala:3546:6 
+[warn] 3546 |      l1 match {
+[warn]      |      ^^
+[warn]      |match may not be exhaustive.
+[warn]      |
+[warn]      |It would fail on pattern case: _: stainless.collection.List[ch.epfl.lexer.Token[C]]
+[warn]      |
+[warn]      | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/main/scala/ch/epfl/lexer/VerifiedLexer.scala:3564:6 
+[warn] 3564 |      l1 match {
+[warn]      |      ^^
+[warn]      |match may not be exhaustive.
+[warn]      |
+[warn]      |It would fail on pattern case: _: stainless.collection.List[ch.epfl.lexer.Token[C]]
+[warn]      |
+[warn]      | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/main/scala/ch/epfl/lexer/VerifiedRegex.scala:357:4 
+[warn] 357 |    r match {
+[warn]     |    ^
+[warn]     |    match may not be exhaustive.
+[warn]     |
+[warn]     |    It would fail on pattern case: Concat(_, _)
+[warn]     |
+[warn]     | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/main/scala/ch/epfl/map/ListLongMap.scala:157:4 
+[warn] 157 |    l match {
+[warn]     |    ^
+[warn]     |    match may not be exhaustive.
+[warn]     |
+[warn]     |    It would fail on pattern case: stainless.collection.Cons(_, _)
+[warn]     |
+[warn]     | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/main/scala/ch/epfl/map/ListLongMap.scala:191:4 
+[warn] 191 |    l match {
+[warn]     |    ^
+[warn]     |    match may not be exhaustive.
+[warn]     |
+[warn]     |    It would fail on pattern case: stainless.collection.Cons(_, _)
+[warn]     |
+[warn]     | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/main/scala/ch/epfl/map/ListLongMap.scala:206:4 
+[warn] 206 |    l match {
+[warn]     |    ^
+[warn]     |    match may not be exhaustive.
+[warn]     |
+[warn]     |    It would fail on pattern case: stainless.collection.Cons(_, _)
+[warn]     |
+[warn]     | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/main/scala/ch/epfl/map/ListLongMap.scala:222:4 
+[warn] 222 |    l match {
+[warn]     |    ^
+[warn]     |    match may not be exhaustive.
+[warn]     |
+[warn]     |    It would fail on pattern case: stainless.collection.Cons(_, _)
+[warn]     |
+[warn]     | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/main/scala/ch/epfl/map/ListLongMap.scala:243:4 
+[warn] 243 |    l match {
+[warn]     |    ^
+[warn]     |    match may not be exhaustive.
+[warn]     |
+[warn]     |    It would fail on pattern case: stainless.collection.Cons(_, _)
+[warn]     |
+[warn]     | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/main/scala/ch/epfl/map/ListLongMap.scala:274:4 
+[warn] 274 |    l match {
+[warn]     |    ^
+[warn]     |    match may not be exhaustive.
+[warn]     |
+[warn]     |    It would fail on pattern case: stainless.collection.Cons(_, _)
+[warn]     |
+[warn]     | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/main/scala/ch/epfl/map/ListMap.scala:195:4 
+[warn] 195 |    l match {
+[warn]     |    ^
+[warn]     |    match may not be exhaustive.
+[warn]     |
+[warn]     |    It would fail on pattern case: stainless.collection.Cons(_, _)
+[warn]     |
+[warn]     | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/main/scala/ch/epfl/map/ListMap.scala:229:4 
+[warn] 229 |    l match {
+[warn]     |    ^
+[warn]     |    match may not be exhaustive.
+[warn]     |
+[warn]     |    It would fail on pattern case: stainless.collection.Cons(_, _)
+[warn]     |
+[warn]     | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/main/scala/ch/epfl/map/ListMap.scala:256:4 
+[warn] 256 |    l match {
+[warn]     |    ^
+[warn]     |    match may not be exhaustive.
+[warn]     |
+[warn]     |    It would fail on pattern case: stainless.collection.Cons(_, _)
+[warn]     |
+[warn]     | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/main/scala/ch/epfl/map/ListMap.scala:308:4 
+[warn] 308 |    l match {
+[warn]     |    ^
+[warn]     |    match may not be exhaustive.
+[warn]     |
+[warn]     |    It would fail on pattern case: stainless.collection.Cons(_, _)
+[warn]     |
+[warn]     | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/main/scala/ch/epfl/map/ListMap.scala:380:4 
+[warn] 380 |    l match {
+[warn]     |    ^
+[warn]     |    match may not be exhaustive.
+[warn]     |
+[warn]     |    It would fail on pattern case: stainless.collection.Cons(_, _)
+[warn]     |
+[warn]     | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/main/scala/ch/epfl/map/MutableLongMap.scala:347:4 
+[warn] 347 |    c match {
+[warn]     |    ^
+[warn]     |    match may not be exhaustive.
+[warn]     |
+[warn]     |    It would fail on pattern case: EmptyCell()
+[warn]     |
+[warn]     | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/main/scala/ch/epfl/map/MutableLongMap.scala:596:8 
+[warn] 596 |        seekEntryRes match {
+[warn]     |        ^^^^^^^^^^^^
+[warn]     |match may not be exhaustive.
+[warn]     |
+[warn]     |It would fail on pattern case: ch.epfl.map.MutableLongMap.Intermediate(_, _, _)
+[warn]     |
+[warn]     | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/main/scala/ch/epfl/map/MutableLongMap.scala:1106:6 
+[warn] 1106 |      intermediate match {
+[warn]      |      ^^^^^^^^^^^^
+[warn]      |match may not be exhaustive.
+[warn]      |
+[warn]      |It would fail on pattern case: _: ch.epfl.map.MutableLongMap.SeekEntryResult
+[warn]      |
+[warn]      | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/main/scala/ch/epfl/map/MutableLongMap.scala:1156:6 
+[warn] 1156 |      intermediate match {
+[warn]      |      ^^^^^^^^^^^^
+[warn]      |match may not be exhaustive.
+[warn]      |
+[warn]      |It would fail on pattern case: _: ch.epfl.map.MutableLongMap.SeekEntryResult
+[warn]      |
+[warn]      | longer explanation available when compiling with `-explain`
+[warn] there was 1 deprecation warning; re-run with -deprecation for details
+[warn] 24 warnings found
+[info] done compiling
+[info] compiling 68 Java sources to /localhome/chassot/bolts/lexers/regex/verifiedlexer/target/scala-3.7.2/classes ...
+[info] done compiling
+[info] running (fork) org.openjdk.jmh.Main -i 5 -wi 5 -f1 -t1 ch.epfl.lexer.benchmark.lexer.JsonManipulationBenchmark
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.16, OpenJDK 64-Bit Server VM, 17.0.16+8-Ubuntu-0ubuntu124.04.1
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 5 iterations, 10 s each
+[info] # Measurement: 5 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.lexer.benchmark.lexer.JsonManipulationBenchmark.checkPredicateAndRecombineWithoutWrapper
+[info] # Parameters: (file = 0001_2079chars.json)
+[info] # Run progress: 0.00% complete, ETA 02:21:40
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 34009526.460 us/op
+[info] # Warmup Iteration   2: 930.206 us/op
+[info] # Warmup Iteration   3: 928.027 us/op
+[info] # Warmup Iteration   4: 941.271 us/op
+[info] # Warmup Iteration   5: 936.305 us/op
+[info] Iteration   1: 938.044 us/op
+[info] Iteration   2: 918.463 us/op
+[info] Iteration   3: 915.788 us/op
+[info] Iteration   4: 911.848 us/op
+[info] Iteration   5: 913.833 us/op
+[info] Result "ch.epfl.lexer.benchmark.lexer.JsonManipulationBenchmark.checkPredicateAndRecombineWithoutWrapper":
+[info]   919.595 ±(99.9%) 40.813 us/op [Average]
+[info]   (min, avg, max) = (911.848, 919.595, 938.044), stdev = 10.599
+[info]   CI (99.9%): [878.782, 960.408] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.16, OpenJDK 64-Bit Server VM, 17.0.16+8-Ubuntu-0ubuntu124.04.1
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 5 iterations, 10 s each
+[info] # Measurement: 5 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.lexer.benchmark.lexer.JsonManipulationBenchmark.checkPredicateAndRecombineWithoutWrapper
+[info] # Parameters: (file = 0002_4157chars.json)
+[info] # Run progress: 1.18% complete, ETA 02:54:12
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 34647763.841 us/op
+[info] # Warmup Iteration   2: 1715.839 us/op
+[info] # Warmup Iteration   3: 1638.874 us/op
+[info] # Warmup Iteration   4: 1641.958 us/op
+[info] # Warmup Iteration   5: 1645.835 us/op
+[info] Iteration   1: 1681.609 us/op
+[info] Iteration   2: 1669.922 us/op
+[info] Iteration   3: 1705.621 us/op
+[info] Iteration   4: 1644.972 us/op
+[info] Iteration   5: 1687.176 us/op
+[info] Result "ch.epfl.lexer.benchmark.lexer.JsonManipulationBenchmark.checkPredicateAndRecombineWithoutWrapper":
+[info]   1677.860 ±(99.9%) 86.451 us/op [Average]
+[info]   (min, avg, max) = (1644.972, 1677.860, 1705.621), stdev = 22.451
+[info]   CI (99.9%): [1591.409, 1764.311] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.16, OpenJDK 64-Bit Server VM, 17.0.16+8-Ubuntu-0ubuntu124.04.1
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 5 iterations, 10 s each
+[info] # Measurement: 5 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.lexer.benchmark.lexer.JsonManipulationBenchmark.checkPredicateAndRecombineWithoutWrapper
+[info] # Parameters: (file = 0010_20776chars.json)
+[info] # Run progress: 2.35% complete, ETA 02:52:32
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 34984062.464 us/op
+[info] # Warmup Iteration   2: 8785.739 us/op
+[info] # Warmup Iteration   3: 8759.648 us/op
+[info] # Warmup Iteration   4: 8978.799 us/op
+[info] # Warmup Iteration   5: 9053.273 us/op
+[info] Iteration   1: 8740.583 us/op
+[info] Iteration   2: 8772.448 us/op
+[info] Iteration   3: 8776.023 us/op
+[info] Iteration   4: 8729.874 us/op
+[info] Iteration   5: 8783.262 us/op
+[info] Result "ch.epfl.lexer.benchmark.lexer.JsonManipulationBenchmark.checkPredicateAndRecombineWithoutWrapper":
+[info]   8760.438 ±(99.9%) 91.051 us/op [Average]
+[info]   (min, avg, max) = (8729.874, 8760.438, 8783.262), stdev = 23.646
+[info]   CI (99.9%): [8669.387, 8851.488] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.16, OpenJDK 64-Bit Server VM, 17.0.16+8-Ubuntu-0ubuntu124.04.1
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 5 iterations, 10 s each
+[info] # Measurement: 5 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.lexer.benchmark.lexer.JsonManipulationBenchmark.checkPredicateAndRecombineWithoutWrapper
+[info] # Parameters: (file = 0015_31167chars.json)
+[info] # Run progress: 3.53% complete, ETA 02:50:46
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 34823858.118 us/op
+[info] # Warmup Iteration   2: 14404.695 us/op
+[info] # Warmup Iteration   3: 14539.704 us/op
+[info] # Warmup Iteration   4: 14716.021 us/op
+[info] # Warmup Iteration   5: 14505.246 us/op
+[info] Iteration   1: 14218.454 us/op
+[info] Iteration   2: 14635.660 us/op
+[info] Iteration   3: 14272.111 us/op
+[info] Iteration   4: 14764.329 us/op
+[info] Iteration   5: 14419.655 us/op
+[info] Result "ch.epfl.lexer.benchmark.lexer.JsonManipulationBenchmark.checkPredicateAndRecombineWithoutWrapper":
+[info]   14462.042 ±(99.9%) 900.439 us/op [Average]
+[info]   (min, avg, max) = (14218.454, 14462.042, 14764.329), stdev = 233.841
+[info]   CI (99.9%): [13561.603, 15362.481] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.16, OpenJDK 64-Bit Server VM, 17.0.16+8-Ubuntu-0ubuntu124.04.1
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 5 iterations, 10 s each
+[info] # Measurement: 5 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.lexer.benchmark.lexer.JsonManipulationBenchmark.checkPredicateAndRecombineWithoutWrapper
+[info] # Parameters: (file = 0020_41560chars.json)
+[info] # Run progress: 4.71% complete, ETA 02:48:47
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 35027773.076 us/op
+[info] # Warmup Iteration   2: 19797.814 us/op
+[info] # Warmup Iteration   3: 19999.318 us/op
+[info] # Warmup Iteration   4: 19444.290 us/op
+[info] # Warmup Iteration   5: 19051.751 us/op
+[info] Iteration   1: 19215.894 us/op
+[info] Iteration   2: 19534.673 us/op
+[info] Iteration   3: 19557.456 us/op
+[info] Iteration   4: 19471.732 us/op
+[info] Iteration   5: 19737.273 us/op
+[info] Result "ch.epfl.lexer.benchmark.lexer.JsonManipulationBenchmark.checkPredicateAndRecombineWithoutWrapper":
+[info]   19503.406 ±(99.9%) 726.179 us/op [Average]
+[info]   (min, avg, max) = (19215.894, 19503.406, 19737.273), stdev = 188.586
+[info]   CI (99.9%): [18777.227, 20229.584] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.16, OpenJDK 64-Bit Server VM, 17.0.16+8-Ubuntu-0ubuntu124.04.1
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 5 iterations, 10 s each
+[info] # Measurement: 5 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.lexer.benchmark.lexer.JsonManipulationBenchmark.checkPredicateAndRecombineWithoutWrapper
+[info] # Parameters: (file = 0025_51950chars.json)
+[info] # Run progress: 5.88% complete, ETA 02:46:50
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 34142481.192 us/op
+[info] # Warmup Iteration   2: 23356.212 us/op
+[info] # Warmup Iteration   3: 22857.270 us/op
+[info] # Warmup Iteration   4: 23079.128 us/op
+[info] # Warmup Iteration   5: 22346.679 us/op
+[info] Iteration   1: 22563.496 us/op
+[info] Iteration   2: 22644.143 us/op
+[info] Iteration   3: 22688.333 us/op
+[info] Iteration   4: 22247.019 us/op
+[info] Iteration   5: 22423.238 us/op
+[info] Result "ch.epfl.lexer.benchmark.lexer.JsonManipulationBenchmark.checkPredicateAndRecombineWithoutWrapper":
+[info]   22513.246 ±(99.9%) 692.295 us/op [Average]
+[info]   (min, avg, max) = (22247.019, 22513.246, 22688.333), stdev = 179.787
+[info]   CI (99.9%): [21820.951, 23205.541] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.16, OpenJDK 64-Bit Server VM, 17.0.16+8-Ubuntu-0ubuntu124.04.1
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 5 iterations, 10 s each
+[info] # Measurement: 5 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.lexer.benchmark.lexer.JsonManipulationBenchmark.checkPredicateAndRecombineWithoutWrapper
+[info] # Parameters: (file = 0030_62339chars.json)
+[info] # Run progress: 7.06% complete, ETA 02:44:38
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 35190120.942 us/op
+[info] # Warmup Iteration   2: 31179.504 us/op
+[info] # Warmup Iteration   3: 29448.345 us/op
+[info] # Warmup Iteration   4: 28195.393 us/op
+[info] # Warmup Iteration   5: 28923.958 us/op
+[info] Iteration   1: 29308.406 us/op
+[info] Iteration   2: 29336.381 us/op
+[info] Iteration   3: 30059.246 us/op
+[info] Iteration   4: 29640.399 us/op
+[info] Iteration   5: 29562.537 us/op
+[info] Result "ch.epfl.lexer.benchmark.lexer.JsonManipulationBenchmark.checkPredicateAndRecombineWithoutWrapper":
+[info]   29581.394 ±(99.9%) 1165.946 us/op [Average]
+[info]   (min, avg, max) = (29308.406, 29581.394, 30059.246), stdev = 302.793
+[info]   CI (99.9%): [28415.448, 30747.340] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.16, OpenJDK 64-Bit Server VM, 17.0.16+8-Ubuntu-0ubuntu124.04.1
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 5 iterations, 10 s each
+[info] # Measurement: 5 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.lexer.benchmark.lexer.JsonManipulationBenchmark.checkPredicateAndRecombineWithoutWrapper
+[info] # Parameters: (file = 0035_72724chars.json)
+[info] # Run progress: 8.24% complete, ETA 02:42:41
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 35710741.732 us/op
+[info] # Warmup Iteration   2: 34110.368 us/op
+[info] # Warmup Iteration   3: 33404.723 us/op
+[info] # Warmup Iteration   4: 34328.833 us/op
+[info] # Warmup Iteration   5: 33734.627 us/op
+[info] Iteration   1: 33225.591 us/op
+[info] Iteration   2: 34186.981 us/op
+[info] Iteration   3: 33819.099 us/op
+[info] Iteration   4: 32597.250 us/op
+[info] Iteration   5: 33051.384 us/op
+[info] Result "ch.epfl.lexer.benchmark.lexer.JsonManipulationBenchmark.checkPredicateAndRecombineWithoutWrapper":
+[info]   33376.061 ±(99.9%) 2426.576 us/op [Average]
+[info]   (min, avg, max) = (32597.250, 33376.061, 34186.981), stdev = 630.174
+[info]   CI (99.9%): [30949.485, 35802.637] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.16, OpenJDK 64-Bit Server VM, 17.0.16+8-Ubuntu-0ubuntu124.04.1
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 5 iterations, 10 s each
+[info] # Measurement: 5 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.lexer.benchmark.lexer.JsonManipulationBenchmark.checkPredicateAndRecombineWithoutWrapper
+[info] # Parameters: (file = 0050_103898chars.json)
+[info] # Run progress: 9.41% complete, ETA 02:40:47
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 35201683.559 us/op
+[info] # Warmup Iteration   2: 45105.267 us/op
+[info] # Warmup Iteration   3: 43596.036 us/op
+[info] # Warmup Iteration   4: 44172.478 us/op
+[info] # Warmup Iteration   5: 43716.777 us/op
+[info] Iteration   1: 43481.351 us/op
+[info] Iteration   2: 43146.043 us/op
+[info] Iteration   3: 43025.010 us/op
+[info] Iteration   4: 43543.751 us/op
+[info] Iteration   5: 43474.306 us/op
+[info] Result "ch.epfl.lexer.benchmark.lexer.JsonManipulationBenchmark.checkPredicateAndRecombineWithoutWrapper":
+[info]   43334.092 ±(99.9%) 895.215 us/op [Average]
+[info]   (min, avg, max) = (43025.010, 43334.092, 43543.751), stdev = 232.485
+[info]   CI (99.9%): [42438.877, 44229.307] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.16, OpenJDK 64-Bit Server VM, 17.0.16+8-Ubuntu-0ubuntu124.04.1
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 5 iterations, 10 s each
+[info] # Measurement: 5 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.lexer.benchmark.lexer.JsonManipulationBenchmark.checkPredicateAndRecombineWithoutWrapper
+[info] # Parameters: (file = 0070_145455chars.json)
+[info] # Run progress: 10.59% complete, ETA 02:38:45
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 34915123.226 us/op
+[info] # Warmup Iteration   2: 69619.970 us/op
+[info] # Warmup Iteration   3: 69179.184 us/op
+[info] # Warmup Iteration   4: 70341.168 us/op
+[info] # Warmup Iteration   5: 68893.829 us/op
+[info] Iteration   1: 68825.293 us/op
+[info] Iteration   2: 69764.444 us/op
+[info] Iteration   3: 70020.074 us/op
+[info] Iteration   4: 69433.816 us/op
+[info] Iteration   5: 67949.676 us/op
+[info] Result "ch.epfl.lexer.benchmark.lexer.JsonManipulationBenchmark.checkPredicateAndRecombineWithoutWrapper":
+[info]   69198.661 ±(99.9%) 3192.492 us/op [Average]
+[info]   (min, avg, max) = (67949.676, 69198.661, 70020.074), stdev = 829.080
+[info]   CI (99.9%): [66006.169, 72391.153] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.16, OpenJDK 64-Bit Server VM, 17.0.16+8-Ubuntu-0ubuntu124.04.1
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 5 iterations, 10 s each
+[info] # Measurement: 5 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.lexer.benchmark.lexer.JsonManipulationBenchmark.checkPredicateAndRecombineWithoutWrapper
+[info] # Parameters: (file = 0090_187013chars.json)
+[info] # Run progress: 11.76% complete, ETA 02:36:43
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 35184197.726 us/op
+[info] # Warmup Iteration   2: 87907.725 us/op
+[info] # Warmup Iteration   3: 87151.639 us/op
+[info] # Warmup Iteration   4: 87530.943 us/op
+[info] # Warmup Iteration   5: 85859.611 us/op
+[info] Iteration   1: 85143.073 us/op
+[info] Iteration   2: 85661.378 us/op
+[info] Iteration   3: 85307.905 us/op
+[info] Iteration   4: 85637.067 us/op
+[info] Iteration   5: 85309.532 us/op
+[info] Result "ch.epfl.lexer.benchmark.lexer.JsonManipulationBenchmark.checkPredicateAndRecombineWithoutWrapper":
+[info]   85411.791 ±(99.9%) 874.913 us/op [Average]
+[info]   (min, avg, max) = (85143.073, 85411.791, 85661.378), stdev = 227.212
+[info]   CI (99.9%): [84536.878, 86286.704] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.16, OpenJDK 64-Bit Server VM, 17.0.16+8-Ubuntu-0ubuntu124.04.1
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 5 iterations, 10 s each
+[info] # Measurement: 5 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.lexer.benchmark.lexer.JsonManipulationBenchmark.checkPredicateAndRecombineWithoutWrapper
+[info] # Parameters: (file = 0120_249345chars.json)
+[info] # Run progress: 12.94% complete, ETA 02:34:41
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 34958317.158 us/op
+[info] # Warmup Iteration   2: 118948.715 us/op
+[info] # Warmup Iteration   3: 116386.485 us/op
+[info] # Warmup Iteration   4: 115871.017 us/op
+[info] # Warmup Iteration   5: 118210.877 us/op
+[info] Iteration   1: 118201.450 us/op
+[info] Iteration   2: 116037.898 us/op
+[info] Iteration   3: 116533.152 us/op
+[info] Iteration   4: 115550.910 us/op
+[info] Iteration   5: 114808.203 us/op
+[info] Result "ch.epfl.lexer.benchmark.lexer.JsonManipulationBenchmark.checkPredicateAndRecombineWithoutWrapper":
+[info]   116226.323 ±(99.9%) 4907.880 us/op [Average]
+[info]   (min, avg, max) = (114808.203, 116226.323, 118201.450), stdev = 1274.561
+[info]   CI (99.9%): [111318.442, 121134.203] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.16, OpenJDK 64-Bit Server VM, 17.0.16+8-Ubuntu-0ubuntu124.04.1
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 5 iterations, 10 s each
+[info] # Measurement: 5 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.lexer.benchmark.lexer.JsonManipulationBenchmark.checkPredicateAndRecombineWithoutWrapper
+[info] # Parameters: (file = 0150_311687chars.json)
+[info] # Run progress: 14.12% complete, ETA 02:32:38
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 36714288.412 us/op
+[info] # Warmup Iteration   2: 140311.447 us/op
+[info] # Warmup Iteration   3: 141999.471 us/op
+[info] # Warmup Iteration   4: 143757.256 us/op
+[info] # Warmup Iteration   5: 142361.742 us/op
+[info] Iteration   1: 139908.921 us/op
+[info] Iteration   2: 139682.235 us/op
+[info] Iteration   3: 138915.809 us/op
+[info] Iteration   4: 137213.872 us/op
+[info] Iteration   5: 138071.247 us/op
+[info] Result "ch.epfl.lexer.benchmark.lexer.JsonManipulationBenchmark.checkPredicateAndRecombineWithoutWrapper":
+[info]   138758.417 ±(99.9%) 4330.774 us/op [Average]
+[info]   (min, avg, max) = (137213.872, 138758.417, 139908.921), stdev = 1124.688
+[info]   CI (99.9%): [134427.643, 143089.191] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.16, OpenJDK 64-Bit Server VM, 17.0.16+8-Ubuntu-0ubuntu124.04.1
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 5 iterations, 10 s each
+[info] # Measurement: 5 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.lexer.benchmark.lexer.JsonManipulationBenchmark.checkPredicateAndRecombineWithoutWrapper
+[info] # Parameters: (file = 0200_415578chars.json)
+[info] # Run progress: 15.29% complete, ETA 02:30:45
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 34994018.602 us/op
+[info] # Warmup Iteration   2: 196537.897 us/op
+[info] # Warmup Iteration   3: 188443.321 us/op
+[info] # Warmup Iteration   4: 194419.794 us/op
+[info] # Warmup Iteration   5: 194222.714 us/op
+[info] Iteration   1: 189759.984 us/op
+[info] Iteration   2: 191091.857 us/op
+[info] Iteration   3: 189214.123 us/op
+[info] Iteration   4: 187284.182 us/op
+[info] Iteration   5: 186804.400 us/op
+[info] Result "ch.epfl.lexer.benchmark.lexer.JsonManipulationBenchmark.checkPredicateAndRecombineWithoutWrapper":
+[info]   188830.909 ±(99.9%) 6839.915 us/op [Average]
+[info]   (min, avg, max) = (186804.400, 188830.909, 191091.857), stdev = 1776.304
+[info]   CI (99.9%): [181990.995, 195670.824] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.16, OpenJDK 64-Bit Server VM, 17.0.16+8-Ubuntu-0ubuntu124.04.1
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 5 iterations, 10 s each
+[info] # Measurement: 5 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.lexer.benchmark.lexer.JsonManipulationBenchmark.checkPredicateAndRecombineWithoutWrapper
+[info] # Parameters: (file = 0300_623361chars.json)
+[info] # Run progress: 16.47% complete, ETA 02:28:42
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 35883315.802 us/op
+[info] # Warmup Iteration   2: 307857.969 us/op
+[info] # Warmup Iteration   3: 297826.844 us/op
+[info] # Warmup Iteration   4: 294784.097 us/op
+[info] # Warmup Iteration   5: 303443.119 us/op
+[info] Iteration   1: 295507.203 us/op
+[info] Iteration   2: 292016.155 us/op
+[info] Iteration   3: 290785.934 us/op
+[info] Iteration   4: 290345.221 us/op
+[info] Iteration   5: 289489.769 us/op
+[info] Result "ch.epfl.lexer.benchmark.lexer.JsonManipulationBenchmark.checkPredicateAndRecombineWithoutWrapper":
+[info]   291628.856 ±(99.9%) 9056.283 us/op [Average]
+[info]   (min, avg, max) = (289489.769, 291628.856, 295507.203), stdev = 2351.888
+[info]   CI (99.9%): [282572.573, 300685.139] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.16, OpenJDK 64-Bit Server VM, 17.0.16+8-Ubuntu-0ubuntu124.04.1
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 5 iterations, 10 s each
+[info] # Measurement: 5 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.lexer.benchmark.lexer.JsonManipulationBenchmark.checkPredicateAndRecombineWithoutWrapper
+[info] # Parameters: (file = 0400_831171chars.json)
+[info] # Run progress: 17.65% complete, ETA 02:26:44
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 35118159.562 us/op
+[info] # Warmup Iteration   2: 380228.060 us/op
+[info] # Warmup Iteration   3: 366530.701 us/op
+[info] # Warmup Iteration   4: 356720.115 us/op
+[info] # Warmup Iteration   5: 360428.165 us/op
+[info] Iteration   1: 356208.313 us/op
+[info] Iteration   2: 355501.325 us/op
+[info] Iteration   3: 348046.881 us/op
+[info] Iteration   4: 350091.187 us/op
+[info] Iteration   5: 349332.997 us/op
+[info] Result "ch.epfl.lexer.benchmark.lexer.JsonManipulationBenchmark.checkPredicateAndRecombineWithoutWrapper":
+[info]   351836.141 ±(99.9%) 14435.877 us/op [Average]
+[info]   (min, avg, max) = (348046.881, 351836.141, 356208.313), stdev = 3748.952
+[info]   CI (99.9%): [337400.263, 366272.018] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.16, OpenJDK 64-Bit Server VM, 17.0.16+8-Ubuntu-0ubuntu124.04.1
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 5 iterations, 10 s each
+[info] # Measurement: 5 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.lexer.benchmark.lexer.JsonManipulationBenchmark.checkPredicateAndRecombineWithoutWrapper
+[info] # Parameters: (file = 0500_1038945chars.json)
+[info] # Run progress: 18.82% complete, ETA 02:24:46
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 34718900.262 us/op
+[info] # Warmup Iteration   2: 485475.727 us/op
+[info] # Warmup Iteration   3: 495668.919 us/op
+[info] # Warmup Iteration   4: 492059.573 us/op
+[info] # Warmup Iteration   5: 493926.761 us/op
+[info] Iteration   1: 485901.241 us/op
+[info] Iteration   2: 484500.218 us/op
+[info] Iteration   3: 485079.391 us/op
+[info] Iteration   4: 480926.763 us/op
+[info] Iteration   5: 483897.872 us/op
+[info] Result "ch.epfl.lexer.benchmark.lexer.JsonManipulationBenchmark.checkPredicateAndRecombineWithoutWrapper":
+[info]   484061.097 ±(99.9%) 7322.952 us/op [Average]
+[info]   (min, avg, max) = (480926.763, 484061.097, 485901.241), stdev = 1901.747
+[info]   CI (99.9%): [476738.145, 491384.049] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.16, OpenJDK 64-Bit Server VM, 17.0.16+8-Ubuntu-0ubuntu124.04.1
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 5 iterations, 10 s each
+[info] # Measurement: 5 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.lexer.benchmark.lexer.JsonManipulationBenchmark.lex
+[info] # Parameters: (file = 0001_2079chars.json)
+[info] # Run progress: 20.00% complete, ETA 02:22:46
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 4689.411 us/op
+[info] # Warmup Iteration   2: 4110.470 us/op
+[info] # Warmup Iteration   3: 3989.280 us/op
+[info] # Warmup Iteration   4: 4070.955 us/op
+[info] # Warmup Iteration   5: 4107.719 us/op
+[info] Iteration   1: 4243.871 us/op
+[info] Iteration   2: 4031.781 us/op
+[info] Iteration   3: 3936.082 us/op
+[info] Iteration   4: 4039.614 us/op
+[info] Iteration   5: 4069.271 us/op
+[info] Result "ch.epfl.lexer.benchmark.lexer.JsonManipulationBenchmark.lex":
+[info]   4064.124 ±(99.9%) 432.135 us/op [Average]
+[info]   (min, avg, max) = (3936.082, 4064.124, 4243.871), stdev = 112.224
+[info]   CI (99.9%): [3631.989, 4496.259] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.16, OpenJDK 64-Bit Server VM, 17.0.16+8-Ubuntu-0ubuntu124.04.1
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 5 iterations, 10 s each
+[info] # Measurement: 5 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.lexer.benchmark.lexer.JsonManipulationBenchmark.lex
+[info] # Parameters: (file = 0002_4157chars.json)
+[info] # Run progress: 21.18% complete, ETA 02:19:04
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 9903.665 us/op
+[info] # Warmup Iteration   2: 8501.721 us/op
+[info] # Warmup Iteration   3: 8739.748 us/op
+[info] # Warmup Iteration   4: 8442.942 us/op
+[info] # Warmup Iteration   5: 8415.641 us/op
+[info] Iteration   1: 8646.165 us/op
+[info] Iteration   2: 8580.739 us/op
+[info] Iteration   3: 8344.210 us/op
+[info] Iteration   4: 8410.378 us/op
+[info] Iteration   5: 8513.799 us/op
+[info] Result "ch.epfl.lexer.benchmark.lexer.JsonManipulationBenchmark.lex":
+[info]   8499.058 ±(99.9%) 473.063 us/op [Average]
+[info]   (min, avg, max) = (8344.210, 8499.058, 8646.165), stdev = 122.853
+[info]   CI (99.9%): [8025.995, 8972.122] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.16, OpenJDK 64-Bit Server VM, 17.0.16+8-Ubuntu-0ubuntu124.04.1
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 5 iterations, 10 s each
+[info] # Measurement: 5 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.lexer.benchmark.lexer.JsonManipulationBenchmark.lex
+[info] # Parameters: (file = 0010_20776chars.json)
+[info] # Run progress: 22.35% complete, ETA 02:15:36
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 52019.240 us/op
+[info] # Warmup Iteration   2: 43501.546 us/op
+[info] # Warmup Iteration   3: 43494.247 us/op
+[info] # Warmup Iteration   4: 41888.481 us/op
+[info] # Warmup Iteration   5: 42432.870 us/op
+[info] Iteration   1: 42067.688 us/op
+[info] Iteration   2: 42760.695 us/op
+[info] Iteration   3: 41719.456 us/op
+[info] Iteration   4: 41854.798 us/op
+[info] Iteration   5: 41755.491 us/op
+[info] Result "ch.epfl.lexer.benchmark.lexer.JsonManipulationBenchmark.lex":
+[info]   42031.625 ±(99.9%) 1653.773 us/op [Average]
+[info]   (min, avg, max) = (41719.456, 42031.625, 42760.695), stdev = 429.480
+[info]   CI (99.9%): [40377.853, 43685.398] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.16, OpenJDK 64-Bit Server VM, 17.0.16+8-Ubuntu-0ubuntu124.04.1
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 5 iterations, 10 s each
+[info] # Measurement: 5 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.lexer.benchmark.lexer.JsonManipulationBenchmark.lex
+[info] # Parameters: (file = 0015_31167chars.json)
+[info] # Run progress: 23.53% complete, ETA 02:12:18
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 74649.353 us/op
+[info] # Warmup Iteration   2: 63894.184 us/op
+[info] # Warmup Iteration   3: 65075.689 us/op
+[info] # Warmup Iteration   4: 64672.162 us/op
+[info] # Warmup Iteration   5: 66013.233 us/op
+[info] Iteration   1: 63229.799 us/op
+[info] Iteration   2: 63543.168 us/op
+[info] Iteration   3: 63397.754 us/op
+[info] Iteration   4: 62535.981 us/op
+[info] Iteration   5: 63195.991 us/op
+[info] Result "ch.epfl.lexer.benchmark.lexer.JsonManipulationBenchmark.lex":
+[info]   63180.538 ±(99.9%) 1487.369 us/op [Average]
+[info]   (min, avg, max) = (62535.981, 63180.538, 63543.168), stdev = 386.265
+[info]   CI (99.9%): [61693.169, 64667.908] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.16, OpenJDK 64-Bit Server VM, 17.0.16+8-Ubuntu-0ubuntu124.04.1
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 5 iterations, 10 s each
+[info] # Measurement: 5 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.lexer.benchmark.lexer.JsonManipulationBenchmark.lex
+[info] # Parameters: (file = 0020_41560chars.json)
+[info] # Run progress: 24.71% complete, ETA 02:09:10
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 95933.237 us/op
+[info] # Warmup Iteration   2: 80815.591 us/op
+[info] # Warmup Iteration   3: 82674.478 us/op
+[info] # Warmup Iteration   4: 79130.455 us/op
+[info] # Warmup Iteration   5: 80879.349 us/op
+[info] Iteration   1: 81472.382 us/op
+[info] Iteration   2: 78444.136 us/op
+[info] Iteration   3: 77326.884 us/op
+[info] Iteration   4: 78692.617 us/op
+[info] Iteration   5: 80413.598 us/op
+[info] Result "ch.epfl.lexer.benchmark.lexer.JsonManipulationBenchmark.lex":
+[info]   79269.923 ±(99.9%) 6370.874 us/op [Average]
+[info]   (min, avg, max) = (77326.884, 79269.923, 81472.382), stdev = 1654.496
+[info]   CI (99.9%): [72899.049, 85640.798] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.16, OpenJDK 64-Bit Server VM, 17.0.16+8-Ubuntu-0ubuntu124.04.1
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 5 iterations, 10 s each
+[info] # Measurement: 5 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.lexer.benchmark.lexer.JsonManipulationBenchmark.lex
+[info] # Parameters: (file = 0025_51950chars.json)
+[info] # Run progress: 25.88% complete, ETA 02:06:11
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 118709.803 us/op
+[info] # Warmup Iteration   2: 100304.634 us/op
+[info] # Warmup Iteration   3: 101701.498 us/op
+[info] # Warmup Iteration   4: 102554.991 us/op
+[info] # Warmup Iteration   5: 100218.558 us/op
+[info] Iteration   1: 99021.946 us/op
+[info] Iteration   2: 102318.240 us/op
+[info] Iteration   3: 101763.792 us/op
+[info] Iteration   4: 99693.676 us/op
+[info] Iteration   5: 98873.694 us/op
+[info] Result "ch.epfl.lexer.benchmark.lexer.JsonManipulationBenchmark.lex":
+[info]   100334.270 ±(99.9%) 6162.686 us/op [Average]
+[info]   (min, avg, max) = (98873.694, 100334.270, 102318.240), stdev = 1600.430
+[info]   CI (99.9%): [94171.583, 106496.956] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.16, OpenJDK 64-Bit Server VM, 17.0.16+8-Ubuntu-0ubuntu124.04.1
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 5 iterations, 10 s each
+[info] # Measurement: 5 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.lexer.benchmark.lexer.JsonManipulationBenchmark.lex
+[info] # Parameters: (file = 0030_62339chars.json)
+[info] # Run progress: 27.06% complete, ETA 02:03:19
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 151075.909 us/op
+[info] # Warmup Iteration   2: 127836.763 us/op
+[info] # Warmup Iteration   3: 128435.272 us/op
+[info] # Warmup Iteration   4: 129573.610 us/op
+[info] # Warmup Iteration   5: 127573.649 us/op
+[info] Iteration   1: 127330.495 us/op
+[info] Iteration   2: 128515.995 us/op
+[info] Iteration   3: 126803.906 us/op
+[info] Iteration   4: 124982.473 us/op
+[info] Iteration   5: 124166.601 us/op
+[info] Result "ch.epfl.lexer.benchmark.lexer.JsonManipulationBenchmark.lex":
+[info]   126359.894 ±(99.9%) 6805.899 us/op [Average]
+[info]   (min, avg, max) = (124166.601, 126359.894, 128515.995), stdev = 1767.470
+[info]   CI (99.9%): [119553.995, 133165.793] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.16, OpenJDK 64-Bit Server VM, 17.0.16+8-Ubuntu-0ubuntu124.04.1
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 5 iterations, 10 s each
+[info] # Measurement: 5 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.lexer.benchmark.lexer.JsonManipulationBenchmark.lex
+[info] # Parameters: (file = 0035_72724chars.json)
+[info] # Run progress: 28.24% complete, ETA 02:00:33
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 167951.943 us/op
+[info] # Warmup Iteration   2: 143967.392 us/op
+[info] # Warmup Iteration   3: 142398.212 us/op
+[info] # Warmup Iteration   4: 144437.965 us/op
+[info] # Warmup Iteration   5: 143226.153 us/op
+[info] Iteration   1: 142614.391 us/op
+[info] Iteration   2: 145908.354 us/op
+[info] Iteration   3: 142504.882 us/op
+[info] Iteration   4: 138434.100 us/op
+[info] Iteration   5: 138976.989 us/op
+[info] Result "ch.epfl.lexer.benchmark.lexer.JsonManipulationBenchmark.lex":
+[info]   141687.743 ±(99.9%) 11754.611 us/op [Average]
+[info]   (min, avg, max) = (138434.100, 141687.743, 145908.354), stdev = 3052.635
+[info]   CI (99.9%): [129933.132, 153442.355] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.16, OpenJDK 64-Bit Server VM, 17.0.16+8-Ubuntu-0ubuntu124.04.1
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 5 iterations, 10 s each
+[info] # Measurement: 5 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.lexer.benchmark.lexer.JsonManipulationBenchmark.lex
+[info] # Parameters: (file = 0050_103898chars.json)
+[info] # Run progress: 29.41% complete, ETA 01:57:53
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 220298.876 us/op
+[info] # Warmup Iteration   2: 182993.463 us/op
+[info] # Warmup Iteration   3: 195889.263 us/op
+[info] # Warmup Iteration   4: 191859.950 us/op
+[info] # Warmup Iteration   5: 190855.739 us/op
+[info] Iteration   1: 187554.469 us/op
+[info] Iteration   2: 190434.814 us/op
+[info] Iteration   3: 191766.263 us/op
+[info] Iteration   4: 181176.667 us/op
+[info] Iteration   5: 185672.926 us/op
+[info] Result "ch.epfl.lexer.benchmark.lexer.JsonManipulationBenchmark.lex":
+[info]   187321.028 ±(99.9%) 16106.062 us/op [Average]
+[info]   (min, avg, max) = (181176.667, 187321.028, 191766.263), stdev = 4182.693
+[info]   CI (99.9%): [171214.965, 203427.090] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.16, OpenJDK 64-Bit Server VM, 17.0.16+8-Ubuntu-0ubuntu124.04.1
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 5 iterations, 10 s each
+[info] # Measurement: 5 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.lexer.benchmark.lexer.JsonManipulationBenchmark.lex
+[info] # Parameters: (file = 0070_145455chars.json)
+[info] # Run progress: 30.59% complete, ETA 01:55:18
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 315682.207 us/op
+[info] # Warmup Iteration   2: 265089.949 us/op
+[info] # Warmup Iteration   3: 274124.488 us/op
+[info] # Warmup Iteration   4: 263210.047 us/op
+[info] # Warmup Iteration   5: 265371.675 us/op
+[info] Iteration   1: 268157.763 us/op
+[info] Iteration   2: 265421.662 us/op
+[info] Iteration   3: 266157.189 us/op
+[info] Iteration   4: 261723.858 us/op
+[info] Iteration   5: 261844.157 us/op
+[info] Result "ch.epfl.lexer.benchmark.lexer.JsonManipulationBenchmark.lex":
+[info]   264660.926 ±(99.9%) 10824.000 us/op [Average]
+[info]   (min, avg, max) = (261723.858, 264660.926, 268157.763), stdev = 2810.958
+[info]   CI (99.9%): [253836.926, 275484.926] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.16, OpenJDK 64-Bit Server VM, 17.0.16+8-Ubuntu-0ubuntu124.04.1
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 5 iterations, 10 s each
+[info] # Measurement: 5 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.lexer.benchmark.lexer.JsonManipulationBenchmark.lex
+[info] # Parameters: (file = 0090_187013chars.json)
+[info] # Run progress: 31.76% complete, ETA 01:52:47
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 436774.488 us/op
+[info] # Warmup Iteration   2: 380460.718 us/op
+[info] # Warmup Iteration   3: 377233.514 us/op
+[info] # Warmup Iteration   4: 375364.980 us/op
+[info] # Warmup Iteration   5: 379684.376 us/op
+[info] Iteration   1: 368096.741 us/op
+[info] Iteration   2: 400586.712 us/op
+[info] Iteration   3: 371542.389 us/op
+[info] Iteration   4: 362403.890 us/op
+[info] Iteration   5: 363887.712 us/op
+[info] Result "ch.epfl.lexer.benchmark.lexer.JsonManipulationBenchmark.lex":
+[info]   373303.489 ±(99.9%) 60334.936 us/op [Average]
+[info]   (min, avg, max) = (362403.890, 373303.489, 400586.712), stdev = 15668.791
+[info]   CI (99.9%): [312968.553, 433638.425] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.16, OpenJDK 64-Bit Server VM, 17.0.16+8-Ubuntu-0ubuntu124.04.1
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 5 iterations, 10 s each
+[info] # Measurement: 5 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.lexer.benchmark.lexer.JsonManipulationBenchmark.lex
+[info] # Parameters: (file = 0120_249345chars.json)
+[info] # Run progress: 32.94% complete, ETA 01:50:20
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 573344.382 us/op
+[info] # Warmup Iteration   2: 493566.558 us/op
+[info] # Warmup Iteration   3: 513462.296 us/op
+[info] # Warmup Iteration   4: 505297.594 us/op
+[info] # Warmup Iteration   5: 514162.654 us/op
+[info] Iteration   1: 501699.865 us/op
+[info] Iteration   2: 490694.157 us/op
+[info] Iteration   3: 499272.460 us/op
+[info] Iteration   4: 491581.262 us/op
+[info] Iteration   5: 502136.188 us/op
+[info] Result "ch.epfl.lexer.benchmark.lexer.JsonManipulationBenchmark.lex":
+[info]   497076.786 ±(99.9%) 21329.415 us/op [Average]
+[info]   (min, avg, max) = (490694.157, 497076.786, 502136.188), stdev = 5539.181
+[info]   CI (99.9%): [475747.371, 518406.201] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.16, OpenJDK 64-Bit Server VM, 17.0.16+8-Ubuntu-0ubuntu124.04.1
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 5 iterations, 10 s each
+[info] # Measurement: 5 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.lexer.benchmark.lexer.JsonManipulationBenchmark.lex
+[info] # Parameters: (file = 0150_311687chars.json)
+[info] # Run progress: 34.12% complete, ETA 01:47:58
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 721372.003 us/op
+[info] # Warmup Iteration   2: 615786.911 us/op
+[info] # Warmup Iteration   3: 622161.744 us/op
+[info] # Warmup Iteration   4: 606301.448 us/op
+[info] # Warmup Iteration   5: 655151.353 us/op
+[info] Iteration   1: 599640.452 us/op
+[info] Iteration   2: 595213.253 us/op
+[info] Iteration   3: 640986.348 us/op
+[info] Iteration   4: 610701.856 us/op
+[info] Iteration   5: 590681.132 us/op
+[info] Result "ch.epfl.lexer.benchmark.lexer.JsonManipulationBenchmark.lex":
+[info]   607444.608 ±(99.9%) 77664.324 us/op [Average]
+[info]   (min, avg, max) = (590681.132, 607444.608, 640986.348), stdev = 20169.178
+[info]   CI (99.9%): [529780.285, 685108.932] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.16, OpenJDK 64-Bit Server VM, 17.0.16+8-Ubuntu-0ubuntu124.04.1
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 5 iterations, 10 s each
+[info] # Measurement: 5 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.lexer.benchmark.lexer.JsonManipulationBenchmark.lex
+[info] # Parameters: (file = 0200_415578chars.json)
+[info] # Run progress: 35.29% complete, ETA 01:45:40
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 981957.445 us/op
+[info] # Warmup Iteration   2: 836736.415 us/op
+[info] # Warmup Iteration   3: 848731.772 us/op
+[info] # Warmup Iteration   4: 826078.271 us/op
+[info] # Warmup Iteration   5: 864905.878 us/op
+[info] Iteration   1: 829724.198 us/op
+[info] Iteration   2: 817179.935 us/op
+[info] Iteration   3: 821965.657 us/op
+[info] Iteration   4: 806699.759 us/op
+[info] Iteration   5: 807321.925 us/op
+[info] Result "ch.epfl.lexer.benchmark.lexer.JsonManipulationBenchmark.lex":
+[info]   816578.295 ±(99.9%) 37800.413 us/op [Average]
+[info]   (min, avg, max) = (806699.759, 816578.295, 829724.198), stdev = 9816.647
+[info]   CI (99.9%): [778777.881, 854378.708] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.16, OpenJDK 64-Bit Server VM, 17.0.16+8-Ubuntu-0ubuntu124.04.1
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 5 iterations, 10 s each
+[info] # Measurement: 5 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.lexer.benchmark.lexer.JsonManipulationBenchmark.lex
+[info] # Parameters: (file = 0300_623361chars.json)
+[info] # Run progress: 36.47% complete, ETA 01:43:28
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 1486577.406 us/op
+[info] # Warmup Iteration   2: 1269308.740 us/op
+[info] # Warmup Iteration   3: 1310027.932 us/op
+[info] # Warmup Iteration   4: 1268086.345 us/op
+[info] # Warmup Iteration   5: 1289869.466 us/op
+[info] Iteration   1: 1241222.286 us/op
+[info] Iteration   2: 1250751.087 us/op
+[info] Iteration   3: 1250700.568 us/op
+[info] Iteration   4: 1243070.435 us/op
+[info] Iteration   5: 1257243.047 us/op
+[info] Result "ch.epfl.lexer.benchmark.lexer.JsonManipulationBenchmark.lex":
+[info]   1248597.485 ±(99.9%) 25010.557 us/op [Average]
+[info]   (min, avg, max) = (1241222.286, 1248597.485, 1257243.047), stdev = 6495.162
+[info]   CI (99.9%): [1223586.927, 1273608.042] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.16, OpenJDK 64-Bit Server VM, 17.0.16+8-Ubuntu-0ubuntu124.04.1
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 5 iterations, 10 s each
+[info] # Measurement: 5 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.lexer.benchmark.lexer.JsonManipulationBenchmark.lex
+[info] # Parameters: (file = 0400_831171chars.json)
+[info] # Run progress: 37.65% complete, ETA 01:41:19
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 2024688.242 us/op
+[info] # Warmup Iteration   2: 1768960.931 us/op
+[info] # Warmup Iteration   3: 1712431.500 us/op
+[info] # Warmup Iteration   4: 1782374.396 us/op
+[info] # Warmup Iteration   5: 1684126.338 us/op
+[info] Iteration   1: 1724045.208 us/op
+[info] Iteration   2: 1624838.522 us/op
+[info] Iteration   3: 1640451.520 us/op
+[info] Iteration   4: 1643312.490 us/op
+[info] Iteration   5: 1636789.636 us/op
+[info] Result "ch.epfl.lexer.benchmark.lexer.JsonManipulationBenchmark.lex":
+[info]   1653887.475 ±(99.9%) 153430.652 us/op [Average]
+[info]   (min, avg, max) = (1624838.522, 1653887.475, 1724045.208), stdev = 39845.453
+[info]   CI (99.9%): [1500456.824, 1807318.127] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.16, OpenJDK 64-Bit Server VM, 17.0.16+8-Ubuntu-0ubuntu124.04.1
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 5 iterations, 10 s each
+[info] # Measurement: 5 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.lexer.benchmark.lexer.JsonManipulationBenchmark.lex
+[info] # Parameters: (file = 0500_1038945chars.json)
+[info] # Run progress: 38.82% complete, ETA 01:39:14
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 2744428.818 us/op
+[info] # Warmup Iteration   2: 2422168.507 us/op
+[info] # Warmup Iteration   3: 2272106.843 us/op
+[info] # Warmup Iteration   4: 2199123.845 us/op
+[info] # Warmup Iteration   5: 2236144.134 us/op
+[info] Iteration   1: 2219538.442 us/op
+[info] Iteration   2: 2232497.476 us/op
+[info] Iteration   3: 2199126.667 us/op
+[info] Iteration   4: 2198616.516 us/op
+[info] Iteration   5: 2157582.059 us/op
+[info] Result "ch.epfl.lexer.benchmark.lexer.JsonManipulationBenchmark.lex":
+[info]   2201472.232 ±(99.9%) 109404.339 us/op [Average]
+[info]   (min, avg, max) = (2157582.059, 2201472.232, 2232497.476), stdev = 28411.959
+[info]   CI (99.9%): [2092067.893, 2310876.571] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.16, OpenJDK 64-Bit Server VM, 17.0.16+8-Ubuntu-0ubuntu124.04.1
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 5 iterations, 10 s each
+[info] # Measurement: 5 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.lexer.benchmark.lexer.JsonManipulationBenchmark.lexAndCheckPrintable
+[info] # Parameters: (file = 0001_2079chars.json)
+[info] # Run progress: 40.00% complete, ETA 01:37:16
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 18835.909 us/op
+[info] # Warmup Iteration   2: 16568.109 us/op
+[info] # Warmup Iteration   3: 16356.054 us/op
+[info] # Warmup Iteration   4: 16179.497 us/op
+[info] # Warmup Iteration   5: 16147.681 us/op
+[info] Iteration   1: 15959.105 us/op
+[info] Iteration   2: 15911.618 us/op
+[info] Iteration   3: 15926.721 us/op
+[info] Iteration   4: 15952.749 us/op
+[info] Iteration   5: 15926.950 us/op
+[info] Result "ch.epfl.lexer.benchmark.lexer.JsonManipulationBenchmark.lexAndCheckPrintable":
+[info]   15935.429 ±(99.9%) 76.414 us/op [Average]
+[info]   (min, avg, max) = (15911.618, 15935.429, 15959.105), stdev = 19.844
+[info]   CI (99.9%): [15859.015, 16011.842] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.16, OpenJDK 64-Bit Server VM, 17.0.16+8-Ubuntu-0ubuntu124.04.1
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 5 iterations, 10 s each
+[info] # Measurement: 5 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.lexer.benchmark.lexer.JsonManipulationBenchmark.lexAndCheckPrintable
+[info] # Parameters: (file = 0002_4157chars.json)
+[info] # Run progress: 41.18% complete, ETA 01:35:02
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 36770.261 us/op
+[info] # Warmup Iteration   2: 32621.572 us/op
+[info] # Warmup Iteration   3: 32569.108 us/op
+[info] # Warmup Iteration   4: 32249.737 us/op
+[info] # Warmup Iteration   5: 32594.932 us/op
+[info] Iteration   1: 32205.682 us/op
+[info] Iteration   2: 31885.872 us/op
+[info] Iteration   3: 31910.721 us/op
+[info] Iteration   4: 32156.948 us/op
+[info] Iteration   5: 32158.424 us/op
+[info] Result "ch.epfl.lexer.benchmark.lexer.JsonManipulationBenchmark.lexAndCheckPrintable":
+[info]   32063.529 ±(99.9%) 586.677 us/op [Average]
+[info]   (min, avg, max) = (31885.872, 32063.529, 32205.682), stdev = 152.358
+[info]   CI (99.9%): [31476.852, 32650.206] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.16, OpenJDK 64-Bit Server VM, 17.0.16+8-Ubuntu-0ubuntu124.04.1
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 5 iterations, 10 s each
+[info] # Measurement: 5 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.lexer.benchmark.lexer.JsonManipulationBenchmark.lexAndCheckPrintable
+[info] # Parameters: (file = 0010_20776chars.json)
+[info] # Run progress: 42.35% complete, ETA 01:32:49
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 189979.040 us/op
+[info] # Warmup Iteration   2: 158809.781 us/op
+[info] # Warmup Iteration   3: 163265.234 us/op
+[info] # Warmup Iteration   4: 158711.541 us/op
+[info] # Warmup Iteration   5: 158499.526 us/op
+[info] Iteration   1: 161326.166 us/op
+[info] Iteration   2: 159001.169 us/op
+[info] Iteration   3: 157182.623 us/op
+[info] Iteration   4: 157194.219 us/op
+[info] Iteration   5: 157425.040 us/op
+[info] Result "ch.epfl.lexer.benchmark.lexer.JsonManipulationBenchmark.lexAndCheckPrintable":
+[info]   158425.843 ±(99.9%) 6890.118 us/op [Average]
+[info]   (min, avg, max) = (157182.623, 158425.843, 161326.166), stdev = 1789.342
+[info]   CI (99.9%): [151535.726, 165315.961] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.16, OpenJDK 64-Bit Server VM, 17.0.16+8-Ubuntu-0ubuntu124.04.1
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 5 iterations, 10 s each
+[info] # Measurement: 5 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.lexer.benchmark.lexer.JsonManipulationBenchmark.lexAndCheckPrintable
+[info] # Parameters: (file = 0015_31167chars.json)
+[info] # Run progress: 43.53% complete, ETA 01:30:39
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 272975.740 us/op
+[info] # Warmup Iteration   2: 242404.872 us/op
+[info] # Warmup Iteration   3: 240384.182 us/op
+[info] # Warmup Iteration   4: 240022.338 us/op
+[info] # Warmup Iteration   5: 239154.683 us/op
+[info] Iteration   1: 236856.209 us/op
+[info] Iteration   2: 235229.224 us/op
+[info] Iteration   3: 236189.223 us/op
+[info] Iteration   4: 237913.993 us/op
+[info] Iteration   5: 237242.947 us/op
+[info] Result "ch.epfl.lexer.benchmark.lexer.JsonManipulationBenchmark.lexAndCheckPrintable":
+[info]   236686.319 ±(99.9%) 3953.296 us/op [Average]
+[info]   (min, avg, max) = (235229.224, 236686.319, 237913.993), stdev = 1026.658
+[info]   CI (99.9%): [232733.024, 240639.615] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.16, OpenJDK 64-Bit Server VM, 17.0.16+8-Ubuntu-0ubuntu124.04.1
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 5 iterations, 10 s each
+[info] # Measurement: 5 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.lexer.benchmark.lexer.JsonManipulationBenchmark.lexAndCheckPrintable
+[info] # Parameters: (file = 0020_41560chars.json)
+[info] # Run progress: 44.71% complete, ETA 01:28:31
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 366977.382 us/op
+[info] # Warmup Iteration   2: 305965.273 us/op
+[info] # Warmup Iteration   3: 317497.129 us/op
+[info] # Warmup Iteration   4: 308580.606 us/op
+[info] # Warmup Iteration   5: 308212.992 us/op
+[info] Iteration   1: 313060.229 us/op
+[info] Iteration   2: 310314.826 us/op
+[info] Iteration   3: 305697.812 us/op
+[info] Iteration   4: 304716.277 us/op
+[info] Iteration   5: 305831.924 us/op
+[info] Result "ch.epfl.lexer.benchmark.lexer.JsonManipulationBenchmark.lexAndCheckPrintable":
+[info]   307924.214 ±(99.9%) 13846.141 us/op [Average]
+[info]   (min, avg, max) = (304716.277, 307924.214, 313060.229), stdev = 3595.799
+[info]   CI (99.9%): [294078.073, 321770.354] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.16, OpenJDK 64-Bit Server VM, 17.0.16+8-Ubuntu-0ubuntu124.04.1
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 5 iterations, 10 s each
+[info] # Measurement: 5 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.lexer.benchmark.lexer.JsonManipulationBenchmark.lexAndCheckPrintable
+[info] # Parameters: (file = 0025_51950chars.json)
+[info] # Run progress: 45.88% complete, ETA 01:26:25
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 483222.283 us/op
+[info] # Warmup Iteration   2: 419970.070 us/op
+[info] # Warmup Iteration   3: 422249.304 us/op
+[info] # Warmup Iteration   4: 417148.807 us/op
+[info] # Warmup Iteration   5: 397905.311 us/op
+[info] Iteration   1: 397902.200 us/op
+[info] Iteration   2: 399419.250 us/op
+[info] Iteration   3: 409542.474 us/op
+[info] Iteration   4: 409393.803 us/op
+[info] Iteration   5: 399305.720 us/op
+[info] Result "ch.epfl.lexer.benchmark.lexer.JsonManipulationBenchmark.lexAndCheckPrintable":
+[info]   403112.689 ±(99.9%) 22459.376 us/op [Average]
+[info]   (min, avg, max) = (397902.200, 403112.689, 409542.474), stdev = 5832.629
+[info]   CI (99.9%): [380653.314, 425572.065] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.16, OpenJDK 64-Bit Server VM, 17.0.16+8-Ubuntu-0ubuntu124.04.1
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 5 iterations, 10 s each
+[info] # Measurement: 5 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.lexer.benchmark.lexer.JsonManipulationBenchmark.lexAndCheckPrintable
+[info] # Parameters: (file = 0030_62339chars.json)
+[info] # Run progress: 47.06% complete, ETA 01:24:21
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 601392.847 us/op
+[info] # Warmup Iteration   2: 513289.614 us/op
+[info] # Warmup Iteration   3: 509984.708 us/op
+[info] # Warmup Iteration   4: 516971.457 us/op
+[info] # Warmup Iteration   5: 506194.257 us/op
+[info] Iteration   1: 500407.475 us/op
+[info] Iteration   2: 497936.758 us/op
+[info] Iteration   3: 505852.272 us/op
+[info] Iteration   4: 512526.444 us/op
+[info] Iteration   5: 500802.746 us/op
+[info] Result "ch.epfl.lexer.benchmark.lexer.JsonManipulationBenchmark.lexAndCheckPrintable":
+[info]   503505.139 ±(99.9%) 22353.502 us/op [Average]
+[info]   (min, avg, max) = (497936.758, 503505.139, 512526.444), stdev = 5805.134
+[info]   CI (99.9%): [481151.637, 525858.642] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.16, OpenJDK 64-Bit Server VM, 17.0.16+8-Ubuntu-0ubuntu124.04.1
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 5 iterations, 10 s each
+[info] # Measurement: 5 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.lexer.benchmark.lexer.JsonManipulationBenchmark.lexAndCheckPrintable
+[info] # Parameters: (file = 0035_72724chars.json)
+[info] # Run progress: 48.24% complete, ETA 01:22:17
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 683259.019 us/op
+[info] # Warmup Iteration   2: 580233.603 us/op
+[info] # Warmup Iteration   3: 571290.821 us/op
+[info] # Warmup Iteration   4: 561893.344 us/op
+[info] # Warmup Iteration   5: 556405.936 us/op
+[info] Iteration   1: 565230.666 us/op
+[info] Iteration   2: 561781.189 us/op
+[info] Iteration   3: 551811.719 us/op
+[info] Iteration   4: 552146.193 us/op
+[info] Iteration   5: 552888.114 us/op
+[info] Result "ch.epfl.lexer.benchmark.lexer.JsonManipulationBenchmark.lexAndCheckPrintable":
+[info]   556771.576 ±(99.9%) 24180.086 us/op [Average]
+[info]   (min, avg, max) = (551811.719, 556771.576, 565230.666), stdev = 6279.491
+[info]   CI (99.9%): [532591.490, 580951.662] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.16, OpenJDK 64-Bit Server VM, 17.0.16+8-Ubuntu-0ubuntu124.04.1
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 5 iterations, 10 s each
+[info] # Measurement: 5 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.lexer.benchmark.lexer.JsonManipulationBenchmark.lexAndCheckPrintable
+[info] # Parameters: (file = 0050_103898chars.json)
+[info] # Run progress: 49.41% complete, ETA 01:20:16
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 958499.461 us/op
+[info] # Warmup Iteration   2: 820204.412 us/op
+[info] # Warmup Iteration   3: 818264.735 us/op
+[info] # Warmup Iteration   4: 831617.808 us/op
+[info] # Warmup Iteration   5: 802832.422 us/op
+[info] Iteration   1: 822568.945 us/op
+[info] Iteration   2: 812169.500 us/op
+[info] Iteration   3: 799190.331 us/op
+[info] Iteration   4: 799226.584 us/op
+[info] Iteration   5: 797835.685 us/op
+[info] Result "ch.epfl.lexer.benchmark.lexer.JsonManipulationBenchmark.lexAndCheckPrintable":
+[info]   806198.209 ±(99.9%) 41797.806 us/op [Average]
+[info]   (min, avg, max) = (797835.685, 806198.209, 822568.945), stdev = 10854.757
+[info]   CI (99.9%): [764400.403, 847996.015] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.16, OpenJDK 64-Bit Server VM, 17.0.16+8-Ubuntu-0ubuntu124.04.1
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 5 iterations, 10 s each
+[info] # Measurement: 5 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.lexer.benchmark.lexer.JsonManipulationBenchmark.lexAndCheckPrintable
+[info] # Parameters: (file = 0070_145455chars.json)
+[info] # Run progress: 50.59% complete, ETA 01:18:18
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 1308790.030 us/op
+[info] # Warmup Iteration   2: 1101261.238 us/op
+[info] # Warmup Iteration   3: 1144568.879 us/op
+[info] # Warmup Iteration   4: 1088207.490 us/op
+[info] # Warmup Iteration   5: 1079381.807 us/op
+[info] Iteration   1: 1096384.897 us/op
+[info] Iteration   2: 1088737.864 us/op
+[info] Iteration   3: 1071130.359 us/op
+[info] Iteration   4: 1069384.535 us/op
+[info] Iteration   5: 1077734.767 us/op
+[info] Result "ch.epfl.lexer.benchmark.lexer.JsonManipulationBenchmark.lexAndCheckPrintable":
+[info]   1080674.484 ±(99.9%) 44700.254 us/op [Average]
+[info]   (min, avg, max) = (1069384.535, 1080674.484, 1096384.897), stdev = 11608.514
+[info]   CI (99.9%): [1035974.230, 1125374.738] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.16, OpenJDK 64-Bit Server VM, 17.0.16+8-Ubuntu-0ubuntu124.04.1
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 5 iterations, 10 s each
+[info] # Measurement: 5 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.lexer.benchmark.lexer.JsonManipulationBenchmark.lexAndCheckPrintable
+[info] # Parameters: (file = 0090_187013chars.json)
+[info] # Run progress: 51.76% complete, ETA 01:16:22
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 1812006.994 us/op
+[info] # Warmup Iteration   2: 1497664.637 us/op
+[info] # Warmup Iteration   3: 1500689.163 us/op
+[info] # Warmup Iteration   4: 1469074.177 us/op
+[info] # Warmup Iteration   5: 1468631.856 us/op
+[info] Iteration   1: 1430542.740 us/op
+[info] Iteration   2: 1430943.995 us/op
+[info] Iteration   3: 1434555.323 us/op
+[info] Iteration   4: 1435329.786 us/op
+[info] Iteration   5: 1478292.417 us/op
+[info] Result "ch.epfl.lexer.benchmark.lexer.JsonManipulationBenchmark.lexAndCheckPrintable":
+[info]   1441932.852 ±(99.9%) 78692.128 us/op [Average]
+[info]   (min, avg, max) = (1430542.740, 1441932.852, 1478292.417), stdev = 20436.096
+[info]   CI (99.9%): [1363240.724, 1520624.981] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.16, OpenJDK 64-Bit Server VM, 17.0.16+8-Ubuntu-0ubuntu124.04.1
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 5 iterations, 10 s each
+[info] # Measurement: 5 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.lexer.benchmark.lexer.JsonManipulationBenchmark.lexAndCheckPrintable
+[info] # Parameters: (file = 0120_249345chars.json)
+[info] # Run progress: 52.94% complete, ETA 01:14:23
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 2211533.916 us/op
+[info] # Warmup Iteration   2: 2013378.163 us/op
+[info] # Warmup Iteration   3: 1929704.351 us/op
+[info] # Warmup Iteration   4: 1880663.627 us/op
+[info] # Warmup Iteration   5: 1846283.154 us/op
+[info] Iteration   1: 1894282.971 us/op
+[info] Iteration   2: 1891634.667 us/op
+[info] Iteration   3: 1853780.672 us/op
+[info] Iteration   4: 1850133.815 us/op
+[info] Iteration   5: 1886282.324 us/op
+[info] Result "ch.epfl.lexer.benchmark.lexer.JsonManipulationBenchmark.lexAndCheckPrintable":
+[info]   1875222.890 ±(99.9%) 82680.745 us/op [Average]
+[info]   (min, avg, max) = (1850133.815, 1875222.890, 1894282.971), stdev = 21471.927
+[info]   CI (99.9%): [1792542.144, 1957903.635] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.16, OpenJDK 64-Bit Server VM, 17.0.16+8-Ubuntu-0ubuntu124.04.1
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 5 iterations, 10 s each
+[info] # Measurement: 5 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.lexer.benchmark.lexer.JsonManipulationBenchmark.lexAndCheckPrintable
+[info] # Parameters: (file = 0150_311687chars.json)
+[info] # Run progress: 54.12% complete, ETA 01:12:31
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 2823969.992 us/op
+[info] # Warmup Iteration   2: 2401202.683 us/op
+[info] # Warmup Iteration   3: 2433509.013 us/op
+[info] # Warmup Iteration   4: 2360144.622 us/op
+[info] # Warmup Iteration   5: 2402575.825 us/op
+[info] Iteration   1: 2442612.306 us/op
+[info] Iteration   2: 2369069.637 us/op
+[info] Iteration   3: 2363784.810 us/op
+[info] Iteration   4: 2367547.087 us/op
+[info] Iteration   5: 2371262.734 us/op
+[info] Result "ch.epfl.lexer.benchmark.lexer.JsonManipulationBenchmark.lexAndCheckPrintable":
+[info]   2382855.315 ±(99.9%) 129059.155 us/op [Average]
+[info]   (min, avg, max) = (2363784.810, 2382855.315, 2442612.306), stdev = 33516.253
+[info]   CI (99.9%): [2253796.160, 2511914.470] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.16, OpenJDK 64-Bit Server VM, 17.0.16+8-Ubuntu-0ubuntu124.04.1
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 5 iterations, 10 s each
+[info] # Measurement: 5 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.lexer.benchmark.lexer.JsonManipulationBenchmark.lexAndCheckPrintable
+[info] # Parameters: (file = 0200_415578chars.json)
+[info] # Run progress: 55.29% complete, ETA 01:10:46
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 3768159.627 us/op
+[info] # Warmup Iteration   2: 3177861.998 us/op
+[info] # Warmup Iteration   3: 3253730.464 us/op
+[info] # Warmup Iteration   4: 3169592.360 us/op
+[info] # Warmup Iteration   5: 3214229.150 us/op
+[info] Iteration   1: 3237609.734 us/op
+[info] Iteration   2: 3163807.920 us/op
+[info] Iteration   3: 3166840.988 us/op
+[info] Iteration   4: 3219974.387 us/op
+[info] Iteration   5: 3191738.340 us/op
+[info] Result "ch.epfl.lexer.benchmark.lexer.JsonManipulationBenchmark.lexAndCheckPrintable":
+[info]   3195994.274 ±(99.9%) 124936.645 us/op [Average]
+[info]   (min, avg, max) = (3163807.920, 3195994.274, 3237609.734), stdev = 32445.650
+[info]   CI (99.9%): [3071057.629, 3320930.919] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.16, OpenJDK 64-Bit Server VM, 17.0.16+8-Ubuntu-0ubuntu124.04.1
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 5 iterations, 10 s each
+[info] # Measurement: 5 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.lexer.benchmark.lexer.JsonManipulationBenchmark.lexAndCheckPrintable
+[info] # Parameters: (file = 0300_623361chars.json)
+[info] # Run progress: 56.47% complete, ETA 01:09:06
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 5674582.908 us/op
+[info] # Warmup Iteration   2: 4826397.585 us/op
+[info] # Warmup Iteration   3: 4889535.100 us/op
+[info] # Warmup Iteration   4: 4771518.840 us/op
+[info] # Warmup Iteration   5: 4884774.559 us/op
+[info] Iteration   1: 4815244.702 us/op
+[info] Iteration   2: 4778242.367 us/op
+[info] Iteration   3: 4812505.695 us/op
+[info] Iteration   4: 4833716.742 us/op
+[info] Iteration   5: 4795984.517 us/op
+[info] Result "ch.epfl.lexer.benchmark.lexer.JsonManipulationBenchmark.lexAndCheckPrintable":
+[info]   4807138.805 ±(99.9%) 80779.087 us/op [Average]
+[info]   (min, avg, max) = (4778242.367, 4807138.805, 4833716.742), stdev = 20978.072
+[info]   CI (99.9%): [4726359.717, 4887917.892] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.16, OpenJDK 64-Bit Server VM, 17.0.16+8-Ubuntu-0ubuntu124.04.1
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 5 iterations, 10 s each
+[info] # Measurement: 5 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.lexer.benchmark.lexer.JsonManipulationBenchmark.lexAndCheckPrintable
+[info] # Parameters: (file = 0400_831171chars.json)
+[info] # Run progress: 57.65% complete, ETA 01:07:36
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 7223841.462 us/op
+[info] # Warmup Iteration   2: 6346481.130 us/op
+[info] # Warmup Iteration   3: 6450786.601 us/op
+[info] # Warmup Iteration   4: 6523610.490 us/op
+[info] # Warmup Iteration   5: 6305895.520 us/op
+[info] Iteration   1: 6367239.187 us/op
+[info] Iteration   2: 6326602.923 us/op
+[info] Iteration   3: 6245805.639 us/op
+[info] Iteration   4: 6247317.760 us/op
+[info] Iteration   5: 6237226.929 us/op
+[info] Result "ch.epfl.lexer.benchmark.lexer.JsonManipulationBenchmark.lexAndCheckPrintable":
+[info]   6284838.488 ±(99.9%) 225619.247 us/op [Average]
+[info]   (min, avg, max) = (6237226.929, 6284838.488, 6367239.187), stdev = 58592.602
+[info]   CI (99.9%): [6059219.240, 6510457.735] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.16, OpenJDK 64-Bit Server VM, 17.0.16+8-Ubuntu-0ubuntu124.04.1
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 5 iterations, 10 s each
+[info] # Measurement: 5 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.lexer.benchmark.lexer.JsonManipulationBenchmark.lexAndCheckPrintable
+[info] # Parameters: (file = 0500_1038945chars.json)
+[info] # Run progress: 58.82% complete, ETA 01:05:54
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 9442621.957 us/op
+[info] # Warmup Iteration   2: 8381462.979 us/op
+[info] # Warmup Iteration   3: 8128059.879 us/op
+[info] # Warmup Iteration   4: 8014862.250 us/op
+[info] # Warmup Iteration   5: 8017778.270 us/op
+[info] Iteration   1: 8168782.068 us/op
+[info] Iteration   2: 8137207.269 us/op
+[info] Iteration   3: 8112539.403 us/op
+[info] Iteration   4: 8156518.622 us/op
+[info] Iteration   5: 8070359.009 us/op
+[info] Result "ch.epfl.lexer.benchmark.lexer.JsonManipulationBenchmark.lexAndCheckPrintable":
+[info]   8129081.274 ±(99.9%) 150580.991 us/op [Average]
+[info]   (min, avg, max) = (8070359.009, 8129081.274, 8168782.068), stdev = 39105.405
+[info]   CI (99.9%): [7978500.283, 8279662.265] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.16, OpenJDK 64-Bit Server VM, 17.0.16+8-Ubuntu-0ubuntu124.04.1
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 5 iterations, 10 s each
+[info] # Measurement: 5 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.lexer.benchmark.lexer.JsonManipulationBenchmark.recombineSlices
+[info] # Parameters: (file = 0001_2079chars.json)
+[info] # Run progress: 60.00% complete, ETA 01:04:36
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 34535262.274 us/op
+[info] # Warmup Iteration   2: 8.277 us/op
+[info] # Warmup Iteration   3: 8.068 us/op
+[info] # Warmup Iteration   4: 7.869 us/op
+[info] # Warmup Iteration   5: 7.938 us/op
+[info] Iteration   1: 7.943 us/op
+[info] Iteration   2: 7.999 us/op
+[info] Iteration   3: 7.925 us/op
+[info] Iteration   4: 7.994 us/op
+[info] Iteration   5: 7.852 us/op
+[info] Result "ch.epfl.lexer.benchmark.lexer.JsonManipulationBenchmark.recombineSlices":
+[info]   7.943 ±(99.9%) 0.231 us/op [Average]
+[info]   (min, avg, max) = (7.852, 7.943, 7.999), stdev = 0.060
+[info]   CI (99.9%): [7.711, 8.174] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.16, OpenJDK 64-Bit Server VM, 17.0.16+8-Ubuntu-0ubuntu124.04.1
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 5 iterations, 10 s each
+[info] # Measurement: 5 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.lexer.benchmark.lexer.JsonManipulationBenchmark.recombineSlices
+[info] # Parameters: (file = 0002_4157chars.json)
+[info] # Run progress: 61.18% complete, ETA 01:02:49
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 34646491.807 us/op
+[info] # Warmup Iteration   2: 16.921 us/op
+[info] # Warmup Iteration   3: 16.765 us/op
+[info] # Warmup Iteration   4: 16.916 us/op
+[info] # Warmup Iteration   5: 16.887 us/op
+[info] Iteration   1: 16.970 us/op
+[info] Iteration   2: 16.627 us/op
+[info] Iteration   3: 16.576 us/op
+[info] Iteration   4: 16.594 us/op
+[info] Iteration   5: 16.608 us/op
+[info] Result "ch.epfl.lexer.benchmark.lexer.JsonManipulationBenchmark.recombineSlices":
+[info]   16.675 ±(99.9%) 0.639 us/op [Average]
+[info]   (min, avg, max) = (16.576, 16.675, 16.970), stdev = 0.166
+[info]   CI (99.9%): [16.036, 17.314] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.16, OpenJDK 64-Bit Server VM, 17.0.16+8-Ubuntu-0ubuntu124.04.1
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 5 iterations, 10 s each
+[info] # Measurement: 5 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.lexer.benchmark.lexer.JsonManipulationBenchmark.recombineSlices
+[info] # Parameters: (file = 0010_20776chars.json)
+[info] # Run progress: 62.35% complete, ETA 01:01:02
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 34708241.013 us/op
+[info] # Warmup Iteration   2: 86.568 us/op
+[info] # Warmup Iteration   3: 85.927 us/op
+[info] # Warmup Iteration   4: 87.002 us/op
+[info] # Warmup Iteration   5: 87.627 us/op
+[info] Iteration   1: 87.693 us/op
+[info] Iteration   2: 87.465 us/op
+[info] Iteration   3: 86.009 us/op
+[info] Iteration   4: 86.181 us/op
+[info] Iteration   5: 86.191 us/op
+[info] Result "ch.epfl.lexer.benchmark.lexer.JsonManipulationBenchmark.recombineSlices":
+[info]   86.708 ±(99.9%) 3.091 us/op [Average]
+[info]   (min, avg, max) = (86.009, 86.708, 87.693), stdev = 0.803
+[info]   CI (99.9%): [83.617, 89.799] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.16, OpenJDK 64-Bit Server VM, 17.0.16+8-Ubuntu-0ubuntu124.04.1
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 5 iterations, 10 s each
+[info] # Measurement: 5 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.lexer.benchmark.lexer.JsonManipulationBenchmark.recombineSlices
+[info] # Parameters: (file = 0015_31167chars.json)
+[info] # Run progress: 63.53% complete, ETA 00:59:13
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 35045179.662 us/op
+[info] # Warmup Iteration   2: 138.218 us/op
+[info] # Warmup Iteration   3: 129.889 us/op
+[info] # Warmup Iteration   4: 129.456 us/op
+[info] # Warmup Iteration   5: 129.775 us/op
+[info] Iteration   1: 129.597 us/op
+[info] Iteration   2: 129.506 us/op
+[info] Iteration   3: 131.280 us/op
+[info] Iteration   4: 133.011 us/op
+[info] Iteration   5: 132.537 us/op
+[info] Result "ch.epfl.lexer.benchmark.lexer.JsonManipulationBenchmark.recombineSlices":
+[info]   131.186 ±(99.9%) 6.243 us/op [Average]
+[info]   (min, avg, max) = (129.506, 131.186, 133.011), stdev = 1.621
+[info]   CI (99.9%): [124.943, 137.430] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.16, OpenJDK 64-Bit Server VM, 17.0.16+8-Ubuntu-0ubuntu124.04.1
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 5 iterations, 10 s each
+[info] # Measurement: 5 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.lexer.benchmark.lexer.JsonManipulationBenchmark.recombineSlices
+[info] # Parameters: (file = 0020_41560chars.json)
+[info] # Run progress: 64.71% complete, ETA 00:57:25
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 35277449.832 us/op
+[info] # Warmup Iteration   2: 177.490 us/op
+[info] # Warmup Iteration   3: 178.502 us/op
+[info] # Warmup Iteration   4: 181.117 us/op
+[info] # Warmup Iteration   5: 178.620 us/op
+[info] Iteration   1: 177.291 us/op
+[info] Iteration   2: 176.130 us/op
+[info] Iteration   3: 179.690 us/op
+[info] Iteration   4: 177.667 us/op
+[info] Iteration   5: 179.175 us/op
+[info] Result "ch.epfl.lexer.benchmark.lexer.JsonManipulationBenchmark.recombineSlices":
+[info]   177.991 ±(99.9%) 5.563 us/op [Average]
+[info]   (min, avg, max) = (176.130, 177.991, 179.690), stdev = 1.445
+[info]   CI (99.9%): [172.428, 183.553] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.16, OpenJDK 64-Bit Server VM, 17.0.16+8-Ubuntu-0ubuntu124.04.1
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 5 iterations, 10 s each
+[info] # Measurement: 5 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.lexer.benchmark.lexer.JsonManipulationBenchmark.recombineSlices
+[info] # Parameters: (file = 0025_51950chars.json)
+[info] # Run progress: 65.88% complete, ETA 00:55:35
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 34865333.884 us/op
+[info] # Warmup Iteration   2: 224.315 us/op
+[info] # Warmup Iteration   3: 227.042 us/op
+[info] # Warmup Iteration   4: 227.096 us/op
+[info] # Warmup Iteration   5: 222.320 us/op
+[info] Iteration   1: 220.069 us/op
+[info] Iteration   2: 220.701 us/op
+[info] Iteration   3: 220.996 us/op
+[info] Iteration   4: 221.154 us/op
+[info] Iteration   5: 221.003 us/op
+[info] Result "ch.epfl.lexer.benchmark.lexer.JsonManipulationBenchmark.recombineSlices":
+[info]   220.784 ±(99.9%) 1.665 us/op [Average]
+[info]   (min, avg, max) = (220.069, 220.784, 221.154), stdev = 0.432
+[info]   CI (99.9%): [219.119, 222.449] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.16, OpenJDK 64-Bit Server VM, 17.0.16+8-Ubuntu-0ubuntu124.04.1
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 5 iterations, 10 s each
+[info] # Measurement: 5 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.lexer.benchmark.lexer.JsonManipulationBenchmark.recombineSlices
+[info] # Parameters: (file = 0030_62339chars.json)
+[info] # Run progress: 67.06% complete, ETA 00:53:45
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 35259349.428 us/op
+[info] # Warmup Iteration   2: 270.968 us/op
+[info] # Warmup Iteration   3: 266.759 us/op
+[info] # Warmup Iteration   4: 273.880 us/op
+[info] # Warmup Iteration   5: 270.586 us/op
+[info] Iteration   1: 270.253 us/op
+[info] Iteration   2: 266.392 us/op
+[info] Iteration   3: 265.916 us/op
+[info] Iteration   4: 267.247 us/op
+[info] Iteration   5: 266.556 us/op
+[info] Result "ch.epfl.lexer.benchmark.lexer.JsonManipulationBenchmark.recombineSlices":
+[info]   267.273 ±(99.9%) 6.674 us/op [Average]
+[info]   (min, avg, max) = (265.916, 267.273, 270.253), stdev = 1.733
+[info]   CI (99.9%): [260.599, 273.947] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.16, OpenJDK 64-Bit Server VM, 17.0.16+8-Ubuntu-0ubuntu124.04.1
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 5 iterations, 10 s each
+[info] # Measurement: 5 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.lexer.benchmark.lexer.JsonManipulationBenchmark.recombineSlices
+[info] # Parameters: (file = 0035_72724chars.json)
+[info] # Run progress: 68.24% complete, ETA 00:51:55
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 34793456.347 us/op
+[info] # Warmup Iteration   2: 310.376 us/op
+[info] # Warmup Iteration   3: 316.702 us/op
+[info] # Warmup Iteration   4: 313.973 us/op
+[info] # Warmup Iteration   5: 315.212 us/op
+[info] Iteration   1: 309.117 us/op
+[info] Iteration   2: 309.226 us/op
+[info] Iteration   3: 309.279 us/op
+[info] Iteration   4: 308.496 us/op
+[info] Iteration   5: 308.740 us/op
+[info] Result "ch.epfl.lexer.benchmark.lexer.JsonManipulationBenchmark.recombineSlices":
+[info]   308.972 ±(99.9%) 1.307 us/op [Average]
+[info]   (min, avg, max) = (308.496, 308.972, 309.279), stdev = 0.339
+[info]   CI (99.9%): [307.665, 310.278] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.16, OpenJDK 64-Bit Server VM, 17.0.16+8-Ubuntu-0ubuntu124.04.1
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 5 iterations, 10 s each
+[info] # Measurement: 5 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.lexer.benchmark.lexer.JsonManipulationBenchmark.recombineSlices
+[info] # Parameters: (file = 0050_103898chars.json)
+[info] # Run progress: 69.41% complete, ETA 00:50:04
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 34976666.678 us/op
+[info] # Warmup Iteration   2: 460.228 us/op
+[info] # Warmup Iteration   3: 451.217 us/op
+[info] # Warmup Iteration   4: 458.788 us/op
+[info] # Warmup Iteration   5: 459.794 us/op
+[info] Iteration   1: 463.117 us/op
+[info] Iteration   2: 452.788 us/op
+[info] Iteration   3: 450.197 us/op
+[info] Iteration   4: 450.323 us/op
+[info] Iteration   5: 450.320 us/op
+[info] Result "ch.epfl.lexer.benchmark.lexer.JsonManipulationBenchmark.recombineSlices":
+[info]   453.349 ±(99.9%) 21.439 us/op [Average]
+[info]   (min, avg, max) = (450.197, 453.349, 463.117), stdev = 5.568
+[info]   CI (99.9%): [431.910, 474.788] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.16, OpenJDK 64-Bit Server VM, 17.0.16+8-Ubuntu-0ubuntu124.04.1
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 5 iterations, 10 s each
+[info] # Measurement: 5 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.lexer.benchmark.lexer.JsonManipulationBenchmark.recombineSlices
+[info] # Parameters: (file = 0070_145455chars.json)
+[info] # Run progress: 70.59% complete, ETA 00:48:13
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 34898513.186 us/op
+[info] # Warmup Iteration   2: 654.531 us/op
+[info] # Warmup Iteration   3: 659.116 us/op
+[info] # Warmup Iteration   4: 657.834 us/op
+[info] # Warmup Iteration   5: 645.869 us/op
+[info] Iteration   1: 640.178 us/op
+[info] Iteration   2: 654.488 us/op
+[info] Iteration   3: 656.727 us/op
+[info] Iteration   4: 650.029 us/op
+[info] Iteration   5: 638.397 us/op
+[info] Result "ch.epfl.lexer.benchmark.lexer.JsonManipulationBenchmark.recombineSlices":
+[info]   647.964 ±(99.9%) 31.972 us/op [Average]
+[info]   (min, avg, max) = (638.397, 647.964, 656.727), stdev = 8.303
+[info]   CI (99.9%): [615.992, 679.936] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.16, OpenJDK 64-Bit Server VM, 17.0.16+8-Ubuntu-0ubuntu124.04.1
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 5 iterations, 10 s each
+[info] # Measurement: 5 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.lexer.benchmark.lexer.JsonManipulationBenchmark.recombineSlices
+[info] # Parameters: (file = 0090_187013chars.json)
+[info] # Run progress: 71.76% complete, ETA 00:46:21
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 34670979.161 us/op
+[info] # Warmup Iteration   2: 837.154 us/op
+[info] # Warmup Iteration   3: 851.219 us/op
+[info] # Warmup Iteration   4: 843.064 us/op
+[info] # Warmup Iteration   5: 842.184 us/op
+[info] Iteration   1: 828.179 us/op
+[info] Iteration   2: 825.511 us/op
+[info] Iteration   3: 825.655 us/op
+[info] Iteration   4: 825.091 us/op
+[info] Iteration   5: 824.436 us/op
+[info] Result "ch.epfl.lexer.benchmark.lexer.JsonManipulationBenchmark.recombineSlices":
+[info]   825.775 ±(99.9%) 5.488 us/op [Average]
+[info]   (min, avg, max) = (824.436, 825.775, 828.179), stdev = 1.425
+[info]   CI (99.9%): [820.286, 831.263] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.16, OpenJDK 64-Bit Server VM, 17.0.16+8-Ubuntu-0ubuntu124.04.1
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 5 iterations, 10 s each
+[info] # Measurement: 5 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.lexer.benchmark.lexer.JsonManipulationBenchmark.recombineSlices
+[info] # Parameters: (file = 0120_249345chars.json)
+[info] # Run progress: 72.94% complete, ETA 00:44:28
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 35225694.717 us/op
+[info] # Warmup Iteration   2: 1107.736 us/op
+[info] # Warmup Iteration   3: 1109.056 us/op
+[info] # Warmup Iteration   4: 1125.839 us/op
+[info] # Warmup Iteration   5: 1112.662 us/op
+[info] Iteration   1: 1093.077 us/op
+[info] Iteration   2: 1093.259 us/op
+[info] Iteration   3: 1093.090 us/op
+[info] Iteration   4: 1091.941 us/op
+[info] Iteration   5: 1086.626 us/op
+[info] Result "ch.epfl.lexer.benchmark.lexer.JsonManipulationBenchmark.recombineSlices":
+[info]   1091.599 ±(99.9%) 10.894 us/op [Average]
+[info]   (min, avg, max) = (1086.626, 1091.599, 1093.259), stdev = 2.829
+[info]   CI (99.9%): [1080.705, 1102.492] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.16, OpenJDK 64-Bit Server VM, 17.0.16+8-Ubuntu-0ubuntu124.04.1
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 5 iterations, 10 s each
+[info] # Measurement: 5 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.lexer.benchmark.lexer.JsonManipulationBenchmark.recombineSlices
+[info] # Parameters: (file = 0150_311687chars.json)
+[info] # Run progress: 74.12% complete, ETA 00:42:35
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 34950784.704 us/op
+[info] # Warmup Iteration   2: 1405.411 us/op
+[info] # Warmup Iteration   3: 1430.290 us/op
+[info] # Warmup Iteration   4: 1431.033 us/op
+[info] # Warmup Iteration   5: 1396.936 us/op
+[info] Iteration   1: 1392.067 us/op
+[info] Iteration   2: 1394.201 us/op
+[info] Iteration   3: 1390.548 us/op
+[info] Iteration   4: 1392.054 us/op
+[info] Iteration   5: 1390.047 us/op
+[info] Result "ch.epfl.lexer.benchmark.lexer.JsonManipulationBenchmark.recombineSlices":
+[info]   1391.783 ±(99.9%) 6.250 us/op [Average]
+[info]   (min, avg, max) = (1390.047, 1391.783, 1394.201), stdev = 1.623
+[info]   CI (99.9%): [1385.533, 1398.034] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.16, OpenJDK 64-Bit Server VM, 17.0.16+8-Ubuntu-0ubuntu124.04.1
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 5 iterations, 10 s each
+[info] # Measurement: 5 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.lexer.benchmark.lexer.JsonManipulationBenchmark.recombineSlices
+[info] # Parameters: (file = 0200_415578chars.json)
+[info] # Run progress: 75.29% complete, ETA 00:40:42
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 35772597.543 us/op
+[info] # Warmup Iteration   2: 1884.726 us/op
+[info] # Warmup Iteration   3: 1878.752 us/op
+[info] # Warmup Iteration   4: 1859.524 us/op
+[info] # Warmup Iteration   5: 1884.635 us/op
+[info] Iteration   1: 1883.408 us/op
+[info] Iteration   2: 1905.110 us/op
+[info] Iteration   3: 1841.936 us/op
+[info] Iteration   4: 1866.914 us/op
+[info] Iteration   5: 1867.691 us/op
+[info] Result "ch.epfl.lexer.benchmark.lexer.JsonManipulationBenchmark.recombineSlices":
+[info]   1873.012 ±(99.9%) 89.679 us/op [Average]
+[info]   (min, avg, max) = (1841.936, 1873.012, 1905.110), stdev = 23.289
+[info]   CI (99.9%): [1783.333, 1962.691] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.16, OpenJDK 64-Bit Server VM, 17.0.16+8-Ubuntu-0ubuntu124.04.1
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 5 iterations, 10 s each
+[info] # Measurement: 5 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.lexer.benchmark.lexer.JsonManipulationBenchmark.recombineSlices
+[info] # Parameters: (file = 0300_623361chars.json)
+[info] # Run progress: 76.47% complete, ETA 00:38:49
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 35878144.528 us/op
+[info] # Warmup Iteration   2: 3005.975 us/op
+[info] # Warmup Iteration   3: 2804.224 us/op
+[info] # Warmup Iteration   4: 2907.926 us/op
+[info] # Warmup Iteration   5: 2868.965 us/op
+[info] Iteration   1: 2797.356 us/op
+[info] Iteration   2: 2792.630 us/op
+[info] Iteration   3: 2796.534 us/op
+[info] Iteration   4: 2791.154 us/op
+[info] Iteration   5: 2790.631 us/op
+[info] Result "ch.epfl.lexer.benchmark.lexer.JsonManipulationBenchmark.recombineSlices":
+[info]   2793.661 ±(99.9%) 11.936 us/op [Average]
+[info]   (min, avg, max) = (2790.631, 2793.661, 2797.356), stdev = 3.100
+[info]   CI (99.9%): [2781.725, 2805.597] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.16, OpenJDK 64-Bit Server VM, 17.0.16+8-Ubuntu-0ubuntu124.04.1
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 5 iterations, 10 s each
+[info] # Measurement: 5 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.lexer.benchmark.lexer.JsonManipulationBenchmark.recombineSlices
+[info] # Parameters: (file = 0400_831171chars.json)
+[info] # Run progress: 77.65% complete, ETA 00:36:55
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 35041445.661 us/op
+[info] # Warmup Iteration   2: 3996.565 us/op
+[info] # Warmup Iteration   3: 4047.329 us/op
+[info] # Warmup Iteration   4: 3982.375 us/op
+[info] # Warmup Iteration   5: 3732.878 us/op
+[info] Iteration   1: 3742.857 us/op
+[info] Iteration   2: 3894.890 us/op
+[info] Iteration   3: 3838.492 us/op
+[info] Iteration   4: 3788.452 us/op
+[info] Iteration   5: 3779.605 us/op
+[info] Result "ch.epfl.lexer.benchmark.lexer.JsonManipulationBenchmark.recombineSlices":
+[info]   3808.859 ±(99.9%) 227.057 us/op [Average]
+[info]   (min, avg, max) = (3742.857, 3808.859, 3894.890), stdev = 58.966
+[info]   CI (99.9%): [3581.803, 4035.916] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.16, OpenJDK 64-Bit Server VM, 17.0.16+8-Ubuntu-0ubuntu124.04.1
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 5 iterations, 10 s each
+[info] # Measurement: 5 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.lexer.benchmark.lexer.JsonManipulationBenchmark.recombineSlices
+[info] # Parameters: (file = 0500_1038945chars.json)
+[info] # Run progress: 78.82% complete, ETA 00:35:01
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 35527016.194 us/op
+[info] # Warmup Iteration   2: 4788.807 us/op
+[info] # Warmup Iteration   3: 4894.728 us/op
+[info] # Warmup Iteration   4: 4838.971 us/op
+[info] # Warmup Iteration   5: 4744.401 us/op
+[info] Iteration   1: 4751.220 us/op
+[info] Iteration   2: 4845.660 us/op
+[info] Iteration   3: 4797.935 us/op
+[info] Iteration   4: 4799.614 us/op
+[info] Iteration   5: 4723.873 us/op
+[info] Result "ch.epfl.lexer.benchmark.lexer.JsonManipulationBenchmark.recombineSlices":
+[info]   4783.660 ±(99.9%) 181.932 us/op [Average]
+[info]   (min, avg, max) = (4723.873, 4783.660, 4845.660), stdev = 47.247
+[info]   CI (99.9%): [4601.728, 4965.592] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.16, OpenJDK 64-Bit Server VM, 17.0.16+8-Ubuntu-0ubuntu124.04.1
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 5 iterations, 10 s each
+[info] # Measurement: 5 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.lexer.benchmark.lexer.JsonManipulationBenchmark.sliceAndSort
+[info] # Parameters: (file = 0001_2079chars.json)
+[info] # Run progress: 80.00% complete, ETA 00:33:07
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 35262723.115 us/op
+[info] # Warmup Iteration   2: 13.188 us/op
+[info] # Warmup Iteration   3: 13.213 us/op
+[info] # Warmup Iteration   4: 15.933 us/op
+[info] # Warmup Iteration   5: 13.575 us/op
+[info] Iteration   1: 13.365 us/op
+[info] Iteration   2: 13.275 us/op
+[info] Iteration   3: 13.251 us/op
+[info] Iteration   4: 13.276 us/op
+[info] Iteration   5: 13.330 us/op
+[info] Result "ch.epfl.lexer.benchmark.lexer.JsonManipulationBenchmark.sliceAndSort":
+[info]   13.299 ±(99.9%) 0.180 us/op [Average]
+[info]   (min, avg, max) = (13.251, 13.299, 13.365), stdev = 0.047
+[info]   CI (99.9%): [13.119, 13.479] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.16, OpenJDK 64-Bit Server VM, 17.0.16+8-Ubuntu-0ubuntu124.04.1
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 5 iterations, 10 s each
+[info] # Measurement: 5 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.lexer.benchmark.lexer.JsonManipulationBenchmark.sliceAndSort
+[info] # Parameters: (file = 0002_4157chars.json)
+[info] # Run progress: 81.18% complete, ETA 00:31:12
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 34673788.366 us/op
+[info] # Warmup Iteration   2: 28.700 us/op
+[info] # Warmup Iteration   3: 29.584 us/op
+[info] # Warmup Iteration   4: 28.647 us/op
+[info] # Warmup Iteration   5: 29.686 us/op
+[info] Iteration   1: 27.874 us/op
+[info] Iteration   2: 28.242 us/op
+[info] Iteration   3: 27.690 us/op
+[info] Iteration   4: 27.761 us/op
+[info] Iteration   5: 27.776 us/op
+[info] Result "ch.epfl.lexer.benchmark.lexer.JsonManipulationBenchmark.sliceAndSort":
+[info]   27.869 ±(99.9%) 0.843 us/op [Average]
+[info]   (min, avg, max) = (27.690, 27.869, 28.242), stdev = 0.219
+[info]   CI (99.9%): [27.025, 28.712] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.16, OpenJDK 64-Bit Server VM, 17.0.16+8-Ubuntu-0ubuntu124.04.1
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 5 iterations, 10 s each
+[info] # Measurement: 5 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.lexer.benchmark.lexer.JsonManipulationBenchmark.sliceAndSort
+[info] # Parameters: (file = 0010_20776chars.json)
+[info] # Run progress: 82.35% complete, ETA 00:29:17
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 34645026.502 us/op
+[info] # Warmup Iteration   2: 157.758 us/op
+[info] # Warmup Iteration   3: 155.435 us/op
+[info] # Warmup Iteration   4: 157.716 us/op
+[info] # Warmup Iteration   5: 156.431 us/op
+[info] Iteration   1: 153.951 us/op
+[info] Iteration   2: 153.214 us/op
+[info] Iteration   3: 152.511 us/op
+[info] Iteration   4: 153.447 us/op
+[info] Iteration   5: 152.760 us/op
+[info] Result "ch.epfl.lexer.benchmark.lexer.JsonManipulationBenchmark.sliceAndSort":
+[info]   153.177 ±(99.9%) 2.187 us/op [Average]
+[info]   (min, avg, max) = (152.511, 153.177, 153.951), stdev = 0.568
+[info]   CI (99.9%): [150.990, 155.364] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.16, OpenJDK 64-Bit Server VM, 17.0.16+8-Ubuntu-0ubuntu124.04.1
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 5 iterations, 10 s each
+[info] # Measurement: 5 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.lexer.benchmark.lexer.JsonManipulationBenchmark.sliceAndSort
+[info] # Parameters: (file = 0015_31167chars.json)
+[info] # Run progress: 83.53% complete, ETA 00:27:21
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 37108877.423 us/op
+[info] # Warmup Iteration   2: 357.039 us/op
+[info] # Warmup Iteration   3: 244.735 us/op
+[info] # Warmup Iteration   4: 238.930 us/op
+[info] # Warmup Iteration   5: 236.220 us/op
+[info] Iteration   1: 235.603 us/op
+[info] Iteration   2: 235.963 us/op
+[info] Iteration   3: 237.054 us/op
+[info] Iteration   4: 235.266 us/op
+[info] Iteration   5: 316.647 us/op
+[info] Result "ch.epfl.lexer.benchmark.lexer.JsonManipulationBenchmark.sliceAndSort":
+[info]   252.107 ±(99.9%) 138.952 us/op [Average]
+[info]   (min, avg, max) = (235.266, 252.107, 316.647), stdev = 36.085
+[info]   CI (99.9%): [113.155, 391.059] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.16, OpenJDK 64-Bit Server VM, 17.0.16+8-Ubuntu-0ubuntu124.04.1
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 5 iterations, 10 s each
+[info] # Measurement: 5 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.lexer.benchmark.lexer.JsonManipulationBenchmark.sliceAndSort
+[info] # Parameters: (file = 0020_41560chars.json)
+[info] # Run progress: 84.71% complete, ETA 00:25:26
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 35500584.097 us/op
+[info] # Warmup Iteration   2: 321.872 us/op
+[info] # Warmup Iteration   3: 308.550 us/op
+[info] # Warmup Iteration   4: 310.228 us/op
+[info] # Warmup Iteration   5: 311.347 us/op
+[info] Iteration   1: 308.470 us/op
+[info] Iteration   2: 307.933 us/op
+[info] Iteration   3: 309.141 us/op
+[info] Iteration   4: 310.763 us/op
+[info] Iteration   5: 314.233 us/op
+[info] Result "ch.epfl.lexer.benchmark.lexer.JsonManipulationBenchmark.sliceAndSort":
+[info]   310.108 ±(99.9%) 9.778 us/op [Average]
+[info]   (min, avg, max) = (307.933, 310.108, 314.233), stdev = 2.539
+[info]   CI (99.9%): [300.330, 319.886] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.16, OpenJDK 64-Bit Server VM, 17.0.16+8-Ubuntu-0ubuntu124.04.1
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 5 iterations, 10 s each
+[info] # Measurement: 5 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.lexer.benchmark.lexer.JsonManipulationBenchmark.sliceAndSort
+[info] # Parameters: (file = 0025_51950chars.json)
+[info] # Run progress: 85.88% complete, ETA 00:23:30
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 35214853.762 us/op
+[info] # Warmup Iteration   2: 393.737 us/op
+[info] # Warmup Iteration   3: 391.926 us/op
+[info] # Warmup Iteration   4: 390.079 us/op
+[info] # Warmup Iteration   5: 385.945 us/op
+[info] Iteration   1: 384.805 us/op
+[info] Iteration   2: 383.896 us/op
+[info] Iteration   3: 385.079 us/op
+[info] Iteration   4: 385.033 us/op
+[info] Iteration   5: 384.417 us/op
+[info] Result "ch.epfl.lexer.benchmark.lexer.JsonManipulationBenchmark.sliceAndSort":
+[info]   384.646 ±(99.9%) 1.904 us/op [Average]
+[info]   (min, avg, max) = (383.896, 384.646, 385.079), stdev = 0.494
+[info]   CI (99.9%): [382.743, 386.550] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.16, OpenJDK 64-Bit Server VM, 17.0.16+8-Ubuntu-0ubuntu124.04.1
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 5 iterations, 10 s each
+[info] # Measurement: 5 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.lexer.benchmark.lexer.JsonManipulationBenchmark.sliceAndSort
+[info] # Parameters: (file = 0030_62339chars.json)
+[info] # Run progress: 87.06% complete, ETA 00:21:33
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 35335195.496 us/op
+[info] # Warmup Iteration   2: 481.866 us/op
+[info] # Warmup Iteration   3: 482.334 us/op
+[info] # Warmup Iteration   4: 483.715 us/op
+[info] # Warmup Iteration   5: 465.356 us/op
+[info] Iteration   1: 474.152 us/op
+[info] Iteration   2: 562.407 us/op
+[info] Iteration   3: 547.753 us/op
+[info] Iteration   4: 475.076 us/op
+[info] Iteration   5: 475.288 us/op
+[info] Result "ch.epfl.lexer.benchmark.lexer.JsonManipulationBenchmark.sliceAndSort":
+[info]   506.935 ±(99.9%) 170.415 us/op [Average]
+[info]   (min, avg, max) = (474.152, 506.935, 562.407), stdev = 44.256
+[info]   CI (99.9%): [336.520, 677.351] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.16, OpenJDK 64-Bit Server VM, 17.0.16+8-Ubuntu-0ubuntu124.04.1
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 5 iterations, 10 s each
+[info] # Measurement: 5 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.lexer.benchmark.lexer.JsonManipulationBenchmark.sliceAndSort
+[info] # Parameters: (file = 0035_72724chars.json)
+[info] # Run progress: 88.24% complete, ETA 00:19:37
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 35287625.904 us/op
+[info] # Warmup Iteration   2: 558.805 us/op
+[info] # Warmup Iteration   3: 525.313 us/op
+[info] # Warmup Iteration   4: 524.113 us/op
+[info] # Warmup Iteration   5: 542.768 us/op
+[info] Iteration   1: 543.793 us/op
+[info] Iteration   2: 539.674 us/op
+[info] Iteration   3: 531.141 us/op
+[info] Iteration   4: 533.475 us/op
+[info] Iteration   5: 532.556 us/op
+[info] Result "ch.epfl.lexer.benchmark.lexer.JsonManipulationBenchmark.sliceAndSort":
+[info]   536.128 ±(99.9%) 20.736 us/op [Average]
+[info]   (min, avg, max) = (531.141, 536.128, 543.793), stdev = 5.385
+[info]   CI (99.9%): [515.392, 556.864] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.16, OpenJDK 64-Bit Server VM, 17.0.16+8-Ubuntu-0ubuntu124.04.1
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 5 iterations, 10 s each
+[info] # Measurement: 5 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.lexer.benchmark.lexer.JsonManipulationBenchmark.sliceAndSort
+[info] # Parameters: (file = 0050_103898chars.json)
+[info] # Run progress: 89.41% complete, ETA 00:17:40
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 34612120.853 us/op
+[info] # Warmup Iteration   2: 827.943 us/op
+[info] # Warmup Iteration   3: 854.371 us/op
+[info] # Warmup Iteration   4: 836.099 us/op
+[info] # Warmup Iteration   5: 853.780 us/op
+[info] Iteration   1: 819.729 us/op
+[info] Iteration   2: 813.810 us/op
+[info] Iteration   3: 806.112 us/op
+[info] Iteration   4: 803.962 us/op
+[info] Iteration   5: 807.859 us/op
+[info] Result "ch.epfl.lexer.benchmark.lexer.JsonManipulationBenchmark.sliceAndSort":
+[info]   810.294 ±(99.9%) 24.724 us/op [Average]
+[info]   (min, avg, max) = (803.962, 810.294, 819.729), stdev = 6.421
+[info]   CI (99.9%): [785.571, 835.018] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.16, OpenJDK 64-Bit Server VM, 17.0.16+8-Ubuntu-0ubuntu124.04.1
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 5 iterations, 10 s each
+[info] # Measurement: 5 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.lexer.benchmark.lexer.JsonManipulationBenchmark.sliceAndSort
+[info] # Parameters: (file = 0070_145455chars.json)
+[info] # Run progress: 90.59% complete, ETA 00:15:43
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 35445515.144 us/op
+[info] # Warmup Iteration   2: 1131.262 us/op
+[info] # Warmup Iteration   3: 1128.776 us/op
+[info] # Warmup Iteration   4: 1103.109 us/op
+[info] # Warmup Iteration   5: 1082.466 us/op
+[info] Iteration   1: 1127.968 us/op
+[info] Iteration   2: 1105.802 us/op
+[info] Iteration   3: 1099.475 us/op
+[info] Iteration   4: 1096.070 us/op
+[info] Iteration   5: 1102.102 us/op
+[info] Result "ch.epfl.lexer.benchmark.lexer.JsonManipulationBenchmark.sliceAndSort":
+[info]   1106.284 ±(99.9%) 48.654 us/op [Average]
+[info]   (min, avg, max) = (1096.070, 1106.284, 1127.968), stdev = 12.635
+[info]   CI (99.9%): [1057.629, 1154.938] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.16, OpenJDK 64-Bit Server VM, 17.0.16+8-Ubuntu-0ubuntu124.04.1
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 5 iterations, 10 s each
+[info] # Measurement: 5 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.lexer.benchmark.lexer.JsonManipulationBenchmark.sliceAndSort
+[info] # Parameters: (file = 0090_187013chars.json)
+[info] # Run progress: 91.76% complete, ETA 00:13:46
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 33454525.002 us/op
+[info] # Warmup Iteration   2: 1586.282 us/op
+[info] # Warmup Iteration   3: 1549.295 us/op
+[info] # Warmup Iteration   4: 1556.064 us/op
+[info] # Warmup Iteration   5: 1539.100 us/op
+[info] Iteration   1: 1541.075 us/op
+[info] Iteration   2: 1528.593 us/op
+[info] Iteration   3: 1529.513 us/op
+[info] Iteration   4: 1557.608 us/op
+[info] Iteration   5: 1558.378 us/op
+[info] Result "ch.epfl.lexer.benchmark.lexer.JsonManipulationBenchmark.sliceAndSort":
+[info]   1543.034 ±(99.9%) 55.902 us/op [Average]
+[info]   (min, avg, max) = (1528.593, 1543.034, 1558.378), stdev = 14.518
+[info]   CI (99.9%): [1487.132, 1598.935] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.16, OpenJDK 64-Bit Server VM, 17.0.16+8-Ubuntu-0ubuntu124.04.1
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 5 iterations, 10 s each
+[info] # Measurement: 5 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.lexer.benchmark.lexer.JsonManipulationBenchmark.sliceAndSort
+[info] # Parameters: (file = 0120_249345chars.json)
+[info] # Run progress: 92.94% complete, ETA 00:11:48
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 34913510.460 us/op
+[info] # Warmup Iteration   2: 2289.283 us/op
+[info] # Warmup Iteration   3: 2079.545 us/op
+[info] # Warmup Iteration   4: 1951.139 us/op
+[info] # Warmup Iteration   5: 1999.313 us/op
+[info] Iteration   1: 2061.476 us/op
+[info] Iteration   2: 1985.151 us/op
+[info] Iteration   3: 2038.884 us/op
+[info] Iteration   4: 1972.361 us/op
+[info] Iteration   5: 1944.531 us/op
+[info] Result "ch.epfl.lexer.benchmark.lexer.JsonManipulationBenchmark.sliceAndSort":
+[info]   2000.480 ±(99.9%) 186.183 us/op [Average]
+[info]   (min, avg, max) = (1944.531, 2000.480, 2061.476), stdev = 48.351
+[info]   CI (99.9%): [1814.298, 2186.663] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.16, OpenJDK 64-Bit Server VM, 17.0.16+8-Ubuntu-0ubuntu124.04.1
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 5 iterations, 10 s each
+[info] # Measurement: 5 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.lexer.benchmark.lexer.JsonManipulationBenchmark.sliceAndSort
+[info] # Parameters: (file = 0150_311687chars.json)
+[info] # Run progress: 94.12% complete, ETA 00:09:50
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 36061282.915 us/op
+[info] # Warmup Iteration   2: 2604.720 us/op
+[info] # Warmup Iteration   3: 2727.574 us/op
+[info] # Warmup Iteration   4: 2763.278 us/op
+[info] # Warmup Iteration   5: 2692.799 us/op
+[info] Iteration   1: 2689.610 us/op
+[info] Iteration   2: 2682.888 us/op
+[info] Iteration   3: 2673.742 us/op
+[info] Iteration   4: 2662.510 us/op
+[info] Iteration   5: 2726.845 us/op
+[info] Result "ch.epfl.lexer.benchmark.lexer.JsonManipulationBenchmark.sliceAndSort":
+[info]   2687.119 ±(99.9%) 94.062 us/op [Average]
+[info]   (min, avg, max) = (2662.510, 2687.119, 2726.845), stdev = 24.428
+[info]   CI (99.9%): [2593.057, 2781.182] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.16, OpenJDK 64-Bit Server VM, 17.0.16+8-Ubuntu-0ubuntu124.04.1
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 5 iterations, 10 s each
+[info] # Measurement: 5 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.lexer.benchmark.lexer.JsonManipulationBenchmark.sliceAndSort
+[info] # Parameters: (file = 0200_415578chars.json)
+[info] # Run progress: 95.29% complete, ETA 00:07:53
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 35616843.497 us/op
+[info] # Warmup Iteration   2: 3462.573 us/op
+[info] # Warmup Iteration   3: 3376.300 us/op
+[info] # Warmup Iteration   4: 3333.827 us/op
+[info] # Warmup Iteration   5: 3345.403 us/op
+[info] Iteration   1: 3271.626 us/op
+[info] Iteration   2: 3279.378 us/op
+[info] Iteration   3: 3291.101 us/op
+[info] Iteration   4: 3291.037 us/op
+[info] Iteration   5: 3266.844 us/op
+[info] Result "ch.epfl.lexer.benchmark.lexer.JsonManipulationBenchmark.sliceAndSort":
+[info]   3279.997 ±(99.9%) 42.559 us/op [Average]
+[info]   (min, avg, max) = (3266.844, 3279.997, 3291.101), stdev = 11.052
+[info]   CI (99.9%): [3237.439, 3322.556] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.16, OpenJDK 64-Bit Server VM, 17.0.16+8-Ubuntu-0ubuntu124.04.1
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 5 iterations, 10 s each
+[info] # Measurement: 5 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.lexer.benchmark.lexer.JsonManipulationBenchmark.sliceAndSort
+[info] # Parameters: (file = 0300_623361chars.json)
+[info] # Run progress: 96.47% complete, ETA 00:05:55
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 34578213.359 us/op
+[info] # Warmup Iteration   2: 6201.449 us/op
+[info] # Warmup Iteration   3: 5913.473 us/op
+[info] # Warmup Iteration   4: 5968.200 us/op
+[info] # Warmup Iteration   5: 6151.539 us/op
+[info] Iteration   1: 6155.691 us/op
+[info] Iteration   2: 6037.450 us/op
+[info] Iteration   3: 6204.753 us/op
+[info] Iteration   4: 7307.993 us/op
+[info] Iteration   5: 6067.060 us/op
+[info] Result "ch.epfl.lexer.benchmark.lexer.JsonManipulationBenchmark.sliceAndSort":
+[info]   6354.590 ±(99.9%) 2068.481 us/op [Average]
+[info]   (min, avg, max) = (6037.450, 6354.590, 7307.993), stdev = 537.178
+[info]   CI (99.9%): [4286.108, 8423.071] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.16, OpenJDK 64-Bit Server VM, 17.0.16+8-Ubuntu-0ubuntu124.04.1
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 5 iterations, 10 s each
+[info] # Measurement: 5 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.lexer.benchmark.lexer.JsonManipulationBenchmark.sliceAndSort
+[info] # Parameters: (file = 0400_831171chars.json)
+[info] # Run progress: 97.65% complete, ETA 00:03:56
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 35642771.669 us/op
+[info] # Warmup Iteration   2: 9620.149 us/op
+[info] # Warmup Iteration   3: 9393.842 us/op
+[info] # Warmup Iteration   4: 9103.554 us/op
+[info] # Warmup Iteration   5: 9160.958 us/op
+[info] Iteration   1: 8996.957 us/op
+[info] Iteration   2: 9028.796 us/op
+[info] Iteration   3: 9049.527 us/op
+[info] Iteration   4: 8993.423 us/op
+[info] Iteration   5: 9320.223 us/op
+[info] Result "ch.epfl.lexer.benchmark.lexer.JsonManipulationBenchmark.sliceAndSort":
+[info]   9077.785 ±(99.9%) 529.463 us/op [Average]
+[info]   (min, avg, max) = (8993.423, 9077.785, 9320.223), stdev = 137.500
+[info]   CI (99.9%): [8548.322, 9607.247] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.16, OpenJDK 64-Bit Server VM, 17.0.16+8-Ubuntu-0ubuntu124.04.1
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 5 iterations, 10 s each
+[info] # Measurement: 5 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.lexer.benchmark.lexer.JsonManipulationBenchmark.sliceAndSort
+[info] # Parameters: (file = 0500_1038945chars.json)
+[info] # Run progress: 98.82% complete, ETA 00:01:58
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 35206066.228 us/op
+[info] # Warmup Iteration   2: 13204.779 us/op
+[info] # Warmup Iteration   3: 15071.558 us/op
+[info] # Warmup Iteration   4: 14560.665 us/op
+[info] # Warmup Iteration   5: 14717.270 us/op
+[info] Iteration   1: 15425.330 us/op
+[info] Iteration   2: 18250.828 us/op
+[info] Iteration   3: 17870.117 us/op
+[info] Iteration   4: 14357.510 us/op
+[info] Iteration   5: 13316.615 us/op
+[info] Result "ch.epfl.lexer.benchmark.lexer.JsonManipulationBenchmark.sliceAndSort":
+[info]   15844.080 ±(99.9%) 8319.214 us/op [Average]
+[info]   (min, avg, max) = (13316.615, 15844.080, 18250.828), stdev = 2160.473
+[info]   CI (99.9%): [7524.866, 24163.294] (assumes normal distribution)
+[info] # Run complete. Total time: 02:48:04
+[info] REMEMBER: The numbers below are just data. To gain reusable insights, you need to follow up on
+[info] why the numbers are the way they are. Use profilers (see -prof, -lprof), design factorial
+[info] experiments, perform baseline and negative tests that provide experimental control, make sure
+[info] the benchmarking environment is safe on JVM/OS/HW level, ask for reviews from the domain experts.
+[info] Do not assume the numbers tell you what you want them to tell.
+[info] Benchmark                                                                           (file)  Mode  Cnt        Score        Error  Units
+[info] JsonManipulationBenchmark.checkPredicateAndRecombineWithoutWrapper     0001_2079chars.json  avgt    5      919.595 ±     40.813  us/op
+[info] JsonManipulationBenchmark.checkPredicateAndRecombineWithoutWrapper     0002_4157chars.json  avgt    5     1677.860 ±     86.451  us/op
+[info] JsonManipulationBenchmark.checkPredicateAndRecombineWithoutWrapper    0010_20776chars.json  avgt    5     8760.438 ±     91.051  us/op
+[info] JsonManipulationBenchmark.checkPredicateAndRecombineWithoutWrapper    0015_31167chars.json  avgt    5    14462.042 ±    900.439  us/op
+[info] JsonManipulationBenchmark.checkPredicateAndRecombineWithoutWrapper    0020_41560chars.json  avgt    5    19503.406 ±    726.179  us/op
+[info] JsonManipulationBenchmark.checkPredicateAndRecombineWithoutWrapper    0025_51950chars.json  avgt    5    22513.246 ±    692.295  us/op
+[info] JsonManipulationBenchmark.checkPredicateAndRecombineWithoutWrapper    0030_62339chars.json  avgt    5    29581.394 ±   1165.946  us/op
+[info] JsonManipulationBenchmark.checkPredicateAndRecombineWithoutWrapper    0035_72724chars.json  avgt    5    33376.061 ±   2426.576  us/op
+[info] JsonManipulationBenchmark.checkPredicateAndRecombineWithoutWrapper   0050_103898chars.json  avgt    5    43334.092 ±    895.215  us/op
+[info] JsonManipulationBenchmark.checkPredicateAndRecombineWithoutWrapper   0070_145455chars.json  avgt    5    69198.661 ±   3192.492  us/op
+[info] JsonManipulationBenchmark.checkPredicateAndRecombineWithoutWrapper   0090_187013chars.json  avgt    5    85411.791 ±    874.913  us/op
+[info] JsonManipulationBenchmark.checkPredicateAndRecombineWithoutWrapper   0120_249345chars.json  avgt    5   116226.323 ±   4907.880  us/op
+[info] JsonManipulationBenchmark.checkPredicateAndRecombineWithoutWrapper   0150_311687chars.json  avgt    5   138758.417 ±   4330.774  us/op
+[info] JsonManipulationBenchmark.checkPredicateAndRecombineWithoutWrapper   0200_415578chars.json  avgt    5   188830.909 ±   6839.915  us/op
+[info] JsonManipulationBenchmark.checkPredicateAndRecombineWithoutWrapper   0300_623361chars.json  avgt    5   291628.856 ±   9056.283  us/op
+[info] JsonManipulationBenchmark.checkPredicateAndRecombineWithoutWrapper   0400_831171chars.json  avgt    5   351836.141 ±  14435.877  us/op
+[info] JsonManipulationBenchmark.checkPredicateAndRecombineWithoutWrapper  0500_1038945chars.json  avgt    5   484061.097 ±   7322.952  us/op
+[info] JsonManipulationBenchmark.lex                                          0001_2079chars.json  avgt    5     4064.124 ±    432.135  us/op
+[info] JsonManipulationBenchmark.lex                                          0002_4157chars.json  avgt    5     8499.058 ±    473.063  us/op
+[info] JsonManipulationBenchmark.lex                                         0010_20776chars.json  avgt    5    42031.625 ±   1653.773  us/op
+[info] JsonManipulationBenchmark.lex                                         0015_31167chars.json  avgt    5    63180.538 ±   1487.369  us/op
+[info] JsonManipulationBenchmark.lex                                         0020_41560chars.json  avgt    5    79269.923 ±   6370.874  us/op
+[info] JsonManipulationBenchmark.lex                                         0025_51950chars.json  avgt    5   100334.270 ±   6162.686  us/op
+[info] JsonManipulationBenchmark.lex                                         0030_62339chars.json  avgt    5   126359.894 ±   6805.899  us/op
+[info] JsonManipulationBenchmark.lex                                         0035_72724chars.json  avgt    5   141687.743 ±  11754.611  us/op
+[info] JsonManipulationBenchmark.lex                                        0050_103898chars.json  avgt    5   187321.028 ±  16106.062  us/op
+[info] JsonManipulationBenchmark.lex                                        0070_145455chars.json  avgt    5   264660.926 ±  10824.000  us/op
+[info] JsonManipulationBenchmark.lex                                        0090_187013chars.json  avgt    5   373303.489 ±  60334.936  us/op
+[info] JsonManipulationBenchmark.lex                                        0120_249345chars.json  avgt    5   497076.786 ±  21329.415  us/op
+[info] JsonManipulationBenchmark.lex                                        0150_311687chars.json  avgt    5   607444.608 ±  77664.324  us/op
+[info] JsonManipulationBenchmark.lex                                        0200_415578chars.json  avgt    5   816578.295 ±  37800.413  us/op
+[info] JsonManipulationBenchmark.lex                                        0300_623361chars.json  avgt    5  1248597.485 ±  25010.557  us/op
+[info] JsonManipulationBenchmark.lex                                        0400_831171chars.json  avgt    5  1653887.475 ± 153430.652  us/op
+[info] JsonManipulationBenchmark.lex                                       0500_1038945chars.json  avgt    5  2201472.232 ± 109404.339  us/op
+[info] JsonManipulationBenchmark.lexAndCheckPrintable                         0001_2079chars.json  avgt    5    15935.429 ±     76.414  us/op
+[info] JsonManipulationBenchmark.lexAndCheckPrintable                         0002_4157chars.json  avgt    5    32063.529 ±    586.677  us/op
+[info] JsonManipulationBenchmark.lexAndCheckPrintable                        0010_20776chars.json  avgt    5   158425.843 ±   6890.118  us/op
+[info] JsonManipulationBenchmark.lexAndCheckPrintable                        0015_31167chars.json  avgt    5   236686.319 ±   3953.296  us/op
+[info] JsonManipulationBenchmark.lexAndCheckPrintable                        0020_41560chars.json  avgt    5   307924.214 ±  13846.141  us/op
+[info] JsonManipulationBenchmark.lexAndCheckPrintable                        0025_51950chars.json  avgt    5   403112.689 ±  22459.376  us/op
+[info] JsonManipulationBenchmark.lexAndCheckPrintable                        0030_62339chars.json  avgt    5   503505.139 ±  22353.502  us/op
+[info] JsonManipulationBenchmark.lexAndCheckPrintable                        0035_72724chars.json  avgt    5   556771.576 ±  24180.086  us/op
+[info] JsonManipulationBenchmark.lexAndCheckPrintable                       0050_103898chars.json  avgt    5   806198.209 ±  41797.806  us/op
+[info] JsonManipulationBenchmark.lexAndCheckPrintable                       0070_145455chars.json  avgt    5  1080674.484 ±  44700.254  us/op
+[info] JsonManipulationBenchmark.lexAndCheckPrintable                       0090_187013chars.json  avgt    5  1441932.852 ±  78692.128  us/op
+[info] JsonManipulationBenchmark.lexAndCheckPrintable                       0120_249345chars.json  avgt    5  1875222.890 ±  82680.745  us/op
+[info] JsonManipulationBenchmark.lexAndCheckPrintable                       0150_311687chars.json  avgt    5  2382855.315 ± 129059.155  us/op
+[info] JsonManipulationBenchmark.lexAndCheckPrintable                       0200_415578chars.json  avgt    5  3195994.274 ± 124936.645  us/op
+[info] JsonManipulationBenchmark.lexAndCheckPrintable                       0300_623361chars.json  avgt    5  4807138.805 ±  80779.087  us/op
+[info] JsonManipulationBenchmark.lexAndCheckPrintable                       0400_831171chars.json  avgt    5  6284838.488 ± 225619.247  us/op
+[info] JsonManipulationBenchmark.lexAndCheckPrintable                      0500_1038945chars.json  avgt    5  8129081.274 ± 150580.991  us/op
+[info] JsonManipulationBenchmark.recombineSlices                              0001_2079chars.json  avgt    5        7.943 ±      0.231  us/op
+[info] JsonManipulationBenchmark.recombineSlices                              0002_4157chars.json  avgt    5       16.675 ±      0.639  us/op
+[info] JsonManipulationBenchmark.recombineSlices                             0010_20776chars.json  avgt    5       86.708 ±      3.091  us/op
+[info] JsonManipulationBenchmark.recombineSlices                             0015_31167chars.json  avgt    5      131.186 ±      6.243  us/op
+[info] JsonManipulationBenchmark.recombineSlices                             0020_41560chars.json  avgt    5      177.991 ±      5.563  us/op
+[info] JsonManipulationBenchmark.recombineSlices                             0025_51950chars.json  avgt    5      220.784 ±      1.665  us/op
+[info] JsonManipulationBenchmark.recombineSlices                             0030_62339chars.json  avgt    5      267.273 ±      6.674  us/op
+[info] JsonManipulationBenchmark.recombineSlices                             0035_72724chars.json  avgt    5      308.972 ±      1.307  us/op
+[info] JsonManipulationBenchmark.recombineSlices                            0050_103898chars.json  avgt    5      453.349 ±     21.439  us/op
+[info] JsonManipulationBenchmark.recombineSlices                            0070_145455chars.json  avgt    5      647.964 ±     31.972  us/op
+[info] JsonManipulationBenchmark.recombineSlices                            0090_187013chars.json  avgt    5      825.775 ±      5.488  us/op
+[info] JsonManipulationBenchmark.recombineSlices                            0120_249345chars.json  avgt    5     1091.599 ±     10.894  us/op
+[info] JsonManipulationBenchmark.recombineSlices                            0150_311687chars.json  avgt    5     1391.783 ±      6.250  us/op
+[info] JsonManipulationBenchmark.recombineSlices                            0200_415578chars.json  avgt    5     1873.012 ±     89.679  us/op
+[info] JsonManipulationBenchmark.recombineSlices                            0300_623361chars.json  avgt    5     2793.661 ±     11.936  us/op
+[info] JsonManipulationBenchmark.recombineSlices                            0400_831171chars.json  avgt    5     3808.859 ±    227.057  us/op
+[info] JsonManipulationBenchmark.recombineSlices                           0500_1038945chars.json  avgt    5     4783.660 ±    181.932  us/op
+[info] JsonManipulationBenchmark.sliceAndSort                                 0001_2079chars.json  avgt    5       13.299 ±      0.180  us/op
+[info] JsonManipulationBenchmark.sliceAndSort                                 0002_4157chars.json  avgt    5       27.869 ±      0.843  us/op
+[info] JsonManipulationBenchmark.sliceAndSort                                0010_20776chars.json  avgt    5      153.177 ±      2.187  us/op
+[info] JsonManipulationBenchmark.sliceAndSort                                0015_31167chars.json  avgt    5      252.107 ±    138.952  us/op
+[info] JsonManipulationBenchmark.sliceAndSort                                0020_41560chars.json  avgt    5      310.108 ±      9.778  us/op
+[info] JsonManipulationBenchmark.sliceAndSort                                0025_51950chars.json  avgt    5      384.646 ±      1.904  us/op
+[info] JsonManipulationBenchmark.sliceAndSort                                0030_62339chars.json  avgt    5      506.935 ±    170.415  us/op
+[info] JsonManipulationBenchmark.sliceAndSort                                0035_72724chars.json  avgt    5      536.128 ±     20.736  us/op
+[info] JsonManipulationBenchmark.sliceAndSort                               0050_103898chars.json  avgt    5      810.294 ±     24.724  us/op
+[info] JsonManipulationBenchmark.sliceAndSort                               0070_145455chars.json  avgt    5     1106.284 ±     48.654  us/op
+[info] JsonManipulationBenchmark.sliceAndSort                               0090_187013chars.json  avgt    5     1543.034 ±     55.902  us/op
+[info] JsonManipulationBenchmark.sliceAndSort                               0120_249345chars.json  avgt    5     2000.480 ±    186.183  us/op
+[info] JsonManipulationBenchmark.sliceAndSort                               0150_311687chars.json  avgt    5     2687.119 ±     94.062  us/op
+[info] JsonManipulationBenchmark.sliceAndSort                               0200_415578chars.json  avgt    5     3279.997 ±     42.559  us/op
+[info] JsonManipulationBenchmark.sliceAndSort                               0300_623361chars.json  avgt    5     6354.590 ±   2068.481  us/op
+[info] JsonManipulationBenchmark.sliceAndSort                               0400_831171chars.json  avgt    5     9077.785 ±    529.463  us/op
+[info] JsonManipulationBenchmark.sliceAndSort                              0500_1038945chars.json  avgt    5    15844.080 ±   8319.214  us/op
+[success] Total time: 10101 s (02:48:21), completed Sep 23, 2025, 9:05:50 PM
