@@ -5,15 +5,27 @@ package ch.epfl.map
 import stainless.annotation._
 import stainless.collection.{ListMap => ListMapStainless, ListMapLemmas => ListMapLemmasStainless, _}
 import stainless.equations._
-import stainless.lang.{ghost => ghostExpr, _}
-import stainless.proof.check
-import scala.annotation.tailrec
 import stainless.lang.Cell
 import MutableLongMap._
 import LongMapFixedSize.validMask
+import scala.annotation.tailrec
 
-import stainless.lang.StaticChecks.* // Comment out when using the OptimisedEnsuring object below
-// import OptimisedChecks.* // Import to remove `ensuring` and `require` from the code for the benchmarks
+// BEGIN uncomment for verification ------------------------------------------
+import stainless.lang.StaticChecks._
+import stainless.lang.{ghost => ghostExpr, _}
+import stainless.proof.check
+// END uncomment for verification --------------------------------------------
+// BEGIN imports for benchmarking -------------------------------------------
+// import stainless.lang.{ghost => _, decreases => _, unfold => _, _}
+// import ch.epfl.map.OptimisedChecks.*
+// import Predef.{assert => _, Ensuring => _, require => _}
+
+// @tailrec
+// def dummyMutableHashMap(x: BigInt): BigInt = {
+//   if (x == BigInt(0)) then x
+//   else dummyMutableHashMap(x - BigInt(1))
+// }.ensuring( res => res == BigInt(0))
+// END imports for benchmarking ---------------------------------------------
 
 import MutableMapInterface.MutableMap
 
