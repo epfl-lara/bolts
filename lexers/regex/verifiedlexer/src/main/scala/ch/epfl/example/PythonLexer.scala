@@ -24,20 +24,20 @@ import ch.epfl.lexer.Vector
 import stainless.lang.Exception
 import scala.annotation.tailrec
 // BEGIN uncomment for verification ------------------------------------------
-// import stainless.lang.StaticChecks._
-// import stainless.lang.{ghost => ghostExpr}
-// import stainless.lang.unfold
+import stainless.lang.StaticChecks._
+import stainless.lang.{ghost => ghostExpr}
+import stainless.lang.unfold
 // END uncomment for verification --------------------------------------------
 // BEGIN imports for benchmarking -------------------------------------------
-import stainless.lang.{ghost => _, decreases => _, unfold => _, _}
-import ch.epfl.lexer.OptimisedChecks.*
-import Predef.{assert => _, Ensuring => _, require => _, _}
+// import stainless.lang.{ghost => _, decreases => _, unfold => _, _}
+// import ch.epfl.lexer.OptimisedChecks.*
+// import Predef.{assert => _, Ensuring => _, require => _, _}
 
-@tailrec
-def dummyPythonLexer(x: BigInt): BigInt = {
-  if (x == BigInt(0)) then x
-  else dummyPythonLexer(x - BigInt(1))
-}.ensuring( res => res == BigInt(0))
+// @tailrec
+// def dummyPythonLexer(x: BigInt): BigInt = {
+//   if (x == BigInt(0)) then x
+//   else dummyPythonLexer(x - BigInt(1))
+// }.ensuring( res => res == BigInt(0))
 // END imports for benchmarking ---------------------------------------------
 
 
