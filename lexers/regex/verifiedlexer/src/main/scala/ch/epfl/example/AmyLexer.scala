@@ -18,6 +18,8 @@ import ch.epfl.lexer.benchmark.RegexUtils.*
 import ch.epfl.lexer.benchmark.RegexUtils.digits
 import stainless.lang.Quantifiers.*
 
+import ch.epfl.lexer.Vector
+
 import scala.annotation.tailrec
 // BEGIN uncomment for verification ------------------------------------------
 import stainless.lang.StaticChecks._
