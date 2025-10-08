@@ -1,1 +1,1 @@
-../../../../../../../../maps/mutablemaps/src/main/scala/ch/epfl/map/MutableMapsInterface.scala
+../../../../../../../../maps/mutablemaps/src/main/scala/com/mutablemaps/map/MutableMapsInterface.scala
