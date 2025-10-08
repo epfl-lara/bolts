@@ -45,6 +45,8 @@ To run the Coqlex benchmarks, you need to clone the Coqlex repository and run th
 
 You can also rely on the data already present in the `from_coqlex` folder, which contains the results of the Coqlex benchmarks run on our machine.
 
+If you decide to run the benchmarks yourself, make sure to copy the results in the `from_coqlex/Comparison/JSON/results` folder.
+
 ### Prepare data for analysis
 
 To prepare the data for analysis, run the following command in the `benchmark_results` directory:
@@ -53,8 +55,8 @@ To prepare the data for analysis, run the following command in the `benchmark_re
   ./extract_data.sh benchmark_results/raw/<date-of-benchmark>
 ```
 
-This will process the raw logs in usable data files and move them in the `benchmark_results/latest` folder. This also write data in the correct format in the `from_coqlex` folder to compare with the Coq lexer benchmark suite.
+This will process the raw logs in usable data files and move them in the `benchmark_results/latest` folder. This also write data in the correct format in the `from_coqlex/Comparison/JSON/results/ZipLex` folder to compare with the Coqlex benchmark suite. For the analysis script to work, you need to have the Coqlex results in the `from_coqlex/Comparison/JSON/results` folder for the other lexers, see previous section.
 
 ### Analyze data
 
-The analysis of the data is done in the `Benchmark Data Analysis.ipynb` notebook. You can open it with Jupyter Notebook or Jupyter Lab.
+The analysis of the data is done in the `Benchmark Data Analysis.ipynb` notebook. Make sure to install the required dependencies listed in `benchmark_results/requirements.txt` using pip. `Benchmark Data Analysis.ipynb` loads the data from the `benchmark_results/latest` folder and the `from_coqlex/Comparison/JSON/results` folder to produce the analysis and plots.
