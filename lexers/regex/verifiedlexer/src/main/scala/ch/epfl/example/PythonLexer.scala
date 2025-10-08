@@ -18,15 +18,28 @@ import ch.epfl.lexer.benchmark.RegexUtils.*
 import ch.epfl.lexer.benchmark.RegexUtils.digits
 import stainless.lang.Quantifiers.*
 
-import stainless.lang.{ghost => ghostExpr}
-import stainless.lang.unfold
-
 import stainless.lang.Exception
-// import ch.epfl.lexer.example.ExampleAmyLexer.Types.WhitespaceValue
-// import ch.epfl.lexer.example.ExampleAmyLexer.Types.KeywordValueInjection
 
 import ch.epfl.lexer.Vector
-import javax.lang.model.element.Element
+import stainless.lang.Exception
+import scala.annotation.tailrec
+// BEGIN uncomment for verification ------------------------------------------
+// import stainless.lang.StaticChecks._
+// import stainless.lang.{ghost => ghostExpr}
+// import stainless.lang.unfold
+// END uncomment for verification --------------------------------------------
+// BEGIN imports for benchmarking -------------------------------------------
+import stainless.lang.{ghost => _, decreases => _, unfold => _, _}
+import ch.epfl.lexer.OptimisedChecks.*
+import Predef.{assert => _, Ensuring => _, require => _, _}
+
+@tailrec
+def dummyPythonLexer(x: BigInt): BigInt = {
+  if (x == BigInt(0)) then x
+  else dummyPythonLexer(x - BigInt(1))
+}.ensuring( res => res == BigInt(0))
+// END imports for benchmarking ---------------------------------------------
+
 
 object ExamplePythonLexer:
     object Types:
