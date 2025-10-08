@@ -10,7 +10,22 @@ import stainless.proof.check
 import scala.annotation.tailrec
 import stainless.lang.Cell
 
-import stainless.lang.StaticChecks.* // Comment out when using the OptimisedEnsuring object below
+// BEGIN uncomment for verification ------------------------------------------
+import stainless.lang.StaticChecks._
+import stainless.lang.{ghost => ghostExpr, _}
+import stainless.proof.check
+// END uncomment for verification --------------------------------------------
+// BEGIN imports for benchmarking -------------------------------------------
+// import stainless.lang.{ghost => _, decreases => _, unfold => _, _}
+// import ch.epfl.lexer.OptimisedChecks.*
+// import Predef.{assert => _, Ensuring => _, require => _, ???}
+
+// @tailrec
+// def dummyMMapInterface(x: BigInt): BigInt = {
+//   if (x == BigInt(0)) then x
+//   else dummyMMapInterface(x - BigInt(1))
+// }.ensuring( res => res == BigInt(0))
+// END imports for benchmarking ---------------------------------------------
 
 object MutableMapInterface{
   @mutable
