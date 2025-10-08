@@ -16,7 +16,6 @@ import stainless.collection.Nil
 import stainless.lang.StaticChecks.*
 // import ch.epfl.lexer.OptimisedChecks.*
 
-// This is a tradeoff so that we can have different types in different tokens/rules
 trait TokenValue
 
 case class Token[C](value: TokenValue, rule: Rule[C], size: BigInt, @ghost originalCharacters: Vector[C]) {
