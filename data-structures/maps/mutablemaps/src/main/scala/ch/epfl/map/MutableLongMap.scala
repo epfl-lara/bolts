@@ -8,6 +8,7 @@ import stainless.equations._
 import stainless.proof.check
 import stainless.lang.Cell
 import scala.annotation.tailrec
+import MutableMapInterface.MutLongMap
 
 // BEGIN uncomment for verification ------------------------------------------
 import stainless.lang.StaticChecks._
@@ -25,7 +26,6 @@ import stainless.proof.check
 //   else dummyMutableLongMap(x - BigInt(1))
 // }.ensuring( res => res == BigInt(0))
 // END imports for benchmarking ---------------------------------------------
-import MutableMapInterface.MutLongMap
 
 object MutableLongMap {
   import LongMapFixedSize.validMask
