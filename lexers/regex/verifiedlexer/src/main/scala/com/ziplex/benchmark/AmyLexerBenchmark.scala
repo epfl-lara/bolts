@@ -237,13 +237,13 @@ object AmyLexerBenchmarkUtils {
         "Ultimate_duplicated_commented_7629chars.amy",
   )
   val exampleFileContents: Map[String, Vector[Char]] = exampleFileNames.map(name => {
-    val source = scala.io.Source.fromFile(s"src/main/scala/com.ziplex/example/res/amy/$name")
+    val source = scala.io.Source.fromFile(s"src/main/scala/com/ziplex/example/res/amy/$name")
     val lines = try source.mkString.toStainless finally source.close()
     (name -> lines)
   }).toMap
 
   val exampleFilesJavaIo: Map[String, java.io.File] = exampleFileNames.map(name => {
-    val file = new java.io.File(s"src/main/scala/com.ziplex/example/res/amy/$name")
+    val file = new java.io.File(s"src/main/scala/com/ziplex/example/res/amy/$name")
     (name -> file)
   }).toMap
 
@@ -330,13 +330,13 @@ object AmyLexerBenchmarkUtils {
           )
 
   val generatedFileContents: Map[String, Vector[Char]] = generatedFileNames.map(name => {
-    val source = scala.io.Source.fromFile(s"src/main/scala/com.ziplex/benchmark/res/generated-amy/$name")
+    val source = scala.io.Source.fromFile(s"src/main/scala/com/ziplex/benchmark/res/generated-amy/$name")
     val lines = try source.mkString.toStainless finally source.close()
     (name -> lines)
   }).toMap
 
   val generatedFilesJavaIo: Map[String, java.io.File] = generatedFileNames.map(name => {
-    val file = new java.io.File(s"src/main/scala/com.ziplex/benchmark/res/generated-amy/$name")
+    val file = new java.io.File(s"src/main/scala/com/ziplex/benchmark/res/generated-amy/$name")
     (name -> file)
   }).toMap
 

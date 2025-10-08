@@ -102,7 +102,7 @@ object JsonLexerBenchmarkUtils {
     "82_19037chars.json",
   )
   val exampleFileContents: Map[String, Vector[Char]] = exampleFileNames.map(name => {
-    val source = scala.io.Source.fromFile(s"src/main/scala/com.ziplex/benchmark/res/json/$name")
+    val source = scala.io.Source.fromFile(s"src/main/scala/com/ziplex/benchmark/res/json/$name")
     val lines = try source.mkString.toStainless finally source.close()
     (name -> lines)
   }).toMap
