@@ -31,12 +31,6 @@ def dummyInterface(x: BigInt): BigInt = {
 }.ensuring( res => res == BigInt(0))
 // END imports for benchmarking ---------------------------------------------
 
-@tailrec
-def dummyInt(x: BigInt): BigInt = {
-  if (x == BigInt(0)) then x
-  else dummyInt(x - BigInt(1))
-}.ensuring( res => res == BigInt(0))
-
 trait TokenValue
 
 case class Token[C](value: TokenValue, rule: Rule[C], size: BigInt, @ghost originalCharacters: Vector[C]) {
