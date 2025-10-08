@@ -357,5 +357,3 @@ object JsonManipulationExample:
     
   }
 end JsonManipulationExample
-
-
