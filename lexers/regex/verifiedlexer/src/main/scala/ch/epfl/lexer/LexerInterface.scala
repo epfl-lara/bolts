@@ -6,11 +6,14 @@ import stainless.annotation.law
 import stainless.annotation.pure
 import stainless.annotation.ghost
 import stainless.lang.Quantifiers.*
-import stainless.lang._
 
 import stainless.collection.List
 import stainless.collection.Cons
 import stainless.collection.Nil
+
+import scala.annotation.tailrec
+
+import ch.epfl.lexer.Vector
 
 // BEGIN uncomment for verification ------------------------------------------
 import stainless.lang.StaticChecks._
