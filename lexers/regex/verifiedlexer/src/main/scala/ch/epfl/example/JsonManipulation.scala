@@ -26,6 +26,9 @@ import stainless.collection.ListSpecs
 
 import scala.annotation.tailrec
 
+import ch.epfl.lexer.benchmark.RegexUtils.asString
+
+// BEGIN uncomment for verification ------------------------------------------
 // import stainless.lang.Option
 // import stainless.lang.Some
 // import stainless.lang.None
@@ -33,17 +36,18 @@ import scala.annotation.tailrec
 // import stainless.lang.ghost as ghostExpr
 // import stainless.lang.unfold
 // import stainless.proof.check
+// END uncomment for verification --------------------------------------------
+// BEGIN imports for benchmarking -------------------------------------------
 import stainless.lang.{ghost => _, decreases => _, unfold => _, _}
 import ch.epfl.lexer.OptimisedChecks.*
 import Predef.{assert => _, Ensuring => _, require => _, println}
 
-import ch.epfl.lexer.benchmark.RegexUtils.asString
-
 @tailrec
-def dummy(x: BigInt): BigInt = {
+def dummyJsonManip(x: BigInt): BigInt = {
   if (x == BigInt(0)) then x
-  else dummy(x - BigInt(1))
+  else dummyJsonManip(x - BigInt(1))
 }.ensuring( res => res == BigInt(0))
+// END imports for benchmarking ---------------------------------------------
 
 object JsonManipulationExample:
 
