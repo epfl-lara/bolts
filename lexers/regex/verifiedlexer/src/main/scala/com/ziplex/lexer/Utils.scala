@@ -18,7 +18,7 @@ import scala.annotation.tailrec
 // END uncomment for verification --------------------------------------------
 // BEGIN imports for benchmarking -------------------------------------------
 import stainless.lang.{ghost => _, decreases => _, unfold => _, _}
-import ch.epfl.lexer.OptimisedChecks.*
+import com.ziplex.lexer.OptimisedChecks.*
 import Predef.{assert => _, Ensuring => _, require => _}
 
 @tailrec

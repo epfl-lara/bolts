@@ -8,8 +8,6 @@ import stainless.collection._
 import stainless.equations._
 import stainless.lang.Quantifiers._
 
-import ch.epfl.lexer.Vector
-
 import scala.annotation.tailrec
 // BEGIN uncomment for verification ------------------------------------------
 // import stainless.lang.StaticChecks._
