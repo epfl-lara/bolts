@@ -17,7 +17,7 @@ import stainless.lang.Cell
 // END uncomment for verification --------------------------------------------
 // BEGIN imports for benchmarking -------------------------------------------
 import stainless.lang.{ghost => _, decreases => _, unfold => _, _}
-import com.ziplex.lexer.OptimisedChecks.*
+import com.mutablemaps.map.OptimisedChecks.*
 import Predef.{assert => _, Ensuring => _, require => _, ???}
 
 @tailrec
