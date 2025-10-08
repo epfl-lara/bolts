@@ -3,10 +3,8 @@
 
 package ch.epfl.lexer
 
-import scala.annotation.tailrec
 
 import stainless.equations._
-import stainless.lang.{ghost => ghostExpr, *}
 import stainless.collection._
 import stainless.annotation._
 import stainless.proof._
@@ -19,12 +17,29 @@ import ch.epfl.map.Hashable
 import ch.epfl.map.TupleListOpsGenK.invariantList
 import ch.epfl.map.MutableHashMap
 
+import ch.epfl.lexer.Vector
+
+import scala.annotation.tailrec
+
+// BEGIN uncomment for verification ------------------------------------------
+import stainless.lang.StaticChecks._
+import stainless.lang.{ghost => ghostExpr, _}
+import stainless.proof.check
 import stainless.lang.Quantifiers.Exists
 import stainless.lang.Quantifiers.ExistsThe
 import stainless.lang.Quantifiers.pickWitness
-
-import stainless.lang.StaticChecks._
+// END uncomment for verification --------------------------------------------
+// BEGIN imports for benchmarking -------------------------------------------
+// import stainless.lang.{ghost => _, decreases => _, unfold => _, _}
 // import ch.epfl.lexer.OptimisedChecks.*
+// import Predef.{assert => _, Ensuring => _, require => _}
+
+// @tailrec
+// def dummyReg(x: BigInt): BigInt = {
+//   if (x == BigInt(0)) then x
+//   else dummyReg(x - BigInt(1))
+// }.ensuring( res => res == BigInt(0))
+// END imports for benchmarking ---------------------------------------------
 
 object MemoisationRegex {
   import VerifiedRegex._
