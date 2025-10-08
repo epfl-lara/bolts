@@ -26,12 +26,6 @@ def dummyMutableLongMap(x: BigInt): BigInt = {
 }.ensuring( res => res == BigInt(0))
 // END imports for benchmarking ---------------------------------------------
 
-// @tailrec
-// def dummyMutableLongMap(x: BigInt): BigInt = {
-//   if (x == BigInt(0)) then x
-//   else dummyMutableLongMap(x - BigInt(1))
-// }.ensuring( res => res == BigInt(0))
-// END imports for benchmarking ---------------------------------------------
 import MutableMapInterface.MutLongMap
 
 object MutableLongMap {
