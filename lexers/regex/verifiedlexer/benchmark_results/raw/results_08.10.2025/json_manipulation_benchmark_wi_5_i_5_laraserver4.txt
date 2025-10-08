@@ -1,0 +1,336 @@
+copying runtime jar...
+[info] welcome to sbt 1.9.8 (Ubuntu Java 17.0.16)
+[info] loading settings for project verifiedlexer-build-build-build from metals.sbt ...
+[info] loading project definition from /localhome/chassot/bolts/lexers/regex/verifiedlexer/project/project/project
+[info] loading settings for project verifiedlexer-build-build from metals.sbt ...
+[info] loading project definition from /localhome/chassot/bolts/lexers/regex/verifiedlexer/project/project
+[success] Generated .bloop/verifiedlexer-build-build.json
+[success] Total time: 3 s, completed Oct 8, 2025, 8:29:26 AM
+[info] loading settings for project verifiedlexer-build from metals.sbt,plugins.sbt ...
+[info] loading project definition from /localhome/chassot/bolts/lexers/regex/verifiedlexer/project
+[success] Generated .bloop/verifiedlexer-build.json
+[success] Total time: 2 s, completed Oct 8, 2025, 8:29:28 AM
+[info] loading settings for project verifiedlexer from build.sbt ...
+[info] set current project to VerifiedLexer (in build file:/localhome/chassot/bolts/lexers/regex/verifiedlexer/)
+[info] compiling 70 Scala sources to /localhome/chassot/bolts/lexers/regex/verifiedlexer/target/scala-3.7.2/classes ...
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/main/scala/ch/epfl/lexer/Utils.scala:1286:4 
+[warn] 1286 |    newList match {
+[warn]      |    ^^^^^^^
+[warn]      |    match may not be exhaustive.
+[warn]      |
+[warn]      |    It would fail on pattern case: stainless.collection.Cons(_, _)
+[warn]      |
+[warn]      | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/main/scala/ch/epfl/lexer/VerifiedLexer.scala:932:8 
+[warn] 932 |        maxPrefWithoutSep match {
+[warn]     |        ^^^^^^^^^^^^^^^^^
+[warn]     |        match may not be exhaustive.
+[warn]     |
+[warn]     |        It would fail on pattern case: stainless.lang.Some(_)
+[warn]     |
+[warn]     | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/main/scala/ch/epfl/lexer/VerifiedLexer.scala:1032:6 
+[warn] 1032 |      rulesArg match {
+[warn]      |      ^^^^^^^^
+[warn]      |      match may not be exhaustive.
+[warn]      |
+[warn]      |      It would fail on pattern case: stainless.collection.Nil()
+[warn]      |
+[warn]      | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/main/scala/ch/epfl/lexer/VerifiedLexer.scala:1065:10 
+[warn] 1065 |          rulesArg match {
+[warn]      |          ^^^^^^^^
+[warn]      |          match may not be exhaustive.
+[warn]      |
+[warn]      |          It would fail on pattern case: stainless.collection.Nil()
+[warn]      |
+[warn]      | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/main/scala/ch/epfl/lexer/VerifiedLexer.scala:1856:6 
+[warn] 1856 |      rules match {
+[warn]      |      ^^^^^
+[warn]      |      match may not be exhaustive.
+[warn]      |
+[warn]      |      It would fail on pattern case: stainless.collection.Cons(_, _)
+[warn]      |
+[warn]      | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/main/scala/ch/epfl/lexer/VerifiedLexer.scala:3813:6 
+[warn] 3813 |      l1 match {
+[warn]      |      ^^
+[warn]      |match may not be exhaustive.
+[warn]      |
+[warn]      |It would fail on pattern case: _: stainless.collection.List[ch.epfl.lexer.Token[C]]
+[warn]      |
+[warn]      | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/main/scala/ch/epfl/lexer/VerifiedLexer.scala:3831:6 
+[warn] 3831 |      l1 match {
+[warn]      |      ^^
+[warn]      |match may not be exhaustive.
+[warn]      |
+[warn]      |It would fail on pattern case: _: stainless.collection.List[ch.epfl.lexer.Token[C]]
+[warn]      |
+[warn]      | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/main/scala/ch/epfl/lexer/VerifiedRegex.scala:359:4 
+[warn] 359 |    r match {
+[warn]     |    ^
+[warn]     |    match may not be exhaustive.
+[warn]     |
+[warn]     |    It would fail on pattern case: Concat(_, _)
+[warn]     |
+[warn]     | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/main/scala/ch/epfl/map/ListLongMap.scala:157:4 
+[warn] 157 |    l match {
+[warn]     |    ^
+[warn]     |    match may not be exhaustive.
+[warn]     |
+[warn]     |    It would fail on pattern case: stainless.collection.Cons(_, _)
+[warn]     |
+[warn]     | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/main/scala/ch/epfl/map/ListLongMap.scala:191:4 
+[warn] 191 |    l match {
+[warn]     |    ^
+[warn]     |    match may not be exhaustive.
+[warn]     |
+[warn]     |    It would fail on pattern case: stainless.collection.Cons(_, _)
+[warn]     |
+[warn]     | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/main/scala/ch/epfl/map/ListLongMap.scala:206:4 
+[warn] 206 |    l match {
+[warn]     |    ^
+[warn]     |    match may not be exhaustive.
+[warn]     |
+[warn]     |    It would fail on pattern case: stainless.collection.Cons(_, _)
+[warn]     |
+[warn]     | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/main/scala/ch/epfl/map/ListLongMap.scala:222:4 
+[warn] 222 |    l match {
+[warn]     |    ^
+[warn]     |    match may not be exhaustive.
+[warn]     |
+[warn]     |    It would fail on pattern case: stainless.collection.Cons(_, _)
+[warn]     |
+[warn]     | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/main/scala/ch/epfl/map/ListLongMap.scala:243:4 
+[warn] 243 |    l match {
+[warn]     |    ^
+[warn]     |    match may not be exhaustive.
+[warn]     |
+[warn]     |    It would fail on pattern case: stainless.collection.Cons(_, _)
+[warn]     |
+[warn]     | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/main/scala/ch/epfl/map/ListLongMap.scala:274:4 
+[warn] 274 |    l match {
+[warn]     |    ^
+[warn]     |    match may not be exhaustive.
+[warn]     |
+[warn]     |    It would fail on pattern case: stainless.collection.Cons(_, _)
+[warn]     |
+[warn]     | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/main/scala/ch/epfl/map/ListMap.scala:195:4 
+[warn] 195 |    l match {
+[warn]     |    ^
+[warn]     |    match may not be exhaustive.
+[warn]     |
+[warn]     |    It would fail on pattern case: stainless.collection.Cons(_, _)
+[warn]     |
+[warn]     | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/main/scala/ch/epfl/map/ListMap.scala:229:4 
+[warn] 229 |    l match {
+[warn]     |    ^
+[warn]     |    match may not be exhaustive.
+[warn]     |
+[warn]     |    It would fail on pattern case: stainless.collection.Cons(_, _)
+[warn]     |
+[warn]     | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/main/scala/ch/epfl/map/ListMap.scala:256:4 
+[warn] 256 |    l match {
+[warn]     |    ^
+[warn]     |    match may not be exhaustive.
+[warn]     |
+[warn]     |    It would fail on pattern case: stainless.collection.Cons(_, _)
+[warn]     |
+[warn]     | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/main/scala/ch/epfl/map/ListMap.scala:308:4 
+[warn] 308 |    l match {
+[warn]     |    ^
+[warn]     |    match may not be exhaustive.
+[warn]     |
+[warn]     |    It would fail on pattern case: stainless.collection.Cons(_, _)
+[warn]     |
+[warn]     | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/main/scala/ch/epfl/map/ListMap.scala:380:4 
+[warn] 380 |    l match {
+[warn]     |    ^
+[warn]     |    match may not be exhaustive.
+[warn]     |
+[warn]     |    It would fail on pattern case: stainless.collection.Cons(_, _)
+[warn]     |
+[warn]     | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/main/scala/ch/epfl/map/MutableLongMap.scala:360:4 
+[warn] 360 |    c match {
+[warn]     |    ^
+[warn]     |    match may not be exhaustive.
+[warn]     |
+[warn]     |    It would fail on pattern case: EmptyCell()
+[warn]     |
+[warn]     | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/main/scala/ch/epfl/map/MutableLongMap.scala:609:8 
+[warn] 609 |        seekEntryRes match {
+[warn]     |        ^^^^^^^^^^^^
+[warn]     |match may not be exhaustive.
+[warn]     |
+[warn]     |It would fail on pattern case: ch.epfl.map.MutableLongMap.Intermediate(_, _, _)
+[warn]     |
+[warn]     | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/main/scala/ch/epfl/map/MutableLongMap.scala:1119:6 
+[warn] 1119 |      intermediate match {
+[warn]      |      ^^^^^^^^^^^^
+[warn]      |match may not be exhaustive.
+[warn]      |
+[warn]      |It would fail on pattern case: _: ch.epfl.map.MutableLongMap.SeekEntryResult
+[warn]      |
+[warn]      | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/main/scala/ch/epfl/map/MutableLongMap.scala:1169:6 
+[warn] 1169 |      intermediate match {
+[warn]      |      ^^^^^^^^^^^^
+[warn]      |match may not be exhaustive.
+[warn]      |
+[warn]      |It would fail on pattern case: _: ch.epfl.map.MutableLongMap.SeekEntryResult
+[warn]      |
+[warn]      | longer explanation available when compiling with `-explain`
+[warn] there was 1 deprecation warning; re-run with -deprecation for details
+[warn] 24 warnings found
+[info] done compiling
+[info] running org.openjdk.jmh.generators.bytecode.JmhBytecodeGenerator /localhome/chassot/bolts/lexers/regex/verifiedlexer/target/scala-3.7.2/classes /localhome/chassot/bolts/lexers/regex/verifiedlexer/target/scala-3.7.2/src_managed/jmh /localhome/chassot/bolts/lexers/regex/verifiedlexer/target/scala-3.7.2/resource_managed/jmh default
+Processing 1154 classes from /localhome/chassot/bolts/lexers/regex/verifiedlexer/target/scala-3.7.2/classes with "reflection" generator
+Writing out Java source to /localhome/chassot/bolts/lexers/regex/verifiedlexer/target/scala-3.7.2/src_managed/jmh and resources to /localhome/chassot/bolts/lexers/regex/verifiedlexer/target/scala-3.7.2/resource_managed/jmh
+[info] compiling 71 Java sources to /localhome/chassot/bolts/lexers/regex/verifiedlexer/target/scala-3.7.2/classes ...
+[info] done compiling
+[info] running (fork) org.openjdk.jmh.Main -i 5 -wi 5 -f1 -t1 ch.epfl.lexer.benchmark.lexer.JsonManipulationBenchmark
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.16, OpenJDK 64-Bit Server VM, 17.0.16+8-Ubuntu-0ubuntu124.04.1
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 5 iterations, 10 s each
+[info] # Measurement: 5 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.lexer.benchmark.lexer.JsonManipulationBenchmark.checkPredicateAndRecombineWithoutWrapper
+[info] # Parameters: (file = 0001_2079chars.json)
+[info] # Run progress: 0.00% complete, ETA 03:46:40
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 12779965.743 us/op
+[info] # Warmup Iteration   2: 912.378 us/op
+[info] # Warmup Iteration   3: 953.281 us/op
+[info] # Warmup Iteration   4: 887.984 us/op
+[info] # Warmup Iteration   5: 950.150 us/op
+[info] Iteration   1: 915.336 us/op
+[info] Iteration   2: 925.248 us/op
+[info] Iteration   3: 875.628 us/op
+[info] Iteration   4: 877.103 us/op
+[info] Iteration   5: 863.668 us/op
+[info] Result "ch.epfl.lexer.benchmark.lexer.JsonManipulationBenchmark.checkPredicateAndRecombineWithoutWrapper":
+[info]   891.397 ±(99.9%) 104.409 us/op [Average]
+[info]   (min, avg, max) = (863.668, 891.397, 925.248), stdev = 27.115
+[info]   CI (99.9%): [786.987, 995.806] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.16, OpenJDK 64-Bit Server VM, 17.0.16+8-Ubuntu-0ubuntu124.04.1
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 5 iterations, 10 s each
+[info] # Measurement: 5 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.lexer.benchmark.lexer.JsonManipulationBenchmark.checkPredicateAndRecombineWithoutWrapper
+[info] # Parameters: (file = 0002_4157chars.json)
+[info] # Run progress: 0.74% complete, ETA 03:52:25
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 12725325.490 us/op
+[info] # Warmup Iteration   2: 2020.586 us/op
+[info] # Warmup Iteration   3: 1942.015 us/op
+[info] # Warmup Iteration   4: 1786.299 us/op
+[info] # Warmup Iteration   5: 1730.707 us/op
+[info] Iteration   1: 1788.392 us/op
+[info] Iteration   2: 1860.368 us/op
+[info] Iteration   3: 1750.571 us/op
+[info] Iteration   4: 1809.372 us/op
+[info] Iteration   5: 1820.264 us/op
+[info] Result "ch.epfl.lexer.benchmark.lexer.JsonManipulationBenchmark.checkPredicateAndRecombineWithoutWrapper":
+[info]   1805.794 ±(99.9%) 155.855 us/op [Average]
+[info]   (min, avg, max) = (1750.571, 1805.794, 1860.368), stdev = 40.475
+[info]   CI (99.9%): [1649.939, 1961.648] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.16, OpenJDK 64-Bit Server VM, 17.0.16+8-Ubuntu-0ubuntu124.04.1
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 5 iterations, 10 s each
+[info] # Measurement: 5 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.lexer.benchmark.lexer.JsonManipulationBenchmark.checkPredicateAndRecombineWithoutWrapper
+[info] # Parameters: (file = 0010_20776chars.json)
+[info] # Run progress: 1.47% complete, ETA 03:50:34
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 12567572.730 us/op
+[info] # Warmup Iteration   2: 9034.090 us/op
+[info] # Warmup Iteration   3: 9126.651 us/op
+[info] # Warmup Iteration   4: 8666.029 us/op
+[info] # Warmup Iteration   5: 9099.755 us/op
+[info] Iteration   1: 8624.060 us/op
+[info] Iteration   2: 9022.301 us/op
+[info] Iteration   3: 8862.440 us/op
+[info] Iteration   4: 8384.483 us/op
+[info] Iteration   5: 8484.499 us/op
+[info] Result "ch.epfl.lexer.benchmark.lexer.JsonManipulationBenchmark.checkPredicateAndRecombineWithoutWrapper":
+[info]   8675.557 ±(99.9%) 1017.028 us/op [Average]
+[info]   (min, avg, max) = (8384.483, 8675.557, 9022.301), stdev = 264.119
+[info]   CI (99.9%): [7658.528, 9692.585] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.16, OpenJDK 64-Bit Server VM, 17.0.16+8-Ubuntu-0ubuntu124.04.1
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 5 iterations, 10 s each
+[info] # Measurement: 5 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.lexer.benchmark.lexer.JsonManipulationBenchmark.checkPredicateAndRecombineWithoutWrapper
+[info] # Parameters: (file = 0015_31167chars.json)
+[info] # Run progress: 2.21% complete, ETA 03:48:42
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 12516827.050 us/op
+[info] # Warmup Iteration   2: 15683.033 us/op
+[info] # Warmup Iteration   3: 15874.761 us/op
+[info] # Warmup Iteration   4: 15162.347 us/op
+[info] # Warmup Iteration   5: 14546.526 us/op
+[info] Iteration   1: 14606.256 us/op
+[info] Iteration   2: 15006.246 us/op
+[info] Iteration   3: 14301.406 us/op
+[info] Iteration   4: 14317.191 us/op
+[info] Iteration   5: 14178.307 us/op
+[info] Result "ch.epfl.lexer.benchmark.lexer.JsonManipulationBenchmark.checkPredicateAndRecombineWithoutWrapper":
+[info]   14481.881 ±(99.9%) 1280.418 us/op [Average]
+[info]   (min, avg, max) = (14178.307, 14481.881, 15006.246), stdev = 332.521
+[info]   CI (99.9%): [13201.463, 15762.299] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.16, OpenJDK 64-Bit Server VM, 17.0.16+8-Ubuntu-0ubuntu124.04.1
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 5 iterations, 10 s each
+[info] # Measurement: 5 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: ch.epfl.lexer.benchmark.lexer.JsonManipulationBenchmark.checkPredicateAndRecombineWithoutWrapper
+[info] # Parameters: (file = 0020_41560chars.json)
+[info] # Run progress: 2.94% complete, ETA 03:46:54
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 12786995.100 us/op
+[info] # Warmup Iteration   2: 18686.727 us/op
