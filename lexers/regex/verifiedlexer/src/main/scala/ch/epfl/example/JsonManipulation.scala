@@ -3,13 +3,6 @@ package ch.epfl.lexer.example
 import stainless.annotation.extern
 import stainless.annotation.induct
 import stainless.annotation.pure
-import stainless.lang.Option
-import stainless.lang.Some
-import stainless.lang.None
-import stainless.lang.decreases
-import stainless.lang.ghost as ghostExpr
-import stainless.lang.unfold
-import stainless.proof.check
 
 import stainless.collection.List
 import stainless.collection.Cons
@@ -30,7 +23,31 @@ import ch.epfl.lexer.VerifiedLexer.printableTokensFromTokens
 import ch.epfl.lexer.VerifiedLexer.emptyPrintableTokens
 import ch.epfl.lexer.ListUtils
 import stainless.collection.ListSpecs
-import java.awt.RenderingHints.Key
+
+import scala.annotation.tailrec
+
+import ch.epfl.lexer.benchmark.RegexUtils.asString
+
+// BEGIN uncomment for verification ------------------------------------------
+import stainless.lang.Option
+import stainless.lang.Some
+import stainless.lang.None
+import stainless.lang.decreases
+import stainless.lang.ghost as ghostExpr
+import stainless.lang.unfold
+import stainless.proof.check
+// END uncomment for verification --------------------------------------------
+// BEGIN imports for benchmarking -------------------------------------------
+// import stainless.lang.{ghost => _, decreases => _, unfold => _, _}
+// import ch.epfl.lexer.OptimisedChecks.*
+// import Predef.{assert => _, Ensuring => _, require => _, println}
+
+// @tailrec
+// def dummyJsonManip(x: BigInt): BigInt = {
+//   if (x == BigInt(0)) then x
+//   else dummyJsonManip(x - BigInt(1))
+// }.ensuring( res => res == BigInt(0))
+// END imports for benchmarking ---------------------------------------------
 
 object JsonManipulationExample:
 
