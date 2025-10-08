@@ -5,10 +5,9 @@ package ch.epfl.map
 import stainless.annotation._
 import stainless.collection._
 import stainless.equations._
-import stainless.lang.{ghost => ghostExpr, *}
 import stainless.proof.check
-import scala.annotation.tailrec
 import stainless.lang.Cell
+import scala.annotation.tailrec
 
 // BEGIN uncomment for verification ------------------------------------------
 // import stainless.lang.StaticChecks._
@@ -17,7 +16,7 @@ import stainless.lang.Cell
 // END uncomment for verification --------------------------------------------
 // BEGIN imports for benchmarking -------------------------------------------
 import stainless.lang.{ghost => _, decreases => _, unfold => _, _}
-import ch.epfl.lexer.OptimisedChecks.*
+import ch.epfl.map.OptimisedChecks.*
 import Predef.{assert => _, Ensuring => _, require => _}
 
 @tailrec

@@ -5,12 +5,10 @@ package ch.epfl.map
 import stainless.annotation._
 import stainless.collection.{ListMap => ListMapStainless, ListMapLemmas => ListMapLemmasStainless, _}
 import stainless.equations._
-import stainless.lang.{ghost => ghostExpr, _}
-import stainless.proof.check
-import scala.annotation.tailrec
 import stainless.lang.Cell
 import MutableLongMap._
 import LongMapFixedSize.validMask
+import scala.annotation.tailrec
 
 // BEGIN uncomment for verification ------------------------------------------
 // import stainless.lang.StaticChecks._
@@ -19,7 +17,7 @@ import LongMapFixedSize.validMask
 // END uncomment for verification --------------------------------------------
 // BEGIN imports for benchmarking -------------------------------------------
 import stainless.lang.{ghost => _, decreases => _, unfold => _, _}
-import ch.epfl.lexer.OptimisedChecks.*
+import ch.epfl.map.OptimisedChecks.*
 import Predef.{assert => _, Ensuring => _, require => _}
 
 @tailrec

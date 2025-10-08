@@ -23,7 +23,7 @@ import ch.epfl.lexer.Vector
 import scala.annotation.tailrec
 // BEGIN uncomment for verification ------------------------------------------
 // import stainless.lang.StaticChecks._
-// import stainless.lang.{ghost => ghostExpr}
+// import stainless.lang.{ghost => ghostExpr, _}
 // END uncomment for verification --------------------------------------------
 // BEGIN imports for benchmarking -------------------------------------------
 import stainless.lang.{ghost => _, decreases => _, unfold => _, _}

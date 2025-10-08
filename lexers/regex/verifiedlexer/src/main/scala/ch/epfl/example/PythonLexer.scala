@@ -21,6 +21,7 @@ import stainless.lang.Quantifiers.*
 import ch.epfl.lexer.Vector
 import stainless.lang.Exception
 import scala.annotation.tailrec
+import scala.math.BigInt
 // BEGIN uncomment for verification ------------------------------------------
 // import stainless.lang.StaticChecks._
 // import stainless.lang.{ghost => ghostExpr}
@@ -28,8 +29,8 @@ import scala.annotation.tailrec
 // END uncomment for verification --------------------------------------------
 // BEGIN imports for benchmarking -------------------------------------------
 import stainless.lang.{ghost => _, decreases => _, unfold => _, _}
-import ch.epfl.lexer.OptimisedChecks.*
 import Predef.{assert => _, Ensuring => _, require => _, _}
+import ch.epfl.lexer.OptimisedChecks.*
 
 @tailrec
 def dummyPythonLexer(x: BigInt): BigInt = {
