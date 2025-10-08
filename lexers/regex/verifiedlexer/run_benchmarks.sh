@@ -1,0 +1,8 @@
+# Create a directory named results_{current date with time} if it doesn't exist
+DIRECTORY_NAME="results_$(date +'%d.%m.%Y')"
+DIRECTORY_PATH="./benchmark_results/raw/$DIRECTORY_NAME"
+cd ./benchmark_results/raw && mkdir -p "$DIRECTORY_NAME" && cd - || exit 1
+sbt "Jmh/run -i 5 -wi 5 -f1 -t1 ch.epfl.lexer.benchmark.lexer.JsonManipulationBenchmark" > "$DIRECTORY_PATH/json_manipulation_benchmark_wi_5_i_5_laraserver4.txt"
+sbt "Jmh/run -i 5 -wi 5 -f1 -t1 ch.epfl.lexer.benchmark.LexerRegexBenchmark" > "$DIRECTORY_PATH/lexerregex_benchmark_wi_5_i_5_laraserver4.txt"
+sbt "Jmh/run -i 5 -wi 5 -f1 -t1 ch.epfl.lexer.benchmark.RegexBenchmark" > "$DIRECTORY_PATH/regex_benchmark_wi_5_i_5_laraserver4.txt"
+sbt "Jmh/run -i 5 -wi 5 -f1 -t1 ch.epfl.lexer.benchmark.lexer.JsonLexerBenchmark" > "$DIRECTORY_PATH/json_lexer_benchmark_wi_5_i_5_laraserver4.txt"
