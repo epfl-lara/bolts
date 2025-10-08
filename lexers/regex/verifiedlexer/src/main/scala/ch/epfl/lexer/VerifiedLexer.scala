@@ -6,13 +6,26 @@ package ch.epfl.lexer
 import stainless.annotation._
 import stainless.collection._
 import stainless.equations._
-import stainless.lang.{ghost => ghostExpr, _}
-import stainless.proof.check
 import scala.annotation.tailrec
 import stainless.lang.Quantifiers._
 
+import scala.annotation.tailrec
+// BEGIN uncomment for verification ------------------------------------------
 import stainless.lang.StaticChecks._
+import stainless.lang.{ghost => ghostExpr, _}
+import stainless.proof.check
+// END uncomment for verification --------------------------------------------
+// BEGIN imports for benchmarking -------------------------------------------
+// import stainless.lang.{ghost => _, decreases => _, unfold => _, _}
 // import ch.epfl.lexer.OptimisedChecks.*
+// import Predef.{assert => _, Ensuring => _, require => _}
+
+// @tailrec
+// def dummy(x: BigInt): BigInt = {
+//   if (x == BigInt(0)) then x
+//   else dummy(x - BigInt(1))
+// }.ensuring( res => res == BigInt(0))
+// END imports for benchmarking ---------------------------------------------
 
 
 object VerifiedLexer {
