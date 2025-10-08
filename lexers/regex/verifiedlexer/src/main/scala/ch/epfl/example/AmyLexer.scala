@@ -37,8 +37,6 @@ import stainless.lang.{ghost => ghostExpr, _}
 // }.ensuring( res => res == BigInt(0))
 // END imports for benchmarking ---------------------------------------------
 
-import ch.epfl.lexer.Vector
-
 object ExampleAmyLexer:
     object Types:
         case class IntegerValue(value: Int, text: Vector[Char]) extends TokenValue:
