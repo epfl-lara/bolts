@@ -3,11 +3,10 @@
 
 package ch.epfl.lexer
 
-import scala.annotation.tailrec
-
 import stainless.equations._
 import stainless.collection._
 import stainless.annotation._
+import stainless.proof._
 import ch.epfl.map.MutableLongMap._
 import ch.epfl.map.ListLongMap
 import ch.epfl.map.ListMap
@@ -17,10 +16,6 @@ import ch.epfl.map.Hashable
 import ch.epfl.map.TupleListOpsGenK.invariantList
 import ch.epfl.map.MutableHashMap
 
-import stainless.lang.Quantifiers.Exists
-import stainless.lang.Quantifiers.ExistsThe
-import stainless.lang.Quantifiers.pickWitness
-
 import ch.epfl.lexer.Vector
 
 import scala.annotation.tailrec
@@ -29,6 +24,9 @@ import scala.annotation.tailrec
 // import stainless.lang.StaticChecks._
 // import stainless.lang.{ghost => ghostExpr, _}
 // import stainless.proof.check
+// import stainless.lang.Quantifiers.Exists
+// import stainless.lang.Quantifiers.ExistsThe
+// import stainless.lang.Quantifiers.pickWitness
 // END uncomment for verification --------------------------------------------
 // BEGIN imports for benchmarking -------------------------------------------
 import stainless.lang.{ghost => _, decreases => _, unfold => _, _}
