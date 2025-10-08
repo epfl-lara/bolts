@@ -3,6 +3,7 @@ package ch.epfl.lexer
 import stainless.collection._
 import stainless.annotation._
 
+import scala.annotation.tailrec
 // BEGIN uncomment for verification ------------------------------------------
 import stainless.lang._
 import stainless.lang.StaticChecks._
