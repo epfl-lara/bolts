@@ -18,12 +18,11 @@ import ch.epfl.lexer.benchmark.RegexUtils.*
 import ch.epfl.lexer.benchmark.RegexUtils.digits
 import stainless.lang.Quantifiers.*
 
-import stainless.lang.Exception
-
 import ch.epfl.lexer.Vector
 import stainless.lang.Exception
 import scala.annotation.tailrec
 import scala.math.BigInt
+
 // BEGIN uncomment for verification ------------------------------------------
 import stainless.lang.StaticChecks._
 import stainless.lang.{ghost => ghostExpr}
