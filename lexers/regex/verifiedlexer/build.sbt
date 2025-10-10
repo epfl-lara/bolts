@@ -1,4 +1,4 @@
-name := "VerifiedLexer"
+name := "ZipLex"
 version := "0.1.0-SNAPSHOT"
 scalaVersion :="3.7.2" 
 
