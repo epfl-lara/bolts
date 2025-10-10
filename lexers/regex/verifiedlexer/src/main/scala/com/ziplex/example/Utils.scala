@@ -64,9 +64,9 @@ object RegexUtils:
 
   extension (t: Token[Char]) def asString(): String = 
     def replaceSpecialCharacters(l: Vector[Char]): Vector[String] = 
-      t.characters.map(c => if c == '\t' then "\\t" else if c == '\n' then "\\n" else f"$c")
+      t.charsOf.map(c => if c == '\t' then "\\t" else if c == '\n' then "\\n" else f"$c")
       
-    s"Token(${t.rule.tag}, \"${replaceSpecialCharacters(t.characters).toScala.mkString("")}\")"
+    s"Token(${t.rule.tag}, \"${replaceSpecialCharacters(t.charsOf).toScala.mkString("")}\")"
   extension [A] (l: stainless.collection.List[A]) def mkString(inter: String) : String = l match {
     case stainless.collection.Nil() => ""
     case stainless.collection.Cons(h, t) => h.toString + (if t.isEmpty then "" else inter + t.mkString(inter))
