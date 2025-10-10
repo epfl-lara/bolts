@@ -37,7 +37,7 @@ case class Token[C](value: TokenValue, rule: Rule[C], size: BigInt, @ghost origi
   require(!originalCharacters.isEmpty)
   require(originalCharacters == rule.transformation.witness(value))
   require(size == originalCharacters.size)
-  def characters: Vector[C] = {
+  def charsOf: Vector[C] = {
     rule.transformation.witness(value)
   }.ensuring(res => res == originalCharacters && res.list == originalCharacters.list)
 
@@ -92,14 +92,14 @@ trait LexerInterface {
       (rules.contains(r)) &&
       (rules.contains(otherR)) &&
       ((lexedTokens.list, lexedSuffix.list) == (tokens, suffix)) &&
-      (tokens.isEmpty || tokens.head.characters.list.size <= otherP.size) &&
+      (tokens.isEmpty || tokens.head.charsOf.list.size <= otherP.size) &&
       (tokens.isEmpty || tokens.head.rule == r) &&
       (ListUtils.isPrefix(otherP, input)) &&
       (r != otherR) &&
-      (tokens.isEmpty || VerifiedRegexMatcher.matchR(r.regex, tokens.head.characters.list)) 
+      (tokens.isEmpty || VerifiedRegexMatcher.matchR(r.regex, tokens.head.charsOf.list)) 
       ==> 
       (if (ListUtils.getIndex(rules, otherR) < ListUtils.getIndex(rules, r)) !VerifiedRegexMatcher.matchR(otherR.regex, otherP)
-      else tokens.size > 0 && otherP.size <= tokens.head.characters.size || !VerifiedRegexMatcher.matchR(otherR.regex, otherP))
+      else tokens.size > 0 && otherP.size <= tokens.head.charsOf.size || !VerifiedRegexMatcher.matchR(otherR.regex, otherP))
     }
 
     /**
