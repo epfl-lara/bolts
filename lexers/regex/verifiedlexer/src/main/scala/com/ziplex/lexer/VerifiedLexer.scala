@@ -3804,6 +3804,9 @@ object VerifiedLexer {
     }.ensuring (_ => rulesProduceEachTokenIndividuallyList(rules, ts1 ++ ts2))
 
     // Helper lemmas for tokensListTwoByTwoPredicate
+    @ghost
+    @inlineOnce
+    @opaque
     def tokensListTwoByTwoPredicateConcatList[C](l1: List[Token[C]], l2: List[Token[C]], rules: List[Rule[C]], p: (Token[C], Token[C], List[Rule[C]]) => Boolean): Unit = {
       require(tokensListTwoByTwoPredicateList(l1, rules, p) && tokensListTwoByTwoPredicateList(l2, rules, p))
       require(!l1.isEmpty && !l2.isEmpty)
@@ -3815,6 +3818,9 @@ object VerifiedLexer {
       }
     }.ensuring(_ => tokensListTwoByTwoPredicateList(l1 ++ l2, rules, p))
 
+    @ghost
+    @inlineOnce
+    @opaque
     def tokensListTwoByTwoPredicateConcatSeparableTokensList[C](l1: List[Token[C]], l2: List[Token[C]], rules: List[Rule[C]]): Unit = {
       require(!rules.isEmpty)
       require(rulesInvariant(rules))
@@ -3836,6 +3842,9 @@ object VerifiedLexer {
       tokensListTwoByTwoPredicateSeparableList(l1 ++ l2, rules)
     })
 
+    @ghost
+    @inlineOnce
+    @opaque
     def tokensListTwoByTwoPredicateSeparableTokensDropList[C](l: List[Token[C]], i: BigInt, rules: List[Rule[C]]): Unit = {
       require(!rules.isEmpty)
       require(rulesInvariant(rules))
@@ -3860,6 +3869,9 @@ object VerifiedLexer {
       tokensListTwoByTwoPredicateSeparableList(l.drop(i), rules)
     })
 
+    @ghost
+    @inlineOnce
+    @opaque
     def tokensListTwoByTwoPredicateSeparableTokensTakeList[C](l: List[Token[C]], i: BigInt, rules: List[Rule[C]]): Unit = {
       require(!rules.isEmpty)
       require(rulesInvariant(rules))
@@ -3883,6 +3895,9 @@ object VerifiedLexer {
       tokensListTwoByTwoPredicateSeparableList(l.take(i), rules)
     })
 
+    @ghost
+    @inlineOnce
+    @opaque
     def tokensListTwoByTwoPredicateInstantiate[C](l: List[Token[C]], rules: List[Rule[C]], p: (Token[C], Token[C], List[Rule[C]]) => Boolean, t1: Token[C], t2: Token[C], i: BigInt): Unit = {
       require(tokensListTwoByTwoPredicateList(l, rules, p))
       require(i >= 0 && i+1 < l.size)
@@ -3896,6 +3911,9 @@ object VerifiedLexer {
       
     }.ensuring(_ => p(t1, t2, rules))
 
+    @ghost
+    @inlineOnce
+    @opaque
     def tokensListTwoByTwoPredicateInstantiateSeparableTokens[C](l: List[Token[C]], rules: List[Rule[C]], t1: Token[C], t2: Token[C], i: BigInt): Unit = {
       require(!rules.isEmpty)
       require(rulesInvariant(rules))
