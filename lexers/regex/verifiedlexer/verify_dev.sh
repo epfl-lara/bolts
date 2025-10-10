@@ -1,4 +1,4 @@
-stainless\
+stainless-dotty\
  src/main/scala/com/ziplex/lexer/VerifiedRegex.scala\
  src/main/scala/com/ziplex/lexer/VerifiedLexer.scala\
  src/main/scala/com/ziplex/lexer/Utils.scala\
