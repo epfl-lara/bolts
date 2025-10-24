@@ -24,6 +24,7 @@ lexers/regex/verifiedlexer
 software-foundations
 system-f
 tutorials/add-digits
+tutorials/binary-search
 tutorials/const-fold
 tutorials/dispenser
 tutorials/krakow2020/working

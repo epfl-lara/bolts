@@ -1,0 +1,53 @@
+name: Bolts Setup
+description: Setup for Bolts CI
+inputs: 
+  java-opts:
+    description: 'Java options for both official sbt and sbt-extras'
+    required: true
+    default: '-Dsbt.io.implicit.relative.glob.conversion=allow -Xss512M -Xms1024M -Xmx12G -XX:MaxMetaspaceSize=2G -XX:+UseCodeCacheFlushing -XX:ReservedCodeCacheSize=768M'
+  temp-dir:
+    description: 'Temporary directory for Java options'
+    required: true
+    default: '/tmp/tmp_${{ github.run_id }}_${{ github.run_attempt }}'
+  java-version:
+    description: 'Java version to use'
+    required: true
+    default: '17'
+runs:
+  using: 'composite'
+  steps:
+  - name: Checkout
+    uses: actions/checkout@v4
+    with:
+      submodules: recursive
+  - name: Setup JDK
+    uses: actions/setup-java@v4
+    with:
+      distribution: temurin
+      java-version: ${{ inputs.java-version }}
+  - name: Setup java options environment variables
+    run: |
+        echo "JAVA_OPTS=${{ inputs.java-opts }}" >> "$GITHUB_ENV" && \
+        echo "JVM_OPTS=${{ inputs.java-opts }}" >> "$GITHUB_ENV" && \
+        echo "JAVA_OPTS=$JAVA_OPTS -Djava.io.tmpdir=$JAVA_OPTS_TMP_DIR" >> "$GITHUB_ENV" && \
+        echo "JVM_OPTS=$JVM_OPTS -Djava.io.tmpdir=${{ inputs.temp-dir }}" >> "$GITHUB_ENV" && \
+        echo "SBT_OPTS=-Djava.io.tmpdir=${{ inputs.temp-dir }} --sbt-dir ${{ inputs.temp-dir }}" >> "$GITHUB_ENV"
+    shell: bash
+  - name: Creating temp folder
+    run: rm -rf ${{ inputs.temp-dir }} && mkdir -p ${{ inputs.temp-dir }} && chmod 777 ${{ inputs.temp-dir }}
+    shell: bash
+  - name: Install stainless and solvers
+    run: ./install_stainless_and_solvers.sh $GITHUB_WORKSPACE/.local/bin $GITHUB_WORKSPACE/.local && echo "PATH=$GITHUB_WORKSPACE/.local/bin:$PATH" >> "$GITHUB_ENV"
+    shell: bash
+  - name: Add stainless to PATH
+    run: echo "$GITHUB_WORKSPACE/.local/stainless/frontends/dotty/target/universal/stage/bin" >> $GITHUB_PATH && echo "PATH=$GITHUB_WORKSPACE/.local/stainless/frontends/dotty/target/universal/stage/bin:$PATH" >> "$GITHUB_ENV"
+    shell: bash
+  - name: Test stainless availability
+    run: stainless-dotty --version
+    shell: bash
+  - name: Add solvers to PATH
+    run: echo "$GITHUB_WORKSPACE/.local/bin" >> $GITHUB_PATH
+    shell: bash
+  - name: Test solvers availability
+    run: cvc5 --version && z3 --version && cvc4 --version
+    shell: bash
