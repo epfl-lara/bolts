@@ -261,7 +261,7 @@ object MutableLongMapOpti {
       if (key == 0) (extraKeys & 1) != 0
       else if (key == Long.MinValue) (extraKeys & 2) != 0
       else {
-        val seekEntryRes = seekEntry(key)(_keys, mask)
+        val seekEntryRes = seekEntry(key)(using _keys, mask)
         seekEntryRes match {
           case Found(index) => {
             true
@@ -285,7 +285,7 @@ object MutableLongMapOpti {
         else if (key == Long.MinValue && (extraKeys & 2) != 0) minValue
         else defaultEntry(key)
       } else {
-        val seekEntryRes = seekEntry(key)(_keys, mask)
+        val seekEntryRes = seekEntry(key)(using _keys, mask)
         seekEntryRes match {
           case Found(index) => {
             _values(index).asInstanceOf[V]
@@ -313,7 +313,7 @@ object MutableLongMapOpti {
         }
 
       } else {
-        val seekEntryRes = seekEntryOrOpen(key)(_keys, mask)
+        val seekEntryRes = seekEntryOrOpen(key)(using _keys, mask)
         seekEntryRes match {
           case Undefined() => {
             // the key is not in the array, it was not able to find an empty space, the map is maybe full
@@ -348,7 +348,7 @@ object MutableLongMapOpti {
           true
         }
       } else {
-        val seekEntryRes = seekEntry(key)(_keys, mask)
+        val seekEntryRes = seekEntry(key)(using _keys, mask)
         seekEntryRes match {
           case Found(index) => {
             _size -= 1
@@ -471,7 +471,7 @@ object MutableLongMapOpti {
     @pure
     def seekEntry(k: Long)(implicit _keys: Array[Long], mask: Int): SeekEntryResult = {
       val intermediate =
-        seekKeyOrZeroOrLongMinValue(0, toIndex(k, mask))(k, _keys, mask)
+        seekKeyOrZeroOrLongMinValue(0, toIndex(k, mask))(using k, _keys, mask)
       intermediate match {
         case Intermediate(undefined, index, x) if (undefined) => Undefined()
         case Intermediate(undefined, index, x) if (!undefined) => {
@@ -485,7 +485,7 @@ object MutableLongMapOpti {
             // If we find a zero before finding the key, we return the index of the Long.MinValue to
             // reuse the spot
 
-            val res = seekKeyOrZeroReturnVacant(x, index, index)(k, _keys, mask)
+            val res = seekKeyOrZeroReturnVacant(x, index, index)(using k, _keys, mask)
             res match {
               case MissingVacant(index) => MissingZero(index)
               case _                    => res
@@ -508,7 +508,7 @@ object MutableLongMapOpti {
     def seekEntryOrOpen(k: Long)(implicit _keys: Array[Long], mask: Int): SeekEntryResult = {
 
       val intermediate =
-        seekKeyOrZeroOrLongMinValue(0, toIndex(k, mask))(k, _keys, mask)
+        seekKeyOrZeroOrLongMinValue(0, toIndex(k, mask))(using k, _keys, mask)
       intermediate match {
         case Intermediate(undefined, index, x) if (undefined) => Undefined()
         case Intermediate(undefined, index, x) if (!undefined) => {
@@ -522,7 +522,7 @@ object MutableLongMapOpti {
             // If we find a zero before finding the key, we return the index of the Long.MinValue to
             // reuse the spot
 
-            val res = seekKeyOrZeroReturnVacant(x, index, index)(k, _keys, mask)
+            val res = seekKeyOrZeroReturnVacant(x, index, index)(using k, _keys, mask)
             res
           }
         }
