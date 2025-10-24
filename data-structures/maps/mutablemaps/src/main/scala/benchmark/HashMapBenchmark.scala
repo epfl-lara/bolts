@@ -5,15 +5,15 @@ import org.openjdk.jmh.annotations.*
 import scala.collection.mutable.LongMap
 import scala.collection.mutable.HashMap
 import scala.util.Random
-import ch.epfl.map.MutableLongMap
+import com.mutablemaps.map.MutableLongMap
 import stainless.collection.{List => StainlessList}
 import scala.collection.immutable
-import ch.epfl.map.EfficientFill
-import ch.epfl.map.MutableHashMap
-import ch.epfl.map.MutableLongMap
-import ch.epfl.map.Hashable
-import ch.epfl.map.ListMap
-import ch.epfl.map.Ordering
+import com.mutablemaps.map.EfficientFill
+import com.mutablemaps.map.MutableHashMap
+import com.mutablemaps.map.MutableLongMap
+import com.mutablemaps.map.Hashable
+import com.mutablemaps.map.ListMap
+import com.mutablemaps.map.Ordering
 
 
 @State(Scope.Benchmark)
@@ -282,7 +282,7 @@ object HashMapBenchmarkUtilBig {
     mutableMap
   }
 
-  val verifiedHashMapFilledWith2to22Values = {
+  val verifiedHashMapFilledWith2to22Values: MutableHashMap.HashMap[Key, Long] = {
     val mutableMap: MutableHashMap.HashMap[Key, Long] = getVerifiedHashMapEmptyBuffer(16)
     for (k, v) <- random2to22Pairs do mutableMap.update(k, v)
     end for

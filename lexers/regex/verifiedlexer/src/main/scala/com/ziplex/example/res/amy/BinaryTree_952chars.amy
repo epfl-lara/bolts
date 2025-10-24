@@ -1,0 +1,37 @@
+object Mega
+  // ADT for binary trees
+  abstract class Tree
+  case class Leaf(value: Int(32)) extends Tree
+  case class Node(left: Tree, right: Tree) extends Tree
+
+  def buildTree(depth: Int(32)): Tree = {
+    if (depth == 0) { Leaf(0) }
+    else { 
+      val subtree: Tree = buildTree(depth - 1);
+      Node(subtree, subtree)
+    }
+  }
+
+  def sumTree(t: Tree): Int(32) = {
+    t match {
+      case Leaf(v) => v
+      case Node(l, r) => sumTree(l) + sumTree(r)
+    }
+  }
+
+  def countNodes(t: Tree): Int(32) = {
+    t match {
+      case Leaf(_) => 1
+      case Node(l, r) => 1 + countNodes(l) + countNodes(r)
+    }
+  }
+
+  val tree: Tree = buildTree(4);
+  val total: Int(32) = sumTree(tree);
+  val count: Int(32) = countNodes(tree);
+  val average: Int(32) = total / count;
+
+  Std.printString("Total: " ++ Std.intToString(total));
+  Std.printString("Count: " ++ Std.intToString(count));
+  Std.printString("Average: " ++ Std.intToString(average))
+end Mega

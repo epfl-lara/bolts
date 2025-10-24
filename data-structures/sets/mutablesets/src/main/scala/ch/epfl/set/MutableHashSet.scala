@@ -7,11 +7,11 @@ import stainless.proof.check
 
 import stainless.lang.StaticChecks.* // Comment out when using the OptimisedEnsuring object below
 
-import ch.epfl.map.MutableMapInterface.MutableMap
-import ch.epfl.map.MutableHashMap
-import ch.epfl.map.Hashable
-import ch.epfl.map.ListMap
-import ch.epfl.map.TupleListOpsGenK
+import com.mutablemaps.map.MutableMapInterface.MutableMap
+import com.mutablemaps.map.MutableHashMap
+import com.mutablemaps.map.Hashable
+import com.mutablemaps.map.ListMap
+import com.mutablemaps.map.TupleListOpsGenK
 
 object MutableHashSet {
   /** Helper method to create a new empty HashSet

@@ -1,0 +1,8 @@
+*
+
+!.gitignore
+!common.ml
+!sem_driver.ml
+!instance.mli
+!instance.ml
+!compile.sh

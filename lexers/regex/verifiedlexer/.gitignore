@@ -35,3 +35,9 @@ metals.sbt
 # Stainless plugin
 stainless/
 project/lib
+
+stainless-stack-trace.txt
+
+.venv
+
+**/plots

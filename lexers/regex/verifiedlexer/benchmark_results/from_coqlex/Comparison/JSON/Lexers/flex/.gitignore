@@ -1,0 +1,6 @@
+*
+
+!.gitignore
+!json_lexer.l
+!global.h
+!compile.sh

@@ -1,0 +1,43 @@
+object BigBenchmark
+  // ADT for expression trees
+  abstract class Expr
+  case class Const(value: Int(32)) extends Expr
+  case class Add(left: Expr, right: Expr) extends Expr
+  case class Sub(left: Expr, right: Expr) extends Expr
+  case class Mul(left: Expr, right: Expr) extends Expr
+  case class Div(left: Expr, right: Expr) extends Expr
+
+  def eval(e: Expr): Int(32) = {
+    e match {
+      case Const(v) => v
+      case Add(l, r) => eval(l) + eval(r)
+      case Sub(l, r) => eval(l) - eval(r)
+      case Mul(l, r) => eval(l) * eval(r)
+      case Div(l, r) =>
+        val divisor: Int(32) = eval(r);
+        if (divisor == 0) { error("Division by zero") }
+        else { eval(l) / divisor }
+    }
+  }
+
+  def buildExpr(n: Int(32)): Expr = {
+    if (n <= 1) { Const(n) }
+    else {
+      Add(Const(n), buildExpr(n - 1))
+    }
+  }
+
+  val expr: Expr = buildExpr(20);
+  val result: Int(32) = eval(expr);
+
+  Std.printString("Expression Result: " ++ Std.intToString(result));
+
+  // Additional sequence of computations
+  val a: Int(32) = 10;
+  val b: Int(32) = 20;
+  val c: Int(32) = a + b;
+  val d: Int(32) = c * 2;
+
+  Std.printInt(d);
+  Std.printBoolean(d < 50)
+end BigBenchmark

@@ -1,0 +1,75 @@
+(* *********************************************************************)
+(*                                                                     *)
+(*                 Coqlex verified lexer generator                     *)
+(*                                                                     *)
+(*             (c) 2021 Siemens Mobility SAS and Inria Saclay          *)
+(*                                                                     *)
+(*  Copyright Institut National de Recherche en Informatique et en     *)
+(*  Automatique. All rights reserved. This file is distributed under   *)
+(*  the terms of the INRIA Non-Commercial License Agreement (see the   *)
+(*  LICENSE file).                                                     *)
+(*                                                                     *)
+(* *********************************************************************)
+
+{
+   
+   Parameter mfloat : Set.
+   Parameter mint : Set.
+   Require Import String.
+   Inductive t_type :=
+    | INT : mint -> t_type
+    | FLOAT : mfloat -> t_type
+    | STRING : string -> t_type
+    | TRUE : t_type
+    | FALSE : t_type
+    | NULL : t_type
+    | COLON : t_type
+    | COMMA : t_type
+    | LEFT_BRACE : t_type
+    | RIGHT_BRACE : t_type
+    | LEFT_BRACK : t_type
+    | RIGHT_BRACK : t_type
+    | WS : t_type.
+    
+    Parameter mint_of_string : string -> mint.
+    Parameter mfloat_of_string : string -> mfloat.
+    
+    Require Extraction.
+    Extract Constant mint => "int".
+    Extract Constant mfloat => "float".
+    Extract Constant mint_of_string => "fun x -> int_of_string (String.concat {||} (List.map (String.make 1) x))".
+    Extract Constant mfloat_of_string => "fun x -> float_of_string (String.concat {||} (List.map (String.make 1) x))".
+}
+
+
+(** Verbatim JSON definition **)
+let ws_carr_re = ['\t' '\n' '\r' ' ']+
+let exp_part_re = ['e' 'E'] ['-' '+']? ['0'-'9']+
+let int_re = '-'? ('0' | (['1'-'9'] ['0'-'9']*))
+let dec_re = int_re ('.' ['0'-'9']+)?
+let float_re = dec_re exp_part_re?
+let punc_re = ['!' '#' '$' '%' '&' '(' ')' '*' '+' ',' '-' '.' '/' ':' ';' '<' '=' '>' '?' '@' '[' ']' '^' '_' '`' '{' '|' '}' '~' '\'']
+let unicode_digit_re = ['0'-'9' 'a'-'f' 'A'-'F']
+let four_unicode_digits_re = unicode_digit_re unicode_digit_re unicode_digit_re unicode_digit_re
+let unicode_codepoint_re = '\\' 'u' four_unicode_digits_re
+let json_char_re = unicode_codepoint_re | ['A' - 'Z'] | ['a' - 'z'] | ['0'-'9'] | ['\t' '\n' ' '] | punc_re | ('\\' '"') | ('\\' '\\')
+let json_string_re = '"' json_char_re * '"'
+(** End of Verbatim JSON definition **)
+
+rule read =
+  parse
+  | ws_carr_re    { ret WS }
+  | int_re      { ret_l (fun str => INT (mint_of_string str)) }
+  | float_re    { ret_l (fun str => FLOAT (mfloat_of_string str)) }
+  | "true"   { ret TRUE }
+  | "false"  { ret FALSE }
+  | "null"   { ret NULL }
+  | json_string_re { ret_l STRING }
+  | '{'      { ret LEFT_BRACE }
+  | '}'      { ret RIGHT_BRACE }
+  | '['      { ret LEFT_BRACK }
+  | ']'      { ret RIGHT_BRACK }
+  | ':'      { ret COLON }
+  | ','      { ret COMMA }
+(*  | _ { failwith ("Unexpected char: " ^ (Lexing.lexeme lexbuf)) }
+  | eof      { EOF }*)
