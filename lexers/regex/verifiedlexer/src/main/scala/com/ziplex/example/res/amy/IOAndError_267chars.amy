@@ -1,0 +1,7 @@
+object IOAndError
+  Std.printString("Enter a number:");
+  val num: Int(32) = Std.readInt();
+  val square: Int(32) = num * num;
+  Std.printString("Square: " ++ Std.intToString(square));
+  if (num < 0) { error("Negative number not allowed") } else { () }
+end IOAndError

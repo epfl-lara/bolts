@@ -1,8 +1,8 @@
 package ch.epfl.set
 
-import ch.epfl.map.MutableLongMap
-import ch.epfl.map.ListLongMap
-import ch.epfl.map.Hashable
+import com.mutablemaps.map.MutableLongMap
+import com.mutablemaps.map.ListLongMap
+import com.mutablemaps.map.Hashable
 import ch.epfl.set.MutableHashSet
 
 object Main {
