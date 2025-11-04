@@ -6,7 +6,7 @@ import stainless.collection._
 import ListSpecs._
 import stainless.annotation._
 
-import ch.epfl.lexer.ListUtils
+import com.ziplex.lexer.ListUtils
 
 
 object BalanceConc:
@@ -38,6 +38,10 @@ object BalanceConc:
         case Leaf(_) => BigInt(1)
         case Node(_, _, csize, _) => csize
     }.ensuring(_ == t.toList.size)
+
+    def isEmpty: Boolean = {
+      t.size == 0
+    }.ensuring(res => res == t.toList.isEmpty)
 
     def height: BigInt = 
       t match 
@@ -85,9 +89,25 @@ object BalanceConc:
           l.exists(p) || r.exists(p)
       }
     }.ensuring(_ == t.toList.exists(p))
-    
+
+    def map[B](f: T => B): Conc[B] = {
+      decreases(t.height)
+      t match {
+        case Empty() => Empty[B]()
+        case Leaf(x) => Leaf(f(x))
+        case Node(l, r, cs, ch) => 
+          ghostExpr(ListUtils.lemmaMapConcat(l.toList, r.toList, f))
+          assert((l.toList ++ r.toList).map(f) == (l.toList.map(f) ++ r.toList.map(f)))
+          Node(l.map(f), r.map(f), cs, ch)
+      }
+    }.ensuring(res => res.toList == t.toList.map(f))
 
   extension[T](xs: Conc[T])
+    /**
+      * Concatenate xs with ys without preserving balancing
+      *
+      * @param ys
+      */
     def <>(ys: Conc[T]) = {
       if xs == Empty[T]() then ys
       else if ys == Empty[T]() then xs
@@ -95,6 +115,11 @@ object BalanceConc:
                         max(xs.height, ys.height) + 1)
     }.ensuring(_.toList == xs.toList ++ ys.toList)
 
+    /**
+      * Concatenate xs with ys preserving balancing
+      *
+      * @param ys
+      */
     def ++(ys: Conc[T]): Conc[T] = {
       require(xs.isBalanced && ys.isBalanced)
       decreases(abs(xs.height - ys.height))
@@ -170,7 +195,7 @@ object BalanceConc:
       else 
         t match
           case Leaf(x) => 
-            if from == 0 && until == 1 then Leaf(x)
+            if from == 0 && until == 1 then t
             else Empty[T]()
           case Node(l, r, _, _) =>
             sliceLemma(l.toList, r.toList, from, until) // lemma
@@ -181,6 +206,50 @@ object BalanceConc:
               val r1 = r.slice(0, until - l.size)
               l1 ++ r1
     }.ensuring(res => res.isBalanced && res.toList == t.toList.slice(from, until))
+
+    def splitAt(i: BigInt): (Conc[T], Conc[T]) = {
+      require(t.isBalanced)
+      require(0 <= i && i <= t.size)
+      decreases(t)
+      t match
+        case Empty[T]() => (t, t)
+        case Leaf(x) => 
+          if i <= 0 then (Empty[T](), t)
+          else (t, Empty[T]())
+        case Node(l, r, _, _) =>
+          splitAtLemma(l.toList, r.toList, i)
+          if l.size == i then (l, r)
+          else if i < l.size then 
+            val (l1, l2) = l.splitAt(i)
+            (l1, l2 ++ r)
+          else 
+            val (r1, r2) = r.splitAt(i - l.size)
+            (l ++ r1, r2)
+    }.ensuring(res => (res._1.isBalanced && res._2.isBalanced) && (res._1.toList, res._2.toList) == t.toList.splitAtIndex(i))
+
+    def filter(p: T => Boolean): Conc[T] = {
+      require(t.isBalanced)
+       t match
+        case Empty[T]() => t
+        case Leaf(x) if p(x) => t
+        case Leaf(x) if !p(x) => Empty[T]()
+        case Node(l, r, _, _) =>
+          ghostExpr(ListUtils.lemmaFilterConcat(l.toList, r.toList, p))
+          assert((l.toList ++ r.toList).filter(p) == (l.toList.filter(p) ++ r.toList.filter(p)))
+          l.filter(p) ++ r.filter(p)
+    }.ensuring(res => res.isBalanced && res.toList == t.toList.filter(p))
+
+    def append(v: T): Conc[T] = {
+      require(t.isBalanced)
+      t ++ Leaf(v)
+    }.ensuring(res => res.isBalanced && res.toList == (t.toList :+ v))
+
+    def prepend(v: T): Conc[T] = {
+      require(t.isBalanced)
+      Leaf(v) ++ t
+    }.ensuring(res => res.isBalanced && res.toList == (Cons(v, t.toList)))
+
+
 
   extension[T](t: Conc[T])
     @extern
@@ -269,6 +338,25 @@ object BalanceConc:
                    else if until <= l.size then l.slice(from, until)
                    else l.slice(from, l.size) ++ r.slice(0, until - l.size)))
 
+  def splitAtLemma[T](l: List[T], r: List[T], i: BigInt): Unit = {
+    require(0 <= i && i <= l.size + r.size)
+    decreases(l, r)
+    if l == Nil[T]() || r == Nil[T]() then ()
+    else 
+      assert(!l.isEmpty && !r.isEmpty)
+      if i <= 0 then ()
+      else 
+        assert((l++r).tail == l.tail ++ r)
+        splitAtLemma(l.tail, r, i - 1)
+  }.ensuring(_ => (l ++ r).splitAtIndex(i) == 
+                  (if l.size == i then (l, r)
+                  else if i < l.size then 
+                    val (l1, l2) = l.splitAtIndex(i)
+                    (l1, l2 ++ r)
+                  else 
+                    val (r1, r2) = r.splitAtIndex(i - l.size)
+                    (l ++ r1, r2)))
+
 /* Expects this definition of method slice of list:
 
   def slice(from: BigInt, until: BigInt): List[T] = {
@@ -285,6 +373,24 @@ object BalanceConc:
           }
         }
     }
+  }
+
+  And this one for splitAtIndex
+
+  def splitAtIndex(index: BigInt) : (List[T], List[T]) = { 
+    decreases(this.length)
+    this match {
+      case Nil() => (Nil[T](), Nil[T]())
+      case Cons(h, rest) =>
+        if (index <= BigInt(0)) {
+          (Nil[T](), this)
+        } else {
+          val (left,right) = rest.splitAtIndex(index - 1)
+          (Cons[T](h,left), right)
+        }
+  }}.ensuring { (res:(List[T],List[T])) =>
+    res._1 ++ res._2 == this &&
+    res._1 == take(index) && res._2 == drop(index)
   }
 */
 

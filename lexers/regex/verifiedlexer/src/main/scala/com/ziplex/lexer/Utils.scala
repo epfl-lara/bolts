@@ -1465,6 +1465,51 @@ object ListUtils {
     }
   }.ensuring (_ => (l1 ++ l2).forall(p))
 
+
+  @ghost
+  @opaque
+  // @inlineOnce
+  def lemmaForallConcat[B](l1: List[B], l2: List[B], p: B => Boolean): Unit = {
+    l1 match {
+      case Cons(hd1, tl1) => 
+        lemmaForallConcat(tl1, l2, p)
+      case _ => ()
+    }
+  }.ensuring(_ => (l1 ++ l2).forall(p) == (l1.forall(p) && l2.forall(p)))
+
+  @ghost
+  @opaque
+  // @inlineOnce
+  def lemmaExistsConcat[B](l1: List[B], l2: List[B], p: B => Boolean): Unit = {
+    l1 match {
+      case Cons(hd1, tl1) => 
+        lemmaExistsConcat(tl1, l2, p)
+      case _ => ()
+    }
+  }.ensuring(_ => (l1 ++ l2).exists(p) == (l1.exists(p) || l2.exists(p)))
+
+  @ghost
+  @opaque
+  // @inlineOnce
+  def lemmaFilterConcat[B](l1: List[B], l2: List[B], p: B => Boolean): Unit = {
+    l1 match {
+      case Cons(hd1, tl1) => 
+        lemmaFilterConcat(tl1, l2, p)
+      case _ => ()
+    }
+  }.ensuring(_ => (l1 ++ l2).filter(p) == (l1.filter(p) ++ l2.filter(p)))
+
+  @ghost
+  @opaque
+  // @inlineOnce
+  def lemmaMapConcat[B, A](l1: List[B], l2: List[B], p: B => A): Unit = {
+    l1 match {
+      case Cons(hd1, tl1) => 
+        lemmaMapConcat(tl1, l2, p)
+      case _ => ()
+    }
+  }.ensuring(_ => (l1 ++ l2).map(p) == (l1.map(p) ++ l2.map(p)))
+
   // @inlineOnce 
   @opaque
   @ghost
