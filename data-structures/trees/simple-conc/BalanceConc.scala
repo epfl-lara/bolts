@@ -1,10 +1,13 @@
 // Simplification of: http://aleksandar-prokopec.com/resources/docs/lcpc-conc-trees.pdf
-import stainless.lang._
+import stainless.lang.{ghost => ghostExpr, _}
 import stainless.proof._
 //import stainless.lang.StaticChecks._
 import stainless.collection._
 import ListSpecs._
 import stainless.annotation._
+
+import ch.epfl.lexer.ListUtils
+
 
 object BalanceConc:
 
@@ -60,6 +63,28 @@ object BalanceConc:
         case _ => true
       }
     }
+
+    def forall(p: T => Boolean): Boolean = {
+      decreases(t.height)
+      t match {
+        case Empty() => true
+        case Leaf(x) => p(x)
+        case Node(l, r, _, _) => 
+          ghostExpr(ListUtils.lemmaForallConcat(l.toList, r.toList, p))
+          l.forall(p) && r.forall(p)
+      }
+    }.ensuring(res => res == t.toList.forall(p))
+
+    def exists(p: T => Boolean): Boolean = {
+      decreases(t.height)
+      t match {
+        case Empty() => false
+        case Leaf(x) => p(x)
+        case Node(l, r, _, _) => 
+          ghostExpr(ListUtils.lemmaExistsConcat(l.toList, r.toList, p))
+          l.exists(p) || r.exists(p)
+      }
+    }.ensuring(_ == t.toList.exists(p))
     
 
   extension[T](xs: Conc[T])
