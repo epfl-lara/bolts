@@ -1,1 +1,1 @@
-../../../lexers/regex/verifiedlexer/src/main/scala/ch/epfl/lexer/Utils.scala
+../../../lexers/regex/verifiedlexer/src/main/scala/com/ziplex/lexer/Utils.scala
