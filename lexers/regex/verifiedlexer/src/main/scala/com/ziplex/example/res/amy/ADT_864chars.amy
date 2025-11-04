@@ -1,0 +1,26 @@
+object ComplexADT
+  abstract class Expr
+  case class Lit(n: Int(32)) extends Expr
+  case class Add(l: Expr, r: Expr) extends Expr
+  case class Sub(l: Expr, r: Expr) extends Expr
+  case class Mul(l: Expr, r: Expr) extends Expr
+  case class Div(l: Expr, r: Expr) extends Expr
+  case class Var(id: String) extends Expr
+
+  def eval(e: Expr): Int(32) = {
+    e match {
+      case Lit(n) => n
+      case Add(l, r) => eval(l) + eval(r)
+      case Sub(l, r) => eval(l) - eval(r)
+      case Mul(l, r) => eval(l) * eval(r)
+      case Div(l, r) =>
+        val rVal: Int(32) = eval(r);
+        if (rVal == 0) { error("division by zero") }
+        else { eval(l) / rVal }
+      case Var(id) => error("undefined variable: " ++ id)
+    }
+  }
+
+  val result: Int(32) = eval(Add(Lit(10), Mul(Lit(2), Lit(3))));
+  Std.printString("Result: " ++ Std.intToString(result))
+end ComplexADT

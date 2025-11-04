@@ -1,1 +1,1 @@
-../../../../../../../../maps/mutablemaps/src/main/scala/ch/epfl/map/MutableLongMap.scala
+../../../../../../../../maps/mutablemaps/src/main/scala/com/mutablemaps/map/MutableLongMap.scala

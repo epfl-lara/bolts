@@ -1,0 +1,104 @@
+object Ultimate
+  // ADT for arithmetic expressions
+  abstract class Expr
+  case class Const(value: Int(32)) extends Expr
+  case class Add(e1: Expr, e2: Expr) extends Expr
+  case class Sub(e1: Expr, e2: Expr) extends Expr
+  case class Mul(e1: Expr, e2: Expr) extends Expr
+  case class Div(e1: Expr, e2: Expr) extends Expr
+
+  // ADT for stack machine instructions
+  abstract class Instr
+  case class IPush(n: Int(32)) extends Instr
+  case class IAdd() extends Instr
+  case class ISub() extends Instr
+  case class IMul() extends Instr
+  case class IDiv() extends Instr
+
+  // ADT for a list of instructions
+  abstract class InstrList
+  case class NilInstr() extends InstrList
+  case class ConsInstr(i: Instr, t: InstrList) extends InstrList
+
+  // ADT for a list of integers (to be used as a stack)
+  abstract class IntList
+  case class NilInt() extends IntList
+  case class ConsInt(n: Int(32), t: IntList) extends IntList
+
+  // Compile an expression into a list of instructions (postfix order)
+  def compile(e: Expr): InstrList = {
+    e match {
+      case Const(n) => ConsInstr(IPush(n), NilInstr())
+      case Add(e1, e2) =>
+        val code1: InstrList = compile(e1);
+        val code2: InstrList = compile(e2);
+        append(code1, append(code2, ConsInstr(IAdd(), NilInstr())))
+      case Sub(e1, e2) =>
+        val code1: InstrList = compile(e1);
+        val code2: InstrList = compile(e2);
+        append(code1, append(code2, ConsInstr(ISub(), NilInstr())))
+      case Mul(e1, e2) =>
+        val code1: InstrList = compile(e1);
+        val code2: InstrList = compile(e2);
+        append(code1, append(code2, ConsInstr(IMul(), NilInstr())))
+      case Div(e1, e2) =>
+        val code1: InstrList = compile(e1);
+        val code2: InstrList = compile(e2);
+        append(code1, append(code2, ConsInstr(IDiv(), NilInstr())))
+    }
+  }
+
+  // Append two instruction lists
+  def append(l1: InstrList, l2: InstrList): InstrList = {
+    l1 match {
+      case NilInstr() => l2
+      case ConsInstr(i, t) => ConsInstr(i, append(t, l2))
+    }
+  }
+
+  // Execute a list of instructions on a stack (represented as an IntList)
+  def execute(code: InstrList, stack: IntList): IntList = {
+    code match {
+      case NilInstr() => stack
+      case ConsInstr(instr, rest) =>
+        instr match {
+          case IPush(n) => execute(rest, ConsInt(n, stack))
+          case IAdd() =>
+            stack match {
+              case ConsInt(n1, ConsInt(n2, t)) => execute(rest, ConsInt(n2 + n1, t))
+              case _ => error("Stack underflow on IAdd")
+            }
+          case ISub() =>
+            stack match {
+              case ConsInt(n1, ConsInt(n2, t)) => execute(rest, ConsInt(n2 - n1, t))
+              case _ => error("Stack underflow on ISub")
+            }
+          case IMul() =>
+            stack match {
+              case ConsInt(n1, ConsInt(n2, t)) => execute(rest, ConsInt(n2 * n1, t))
+              case _ => error("Stack underflow on IMul")
+            }
+          case IDiv() =>
+            stack match {
+              case ConsInt(n1, ConsInt(n2, t)) =>
+                if (n1 == 0) { error("Division by zero in IDiv") }
+                else { execute(rest, ConsInt(n2 / n1, t)) }
+              case _ => error("Stack underflow on IDiv")
+            }
+        }
+    }
+  }
+
+  // Build a sample expression: ((3 + 4) * (10 - 2))
+  def sampleExpr(): Expr = {
+    Mul(Add(Const(3), Const(4)), Sub(Const(10), Const(2)))
+  }
+
+  val expr: Expr = sampleExpr();
+  val code: InstrList = compile(expr);
+  val resultStack: IntList = execute(code, NilInt());
+  // Extract the result from the top of the stack
+  val result: Int(32) = resultStack match { case ConsInt(n, _) => n; case _ => error("No result") };
+
+  Std.printString("Compiled and executed expression result: " ++ Std.intToString(result))
+end Ultimate

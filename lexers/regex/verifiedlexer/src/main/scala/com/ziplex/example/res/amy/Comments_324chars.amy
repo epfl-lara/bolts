@@ -1,0 +1,14 @@
+object CommentStress
+  // This is a line comment.
+  /*
+    This is a block comment.
+    It spans multiple lines.
+  */
+  def dummy(n: Int(32)): Int(32) = {
+    // Inner comment
+    n + 1  // End-of-line comment.
+  }
+
+  val result: Int(32) = dummy(5) + /* inline comment */ dummy(10);
+  Std.printInt(result)
+end CommentStress
