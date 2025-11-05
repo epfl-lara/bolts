@@ -85,12 +85,10 @@ object VerifiedLexer {
       def print(): Vector[C] = {
         ghostExpr({
           Lexer.theoremInvertabilityWhenTokenListSeparable(rules, tokens.list)
-          Vector.listEqImpliesEq(Vector.fromList(tokens.list), tokens)
-          Vector.listEqImpliesEq(Lexer.lex(rules, Lexer.print(tokens))._2 , Vector.empty[C])
-          Vector.listEqImpliesEq(Lexer.lex(rules, Lexer.print(tokens))._1, tokens)
         })
         Lexer.print(tokens)
-      }.ensuring(res => Lexer.lex(rules, res) == (tokens, Vector.empty[C]))
+      }.ensuring(res => Lexer.lex(rules, res)._1.list == tokens.list &&
+                        Lexer.lex(rules, res)._2.list.isEmpty)
 
       def append(other: PrintableTokens[C]): Option[PrintableTokens[C]] = {
         require(rules == other.rules)
@@ -98,11 +96,6 @@ object VerifiedLexer {
         this.lemmaInvariant()
         if(other.tokens.isEmpty) {
           assert(this.rules == other.rules)
-          ghostExpr(Vector.listEqImpliesEq(tokens ++ other.tokens, Vector.fromList(tokens.list ++ other.tokens.list)))
-          ghostExpr(Vector.listEqImpliesEq(other.tokens , Vector.empty[Token[C]]))
-          ghostExpr(Vector.listEqImpliesEq(this.tokens ++ Vector.empty[Token[C]], this.tokens))
-
-          ghostExpr(Vector.listEqImpliesEq(this.print(), Vector.fromList(Lexer.printList(this.tokens.list))))
           ghostExpr(Lexer.lemmaPrintConcatSameAsConcatPrint(this.tokens.list, Nil[Token[C]]()))
           ghostExpr(unfold(Lexer.printList(Nil[Token[C]]())))
 
@@ -111,18 +104,11 @@ object VerifiedLexer {
           ghostExpr(unfold(Lexer.print(other.tokens)))
           ghostExpr(unfold(Lexer.printList(other.tokens.list)))
           assert(Lexer.print(other.tokens) == Vector.empty[C])
-
-          ghostExpr(Vector.listEqImpliesEq(this.print() ++ Vector.empty[C], this.print()))
-
           Some(this)
         } else if(this.tokens.isEmpty) {
-          ghostExpr(Vector.listEqImpliesEq(tokens ++ other.tokens, Vector.fromList(tokens.list ++ other.tokens.list)))
           assert(this.rules == other.rules)
-          ghostExpr(Vector.listEqImpliesEq(this.tokens , Vector.empty[Token[C]]))
-          ghostExpr(Vector.listEqImpliesEq(Vector.empty[Token[C]] ++ other.tokens, other.tokens))
-          assert(this.tokens == Vector.empty[Token[C]])
-          assert(other.tokens == Vector.empty[Token[C]] ++ other.tokens)
-          ghostExpr(Vector.listEqImpliesEq(other.print(), Vector.fromList(Lexer.printList(other.tokens.list))))
+          assert(this.tokens.list.isEmpty)
+          assert(other.tokens.list == Vector.empty[Token[C]].list ++ other.tokens.list)
           ghostExpr(Lexer.lemmaPrintConcatSameAsConcatPrint(Nil(), other.tokens.list))
 
           ghostExpr(unfold(Lexer.printList(Nil[Token[C]]())))
@@ -132,48 +118,25 @@ object VerifiedLexer {
           ghostExpr(unfold(Lexer.print(other.tokens)))
           ghostExpr(unfold(Lexer.printList(other.tokens.list)))
           assert(Lexer.print(this.tokens) == Vector.empty[C])
-
-          ghostExpr(Vector.listEqImpliesEq(Vector.empty[C] ++ other.print(), other.print()))
-
           Some(other) 
         } else {
           ghostExpr(Lexer.lemmaRulesProduceEachTokenIndividuallyThenForAnyToken(rules, this.tokens.list, this.tokens.last))
           ghostExpr(Lexer.lemmaRulesProduceEachTokenIndividuallyThenForAnyToken(rules, other.tokens.list, other.tokens.head))
           if (Lexer.separableTokensPredicate(tokens.last, other.tokens.head, rules)) {
-            ghostExpr(Vector.listEqImpliesEq(tokens ++ other.tokens, Vector.fromList(tokens.list ++ other.tokens.list)))
-            ghostExpr(Vector.listEqImpliesEq(tokens, Vector.fromList(tokens.list)))
-            ghostExpr(Vector.listEqImpliesEq(other.tokens, Vector.fromList(other.tokens.list)))
-
             ghostExpr(Lexer.tokensListTwoByTwoPredicateConcatSeparableTokensList(tokens.list, other.tokens.list, rules))
             assert(Lexer.tokensListTwoByTwoPredicateSeparable(this.tokens ++ other.tokens, 0, rules))
-
-            ghostExpr(Vector.listEqImpliesEq(this.print(), Vector.fromList(Lexer.printList(this.tokens.list))))
-            ghostExpr(Vector.listEqImpliesEq(other.print(), Vector.fromList(Lexer.printList(other.tokens.list))))
-            ghostExpr(Vector.listEqImpliesEq(this.print() ++ other.print(), Vector.fromList(Lexer.printList(this.tokens.list) ++ Lexer.printList(other.tokens.list))))
-            
-            
             ghostExpr(Lexer.lemmaPrintConcatSameAsConcatPrint(this.tokens.list, other.tokens.list))
-            assert(this.print() ++ other.print() == Vector.fromList(Lexer.printList(this.tokens.list ++ other.tokens.list)))
 
             ghostExpr(unfold(this.print()))
             ghostExpr(unfold(other.print()))
             ghostExpr(unfold(PrintableTokens(rules, tokens ++ other.tokens).print()))
-            ghostExpr(Vector.listEqImpliesEq(PrintableTokens(rules, tokens ++ other.tokens).tokens, this.tokens ++ other.tokens))
-
             ghostExpr(Lexer.lemmaPrintConcatSameAsConcatPrint(this.tokens.list, other.tokens.list))
-            assert(Lexer.printList(this.tokens.list ++ other.tokens.list) == Lexer.printList(this.tokens.list) ++ Lexer.printList(other.tokens.list))
-            assert(Lexer.print(tokens ++ other.tokens).list == Lexer.printList(tokens.list) ++ Lexer.printList(other.tokens.list))
-
-            ghostExpr(Vector.listEqImpliesEq(Lexer.print(tokens ++ other.tokens), Lexer.print(tokens) ++ Lexer.print(other.tokens)))
-            ghostExpr(Vector.listEqImpliesEq(this.print() ++ other.print(), Vector.fromList(this.print().list ++ other.print().list)))
-            ghostExpr(Vector.listEqImpliesEq(this.print() ++ other.print(), Vector.fromList(PrintableTokens(rules, tokens ++ other.tokens).print().list)))
-
             Some(PrintableTokens(rules, tokens ++ other.tokens))
           } else {
             None()
           }
         }
-      }.ensuring(res => res.isEmpty || (res.get.rules == rules && res.get.tokens == tokens ++ other.tokens && res.get.print() == this.print() ++ other.print()))
+      }.ensuring(res => res.isEmpty || (res.get.rules == rules && res.get.tokens.list == tokens.list ++ other.tokens.list && res.get.print().list == this.print().list ++ other.print().list))
 
       def slice(from: BigInt, to: BigInt): PrintableTokens[C] = {
         require(0 <= from && from <= to && to <= tokens.size)
