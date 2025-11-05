@@ -1374,6 +1374,18 @@ object ListUtils {
 
   @inlineOnce
   @opaque
+  @ghost
+  def lemmaLastOfConcatIsLastOfRhs[B](l1: List[B], l2: List[B]): Unit = {
+    require(!(l1 ++ l2).isEmpty)
+    decreases(l1)
+    l1 match {
+      case Cons(hd, tl) if !tl.isEmpty => lemmaLastOfConcatIsLastOfRhs(tl, l2)
+      case _        => ()
+    }
+  }.ensuring (_ => (l2.isEmpty && ((l1 ++ l2).last == l1.last)) || (!l2.isEmpty && (l1 ++ l2).last == l2.last))
+
+  @inlineOnce
+  @opaque
   def removeDuplicates[B](list: List[B], acc: List[B] = Nil[B]()): List[B] = {
     require(ListOps.noDuplicate(acc))
     decreases(list.size)
@@ -1564,6 +1576,18 @@ object ListUtils {
       case Nil()                   => ()
     }
   }.ensuring (_ => !(l1 ++ l2).contains(b))
+
+  @inlineOnce
+  @opaque
+  @ghost
+  def lemmaConcatContainsDisjunctionOfEach[B](l1: List[B], l2: List[B], b: B): Unit = {
+    decreases(l1)
+    l1 match {
+      case Cons(hd, tl) if hd == b => ()
+      case Cons(hd, tl)            => lemmaConcatContainsDisjunctionOfEach(tl, l2, b)
+      case Nil()                   => ()
+    }
+  }.ensuring (_ => (l1 ++ l2).contains(b) == (l1.contains(b) || l2.contains(b)))
 
   @inlineOnce
   @opaque

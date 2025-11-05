@@ -5,6 +5,7 @@ import stainless.proof._
 import stainless.collection._
 import ListSpecs._
 import stainless.annotation._
+import stainless.lang.StaticChecks.*
 
 import com.ziplex.lexer.ListUtils
 
@@ -59,14 +60,38 @@ object BalanceConc:
           else r(i - l.size)
     }.ensuring(_ == t.toList(i))
 
+    def contains(v: T): Boolean = {
+      t match
+        case Empty() => false
+        case Leaf(x) => v == x
+        case Node(l, r, _, _) =>  l.contains(v) || r.contains(v)
+    }.ensuring(_ == t.toList.contains(v))
+
     def isBalanced: Boolean = {
       t match {
         case Node(l, r, _, _) =>
           -1 <= l.height - r.height && l.height - r.height <= 1 &&
-          l.isBalanced && r.isBalanced
+          l.isBalanced && r.isBalanced && t.size > 1 // to avoid needlessly deep nodes otherwise the asymptotic complexity can be arbitrary large
         case _ => true
       }
     }
+    def head: T = {
+      require(!t.isEmpty)
+      t match
+        case Leaf(x) => x
+        case Node(l, r, _, _) if l.isEmpty => r.head
+        case Node(l, r, _, _) => l.head
+    }.ensuring(res => res == t.toList.head)
+
+    def last: T = {
+      require(!t.isEmpty)
+      t match
+        case Leaf(x) => x
+        case Node(l, r, _, _) if r.isEmpty => l.last
+        case Node(l, r, _, _) => 
+          ghostExpr(ListUtils.lemmaLastOfConcatIsLastOfRhs(l.toList, r.toList))
+          r.last
+    }.ensuring(res => res == t.toList.last)
 
     def forall(p: T => Boolean): Boolean = {
       decreases(t.height)
@@ -161,7 +186,7 @@ object BalanceConc:
         res.height >= max(xs.height, ys.height) &&
         res.toList == xs.toList ++ ys.toList)
 
-
+  @ghost 
   def appendAssocInst[T](xs: Conc[T], ys: Conc[T]): Boolean = {
     (xs match {
       case Node(l, r, _, _) =>
@@ -198,7 +223,7 @@ object BalanceConc:
             if from == 0 && until == 1 then t
             else Empty[T]()
           case Node(l, r, _, _) =>
-            sliceLemma(l.toList, r.toList, from, until) // lemma
+            ghostExpr(sliceLemma(l.toList, r.toList, from, until)) // lemma
             if l.size <= from then r.slice(from - l.size, until - l.size)
             else if until <= l.size then l.slice(from, until)
             else            
@@ -217,7 +242,7 @@ object BalanceConc:
           if i <= 0 then (Empty[T](), t)
           else (t, Empty[T]())
         case Node(l, r, _, _) =>
-          splitAtLemma(l.toList, r.toList, i)
+          ghostExpr(splitAtLemma(l.toList, r.toList, i))
           if l.size == i then (l, r)
           else if i < l.size then 
             val (l1, l2) = l.splitAt(i)
@@ -249,6 +274,18 @@ object BalanceConc:
       Leaf(v) ++ t
     }.ensuring(res => res.isBalanced && res.toList == (Cons(v, t.toList)))
 
+    def tail: Conc[T] = {
+      require(t.isBalanced)
+      require(!t.isEmpty)
+      t match
+        case Leaf(x) => Empty[T]()
+        // case Node(l, r, _, _) if l.size == 1 => r
+        case Node(l, r, _, _) if l.isEmpty => r.tail
+        case Node(l, r, _, _) => 
+          ghostExpr(ListUtils.lemmaTailOfConcatIsTailConcat(l.toList, r.toList))
+          assert((l.toList ++ r.toList).tail == (l.toList.tail ++ r.toList))
+          l.tail ++ r
+    }.ensuring(res => res.isBalanced && res.toList == t.toList.tail)
 
 
   extension[T](t: Conc[T])
@@ -320,7 +357,26 @@ object BalanceConc:
   // **************************************************************************
   // lemmas for proofs
   // **************************************************************************
-  
+
+  // NOT TRUE and we don't want it
+  // @ghost @inlineOnce @opaque
+  // def listEqImpliesEq[T](c1: Conc[T], c2: Conc[T]): Unit = {
+  //   require(c1.isBalanced && c2.isBalanced)
+  //   require(c1.toList == c2.toList)
+  //   decreases(c1)
+  //   (c1, c2) match
+  //     case (Empty(), Empty()) => assert(c2 == c1)  
+  //     case (Leaf(x1), Leaf(x2)) => assert(c2 == c1)
+  //     case (Node(l1, r1, _, _), Node(l2, r2, _, _)) => 
+  //       assert(l1.size == l2.size)
+  //       listEqImpliesEq(l1, l2)
+  //       listEqImpliesEq(r1, r2)
+  //     case _ => check(false)
+        
+    
+  // }.ensuring(_ => c1 == c2)
+
+  @ghost @inlineOnce @opaque
   def sliceLemma[T](l: List[T], r: List[T], from: BigInt, until: BigInt): Unit = {
     require(0 <= from && from <= until && until <= l.size + r.size)
     decreases(l, r)
@@ -338,6 +394,7 @@ object BalanceConc:
                    else if until <= l.size then l.slice(from, until)
                    else l.slice(from, l.size) ++ r.slice(0, until - l.size)))
 
+  @ghost @inlineOnce @opaque
   def splitAtLemma[T](l: List[T], r: List[T], i: BigInt): Unit = {
     require(0 <= i && i <= l.size + r.size)
     decreases(l, r)
