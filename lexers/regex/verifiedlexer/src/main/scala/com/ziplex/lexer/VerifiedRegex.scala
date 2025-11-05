@@ -2835,9 +2835,8 @@ object ZipperRegex {
       findLongestMatchInnerZipper(z, Nil(), 0, input.list, input.list, input.size)._1,
       findLongestMatchInnerZipper(z, Nil(), 0, input.list, input.list, input.size)._2
     ))
-    ghostExpr(Vector.listEqImpliesEq(input.splitAt(prefixLength)._1 ++ input.splitAt(prefixLength)._2, input))
     input.splitAt(prefixLength)
-  }.ensuring (res => (res._1.list, res._2.list) == findLongestMatchZipper(z, input.list) && res._1 ++ res._2 == input)
+  }.ensuring (res => (res._1.list, res._2.list) == findLongestMatchZipper(z, input.list) && res._1.list ++ res._2.list == input.list)
   
   def findLongestMatchInnerZipperFast[C](z: Zipper[C], @ghost testedP: List[C], testedPSize: BigInt, @ghost testedSuffix: List[C], totalInput: Vector[C], totalInputSize: BigInt): BigInt = {
     require(testedP ++ testedSuffix == totalInput.list)
@@ -2909,7 +2908,6 @@ object ZipperRegex {
     ghostExpr(unfold(findLongestMatchInnerZipperFastMem(cacheUp, cacheDown, z, Nil(), 0, input.list, input, input.size)))
     ghostExpr(unfold(findLongestMatchInnerZipperFast(z, Nil(), 0, input.list, input, input.size)))
     ghostExpr(unfold(findLongestMatchInnerZipper(z, Nil(), 0, input.list, input.list, input.size)))
-    ghostExpr(Vector.listEqImpliesEq(input.splitAt(prefixLength)._1 ++ input.splitAt(prefixLength)._2, input))
     ghostExpr(ListUtils.lemmaConcatSameAndSameSizesThenSameLists(
       input.splitAt(prefixLength)._1.list,
       input.splitAt(prefixLength)._2.list,
