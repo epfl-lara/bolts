@@ -238,7 +238,7 @@ trait LexerInterface {
   def withSeparatorToken[C](v: Vector[Token[C]], separatorToken: Token[C]): Vector[Token[C]] = {
     require(separatorToken.rule.isSeparator)
     ??? : Vector[Token[C]]
-  }.ensuring(res => print(res) == printWithSeparatorToken(v, separatorToken))
+  }.ensuring(res => print(res).list == printWithSeparatorToken(v, separatorToken).list)
 
 
   /** Prints back the tokens to a list of characters of the type C, by adding a separatorToken between tokens when the maxPrefix would return

@@ -141,7 +141,6 @@ object VerifiedLexer {
       def slice(from: BigInt, to: BigInt): PrintableTokens[C] = {
         require(0 <= from && from <= to && to <= tokens.size)
 
-        // ghostExpr(Vector.listEqImpliesEq(tokens.slice(from, to), Vector.fromList(tokens.list.slice(from, to))))
         lemmaInvariant()
         assert(Lexer.rulesInvariant(rules))
         ghostExpr(unfold(Lexer.rulesProduceEachTokenIndividually(rules, tokens)))
@@ -197,7 +196,7 @@ object VerifiedLexer {
       val (producedTs, suffix) = lex(rs, print(Vector.singleton(t)))
       producedTs.size == 1 && producedTs(0) == t && suffix.isEmpty
     }.ensuring(res => {
-      res == (lex(rs, print(Vector.singleton(t))) == (Vector.singleton(t), Vector.empty[C]))
+      res == (lex(rs, print(Vector.singleton(t)))._1.list == Vector.singleton(t).list &&  lex(rs, print(Vector.singleton(t)))._2.isEmpty)
     })
 
     def rulesProduceIndividualTokenMem[C](rs: List[Rule[C]], t: Token[C])(using cacheUp: CacheUp[C], cacheDown: CacheDown[C]): Boolean = {
@@ -479,7 +478,6 @@ object VerifiedLexer {
         case Some((token, suffix)) => {
           val (followingTokens, nextSuffix) = lexRec(rules, suffix)
           assert(token.charsOf.list ++ suffix.list == input.list)
-          ghostExpr(Vector.listEqImpliesEq(token.charsOf ++ suffix, input))
           assert(token.charsOf ++ suffix == input)
           (followingTokens.prepend(token), nextSuffix)
         }
@@ -487,7 +485,7 @@ object VerifiedLexer {
       }
     }.ensuring (res =>
       (if (res._1.size > 0) res._2.size < input.size && !res._1.isEmpty
-      else res._2 == input) &&
+      else res._2.list == input.list) &&
       (res._1.list == lexList(rules, input.list)._1 && 
        res._2.list == lexList(rules, input.list)._2)
     )
@@ -502,45 +500,20 @@ object VerifiedLexer {
       decreases(input.size)
       require(!rules.isEmpty)
       require(rulesInvariant(rules))
-      require(totalInput == treated ++ input)
-      require(lexRec(rules, treated) == (acc, Vector.empty[C]))
-      require(lexRec(rules, totalInput) == (acc ++ lexRec(rules, input)._1, lexRec(rules, input)._2))
+      require(totalInput.list == treated.list ++ input.list)
+      require(lexRec(rules, treated)._1.list == acc.list)
+      require(lexRec(rules, treated)._2.list.isEmpty)
+      require(lexRec(rules, totalInput)._1.list == (acc ++ lexRec(rules, input)._1).list)
+      require(lexRec(rules, totalInput)._2.list == lexRec(rules, input)._2.list)
       maxPrefixZipperVector(rules, input) match {
         case Some((token, suffix)) => {
           @ghost val (followingTokens, nextSuffix) = lexRec(rules, suffix)
-          assert(token.charsOf.list ++ suffix.list == input.list)
-          ghostExpr(Vector.listEqImpliesEq(token.charsOf ++ suffix, input))
-          assert(token.charsOf ++ suffix == input)
-          assert(lexRec(rules, suffix) == (followingTokens, nextSuffix))
-          assert(treated ++ (token.charsOf ++ suffix) == totalInput)
           ghostExpr(ListUtils.lemmaTwoListsConcatAssociativity(treated.list, token.charsOf.list, suffix.list))
-          ghostExpr(Vector.listEqImpliesEq((treated ++ token.charsOf) ++ suffix, totalInput))
-          assert(lexRec(rules, treated) == (acc, Vector.empty[C]))
           ghostExpr(unfold(lexRec(rules, input)))
-          assert(lexRec(rules, input)._1.head == token)
-          assert(lexRec(rules, input)._1.list == List(token) ++ followingTokens.list)
-          assert(token.charsOf ++ suffix == input)
-          assert(followingTokens.prepend(token) == lexRec(rules, input)._1)
           ghostExpr(ListUtils.lemmaTwoListsConcatAssociativity(acc.list, List(token), followingTokens.list))
-          ghostExpr(Vector.listEqImpliesEq(acc.append(token) ++ followingTokens, acc ++ lexRec(rules, input)._1))
-          assert(acc.append(token) ++ followingTokens == acc ++ lexRec(rules, input)._1)
-          assert(lexRec(rules, treated ++ token.charsOf ++ suffix) == (acc.append(token) ++ followingTokens, nextSuffix))
-          assert(lexRec(rules, suffix) == (followingTokens, nextSuffix))
-          assert(acc.append(token).list == acc.list ++ List(token) )
           ghostExpr(lemmaLexThenLexPrefix(rules, treated.list ++ token.charsOf.list, suffix.list, acc.append(token).list, followingTokens.list, nextSuffix.list))
-          assert(lexList(rules, treated.list ++ token.charsOf.list) == (acc.list ++ List(token), List[C]()))
 
-          assert(lexList(rules, treated.list ++ token.charsOf.list)._1 == lexRec(rules, treated ++ token.charsOf)._1.list)
-          assert(lexList(rules, treated.list ++ token.charsOf.list)._2 == lexRec(rules, treated ++ token.charsOf)._2.list)
-          assert(treated.list ++ token.charsOf.list == (treated ++ token.charsOf).list)
           ghostExpr(unfold(lexRec(rules, treated ++ token.charsOf)))
-          assert(lexRec(rules, treated ++ token.charsOf)._1.list == (acc.append(token).list))
-          assert(lexRec(rules, treated ++ token.charsOf)._2.list == List[C]())
-          ghostExpr(Vector.listEqImpliesEq(lexRec(rules, treated ++ token.charsOf)._1, acc.append(token)))
-          ghostExpr(Vector.listEqImpliesEq(lexRec(rules, treated ++ token.charsOf)._2, Vector.empty[C]))
-          assert(lexRec(rules, treated ++ token.charsOf)._1 == (acc.append(token)))
-          assert(lexRec(rules, treated ++ token.charsOf) == (acc.append(token), Vector.empty[C]))
-          assert(lexRec(rules, treated ++ token.charsOf) == (acc.append(token), Vector.empty[C]))
           @ghost val newTreated = treated ++ token.charsOf
           lexTailRec(
             rules,
@@ -551,11 +524,11 @@ object VerifiedLexer {
           )
         }
         case None() => {
-          ghostExpr(Vector.listEqImpliesEq(acc ++ Vector.empty[Token[C]], acc))
           (acc, input)
         }
       }
-    }.ensuring (res => res == lexRec(rules, totalInput) )
+    }.ensuring (res => res._1.list == lexRec(rules, totalInput)._1.list && 
+                       res._2.list == lexRec(rules, totalInput)._2.list)
 
 
     def lexMem[C](
@@ -568,9 +541,6 @@ object VerifiedLexer {
       require(cacheDown.valid)
       decreases(input.size)
 
-      ghostExpr(Vector.listEqImpliesEq(Vector.empty[C] ++ input, input))
-      ghostExpr(Vector.listEqImpliesEq(Vector.empty[Token[C]] ++ lexRec(rules, input)._1, lexRec(rules, input)._1))
-
       lexTailRecMem(
         rules,
         input,
@@ -578,7 +548,8 @@ object VerifiedLexer {
         input,
         Vector.empty
       )
-    }.ensuring (res => res == lex(rules, input))
+    }.ensuring (res => res._1.list == lex(rules, input)._1.list && 
+                       res._2.list == lex(rules, input)._2.list)
 
     def lexTailRecMem[C](
         rules: List[Rule[C]],
@@ -592,9 +563,11 @@ object VerifiedLexer {
       require(rulesInvariant(rules))
       require(cacheUp.valid)
       require(cacheDown.valid)
-      require(totalInput == treated ++ input)
-      require(lexRec(rules, treated) == (acc, Vector.empty[C]))
-      require(lexRec(rules, totalInput) == (acc ++ lexRec(rules, input)._1, lexRec(rules, input)._2))
+      require(totalInput.list == treated.list ++ input.list)
+      require(lexRec(rules, treated)._1.list == acc.list)
+      require(lexRec(rules, treated)._2.list.isEmpty)
+      require(lexRec(rules, totalInput)._1.list == (acc ++ lexRec(rules, input)._1).list)
+      require(lexRec(rules, totalInput)._2.list == lexRec(rules, input)._2.list)
       unfold(lexTailRec(rules, totalInput, treated, input, acc))
       unfold(lex(rules, input))
       maxPrefixZipperVectorMem(rules, input) match {
@@ -612,7 +585,8 @@ object VerifiedLexer {
           (acc, input)
         }
       }
-    }.ensuring (res => res == lexTailRec(rules, totalInput, treated, input, acc) )
+    }.ensuring (res => res._1.list == lexTailRec(rules, totalInput, treated, input, acc)._1.list && 
+                       res._2.list == lexTailRec(rules, totalInput, treated, input, acc)._2.list)
 
     @ghost
     def lexRegexList[C](
@@ -712,10 +686,8 @@ object VerifiedLexer {
       assert(printList(withSeparatorTokenList(v.list, separatorToken)) == printWithSeparatorTokenList(v.list, separatorToken))
       assert(print(withSeparatorTokenInner(v, separatorToken)).list == printWithSeparatorTokenList(v.list, separatorToken))
       assert(print(withSeparatorTokenInner(v, separatorToken)).list == printWithSeparatorToken(v, separatorToken).list)
-      ghostExpr(Vector.listEqImpliesEq(print(withSeparatorTokenInner(v, separatorToken)), printWithSeparatorToken(v, separatorToken)))
-      assert(print(withSeparatorTokenInner(v, separatorToken)) == printWithSeparatorToken(v, separatorToken))
       withSeparatorTokenInner(v, separatorToken)
-    }.ensuring(res => res.list == withSeparatorTokenList(v.list, separatorToken) && print(res) == printWithSeparatorToken(v, separatorToken))
+    }.ensuring(res => res.list == withSeparatorTokenList(v.list, separatorToken) && print(res).list == printWithSeparatorToken(v, separatorToken).list)
 
     def withSeparatorTokenInner[C](v: Vector[Token[C]], separatorToken: Token[C], from: BigInt = 0, acc: Vector[Token[C]] = Vector.empty[Token[C]]): Vector[Token[C]] = {
       require(from >= 0 && from <= v.size)
@@ -727,10 +699,8 @@ object VerifiedLexer {
         ghostExpr({
           ListUtils.lemmaDropApply(v.list, from)
           ListUtils.lemmaDropTail(v.list, from)
-          Vector.listEqImpliesEq(Vector.singleton(v(from)) ++ Vector.singleton(separatorToken), Vector.fromList(List(v(from), separatorToken)))
           ListUtils.lemmaTwoListsConcatAssociativity(acc.list, List(v(from), separatorToken), withSeparatorTokenList(v.list.drop(from + 1), separatorToken))
           assert(withSeparatorTokenInner(v, separatorToken, from + 1, acc ++ (Vector.singleton(v(from)) ++ Vector.singleton(separatorToken))).list == (acc ++ (Vector.singleton(v(from)) ++ Vector.singleton(separatorToken))).list ++ withSeparatorTokenList(v.list.drop(from + 1), separatorToken))
-          Vector.listEqImpliesEq(Vector.singleton(v(from)), Vector.fromList(List(v(from))))
           assert((acc ++ Vector.singleton(v(from))).list == acc.list ++ List(v(from)))
         })
         withSeparatorTokenInner(v, separatorToken, from + 1, acc ++ (Vector.singleton(v(from)) ++ Vector.singleton(separatorToken)))
@@ -847,12 +817,9 @@ object VerifiedLexer {
             case Some((t, s)) if t != hd => hd.charsOf.list ++ separatorToken.charsOf.list ++ suffix
             case None() => {
               ghostExpr({
-                Vector.listEqImpliesEq(hd.charsOf, Vector.fromList(hd.charsOf.list))
                 ghostExpr(unfold(print(Vector.singleton(hd))))
                 assert(print(Vector.singleton(hd)).list == printList(List(hd)))
                 assert(printList(List(hd)) == hd.charsOf.list)
-                ghostExpr(Vector.listEqImpliesEq(print(Vector.singleton(hd)), hd.charsOf))
-                assert(print(Vector.singleton(hd)) == hd.charsOf)
                 assert(rulesProduceIndividualToken(rules, hd))
                 assert(!lex(rules, Vector.fromList(hd.charsOf.list))._1.isEmpty)
                 lemmaLexIsDefinedWithStrThenLexWithSuffixIsDefined(rules, hd.charsOf.list, suffix)
@@ -896,12 +863,11 @@ object VerifiedLexer {
           case Some((t, s)) if t != v(from) => v(from).charsOf ++ separatorToken.charsOf ++ suffix
           case None() => {
             ghostExpr({
-              Vector.listEqImpliesEq(v(from).charsOf, Vector.fromList(v(from).charsOf.list))
+              // Vector.listEqImpliesEq(v(from).charsOf, Vector.fromList(v(from).charsOf.list))
               ghostExpr(unfold(print(Vector.singleton(v(from)))))
               assert(print(Vector.singleton(v(from))).list == printList(List(v(from))))
               assert(printList(List(v(from))) == v(from).charsOf.list)
-              ghostExpr(Vector.listEqImpliesEq(print(Vector.singleton(v(from))), v(from).charsOf))
-              assert(print(Vector.singleton(v(from))) == v(from).charsOf)
+              // ghostExpr(Vector.listEqImpliesEq(print(Vector.singleton(v(from))), v(from).charsOf))
               assert(rulesProduceIndividualToken(rules, v(from)))
               assert(!lex(rules, Vector.fromList(v(from).charsOf.list))._1.isEmpty)
               lemmaLexIsDefinedWithStrThenLexWithSuffixIsDefined(rules, v(from).charsOf.list, suffix.list)
