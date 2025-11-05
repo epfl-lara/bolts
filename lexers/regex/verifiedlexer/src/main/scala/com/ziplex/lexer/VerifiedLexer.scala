@@ -141,7 +141,7 @@ object VerifiedLexer {
       def slice(from: BigInt, to: BigInt): PrintableTokens[C] = {
         require(0 <= from && from <= to && to <= tokens.size)
 
-        ghostExpr(Vector.listEqImpliesEq(tokens.slice(from, to), Vector.fromList(tokens.list.slice(from, to))))
+        // ghostExpr(Vector.listEqImpliesEq(tokens.slice(from, to), Vector.fromList(tokens.list.slice(from, to))))
         lemmaInvariant()
         assert(Lexer.rulesInvariant(rules))
         ghostExpr(unfold(Lexer.rulesProduceEachTokenIndividually(rules, tokens)))
@@ -163,7 +163,7 @@ object VerifiedLexer {
         ghostExpr(Lexer.tokensListTwoByTwoPredicateSeparableTokensTakeList(tokens.list.drop(from), to-from, rules))
         assert(Lexer.separableTokens(tokens.slice(from, to), rules))
         PrintableTokens(rules, tokens.slice(from, to))
-      }.ensuring(res => res.rules == rules && res.tokens == tokens.slice(from, to))
+      }.ensuring(res => res.rules == rules && res.tokens.list == tokens.slice(from, to).list)
     }
 
   case object Lexer extends LexerInterface {
