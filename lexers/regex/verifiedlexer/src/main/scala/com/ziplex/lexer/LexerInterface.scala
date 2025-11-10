@@ -33,20 +33,40 @@ import stainless.lang.{ghost => ghostExpr, _}
 
 trait TokenValue
 
-case class Token[C](value: TokenValue, rule: Rule[C], size: BigInt, @ghost originalCharacters: Vector[C]) {
+case class Token[C](value: TokenValue, rule: Rule[C], size: BigInt, @ghost originalCharacters: List[C]) {
   require(!originalCharacters.isEmpty)
-  require(originalCharacters == rule.transformation.witness(value))
+  require(originalCharacters == rule.transformation.toChars(value).list)
   require(size == originalCharacters.size)
   def charsOf: Vector[C] = {
-    rule.transformation.witness(value)
-  }.ensuring(res => res == originalCharacters && res.list == originalCharacters.list)
+    rule.transformation.toChars(value)
+  }.ensuring(res => res.list == originalCharacters)
 
   def lemmaCharactersSize(): Unit = {
   }.ensuring(_ => size == originalCharacters.size)
 }
-case class Rule[C](regex: Regex[C], tag: String, isSeparator: Boolean, transformation: Injection[Vector[C], TokenValue])
+case class Rule[C](regex: Regex[C], tag: String, isSeparator: Boolean, transformation: TokenValueInjection[C])
 
+@ghost inline def semiInverseBodyModEq[C](toChars: TokenValue => Vector[C], toValue: Vector[C] => TokenValue): Boolean = 
+  Forall((chars: Vector[C]) => toChars(toValue(chars)).list == chars.list)
 
+@ghost inline def equivClassesBody[C](toChars: TokenValue => Vector[C], toValue: Vector[C] => TokenValue): Boolean = 
+  Forall2((chars1: Vector[C], chars2: Vector[C]) => (chars1.list == chars2.list) ==> (toValue(chars1) == toValue(chars2)))
+
+@ghost def semiInverseModEq[C](toChars: TokenValue => Vector[C], toValue: Vector[C] => TokenValue): Boolean = semiInverseBodyModEq(toChars, toValue)
+@ghost def equivClasses[C](toChars: TokenValue => Vector[C], toValue: Vector[C] => TokenValue): Boolean = equivClassesBody(toChars, toValue)
+case class TokenValueInjection[C](toValue: Vector[C] => TokenValue, toChars: TokenValue => Vector[C]) {
+  require(semiInverseModEq(toChars, toValue))
+  require(equivClasses(toChars, toValue))
+  def apply(chars: Vector[C]): TokenValue = toValue(chars)
+  @ghost def lemmaInv(): Unit = {}.ensuring(_ => semiInverseModEq(toChars, toValue) && equivClasses(toChars, toValue))
+  @ghost def lemmaSemiInverse(c: Vector[C]): Unit = {
+    ForallOf((chars: Vector[C]) => toChars(toValue(chars)).list == chars.list)(c)
+  }.ensuring(_ => toChars(toValue(c)).list == c.list)
+  @ghost def lemmaEqSameImage(c1: Vector[C], c2: Vector[C]): Unit = {
+    require(c1.list == c2.list)
+    Forall2of((chars1: Vector[C], chars2: Vector[C]) => (chars1.list == chars2.list) ==> (toValue(chars1) == toValue(chars2)))(c1, c2)
+  }.ensuring(_ => toValue(c1) == toValue(c2))
+} 
 
 
 trait LexerInterface {
