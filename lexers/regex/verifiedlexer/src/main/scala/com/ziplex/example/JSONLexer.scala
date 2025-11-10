@@ -2,6 +2,7 @@ package com.ziplex.lexer.example
 
 import com.ziplex.lexer.VerifiedLexer.Lexer
 import com.ziplex.lexer.LexerInterface
+import com.ziplex.lexer.TokenValueInjection
 import com.ziplex.lexer.Rule
 import com.ziplex.lexer.Token
 import com.ziplex.lexer.TokenValue
@@ -93,7 +94,7 @@ object ExampleJsonLexer:
                     case IntegerValue(_, text) => text
                     case _ => Vector.empty
             
-            val injection: Injection[Vector[Char], TokenValue] = {
+            val injection: TokenValueInjection[Char] = {
                 ghostExpr{
                     assert({
                         unfold(semiInverseBody(toCharacters, toValue))
@@ -101,7 +102,7 @@ object ExampleJsonLexer:
                     })
                     unfold(semiInverse(toCharacters, toValue))
                 }
-                Injection(toValue, toCharacters)
+                TokenValueInjection(toValue, toCharacters)
             }
         end IntegerValueInjection
 
@@ -111,7 +112,7 @@ object ExampleJsonLexer:
                 case FloatLiteralValue(value) => value
                 case _ => Vector.empty
             
-            val injection: Injection[Vector[Char], TokenValue] = {
+            val injection: TokenValueInjection[Char] = {
                 ghostExpr{
                     assert({
                         unfold(semiInverseBody(toCharacters, toValue))
@@ -119,7 +120,7 @@ object ExampleJsonLexer:
                     })
                     unfold(semiInverse(toCharacters, toValue))
                 }
-                Injection(toValue, toCharacters)
+                TokenValueInjection(toValue, toCharacters)
             }
         end FloatLiteralValueInjection
 
@@ -129,7 +130,7 @@ object ExampleJsonLexer:
                 t match
                     case WhitespaceValue(value) => value
                     case _ => Vector.empty
-            val injection: Injection[Vector[Char], TokenValue] = {
+            val injection: TokenValueInjection[Char] = {
                 ghostExpr{
                     assert({
                         unfold(semiInverseBody(toCharacters, toValue))
@@ -137,7 +138,7 @@ object ExampleJsonLexer:
                     })
                     unfold(semiInverse(toCharacters, toValue))
                 }
-                Injection(toValue, toCharacters)
+                TokenValueInjection(toValue, toCharacters)
             }
         end WhitespaceValueInjection
 
@@ -147,7 +148,7 @@ object ExampleJsonLexer:
                 case StringLiteralValue(value) => value
                 case _ => Vector.empty
             
-            val injection: Injection[Vector[Char], TokenValue] = {
+            val injection: TokenValueInjection[Char] = {
                 ghostExpr{
                     assert({
                         unfold(semiInverseBody(toCharacters, toValue))
@@ -155,21 +156,21 @@ object ExampleJsonLexer:
                     })
                     unfold(semiInverse(toCharacters, toValue))
                 }
-                Injection(toValue, toCharacters)
+                TokenValueInjection(toValue, toCharacters)
             }
         end StringLiteralValueInjection
 
         case object KeywordValueInjection:
             def toValue(v: Vector[Char]): TokenValue = v match
-                case vv if vv == Vector.fromList(List('n', 'u', 'l', 'l'))        => KeywordValue.Null
-                case vv if vv == Vector.fromList(List('t', 'r', 'u', 'e'))        => KeywordValue.True
-                case vv if vv == Vector.fromList(List('f', 'a', 'l', 's', 'e'))   => KeywordValue.False
-                case vv if vv == Vector.fromList(List(':'))                       => KeywordValue.Colon
-                case vv if vv == Vector.fromList(List(','))                       => KeywordValue.Comma
-                case vv if vv == Vector.fromList(List('{'))                       => KeywordValue.LeftBrace
-                case vv if vv == Vector.fromList(List('}'))                       => KeywordValue.RightBrace
-                case vv if vv == Vector.fromList(List('['))                       => KeywordValue.LeftBracket
-                case vv if vv == Vector.fromList(List(']'))                       => KeywordValue.RightBracket
+                case vv if vv.equivalentSequenceAs(Vector.fromList(List('n', 'u', 'l', 'l')))        => KeywordValue.Null
+                case vv if vv.equivalentSequenceAs(Vector.fromList(List('t', 'r', 'u', 'e')))        => KeywordValue.True
+                case vv if vv.equivalentSequenceAs(Vector.fromList(List('f', 'a', 'l', 's', 'e')))   => KeywordValue.False
+                case vv if vv.equivalentSequenceAs(Vector.fromList(List(':')))                       => KeywordValue.Colon
+                case vv if vv.equivalentSequenceAs(Vector.fromList(List(',')))                       => KeywordValue.Comma
+                case vv if vv.equivalentSequenceAs(Vector.fromList(List('{')))                       => KeywordValue.LeftBrace
+                case vv if vv.equivalentSequenceAs(Vector.fromList(List('}')))                       => KeywordValue.RightBrace
+                case vv if vv.equivalentSequenceAs(Vector.fromList(List('[')))                       => KeywordValue.LeftBracket
+                case vv if vv.equivalentSequenceAs(Vector.fromList(List(']')))                       => KeywordValue.RightBracket
                 case vv                                                           => KeywordValue.Broken(vv)
             def toCharacters(t: TokenValue): Vector[Char] = t match
                 case KeywordValue.Null           => Vector.fromList(List('n', 'u', 'l', 'l'))
@@ -184,7 +185,7 @@ object ExampleJsonLexer:
                 case KeywordValue.Broken(value)  => value
                 case _                            => Vector.empty
 
-            val injection: Injection[Vector[Char], TokenValue] = {
+            val injection: TokenValueInjection[Char] = {
                 ghostExpr{
                     assert({
                         unfold(semiInverseBody(toCharacters, toValue))
@@ -192,7 +193,7 @@ object ExampleJsonLexer:
                     })
                     unfold(semiInverse(toCharacters, toValue))
                 }
-                Injection(toValue, toCharacters)
+                TokenValueInjection(toValue, toCharacters)
             }
         end KeywordValueInjection
         
