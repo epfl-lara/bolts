@@ -22,7 +22,13 @@ import stainless.lang.Quantifiers.*
 
 import stainless.lang.Exception
 
-import com.ziplex.lexer.Vector
+import com.ziplex.lexer.BalanceConcObj.BalanceConc
+import com.ziplex.lexer.BalanceConcObj
+import com.ziplex.lexer.semiInverseBodyModEq
+import com.ziplex.lexer.semiInverseModEq
+import com.ziplex.lexer.equivClassesBody
+import com.ziplex.lexer.equivClasses
+
 import scala.annotation.tailrec
 // BEGIN uncomment for verification ------------------------------------------
 import stainless.lang.StaticChecks._
@@ -43,7 +49,7 @@ import stainless.lang.unfold
 
 object ExampleJsonLexer:
     object Types:
-        case class IntegerValue(value: BigInt, text: Vector[Char]) extends TokenValue:
+        case class IntegerValue(value: BigInt, text: List[Char]) extends TokenValue:
             require(IntegerValueUtils.charsToBigInt(text) == value)
         end IntegerValue
             
@@ -61,16 +67,17 @@ object ExampleJsonLexer:
                 case _             => 0
                 
             
-            @pure def charsToBigInt(v: Vector[Char], acc: BigInt = 0): BigInt = {
-                decreases(v.size)
-                if v.isEmpty then acc
-                else charsToBigInt(v.tail, acc * 10 + charToBigInt(v(0)))
+            @pure def charsToBigInt(l: List[Char], acc: BigInt = 0): BigInt = {
+                decreases(l.size)
+                l match
+                    case Nil() => acc
+                    case Cons(hd, tl) => charsToBigInt(tl, acc * 10 + charToBigInt(hd))
             }
         end IntegerValueUtils
 
-        case class FloatLiteralValue(text: Vector[Char]) extends TokenValue
-        case class WhitespaceValue(value: Vector[Char]) extends TokenValue
-        case class StringLiteralValue(text: Vector[Char]) extends TokenValue
+        case class FloatLiteralValue(text: List[Char]) extends TokenValue
+        case class WhitespaceValue(value: List[Char]) extends TokenValue
+        case class StringLiteralValue(text: List[Char]) extends TokenValue
 
         enum KeywordValue extends TokenValue:
             case Null
@@ -82,116 +89,176 @@ object ExampleJsonLexer:
             case RightBrace
             case LeftBracket
             case RightBracket
-            case Broken(value: Vector[Char])
+            case Broken(value: List[Char])
         end KeywordValue
 
 
         // Injection definition + proofs
 
         case object IntegerValueInjection:
-            def toValue(v: Vector[Char]): TokenValue = IntegerValue(IntegerValueUtils.charsToBigInt(v), v)
-            def toCharacters(t: TokenValue): Vector[Char] = t match
-                    case IntegerValue(_, text) => text
-                    case _ => Vector.empty
+            def toValue(v: BalanceConc[Char]): TokenValue = 
+                val list = v.efficientList
+                IntegerValue(IntegerValueUtils.charsToBigInt(list), list)
+            def toCharacters(t: TokenValue): BalanceConc[Char] = t match
+                    case IntegerValue(_, text) => BalanceConcObj.fromListB(text)
+                    case _ => BalanceConcObj.emptyB
             
             val injection: TokenValueInjection[Char] = {
                 ghostExpr{
                     assert({
-                        unfold(semiInverseBody(toCharacters, toValue))
-                        semiInverseBody(toCharacters, toValue)
+                        unfold(semiInverseBodyModEq(toCharacters, toValue))
+                        semiInverseBodyModEq(toCharacters, toValue)
                     })
-                    unfold(semiInverse(toCharacters, toValue))
+                    unfold(semiInverseModEq(toCharacters, toValue))
+                    assert(semiInverseModEq(toCharacters, toValue))
+                }
+                ghostExpr{
+                    assert({
+                        unfold(equivClassesBody(toCharacters, toValue))
+                        equivClassesBody(toCharacters, toValue)
+                    })
+                    unfold(equivClasses(toCharacters, toValue))
+                    assert(equivClasses(toCharacters, toValue))
                 }
                 TokenValueInjection(toValue, toCharacters)
             }
         end IntegerValueInjection
 
         case object FloatLiteralValueInjection:
-            def toValue(v: Vector[Char]): TokenValue = FloatLiteralValue(v)
-            def toCharacters(t: TokenValue): Vector[Char] = t match
-                case FloatLiteralValue(value) => value
-                case _ => Vector.empty
+            def toValue(v: BalanceConc[Char]): TokenValue = FloatLiteralValue(v.efficientList)
+            def toCharacters(t: TokenValue): BalanceConc[Char] = t match
+                case FloatLiteralValue(value) => BalanceConcObj.fromListB(value)
+                case _ => BalanceConcObj.emptyB
             
             val injection: TokenValueInjection[Char] = {
                 ghostExpr{
                     assert({
-                        unfold(semiInverseBody(toCharacters, toValue))
-                        semiInverseBody(toCharacters, toValue)
+                        unfold(semiInverseBodyModEq(toCharacters, toValue))
+                        semiInverseBodyModEq(toCharacters, toValue)
                     })
-                    unfold(semiInverse(toCharacters, toValue))
+                    unfold(semiInverseModEq(toCharacters, toValue))
+                    assert(semiInverseModEq(toCharacters, toValue))
+                }
+                ghostExpr{
+                    assert({
+                        unfold(equivClassesBody(toCharacters, toValue))
+                        equivClassesBody(toCharacters, toValue)
+                    })
+                    unfold(equivClasses(toCharacters, toValue))
+                    assert(equivClasses(toCharacters, toValue))
                 }
                 TokenValueInjection(toValue, toCharacters)
             }
         end FloatLiteralValueInjection
 
         case object WhitespaceValueInjection:
-            def toValue(v: Vector[Char]): TokenValue = WhitespaceValue(v)
-            def toCharacters(t: TokenValue): Vector[Char] = 
+            def toValue(v: BalanceConc[Char]): TokenValue = WhitespaceValue(v.efficientList)
+            def toCharacters(t: TokenValue): BalanceConc[Char] = 
                 t match
-                    case WhitespaceValue(value) => value
-                    case _ => Vector.empty
+                    case WhitespaceValue(value) => BalanceConcObj.fromListB(value)
+                    case _ => BalanceConcObj.emptyB
             val injection: TokenValueInjection[Char] = {
                 ghostExpr{
                     assert({
-                        unfold(semiInverseBody(toCharacters, toValue))
-                        semiInverseBody(toCharacters, toValue)
+                        unfold(semiInverseBodyModEq(toCharacters, toValue))
+                        semiInverseBodyModEq(toCharacters, toValue)
                     })
-                    unfold(semiInverse(toCharacters, toValue))
+                    unfold(semiInverseModEq(toCharacters, toValue))
+                }
+                ghostExpr{
+                    assert({
+                        unfold(equivClassesBody(toCharacters, toValue))
+                        equivClassesBody(toCharacters, toValue)
+                    })
+                    unfold(equivClasses(toCharacters, toValue))
                 }
                 TokenValueInjection(toValue, toCharacters)
             }
         end WhitespaceValueInjection
 
         case object StringLiteralValueInjection:
-            def toValue(v: Vector[Char]): TokenValue = StringLiteralValue(v)
-            def toCharacters(t: TokenValue): Vector[Char] = t match
-                case StringLiteralValue(value) => value
-                case _ => Vector.empty
+            def toValue(v: BalanceConc[Char]): TokenValue = StringLiteralValue(v.efficientList)
+            def toCharacters(t: TokenValue): BalanceConc[Char] = t match
+                case StringLiteralValue(value) => BalanceConcObj.fromListB(value)
+                case _ => BalanceConcObj.emptyB
             
             val injection: TokenValueInjection[Char] = {
                 ghostExpr{
                     assert({
-                        unfold(semiInverseBody(toCharacters, toValue))
-                        semiInverseBody(toCharacters, toValue)
+                        unfold(semiInverseBodyModEq(toCharacters, toValue))
+                        semiInverseBodyModEq(toCharacters, toValue)
                     })
-                    unfold(semiInverse(toCharacters, toValue))
+                    unfold(semiInverseModEq(toCharacters, toValue))
+                }
+                ghostExpr{
+                    assert({
+                        unfold(equivClassesBody(toCharacters, toValue))
+                        equivClassesBody(toCharacters, toValue)
+                    })
+                    unfold(equivClasses(toCharacters, toValue))
                 }
                 TokenValueInjection(toValue, toCharacters)
             }
         end StringLiteralValueInjection
 
+        lazy val nullString: List[Char] = List('n', 'u', 'l', 'l')
+        lazy val trueString: List[Char] = List('t', 'r', 'u', 'e')
+        lazy val falseString: List[Char] = List('f', 'a', 'l', 's', 'e')
+        lazy val colonString: List[Char] = List(':')
+        lazy val commaString: List[Char] = List(',')
+        lazy val leftBraceString: List[Char] = List('{')
+        lazy val rightBraceString: List[Char] = List('}')
+        lazy val leftBracketString: List[Char] = List('[')
+        lazy val rightBracketString: List[Char] = List(']')
+
+        lazy val nullStringConc =  BalanceConcObj.fromListB(nullString)
+        lazy val trueStringConc =  BalanceConcObj.fromListB(trueString)
+        lazy val falseStringConc =  BalanceConcObj.fromListB(falseString)
+        lazy val colonStringConc =  BalanceConcObj.fromListB(colonString)
+        lazy val commaStringConc =  BalanceConcObj.fromListB(commaString)
+        lazy val leftBraceStringConc =  BalanceConcObj.fromListB(leftBraceString)
+        lazy val rightBraceStringConc =  BalanceConcObj.fromListB(rightBraceString)
+        lazy val leftBracketStringConc =  BalanceConcObj.fromListB(leftBracketString)
+        lazy val rightBracketStringConc =  BalanceConcObj.fromListB(rightBracketString)
         case object KeywordValueInjection:
-            def toValue(v: Vector[Char]): TokenValue = v match
-                case vv if vv.equivalentSequenceAs(Vector.fromList(List('n', 'u', 'l', 'l')))        => KeywordValue.Null
-                case vv if vv.equivalentSequenceAs(Vector.fromList(List('t', 'r', 'u', 'e')))        => KeywordValue.True
-                case vv if vv.equivalentSequenceAs(Vector.fromList(List('f', 'a', 'l', 's', 'e')))   => KeywordValue.False
-                case vv if vv.equivalentSequenceAs(Vector.fromList(List(':')))                       => KeywordValue.Colon
-                case vv if vv.equivalentSequenceAs(Vector.fromList(List(',')))                       => KeywordValue.Comma
-                case vv if vv.equivalentSequenceAs(Vector.fromList(List('{')))                       => KeywordValue.LeftBrace
-                case vv if vv.equivalentSequenceAs(Vector.fromList(List('}')))                       => KeywordValue.RightBrace
-                case vv if vv.equivalentSequenceAs(Vector.fromList(List('[')))                       => KeywordValue.LeftBracket
-                case vv if vv.equivalentSequenceAs(Vector.fromList(List(']')))                       => KeywordValue.RightBracket
-                case vv                                                           => KeywordValue.Broken(vv)
-            def toCharacters(t: TokenValue): Vector[Char] = t match
-                case KeywordValue.Null           => Vector.fromList(List('n', 'u', 'l', 'l'))
-                case KeywordValue.True           => Vector.fromList(List('t', 'r', 'u', 'e'))
-                case KeywordValue.False          => Vector.fromList(List('f', 'a', 'l', 's', 'e'))
-                case KeywordValue.Colon          => Vector.fromList(List(':'))
-                case KeywordValue.Comma          => Vector.fromList(List(','))
-                case KeywordValue.LeftBrace      => Vector.fromList(List('{'))
-                case KeywordValue.RightBrace     => Vector.fromList(List('}'))
-                case KeywordValue.LeftBracket    => Vector.fromList(List('['))
-                case KeywordValue.RightBracket   => Vector.fromList(List(']'))
-                case KeywordValue.Broken(value)  => value
-                case _                            => Vector.empty
+            def toValue(c: BalanceConc[Char]): TokenValue = c.efficientList match
+                case l if l == nullString            => KeywordValue.Null
+                case l if l == trueString            => KeywordValue.True
+                case l if l == falseString           => KeywordValue.False
+                case l if l == colonString           => KeywordValue.Colon
+                case l if l == commaString           => KeywordValue.Comma
+                case l if l == leftBraceString       => KeywordValue.LeftBrace
+                case l if l == rightBraceString      => KeywordValue.RightBrace
+                case l if l == leftBracketString     => KeywordValue.LeftBracket
+                case l if l == rightBracketString    => KeywordValue.RightBracket
+                case l                               => KeywordValue.Broken(l)
+            def toCharacters(t: TokenValue): BalanceConc[Char] = t match
+                case KeywordValue.Null           => nullStringConc
+                case KeywordValue.True           => trueStringConc
+                case KeywordValue.False          => falseStringConc
+                case KeywordValue.Colon          => colonStringConc
+                case KeywordValue.Comma          => commaStringConc
+                case KeywordValue.LeftBrace      => leftBraceStringConc
+                case KeywordValue.RightBrace     => rightBraceStringConc
+                case KeywordValue.LeftBracket    => leftBracketStringConc
+                case KeywordValue.RightBracket   => rightBracketStringConc
+                case KeywordValue.Broken(value)  => BalanceConcObj.fromListB(value)
+                case _                           => BalanceConcObj.emptyB
 
             val injection: TokenValueInjection[Char] = {
                 ghostExpr{
                     assert({
-                        unfold(semiInverseBody(toCharacters, toValue))
-                        semiInverseBody(toCharacters, toValue)
+                        unfold(semiInverseBodyModEq(toCharacters, toValue))
+                        semiInverseBodyModEq(toCharacters, toValue)
                     })
-                    unfold(semiInverse(toCharacters, toValue))
+                    unfold(semiInverseModEq(toCharacters, toValue))
+                }
+                ghostExpr{
+                    assert({
+                        unfold(equivClassesBody(toCharacters, toValue))
+                        equivClassesBody(toCharacters, toValue)
+                    })
+                    unfold(equivClasses(toCharacters, toValue))
                 }
                 TokenValueInjection(toValue, toCharacters)
             }

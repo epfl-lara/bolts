@@ -287,7 +287,7 @@ object Vector {
   @inlineOnce
   @opaque
   @ghost
-  def lemmaTwoListsConcatAssociativity[B](
+  def lemmaConcatAssociativity[B](
       l1: List[B],
       l2: List[B],
       l3: List[B]
@@ -295,7 +295,7 @@ object Vector {
     decreases(l1)
     l1 match {
       case Cons(hd, tl) => {
-        lemmaTwoListsConcatAssociativity(tl, l2, l3)
+        lemmaConcatAssociativity(tl, l2, l3)
       }
       case Nil() => ()
     }
@@ -312,7 +312,7 @@ object Vector {
         case Cons(x, xs) => 
           assert(rec(xs, v :+ x).list == (v :+ x).list ++ xs)
           assert((v :+ x).list == v.list ++ List(x))
-          ghostExpr(lemmaTwoListsConcatAssociativity(v.list, List(x), xs))
+          ghostExpr(lemmaConcatAssociativity(v.list, List(x), xs))
           assert((v.list ++ List(x)) ++ xs == v.list ++ (x :: xs))
           rec(xs, v :+ x)
       }

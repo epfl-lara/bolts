@@ -728,7 +728,7 @@ object ListUtils {
                               // splitAtIndexTr(tl, i - 1, acc ++ List(hd))
                               lemmaSplitAtIndexTrEqualsSplitAtIndex(tl, i - 1, acc ++ List(hd))
                               assert(splitAtIndexTr(tl, i - 1, acc ++ List(hd)) == ((acc ++ List(hd)) ++ tl.splitAtIndex(i - 1)._1, tl.splitAtIndex(i - 1)._2))
-                              ListUtils.lemmaTwoListsConcatAssociativity(acc, List(hd), tl.splitAtIndex(i - 1)._1)
+                              ListUtils.lemmaConcatAssociativity(acc, List(hd), tl.splitAtIndex(i - 1)._1)
                               assert(splitAtIndexTr(tl, i - 1, acc ++ List(hd)) == (acc ++ (List(hd) ++ tl.splitAtIndex(i - 1)._1), tl.splitAtIndex(i - 1)._2))
     }
    
@@ -986,12 +986,12 @@ object ListUtils {
   @inlineOnce
   @opaque
   @ghost
-  def lemmaConcatAssociativity[B](l1: List[B], elmt: B, l2: List[B], tot: List[B]): Unit = {
+  def lemmaConcatElemAssociativity[B](l1: List[B], elmt: B, l2: List[B], tot: List[B]): Unit = {
     require((l1 ++ List(elmt)) ++ l2 == tot)
     decreases(l1)
     assert(l1 ++ List(elmt) ++ l2 == tot)
     l1 match {
-      case Cons(hd, tl) => lemmaConcatAssociativity(tl, elmt, l2, tot.tail)
+      case Cons(hd, tl) => lemmaConcatElemAssociativity(tl, elmt, l2, tot.tail)
       case Nil()        => ()
     }
   }.ensuring (_ => l1 ++ (List(elmt) ++ l2) == tot)
@@ -999,7 +999,7 @@ object ListUtils {
   @inlineOnce
   @opaque
   @ghost
-  def lemmaTwoListsConcatAssociativity[B](
+  def lemmaConcatAssociativity[B](
       l1: List[B],
       l2: List[B],
       l3: List[B]
@@ -1007,7 +1007,7 @@ object ListUtils {
     decreases(l1)
     l1 match {
       case Cons(hd, tl) => {
-        lemmaTwoListsConcatAssociativity(tl, l2, l3)
+        lemmaConcatAssociativity(tl, l2, l3)
       }
       case Nil() => ()
     }
@@ -1278,7 +1278,7 @@ object ListUtils {
           assert(ListSpecs.subseq(res, baseList ++ tl))
           lemmaBiggerSndListPreservesSubSeq(res, baseList, tl, List(hd))
   
-          lemmaTwoListsConcatAssociativity(baseList, List(hd), tl)
+          lemmaConcatAssociativity(baseList, List(hd), tl)
           assert( baseList ++ (List(hd) ++ tl) ==  baseList ++ List(hd) ++ tl)
           assert(ListSpecs.subseq(res, baseList ++ (List(hd) ++ tl)))
 
@@ -1295,7 +1295,7 @@ object ListUtils {
           assert( ListOps.noDuplicate(res) )
           assert(((baseList ++ List(hd)) ++ newList).content == res.content)
           assert(ListSpecs.subseq(res, (baseList ++ List(hd)) ++ tl))
-          lemmaTwoListsConcatAssociativity(baseList, List(hd), tl)
+          lemmaConcatAssociativity(baseList, List(hd), tl)
           assert(ListSpecs.subseq(res, baseList ++ (List(hd) ++ tl)))
 
           assert(isPrefix(baseList ++ List(hd), res))
