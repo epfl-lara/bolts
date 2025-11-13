@@ -199,7 +199,7 @@ object BalanceConcObj:
   }.holds
 
   extension[T](t: Conc[T])
-    def list: List[T] = t match
+    @ghost def list: List[T] = t match
       case Empty() => Nil[T]()
       case Leaf(x) => List(x)
       case Node(l, r, _, _) => l.list ++ r.list
@@ -236,7 +236,7 @@ object BalanceConcObj:
       t match
         case Leaf(x) => assert(i == 0); x
         case Node(l, r, _, _) =>
-          appendIndex(l.list, r.list, i) // lemma
+          ghostExpr(appendIndex(l.list, r.list, i)) // lemma
           if i < l.size then l(i)
           else r(i - l.size)
     }.ensuring(_ == t.list(i))
