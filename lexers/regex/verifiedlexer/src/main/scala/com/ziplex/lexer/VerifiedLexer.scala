@@ -6,27 +6,26 @@ package com.ziplex.lexer
 import stainless.annotation._
 import stainless.collection._
 import stainless.equations._
-import scala.annotation.tailrec
 import stainless.lang.Quantifiers._
 
 import scala.annotation.tailrec
+
 // BEGIN uncomment for verification ------------------------------------------
-import stainless.lang.StaticChecks._
-import stainless.lang.{ghost => ghostExpr, _}
-import stainless.proof.check
+// import stainless.lang.StaticChecks._
+// import stainless.lang.{ghost => ghostExpr, _}
+// import stainless.proof.check
 // END uncomment for verification --------------------------------------------
 // BEGIN imports for benchmarking -------------------------------------------
-// import stainless.lang.{ghost => _, decreases => _, unfold => _, _}
-// import com.ziplex.lexer.OptimisedChecks.*
-// import Predef.{assert => _, Ensuring => _, require => _}
+import stainless.lang.{ghost => _, decreases => _, unfold => _, _}
+import com.ziplex.lexer.OptimisedChecks.*
+import Predef.{assert => _, Ensuring => _, require => _}
 
-// @tailrec
-// def dummy(x: BigInt): BigInt = {
-//   if (x == BigInt(0)) then x
-//   else dummy(x - BigInt(1))
-// }.ensuring( res => res == BigInt(0))
+@tailrec
+def dummy(x: BigInt): BigInt = {
+  if (x == BigInt(0)) then x
+  else dummy(x - BigInt(1))
+}.ensuring( res => res == BigInt(0))
 // END imports for benchmarking ---------------------------------------------
-
 
 object VerifiedLexer {
   import VerifiedRegex._
@@ -362,7 +361,7 @@ object VerifiedLexer {
     }.ensuring(res => res == separableTokens(tokens, rules))
 
     
-
+    @tailrec
     override def tokensListTwoByTwoPredicateSeparable[C](v: Vector[Token[C]], from: BigInt, rules: List[Rule[C]]): Boolean = {
       require(from >= 0 && from <= v.size)
       require(!rules.isEmpty)
@@ -381,11 +380,7 @@ object VerifiedLexer {
           assert(v.list.contains(v(from)))
           assert(v.contains(v(from + 1)))
           assert(v.list.contains(v(from + 1)))
-          lemmaRulesProduceEachTokenIndividuallyThenForAnyToken(rules, v.list, v(from))
           lemmaRulesProduceEachTokenIndividuallyThenForAnyToken(rules, v.list, v(from + 1))
-          check(rulesProduceIndividualToken(rules, v(from)))
-          check(rulesProduceIndividualToken(rules, v(from + 1)))
-
           check(v(from + 1).charsOf.size > 0)
         })
         separableTokensPredicate(v(from), v(from + 1), rules) && tokensListTwoByTwoPredicateSeparable(v, from + 1, rules)
@@ -528,7 +523,7 @@ object VerifiedLexer {
       (res._1.list == lexList(rules, input.list)._1 && 
        res._2.list == lexList(rules, input.list)._2)
     )
-
+    @tailrec
     def lexTailRec[C](
         rules: List[Rule[C]],
         @ghost totalInput: Vector[C],
@@ -617,6 +612,8 @@ object VerifiedLexer {
       )
     }.ensuring (res => res == lex(rules, input))
 
+
+    @tailrec
     def lexTailRecMem[C](
         rules: List[Rule[C]],
         @ghost totalInput: Vector[C],
