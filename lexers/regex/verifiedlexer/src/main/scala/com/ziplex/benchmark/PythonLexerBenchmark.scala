@@ -9,7 +9,6 @@ import scala.compiletime.uninitialized
 import com.ziplex.lexer.VerifiedLexer.Lexer
 import com.ziplex.lexer.example.ExamplePythonLexer.PythonLexer
 import com.ziplex.lexer.example.RegexUtils.*
-import com.ziplex.lexer.Vector
 import com.ziplex.lexer.MemoisationZipper
 import com.ziplex.lexer.VerifiedRegex.Regex
 import com.mutablemaps.map.Hashable
@@ -17,6 +16,11 @@ import com.ziplex.lexer.ZipperRegex.Context
 import com.ziplex.lexer.benchmark.ContextCharHashable
 import com.ziplex.lexer.benchmark.RegexCharHashable
 import com.ziplex.lexer.benchmark.RegexContextCharHashable
+
+import com.ziplex.lexer.Sequence
+import com.ziplex.lexer.emptySeq
+import com.ziplex.lexer.singletonSeq
+import com.ziplex.lexer.seqFromList
 
 import java.io.File
 
@@ -104,7 +108,7 @@ object PythonLexerBenchmarkUtils {
         "Vector2D_802chars.py",
         "WordStats_346chars.py",
   )
-  val exampleFileContents: Map[String, Vector[Char]] = exampleFileNames.map(name => {
+  val exampleFileContents: Map[String, Sequence[Char]] = exampleFileNames.map(name => {
     val source = scala.io.Source.fromFile(s"src/main/scala/com/ziplex/example/res/python/$name")
     val lines = try source.mkString.toStainless finally source.close()
     (name -> lines)

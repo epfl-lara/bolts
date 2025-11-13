@@ -26,7 +26,8 @@ case class Vector[T](@pure @extern underlying: scala.collection.immutable.Vector
 
   // we have an invariant stating that if size < MAX_INT then overflowing.isEmpty
 
-  @ghost @pure @extern
+  // @ghost 
+  @pure @extern
   def list: List[T] = List.fromScala(underlying.toList) ++ overflowing
 
   @pure @extern @inlineOnce
@@ -232,12 +233,35 @@ case class Vector[T](@pure @extern underlying: scala.collection.immutable.Vector
   def dropList(n: BigInt): List[T] = {
     this.list.drop(n)
   }
+
+  @pure
+  def equivalentSequenceAs(other: Vector[T]): Boolean = {
+    if this.size != other.size then false
+    else
+      this.equivalentSequenceAsSameSize(other, BigInt(0))
+  }.ensuring(res => res == (this.list == other.list))
+
+  @pure
+  def equivalentSequenceAsSameSize(other: Vector[T], from: BigInt): Boolean = {
+    require(0 <= from && from <= this.size)
+    require(this.size == other.size)
+    decreases(this.size - from)
+    if from == this.size then true 
+    else
+      ghostExpr({
+        ListUtils.lemmaDropApply(this.list, from)
+        ListUtils.lemmaDropApply(other.list, from)
+        ListUtils.lemmaDropTail(this.list, from)
+        ListUtils.lemmaDropTail(other.list, from)
+      })
+      this(from) == other(from) && this.equivalentSequenceAsSameSize(other, from + 1)
+  }.ensuring(res => res == (this.list.drop(from) == other.list.drop(from)))
 }
 object Vector {
-  @pure @extern @inlineOnce @ghost
-  def listEqImpliesEq[T](v1: Vector[T], v2: Vector[T]): Unit = {
-    require(v1.list == v2.list)
-  }.ensuring(_ => v1 == v2)
+  // @pure @extern @inlineOnce @ghost
+  // def listEqImpliesEq[T](v1: Vector[T], v2: Vector[T]): Unit = {
+  //   require(v1.list == v2.list)
+  // }.ensuring(_ => v1 == v2)
 
   @pure @extern @inlineOnce @ghost
   def listApplyEqVecApply[T](v: Vector[T], i: BigInt): Unit = {
@@ -262,7 +286,7 @@ object Vector {
   @inlineOnce
   @opaque
   @ghost
-  def lemmaTwoListsConcatAssociativity[B](
+  def lemmaConcatAssociativity[B](
       l1: List[B],
       l2: List[B],
       l3: List[B]
@@ -270,7 +294,7 @@ object Vector {
     decreases(l1)
     l1 match {
       case Cons(hd, tl) => {
-        lemmaTwoListsConcatAssociativity(tl, l2, l3)
+        lemmaConcatAssociativity(tl, l2, l3)
       }
       case Nil() => ()
     }
@@ -287,7 +311,7 @@ object Vector {
         case Cons(x, xs) => 
           assert(rec(xs, v :+ x).list == (v :+ x).list ++ xs)
           assert((v :+ x).list == v.list ++ List(x))
-          ghostExpr(lemmaTwoListsConcatAssociativity(v.list, List(x), xs))
+          ghostExpr(lemmaConcatAssociativity(v.list, List(x), xs))
           assert((v.list ++ List(x)) ++ xs == v.list ++ (x :: xs))
           rec(xs, v :+ x)
       }
@@ -297,8 +321,8 @@ object Vector {
 
   @pure @extern @inlineOnce @ghost
   def fromListHdTlConstructive[T](hd: T, tl: List[T], v: Vector[T]): Unit = {
-    require(v == Vector.fromList(hd :: tl))
-  }.ensuring(_ => v == Vector.fromList(tl).prepend(hd))
+    require(v.list == Vector.fromList(hd :: tl).list)
+  }.ensuring(_ => v.list == Vector.fromList(tl).prepend(hd).list)
 
   @pure 
   def singleton[T](t: T): Vector[T] = {

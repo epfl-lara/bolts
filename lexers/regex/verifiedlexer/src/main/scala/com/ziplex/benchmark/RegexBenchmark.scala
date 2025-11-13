@@ -20,6 +20,11 @@ import com.ziplex.lexer.MemoisationZipper
 import com.ziplex.lexer.ZipperRegex.Context
 import com.mutablemaps.map.Hashable
 
+import com.ziplex.lexer.Sequence
+import com.ziplex.lexer.emptySeq
+import com.ziplex.lexer.singletonSeq
+import com.ziplex.lexer.seqFromList
+
 @State(Scope.Benchmark)
 class RegexBenchmark {
   import RegexBenchmarkUtils.given
@@ -347,7 +352,7 @@ object RegexBenchmarkUtils {
   val string_sizes = List(5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60, 65, 70, 75, 80, 85, 90, 95, 100, 105, 110, 115, 120, 130, 140, 150, 200)
   val abStar: Regex[Char] = ("a" | "b").*
 
-  val abStar_Accepting_strings: Map[Int, Vector[Char]] = string_sizes.map(n => (n, (1 to n).map(_ => random_a_or_b()).mkString.toStainless)).toMap
+  val abStar_Accepting_strings: Map[Int, Sequence[Char]] = string_sizes.map(n => (n, (1 to n).map(_ => random_a_or_b()).mkString.toStainless)).toMap
   val abStar_Accepting_strings_list: Map[Int, StainlessList[Char]] = string_sizes.map(n => (n, (1 to n).map(_ => random_a_or_b()).mkString.toStainlessList)).toMap
 
   val regexCache: MemoisationRegex.Cache[Char] = MemoisationRegex.empty(RegexCharHashable)
@@ -357,7 +362,7 @@ object RegexBenchmarkUtils {
   val possibleEmailChars = "abcdedfghijklmnopqrstuvwxyz."
   val emailRegex = possibleEmailChars.anyOf.+ ~ "@".r ~ possibleEmailChars.anyOf.+ ~ ".".r ~ possibleEmailChars.anyOf.+
 
-  val email_Accepting_strings: Map[Int, Vector[Char]] = string_sizes.map(n => (n, random_email_strings(n).toStainless)).toMap
+  val email_Accepting_strings: Map[Int, Sequence[Char]] = string_sizes.map(n => (n, random_email_strings(n).toStainless)).toMap
   val email_Accepting_strings_list: Map[Int, StainlessList[Char]] = string_sizes.map(n => (n, random_email_strings(n).toStainlessList)).toMap
   def random_a_or_b(): String = {
     if (r.nextBoolean()) "a" else "b"
@@ -415,13 +420,13 @@ object RegexBenchmarkUtils {
     res
   }
 
-  val comment_Accepting_strings: Map[Int, Vector[Char]] = string_sizes.map(n => (n, random_inline_comment(n).toStainless)).toMap
+  val comment_Accepting_strings: Map[Int, Sequence[Char]] = string_sizes.map(n => (n, random_inline_comment(n).toStainless)).toMap
   val comment_Accepting_strings_list: Map[Int, StainlessList[Char]] = string_sizes.map(n => (n, random_inline_comment(n).toStainlessList)).toMap
-  val comment_Accepting_strings_multiline: Map[Int, Vector[Char]] = string_sizes.map(n => (n, random_multiline_comment(n).toStainless)).toMap
+  val comment_Accepting_strings_multiline: Map[Int, Sequence[Char]] = string_sizes.map(n => (n, random_multiline_comment(n).toStainless)).toMap
   val comment_Accepting_strings_multiline_list: Map[Int, StainlessList[Char]] = string_sizes.map(n => (n, random_multiline_comment(n).toStainlessList)).toMap
 
-  val comment_Accepting_strings_realString: Map[Int, String] = comment_Accepting_strings.map { case (k, v) => (k, v.toScala.mkString("")) }
-  val comment_Accepting_strings_multiline_realString: Map[Int, String] = comment_Accepting_strings_multiline.map { case (k, v) => (k, v.toScala.mkString("")) }
+  val comment_Accepting_strings_realString: Map[Int, String] = comment_Accepting_strings.map { case (k, v) => (k, v.efficientList.mkString("")) }
+  val comment_Accepting_strings_multiline_realString: Map[Int, String] = comment_Accepting_strings_multiline.map { case (k, v) => (k, v.efficientList.mkString("")) }
 }
 
 object ScalaRegexUtils {

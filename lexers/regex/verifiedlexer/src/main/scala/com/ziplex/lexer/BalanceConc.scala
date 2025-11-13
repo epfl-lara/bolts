@@ -1,4 +1,6 @@
-// Simplification of: http://aleksandar-prokopec.com/resources/docs/lcpc-conc-trees.pdf
+// adapted from bolts version
+package com.ziplex.lexer
+
 import stainless.lang.{ghost => ghostExpr, _}
 import stainless.proof._
 //import stainless.lang.StaticChecks._
@@ -10,7 +12,7 @@ import stainless.lang.StaticChecks.*
 import com.ziplex.lexer.ListUtils
 
 
-object BalanceConc:
+object BalanceConcObj:
 
   sealed abstract class Conc[T]
   case class Empty[T]() extends Conc[T]
@@ -22,27 +24,191 @@ object BalanceConc:
             0 <= cheight)
   }
 
+  case class BalanceConc[T](c: Conc[T]) {
+    require(c.isBalanced)
+
+    @ghost inline def list: List[T] = c.list
+    def efficientList: List[T] = {
+      c.efficientList()
+    }.ensuring(res => list == this.list)
+    def size: BigInt = {
+      c.size
+    }.ensuring(res => res == this.list.size)
+    def isEmpty: Boolean = {
+      c.isEmpty
+    }.ensuring(res => res == this.list.isEmpty)
+    inline def height: BigInt = c.height
+    def apply(i: BigInt): T = {
+      require(0 <= i && i < this.size)
+      c(i)
+    }.ensuring(res => res == this.list.apply(i))
+    def contains(v: T): Boolean = {
+      c.contains(v)
+    }.ensuring(res => res == this.list.contains(v))
+    inline def isBalanced: Boolean = c.isBalanced
+    def head: T = {
+      require(!this.isEmpty)
+      c.head
+    }.ensuring(res => res == this.list.head)
+    def last: T = {
+      require(!this.isEmpty)
+      c.last
+    }.ensuring(res => res == this.list.last)
+
+    def forall(p: T => Boolean): Boolean = {
+      c.forall(p)
+      }.ensuring(res => res == this.list.forall(p))
+    def exists(p: T => Boolean): Boolean = {
+      c.exists(p)
+      }.ensuring(_ == this.list.exists(p))
+    @ghost def dropList(n: BigInt): List[T] = c.dropList(n)
+    def ++(ys: BalanceConc[T]): BalanceConc[T] = { 
+      assert(c.isBalanced && ys.c.isBalanced)
+      BalanceConc(c ++ ys.c)
+    }.ensuring(res => 
+      appendAssocInst(this.c, ys.c) &&
+      res.isBalanced &&
+      res.height <= max(this.height, ys.height) + 1 &&
+      res.height >= max(this.height, ys.height) &&
+      res.list == this.list ++ ys.list)
+
+    def map[B](f: T => B): BalanceConc[B] = {
+      BalanceConc(c.map(f))
+    }.ensuring(res => res.list == this.list.map(f) && res.isBalanced)
+
+    def slice(from: BigInt, until: BigInt): BalanceConc[T] = {
+      require(0 <= from && from <= until && until <= this.size && this.isBalanced)
+      BalanceConc(c.slice(from, until))
+    }.ensuring(res => res.isBalanced && res.list == this.list.slice(from, until))
+
+    def splitAt(i: BigInt): (BalanceConc[T], BalanceConc[T]) = {
+      require(this.isBalanced)
+      require(0 <= i && i <= this.size)
+      val split = c.splitAt(i)
+      (BalanceConc(split._1), BalanceConc(split._2))
+    }.ensuring(res => (res._1.isBalanced && res._2.isBalanced) && (res._1.list, res._2.list) == this.list.splitAtIndex(i))
+
+    def filter(p: T => Boolean): BalanceConc[T] = {
+      BalanceConc(c.filter(p))
+    }.ensuring(res => res.isBalanced && res.list == this.list.filter(p))
+
+    def append(v: T): BalanceConc[T] = {
+      BalanceConc(c.append(v))
+    }.ensuring(res => res.isBalanced && res.list == (this.list :+ v))
+    def prepend(v: T): BalanceConc[T] = {
+      BalanceConc(c.prepend(v))
+    }.ensuring(res => res.isBalanced && res.list == (Cons(v, this.list)))
+    def tail: BalanceConc[T] = {
+      require(!this.isEmpty)
+      BalanceConc(c.tail)
+    }.ensuring(res => res.isBalanced && res.list == this.list.tail)
+
+  }
+
+  def emptyB[T]: BalanceConc[T] = BalanceConc(Empty())
+
+  @pure @extern @inlineOnce @ghost
+  def fromListHdTlConstructive[T](hd: T, tl: List[T], bc: BalanceConc[T]): Unit = {
+    require(bc.list == fromList(hd :: tl).list)
+  }.ensuring(_ => bc.list == fromList(tl).prepend(hd).list)
+
+  @pure @opaque 
+  def fromList[T](l: List[T]): Conc[T] = {
+    def rec(ll: List[T], c: Conc[T]): Conc[T] = {
+      require(c.isBalanced)
+      decreases(ll.size)
+      ll match {
+        case Nil() => c
+        case Cons(x, xs) => 
+          assert(rec(xs, c.append(x)).list == (c.append(x)).list ++ xs)
+          assert((c.append(x)).list == c.list ++ List(x))
+          ghostExpr(ListUtils.lemmaConcatAssociativity(c.list, List(x), xs))
+          assert((c.list ++ List(x)) ++ xs == c.list ++ (x :: xs))
+          rec(xs, c.append(x))
+      }
+    }.ensuring(res => res.list == c.list ++ ll && res.isBalanced)
+    rec(l, Empty[T]())
+  }.ensuring(res => res.list == l && res.isBalanced)
+
+  @pure @opaque 
+  def fromListB[T](l: List[T]): BalanceConc[T] = {
+    BalanceConc(fromList(l))
+  }.ensuring(res => res.list == l)
+
+  def singleton[T](v: T): BalanceConc[T] = BalanceConc(Leaf(v))
+
+  @pure @extern @inlineOnce @ghost
+  def fromListHdTlConstructive[T](hd: T, tl: List[T], bc: Conc[T]): Unit = {
+    require(bc.list == fromList(hd :: tl).list)
+  }.ensuring(_ => bc.list == fromList(tl).prepend(hd).list)
+
+  @pure @extern @inlineOnce @ghost
+  def fromListBHdTlConstructive[T](hd: T, tl: List[T], bc: BalanceConc[T]): Unit = {
+    require(bc.list == fromList(hd :: tl).list)
+  }.ensuring(_ => bc.list == fromList(tl).prepend(hd).list)
+
   def max(x: BigInt, y: BigInt) =
     if x < y then y else x
   def abs(x: BigInt) =
     if 0 <= x then x else -x
 
+  @ghost 
+  def appendAssocInst[T](xs: Conc[T], ys: Conc[T]): Boolean = {
+    (xs match {
+      case Node(l, r, _, _) =>
+        appendAssoc(l.list, r.list, ys.list) && //instantiation of associativity of concatenation
+          (r match {
+            case Node(rl, rr, _, _) =>
+              appendAssoc(rl.list, rr.list, ys.list) &&
+                appendAssoc(l.list, rl.list, rr.list ++ ys.list)
+            case _ => true
+          })
+      case _ => true
+    }) &&
+    (ys match {
+        case Node(l, r, _, _) =>
+          appendAssoc(xs.list, l.list, r.list) &&
+            (l match {
+              case Node(ll, lr, _, _) =>
+                appendAssoc(xs.list, ll.list, lr.list) &&
+                  appendAssoc(xs.list ++ ll.list, lr.list, r.list)
+              case _ => true
+            })
+        case _ => true
+    })
+  }.holds
+
+  @ghost 
+  def appendAssocInstB[T](xs: BalanceConc[T], ys: BalanceConc[T]): Boolean = {
+    appendAssocInst(xs.c, ys.c)
+  }.holds
+
   extension[T](t: Conc[T])
-    def toList: List[T] = t match
+    def list: List[T] = t match
       case Empty() => Nil[T]()
       case Leaf(x) => List(x)
-      case Node(l, r, _, _) => l.toList ++ r.toList
+      case Node(l, r, _, _) => l.list ++ r.list
+
+    def efficientList(acc: List[T] = Nil[T]()): List[T] = {
+      t match
+        case Empty() => acc
+        case Leaf(x) => Cons(x, acc)
+        case Node(l, r, _, _) => 
+          ghostExpr(ListUtils.lemmaConcatAssociativity(l.list, r.list, acc))
+          l.efficientList(r.efficientList(acc))
+
+    }.ensuring(res => res == (t.list ++ acc))
 
     def size: BigInt = {
       t match
         case Empty() => BigInt(0)
         case Leaf(_) => BigInt(1)
         case Node(_, _, csize, _) => csize
-    }.ensuring(_ == t.toList.size)
+    }.ensuring(_ == t.list.size)
 
     def isEmpty: Boolean = {
       t.size == 0
-    }.ensuring(res => res == t.toList.isEmpty)
+    }.ensuring(res => res == t.list.isEmpty)
 
     def height: BigInt = 
       t match 
@@ -55,17 +221,17 @@ object BalanceConc:
       t match
         case Leaf(x) => assert(i == 0); x
         case Node(l, r, _, _) =>
-          appendIndex(l.toList, r.toList, i) // lemma
+          appendIndex(l.list, r.list, i) // lemma
           if i < l.size then l(i)
           else r(i - l.size)
-    }.ensuring(_ == t.toList(i))
+    }.ensuring(_ == t.list(i))
 
     def contains(v: T): Boolean = {
       t match
         case Empty() => false
         case Leaf(x) => v == x
         case Node(l, r, _, _) =>  l.contains(v) || r.contains(v)
-    }.ensuring(_ == t.toList.contains(v))
+    }.ensuring(_ == t.list.contains(v))
 
     def isBalanced: Boolean = {
       t match {
@@ -81,7 +247,7 @@ object BalanceConc:
         case Leaf(x) => x
         case Node(l, r, _, _) if l.isEmpty => r.head
         case Node(l, r, _, _) => l.head
-    }.ensuring(res => res == t.toList.head)
+    }.ensuring(res => res == t.list.head)
 
     def last: T = {
       require(!t.isEmpty)
@@ -89,9 +255,9 @@ object BalanceConc:
         case Leaf(x) => x
         case Node(l, r, _, _) if r.isEmpty => l.last
         case Node(l, r, _, _) => 
-          ghostExpr(ListUtils.lemmaLastOfConcatIsLastOfRhs(l.toList, r.toList))
+          ghostExpr(ListUtils.lemmaLastOfConcatIsLastOfRhs(l.list, r.list))
           r.last
-    }.ensuring(res => res == t.toList.last)
+    }.ensuring(res => res == t.list.last)
 
     def forall(p: T => Boolean): Boolean = {
       decreases(t.height)
@@ -99,10 +265,10 @@ object BalanceConc:
         case Empty() => true
         case Leaf(x) => p(x)
         case Node(l, r, _, _) => 
-          ghostExpr(ListUtils.lemmaForallConcat(l.toList, r.toList, p))
+          ghostExpr(ListUtils.lemmaForallConcat(l.list, r.list, p))
           l.forall(p) && r.forall(p)
       }
-    }.ensuring(res => res == t.toList.forall(p))
+    }.ensuring(res => res == t.list.forall(p))
 
     def exists(p: T => Boolean): Boolean = {
       decreases(t.height)
@@ -110,22 +276,15 @@ object BalanceConc:
         case Empty() => false
         case Leaf(x) => p(x)
         case Node(l, r, _, _) => 
-          ghostExpr(ListUtils.lemmaExistsConcat(l.toList, r.toList, p))
+          ghostExpr(ListUtils.lemmaExistsConcat(l.list, r.list, p))
           l.exists(p) || r.exists(p)
       }
-    }.ensuring(_ == t.toList.exists(p))
+    }.ensuring(_ == t.list.exists(p))
 
-    def map[B](f: T => B): Conc[B] = {
-      decreases(t.height)
-      t match {
-        case Empty() => Empty[B]()
-        case Leaf(x) => Leaf(f(x))
-        case Node(l, r, cs, ch) => 
-          ghostExpr(ListUtils.lemmaMapConcat(l.toList, r.toList, f))
-          assert((l.toList ++ r.toList).map(f) == (l.toList.map(f) ++ r.toList.map(f)))
-          Node(l.map(f), r.map(f), cs, ch)
-      }
-    }.ensuring(res => res.toList == t.toList.map(f))
+    @pure @ghost @inlineOnce
+    def dropList(n: BigInt): List[T] = {
+      t.list.drop(n)
+    }
 
   extension[T](xs: Conc[T])
     /**
@@ -138,7 +297,7 @@ object BalanceConc:
       else if ys == Empty[T]() then xs
       else Node(xs, ys, xs.size + ys.size, 
                         max(xs.height, ys.height) + 1)
-    }.ensuring(_.toList == xs.toList ++ ys.toList)
+    }.ensuring(_.list == xs.list ++ ys.list)
 
     /**
       * Concatenate xs with ys preserving balancing
@@ -184,35 +343,55 @@ object BalanceConc:
         res.isBalanced &&
         res.height <= max(xs.height, ys.height) + 1 &&
         res.height >= max(xs.height, ys.height) &&
-        res.toList == xs.toList ++ ys.toList)
+        res.list == xs.list ++ ys.list)
 
-  @ghost 
-  def appendAssocInst[T](xs: Conc[T], ys: Conc[T]): Boolean = {
-    (xs match {
-      case Node(l, r, _, _) =>
-        appendAssoc(l.toList, r.toList, ys.toList) && //instantiation of associativity of concatenation
-          (r match {
-            case Node(rl, rr, _, _) =>
-              appendAssoc(rl.toList, rr.toList, ys.toList) &&
-                appendAssoc(l.toList, rl.toList, rr.toList ++ ys.toList)
-            case _ => true
-          })
-      case _ => true
-    }) &&
-    (ys match {
-        case Node(l, r, _, _) =>
-          appendAssoc(xs.toList, l.toList, r.toList) &&
-            (l match {
-              case Node(ll, lr, _, _) =>
-                appendAssoc(xs.toList, ll.toList, lr.toList) &&
-                  appendAssoc(xs.toList ++ ll.toList, lr.toList, r.toList)
-              case _ => true
-            })
-        case _ => true
-    })
-  }.holds
+    /**
+      * Compare with the other balance conc at the sequence level,
+      * i.e., returns true if the two balance concs represent the same sequence
+      *
+      * @return
+      */
+    def sameSeqAs(ys: Conc[T]): Boolean = {
+      if xs.size != ys.size then false else xs.sameSeqAsFrom(ys, 0)
+    }.ensuring(res => res == (xs.list == ys.list))
+
+    /**
+      * Compare with the other balance conc at the sequence level,
+      * i.e., returns true if the two balance concs represent the same sequence
+      * 
+      * starting at the index from, used as a sub function of sameSeqAs
+      *
+      * @return
+      */
+    def sameSeqAsFrom(ys: Conc[T], from: BigInt): Boolean = {
+      require(xs.size == ys.size)
+      require(0 <= from && from <= xs.size)
+      decreases(xs.size - from)
+      if from >= xs.size then true
+      else
+        ghostExpr({
+          ListUtils.lemmaDropApply(xs.list, from)
+          ListUtils.lemmaDropApply(ys.list, from)
+          ListUtils.lemmaDropTail(xs.list, from)
+          ListUtils.lemmaDropTail(ys.list, from)
+        })
+        xs(from) == ys(from) && sameSeqAsFrom(ys, from + 1)
+    }.ensuring(res => res == (xs.dropList(from) == ys.dropList(from)))
 
   extension[T](t: Conc[T])
+    def map[B](f: T => B): Conc[B] = {
+      require(t.isBalanced)
+      decreases(t.height)
+      t match {
+        case Empty() => Empty[B]()
+        case Leaf(x) => Leaf(f(x))
+        case Node(l, r, cs, ch) => 
+          ghostExpr(ListUtils.lemmaMapConcat(l.list, r.list, f))
+          assert((l.list ++ r.list).map(f) == (l.list.map(f) ++ r.list.map(f)))
+          Node(l.map(f), r.map(f), cs, ch)
+      }
+    }.ensuring(res => res.list == t.list.map(f) && res.isBalanced)
+
     def slice(from: BigInt, until: BigInt): Conc[T] = {
       require(0 <= from && from <= until && until <= t.size && t.isBalanced)
       decreases(t)
@@ -223,14 +402,14 @@ object BalanceConc:
             if from == 0 && until == 1 then t
             else Empty[T]()
           case Node(l, r, _, _) =>
-            ghostExpr(sliceLemma(l.toList, r.toList, from, until)) // lemma
+            ghostExpr(sliceLemma(l.list, r.list, from, until)) // lemma
             if l.size <= from then r.slice(from - l.size, until - l.size)
             else if until <= l.size then l.slice(from, until)
             else            
               val l1 = l.slice(from, l.size)
               val r1 = r.slice(0, until - l.size)
               l1 ++ r1
-    }.ensuring(res => res.isBalanced && res.toList == t.toList.slice(from, until))
+    }.ensuring(res => res.isBalanced && res.list == t.list.slice(from, until))
 
     def splitAt(i: BigInt): (Conc[T], Conc[T]) = {
       require(t.isBalanced)
@@ -242,7 +421,7 @@ object BalanceConc:
           if i <= 0 then (Empty[T](), t)
           else (t, Empty[T]())
         case Node(l, r, _, _) =>
-          ghostExpr(splitAtLemma(l.toList, r.toList, i))
+          ghostExpr(splitAtLemma(l.list, r.list, i))
           if l.size == i then (l, r)
           else if i < l.size then 
             val (l1, l2) = l.splitAt(i)
@@ -250,7 +429,7 @@ object BalanceConc:
           else 
             val (r1, r2) = r.splitAt(i - l.size)
             (l ++ r1, r2)
-    }.ensuring(res => (res._1.isBalanced && res._2.isBalanced) && (res._1.toList, res._2.toList) == t.toList.splitAtIndex(i))
+    }.ensuring(res => (res._1.isBalanced && res._2.isBalanced) && (res._1.list, res._2.list) == t.list.splitAtIndex(i))
 
     def filter(p: T => Boolean): Conc[T] = {
       require(t.isBalanced)
@@ -259,20 +438,20 @@ object BalanceConc:
         case Leaf(x) if p(x) => t
         case Leaf(x) if !p(x) => Empty[T]()
         case Node(l, r, _, _) =>
-          ghostExpr(ListUtils.lemmaFilterConcat(l.toList, r.toList, p))
-          assert((l.toList ++ r.toList).filter(p) == (l.toList.filter(p) ++ r.toList.filter(p)))
+          ghostExpr(ListUtils.lemmaFilterConcat(l.list, r.list, p))
+          assert((l.list ++ r.list).filter(p) == (l.list.filter(p) ++ r.list.filter(p)))
           l.filter(p) ++ r.filter(p)
-    }.ensuring(res => res.isBalanced && res.toList == t.toList.filter(p))
+    }.ensuring(res => res.isBalanced && res.list == t.list.filter(p))
 
     def append(v: T): Conc[T] = {
       require(t.isBalanced)
       t ++ Leaf(v)
-    }.ensuring(res => res.isBalanced && res.toList == (t.toList :+ v))
+    }.ensuring(res => res.isBalanced && res.list == (t.list :+ v))
 
     def prepend(v: T): Conc[T] = {
       require(t.isBalanced)
       Leaf(v) ++ t
-    }.ensuring(res => res.isBalanced && res.toList == (Cons(v, t.toList)))
+    }.ensuring(res => res.isBalanced && res.list == (Cons(v, t.list)))
 
     def tail: Conc[T] = {
       require(t.isBalanced)
@@ -282,53 +461,10 @@ object BalanceConc:
         // case Node(l, r, _, _) if l.size == 1 => r
         case Node(l, r, _, _) if l.isEmpty => r.tail
         case Node(l, r, _, _) => 
-          ghostExpr(ListUtils.lemmaTailOfConcatIsTailConcat(l.toList, r.toList))
-          assert((l.toList ++ r.toList).tail == (l.toList.tail ++ r.toList))
+          ghostExpr(ListUtils.lemmaTailOfConcatIsTailConcat(l.list, r.list))
+          assert((l.list ++ r.list).tail == (l.list.tail ++ r.list))
           l.tail ++ r
-    }.ensuring(res => res.isBalanced && res.toList == t.toList.tail)
-
-
-  extension[T](t: Conc[T])
-    @extern
-    def toStr: Vector[String] = 
-      t match
-        case Empty() => Vector("Empty()")
-        case Leaf(x) => Vector("Leaf(" + x.toString + ")")
-        case Node(l, r, csize, _) =>
-          if csize <= 4 then
-            Vector("Node(" + l.toStr.head + ", " + r.toStr.head + ")")
-          else  
-            val ls = l.toStr
-            val rs = r.toStr          
-            def indent(k: Int) = (s: String) => " " * k + s
-            val lsNode = Vector("Node(" + ls.head) ++
-                                      ls.tail.map(indent(3))
-            val lsNodecomma = lsNode.init ++ Vector(lsNode.last + ",")
-            val rsIndent = rs.map(indent(3))
-            val rsIndentClosed = rsIndent.init ++ Vector(rsIndent.last + ")")
-            lsNodecomma ++ rsIndentClosed
-    end toStr
-
-  extension[T](t: Conc[T])
-    @extern
-    def toDraw: Vector[String] = // note that down is left
-      t match
-        case Empty() => Vector("()")
-        case Leaf(x) => Vector(x.toString)
-        case Node(l, r, csize, _) =>
-          val ls = r.toDraw
-          val rs = l.toDraw      
-          val p = 3* ls.size / 2 // push first subtree right for visual balance
-          val ls1 = Vector("┬" + "─"*p + ls.head) ++
-                    ls.tail.map("│" + " "*p + _)
-          val rs1 = Vector("└" + rs.head) ++
-                    rs.tail.map(" " + _)
-          ls1 ++ rs1
-    end toDraw
-
-  @extern
-  def show[T](t: Conc[T]): String = 
-    t.toDraw.mkString("\n")
+    }.ensuring(res => res.isBalanced && res.list == t.list.tail)
 
   def mkTree(from: Int, until: Int): Conc[Int] =
     require(0 <= from && from <= until && until <= 1_000_000)
@@ -339,20 +475,6 @@ object BalanceConc:
       val mid = from + (until - from)/2
       mkTree(from, mid) ++ mkTree(mid, until)    
 
-  @extern
-  def test =
-    val c1: Conc[Int] = (1 to 8).map(Leaf(_)).foldRight[Conc[Int]](Empty())((a, b) => a <> b)
-    println(f"\nc1.height = ${c1.height}, isBalanced=${c1.isBalanced}")
-    println(show(c1))
-    val c2: Conc[Int] = (1 to 8).map(Leaf(_)).foldLeft[Conc[Int]](Empty())((a, b) => a <> b)
-    println(f"\nc2.height = ${c2.height}, isBalanced=${c2.isBalanced}")
-    println(show(c2))
-    val c3 = mkTree(1, 9)
-    val c4 = mkTree(0,1) ++ ((c3 ++ mkTree(9, 11)) ++ mkTree(12, 14))
-    println(f"\nc4.height = ${c4.height}, isBalanced=${c4.isBalanced}")
-    println(show(c4))
-    println(show(c4.slice(3,8)))
-
 
   // **************************************************************************
   // lemmas for proofs
@@ -362,7 +484,7 @@ object BalanceConc:
   // @ghost @inlineOnce @opaque
   // def listEqImpliesEq[T](c1: Conc[T], c2: Conc[T]): Unit = {
   //   require(c1.isBalanced && c2.isBalanced)
-  //   require(c1.toList == c2.toList)
+  //   require(c1.list == c2.list)
   //   decreases(c1)
   //   (c1, c2) match
   //     case (Empty(), Empty()) => assert(c2 == c1)  
@@ -451,5 +573,6 @@ object BalanceConc:
   }
 */
 
-end BalanceConc
+end BalanceConcObj
+
 

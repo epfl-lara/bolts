@@ -15,6 +15,11 @@ import stainless.lang.Option
 import stainless.lang.Some
 import stainless.lang.None
 
+import com.ziplex.lexer.Sequence
+import com.ziplex.lexer.emptySeq
+import com.ziplex.lexer.singletonSeq
+import com.ziplex.lexer.seqFromList
+
 object Main {
   def main(args: Array[String]): Unit = {
     tokenizeJsonFile("src/main/scala/com/ziplex/example/res/json/example-for-sorting.json", "src/main/scala/com/ziplex/example/res/json/example-for-sorting.json.tokens")
@@ -40,7 +45,7 @@ object Main {
     println(f"Suffix tokens for file '$filepath':\n${suffix}")
     assert(suffix.isEmpty)
     val tokenStrings = tokens.map(t => t.asString())
-    val tokenString = tokenStrings.toScala.mkString("\n")
+    val tokenString = tokenStrings.efficientList.mkString("\n")
     // Write to file
     val writer = new java.io.PrintWriter(new java.io.File(destFilePath))
     writer.write(tokenString)
@@ -50,7 +55,7 @@ object Main {
 
   def regexZipperExample() = {
     val r: Regex[Char] = ("a".r | "b".r).* ~ "c".r
-    val input: Vector[Char] = "ababc".toStainless
+    val input: Sequence[Char] = "ababc".toStainless
     assert(matchZipperVector(r, input))
     assert(matchZipperVectorMem(r, input)(using ExampleUtils.zipperCacheUp, ExampleUtils.zipperCacheDown))
 

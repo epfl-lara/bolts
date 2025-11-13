@@ -743,7 +743,7 @@ object ListUtils {
                               // splitAtIndexTr(tl, i - 1, acc ++ List(hd))
                               lemmaSplitAtIndexTrEqualsSplitAtIndex(tl, i - 1, acc ++ List(hd))
                               assert(splitAtIndexTr(tl, i - 1, acc ++ List(hd)) == ((acc ++ List(hd)) ++ tl.splitAtIndex(i - 1)._1, tl.splitAtIndex(i - 1)._2))
-                              ListUtils.lemmaTwoListsConcatAssociativity(acc, List(hd), tl.splitAtIndex(i - 1)._1)
+                              ListUtils.lemmaConcatAssociativity(acc, List(hd), tl.splitAtIndex(i - 1)._1)
                               assert(splitAtIndexTr(tl, i - 1, acc ++ List(hd)) == (acc ++ (List(hd) ++ tl.splitAtIndex(i - 1)._1), tl.splitAtIndex(i - 1)._2))
     }
    
@@ -1001,12 +1001,12 @@ object ListUtils {
   @inlineOnce
   @opaque
   @ghost
-  def lemmaConcatAssociativity[B](l1: List[B], elmt: B, l2: List[B], tot: List[B]): Unit = {
+  def lemmaConcatElemAssociativity[B](l1: List[B], elmt: B, l2: List[B], tot: List[B]): Unit = {
     require((l1 ++ List(elmt)) ++ l2 == tot)
     decreases(l1)
     assert(l1 ++ List(elmt) ++ l2 == tot)
     l1 match {
-      case Cons(hd, tl) => lemmaConcatAssociativity(tl, elmt, l2, tot.tail)
+      case Cons(hd, tl) => lemmaConcatElemAssociativity(tl, elmt, l2, tot.tail)
       case Nil()        => ()
     }
   }.ensuring (_ => l1 ++ (List(elmt) ++ l2) == tot)
@@ -1014,7 +1014,7 @@ object ListUtils {
   @inlineOnce
   @opaque
   @ghost
-  def lemmaTwoListsConcatAssociativity[B](
+  def lemmaConcatAssociativity[B](
       l1: List[B],
       l2: List[B],
       l3: List[B]
@@ -1022,7 +1022,7 @@ object ListUtils {
     decreases(l1)
     l1 match {
       case Cons(hd, tl) => {
-        lemmaTwoListsConcatAssociativity(tl, l2, l3)
+        lemmaConcatAssociativity(tl, l2, l3)
       }
       case Nil() => ()
     }
@@ -1293,7 +1293,7 @@ object ListUtils {
           assert(ListSpecs.subseq(res, baseList ++ tl))
           lemmaBiggerSndListPreservesSubSeq(res, baseList, tl, List(hd))
   
-          lemmaTwoListsConcatAssociativity(baseList, List(hd), tl)
+          lemmaConcatAssociativity(baseList, List(hd), tl)
           assert( baseList ++ (List(hd) ++ tl) ==  baseList ++ List(hd) ++ tl)
           assert(ListSpecs.subseq(res, baseList ++ (List(hd) ++ tl)))
 
@@ -1310,7 +1310,7 @@ object ListUtils {
           assert( ListOps.noDuplicate(res) )
           assert(((baseList ++ List(hd)) ++ newList).content == res.content)
           assert(ListSpecs.subseq(res, (baseList ++ List(hd)) ++ tl))
-          lemmaTwoListsConcatAssociativity(baseList, List(hd), tl)
+          lemmaConcatAssociativity(baseList, List(hd), tl)
           assert(ListSpecs.subseq(res, baseList ++ (List(hd) ++ tl)))
 
           assert(isPrefix(baseList ++ List(hd), res))
@@ -1386,6 +1386,18 @@ object ListUtils {
       case _        => ()
     }
   }.ensuring (_ => (l1 ++ l2).tail == l1.tail ++ l2)
+
+  @inlineOnce
+  @opaque
+  @ghost
+  def lemmaLastOfConcatIsLastOfRhs[B](l1: List[B], l2: List[B]): Unit = {
+    require(!(l1 ++ l2).isEmpty)
+    decreases(l1)
+    l1 match {
+      case Cons(hd, tl) if !tl.isEmpty => lemmaLastOfConcatIsLastOfRhs(tl, l2)
+      case _        => ()
+    }
+  }.ensuring (_ => (l2.isEmpty && ((l1 ++ l2).last == l1.last)) || (!l2.isEmpty && (l1 ++ l2).last == l2.last))
 
   @inlineOnce
   @opaque
@@ -1480,6 +1492,51 @@ object ListUtils {
     }
   }.ensuring (_ => (l1 ++ l2).forall(p))
 
+
+  @ghost
+  @opaque
+  // @inlineOnce
+  def lemmaForallConcat[B](l1: List[B], l2: List[B], p: B => Boolean): Unit = {
+    l1 match {
+      case Cons(hd1, tl1) => 
+        lemmaForallConcat(tl1, l2, p)
+      case _ => ()
+    }
+  }.ensuring(_ => (l1 ++ l2).forall(p) == (l1.forall(p) && l2.forall(p)))
+
+  @ghost
+  @opaque
+  // @inlineOnce
+  def lemmaExistsConcat[B](l1: List[B], l2: List[B], p: B => Boolean): Unit = {
+    l1 match {
+      case Cons(hd1, tl1) => 
+        lemmaExistsConcat(tl1, l2, p)
+      case _ => ()
+    }
+  }.ensuring(_ => (l1 ++ l2).exists(p) == (l1.exists(p) || l2.exists(p)))
+
+  @ghost
+  @opaque
+  // @inlineOnce
+  def lemmaFilterConcat[B](l1: List[B], l2: List[B], p: B => Boolean): Unit = {
+    l1 match {
+      case Cons(hd1, tl1) => 
+        lemmaFilterConcat(tl1, l2, p)
+      case _ => ()
+    }
+  }.ensuring(_ => (l1 ++ l2).filter(p) == (l1.filter(p) ++ l2.filter(p)))
+
+  @ghost
+  @opaque
+  // @inlineOnce
+  def lemmaMapConcat[B, A](l1: List[B], l2: List[B], p: B => A): Unit = {
+    l1 match {
+      case Cons(hd1, tl1) => 
+        lemmaMapConcat(tl1, l2, p)
+      case _ => ()
+    }
+  }.ensuring(_ => (l1 ++ l2).map(p) == (l1.map(p) ++ l2.map(p)))
+
   // @inlineOnce 
   @opaque
   @ghost
@@ -1534,6 +1591,18 @@ object ListUtils {
       case Nil()                   => ()
     }
   }.ensuring (_ => !(l1 ++ l2).contains(b))
+
+  @inlineOnce
+  @opaque
+  @ghost
+  def lemmaConcatContainsDisjunctionOfEach[B](l1: List[B], l2: List[B], b: B): Unit = {
+    decreases(l1)
+    l1 match {
+      case Cons(hd, tl) if hd == b => ()
+      case Cons(hd, tl)            => lemmaConcatContainsDisjunctionOfEach(tl, l2, b)
+      case Nil()                   => ()
+    }
+  }.ensuring (_ => (l1 ++ l2).contains(b) == (l1.contains(b) || l2.contains(b)))
 
   @inlineOnce
   @opaque
