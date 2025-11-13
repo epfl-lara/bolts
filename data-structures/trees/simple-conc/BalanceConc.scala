@@ -22,6 +22,24 @@ object BalanceConc:
             0 <= cheight)
   }
 
+  @pure @opaque 
+  def fromList[T](l: List[T]): Conc[T] = {
+    def rec(ll: List[T], c: Conc[T]): Conc[T] = {
+      require(c.isBalanced)
+      decreases(ll.size)
+      ll match {
+        case Nil() => c
+        case Cons(x, xs) => 
+          assert(rec(xs, c.append(x)).toList == (c.append(x)).toList ++ xs)
+          assert((c.append(x)).toList == c.toList ++ List(x))
+          ghostExpr(ListUtils.lemmaTwoListsConcatAssociativity(c.toList, List(x), xs))
+          assert((c.toList ++ List(x)) ++ xs == c.toList ++ (x :: xs))
+          rec(xs, c.append(x))
+      }
+    }.ensuring(res => res.toList == c.toList ++ ll)
+    rec(l, Empty[T]())
+  }.ensuring(_.toList == l)
+
   def max(x: BigInt, y: BigInt) =
     if x < y then y else x
   def abs(x: BigInt) =
