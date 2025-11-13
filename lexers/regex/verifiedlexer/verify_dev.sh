@@ -10,7 +10,7 @@ stainless-dotty\
  src/main/scala/com/ziplex/example/JSONLexer.scala\
  src/main/scala/com/ziplex/example/JsonManipulation.scala\
  src/main/scala/com/ziplex/example/AmyLexer.scala\
+ src/main/scala/com/ziplex/example/PythonLexer.scala\
  --config-file=stainless.conf\
  -D-parallel=16\
  $1
-#  src/main/scala/com/ziplex/example/PythonLexer.scala\

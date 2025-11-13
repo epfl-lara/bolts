@@ -7,9 +7,10 @@ import com.ziplex.lexer.ZipperRegex._
 import com.ziplex.lexer.Token
 import stainless.annotation.extern
 import scala.annotation.tailrec
-import com.ziplex.lexer.BalanceConcObj.BalanceConc
-import com.ziplex.lexer.BalanceConcObj
-import com.ziplex.lexer.BalanceConcObj.emptyB
+import com.ziplex.lexer.Sequence
+import com.ziplex.lexer.emptySeq
+import com.ziplex.lexer.singletonSeq
+import com.ziplex.lexer.seqFromList
 
 @extern
 object RegexUtils:
@@ -24,7 +25,7 @@ object RegexUtils:
   extension (s: String) def * : Regex[Char] = r(s).*
   extension (s: String) def anyOf: Regex[Char] = s.toCharArray().foldRight[Regex[Char]](EmptyLang())((c, acc) => if isEmptyLang(acc) then ElementMatch(c) else Union(ElementMatch(c), acc))
   def opt(r: Regex[Char]): Regex[Char] = r | epsilon
-  extension (s: String) def toStainless: BalanceConc[Char] = s.toCharArray().foldLeft[BalanceConc[Char]](emptyB)((acc, c) => acc.append(c))
+  extension (s: String) def toStainless: Sequence[Char] = s.toCharArray().foldLeft[Sequence[Char]](emptySeq)((acc, c) => acc.append(c))
   extension (r: Regex[Char]) def asString(): String = r match {
     case EmptyLang() => "∅"
     case EmptyExpr() => "ε"
@@ -65,7 +66,7 @@ object RegexUtils:
   }
 
   extension (t: Token[Char]) def asString(): String = 
-    def replaceSpecialCharacters(l: BalanceConc[Char]): BalanceConc[String] = 
+    def replaceSpecialCharacters(l: Sequence[Char]): Sequence[String] = 
       t.charsOf.map(c => if c == '\t' then "\\t" else if c == '\n' then "\\n" else f"$c")
       
     s"Token(${t.rule.tag}, \"${replaceSpecialCharacters(t.charsOf).list.mkString("")}\")"

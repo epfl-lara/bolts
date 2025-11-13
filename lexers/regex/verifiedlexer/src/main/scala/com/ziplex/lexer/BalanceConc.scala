@@ -107,6 +107,11 @@ object BalanceConcObj:
 
   def emptyB[T]: BalanceConc[T] = BalanceConc(Empty())
 
+  @pure @extern @inlineOnce @ghost
+  def fromListHdTlConstructive[T](hd: T, tl: List[T], bc: BalanceConc[T]): Unit = {
+    require(bc.list == fromList(hd :: tl).list)
+  }.ensuring(_ => bc.list == fromList(tl).prepend(hd).list)
+
   @pure @opaque 
   def fromList[T](l: List[T]): Conc[T] = {
     def rec(ll: List[T], c: Conc[T]): Conc[T] = {

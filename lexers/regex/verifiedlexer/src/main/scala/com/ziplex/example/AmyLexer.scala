@@ -18,8 +18,10 @@ import com.ziplex.lexer.example.RegexUtils.*
 import com.ziplex.lexer.example.RegexUtils.digits
 import stainless.lang.Quantifiers.*
 
-import com.ziplex.lexer.BalanceConcObj.BalanceConc
-import com.ziplex.lexer.BalanceConcObj
+import com.ziplex.lexer.Sequence
+import com.ziplex.lexer.emptySeq
+import com.ziplex.lexer.singletonSeq
+import com.ziplex.lexer.seqFromList
 import com.ziplex.lexer.semiInverseBodyModEq
 import com.ziplex.lexer.semiInverseModEq
 import com.ziplex.lexer.equivClassesBody
@@ -113,12 +115,12 @@ object ExampleAmyLexer:
         case class CommentValue(value: List[Char]) extends TokenValue
 
         case object IntegerValueInjection:
-            def toValue(v: BalanceConc[Char]): TokenValue = 
+            def toValue(v: Sequence[Char]): TokenValue = 
                 val list = v.efficientList
                 IntegerValue(IntegerValueUtils.charsToInt(list), list)
-            def toCharacters(t: TokenValue): BalanceConc[Char] = t match
-                    case IntegerValue(_, text) => BalanceConcObj.fromListB(text)
-                    case _ => BalanceConcObj.emptyB
+            def toCharacters(t: TokenValue): Sequence[Char] = t match
+                    case IntegerValue(_, text) => seqFromList(text)
+                    case _ => emptySeq
             
             val injection: TokenValueInjection[Char] = {
                 ghostExpr{
@@ -140,10 +142,10 @@ object ExampleAmyLexer:
         end IntegerValueInjection
 
         case object IdentifierValueInjection:
-            def toValue(v: BalanceConc[Char]): TokenValue = IdentifierValue(v.efficientList)
-            def toCharacters(t: TokenValue): BalanceConc[Char] = t match
-                case IdentifierValue(value) => BalanceConcObj.fromListB(value)
-                case _ => BalanceConcObj.emptyB
+            def toValue(v: Sequence[Char]): TokenValue = IdentifierValue(v.efficientList)
+            def toCharacters(t: TokenValue): Sequence[Char] = t match
+                case IdentifierValue(value) => seqFromList(value)
+                case _ => emptySeq
             
             val injection: TokenValueInjection[Char] = {
                 ghostExpr{
@@ -179,23 +181,23 @@ object ExampleAmyLexer:
         lazy val stringUnderscore: List[Char] = List('_')
         lazy val stringEnd: List[Char] = List('e', 'n', 'd')
 
-        lazy val stringAbstractConc: BalanceConc[Char] = BalanceConcObj.fromListB(stringAbstract)
-        lazy val stringCaseConc: BalanceConc[Char] = BalanceConcObj.fromListB(stringCase)
-        lazy val stringClassConc: BalanceConc[Char] = BalanceConcObj.fromListB(stringClass)
-        lazy val stringDefConc: BalanceConc[Char] = BalanceConcObj.fromListB(stringDef)
-        lazy val stringElseConc: BalanceConc[Char] = BalanceConcObj.fromListB(stringElse)
-        lazy val stringExtendsConc: BalanceConc[Char] = BalanceConcObj.fromListB(stringExtends)
-        lazy val stringIfConc: BalanceConc[Char] = BalanceConcObj.fromListB(stringIf)
-        lazy val stringMatchConc: BalanceConc[Char] = BalanceConcObj.fromListB(stringMatch)
-        lazy val stringObjectConc: BalanceConc[Char] = BalanceConcObj.fromListB(stringObject)
-        lazy val stringValConc: BalanceConc[Char] = BalanceConcObj.fromListB(stringVal)
-        lazy val stringErrorConc: BalanceConc[Char] = BalanceConcObj.fromListB(stringError)
-        lazy val stringUnderscoreConc: BalanceConc[Char] = BalanceConcObj.fromListB(stringUnderscore)
-        lazy val stringEndConc: BalanceConc[Char] = BalanceConcObj.fromListB(stringEnd)
+        lazy val stringAbstractConc: Sequence[Char] = seqFromList(stringAbstract)
+        lazy val stringCaseConc: Sequence[Char] = seqFromList(stringCase)
+        lazy val stringClassConc: Sequence[Char] = seqFromList(stringClass)
+        lazy val stringDefConc: Sequence[Char] = seqFromList(stringDef)
+        lazy val stringElseConc: Sequence[Char] = seqFromList(stringElse)
+        lazy val stringExtendsConc: Sequence[Char] = seqFromList(stringExtends)
+        lazy val stringIfConc: Sequence[Char] = seqFromList(stringIf)
+        lazy val stringMatchConc: Sequence[Char] = seqFromList(stringMatch)
+        lazy val stringObjectConc: Sequence[Char] = seqFromList(stringObject)
+        lazy val stringValConc: Sequence[Char] = seqFromList(stringVal)
+        lazy val stringErrorConc: Sequence[Char] = seqFromList(stringError)
+        lazy val stringUnderscoreConc: Sequence[Char] = seqFromList(stringUnderscore)
+        lazy val stringEndConc: Sequence[Char] = seqFromList(stringEnd)
 
-        // foravv v: BalanceConc[Char], toCharacters(toValue(l)) == l
+        // foravv v: Sequence[Char], toCharacters(toValue(l)) == l
         case object KeywordValueInjection:
-            def toValue(c: BalanceConc[Char]): TokenValue = c.efficientList match
+            def toValue(c: Sequence[Char]): TokenValue = c.efficientList match
                 case l if l == stringAbstract => KeywordValue.Abstract
                 case l if l == stringCase => KeywordValue.Case
                 case l if l == stringClass => KeywordValue.Class
@@ -210,7 +212,7 @@ object ExampleAmyLexer:
                 case l if l == stringUnderscore => KeywordValue.Underscore
                 case l if l == stringEnd => KeywordValue.End
                 case l => KeywordValue.Broken(l)
-            def toCharacters(t: TokenValue): BalanceConc[Char] = t match
+            def toCharacters(t: TokenValue): Sequence[Char] = t match
                 case KeywordValue.Abstract          => stringAbstractConc
                 case KeywordValue.Case              => stringCaseConc
                 case KeywordValue.Class             => stringClassConc
@@ -224,8 +226,8 @@ object ExampleAmyLexer:
                 case KeywordValue.Error             => stringErrorConc
                 case KeywordValue.Underscore        => stringUnderscoreConc
                 case KeywordValue.End               => stringEndConc
-                case KeywordValue.Broken(value)     => BalanceConcObj.fromListB(value)
-                case _                              => BalanceConcObj.emptyB
+                case KeywordValue.Broken(value)     => seqFromList(value)
+                case _                              => emptySeq
 
             val injection: TokenValueInjection[Char] = {
                 ghostExpr{
@@ -251,25 +253,25 @@ object ExampleAmyLexer:
         lazy val stringBoolean: List[Char] =  List('B', 'o', 'o', 'l', 'e', 'a', 'n')
         lazy val stringString: List[Char] =  List('S', 't', 'r', 'i', 'n', 'g')
 
-        lazy val stringInt32Conc: BalanceConc[Char] =  BalanceConcObj.fromListB(stringInt32)
-        lazy val stringUnitConc: BalanceConc[Char] =  BalanceConcObj.fromListB(stringUnit)
-        lazy val stringBooleanConc: BalanceConc[Char] =  BalanceConcObj.fromListB(stringBoolean)
-        lazy val stringStringConc: BalanceConc[Char] =  BalanceConcObj.fromListB(stringString)
+        lazy val stringInt32Conc: Sequence[Char] =  seqFromList(stringInt32)
+        lazy val stringUnitConc: Sequence[Char] =  seqFromList(stringUnit)
+        lazy val stringBooleanConc: Sequence[Char] =  seqFromList(stringBoolean)
+        lazy val stringStringConc: Sequence[Char] =  seqFromList(stringString)
 
         case object PrimitiveTypeValueInjection:
-            def toValue(v: BalanceConc[Char]): TokenValue = v.efficientList match
+            def toValue(v: Sequence[Char]): TokenValue = v.efficientList match
                 case l if l == stringInt32 => PrimitiveTypeValue.Int32
                 case l if l == stringUnit => PrimitiveTypeValue.Unit
                 case l if l == stringBoolean => PrimitiveTypeValue.Boolean
                 case l if l == stringString => PrimitiveTypeValue.String
                 case l => PrimitiveTypeValue.Broken(l)
-            def toCharacters(t: TokenValue): BalanceConc[Char] = t match
+            def toCharacters(t: TokenValue): Sequence[Char] = t match
                 case PrimitiveTypeValue.Int32         => stringInt32Conc
                 case PrimitiveTypeValue.Unit          => stringUnitConc
                 case PrimitiveTypeValue.Boolean       => stringBooleanConc
                 case PrimitiveTypeValue.String        => stringStringConc
-                case PrimitiveTypeValue.Broken(value) => BalanceConcObj.fromListB(value)
-                case _                                => BalanceConcObj.emptyB
+                case PrimitiveTypeValue.Broken(value) => seqFromList(value)
+                case _                                => emptySeq
 
             val injection: TokenValueInjection[Char] = {
                 ghostExpr{
@@ -292,18 +294,18 @@ object ExampleAmyLexer:
 
         lazy val stringTrue: List[Char] = List('t', 'r', 'u', 'e')    
         lazy val stringFalse: List[Char] = List('f', 'a', 'l', 's', 'e')
-        lazy val stringTrueConc: BalanceConc[Char] = BalanceConcObj.fromListB(stringTrue)
-        lazy val stringFalseConc: BalanceConc[Char] = BalanceConcObj.fromListB(stringFalse)
+        lazy val stringTrueConc: Sequence[Char] = seqFromList(stringTrue)
+        lazy val stringFalseConc: Sequence[Char] = seqFromList(stringFalse)
         case object BooleanLiteralValueInjection:
-            def toValue(v: BalanceConc[Char]): TokenValue = v.efficientList match
+            def toValue(v: Sequence[Char]): TokenValue = v.efficientList match
                 case l if l == stringTrue => BooleanLiteralValue.True
                 case l if l == stringFalse => BooleanLiteralValue.False
                 case l => BooleanLiteralValue.Broken(l)
-            def toCharacters(t: TokenValue): BalanceConc[Char] = t match
+            def toCharacters(t: TokenValue): Sequence[Char] = t match
                 case BooleanLiteralValue.True          => stringTrueConc
                 case BooleanLiteralValue.False         => stringFalseConc
-                case BooleanLiteralValue.Broken(value) => BalanceConcObj.fromListB(value)
-                case _                                 => BalanceConcObj.emptyB
+                case BooleanLiteralValue.Broken(value) => seqFromList(value)
+                case _                                 => emptySeq
             val injection: TokenValueInjection[Char] = {
                 ghostExpr{
                     assert({
@@ -335,21 +337,21 @@ object ExampleAmyLexer:
         lazy val stringOr: List[Char] = List('|', '|')
         lazy val stringConcat: List[Char] = List('+', '+')
 
-        lazy val stringPlusConc: BalanceConc[Char]          = BalanceConcObj.fromListB(stringPlus)
-        lazy val stringMinusConc: BalanceConc[Char]         = BalanceConcObj.fromListB(stringMinus)
-        lazy val stringTimesConc: BalanceConc[Char]         = BalanceConcObj.fromListB(stringTimes)
-        lazy val stringDivConc: BalanceConc[Char]           = BalanceConcObj.fromListB(stringDiv)
-        lazy val stringModConc: BalanceConc[Char]           = BalanceConcObj.fromListB(stringMod)
-        lazy val stringNotConc: BalanceConc[Char]           = BalanceConcObj.fromListB(stringNot)
-        lazy val stringEqualConc: BalanceConc[Char]         = BalanceConcObj.fromListB(stringEqual)
-        lazy val stringLessEqualConc: BalanceConc[Char]     = BalanceConcObj.fromListB(stringLessEqual)
-        lazy val stringAndConc: BalanceConc[Char]           = BalanceConcObj.fromListB(stringAnd)
-        lazy val stringOrConc: BalanceConc[Char]            = BalanceConcObj.fromListB(stringOr)
-        lazy val stringConcatConc: BalanceConc[Char]        = BalanceConcObj.fromListB(stringConcat)
+        lazy val stringPlusConc: Sequence[Char]          = seqFromList(stringPlus)
+        lazy val stringMinusConc: Sequence[Char]         = seqFromList(stringMinus)
+        lazy val stringTimesConc: Sequence[Char]         = seqFromList(stringTimes)
+        lazy val stringDivConc: Sequence[Char]           = seqFromList(stringDiv)
+        lazy val stringModConc: Sequence[Char]           = seqFromList(stringMod)
+        lazy val stringNotConc: Sequence[Char]           = seqFromList(stringNot)
+        lazy val stringEqualConc: Sequence[Char]         = seqFromList(stringEqual)
+        lazy val stringLessEqualConc: Sequence[Char]     = seqFromList(stringLessEqual)
+        lazy val stringAndConc: Sequence[Char]           = seqFromList(stringAnd)
+        lazy val stringOrConc: Sequence[Char]            = seqFromList(stringOr)
+        lazy val stringConcatConc: Sequence[Char]        = seqFromList(stringConcat)
 
 
         case object OperatorValueInjection:
-            def toValue(v: BalanceConc[Char]): TokenValue = v.efficientList match
+            def toValue(v: Sequence[Char]): TokenValue = v.efficientList match
                 case l if l == stringPlus => OperatorValue.Plus
                 case l if l == stringMinus => OperatorValue.Minus
                 case l if l == stringTimes => OperatorValue.Times
@@ -362,7 +364,7 @@ object ExampleAmyLexer:
                 case l if l == stringOr => OperatorValue.Or
                 case l if l == stringConcat => OperatorValue.Concat
                 case l                                          => OperatorValue.Broken(l)
-            def toCharacters(t: TokenValue): BalanceConc[Char] = t match
+            def toCharacters(t: TokenValue): Sequence[Char] = t match
                 case OperatorValue.Plus          => stringPlusConc
                 case OperatorValue.Minus         => stringMinusConc
                 case OperatorValue.Times         => stringTimesConc
@@ -374,8 +376,8 @@ object ExampleAmyLexer:
                 case OperatorValue.And           => stringAndConc
                 case OperatorValue.Or            => stringOrConc
                 case OperatorValue.Concat        => stringConcatConc
-                case OperatorValue.Broken(value) => BalanceConcObj.fromListB(value)
-                case _                           => BalanceConcObj.emptyB
+                case OperatorValue.Broken(value) => seqFromList(value)
+                case _                           => emptySeq
             val injection: TokenValueInjection[Char] = {
                 ghostExpr{
                     assert({
@@ -396,11 +398,11 @@ object ExampleAmyLexer:
         end OperatorValueInjection
 
         case object StringLiteralValueInjection:
-            def toValue(v: BalanceConc[Char]): TokenValue = StringLiteralValue(v.efficientList)
-            def toCharacters(t: TokenValue): BalanceConc[Char] =
+            def toValue(v: Sequence[Char]): TokenValue = StringLiteralValue(v.efficientList)
+            def toCharacters(t: TokenValue): Sequence[Char] =
                 t match
-                    case StringLiteralValue(value) => BalanceConcObj.fromListB(value)
-                    case _ => BalanceConcObj.emptyB
+                    case StringLiteralValue(value) => seqFromList(value)
+                    case _ => emptySeq
 
             val injection: TokenValueInjection[Char] = {
                 ghostExpr{
@@ -422,10 +424,10 @@ object ExampleAmyLexer:
         end StringLiteralValueInjection
 
         case object DelimiterValueInjection:
-            def toValue(v: BalanceConc[Char]): TokenValue = DelimiterValue(v.efficientList)
-            def toCharacters(t: TokenValue): BalanceConc[Char] = t match
-                case DelimiterValue(value) => BalanceConcObj.fromListB(value)
-                case _ => BalanceConcObj.emptyB
+            def toValue(v: Sequence[Char]): TokenValue = DelimiterValue(v.efficientList)
+            def toCharacters(t: TokenValue): Sequence[Char] = t match
+                case DelimiterValue(value) => seqFromList(value)
+                case _ => emptySeq
             
             val injection: TokenValueInjection[Char] = {
                 ghostExpr{
@@ -447,11 +449,11 @@ object ExampleAmyLexer:
         end DelimiterValueInjection
 
         case object WhitespaceValueInjection:
-            def toValue(v: BalanceConc[Char]): TokenValue = WhitespaceValue(v.efficientList)
-            def toCharacters(t: TokenValue): BalanceConc[Char] = 
+            def toValue(v: Sequence[Char]): TokenValue = WhitespaceValue(v.efficientList)
+            def toCharacters(t: TokenValue): Sequence[Char] = 
                 t match
-                    case WhitespaceValue(value) => BalanceConcObj.fromListB(value)
-                    case _ => BalanceConcObj.emptyB
+                    case WhitespaceValue(value) => seqFromList(value)
+                    case _ => emptySeq
             val injection: TokenValueInjection[Char] = {
                 ghostExpr{
                     assert({
@@ -472,11 +474,11 @@ object ExampleAmyLexer:
         end WhitespaceValueInjection
 
         case object CommentValueInjection:
-            def toValue(v: BalanceConc[Char]): TokenValue = CommentValue(v.efficientList)
-            def toCharacters(t: TokenValue): BalanceConc[Char] = 
+            def toValue(v: Sequence[Char]): TokenValue = CommentValue(v.efficientList)
+            def toCharacters(t: TokenValue): Sequence[Char] = 
                 t match
-                    case CommentValue(value) => BalanceConcObj.fromListB(value)
-                    case _ => BalanceConcObj.emptyB
+                    case CommentValue(value) => seqFromList(value)
+                    case _ => emptySeq
             val injection: TokenValueInjection[Char] = {
                 ghostExpr{
                     assert({
@@ -608,7 +610,7 @@ object ExampleAmyLexer:
             assert(Lexer.rulesInvariant(rules))
             assert(!rules.isEmpty)
 
-            val inputProgram: BalanceConc[Char] = 
+            val inputProgram: Sequence[Char] = 
                     """object Hello
                         Std.printString("Hello world!")
                     end Hello""".toStainless
@@ -649,9 +651,9 @@ object ExampleAmyLexer:
 
 
             // and indeed if we print them and tokenise them again, we don't get the same tokens
-            val prettyPrinted2: BalanceConc[Char] = Lexer.print(modifiedTokens2)
+            val prettyPrinted2: Sequence[Char] = Lexer.print(modifiedTokens2)
             println(f"Pretty printed: ${prettyPrinted2.efficientList.mkString("")}")
-            val (tokens3: BalanceConc[Token[Char]], suffix3: BalanceConc[Char]) = Lexer.lex(AmyLexer.rules, prettyPrinted2)
+            val (tokens3: Sequence[Token[Char]], suffix3: Sequence[Char]) = Lexer.lex(AmyLexer.rules, prettyPrinted2)
             assert(suffix3.isEmpty)
             println(f"Tokens: ${tokens3.map(t => t.asString()).efficientList.mkString(", ")}")
             assert(tokens3 != modifiedTokens2)

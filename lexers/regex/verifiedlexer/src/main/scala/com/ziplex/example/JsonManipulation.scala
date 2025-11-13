@@ -11,8 +11,10 @@ import stainless.collection.Nil
 
 import com.ziplex.lexer.{Token, Rule}
 
-import com.ziplex.lexer.BalanceConcObj.BalanceConc
-import com.ziplex.lexer.BalanceConcObj
+import com.ziplex.lexer.Sequence
+import com.ziplex.lexer.emptySeq
+import com.ziplex.lexer.singletonSeq
+import com.ziplex.lexer.seqFromList
 
 import com.ziplex.lexer.example.ExampleJsonLexer.Types.*
 import com.ziplex.lexer.example.ExampleJsonLexer.JsonLexer
@@ -52,12 +54,12 @@ import stainless.proof.check
 object JsonManipulationExample:
 
   /**
-    * Opens a file and returns its content as a BalanceConc[Char] for lexing
+    * Opens a file and returns its content as a Sequence[Char] for lexing
     *
     * @param path
     * @return
     */
-  @extern def openFile(path: String): BalanceConc[Char] = scala.io.Source.fromFile(path).iter.foldLeft[BalanceConc[Char]](BalanceConcObj.emptyB[Char])((acc, char) => acc.append(char))
+  @extern def openFile(path: String): Sequence[Char] = scala.io.Source.fromFile(path).iter.foldLeft[Sequence[Char]](emptySeq[Char])((acc, char) => acc.append(char))
 
 
   /** Returns the indices of all the open braces in the token list
@@ -65,7 +67,7 @@ object JsonManipulationExample:
     * @param ts
     */
   @extern @pure def isKeywordValue(t: Token[Char], kw: KeywordValue): Boolean = t.value == kw
-  def indicesOfOpenBraces(ts: BalanceConc[Token[Char]], size: BigInt, from: BigInt = 0, acc: BalanceConc[BigInt] = BalanceConcObj.emptyB[BigInt]): BalanceConc[BigInt] = {
+  def indicesOfOpenBraces(ts: Sequence[Token[Char]], size: BigInt, from: BigInt = 0, acc: Sequence[BigInt] = emptySeq[BigInt]): Sequence[BigInt] = {
     require(from >= 0 && from <= ts.size)  
     require(ts.size == size)
     require(acc.forall(i => 0 <= i && i < size))
@@ -79,7 +81,7 @@ object JsonManipulationExample:
         ghostExpr({
           assert(acc.forall(i => 0 <= i && i < size))
           ListUtils.lemmaConcatPreservesForall(acc.list, List(from), (i: BigInt) => 0 <= i && i < size)
-          assert((acc ++ BalanceConcObj.fromListB(List(from))).forall(i => 0 <= i && i < size))
+          assert((acc ++ seqFromList(List(from))).forall(i => 0 <= i && i < size))
         })
         indicesOfOpenBraces(ts, size, from + 1, acc.append(from))
       else
@@ -99,7 +101,7 @@ object JsonManipulationExample:
     * @param cacheDown
     * @return
     */
-  def lexAndCheckPrintable(input: BalanceConc[Char])(using cacheUp: MemoisationZipper.CacheUp[Char], cacheDown: MemoisationZipper.CacheDown[Char]): Option[PrintableTokens[Char]] = {
+  def lexAndCheckPrintable(input: Sequence[Char])(using cacheUp: MemoisationZipper.CacheUp[Char], cacheDown: MemoisationZipper.CacheDown[Char]): Option[PrintableTokens[Char]] = {
     require(!JsonLexer.rules.isEmpty)
     require(Lexer.rulesInvariant(JsonLexer.rules))
     ghostExpr({
@@ -116,7 +118,7 @@ object JsonManipulationExample:
   }.ensuring(res => res.isEmpty || usesJsonRules(res.get))
 
 
-  def slicesMulti(pt: PrintableTokens[Char], size: BigInt, indices: BalanceConc[BigInt], acc: BalanceConc[PrintableTokens[Char]] = BalanceConcObj.emptyB[PrintableTokens[Char]]): BalanceConc[PrintableTokens[Char]] = {
+  def slicesMulti(pt: PrintableTokens[Char], size: BigInt, indices: Sequence[BigInt], acc: Sequence[PrintableTokens[Char]] = emptySeq[PrintableTokens[Char]]): Sequence[PrintableTokens[Char]] = {
     require(pt.size == size)
     require(indices.forall(i => 0 <= i && i < size))
     require(usesJsonRules(pt))
@@ -161,7 +163,7 @@ object JsonManipulationExample:
       else 
         val t = obj.tokens(from)
         t.value match {
-          case StringLiteralValue(s) if s == BalanceConcObj.fromListB(List('"', 'i', 'd', '"')) =>
+          case StringLiteralValue(s) if s == seqFromList(List('"', 'i', 'd', '"')) =>
             rec(from + 1, true)
           case IntegerValue(i, _) if returnNextInt =>
             i
@@ -171,7 +173,7 @@ object JsonManipulationExample:
     rec(0, false)
   }
 
-  def sortObjectsByID(objs: BalanceConc[(BigInt, PrintableTokens[Char])]): BalanceConc[(BigInt, PrintableTokens[Char])] = {
+  def sortObjectsByID(objs: Sequence[(BigInt, PrintableTokens[Char])]): Sequence[(BigInt, PrintableTokens[Char])] = {
     decreases(objs.size)
     require(objs.forall(t => usesJsonRules(t._2)))
     if objs.size <= 1 then objs
@@ -217,7 +219,7 @@ object JsonManipulationExample:
       sortObjectsByID(left) ++ middle ++ sortObjectsByID(right) 
   }.ensuring(res => res.forall(t => usesJsonRules(t._2)))
 
-  def recombineSlicesWithSep(objs: BalanceConc[PrintableTokens[Char]], sep: PrintableTokens[Char], acc: PrintableTokens[Char]): Option[PrintableTokens[Char]] = {
+  def recombineSlicesWithSep(objs: Sequence[PrintableTokens[Char]], sep: PrintableTokens[Char], acc: PrintableTokens[Char]): Option[PrintableTokens[Char]] = {
     require(objs.forall(usesJsonRules))
     require(usesJsonRules(acc))
     require(usesJsonRules(sep))
@@ -242,9 +244,9 @@ object JsonManipulationExample:
   def createCommaNewLineSeparator(using cacheUp: MemoisationZipper.CacheUp[Char], cacheDown: MemoisationZipper.CacheDown[Char]): Option[PrintableTokens[Char]] = {
     require(!JsonLexer.rules.isEmpty)
     require(Lexer.rulesInvariant(JsonLexer.rules))
-    val commaToken = Token(KeywordValueInjection.injection(BalanceConcObj.singleton(',')), JsonLexer.commaRule, BigInt(1), List(','))
-    val newLineToken = Token(WhitespaceValueInjection.injection(BalanceConcObj.singleton('\n')), JsonLexer.whitespaceRule, BigInt(1), List('\n'))
-    val sepSequence = BalanceConcObj.singleton(commaToken) ++ BalanceConcObj.singleton(newLineToken)
+    val commaToken = Token(KeywordValueInjection.injection(singletonSeq(',')), JsonLexer.commaRule, BigInt(1), List(','))
+    val newLineToken = Token(WhitespaceValueInjection.injection(singletonSeq('\n')), JsonLexer.whitespaceRule, BigInt(1), List('\n'))
+    val sepSequence = singletonSeq(commaToken) ++ singletonSeq(newLineToken)
     if !Lexer.rulesProduceEachTokenIndividuallyMem(JsonLexer.rules, sepSequence) then None()
     else 
       printableTokensFromTokens(JsonLexer.rules, sepSequence)
@@ -253,8 +255,8 @@ object JsonManipulationExample:
   def createLeftBracketSeparator(using cacheUp: MemoisationZipper.CacheUp[Char], cacheDown: MemoisationZipper.CacheDown[Char]): Option[PrintableTokens[Char]] = {
     require(!JsonLexer.rules.isEmpty)
     require(Lexer.rulesInvariant(JsonLexer.rules))
-    val leftBracketToken = Token(KeywordValueInjection.injection(BalanceConcObj.singleton('[')), JsonLexer.lBracketRule, BigInt(1), List('['))
-    val sepSequence = BalanceConcObj.singleton(leftBracketToken)
+    val leftBracketToken = Token(KeywordValueInjection.injection(singletonSeq('[')), JsonLexer.lBracketRule, BigInt(1), List('['))
+    val sepSequence = singletonSeq(leftBracketToken)
     if !Lexer.rulesProduceEachTokenIndividuallyMem(JsonLexer.rules, sepSequence) then None()
     else 
       printableTokensFromTokens(JsonLexer.rules, sepSequence)
@@ -263,8 +265,8 @@ object JsonManipulationExample:
   def createRightBracketSeparator(using cacheUp: MemoisationZipper.CacheUp[Char], cacheDown: MemoisationZipper.CacheDown[Char]): Option[PrintableTokens[Char]] = {
     require(!JsonLexer.rules.isEmpty)
     require(Lexer.rulesInvariant(JsonLexer.rules))
-    val rightBracketToken = Token(KeywordValueInjection.injection(BalanceConcObj.singleton(']')), JsonLexer.rBracketRule, BigInt(1), List(']'))
-    val sepSequence = BalanceConcObj.singleton(rightBracketToken)
+    val rightBracketToken = Token(KeywordValueInjection.injection(singletonSeq(']')), JsonLexer.rBracketRule, BigInt(1), List(']'))
+    val sepSequence = singletonSeq(rightBracketToken)
     if !Lexer.rulesProduceEachTokenIndividuallyMem(JsonLexer.rules, sepSequence) then None()
     else 
       printableTokensFromTokens(JsonLexer.rules, sepSequence)
@@ -289,7 +291,7 @@ object JsonManipulationExample:
     
     val tokensSize = printableTokens.size
     val indices = indicesOfOpenBraces(printableTokens.tokens, tokensSize)
-    val slices: BalanceConc[PrintableTokens[Char]] = slicesMulti(printableTokens, tokensSize, indices)
+    val slices: Sequence[PrintableTokens[Char]] = slicesMulti(printableTokens, tokensSize, indices)
     // Now we have slices of PrintableTokens, all separable on their own, as provided by the specification of slice
 
     def addId(pt: PrintableTokens[Char]): (BigInt, PrintableTokens[Char]) = (parseID(pt), pt)
@@ -327,7 +329,7 @@ object JsonManipulationExample:
             encloseInSep(objs, leftBr, rightBr) match
               case Some(newTokens) => 
                 // Now we have a PrintableTokens instance with all our objects, separated by comma and new line, and enclosed in brackets
-                val printed: BalanceConc[Char] = newTokens.print()
+                val printed: Sequence[Char] = newTokens.print()
                 // if we lex then again, we get the same tokens
                 assert(usesJsonRules(newTokens))
                 assert(JsonLexer.rules == newTokens.rules)
@@ -342,8 +344,8 @@ object JsonManipulationExample:
   }.ensuring(res => res.isEmpty || 
                     (Lexer.lex(JsonLexer.rules, res.get.print())._1.list == res.get.tokens.list && Lexer.lex(JsonLexer.rules, res.get.print())._2.isEmpty))
 
-  def main(path: String)(using cacheUp: MemoisationZipper.CacheUp[Char], cacheDown: MemoisationZipper.CacheDown[Char]): Option[BalanceConc[Char]] = {
-    val input: BalanceConc[Char] = openFile(path)
+  def main(path: String)(using cacheUp: MemoisationZipper.CacheUp[Char], cacheDown: MemoisationZipper.CacheDown[Char]): Option[Sequence[Char]] = {
+    val input: Sequence[Char] = openFile(path)
 
     if JsonLexer.rules.isEmpty || !Lexer.rulesInvariant(JsonLexer.rules) then None()
     else

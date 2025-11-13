@@ -10,7 +10,6 @@ import com.ziplex.lexer.VerifiedLexer.Lexer
 import com.ziplex.lexer.VerifiedLexer.emptyPrintableTokens
 import com.ziplex.lexer.example.ExampleJsonLexer.JsonLexer
 import com.ziplex.lexer.example.RegexUtils.*
-import com.ziplex.lexer.Vector
 import com.ziplex.lexer.MemoisationZipper
 import com.ziplex.lexer.VerifiedRegex.Regex
 import com.mutablemaps.map.Hashable
@@ -23,6 +22,11 @@ import com.ziplex.lexer.VerifiedLexer.printableTokensFromTokens
 
 import com.ziplex.lexer.example.JsonManipulationExample.*
 import com.ziplex.lexer.example.ExampleJsonLexer.Types.*
+
+import com.ziplex.lexer.Sequence
+import com.ziplex.lexer.emptySeq
+import com.ziplex.lexer.singletonSeq
+import com.ziplex.lexer.seqFromList
 
 import java.io.File
 import com.ziplex.lexer.VerifiedLexer.PrintableTokens
@@ -133,7 +137,7 @@ class JsonManipulationBenchmark {
     val printableTokens = JsonManipulationBenchmarkUtils.filePrintableTokens(file)
     val tokensSize = printableTokens.size
     val indices = indicesOfOpenBraces(printableTokens.tokens, tokensSize)
-    val slices: Vector[PrintableTokens[Char]] = slicesMulti(printableTokens, tokensSize, indices)
+    val slices: Sequence[PrintableTokens[Char]] = slicesMulti(printableTokens, tokensSize, indices)
     val slicesWithIds = slices.map(JsonManipulationBenchmarkUtils.addId)
     val orderedSlices = sortObjectsByID(slicesWithIds)
     assert(orderedSlices.size > 0)
@@ -166,17 +170,17 @@ class JsonManipulationBenchmark {
     assert(orderedSlicesWithoutIdsJustTokens.size > 0)
     val length = orderedSlicesWithoutIdsJustTokens.size
     var i = BigInt(0)
-    var recombined = Vector.empty[Token[Char]]
+    var recombined = emptySeq[Token[Char]]
     while i < length do {
       val tokens = orderedSlicesWithoutIdsJustTokens(i)
       recombined = recombined ++ tokens
       if i < length - 1 then {
-        recombined = recombined ++ Vector.singleton(JsonManipulationBenchmarkUtils.commaToken) ++ Vector.singleton(JsonManipulationBenchmarkUtils.newLineToken)
+        recombined = recombined ++ singletonSeq(JsonManipulationBenchmarkUtils.commaToken) ++ singletonSeq(JsonManipulationBenchmarkUtils.newLineToken)
       }
       i = i + 1
     }
     assert(recombined.size > 0)
-    val withBrackets = Vector.singleton(JsonManipulationBenchmarkUtils.leftBracketToken) ++ recombined ++ Vector.singleton(JsonManipulationBenchmarkUtils.rightBracketToken)
+    val withBrackets = singletonSeq(JsonManipulationBenchmarkUtils.leftBracketToken) ++ recombined ++ singletonSeq(JsonManipulationBenchmarkUtils.rightBracketToken)
     val printable = Lexer.separableTokensMem(withBrackets, JsonLexer.rules)(
       using JsonManipulationBenchmarkUtils.zipperCacheUpInternal,
       JsonManipulationBenchmarkUtils.zipperCacheDownInternal
@@ -218,7 +222,7 @@ object JsonManipulationBenchmarkUtils {
     // "7000_14545249chars.json",
     // "9000_18700977chars.json",
   )
-  val fileContents: Map[String, Vector[Char]] = fileNames.map(name => {
+  val fileContents: Map[String, Sequence[Char]] = fileNames.map(name => {
     val source = scala.io.Source.fromFile(s"src/main/scala/com/ziplex/benchmark/res/json-manip/$name")
     val lines = try source.mkString.toStainless finally source.close()
     (name -> lines)
@@ -233,10 +237,10 @@ object JsonManipulationBenchmarkUtils {
     (name -> printableTokensFromTokensMem(JsonLexer.rules, tokens).get)
   }
 
-  lazy val orderedSlicesWithoutIds: Map[String, Vector[PrintableTokens[Char]]] = filePrintableTokens.map { case (name, pt) =>
+  lazy val orderedSlicesWithoutIds: Map[String, Sequence[PrintableTokens[Char]]] = filePrintableTokens.map { case (name, pt) =>
     val tokensSize = pt.size
     val indices = indicesOfOpenBraces(pt.tokens, tokensSize)
-    val slices: Vector[PrintableTokens[Char]] = slicesMulti(pt, tokensSize, indices)
+    val slices: Sequence[PrintableTokens[Char]] = slicesMulti(pt, tokensSize, indices)
     val slicesWithIds = slices.map(JsonManipulationBenchmarkUtils.addId)
     val orderedSlices = sortObjectsByID(slicesWithIds)
     assert(orderedSlices.size > 0)
@@ -245,7 +249,7 @@ object JsonManipulationBenchmarkUtils {
     (name -> orderedSlicesWithoutIds)
   }
 
-  lazy val orderedSlicesWithoutIdsJustTokens: Map[String, Vector[Vector[Token[Char]]]] = orderedSlicesWithoutIds.map { case (name, pts) =>
+  lazy val orderedSlicesWithoutIdsJustTokens: Map[String, Sequence[Sequence[Token[Char]]]] = orderedSlicesWithoutIds.map { case (name, pts) =>
     (name -> pts.map(_.tokens))
   }
 
@@ -254,10 +258,10 @@ object JsonManipulationBenchmarkUtils {
 
   val (commaNewLineSeparator, leftBracketSeparator, rightBracketSeparator) = (createCommaNewLineSeparator.get, createLeftBracketSeparator.get, createRightBracketSeparator.get)
 
-  val commaToken = Token(KeywordValueInjection.injection(Vector.singleton(',')), JsonLexer.commaRule, BigInt(1), Vector.singleton(','))
-  val newLineToken = Token(WhitespaceValueInjection.injection(Vector.singleton('\n')), JsonLexer.whitespaceRule, BigInt(1), Vector.singleton('\n'))
-  val leftBracketToken = Token(KeywordValueInjection.injection(Vector.singleton('[')), JsonLexer.lBracketRule, BigInt(1), Vector.singleton('['))
-  val rightBracketToken = Token(KeywordValueInjection.injection(Vector.singleton(']')), JsonLexer.rBracketRule, BigInt(1), Vector.singleton(']'))
+  val commaToken = Token(KeywordValueInjection.injection(singletonSeq(',')), JsonLexer.commaRule, BigInt(1), stainless.collection.List(','))
+  val newLineToken = Token(WhitespaceValueInjection.injection(singletonSeq('\n')), JsonLexer.whitespaceRule, BigInt(1), stainless.collection.List('\n'))
+  val leftBracketToken = Token(KeywordValueInjection.injection(singletonSeq('[')), JsonLexer.lBracketRule, BigInt(1), stainless.collection.List('['))
+  val rightBracketToken = Token(KeywordValueInjection.injection(singletonSeq(']')), JsonLexer.rBracketRule, BigInt(1), stainless.collection.List(']'))
 
   val zipperCacheUp: MemoisationZipper.CacheUp[Char] = MemoisationZipper.emptyUp(ContextCharHashable)
   val zipperCacheDown: MemoisationZipper.CacheDown[Char] = MemoisationZipper.emptyDown(RegexContextCharHashable)

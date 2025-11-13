@@ -22,8 +22,10 @@ import stainless.lang.Quantifiers.*
 
 import stainless.lang.Exception
 
-import com.ziplex.lexer.BalanceConcObj.BalanceConc
-import com.ziplex.lexer.BalanceConcObj
+import com.ziplex.lexer.Sequence
+import com.ziplex.lexer.emptySeq
+import com.ziplex.lexer.singletonSeq
+import com.ziplex.lexer.seqFromList
 import com.ziplex.lexer.semiInverseBodyModEq
 import com.ziplex.lexer.semiInverseModEq
 import com.ziplex.lexer.equivClassesBody
@@ -96,12 +98,12 @@ object ExampleJsonLexer:
         // Injection definition + proofs
 
         case object IntegerValueInjection:
-            def toValue(v: BalanceConc[Char]): TokenValue = 
+            def toValue(v: Sequence[Char]): TokenValue = 
                 val list = v.efficientList
                 IntegerValue(IntegerValueUtils.charsToBigInt(list), list)
-            def toCharacters(t: TokenValue): BalanceConc[Char] = t match
-                    case IntegerValue(_, text) => BalanceConcObj.fromListB(text)
-                    case _ => BalanceConcObj.emptyB
+            def toCharacters(t: TokenValue): Sequence[Char] = t match
+                    case IntegerValue(_, text) => seqFromList(text)
+                    case _ => emptySeq
             
             val injection: TokenValueInjection[Char] = {
                 ghostExpr{
@@ -125,10 +127,10 @@ object ExampleJsonLexer:
         end IntegerValueInjection
 
         case object FloatLiteralValueInjection:
-            def toValue(v: BalanceConc[Char]): TokenValue = FloatLiteralValue(v.efficientList)
-            def toCharacters(t: TokenValue): BalanceConc[Char] = t match
-                case FloatLiteralValue(value) => BalanceConcObj.fromListB(value)
-                case _ => BalanceConcObj.emptyB
+            def toValue(v: Sequence[Char]): TokenValue = FloatLiteralValue(v.efficientList)
+            def toCharacters(t: TokenValue): Sequence[Char] = t match
+                case FloatLiteralValue(value) => seqFromList(value)
+                case _ => emptySeq
             
             val injection: TokenValueInjection[Char] = {
                 ghostExpr{
@@ -152,11 +154,11 @@ object ExampleJsonLexer:
         end FloatLiteralValueInjection
 
         case object WhitespaceValueInjection:
-            def toValue(v: BalanceConc[Char]): TokenValue = WhitespaceValue(v.efficientList)
-            def toCharacters(t: TokenValue): BalanceConc[Char] = 
+            def toValue(v: Sequence[Char]): TokenValue = WhitespaceValue(v.efficientList)
+            def toCharacters(t: TokenValue): Sequence[Char] = 
                 t match
-                    case WhitespaceValue(value) => BalanceConcObj.fromListB(value)
-                    case _ => BalanceConcObj.emptyB
+                    case WhitespaceValue(value) => seqFromList(value)
+                    case _ => emptySeq
             val injection: TokenValueInjection[Char] = {
                 ghostExpr{
                     assert({
@@ -177,10 +179,10 @@ object ExampleJsonLexer:
         end WhitespaceValueInjection
 
         case object StringLiteralValueInjection:
-            def toValue(v: BalanceConc[Char]): TokenValue = StringLiteralValue(v.efficientList)
-            def toCharacters(t: TokenValue): BalanceConc[Char] = t match
-                case StringLiteralValue(value) => BalanceConcObj.fromListB(value)
-                case _ => BalanceConcObj.emptyB
+            def toValue(v: Sequence[Char]): TokenValue = StringLiteralValue(v.efficientList)
+            def toCharacters(t: TokenValue): Sequence[Char] = t match
+                case StringLiteralValue(value) => seqFromList(value)
+                case _ => emptySeq
             
             val injection: TokenValueInjection[Char] = {
                 ghostExpr{
@@ -211,17 +213,17 @@ object ExampleJsonLexer:
         lazy val leftBracketString: List[Char] = List('[')
         lazy val rightBracketString: List[Char] = List(']')
 
-        lazy val nullStringConc =  BalanceConcObj.fromListB(nullString)
-        lazy val trueStringConc =  BalanceConcObj.fromListB(trueString)
-        lazy val falseStringConc =  BalanceConcObj.fromListB(falseString)
-        lazy val colonStringConc =  BalanceConcObj.fromListB(colonString)
-        lazy val commaStringConc =  BalanceConcObj.fromListB(commaString)
-        lazy val leftBraceStringConc =  BalanceConcObj.fromListB(leftBraceString)
-        lazy val rightBraceStringConc =  BalanceConcObj.fromListB(rightBraceString)
-        lazy val leftBracketStringConc =  BalanceConcObj.fromListB(leftBracketString)
-        lazy val rightBracketStringConc =  BalanceConcObj.fromListB(rightBracketString)
+        lazy val nullStringConc =  seqFromList(nullString)
+        lazy val trueStringConc =  seqFromList(trueString)
+        lazy val falseStringConc =  seqFromList(falseString)
+        lazy val colonStringConc =  seqFromList(colonString)
+        lazy val commaStringConc =  seqFromList(commaString)
+        lazy val leftBraceStringConc =  seqFromList(leftBraceString)
+        lazy val rightBraceStringConc =  seqFromList(rightBraceString)
+        lazy val leftBracketStringConc =  seqFromList(leftBracketString)
+        lazy val rightBracketStringConc =  seqFromList(rightBracketString)
         case object KeywordValueInjection:
-            def toValue(c: BalanceConc[Char]): TokenValue = c.efficientList match
+            def toValue(c: Sequence[Char]): TokenValue = c.efficientList match
                 case l if l == nullString            => KeywordValue.Null
                 case l if l == trueString            => KeywordValue.True
                 case l if l == falseString           => KeywordValue.False
@@ -232,7 +234,7 @@ object ExampleJsonLexer:
                 case l if l == leftBracketString     => KeywordValue.LeftBracket
                 case l if l == rightBracketString    => KeywordValue.RightBracket
                 case l                               => KeywordValue.Broken(l)
-            def toCharacters(t: TokenValue): BalanceConc[Char] = t match
+            def toCharacters(t: TokenValue): Sequence[Char] = t match
                 case KeywordValue.Null           => nullStringConc
                 case KeywordValue.True           => trueStringConc
                 case KeywordValue.False          => falseStringConc
@@ -242,8 +244,8 @@ object ExampleJsonLexer:
                 case KeywordValue.RightBrace     => rightBraceStringConc
                 case KeywordValue.LeftBracket    => leftBracketStringConc
                 case KeywordValue.RightBracket   => rightBracketStringConc
-                case KeywordValue.Broken(value)  => BalanceConcObj.fromListB(value)
-                case _                           => BalanceConcObj.emptyB
+                case KeywordValue.Broken(value)  => seqFromList(value)
+                case _                           => emptySeq
 
             val injection: TokenValueInjection[Char] = {
                 ghostExpr{
