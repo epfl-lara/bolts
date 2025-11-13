@@ -9,6 +9,7 @@ import stainless.equations._
 import stainless.lang.Quantifiers._
 
 import scala.annotation.tailrec
+
 // BEGIN uncomment for verification ------------------------------------------
 // import stainless.lang.StaticChecks._
 // import stainless.lang.{ghost => ghostExpr, _}
@@ -379,11 +380,7 @@ object VerifiedLexer {
           assert(v.list.contains(v(from)))
           assert(v.contains(v(from + 1)))
           assert(v.list.contains(v(from + 1)))
-          lemmaRulesProduceEachTokenIndividuallyThenForAnyToken(rules, v.list, v(from))
           lemmaRulesProduceEachTokenIndividuallyThenForAnyToken(rules, v.list, v(from + 1))
-          check(rulesProduceIndividualToken(rules, v(from)))
-          check(rulesProduceIndividualToken(rules, v(from + 1)))
-
           check(v(from + 1).charsOf.size > 0)
         })
         separableTokensPredicate(v(from), v(from + 1), rules) && tokensListTwoByTwoPredicateSeparable(v, from + 1, rules)
@@ -614,6 +611,7 @@ object VerifiedLexer {
         Vector.empty
       )
     }.ensuring (res => res == lex(rules, input))
+
 
     @tailrec
     def lexTailRecMem[C](
