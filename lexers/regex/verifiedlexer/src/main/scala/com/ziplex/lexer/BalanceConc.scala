@@ -42,7 +42,7 @@ object BalanceConcObj:
   case class BalanceConc[T](c: Conc[T]) {
     require(c.isBalanced)
 
-    @ghost inline def list: List[T] = c.list
+    @ghost def list: List[T] = c.list
     def efficientList: List[T] = {
       c.efficientList()
     }.ensuring(res => list == this.list)
@@ -470,7 +470,7 @@ object BalanceConcObj:
       t match
         case Leaf(x) => x
         case Node(l, r, _, _) => l.head
-    }.ensuring(res => res == t.toList.head)
+    }.ensuring(res => res == t.list.head)
 
     def last: T = {
       require(t.isBalanced)
@@ -478,9 +478,9 @@ object BalanceConcObj:
       t match
         case Leaf(x) => x
         case Node(l, r, _, _) => 
-          ghostExpr(ListUtils.lemmaLastOfConcatIsLastOfRhs(l.toList, r.toList))
+          ghostExpr(ListUtils.lemmaLastOfConcatIsLastOfRhs(l.list, r.list))
           r.last
-    }.ensuring(res => res == t.toList.last)
+    }.ensuring(res => res == t.list.last)
 
   def mkTree(from: Int, until: Int): Conc[Int] =
     require(0 <= from && from <= until && until <= 1_000_000)

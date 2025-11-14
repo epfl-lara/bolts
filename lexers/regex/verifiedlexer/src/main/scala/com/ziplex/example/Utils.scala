@@ -69,7 +69,7 @@ object RegexUtils:
     def replaceSpecialCharacters(l: Sequence[Char]): Sequence[String] = 
       t.charsOf.map(c => if c == '\t' then "\\t" else if c == '\n' then "\\n" else f"$c")
       
-    s"Token(${t.rule.tag}, \"${replaceSpecialCharacters(t.charsOf).list.mkString("")}\")"
+    s"Token(${t.rule.tag}, \"${replaceSpecialCharacters(t.charsOf).efficientList.mkString("")}\")"
   extension [A] (l: stainless.collection.List[A]) def mkString(inter: String) : String = l match {
     case stainless.collection.Nil() => ""
     case stainless.collection.Cons(h, t) => h.toString + (if t.isEmpty then "" else inter + t.mkString(inter))

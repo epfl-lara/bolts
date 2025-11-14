@@ -10,7 +10,7 @@ import com.ziplex.lexer.example.RegexUtils.*
 import scala.util.Random
 import scala.compiletime.uninitialized
 import com.ziplex.lexer.VerifiedRegexMatcher.matchZipper
-import com.ziplex.lexer.VerifiedRegexMatcher.matchZipperVector
+import com.ziplex.lexer.VerifiedRegexMatcher.matchZipperSequence
 import com.ziplex.lexer.VerifiedRegexMatcher.matchZipperVectorMem
 import com.ziplex.lexer.VerifiedRegexMatcher.matchR
 import com.ziplex.lexer.VerifiedRegexMatcher.matchRMem
@@ -86,7 +86,7 @@ class RegexBenchmark {
   def abStarAccepting_Zipper_vector(): Unit = {
     val r = RegexBenchmarkUtils.abStar
     val v = RegexBenchmarkUtils.abStar_Accepting_strings(size.toInt)
-    val res = matchZipperVector(r, v)
+    val res = matchZipperSequence(r, v)
     assert(res)
   }
 
@@ -148,7 +148,7 @@ class RegexBenchmark {
   def emailAccepting_Zipper_vector(): Unit = {
     val r = RegexBenchmarkUtils.emailRegex
     val v = RegexBenchmarkUtils.email_Accepting_strings(size.toInt)
-    val res = matchZipperVector(r, v)
+    val res = matchZipperSequence(r, v)
     assert(res)
   }
 
@@ -246,7 +246,7 @@ class LexerRegexBenchmark {
     def commentAccepting_Zipper_vector(): Unit = {
       val r = RegexBenchmarkUtils.singleLineCommentRegex
       val v = RegexBenchmarkUtils.comment_Accepting_strings(size.toInt)
-      val res = matchZipperVector(r, v)
+      val res = matchZipperSequence(r, v)
       assert(res)
     }
     @Benchmark
@@ -294,7 +294,7 @@ class LexerRegexBenchmark {
     def commentAccepting_Zipper_multiline_vector(): Unit = {
       val r = RegexBenchmarkUtils.multiCommentRegex
       val v = RegexBenchmarkUtils.comment_Accepting_strings_multiline(size.toInt)
-      val res = matchZipperVector(r, v)
+      val res = matchZipperSequence(r, v)
       assert(res)
     }
 

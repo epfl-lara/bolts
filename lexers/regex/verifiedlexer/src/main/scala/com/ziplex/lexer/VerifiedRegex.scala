@@ -705,10 +705,10 @@ object ZipperRegex {
   }
 
   // @tailrec
-  def matchZipperVector[C](z: Zipper[C], input: Sequence[C], i: BigInt = 0): Boolean = {
+  def matchZipperSequence[C](z: Zipper[C], input: Sequence[C], i: BigInt = 0): Boolean = {
     require(i >= 0 && i <= input.size)
     decreases(input.size  - i)
-    if i == input.size then nullableZipper(z) else matchZipperVector(derivationStepZipper(z, input(i)), input, i + 1)
+    if i == input.size then nullableZipper(z) else matchZipperSequence(derivationStepZipper(z, input(i)), input, i + 1)
   }
 
   // @tailrec
@@ -716,7 +716,7 @@ object ZipperRegex {
     require(i >= 0 && i <= input.size)
     decreases(input.size  - i)
     if i == input.size then nullableZipper(z) else matchZipperVectorMem(derivationStepZipperMem(z, input(i)), input, i + 1)
-  }.ensuring(res => res == matchZipperVector(z, input, i))
+  }.ensuring(res => res == matchZipperSequence(z, input, i))
 
   @ghost
   @inlineOnce
@@ -731,8 +731,8 @@ object ZipperRegex {
       ListUtils.lemmaDropApply(input.list, i)
       ListUtils.lemmaDropTail(input.list, i)
       assert(input.dropList(i) == (input(i) :: input.dropList(i + 1)))
-      assert(matchZipper(z, input.dropList(i)) == matchZipperVector(z, input, i))
-  }.ensuring(_ => matchZipper(z, input.dropList(i)) == matchZipperVector(z, input, i))
+      assert(matchZipper(z, input.dropList(i)) == matchZipperSequence(z, input, i))
+  }.ensuring(_ => matchZipper(z, input.dropList(i)) == matchZipperSequence(z, input, i))
 
   def prefixMatchZipper[C](z: Zipper[C], input: List[C]): Boolean = {
     decreases(input.size)
@@ -3398,11 +3398,11 @@ object VerifiedRegexMatcher {
     ZipperRegex.matchZipper(ZipperRegex.focus(r), input)
   }.ensuring (res => res == matchR(r, input))
 
-  def matchZipperVector[C](r: Regex[C], input: Sequence[C]): Boolean = {
+  def matchZipperSequence[C](r: Regex[C], input: Sequence[C]): Boolean = {
     require(validRegex(r))
     ghostExpr(ZipperRegex.lemmaMatchZipperVectorEquivalent(ZipperRegex.focus(r), input))
     ghostExpr(ZipperRegex.theoremZipperRegexEquiv(ZipperRegex.focus(r), ZipperRegex.focus(r).toList, r, input.list))
-    ZipperRegex.matchZipperVector(ZipperRegex.focus(r), input)
+    ZipperRegex.matchZipperSequence(ZipperRegex.focus(r), input)
   }.ensuring (res => res == matchR(r, input.list))
 
   def matchZipperMem[C](r: Regex[C], input: List[C])(using cacheUp: MemoisationZipper.CacheUp[C], cacheDown: MemoisationZipper.CacheDown[C]): Boolean = {

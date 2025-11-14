@@ -1075,22 +1075,24 @@ object VerifiedLexer {
         ghostExpr(assert(semiInverseBodyModEq(rule.transformation.toChars, rule.transformation.toValue)))
         ghostExpr(ForallOf((chars: Sequence[C]) => rule.transformation.toChars(rule.transformation.toValue(chars)).list == chars.list)(longestPrefix))
         ghostExpr(ForallOf((chars: Sequence[C]) => rule.transformation.toChars(rule.transformation.toValue(chars)).list == chars.list)(seqFromList(longestPrefix.list)))
-        val res = Some[(Token[C], Sequence[C])]((Token(rule.transformation.apply(longestPrefix), rule, longestPrefix.size, longestPrefix.list), suffix))
-        
-        assert(res.isDefined == maxPrefixOneRule(rule, input.list).isDefined )
-        assert(res.isDefined)
-        assert(seqFromList(longestPrefix.list).list == longestPrefix.list)
-        ghostExpr(rule.transformation.lemmaEqSameImage(longestPrefix, seqFromList(longestPrefix.list)))
-        assert(rule.transformation.apply(seqFromList(longestPrefix.list)) == rule.transformation.apply(longestPrefix))
-        assert(maxPrefixOneRule(rule, input.list).get._1.value == rule.transformation.apply(longestPrefix))
-        assert(maxPrefixOneRule(rule, input.list).get._1.rule == rule)
-        assert(maxPrefixOneRule(rule, input.list).get._1.size == longestPrefix.size)
-        assert(maxPrefixOneRule(rule, input.list).get._1.originalCharacters == longestPrefix.list)
-        assert(Token(rule.transformation.apply(longestPrefix), rule, longestPrefix.size, longestPrefix.list) == maxPrefixOneRule(rule, input.list).get._1)
-        assert(res.get._1 == maxPrefixOneRule(rule, input.list).get._1)
-        assert(res.get._2.list == maxPrefixOneRule(rule, input.list).get._2)
+        ghostExpr({
+          val res = Some[(Token[C], Sequence[C])]((Token(rule.transformation.apply(longestPrefix), rule, longestPrefix.size, longestPrefix.list), suffix))
+          
+          assert(res.isDefined == maxPrefixOneRule(rule, input.list).isDefined )
+          assert(res.isDefined)
+          assert(seqFromList(longestPrefix.list).list == longestPrefix.list)
+          ghostExpr(rule.transformation.lemmaEqSameImage(longestPrefix, seqFromList(longestPrefix.list)))
+          assert(rule.transformation.apply(seqFromList(longestPrefix.list)) == rule.transformation.apply(longestPrefix))
+          assert(maxPrefixOneRule(rule, input.list).get._1.value == rule.transformation.apply(longestPrefix))
+          assert(maxPrefixOneRule(rule, input.list).get._1.rule == rule)
+          assert(maxPrefixOneRule(rule, input.list).get._1.size == longestPrefix.size)
+          assert(maxPrefixOneRule(rule, input.list).get._1.originalCharacters == longestPrefix.list)
+          assert(Token(rule.transformation.apply(longestPrefix), rule, longestPrefix.size, longestPrefix.list) == maxPrefixOneRule(rule, input.list).get._1)
+          assert(res.get._1 == maxPrefixOneRule(rule, input.list).get._1)
+          assert(res.get._2.list == maxPrefixOneRule(rule, input.list).get._2)
 
-        res
+        })
+        Some[(Token[C], Sequence[C])]((Token(rule.transformation.apply(longestPrefix), rule, longestPrefix.size, longestPrefix.list), suffix))
       }
 
     }.ensuring (res => res.isDefined == maxPrefixOneRule(rule, input.list).isDefined && 

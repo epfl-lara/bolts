@@ -38,6 +38,7 @@ import stainless.lang.decreases
 import stainless.lang.ghost as ghostExpr
 import stainless.lang.unfold
 import stainless.proof.check
+import stainless.lang.StaticChecks.*
 // END uncomment for verification --------------------------------------------
 // BEGIN imports for benchmarking -------------------------------------------
 // import stainless.lang.{ghost => _, decreases => _, unfold => _, _}
