@@ -1,10 +1,14 @@
 // Simplification of: http://aleksandar-prokopec.com/resources/docs/lcpc-conc-trees.pdf
-import stainless.lang._
+import stainless.lang.{ghost => ghostExpr, _}
 import stainless.proof._
 //import stainless.lang.StaticChecks._
 import stainless.collection._
 import ListSpecs._
 import stainless.annotation._
+import stainless.lang.StaticChecks.*
+
+import com.ziplex.lexer.ListUtils
+
 
 object BalanceConc:
 
@@ -17,6 +21,24 @@ object BalanceConc:
             cheight == max(left.height, right.height) + 1 &&
             0 <= cheight)
   }
+
+  @pure @opaque 
+  def fromList[T](l: List[T]): Conc[T] = {
+    def rec(ll: List[T], c: Conc[T]): Conc[T] = {
+      require(c.isBalanced)
+      decreases(ll.size)
+      ll match {
+        case Nil() => c
+        case Cons(x, xs) => 
+          assert(rec(xs, c.append(x)).toList == (c.append(x)).toList ++ xs)
+          assert((c.append(x)).toList == c.toList ++ List(x))
+          ghostExpr(ListUtils.lemmaTwoListsConcatAssociativity(c.toList, List(x), xs))
+          assert((c.toList ++ List(x)) ++ xs == c.toList ++ (x :: xs))
+          rec(xs, c.append(x))
+      }
+    }.ensuring(res => res.toList == c.toList ++ ll)
+    rec(l, Empty[T]())
+  }.ensuring(_.toList == l)
 
   def max(x: BigInt, y: BigInt) =
     if x < y then y else x
@@ -36,6 +58,10 @@ object BalanceConc:
         case Node(_, _, csize, _) => csize
     }.ensuring(_ == t.toList.size)
 
+    def isEmpty: Boolean = {
+      t.size == 0
+    }.ensuring(res => res == t.toList.isEmpty)
+
     def height: BigInt = 
       t match 
         case Empty() => 0
@@ -52,17 +78,62 @@ object BalanceConc:
           else r(i - l.size)
     }.ensuring(_ == t.toList(i))
 
+    def contains(v: T): Boolean = {
+      t match
+        case Empty() => false
+        case Leaf(x) => v == x
+        case Node(l, r, _, _) =>  l.contains(v) || r.contains(v)
+    }.ensuring(_ == t.toList.contains(v))
+
     def isBalanced: Boolean = {
       t match {
         case Node(l, r, _, _) =>
           -1 <= l.height - r.height && l.height - r.height <= 1 &&
-          l.isBalanced && r.isBalanced
+          l.isBalanced && r.isBalanced && t.size > 1 // to avoid needlessly deep nodes otherwise the asymptotic complexity can be arbitrary large
         case _ => true
       }
     }
-    
+
+    def forall(p: T => Boolean): Boolean = {
+      decreases(t.height)
+      t match {
+        case Empty() => true
+        case Leaf(x) => p(x)
+        case Node(l, r, _, _) => 
+          ghostExpr(ListUtils.lemmaForallConcat(l.toList, r.toList, p))
+          l.forall(p) && r.forall(p)
+      }
+    }.ensuring(res => res == t.toList.forall(p))
+
+    def exists(p: T => Boolean): Boolean = {
+      decreases(t.height)
+      t match {
+        case Empty() => false
+        case Leaf(x) => p(x)
+        case Node(l, r, _, _) => 
+          ghostExpr(ListUtils.lemmaExistsConcat(l.toList, r.toList, p))
+          l.exists(p) || r.exists(p)
+      }
+    }.ensuring(_ == t.toList.exists(p))
+
+    def map[B](f: T => B): Conc[B] = {
+      decreases(t.height)
+      t match {
+        case Empty() => Empty[B]()
+        case Leaf(x) => Leaf(f(x))
+        case Node(l, r, cs, ch) => 
+          ghostExpr(ListUtils.lemmaMapConcat(l.toList, r.toList, f))
+          assert((l.toList ++ r.toList).map(f) == (l.toList.map(f) ++ r.toList.map(f)))
+          Node(l.map(f), r.map(f), cs, ch)
+      }
+    }.ensuring(res => res.toList == t.toList.map(f))
 
   extension[T](xs: Conc[T])
+    /**
+      * Concatenate xs with ys without preserving balancing
+      *
+      * @param ys
+      */
     def <>(ys: Conc[T]) = {
       if xs == Empty[T]() then ys
       else if ys == Empty[T]() then xs
@@ -70,6 +141,11 @@ object BalanceConc:
                         max(xs.height, ys.height) + 1)
     }.ensuring(_.toList == xs.toList ++ ys.toList)
 
+    /**
+      * Concatenate xs with ys preserving balancing
+      *
+      * @param ys
+      */
     def ++(ys: Conc[T]): Conc[T] = {
       require(xs.isBalanced && ys.isBalanced)
       decreases(abs(xs.height - ys.height))
@@ -111,7 +187,7 @@ object BalanceConc:
         res.height >= max(xs.height, ys.height) &&
         res.toList == xs.toList ++ ys.toList)
 
-
+  @ghost 
   def appendAssocInst[T](xs: Conc[T], ys: Conc[T]): Boolean = {
     (xs match {
       case Node(l, r, _, _) =>
@@ -145,10 +221,10 @@ object BalanceConc:
       else 
         t match
           case Leaf(x) => 
-            if from == 0 && until == 1 then Leaf(x)
+            if from == 0 && until == 1 then t
             else Empty[T]()
           case Node(l, r, _, _) =>
-            sliceLemma(l.toList, r.toList, from, until) // lemma
+            ghostExpr(sliceLemma(l.toList, r.toList, from, until)) // lemma
             if l.size <= from then r.slice(from - l.size, until - l.size)
             else if until <= l.size then l.slice(from, until)
             else            
@@ -156,6 +232,80 @@ object BalanceConc:
               val r1 = r.slice(0, until - l.size)
               l1 ++ r1
     }.ensuring(res => res.isBalanced && res.toList == t.toList.slice(from, until))
+
+    def splitAt(i: BigInt): (Conc[T], Conc[T]) = {
+      require(t.isBalanced)
+      require(0 <= i && i <= t.size)
+      decreases(t)
+      t match
+        case Empty[T]() => (t, t)
+        case Leaf(x) => 
+          if i <= 0 then (Empty[T](), t)
+          else (t, Empty[T]())
+        case Node(l, r, _, _) =>
+          ghostExpr(splitAtLemma(l.toList, r.toList, i))
+          if l.size == i then (l, r)
+          else if i < l.size then 
+            val (l1, l2) = l.splitAt(i)
+            (l1, l2 ++ r)
+          else 
+            val (r1, r2) = r.splitAt(i - l.size)
+            (l ++ r1, r2)
+    }.ensuring(res => (res._1.isBalanced && res._2.isBalanced) && (res._1.toList, res._2.toList) == t.toList.splitAtIndex(i))
+
+    def filter(p: T => Boolean): Conc[T] = {
+      require(t.isBalanced)
+       t match
+        case Empty[T]() => t
+        case Leaf(x) if p(x) => t
+        case Leaf(x) if !p(x) => Empty[T]()
+        case Node(l, r, _, _) =>
+          ghostExpr(ListUtils.lemmaFilterConcat(l.toList, r.toList, p))
+          assert((l.toList ++ r.toList).filter(p) == (l.toList.filter(p) ++ r.toList.filter(p)))
+          l.filter(p) ++ r.filter(p)
+    }.ensuring(res => res.isBalanced && res.toList == t.toList.filter(p))
+
+    def append(v: T): Conc[T] = {
+      require(t.isBalanced)
+      t ++ Leaf(v)
+    }.ensuring(res => res.isBalanced && res.toList == (t.toList :+ v))
+
+    def prepend(v: T): Conc[T] = {
+      require(t.isBalanced)
+      Leaf(v) ++ t
+    }.ensuring(res => res.isBalanced && res.toList == (Cons(v, t.toList)))
+
+    def tail: Conc[T] = {
+      require(t.isBalanced)
+      require(!t.isEmpty)
+      t match
+        case Leaf(x) => Empty[T]()
+        // case Node(l, r, _, _) if l.size == 1 => r
+        case Node(l, r, _, _) if l.isEmpty => r.tail
+        case Node(l, r, _, _) => 
+          ghostExpr(ListUtils.lemmaTailOfConcatIsTailConcat(l.toList, r.toList))
+          assert((l.toList ++ r.toList).tail == (l.toList.tail ++ r.toList))
+          l.tail ++ r
+    }.ensuring(res => res.isBalanced && res.toList == t.toList.tail)
+
+    def head: T = {
+      require(t.isBalanced)
+      require(!t.isEmpty)
+      t match
+        case Leaf(x) => x
+        case Node(l, r, _, _) => l.head
+    }.ensuring(res => res == t.toList.head)
+
+    def last: T = {
+      require(t.isBalanced)
+      require(!t.isEmpty)
+      t match
+        case Leaf(x) => x
+        case Node(l, r, _, _) => 
+          ghostExpr(ListUtils.lemmaLastOfConcatIsLastOfRhs(l.toList, r.toList))
+          r.last
+    }.ensuring(res => res == t.toList.last)
+
 
   extension[T](t: Conc[T])
     @extern
@@ -226,7 +376,26 @@ object BalanceConc:
   // **************************************************************************
   // lemmas for proofs
   // **************************************************************************
-  
+
+  // NOT TRUE and we don't want it
+  // @ghost @inlineOnce @opaque
+  // def listEqImpliesEq[T](c1: Conc[T], c2: Conc[T]): Unit = {
+  //   require(c1.isBalanced && c2.isBalanced)
+  //   require(c1.toList == c2.toList)
+  //   decreases(c1)
+  //   (c1, c2) match
+  //     case (Empty(), Empty()) => assert(c2 == c1)  
+  //     case (Leaf(x1), Leaf(x2)) => assert(c2 == c1)
+  //     case (Node(l1, r1, _, _), Node(l2, r2, _, _)) => 
+  //       assert(l1.size == l2.size)
+  //       listEqImpliesEq(l1, l2)
+  //       listEqImpliesEq(r1, r2)
+  //     case _ => check(false)
+        
+    
+  // }.ensuring(_ => c1 == c2)
+
+  @ghost @inlineOnce @opaque
   def sliceLemma[T](l: List[T], r: List[T], from: BigInt, until: BigInt): Unit = {
     require(0 <= from && from <= until && until <= l.size + r.size)
     decreases(l, r)
@@ -244,6 +413,26 @@ object BalanceConc:
                    else if until <= l.size then l.slice(from, until)
                    else l.slice(from, l.size) ++ r.slice(0, until - l.size)))
 
+  @ghost @inlineOnce @opaque
+  def splitAtLemma[T](l: List[T], r: List[T], i: BigInt): Unit = {
+    require(0 <= i && i <= l.size + r.size)
+    decreases(l, r)
+    if l == Nil[T]() || r == Nil[T]() then ()
+    else 
+      assert(!l.isEmpty && !r.isEmpty)
+      if i <= 0 then ()
+      else 
+        assert((l++r).tail == l.tail ++ r)
+        splitAtLemma(l.tail, r, i - 1)
+  }.ensuring(_ => (l ++ r).splitAtIndex(i) == 
+                  (if l.size == i then (l, r)
+                  else if i < l.size then 
+                    val (l1, l2) = l.splitAtIndex(i)
+                    (l1, l2 ++ r)
+                  else 
+                    val (r1, r2) = r.splitAtIndex(i - l.size)
+                    (l ++ r1, r2)))
+
 /* Expects this definition of method slice of list:
 
   def slice(from: BigInt, until: BigInt): List[T] = {
@@ -260,6 +449,24 @@ object BalanceConc:
           }
         }
     }
+  }
+
+  And this one for splitAtIndex
+
+  def splitAtIndex(index: BigInt) : (List[T], List[T]) = { 
+    decreases(this.length)
+    this match {
+      case Nil() => (Nil[T](), Nil[T]())
+      case Cons(h, rest) =>
+        if (index <= BigInt(0)) {
+          (Nil[T](), this)
+        } else {
+          val (left,right) = rest.splitAtIndex(index - 1)
+          (Cons[T](h,left), right)
+        }
+  }}.ensuring { (res:(List[T],List[T])) =>
+    res._1 ++ res._2 == this &&
+    res._1 == take(index) && res._2 == drop(index)
   }
 */
 
