@@ -256,23 +256,6 @@ object BalanceConcObj:
         case _ => true
       }
     }
-    def head: T = {
-      require(!t.isEmpty)
-      t match
-        case Leaf(x) => x
-        case Node(l, r, _, _) if l.isEmpty => r.head
-        case Node(l, r, _, _) => l.head
-    }.ensuring(res => res == t.list.head)
-
-    def last: T = {
-      require(!t.isEmpty)
-      t match
-        case Leaf(x) => x
-        case Node(l, r, _, _) if r.isEmpty => l.last
-        case Node(l, r, _, _) => 
-          ghostExpr(ListUtils.lemmaLastOfConcatIsLastOfRhs(l.list, r.list))
-          r.last
-    }.ensuring(res => res == t.list.last)
 
     def forall(p: T => Boolean): Boolean = {
       decreases(t.height)
@@ -480,6 +463,24 @@ object BalanceConcObj:
           assert((l.list ++ r.list).tail == (l.list.tail ++ r.list))
           l.tail ++ r
     }.ensuring(res => res.isBalanced && res.list == t.list.tail)
+
+    def head: T = {
+      require(t.isBalanced)
+      require(!t.isEmpty)
+      t match
+        case Leaf(x) => x
+        case Node(l, r, _, _) => l.head
+    }.ensuring(res => res == t.toList.head)
+
+    def last: T = {
+      require(t.isBalanced)
+      require(!t.isEmpty)
+      t match
+        case Leaf(x) => x
+        case Node(l, r, _, _) => 
+          ghostExpr(ListUtils.lemmaLastOfConcatIsLastOfRhs(l.toList, r.toList))
+          r.last
+    }.ensuring(res => res == t.toList.last)
 
   def mkTree(from: Int, until: Int): Conc[Int] =
     require(0 <= from && from <= until && until <= 1_000_000)
