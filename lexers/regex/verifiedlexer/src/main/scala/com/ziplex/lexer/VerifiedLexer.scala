@@ -409,7 +409,7 @@ object VerifiedLexer {
       require(rulesProduceIndividualToken(rules, t2))
       require(!t2.charsOf.isEmpty)
 
-      !VerifiedRegexMatcher.prefixMatchZipperVector(rulesRegex(rules), t1.charsOf ++ singletonSeq(t2.charsOf(0)))
+      !VerifiedRegexMatcher.prefixMatchZipperSequence(rulesRegex(rules), t1.charsOf ++ singletonSeq(t2.charsOf(0)))
     }
 
     def separableTokensPredicateMem[C](t1: Token[C], t2: Token[C], rules: List[Rule[C]])(using cacheUp: CacheUp[C], cacheDown: CacheDown[C]): Boolean = {
@@ -419,7 +419,7 @@ object VerifiedLexer {
       require(rulesProduceIndividualToken(rules, t2))
       require(!t2.charsOf.isEmpty)
 
-      !VerifiedRegexMatcher.prefixMatchZipperVectorMem(rulesRegex(rules), t1.charsOf ++ singletonSeq(t2.charsOf(0)))
+      !VerifiedRegexMatcher.prefixMatchZipperSequenceMem(rulesRegex(rules), t1.charsOf ++ singletonSeq(t2.charsOf(0)))
     }.ensuring(res => res == separableTokensPredicate(t1, t2, rules))
 
      override def rulesInvariant[C](rules: List[Rule[C]]): Boolean =
@@ -482,7 +482,7 @@ object VerifiedLexer {
       decreases(input.size)
       require(!rules.isEmpty)
       require(rulesInvariant(rules))
-      maxPrefixZipperVector(rules, input) match {
+      maxPrefixZipperSequence(rules, input) match {
         case Some((token, suffix)) => {
           val (followingTokens, nextSuffix) = lexRec(rules, suffix)
           assert(token.charsOf.list ++ suffix.list == input.list)
@@ -512,7 +512,7 @@ object VerifiedLexer {
       require(lexRec(rules, treated)._2.list.isEmpty)
       require(lexRec(rules, totalInput)._1.list == (acc ++ lexRec(rules, input)._1).list)
       require(lexRec(rules, totalInput)._2.list == lexRec(rules, input)._2.list)
-      maxPrefixZipperVector(rules, input) match {
+      maxPrefixZipperSequence(rules, input) match {
         case Some((token, suffix)) => {
           @ghost val (followingTokens, nextSuffix) = lexRec(rules, suffix)
           ghostExpr(ListUtils.lemmaConcatAssociativity(treated.list, token.charsOf.list, suffix.list))
@@ -577,7 +577,7 @@ object VerifiedLexer {
       require(lexRec(rules, totalInput)._2.list == lexRec(rules, input)._2.list)
       unfold(lexTailRec(rules, totalInput, treated, input, acc))
       unfold(lex(rules, input))
-      maxPrefixZipperVectorMem(rules, input) match {
+      maxPrefixZipperSequenceMem(rules, input) match {
         case Some((token, suffix)) => {
           @ghost val newTreated = treated ++ token.charsOf
           lexTailRecMem(
@@ -864,7 +864,7 @@ object VerifiedLexer {
           ListSpecs.forallContained(v.list, t => rulesProduceIndividualToken(rules, t), v(from))
         })
         val suffix = printWithSeparatorTokenWhenNeeded(rules, v, separatorToken, from + 1)
-        val maxPrefWithoutSep = maxPrefixZipperVector(rules, v(from).charsOf ++ suffix)
+        val maxPrefWithoutSep = maxPrefixZipperSequence(rules, v(from).charsOf ++ suffix)
         maxPrefWithoutSep match {
           case Some((t, s)) if t == v(from) => v(from).charsOf ++ suffix
           case Some((t, s)) if t != v(from) => v(from).charsOf ++ separatorToken.charsOf ++ suffix
@@ -953,7 +953,7 @@ object VerifiedLexer {
       }
     }.ensuring (res => res == maxPrefix(rulesArg, input))
 
-    def maxPrefixZipperVector[C](
+    def maxPrefixZipperSequence[C](
         rulesArg: List[Rule[C]],
         input: Sequence[C]
     ): Option[(Token[C], Sequence[C])] = {
@@ -963,10 +963,10 @@ object VerifiedLexer {
 
       ghostExpr(ListUtils.lemmaIsPrefixRefl(input.list, input.list))
       rulesArg match {
-        case Cons(hd, Nil()) => maxPrefixOneRuleZipperVector(hd, input)
+        case Cons(hd, Nil()) => maxPrefixOneRuleZipperSequence(hd, input)
         case Cons(hd, tl) => {
-          val currentRulePref = maxPrefixOneRuleZipperVector(hd, input)
-          val othersPrefix = maxPrefixZipperVector(tl, input)
+          val currentRulePref = maxPrefixOneRuleZipperSequence(hd, input)
+          val othersPrefix = maxPrefixZipperSequence(tl, input)
           (currentRulePref, othersPrefix) match {
             case (None(), None())   => None()
             case (c, None())        => c
@@ -984,7 +984,7 @@ object VerifiedLexer {
                        else true)
                        )
 
-    def maxPrefixZipperVectorMem[C](
+    def maxPrefixZipperSequenceMem[C](
             rulesArg: List[Rule[C]],
             input: Sequence[C]
         )(using cacheUp: CacheUp[C], cacheDown: CacheDown[C]): Option[(Token[C], Sequence[C])] = {
@@ -996,10 +996,10 @@ object VerifiedLexer {
 
           ghostExpr(ListUtils.lemmaIsPrefixRefl(input.list, input.list))
           rulesArg match {
-            case Cons(hd, Nil()) => maxPrefixOneRuleZipperVectorMem(hd, input)
+            case Cons(hd, Nil()) => maxPrefixOneRuleZipperSequenceMem(hd, input)
             case Cons(hd, tl) => {
-              val currentRulePref = maxPrefixOneRuleZipperVectorMem(hd, input)
-              val othersPrefix = maxPrefixZipperVectorMem(tl, input)
+              val currentRulePref = maxPrefixOneRuleZipperSequenceMem(hd, input)
+              val othersPrefix = maxPrefixZipperSequenceMem(tl, input)
               (currentRulePref, othersPrefix) match {
                 case (None(), None())   => None()
                 case (c, None())        => c
@@ -1008,7 +1008,7 @@ object VerifiedLexer {
               }
             }
           }
-        }.ensuring (res => res == maxPrefixZipperVector(rulesArg, input) && cacheUp.valid && cacheDown.valid)
+        }.ensuring (res => res == maxPrefixZipperSequence(rulesArg, input) && cacheUp.valid && cacheDown.valid)
 
     /** Finds the biggest prefix matching any rule in the input list of characters If nothing matched a rule, returns None Else, returns the matched
       * prefix and the remaining suffix
@@ -1059,13 +1059,13 @@ object VerifiedLexer {
       }
     }.ensuring (res => res == maxPrefixOneRule(rule, input))
 
-    def maxPrefixOneRuleZipperVector[C](
+    def maxPrefixOneRuleZipperSequence[C](
         rule: Rule[C],
         input: Sequence[C]
     ): Option[(Token[C], Sequence[C])] = {
       require(ruleValid(rule))
 
-      val (longestPrefix, suffix) = findLongestMatchWithZipperVector(rule.regex, input)
+      val (longestPrefix, suffix) = findLongestMatchWithZipperSequence(rule.regex, input)
       if (longestPrefix.isEmpty) {
         None[(Token[C], Sequence[C])]()
       } else {
@@ -1091,8 +1091,9 @@ object VerifiedLexer {
           assert(res.get._1 == maxPrefixOneRule(rule, input.list).get._1)
           assert(res.get._2.list == maxPrefixOneRule(rule, input.list).get._2)
 
-        })
-        Some[(Token[C], Sequence[C])]((Token(rule.transformation.apply(longestPrefix), rule, longestPrefix.size, longestPrefix.list), suffix))
+        })  
+        // the longestPrefix.efficientList parameter is ghost, but for now the checker rejects it, so we use the non-ghost version, even if it will be removed
+        Some[(Token[C], Sequence[C])]((Token(rule.transformation.apply(longestPrefix), rule, longestPrefix.size, longestPrefix.efficientList), suffix))
       }
 
     }.ensuring (res => res.isDefined == maxPrefixOneRule(rule, input.list).isDefined && 
@@ -1100,7 +1101,7 @@ object VerifiedLexer {
                           res.get._2.list == maxPrefixOneRule(rule, input.list).get._2
                        else true))
 
-     def maxPrefixOneRuleZipperVectorMem[C](
+     def maxPrefixOneRuleZipperSequenceMem[C](
         rule: Rule[C],
         input: Sequence[C]
     )(using cacheUp: CacheUp[C], cacheDown: CacheDown[C]): Option[(Token[C], Sequence[C])] = {
@@ -1108,17 +1109,18 @@ object VerifiedLexer {
       require(cacheUp.valid)
       require(cacheDown.valid)
 
-      val (longestPrefix, suffix) = findLongestMatchWithZipperVectorMem(rule.regex, input)
-      assert((longestPrefix, suffix) == findLongestMatchWithZipperVector(rule.regex, input))
+      val (longestPrefix, suffix) = findLongestMatchWithZipperSequenceMem(rule.regex, input)
+      assert((longestPrefix, suffix) == findLongestMatchWithZipperSequence(rule.regex, input))
       if (longestPrefix.isEmpty) {
         None[(Token[C], Sequence[C])]()
       } else {
         ghostExpr(longestMatchIsAcceptedByMatchOrIsEmpty(rule.regex, input.list))
         ghostExpr(rule.transformation.lemmaSemiInverse(longestPrefix))
-        Some[(Token[C], Sequence[C])]((Token(rule.transformation.apply(longestPrefix), rule, longestPrefix.size, longestPrefix.list), suffix))
+        // the longestPrefix.efficientList parameter is ghost, but for now the checker rejects it, so we use the non-ghost version, even if it will be removed
+        Some[(Token[C], Sequence[C])]((Token(rule.transformation.apply(longestPrefix), rule, longestPrefix.size, longestPrefix.efficientList), suffix))
       }
 
-    }.ensuring (res => res == maxPrefixOneRuleZipperVector(rule, input))
+    }.ensuring (res => res == maxPrefixOneRuleZipperSequence(rule, input))
 
     // Proofs --------------------------------------------------------------------------------------------------------------------------------
 
@@ -1296,7 +1298,7 @@ object VerifiedLexer {
           assert(separableTokensPredicate(hd, next, rules))
 
           check(hd.charsOf.list == hd.originalCharacters)
-          assert(maxPrefixZipperVector(rules, seqFromList(hd.originalCharacters)).isDefined)
+          assert(maxPrefixZipperSequence(rules, seqFromList(hd.originalCharacters)).isDefined)
           check(maxPrefix(rules, hd.originalCharacters).isDefined)
           check(maxPrefix(rules, hd.charsOf.list).isDefined)
           check(maxPrefix(rules, hd.charsOf.list).isDefined)
@@ -1311,9 +1313,9 @@ object VerifiedLexer {
           assert(prefixOpt.get._2 == suffix.list)
 
           assert(hd == maxPrefixZipper(rules, input.list).get._1)
-          assert(hd == maxPrefixZipperVector(rules, input).get._1)
-          assert(prefixOpt.get._2 == maxPrefixZipperVector(rules, input).get._2.list)
-          assert(suffix.list == maxPrefixZipperVector(rules, input).get._2.list)
+          assert(hd == maxPrefixZipperSequence(rules, input).get._1)
+          assert(prefixOpt.get._2 == maxPrefixZipperSequence(rules, input).get._2.list)
+          assert(suffix.list == maxPrefixZipperSequence(rules, input).get._2.list)
 
           assert(lex(rules, input)._1.list == followingTokens.prepend(hd).list)
           assert(lex(rules, input)._1.list == (seqFromList(tl).prepend(next)).prepend(hd).list)
@@ -1422,7 +1424,7 @@ object VerifiedLexer {
 
           check(hd.charsOf.list == hd.originalCharacters)
           ListSpecs.forallContained(tokens, t => rulesProduceIndividualToken(rules, t), hd)
-          assert(maxPrefixZipperVector(rules, seqFromList(hd.originalCharacters)).isDefined)
+          assert(maxPrefixZipperSequence(rules, seqFromList(hd.originalCharacters)).isDefined)
 
           check(maxPrefix(rules, hd.charsOf.list).isDefined)
 
@@ -1455,15 +1457,15 @@ object VerifiedLexer {
             // assert(print(singletonSeq(separatorToken)) == separatorToken.characters)
             // assert(rulesProduceIndividualToken(rules, separatorToken))
             // assert(!lex(rules, seqFromList(separatorToken.characters.list))._1.isEmpty)
-            // assert(maxPrefixZipperVector(rules, separatorToken.originalCharacters).isDefined)
+            // assert(maxPrefixZipperSequence(rules, separatorToken.originalCharacters).isDefined)
             // check(maxPrefix(rules, separatorToken.originalCharacters).isDefined)
             // check(maxPrefix(rules, separatorToken.characters.list).isDefined)
             // check(maxPrefix(rules, separatorToken.characters.list).isDefined)
             // check(maxPrefix(rules, separatorToken.characters.list).get._1 == separatorToken)
             // check(maxPrefix(rules, separatorToken.characters.list).get._2.isEmpty)
-            // assert(maxPrefixZipperVector(rules, separatorToken.characters).isDefined)
+            // assert(maxPrefixZipperSequence(rules, separatorToken.characters).isDefined)
             // assert(maxPrefix(rules, separatorToken.characters.list).isDefined)
-            // assert(maxPrefixZipperVector(rules, separatorToken.characters).get._1 == separatorToken)
+            // assert(maxPrefixZipperSequence(rules, separatorToken.characters).get._1 == separatorToken)
             // assert(maxPrefix(rules, separatorToken.characters.list).get._1 == separatorToken)
             lemmaMaxPrefReturnTokenSoItsTagBelongsToTheRuleWithinToken(rules, separatorToken.charsOf.list, separatorToken)
 
@@ -1477,9 +1479,9 @@ object VerifiedLexer {
             // assert(print(singletonSeq(nextToken)) == nextToken.characters)
             // assert(rulesProduceIndividualToken(rules, nextToken))
             // assert(!lex(rules, seqFromList(nextToken.characters.list))._1.isEmpty)
-            // check(maxPrefixZipperVector(rules, nextToken.characters).isDefined)
+            // check(maxPrefixZipperSequence(rules, nextToken.characters).isDefined)
             // assert(maxPrefix(rules, nextToken.characters.list).isDefined)
-            // assert(maxPrefixZipperVector(rules, nextToken.characters).get._1 == nextToken)
+            // assert(maxPrefixZipperSequence(rules, nextToken.characters).get._1 == nextToken)
             // assert(maxPrefix(rules, nextToken.characters.list).get._1 == nextToken)
             lemmaMaxPrefReturnTokenSoItsTagBelongsToTheRuleWithinToken(rules, nextToken.charsOf.list, nextToken)
             val nextTokenRule = nextToken.rule

@@ -57,7 +57,7 @@ object Main {
     val r: Regex[Char] = ("a".r | "b".r).* ~ "c".r
     val input: Sequence[Char] = "ababc".toStainless
     assert(matchZipperSequence(r, input))
-    assert(matchZipperVectorMem(r, input)(using ExampleUtils.zipperCacheUp, ExampleUtils.zipperCacheDown))
+    assert(matchZipperSequenceMem(r, input)(using ExampleUtils.zipperCacheUp, ExampleUtils.zipperCacheDown))
 
   }
 }
