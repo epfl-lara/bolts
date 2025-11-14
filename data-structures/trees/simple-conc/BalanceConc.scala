@@ -93,23 +93,6 @@ object BalanceConc:
         case _ => true
       }
     }
-    def head: T = {
-      require(!t.isEmpty)
-      t match
-        case Leaf(x) => x
-        case Node(l, r, _, _) if l.isEmpty => r.head
-        case Node(l, r, _, _) => l.head
-    }.ensuring(res => res == t.toList.head)
-
-    def last: T = {
-      require(!t.isEmpty)
-      t match
-        case Leaf(x) => x
-        case Node(l, r, _, _) if r.isEmpty => l.last
-        case Node(l, r, _, _) => 
-          ghostExpr(ListUtils.lemmaLastOfConcatIsLastOfRhs(l.toList, r.toList))
-          r.last
-    }.ensuring(res => res == t.toList.last)
 
     def forall(p: T => Boolean): Boolean = {
       decreases(t.height)
@@ -304,6 +287,24 @@ object BalanceConc:
           assert((l.toList ++ r.toList).tail == (l.toList.tail ++ r.toList))
           l.tail ++ r
     }.ensuring(res => res.isBalanced && res.toList == t.toList.tail)
+
+    def head: T = {
+      require(t.isBalanced)
+      require(!t.isEmpty)
+      t match
+        case Leaf(x) => x
+        case Node(l, r, _, _) => l.head
+    }.ensuring(res => res == t.toList.head)
+
+    def last: T = {
+      require(t.isBalanced)
+      require(!t.isEmpty)
+      t match
+        case Leaf(x) => x
+        case Node(l, r, _, _) => 
+          ghostExpr(ListUtils.lemmaLastOfConcatIsLastOfRhs(l.toList, r.toList))
+          r.last
+    }.ensuring(res => res == t.toList.last)
 
 
   extension[T](t: Conc[T])
