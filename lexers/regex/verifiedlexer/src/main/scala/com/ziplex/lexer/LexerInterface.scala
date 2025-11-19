@@ -46,7 +46,7 @@ inline def seqFromList[T](l: List[T]): Sequence[T] = BalanceConcObj.fromListB(l)
 
 trait TokenValue
 
-case class Token[C](value: TokenValue, rule: Rule[C], size: BigInt, @ghost originalCharacters: List[C]) {
+final case class Token[C](value: TokenValue, rule: Rule[C], size: BigInt, @ghost originalCharacters: List[C]) {
   require(!originalCharacters.isEmpty)
   require(originalCharacters == rule.transformation.toChars(value).list)
   require(size == originalCharacters.size)
