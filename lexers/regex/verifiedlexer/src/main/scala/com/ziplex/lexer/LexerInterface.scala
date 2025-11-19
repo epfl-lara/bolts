@@ -15,6 +15,7 @@ import stainless.collection.Nil
 
 import scala.annotation.tailrec
 
+import com.ziplex.lexer.Vector
 import com.ziplex.lexer.BalanceConcObj.BalanceConc
 import com.ziplex.lexer.BalanceConcObj
 
@@ -35,14 +36,23 @@ def dummyInterface(x: BigInt): BigInt = {
 // END imports for benchmarking ---------------------------------------------
 
 
+// Pick the structure used to represent the strings as sequences of characters
+// Vector is a trusted wrapper around the Vector datastructure from the Scala standard library
+// BalanceConc is a sequence implementation based on a binary tree, fully verified although slower
+
+// type Sequence[T] = Vector[T]
+// inline def emptySeq[T]: Sequence[T] = Vector.empty
+// inline def singletonSeq[T](t: T): Sequence[T] = Vector.singleton(t)
+// inline def seqFromList[T](l: List[T]): Sequence[T] = Vector.fromList(l)
 type Sequence[T] = BalanceConc[T]
 inline def emptySeq[T]: Sequence[T] = BalanceConcObj.emptyB
 inline def singletonSeq[T](t: T): Sequence[T] = BalanceConcObj.singleton(t)
 inline def seqFromList[T](l: List[T]): Sequence[T] = BalanceConcObj.fromListB(l)
-@ghost @inlineOnce @opaque def seqFromListBHdTlConstructive[T](hd: T, tl: List[T], bc: Sequence[T]): Unit = {
-  require(bc.list == BalanceConcObj.fromList(hd :: tl).list)
-      BalanceConcObj.fromListHdTlConstructive(hd, tl, bc)
-  }.ensuring(_ => bc.list == BalanceConcObj.fromList(tl).prepend(hd).list)
+@ghost @inlineOnce @opaque def seqFromListBHdTlConstructive[T](hd: T, tl: List[T], s: Sequence[T]): Unit = {
+  require(s.list == seqFromList(hd :: tl).list)
+      // Vector.fromListHdTlConstructive(hd, tl, s)
+      BalanceConcObj.fromListHdTlConstructive(hd, tl, s)
+  }.ensuring(_ => s.list == seqFromList(tl).prepend(hd).list)
 
 trait TokenValue
 

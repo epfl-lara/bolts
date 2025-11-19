@@ -26,9 +26,13 @@ case class Vector[T](@pure @extern underlying: scala.collection.immutable.Vector
 
   // we have an invariant stating that if size < MAX_INT then overflowing.isEmpty
 
-  // @ghost 
-  @pure @extern
+  @pure @extern @ghost
   def list: List[T] = List.fromScala(underlying.toList) ++ overflowing
+
+  @pure @extern 
+  def efficientList: List[T] = {
+    List.fromScala(underlying.toList) ++ overflowing
+  }.ensuring(_ == this.list)
 
   @pure @extern @inlineOnce
   def size: BigInt = {
