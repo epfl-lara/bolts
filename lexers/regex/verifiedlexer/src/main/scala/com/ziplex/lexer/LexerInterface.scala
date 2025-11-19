@@ -5,6 +5,8 @@ import stainless.collection.List
 import stainless.annotation.law
 import stainless.annotation.pure
 import stainless.annotation.ghost
+import stainless.annotation.inlineOnce
+import stainless.annotation.opaque
 import stainless.lang.Quantifiers.*
 
 import stainless.collection.List
@@ -37,11 +39,14 @@ type Sequence[T] = BalanceConc[T]
 inline def emptySeq[T]: Sequence[T] = BalanceConcObj.emptyB
 inline def singletonSeq[T](t: T): Sequence[T] = BalanceConcObj.singleton(t)
 inline def seqFromList[T](l: List[T]): Sequence[T] = BalanceConcObj.fromListB(l)
-@ghost inline def seqFromListBHdTlConstructive[T](hd: T, tl: List[T], bc: Sequence[T]): Unit = BalanceConcObj.fromListHdTlConstructive(hd, tl, bc)
+@ghost @inlineOnce @opaque def seqFromListBHdTlConstructive[T](hd: T, tl: List[T], bc: Sequence[T]): Unit = {
+  require(bc.list == BalanceConcObj.fromList(hd :: tl).list)
+      BalanceConcObj.fromListHdTlConstructive(hd, tl, bc)
+  }.ensuring(_ => bc.list == BalanceConcObj.fromList(tl).prepend(hd).list)
 
 trait TokenValue
 
-case class Token[C](value: TokenValue, rule: Rule[C], size: BigInt, @ghost originalCharacters: List[C]) {
+final case class Token[C](value: TokenValue, rule: Rule[C], size: BigInt, @ghost originalCharacters: List[C]) {
   require(!originalCharacters.isEmpty)
   require(originalCharacters == rule.transformation.toChars(value).list)
   require(size == originalCharacters.size)
@@ -89,7 +94,7 @@ trait LexerInterface {
     */
   def lex[C](rules: List[Rule[C]], input: Sequence[C]): (Sequence[Token[C]], Sequence[C])
 
-  /** Prints back the tokens to a vector of characters of the type C
+  /** Prints back the tokens to a sequence of characters of the type C
     *
     * @param l
     */
@@ -172,7 +177,7 @@ trait LexerInterface {
   def separableTokens[C](tokens: Sequence[Token[C]], rules: List[Rule[C]]): Boolean
 
   /**
-    * Predicate over a vector of tokens, that applies the separableTokensPredicate binary predicate to each pair of consecutive tokens
+    * Predicate over a sequence of tokens, that applies the separableTokensPredicate binary predicate to each pair of consecutive tokens
     *
     * @param l
     * @param rules
@@ -246,7 +251,7 @@ trait LexerInterface {
     r1.regex.usedCharacters.forall(c => !r2.regex.usedCharacters.contains(c))
   }
 
-  /** Prints back the tokens to a vector of characters of the type C, by adding a separatorToken between each, and after the last
+  /** Prints back the tokens to a sequence of characters of the type C, by adding a separatorToken between each, and after the last
     *
     * @param l
     * @param separatorToken
@@ -254,7 +259,7 @@ trait LexerInterface {
   def printWithSeparatorToken[C](l: Sequence[Token[C]], separatorToken: Token[C], from: BigInt = 0): Sequence[C]
 
   /**
-    * Returns the Vector of tokens v with the separator token interleaved between each pair, as
+    * Returns the Sequence of tokens v with the separator token interleaved between each pair, as
     * t(0), sep, t(1), sep, ...., t(n), sep
     * 
     * printing this results in the same string as calling printWithSeparatorToken
