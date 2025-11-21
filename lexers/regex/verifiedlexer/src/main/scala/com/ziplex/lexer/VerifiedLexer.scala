@@ -1092,8 +1092,7 @@ object VerifiedLexer {
           assert(res.get._2.list == maxPrefixOneRule(rule, input.list).get._2)
 
         })  
-        // the longestPrefix.efficientList parameter is ghost, but for now the checker rejects it, so we use the non-ghost version, even if it will be removed
-        Some[(Token[C], Sequence[C])]((Token(rule.transformation.apply(longestPrefix), rule, longestPrefix.size, longestPrefix.efficientList), suffix))
+        Some[(Token[C], Sequence[C])]((Token(rule.transformation.apply(longestPrefix), rule, longestPrefix.size, longestPrefix.list), suffix))
       }
 
     }.ensuring (res => res.isDefined == maxPrefixOneRule(rule, input.list).isDefined && 
@@ -1115,9 +1114,8 @@ object VerifiedLexer {
         None[(Token[C], Sequence[C])]()
       } else {
         ghostExpr(longestMatchIsAcceptedByMatchOrIsEmpty(rule.regex, input.list))
-        ghostExpr(rule.transformation.lemmaSemiInverse(longestPrefix))
-        // the longestPrefix.efficientList parameter is ghost, but for now the checker rejects it, so we use the non-ghost version, even if it will be removed
-        Some[(Token[C], Sequence[C])]((Token(rule.transformation.apply(longestPrefix), rule, longestPrefix.size, longestPrefix.efficientList), suffix))
+        ghostExpr(rule.transformation.lemmaSemiInverse(longestPrefix)) removed
+        Some[(Token[C], Sequence[C])]((Token(rule.transformation.apply(longestPrefix), rule, longestPrefix.size, longestPrefix.list), suffix))
       }
 
     }.ensuring (res => res == maxPrefixOneRuleZipperSequence(rule, input))
