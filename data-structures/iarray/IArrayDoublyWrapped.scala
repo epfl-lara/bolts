@@ -1,5 +1,7 @@
+// Use two classes: one that is ignored, and one external. This was needed before stainless/pull/1675
 import stainless.annotation.*
 import stainless.lang.StaticChecks.*
+import stainless.math.wrapping // just for overflow
 
 object IArrayExample: 
   @ignore private[IArrayExample]
@@ -38,7 +40,7 @@ object IArrayExample:
       val f1 : Int => T = (i: Int) => f(from + i)
       IArray(arrIn, offset + from, f1)
     }.ensuring(res => res.size == until - from && 
-                      res.f == ((i:Int) => this.f(from + i)))
+                      res.f == ((i:Int) => this.f(wrapping(from + i))))
 
 
   object IArray:
