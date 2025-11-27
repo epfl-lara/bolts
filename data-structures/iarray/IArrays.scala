@@ -40,8 +40,10 @@ object IArrays:
     def concat(other: IArray[T]): IArray[T] = {
       @ghost val list = this.list ++ other.list
       val res = IArray(list)
-      res._arr = (this._arr.slice(this._offset, this._offset + this._size).asInstanceOf[Array[AnyRef]] ++ 
-                 other._arr.slice(other._offset, other._offset + other._size).asInstanceOf[Array[AnyRef]]).asInstanceOf[Array[T]]
+      val newArr = new Array[AnyRef](this.size + other.size)
+      this._arr.copyToArray(newArr, this._offset, this._offset + this._size)
+      other._arr.copyToArray(newArr, other._offset, other._offset + other._size)
+      res._arr = newArr.asInstanceOf[Array[T]]
       res._offset = 0
       res._size = this.size + other.size
       res
