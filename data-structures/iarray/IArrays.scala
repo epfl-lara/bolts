@@ -5,7 +5,7 @@ import stainless.lang.*
 import stainless.collection.{List, Cons, Nil}
 object IArrays: 
  
-  case class IArray[T] private (@ghost list: List[T]):
+  case class IArray[T <: AnyRef] private (@ghost list: List[T]):
     @ignore
     var _arr: Array[T] = uninitialized
     @ignore
@@ -36,6 +36,17 @@ object IArrays:
       res
     }.ensuring(_ == IArray(list.islice(from, until)))
 
+    @pure @extern
+    def concat(other: IArray[T]): IArray[T] = {
+      @ghost val list = this.list ++ other.list
+      val res = IArray(list)
+      res._arr = (this._arr.slice(this._offset, this._offset + this._size).asInstanceOf[Array[AnyRef]] ++ 
+                 other._arr.slice(other._offset, other._offset + other._size).asInstanceOf[Array[AnyRef]]).asInstanceOf[Array[T]]
+      res._offset = 0
+      res._size = this.size + other.size
+      res
+    }.ensuring(_ == IArray(this.list ++ other.list))
+    
   object IArray:
     @pure @extern
     def fill[T <: AnyRef](n: Int)(x: T): IArray[T] = {
