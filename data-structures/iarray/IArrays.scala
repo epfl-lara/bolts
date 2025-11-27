@@ -60,6 +60,7 @@ object IArrays:
       res      
     }.ensuring(_ == IArray(List.ifill(n)(x)))
     
+    @ghost
     def range(from: Int, until: Int): List[Int] = {
       require(0 <= from && from <= until)
       decreases(until - from)
@@ -76,13 +77,7 @@ object IArrays:
       require(0 < n)
       @ghost val list = range(0, n).map(f)
       val res = IArray(list)
-      val newArr = new Array[AnyRef](n).asInstanceOf[Array[T]]
-      var i = 0
-      while(i < n) {
-        newArr(i) = f(i)
-        i += 1
-      }
-      res._arr = newArr.asInstanceOf[Array[T]]
+      res._arr = Array.tabulate[AnyRef](n)(i => f(i)).asInstanceOf[Array[T]]
       res._offset = 0
       res._size = n
       res
