@@ -5,7 +5,7 @@ import stainless.lang.*
 import stainless.collection.{List, Cons, Nil}
 object IArrays: 
  
-  case class IArray[T] private (@ghost list: List[T]):
+  case class IArray[T <: AnyRef] private (@ghost list: List[T]):
     @ignore
     var _arr: Array[T] = uninitialized
     @ignore
@@ -36,6 +36,19 @@ object IArrays:
       res
     }.ensuring(_ == IArray(list.islice(from, until)))
 
+    @pure @extern
+    def concat(other: IArray[T]): IArray[T] = {
+      @ghost val list = this.list ++ other.list
+      val res = IArray(list)
+      val newArr = new Array[AnyRef](this.size + other.size)
+      this._arr.copyToArray(newArr, this._offset, this._offset + this._size)
+      other._arr.copyToArray(newArr, other._offset, other._offset + other._size)
+      res._arr = newArr.asInstanceOf[Array[T]]
+      res._offset = 0
+      res._size = this.size + other.size
+      res
+    }.ensuring(_ == IArray(this.list ++ other.list))
+    
   object IArray:
     @pure @extern
     def fill[T <: AnyRef](n: Int)(x: T): IArray[T] = {
@@ -47,6 +60,7 @@ object IArrays:
       res      
     }.ensuring(_ == IArray(List.ifill(n)(x)))
     
+    @ghost
     def range(from: Int, until: Int): List[Int] = {
       require(0 <= from && from <= until)
       decreases(until - from)
@@ -61,9 +75,9 @@ object IArrays:
     @pure @extern
     def tabulate[T <: AnyRef](n: Int)(f: Int => T): IArray[T] = {
       require(0 < n)
-      val list = range(0, n).map(f)
+      @ghost val list = range(0, n).map(f)
       val res = IArray(list)
-      res._arr = list.toScala.toArray[AnyRef].asInstanceOf[Array[T]]
+      res._arr = Array.tabulate[AnyRef](n)(i => f(i)).asInstanceOf[Array[T]]
       res._offset = 0
       res._size = n
       res
