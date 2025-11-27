@@ -74,9 +74,15 @@ object IArrays:
     @pure @extern
     def tabulate[T <: AnyRef](n: Int)(f: Int => T): IArray[T] = {
       require(0 < n)
-      val list = range(0, n).map(f)
+      @ghost val list = range(0, n).map(f)
       val res = IArray(list)
-      res._arr = list.toScala.toArray[AnyRef].asInstanceOf[Array[T]]
+      val newArr = new Array[AnyRef](n).asInstanceOf[Array[T]]
+      var i = 0
+      while(i < n) {
+        newArr(i) = f(i)
+        i += 1
+      }
+      res._arr = newArr.asInstanceOf[Array[T]]
       res._offset = 0
       res._size = n
       res
