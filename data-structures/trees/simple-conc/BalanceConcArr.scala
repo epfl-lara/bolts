@@ -9,13 +9,18 @@ import stainless.lang.StaticChecks.*
 
 import com.ziplex.lexer.ListUtils
 
+import IArrays.*
 
-object BalanceConc:
 
-  sealed abstract class Conc[T]
-  case class Empty[T]() extends Conc[T]
-  case class Leaf[T](x: T) extends Conc[T]
-  case class Node[T](left: Conc[T], right: Conc[T], 
+object BalanceConcArr:
+
+  sealed abstract class Conc[T <: AnyRef]
+  case class Empty[T <: AnyRef]() extends Conc[T]
+  case class Leaf[T <: AnyRef](xs: IArray[T], csize: BigInt) extends Conc[T] {
+    require(xs.list.size <= 32 && csize == xs.list.size && xs.list.size > 0)
+  }
+  // case class Leaf[T <: AnyRef](x: T) extends Conc[T]
+  case class Node[T <: AnyRef](left: Conc[T], right: Conc[T], 
                      csize: BigInt, cheight: BigInt) extends Conc[T] {
     require(csize == left.size + right.size && left != Empty[T]() && right != Empty[T]() &&
             cheight == max(left.height, right.height) + 1 &&
@@ -23,7 +28,7 @@ object BalanceConc:
   }
 
   @pure @opaque 
-  def fromList[T](l: List[T]): Conc[T] = {
+  def fromList[T <: AnyRef](l: List[T]): Conc[T] = {
     def rec(ll: List[T], c: Conc[T]): Conc[T] = {
       require(c.isBalanced)
       decreases(ll.size)
@@ -45,16 +50,17 @@ object BalanceConc:
   def abs(x: BigInt) =
     if 0 <= x then x else -x
 
-  extension[T](t: Conc[T])
+  extension[T <: AnyRef](t: Conc[T])
+    @ghost
     def toList: List[T] = t match
       case Empty() => Nil[T]()
-      case Leaf(x) => List(x)
+      case Leaf(xs, _) => xs.list
       case Node(l, r, _, _) => l.toList ++ r.toList
 
     def size: BigInt = {
       t match
         case Empty() => BigInt(0)
-        case Leaf(_) => BigInt(1)
+        case Leaf(_, csize) => csize
         case Node(_, _, csize, _) => csize
     }.ensuring(_ == t.toList.size)
 
@@ -65,13 +71,13 @@ object BalanceConc:
     def height: BigInt = 
       t match 
         case Empty() => 0
-        case Leaf(x) => 1
+        case Leaf(_, _) => 1
         case Node(_, _, _, cheight) => cheight
 
     def apply(i: BigInt): T = {
       require(0 <= i && i < t.size)
       t match
-        case Leaf(x) => assert(i == 0); x
+        case Leaf(xs, csize) => assert(i >= 0 && i < csize); xs(bigIntToInt(i))
         case Node(l, r, _, _) =>
           appendIndex(l.toList, r.toList, i) // lemma
           if i < l.size then l(i)
@@ -81,7 +87,7 @@ object BalanceConc:
     def contains(v: T): Boolean = {
       t match
         case Empty() => false
-        case Leaf(x) => v == x
+        case Leaf(xs, _) => xs.contains(v)
         case Node(l, r, _, _) =>  l.contains(v) || r.contains(v)
     }.ensuring(_ == t.toList.contains(v))
 
@@ -98,7 +104,7 @@ object BalanceConc:
       decreases(t.height)
       t match {
         case Empty() => true
-        case Leaf(x) => p(x)
+        case Leaf(xs, _) => xs.forall(p)
         case Node(l, r, _, _) => 
           ghostExpr(ListUtils.lemmaForallConcat(l.toList, r.toList, p))
           l.forall(p) && r.forall(p)
@@ -109,18 +115,18 @@ object BalanceConc:
       decreases(t.height)
       t match {
         case Empty() => false
-        case Leaf(x) => p(x)
+        case Leaf(xs, _) => xs.exists(p)
         case Node(l, r, _, _) => 
           ghostExpr(ListUtils.lemmaExistsConcat(l.toList, r.toList, p))
           l.exists(p) || r.exists(p)
       }
     }.ensuring(_ == t.toList.exists(p))
 
-    def map[B](f: T => B): Conc[B] = {
+    def map[B <: AnyRef](f: T => B): Conc[B] = {
       decreases(t.height)
       t match {
         case Empty() => Empty[B]()
-        case Leaf(x) => Leaf(f(x))
+        case Leaf(xs, csize) => Leaf(xs.map(f), csize)
         case Node(l, r, cs, ch) => 
           ghostExpr(ListUtils.lemmaMapConcat(l.toList, r.toList, f))
           assert((l.toList ++ r.toList).map(f) == (l.toList.map(f) ++ r.toList.map(f)))
@@ -128,7 +134,7 @@ object BalanceConc:
       }
     }.ensuring(res => res.toList == t.toList.map(f))
 
-  extension[T](xs: Conc[T])
+  extension[T <: AnyRef](xs: Conc[T])
     /**
       * Concatenate xs with ys without preserving balancing
       *
@@ -188,7 +194,7 @@ object BalanceConc:
         res.toList == xs.toList ++ ys.toList)
 
   @ghost 
-  def appendAssocInst[T](xs: Conc[T], ys: Conc[T]): Boolean = {
+  def appendAssocInst[T <: AnyRef](xs: Conc[T], ys: Conc[T]): Boolean = {
     (xs match {
       case Node(l, r, _, _) =>
         appendAssoc(l.toList, r.toList, ys.toList) && //instantiation of associativity of concatenation
@@ -213,16 +219,15 @@ object BalanceConc:
     })
   }.holds
 
-  extension[T](t: Conc[T])
+  extension[T <: AnyRef](t: Conc[T])
     def slice(from: BigInt, until: BigInt): Conc[T] = {
       require(0 <= from && from <= until && until <= t.size && t.isBalanced)
       decreases(t)
       if from == until then Empty[T]()
       else 
         t match
-          case Leaf(x) => 
-            if from == 0 && until == 1 then t
-            else Empty[T]()
+          case Leaf(xs, csize) => if until - from == 0 then Empty[T]() 
+                                 else Leaf(xs.slice(bigIntToInt(from), bigIntToInt(until)), until - from)
           case Node(l, r, _, _) =>
             ghostExpr(sliceLemma(l.toList, r.toList, from, until)) // lemma
             if l.size <= from then r.slice(from - l.size, until - l.size)
@@ -239,9 +244,11 @@ object BalanceConc:
       decreases(t)
       t match
         case Empty[T]() => (t, t)
-        case Leaf(x) => 
+        case Leaf(xs, csize) => 
           if i <= 0 then (Empty[T](), t)
-          else (t, Empty[T]())
+          else if i == csize then (t, Empty[T]())
+          else (Leaf(xs.slice(0, bigIntToInt(i)), i), 
+                Leaf(xs.slice(bigIntToInt(i), bigIntToInt(csize)), csize - i))
         case Node(l, r, _, _) =>
           ghostExpr(splitAtLemma(l.toList, r.toList, i))
           if l.size == i then (l, r)
@@ -257,8 +264,11 @@ object BalanceConc:
       require(t.isBalanced)
        t match
         case Empty[T]() => t
-        case Leaf(x) if p(x) => t
-        case Leaf(x) if !p(x) => Empty[T]()
+        case Leaf(xs, csize) => 
+          val filteredArray = xs.filter(p)
+          assert(filteredArray.size <= bigIntToInt(csize))
+          if filteredArray.size == 0 then Empty[T]()
+          else Leaf(filteredArray, intToBigInt(filteredArray.size))
         case Node(l, r, _, _) =>
           ghostExpr(ListUtils.lemmaFilterConcat(l.toList, r.toList, p))
           assert((l.toList ++ r.toList).filter(p) == (l.toList.filter(p) ++ r.toList.filter(p)))
@@ -267,19 +277,21 @@ object BalanceConc:
 
     def append(v: T): Conc[T] = {
       require(t.isBalanced)
-      t ++ Leaf(v)
+      t ++ Leaf(IArray.fill(1)(v), 1)
     }.ensuring(res => res.isBalanced && res.toList == (t.toList :+ v))
 
     def prepend(v: T): Conc[T] = {
       require(t.isBalanced)
-      Leaf(v) ++ t
+      Leaf(IArray.fill(1)(v), 1) ++ t
     }.ensuring(res => res.isBalanced && res.toList == (Cons(v, t.toList)))
 
     def tail: Conc[T] = {
       require(t.isBalanced)
       require(!t.isEmpty)
       t match
-        case Leaf(x) => Empty[T]()
+        case Leaf(xs, csize) => 
+          if csize == 1 then Empty[T]()
+          else Leaf(xs.slice(1, bigIntToInt(csize)), csize - 1)
         // case Node(l, r, _, _) if l.size == 1 => r
         case Node(l, r, _, _) if l.isEmpty => r.tail
         case Node(l, r, _, _) => 
@@ -292,7 +304,7 @@ object BalanceConc:
       require(t.isBalanced)
       require(!t.isEmpty)
       t match
-        case Leaf(x) => x
+        case Leaf(xs, csize) => xs(0)
         case Node(l, r, _, _) => l.head
     }.ensuring(res => res == t.toList.head)
 
@@ -300,19 +312,19 @@ object BalanceConc:
       require(t.isBalanced)
       require(!t.isEmpty)
       t match
-        case Leaf(x) => x
+        case Leaf(xs, csize) => xs.last
         case Node(l, r, _, _) => 
           ghostExpr(ListUtils.lemmaLastOfConcatIsLastOfRhs(l.toList, r.toList))
           r.last
     }.ensuring(res => res == t.toList.last)
 
 
-  extension[T](t: Conc[T])
+  extension[T <: AnyRef](t: Conc[T])
     @extern
     def toStr: Vector[String] = 
       t match
         case Empty() => Vector("Empty()")
-        case Leaf(x) => Vector("Leaf(" + x.toString + ")")
+        case Leaf(xs, csize) => Vector("Leaf(" + xs.toString + ")")
         case Node(l, r, csize, _) =>
           if csize <= 4 then
             Vector("Node(" + l.toStr.head + ", " + r.toStr.head + ")")
@@ -328,12 +340,12 @@ object BalanceConc:
             lsNodecomma ++ rsIndentClosed
     end toStr
 
-  extension[T](t: Conc[T])
+  extension[T <: AnyRef](t: Conc[T])
     @extern
     def toDraw: Vector[String] = // note that down is left
       t match
         case Empty() => Vector("()")
-        case Leaf(x) => Vector(x.toString)
+        case Leaf(xs, csize) => Vector(xs.toString)
         case Node(l, r, csize, _) =>
           val ls = r.toDraw
           val rs = l.toDraw      
@@ -345,32 +357,32 @@ object BalanceConc:
           ls1 ++ rs1
     end toDraw
 
-  @extern
-  def show[T](t: Conc[T]): String = 
-    t.toDraw.mkString("\n")
+  // @extern
+  // def show[T](t: Conc[T]): String = 
+  //   t.toDraw.mkString("\n")
 
-  def mkTree(from: Int, until: Int): Conc[Int] =
-    require(0 <= from && from <= until && until <= 1_000_000)
-    decreases(until - from)
-    if from == until then Empty()
-    else if from + 1 == until then Leaf(from)
-    else
-      val mid = from + (until - from)/2
-      mkTree(from, mid) ++ mkTree(mid, until)    
+  // def mkTree(from: Int, until: Int): Conc[Int] =
+  //   require(0 <= from && from <= until && until <= 1_000_000)
+  //   decreases(until - from)
+  //   if from == until then Empty()
+  //   else if from + 1 == until then Leaf(from)
+  //   else
+  //     val mid = from + (until - from)/2
+  //     mkTree(from, mid) ++ mkTree(mid, until)    
 
-  @extern
-  def test =
-    val c1: Conc[Int] = (1 to 8).map(Leaf(_)).foldRight[Conc[Int]](Empty())((a, b) => a <> b)
-    println(f"\nc1.height = ${c1.height}, isBalanced=${c1.isBalanced}")
-    println(show(c1))
-    val c2: Conc[Int] = (1 to 8).map(Leaf(_)).foldLeft[Conc[Int]](Empty())((a, b) => a <> b)
-    println(f"\nc2.height = ${c2.height}, isBalanced=${c2.isBalanced}")
-    println(show(c2))
-    val c3 = mkTree(1, 9)
-    val c4 = mkTree(0,1) ++ ((c3 ++ mkTree(9, 11)) ++ mkTree(12, 14))
-    println(f"\nc4.height = ${c4.height}, isBalanced=${c4.isBalanced}")
-    println(show(c4))
-    println(show(c4.slice(3,8)))
+  // @extern
+  // def test =
+  //   val c1: Conc[Int] = (1 to 8).map(Leaf(_)).foldRight[Conc[Int]](Empty())((a, b) => a <> b)
+  //   println(f"\nc1.height = ${c1.height}, isBalanced=${c1.isBalanced}")
+  //   println(show(c1))
+  //   val c2: Conc[Int] = (1 to 8).map(Leaf(_)).foldLeft[Conc[Int]](Empty())((a, b) => a <> b)
+  //   println(f"\nc2.height = ${c2.height}, isBalanced=${c2.isBalanced}")
+  //   println(show(c2))
+  //   val c3 = mkTree(1, 9)
+  //   val c4 = mkTree(0,1) ++ ((c3 ++ mkTree(9, 11)) ++ mkTree(12, 14))
+  //   println(f"\nc4.height = ${c4.height}, isBalanced=${c4.isBalanced}")
+  //   println(show(c4))
+  //   println(show(c4.slice(3,8)))
 
 
   // **************************************************************************
@@ -470,5 +482,64 @@ object BalanceConc:
   }
 */
 
-end BalanceConc
+
+  def intToBigInt(n: Int): BigInt = {
+    require(n >= 0)
+    decreases(n)
+    if n == 0 then BigInt(0)
+    else BigInt(1) + intToBigInt(n - 1)
+  }
+
+  def bigIntToInt(n: BigInt): Int = {
+    require(n >= 0 && n <= 32)
+    n match
+      case _ if n == BigInt(0) => 0
+      case _ if n == BigInt(1) => 1
+      case _ if n == BigInt(2) => 2
+      case _ if n == BigInt(3) => 3
+      case _ if n == BigInt(4) => 4
+      case _ if n == BigInt(5) => 5
+      case _ if n == BigInt(6) => 6
+      case _ if n == BigInt(7) => 7
+      case _ if n == BigInt(8) => 8
+      case _ if n == BigInt(9) => 9
+      case _ if n == BigInt(10) => 10
+      case _ if n == BigInt(11) => 11
+      case _ if n == BigInt(12) => 12
+      case _ if n == BigInt(13) => 13
+      case _ if n == BigInt(14) => 14
+      case _ if n == BigInt(15) => 15
+      case _ if n == BigInt(16) => 16
+      case _ if n == BigInt(17) => 17
+      case _ if n == BigInt(18) => 18
+      case _ if n == BigInt(19) => 19
+      case _ if n == BigInt(20) => 20
+      case _ if n == BigInt(21) => 21
+      case _ if n == BigInt(22) => 22
+      case _ if n == BigInt(23) => 23
+      case _ if n == BigInt(24) => 24
+      case _ if n == BigInt(25) => 25
+      case _ if n == BigInt(26) => 26
+      case _ if n == BigInt(27) => 27
+      case _ if n == BigInt(28) => 28
+      case _ if n == BigInt(29) => 29
+      case _ if n == BigInt(30) => 30
+      case _ if n == BigInt(31) => 31
+      case _ if n == BigInt(32) => 32
+  }
+
+  @ghost
+  def listISizeSizeEq[T](l: List[T]): Unit = {
+    require(l.isize < Int.MaxValue)
+    decreases(l)
+    l match
+      case Nil() => ()
+      case Cons(_, t) => {
+        assert(t.isize == l.isize - 1)
+        // assert(intToBigInt(t.isize) == l.isize)
+        listISizeSizeEq(t)
+      }
+  }.ensuring(_ => intToBigInt(l.isize) == l.size) 
+
+end BalanceConcArr
 
