@@ -41,8 +41,8 @@ object IArrays:
       @ghost val list = this.list ++ other.list
       val res = IArray(list)
       val newArr = new Array[AnyRef](this.size + other.size)
-      this._arr.copyToArray(newArr, this._offset, this._offset + this._size)
-      other._arr.copyToArray(newArr, other._offset, other._offset + other._size)
+      java.lang.System.arraycopy(this._arr, this._offset, newArr, 0, this._size)
+      java.lang.System.arraycopy(other._arr, other._offset, newArr, this.size, other.size)
       res._arr = newArr.asInstanceOf[Array[T]]
       res._offset = 0
       res._size = this.size + other.size
