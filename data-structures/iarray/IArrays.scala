@@ -41,13 +41,89 @@ object IArrays:
       @ghost val list = this.list ++ other.list
       val res = IArray(list)
       val newArr = new Array[AnyRef](this.size + other.size)
-      this._arr.copyToArray(newArr, this._offset, this._offset + this._size)
-      other._arr.copyToArray(newArr, other._offset, other._offset + other._size)
+      java.lang.System.arraycopy(this._arr, this._offset, newArr, 0, this._size)
+      java.lang.System.arraycopy(other._arr, other._offset, newArr, this.size, other.size)
       res._arr = newArr.asInstanceOf[Array[T]]
       res._offset = 0
       res._size = this.size + other.size
       res
     }.ensuring(_ == IArray(this.list ++ other.list))
+
+    @pure @extern
+    def contains(x: T): Boolean = {
+      var found = false
+      var i = this._offset
+      while i < this._offset + this._size && !found do
+        if apply(i) == x then found = true
+        i += 1
+      found
+    }.ensuring(_ == list.contains(x))
+
+    @pure @extern
+    def forall(p: T => Boolean): Boolean = {
+      var res = true
+      var i = this._offset
+      while i < this._offset + this._size && res do
+        if !p(apply(i)) then res = false
+        i += 1
+      res
+    }.ensuring(_ == list.forall(p))
+    
+    @pure @extern
+    def exists(p: T => Boolean): Boolean = {
+      var res = false
+      var i = this._offset
+      while i < this._offset + this._size && !res do
+        if p(apply(i)) then res = true
+        i += 1
+      res
+    }.ensuring(_ == list.exists(p))
+
+    @pure @extern
+    def map[B <: AnyRef](f: T => B): IArray[B] = {
+      @ghost val list = this.list.map(f)
+      val res = IArray(list)
+      res._arr = new Array[AnyRef](this.size).asInstanceOf[Array[B]]
+      var i = 0
+      while i < this.size do
+        res._arr(i) = f(this.apply(i))
+        i += 1
+      res._offset = 0
+      res._size = this.size
+      res
+    }.ensuring(_ == IArray(this.list.map(f)))
+
+    @pure @extern
+    def filter(p: T => Boolean): IArray[T] = {
+      @ghost val list = this.list.filter(p)
+      val res = IArray(list)
+      val toKeep = new Array[Boolean](this.size)
+      var count = 0
+      var i = 0
+      while i < this.size do
+        if p(this.apply(i)) then
+          toKeep(i) = true
+          count += 1
+        else toKeep(i) = false
+        i += 1
+      res._arr = new Array[AnyRef](count).asInstanceOf[Array[T]]
+      var j = 0
+      i = 0
+      while i < this.size do
+        if toKeep(i) then
+          res._arr(j) = this.apply(i)
+          j += 1
+        i += 1
+      res._offset = 0
+      res._size = count
+      res
+    }.ensuring(_ == IArray(this.list.filter(p)))
+
+    @pure @extern
+    def last: T = {
+      require(this.size > 0)
+      this._arr(this._offset + this._size - 1)
+    }.ensuring(_ == this.list.last)
     
   object IArray:
     @pure @extern
