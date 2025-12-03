@@ -27,6 +27,8 @@ object BalanceConcArr:
             0 <= cheight)
   }
 
+  @pure def LeafFrom[T <: AnyRef](x: T): Conc[T] = Leaf(IArray.fill(1)(x), 1)
+
   @pure @opaque 
   def fromList[T <: AnyRef](l: List[T]): Conc[T] = {
     def rec(ll: List[T], c: Conc[T]): Conc[T] = {
@@ -99,7 +101,7 @@ object BalanceConcArr:
       t match {
         case Node(l, r, _, _) =>
           -1 <= l.height - r.height && l.height - r.height <= 1 &&
-          l.isBalanced && r.isBalanced && t.size > 1 // to avoid needlessly deep nodes otherwise the asymptotic complexity can be arbitrary large
+          l.isBalanced && r.isBalanced && !l.isEmpty && !r.isEmpty // to avoid needlessly deep nodes otherwise the asymptotic complexity can be arbitrary large
         case _ => true
       }
     }
@@ -402,28 +404,28 @@ object BalanceConcArr:
   def show[T <: AnyRef](t: Conc[T]): String = 
     t.toDraw.mkString("\n")
 
-  // def mkTree(from: Int, until: Int): Conc[Int] =
-  //   require(0 <= from && from <= until && until <= 1_000_000)
-  //   decreases(until - from)
-  //   if from == until then Empty()
-  //   else if from + 1 == until then Leaf(from)
-  //   else
-  //     val mid = from + (until - from)/2
-  //     mkTree(from, mid) ++ mkTree(mid, until)    
+  def mkTree(from: BigInt, until: BigInt): Conc[BigInt] =
+    require(0 <= from && from <= until && until <= 1_000_000)
+    decreases(until - from)
+    if from == until then Empty()
+    else if from + 1 == until then LeafFrom(from)
+    else
+      val mid = from + (until - from)/2
+      mkTree(from, mid) ++ mkTree(mid, until)    
 
-  // @extern
-  // def test =
-  //   val c1: Conc[Int] = (1 to 8).map(Leaf(_)).foldRight[Conc[Int]](Empty())((a, b) => a <> b)
-  //   println(f"\nc1.height = ${c1.height}, isBalanced=${c1.isBalanced}")
-  //   println(show(c1))
-  //   val c2: Conc[Int] = (1 to 8).map(Leaf(_)).foldLeft[Conc[Int]](Empty())((a, b) => a <> b)
-  //   println(f"\nc2.height = ${c2.height}, isBalanced=${c2.isBalanced}")
-  //   println(show(c2))
-  //   val c3 = mkTree(1, 9)
-  //   val c4 = mkTree(0,1) ++ ((c3 ++ mkTree(9, 11)) ++ mkTree(12, 14))
-  //   println(f"\nc4.height = ${c4.height}, isBalanced=${c4.isBalanced}")
-  //   println(show(c4))
-  //   println(show(c4.slice(3,8)))
+  @extern
+  def test =
+    val c1: Conc[BigInt] = (1 to 8).map(LeafFrom[BigInt](_)).foldRight[Conc[BigInt]](Empty())((a, b) => a <> b)
+    println(f"\nc1.height = ${c1.height}, isBalanced=${c1.isBalanced}")
+    println(show(c1))
+    val c2: Conc[BigInt] = (1 to 8).map(LeafFrom[BigInt](_)).foldLeft[Conc[BigInt]](Empty())((a, b) => a <> b)
+    println(f"\nc2.height = ${c2.height}, isBalanced=${c2.isBalanced}")
+    println(show(c2))
+    val c3 = mkTree(1, 9)
+    val c4 = mkTree(0,1) ++ ((c3 ++ mkTree(9, 11)) ++ mkTree(12, 14))
+    println(f"\nc4.height = ${c4.height}, isBalanced=${c4.isBalanced}")
+    println(show(c4))
+    println(show(c4.slice(3,8)))
 
 
   // **************************************************************************
