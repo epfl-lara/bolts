@@ -161,7 +161,7 @@ object IArrays:
     
   object IArray:
     @pure @extern
-    def empty[T <: AnyRef]: IArray[T] = {
+    def empty[T <: AnyRef](): IArray[T] = {
       val res = IArray[T](Nil())
       res._arr = new Array[AnyRef](0).asInstanceOf[Array[T]]
       res._offset = 0
