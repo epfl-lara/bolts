@@ -58,6 +58,29 @@ object IArrays:
     }.ensuring(_ == IArray(this.list ++ other.list))
 
     @pure @extern
+    def append(x: T): IArray[T] = {
+      require(this.size + 1 <= Int.MaxValue)
+      @ghost val list = this.list :+ x
+      val res = IArray(list)
+
+      if this._offset + this._size < this._arr.length then
+        // there's space at the end of the array
+        res._arr = this._arr
+        res._arr((this.size).toInt) = x
+        res._offset = this._offset
+        res._size = this.size + 1
+        res
+      else
+        res._arr = new Array[AnyRef](this.size.toInt + 1).asInstanceOf[Array[T]]
+        java.lang.System.arraycopy(this._arr, this._offset, res._arr, 0, this._size.toInt)
+        res._arr(this.size.toInt) = x
+        res._offset = 0
+
+      res._size = this.size + 1
+      res
+    }.ensuring(_ == IArray(this.list :+ x))
+
+    @pure @extern
     def contains(x: T): Boolean = {
       var found = false
       var i: BigInt = BigInt(this._offset)
