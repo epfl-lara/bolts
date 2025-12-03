@@ -161,6 +161,15 @@ object IArrays:
     
   object IArray:
     @pure @extern
+    def empty[T <: AnyRef]: IArray[T] = {
+      val res = IArray[T](Nil())
+      res._arr = new Array[AnyRef](0).asInstanceOf[Array[T]]
+      res._offset = 0
+      res._size = 0
+      res
+    }.ensuring(_ == IArray[T](Nil()))
+    
+    @pure @extern
     def fill[T <: AnyRef](n: BigInt)(x: T): IArray[T] = {
       require(0 < n && n <= Int.MaxValue)
       val res = IArray(List.fill(n)(x))      
