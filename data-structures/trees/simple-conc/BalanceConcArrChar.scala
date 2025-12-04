@@ -12,7 +12,7 @@ import com.ziplex.lexer.ListUtils
 import IArrays.*
 
 
-object BalanceConcArr:
+object BalanceConcArrChar:
 
   inline def LEAF_ARRAY_MAX_SIZE: BigInt = 128 // MUST BE <= 2147483647 (Int.MaxValue)
 
@@ -594,4 +594,4 @@ object BalanceConcArr:
 
   }.ensuring (_ => (l1 ++ l2) ++ l3 == l1 ++ (l2 ++ l3))
 
-end BalanceConcArr
+end BalanceConcArrChar
