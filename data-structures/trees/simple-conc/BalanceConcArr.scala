@@ -49,8 +49,51 @@ object BalanceConcArr:
     rec(l, Empty[T]())
   }.ensuring(_.toList == l)
 
+  // @ghost
+  // def combineChunks[T <: AnyRef](leavs: List[Conc[T]]): List[T] = {
+  //   decreases(leavs.size)
+  //   leavs match
+  //     case Nil() => Nil[T]()
+  //     case Cons(tree, ts) => tree.toList ++ combineChunks(ts)
+  // }
+
+  // def splitArrayInChunk[T <: AnyRef](arr: IArray[T], from: BigInt): List[Conc[T]] = {
+  //   require(0 <= from && from <= arr.size)
+  //   decreases(arr.size - from)
+  //   if from == arr.size then Nil[Leaf[T]]()
+  //   else 
+  //     val chunkSize = min(LEAF_ARRAY_MAX_SIZE, arr.size - from)
+  //     val leaf = Leaf(arr.slice(from, from + chunkSize), chunkSize)
+  //     Cons(leaf, splitArrayInChunk(arr, from + chunkSize))
+  // }.ensuring(res => combineChunks(res) == arr.list)
+
+  @pure
+  def fromArray[T <: AnyRef](arr: IArray[T], acc: Conc[T] = Empty[T]()): Conc[T] = {
+    require(acc.isBalanced)
+    decreases(arr.size)
+
+    if arr.size <= LEAF_ARRAY_MAX_SIZE then 
+      if arr.size == 0 then acc
+      else acc ++ Leaf(arr, arr.size)
+    else 
+      val leftLeaf = Leaf(arr.slice(0, LEAF_ARRAY_MAX_SIZE), LEAF_ARRAY_MAX_SIZE)
+      ghostExpr({
+        val res = fromArray(arr.slice(LEAF_ARRAY_MAX_SIZE, arr.size), acc ++ leftLeaf)
+        assert((acc.toList ++ leftLeaf.toList) ++ arr.slice(LEAF_ARRAY_MAX_SIZE, arr.size).list == res.toList)
+        lemmaConcatAssociativity(acc.toList, leftLeaf.toList , arr.slice(LEAF_ARRAY_MAX_SIZE, arr.size).list)
+        assert(acc.toList ++ (leftLeaf.toList ++ arr.slice(LEAF_ARRAY_MAX_SIZE, arr.size).list) == res.toList)
+        assert(res.isBalanced)
+        sliceSplit(arr.list, LEAF_ARRAY_MAX_SIZE)
+        assert((leftLeaf.toList ++ arr.slice(LEAF_ARRAY_MAX_SIZE, arr.size).list) == arr.list)
+        assert(res.toList == (acc.toList ++ arr.list))
+      })
+      fromArray(arr.slice(LEAF_ARRAY_MAX_SIZE, arr.size), acc ++ leftLeaf)
+  }.ensuring(res => res.isBalanced && (res.toList == (acc.toList ++ arr.list)))
+
   def max(x: BigInt, y: BigInt) =
     if x < y then y else x
+  def min(x: BigInt, y: BigInt) =
+    if x < y then x else y
   def abs(x: BigInt) =
     if 0 <= x then x else -x
 
@@ -580,6 +623,22 @@ object BalanceConcArr:
         if t.size > 0 then sliceTailLemma(t)
     }
   }.ensuring(_ => l.tail == l.slice(1, l.size))
+
+
+  @ghost @pure @inlineOnce @opaque
+  def sliceSplit[T](l: List[T], i: BigInt): Unit = {
+    require(0 <= i && i <= l.size)
+    l match {
+      case Nil() => ()
+      case Cons(hd, tl) if i == 0 => 
+        assert(l.slice(0, i).isEmpty)
+        takeFullLemma(l)
+      case Cons(hd, tl) if i > 0  => 
+        sliceSplit(tl, i - 1)
+        assert(List(hd) ++ tl.slice(0, i - 1) == l.slice(0, i))
+    }
+  }.ensuring(_ => l.slice(0, i) ++ l.slice(i, l.size) == l)
+
 
   @ghost @pure @inlineOnce @opaque
   def lemmaConcatAssociativity[B](
