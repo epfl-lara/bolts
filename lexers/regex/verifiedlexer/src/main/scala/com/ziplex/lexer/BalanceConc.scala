@@ -482,16 +482,6 @@ object BalanceConcObj:
           r.last
     }.ensuring(res => res == t.list.last)
 
-  def mkTree(from: Int, until: Int): Conc[Int] =
-    require(0 <= from && from <= until && until <= 1_000_000)
-    decreases(until - from)
-    if from == until then Empty()
-    else if from + 1 == until then Leaf(from)
-    else
-      val mid = from + (until - from)/2
-      mkTree(from, mid) ++ mkTree(mid, until)    
-
-
   // **************************************************************************
   // lemmas for proofs
   // **************************************************************************
