@@ -1114,7 +1114,7 @@ object VerifiedLexer {
         None[(Token[C], Sequence[C])]()
       } else {
         ghostExpr(longestMatchIsAcceptedByMatchOrIsEmpty(rule.regex, input.list))
-        ghostExpr(rule.transformation.lemmaSemiInverse(longestPrefix)) removed
+        ghostExpr(rule.transformation.lemmaSemiInverse(longestPrefix))
         Some[(Token[C], Sequence[C])]((Token(rule.transformation.apply(longestPrefix), rule, longestPrefix.size, longestPrefix.list), suffix))
       }
 

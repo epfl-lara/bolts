@@ -1011,7 +1011,6 @@ object ListUtils {
       }
       case Nil() => ()
     }
-
   }.ensuring (_ => (l1 ++ l2) ++ l3 == l1 ++ (l2 ++ l3))
 
   @inlineOnce
