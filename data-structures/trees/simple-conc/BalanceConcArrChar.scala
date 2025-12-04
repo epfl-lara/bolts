@@ -14,6 +14,7 @@ import IArrays.*
 
 object BalanceConcArrChar:
 
+  // TODO make this parametric
   inline def LEAF_ARRAY_MAX_SIZE: BigInt = 128 // MUST BE <= 2147483647 (Int.MaxValue)
 
   sealed abstract class ConcChar
