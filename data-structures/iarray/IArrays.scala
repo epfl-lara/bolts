@@ -6,6 +6,9 @@ import stainless.collection.{List, Cons, Nil}
 
 object IArrays: 
 
+  // type IArrayType[X] = X match
+  //   case Char => IArrayChar
+  //   case AnyRef => IArrayAnyRef
   sealed trait IArray[T]:
     @ghost def list: List[T]
 
