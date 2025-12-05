@@ -426,24 +426,6 @@ object BalanceConcArrChar:
   // lemmas for proofs
   // **************************************************************************
 
-  // NOT TRUE and we don't want it
-  // @ghost @inlineOnce @opaque
-  // def listEqImpliesEq[Char](c1: ConcChar, c2: ConcChar): Unit = {
-  //   require(c1.isBalanced && c2.isBalanced)
-  //   require(c1.list == c2.list)
-  //   decreases(c1)
-  //   (c1, c2) match
-  //     case (Empty(), Empty()) => assert(c2 == c1)  
-  //     case (Leaf(x1), Leaf(x2)) => assert(c2 == c1)
-  //     case (Node(l1, r1, _, _), Node(l2, r2, _, _)) => 
-  //       assert(l1.size == l2.size)
-  //       listEqImpliesEq(l1, l2)
-  //       listEqImpliesEq(r1, r2)
-  //     case _ => check(false)
-        
-    
-  // }.ensuring(_ => c1 == c2)
-
   @ghost @inlineOnce @opaque
   def sliceLemma[B](l: List[B], r: List[B], from: BigInt, until: BigInt): Unit = {
     require(0 <= from && from <= until && until <= l.size + r.size)
