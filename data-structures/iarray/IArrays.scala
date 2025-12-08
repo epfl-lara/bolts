@@ -6,9 +6,39 @@ import stainless.collection.{List, Cons, Nil}
 
 object IArrays: 
 
-  // type IArrayType[X] = X match
-  //   case Char => IArrayChar
-  //   case AnyRef => IArrayAnyRef
+  sealed trait Factory[T]:
+    def singleton(x: T): IArray[T]
+    def empty(): IArray[T]
+    def fill(n: BigInt)(x: T): IArray[T] = {
+      require(0 < n && n <= Int.MaxValue)
+      ??? : IArray[T]
+    }
+
+  case object CharFactory extends Factory[Char]:
+    def singleton(x: Char): IArray[Char] = IArrayCharObj.fill(1)(x)
+    def empty(): IArray[Char] = IArrayCharObj.empty()
+    override def fill(n: BigInt)(x: Char): IArray[Char] = {
+      require(0 < n && n <= Int.MaxValue)
+      IArrayCharObj.fill(n)(x)
+    }
+
+  case object IntFactory extends Factory[Int]:
+    def singleton(x: Int): IArray[Int] = IArrayIntObj.fill(1)(x)
+    def empty(): IArray[Int] = IArrayIntObj.empty()
+    override def fill(n: BigInt)(x: Int): IArray[Int] = {
+      require(0 < n && n <= Int.MaxValue)
+      IArrayIntObj.fill(n)(x)
+    }
+
+  case class AnyRefFactory[T <: AnyRef]() extends Factory[T]:
+    def singleton(x: T): IArray[T] = IArrayAnyRefObj.fill(1)(x)
+    def empty(): IArray[T] = IArrayAnyRefObj.empty[T]()
+    override def fill(n: BigInt)(x: T): IArray[T] = {
+      require(0 < n && n <= Int.MaxValue)
+      IArrayAnyRefObj.fill(n)(x)
+      }
+
+
   sealed trait IArray[T]:
     @ghost def list: List[T]
 
@@ -83,6 +113,7 @@ object IArrays:
     a match
       case IArrayAnyRef(_) => 0
       case IArrayChar(_) => 1
+      case IArrayInt(_) => 2
     
   }
  
@@ -500,5 +531,208 @@ object IArrays:
       res
     }.ensuring(_ == IArrayChar(range(0, n).map(f)))
   end IArrayCharObj
+
+  case class IArrayInt (@ghost private val innerList: List[Int]) extends IArray[Int]:
+    require(innerList.size <= Int.MaxValue)
+
+    @ignore
+    var _arr: Array[Int] = uninitialized
+    @ignore
+    var _offset: Int = uninitialized
+    @ignore
+    var _size: BigInt = uninitialized    
+    @ignore
+    var default: Int = uninitialized
+
+    @ghost
+    override def list = innerList
+
+    @pure @extern 
+    override def size: BigInt = {
+      _size
+    }.ensuring(_ == list.size)  
+
+    @pure @extern 
+    override def isize: Int = {
+      _size.toInt
+    }.ensuring(_ == list.isize) 
+
+    @pure @extern 
+    override def apply(i: BigInt): Int = {
+      require(0 <= i && i < size)
+      _arr(_offset + i.toInt)
+    }.ensuring(_ == list.apply(i))
+
+    @pure @extern
+    override def slice(from: BigInt, until: BigInt): IArrayInt = {
+      require(0 <= from && from <= until && until <= size)
+      val res = IArrayInt(list.slice(from, until))
+      res._arr = this._arr // _arr is never mutated
+      res._offset = from.toInt
+      res._size = until - from
+      res
+    }.ensuring(_ == IArrayInt(list.slice(from, until)))
+
+    @pure @extern
+    override def concat(other: IArray[Int]): IArray[Int] = {
+      require(getTypeIndicator(this) == getTypeIndicator(other))
+      require(this.size + other.size <= Int.MaxValue)
+      @ghost val list = this.list ++ other.list
+      val res = IArrayInt(list)
+      val newArr = new Array[Int](this.size.toInt + other.size.toInt)
+      java.lang.System.arraycopy(this._arr, this._offset, newArr, 0, this._size.toInt)
+      java.lang.System.arraycopy(other.asInstanceOf[IArrayInt]._arr, other.asInstanceOf[IArrayInt]._offset, newArr, this.size.toInt, other.asInstanceOf[IArrayInt].size.toInt)
+      res._arr = newArr
+      res._offset = 0
+      res._size = this.size + other.size
+      res.asInstanceOf[IArray[Int]]
+    }.ensuring(_ == IArrayInt(this.list ++ other.list))
+
+    @pure @extern
+    override def append(x: Int): IArrayInt = {
+      require(this.size + 1 <= Int.MaxValue)
+      @ghost val list = this.list :+ x
+      val res = IArrayInt(list)
+
+      if this._offset + this._size < this._arr.length then
+        // there's space at the end of the array
+        res._arr = this._arr
+        res._arr((this.size).toInt) = x
+        res._offset = this._offset
+        res._size = this.size + 1
+        res
+      else
+        res._arr = new Array[Int](this.size.toInt + 1)
+        java.lang.System.arraycopy(this._arr, this._offset, res._arr, 0, this._size.toInt)
+        res._arr(this.size.toInt) = x
+        res._offset = 0
+
+      res._size = this.size + 1
+      res
+    }.ensuring(_ == IArrayInt(this.list :+ x))
+
+    @pure @extern
+    override def contains(x: Int): Boolean = {
+      var found = false
+      var i: BigInt = BigInt(this._offset)
+      val endI: BigInt = i + this._size
+      while i < endI && !found do
+        if apply(i) == x then found = true
+        i += 1
+      found
+    }.ensuring(_ == list.contains(x))
+
+    @pure @extern
+    override def forall(p: Int => Boolean): Boolean = {
+      var res = true
+      var i: BigInt = BigInt(this._offset)
+      val endI: BigInt = i + this._size
+      while i < endI && res do
+        if !p(apply(i)) then res = false
+        i += 1
+      res
+    }.ensuring(_ == list.forall(p))
+    
+    @pure @extern
+    override def exists(p: Int => Boolean): Boolean = {
+      var res = false
+      var i: BigInt = BigInt(this._offset)
+      val endI: BigInt = i + this._size
+      while i < endI && !res do
+        if p(apply(i)) then res = true
+        i += 1
+      res
+    }.ensuring(_ == list.exists(p))
+
+    @pure @extern
+    def map(f: Int => Int): IArrayInt = {
+      @ghost val list = this.list.map(f)
+      val res = IArrayInt(list)
+      res._arr = new Array[Int](this._size.toInt)
+      var i: BigInt = 0
+      while i < this.size do
+        res._arr(i.toInt) = f(this.apply(i))
+        i += 1
+      res._offset = 0
+      res._size = this._size
+      res
+    }.ensuring(_ == IArrayInt(this.list.map(f)))
+
+    @pure @extern
+    override def filter(p: Int => Boolean): IArrayInt = {
+      @ghost val list = this.list.filter(p)
+      val res = IArrayInt(list)
+      val toKeep = new Array[Boolean](this._size.toInt)
+      var count: BigInt = 0
+      var i: BigInt = 0
+      while i < this._size do
+        if p(this.apply(i)) then
+          toKeep(i.toInt) = true
+          count += 1
+        else toKeep(i.toInt) = false
+        i += 1
+      res._arr = new Array[Int](count.toInt)
+      var j: BigInt = 0
+      i = 0
+      while i < this._size do
+        if toKeep(i.toInt) then
+          res._arr(j.toInt) = this.apply(i)
+          j += 1
+        i += 1
+      res._offset = 0
+      res._size = count
+      res
+    }.ensuring(_ == IArrayInt(this.list.filter(p)))
+
+    @pure @extern
+    override def last: Int = {
+      require(this.size > 0)
+      this._arr(this._offset.toInt + this._size.toInt - 1)
+    }.ensuring(_ == this.list.last)
+
+  end IArrayInt
+  object IArrayIntObj:
+    @pure @extern
+    def empty(): IArrayInt = {
+      val res = IArrayInt(Nil())
+      res._arr = new Array[Int](0)
+      res._offset = 0
+      res._size = 0
+      res
+    }.ensuring(_ == IArrayInt(Nil()))
+    
+    @pure @extern
+    def fill(n: BigInt)(x: Int): IArrayInt = {
+      require(0 < n && n <= Int.MaxValue)
+      val res = IArrayInt(List.fill(n)(x))      
+      res._arr = Array.fill[Int](n.toInt)(x)
+      res._offset = 0
+      res._size = n
+      res      
+    }.ensuring(_ == IArrayInt(List.fill(n)(x)))
+    
+    @ghost
+    def range(from: BigInt, until: BigInt): List[BigInt] = {
+      require(0 <= from && from <= until && until <= Int.MaxValue)
+      decreases(until - from)
+      if(until <= from) stainless.collection.Nil[BigInt]() 
+      else 
+        val tl = 
+          if from == Int.MaxValue then stainless.collection.Nil[BigInt]() 
+          else range(from + 1, until)
+        Cons(from, tl)
+    }.ensuring(_.size == until - from)
+
+    @pure @extern
+    def tabulate(n: BigInt)(f: BigInt => Int): IArrayInt = {
+      require(0 < n && n <= Int.MaxValue)
+      @ghost val list = range(0, n).map(f)
+      val res: IArrayInt = IArrayInt(list)
+      res._arr = Array.tabulate[Int](n.toInt)(i => f(BigInt(i)))
+      res._offset = 0
+      res._size = n
+      res
+    }.ensuring(_ == IArrayInt(range(0, n).map(f)))
+  end IArrayIntObj
 
 end IArrays
