@@ -69,19 +69,17 @@ object IArrays:
       @ghost val list = this.list :+ x
       val res = IArray(list)
 
-      if this._offset + this._size < this._arr.length then
-        // there's space at the end of the array
-        res._arr = this._arr
-        res._arr((this.size).toInt) = x
-        res._offset = this._offset
-        res._size = this.size + 1
-        res
-      else
-        res._arr = new Array[T](this.size.toInt + 1)
-        java.lang.System.arraycopy(this._arr, this._offset, res._arr, 0, this._size.toInt)
-        res._arr(this.size.toInt) = x
-        res._offset = 0
-
+      // if this._offset + this._size < this._arr.length then
+      //   // there's space at the end of the array
+      //   res._arr = this._arr
+      //   res._arr((this.size).toInt) = x
+      //   res._offset = this._offset
+      //   res
+      // else
+      res._arr = new Array[T](this.size.toInt + 1)
+      java.lang.System.arraycopy(this._arr, this._offset, res._arr, 0, this._size.toInt)
+      res._arr(this.size.toInt) = x
+      res._offset = 0
       res._size = this.size + 1
       res
     }.ensuring(_ == IArray(this.list :+ x))
