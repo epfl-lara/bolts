@@ -89,8 +89,8 @@ object IArrays:
     @pure @extern
     def contains(x: T): Boolean = {
       var found = false
-      var i: BigInt = BigInt(this._offset)
-      val endI: BigInt = i + this._size
+      var i: BigInt = 0
+      val endI: BigInt = this._size
       while i < endI && !found do
         if apply(i) == x then found = true
         i += 1
@@ -165,7 +165,7 @@ object IArrays:
       this._arr(this._offset.toInt + this._size.toInt - 1)
     }.ensuring(_ == this.list.last)
     
-  object IArrayObj:
+  object IArray:
     @pure @extern
     def empty[T: ClassTag](): IArray[T] = {
       val res = IArray[T](Nil())
@@ -208,11 +208,11 @@ object IArrays:
       res
     }.ensuring(_ == IArray(range(0, n).map(f)))
   
-  end IArrayObj
+  end IArray
   
   @main @extern
   def test: Unit =
-    val t = IArrayObj.tabulate(100)(i => i*(i+1))
+    val t = IArray.tabulate(100)(i => i*(i+1))
     println(t(10))
     println(t(5))
     println(t(1))
