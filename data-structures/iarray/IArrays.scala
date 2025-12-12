@@ -60,7 +60,7 @@ object IArrays:
       res._arr = newArr
       res._offset = 0
       res._size = this.size + other.size
-      res.asInstanceOf[IArray[T]]
+      res
     }.ensuring(_ == IArray(this.list ++ other.list))
 
     @pure @extern
@@ -162,7 +162,7 @@ object IArrays:
     @pure @extern
     def last: T = {
       require(this.size > 0)
-      this._arr(this._offset.toInt + this._size.toInt - 1)
+      this.apply(this.size - 1)
     }.ensuring(_ == this.list.last)
     
   object IArray:
