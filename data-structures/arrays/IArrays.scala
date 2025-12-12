@@ -1,3 +1,6 @@
+//> using jar /Users/samuel/EPFL/stainless/frontends/library/target/scala-2.13/classes
+//> using sourceJar /Users/samuel/EPFL/stainless/frontends/dotty/target/scala-3.2.0/classes
+
 import scala.reflect.ClassTag
 import scala.compiletime.uninitialized
 import stainless.annotation.*
@@ -207,6 +210,45 @@ object IArrays:
     }.ensuring(_ == IArray(range(0, n).map(f)))
   
   end IArray
+
+  @extern
+  def unitTest(): Unit = {
+    val t = IArray.tabulate(100)(i => i*(i+1))
+    assert(t.size == 100)
+
+    // Testing eah operation
+    val t1 = t.slice(10, 20)
+    assert(t1.size == 10)
+    assert(t1(0) == 10*11)
+
+    val t2 = t1.append(9999999)
+    assert(t2.size == 11)
+    assert(t2(10) == 9999999)
+
+    val t3 = t2.concat(t1)
+    assert(t3.size == 21)
+    assert(t3(0) == 10*11)
+    assert(t3(20) == 19*20)
+
+    val t4 = t.slice(10, 20).map(x => x + 1)
+    assert(t4.size == 10)
+    assert(t4(0) == 10*11 + 1)
+
+    val t5 = t.slice(0, 10).filter(x => x % 2 == 0)
+    val l = List(0, 2, 6, 12, 20, 30, 42, 56, 72, 90).filter(x => x % 2 == 0)
+    assert(t5.size == l.size)
+    for i <- 0 until t5.size.toInt do
+      assert(t5(BigInt(i)) == l(BigInt(i)))
+
+    val allEven = t5.forall(x => x % 2 == 0)
+    assert(allEven)
+
+    val existsMod9 = t.exists(x => x % 9 == 0)
+    assert(existsMod9)
+
+    println("IArrays.unitTest passed")
+
+  }
   
   @main @extern
   def test: Unit =
@@ -217,5 +259,7 @@ object IArrays:
     val t1 = t.slice(10, 17)
     println(f"t1.size = ${t1.size}")
     println(t1(0))
+
+    unitTest()
 
 end IArrays
