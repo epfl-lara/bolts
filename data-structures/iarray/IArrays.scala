@@ -100,8 +100,8 @@ object IArrays:
     @pure @extern
     def forall(p: T => Boolean): Boolean = {
       var res = true
-      var i: BigInt = BigInt(this._offset)
-      val endI: BigInt = i + this._size
+      var i: BigInt = 0
+      val endI: BigInt = this._size
       while i < endI && res do
         if !p(apply(i)) then res = false
         i += 1
@@ -111,8 +111,8 @@ object IArrays:
     @pure @extern
     def exists(p: T => Boolean): Boolean = {
       var res = false
-      var i: BigInt = BigInt(this._offset)
-      val endI: BigInt = i + this._size
+      var i: BigInt = 0
+      val endI: BigInt = this._size
       while i < endI && !res do
         if p(apply(i)) then res = true
         i += 1
