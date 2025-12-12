@@ -1,1 +1,0 @@
-stainless-dotty BalanceConcArrChar.scala Utils.scala ../../iarray/IArraysChar.scala --config-file=stainless.conf $1

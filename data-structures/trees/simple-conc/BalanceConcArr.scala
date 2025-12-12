@@ -1,4 +1,6 @@
 // Simplification of: http://aleksandar-prokopec.com/resources/docs/lcpc-conc-trees.pdf
+import scala.reflect.ClassTag
+
 import stainless.lang.{ghost => ghostExpr, _}
 import stainless.proof._
 //import stainless.lang.StaticChecks._
@@ -16,23 +18,23 @@ object BalanceConcArr:
 
   inline def LEAF_ARRAY_MAX_SIZE: BigInt = 128 // MUST BE <= 2147483647 (Int.MaxValue)
 
-  sealed abstract class Conc[T <: AnyRef]
-  case class Empty[T <: AnyRef]() extends Conc[T]
-  case class Leaf[T <: AnyRef](xs: IArray[T], csize: BigInt) extends Conc[T] {
+  sealed abstract class Conc[T]
+  case class Empty[T]() extends Conc[T]
+  case class Leaf[T: ClassTag](xs: IArray[T], csize: BigInt) extends Conc[T] {
     require(xs.list.size <= LEAF_ARRAY_MAX_SIZE && csize == xs.list.size && csize > 0 && csize <= LEAF_ARRAY_MAX_SIZE)
   }
-  // case class Leaf[T <: AnyRef](x: T) extends Conc[T]
-  case class Node[T <: AnyRef](left: Conc[T], right: Conc[T], 
+  // case class Leaf[T: ClassTag](x: T) extends Conc[T]
+  case class Node[T: ClassTag](left: Conc[T], right: Conc[T], 
                      csize: BigInt, cheight: BigInt) extends Conc[T] {
     require(csize == left.size + right.size && left != Empty[T]() && right != Empty[T]() &&
             cheight == max(left.height, right.height) + 1 &&
             0 <= cheight)
   }
 
-  @pure def LeafFrom[T <: AnyRef](x: T): Conc[T] = Leaf(IArray.fill(1)(x), 1)
+  @pure def LeafFrom[T: ClassTag](x: T): Conc[T] = Leaf(IArray.fill(1)(x), 1)
 
   @pure @opaque 
-  def fromList[T <: AnyRef](l: List[T]): Conc[T] = {
+  def fromList[T: ClassTag](l: List[T]): Conc[T] = {
     def rec(ll: List[T], c: Conc[T]): Conc[T] = {
       require(c.isBalanced)
       decreases(ll.size)
@@ -49,26 +51,8 @@ object BalanceConcArr:
     rec(l, Empty[T]())
   }.ensuring(_.toList == l)
 
-  // @ghost
-  // def combineChunks[T <: AnyRef](leavs: List[Conc[T]]): List[T] = {
-  //   decreases(leavs.size)
-  //   leavs match
-  //     case Nil() => Nil[T]()
-  //     case Cons(tree, ts) => tree.toList ++ combineChunks(ts)
-  // }
-
-  // def splitArrayInChunk[T <: AnyRef](arr: IArray[T], from: BigInt): List[Conc[T]] = {
-  //   require(0 <= from && from <= arr.size)
-  //   decreases(arr.size - from)
-  //   if from == arr.size then Nil[Leaf[T]]()
-  //   else 
-  //     val chunkSize = min(LEAF_ARRAY_MAX_SIZE, arr.size - from)
-  //     val leaf = Leaf(arr.slice(from, from + chunkSize), chunkSize)
-  //     Cons(leaf, splitArrayInChunk(arr, from + chunkSize))
-  // }.ensuring(res => combineChunks(res) == arr.list)
-
   @pure
-  def fromArray[T <: AnyRef](arr: IArray[T], acc: Conc[T] = Empty[T]()): Conc[T] = {
+  def fromArray[T: ClassTag](arr: IArray[T], acc: Conc[T]): Conc[T] = {
     require(acc.isBalanced)
     decreases(arr.size)
 
@@ -97,7 +81,7 @@ object BalanceConcArr:
   def abs(x: BigInt) =
     if 0 <= x then x else -x
 
-  extension[T <: AnyRef](t: Conc[T])
+  extension[T: ClassTag](t: Conc[T])
     @ghost
     def toList: List[T] = t match
       case Empty() => Nil[T]()
@@ -173,7 +157,7 @@ object BalanceConcArr:
       }
     }.ensuring(_ == t.toList.exists(p))
 
-    def map[B <: AnyRef](f: T => B): Conc[B] = {
+    def map[B: ClassTag](f: T => B): Conc[B] = {
       decreases(t.height)
       t match {
         case Empty() => Empty[B]()
@@ -185,7 +169,7 @@ object BalanceConcArr:
       }
     }.ensuring(res => res.toList == t.toList.map(f))
 
-  extension[T <: AnyRef](xs: Conc[T])
+  extension[T: ClassTag](xs: Conc[T])
     /**
       * Concatenate xs with ys without preserving balancing
       *
@@ -245,7 +229,7 @@ object BalanceConcArr:
         res.toList == xs.toList ++ ys.toList)
 
   @ghost 
-  def appendAssocInst[T <: AnyRef](xs: Conc[T], ys: Conc[T]): Boolean = {
+  def appendAssocInst[T: ClassTag](xs: Conc[T], ys: Conc[T]): Boolean = {
     (xs match {
       case Node(l, r, _, _) =>
         appendAssoc(l.toList, r.toList, ys.toList) && //instantiation of associativity of concatenation
@@ -270,7 +254,7 @@ object BalanceConcArr:
     })
   }.holds
 
-  extension[T <: AnyRef](t: Conc[T])
+  extension[T: ClassTag](t: Conc[T])
     def slice(from: BigInt, until: BigInt): Conc[T] = {
       require(0 <= from && from <= until && until <= t.size && t.isBalanced)
       decreases(t)
@@ -407,7 +391,7 @@ object BalanceConcArr:
     }.ensuring(res => res == t.toList.last)
 
 
-  extension[T <: AnyRef](t: Conc[T])
+  extension[T: ClassTag](t: Conc[T])
     @extern
     def toStr: Vector[String] = 
       t match
@@ -428,7 +412,7 @@ object BalanceConcArr:
             lsNodecomma ++ rsIndentClosed
     end toStr
 
-  extension[T <: AnyRef](t: Conc[T])
+  extension[T: ClassTag](t: Conc[T])
     @extern
     def toDraw: Vector[String] = // note that down is left
       t match
@@ -446,7 +430,7 @@ object BalanceConcArr:
     end toDraw
 
   @extern
-  def show[T <: AnyRef](t: Conc[T]): String = 
+  def show[T: ClassTag](t: Conc[T]): String = 
     t.toDraw.mkString("\n")
 
   def mkTree(from: BigInt, until: BigInt): Conc[BigInt] =
