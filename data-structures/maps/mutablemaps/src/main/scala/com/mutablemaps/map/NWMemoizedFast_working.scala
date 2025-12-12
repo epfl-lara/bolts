@@ -15,16 +15,10 @@ object NWMemoizedFast {
     // Wrapper type
     case class MemoKey(i: BigInt, j: BigInt)
 
-    case object MemoHashable extends Hashable[MemoKey] {
-        def hash(x: MemoKey): Long = {
-            1L
-        }
-    }
-
-    def emptyMemo: HashMap[MemoKey, (BigInt, List[(BigInt, BigInt)])] =
+    def emptyMemo(hashF: Hashable[MemoKey]): HashMap[MemoKey, (BigInt, List[(BigInt, BigInt)])] =
         MutableHashMap.getEmptyHashMap(
             (_: MemoKey) => (BigInt(0), Nil[(BigInt, BigInt)]()),
-            MemoHashable
+            hashF
         )
 
     def validKeyValuePair(s1: List[BigInt], s2: List[BigInt], ma: BigInt, mi: BigInt, g: BigInt, p: (MemoKey, (BigInt, List[(BigInt, BigInt)]))): Boolean = {
