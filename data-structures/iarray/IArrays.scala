@@ -56,7 +56,7 @@ object IArrays:
       val res = IArray(list)
       val newArr = new Array[T](this.size.toInt + other.size.toInt)
       java.lang.System.arraycopy(this._arr, this._offset, newArr, 0, this._size.toInt)
-      java.lang.System.arraycopy(other.asInstanceOf[IArray[T]]._arr, other.asInstanceOf[IArray[T]]._offset, newArr, this.size.toInt, other.asInstanceOf[IArray[T]].size.toInt)
+      java.lang.System.arraycopy(other._arr, other._offset, newArr, this.size.toInt, other.size.toInt)
       res._arr = newArr
       res._offset = 0
       res._size = this.size + other.size
