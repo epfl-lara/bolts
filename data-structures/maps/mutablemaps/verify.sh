@@ -4,4 +4,6 @@ stainless-dotty\
  ./src/main/scala/com/mutablemaps/map/MutableLongMap.scala\
  ./src/main/scala/com/mutablemaps/map/MutableHashMap.scala\
  ./src/main/scala/com/mutablemaps/map/MutableMapsInterface.scala\
+ ./src/main/scala/com/mutablemaps/map/nw_basic.scala\
+ ./src/main/scala/com/mutablemaps/map/NWMemoizedFast.scala\
   --config-file=stainless.conf -Dparallel=6 $1
