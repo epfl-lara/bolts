@@ -1,7 +1,7 @@
 /** Author: Samuel Chassot
   */
 
-package com.mutablemaps.map
+package com.stainless
 
 object OptimisedChecks {
   extension [T](inline value: T) inline def ensuring(condition: T => Boolean): T = value
