@@ -1,4 +1,4 @@
-package benchmark
+package benchmark.maps
 
 import java.util.concurrent.TimeUnit
 import org.openjdk.jmh.annotations.*
