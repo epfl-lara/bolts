@@ -1,6 +1,3 @@
-//> using jar /Users/samuel/EPFL/stainless/frontends/library/target/scala-2.13/classes
-//> using sourceJar /Users/samuel/EPFL/stainless/frontends/dotty/target/scala-3.2.0/classes
-
 import scala.reflect.ClassTag
 import scala.compiletime.uninitialized
 import stainless.annotation.*
