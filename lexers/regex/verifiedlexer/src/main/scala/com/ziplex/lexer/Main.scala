@@ -19,6 +19,7 @@ import com.ziplex.lexer.Sequence
 import com.ziplex.lexer.emptySeq
 import com.ziplex.lexer.singletonSeq
 import com.ziplex.lexer.seqFromList
+import scala.reflect.ClassTag
 
 object Main {
   def main(args: Array[String]): Unit = {
@@ -41,7 +42,7 @@ object Main {
     val fileContent: String = scala.io.Source.fromFile(filepath).mkString
     println("Lexing with memoization")
     println(s"File content for file '$filepath':\n$fileContent")
-    val (tokens, suffix) = Lexer.lexMem(JsonLexer.rules, fileContent.toStainless)(using ExampleUtils.zipperCacheUp, ExampleUtils.zipperCacheDown)
+    val (tokens, suffix) = Lexer.lexMem(JsonLexer.rules, fileContent.toStainless)(using ClassTag.Char, ExampleUtils.zipperCacheUp, ExampleUtils.zipperCacheDown)
     println(f"Suffix tokens for file '$filepath':\n${suffix}")
     assert(suffix.isEmpty)
     val tokenStrings = tokens.map(t => t.asString())

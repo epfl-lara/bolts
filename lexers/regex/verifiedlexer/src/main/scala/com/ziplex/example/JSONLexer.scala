@@ -103,7 +103,7 @@ object ExampleJsonLexer:
                 IntegerValue(IntegerValueUtils.charsToBigInt(list), list)
             def toCharacters(t: TokenValue): Sequence[Char] = t match
                     case IntegerValue(_, text) => seqFromList(text)
-                    case _ => emptySeq
+                    case _ => emptySeq()
             
             val injection: TokenValueInjection[Char] = {
                 ghostExpr{
@@ -130,7 +130,7 @@ object ExampleJsonLexer:
             def toValue(v: Sequence[Char]): TokenValue = FloatLiteralValue(v.efficientList)
             def toCharacters(t: TokenValue): Sequence[Char] = t match
                 case FloatLiteralValue(value) => seqFromList(value)
-                case _ => emptySeq
+                case _ => emptySeq()
             
             val injection: TokenValueInjection[Char] = {
                 ghostExpr{
@@ -158,7 +158,7 @@ object ExampleJsonLexer:
             def toCharacters(t: TokenValue): Sequence[Char] = 
                 t match
                     case WhitespaceValue(value) => seqFromList(value)
-                    case _ => emptySeq
+                    case _ => emptySeq()
             val injection: TokenValueInjection[Char] = {
                 ghostExpr{
                     assert({
@@ -182,7 +182,7 @@ object ExampleJsonLexer:
             def toValue(v: Sequence[Char]): TokenValue = StringLiteralValue(v.efficientList)
             def toCharacters(t: TokenValue): Sequence[Char] = t match
                 case StringLiteralValue(value) => seqFromList(value)
-                case _ => emptySeq
+                case _ => emptySeq()
             
             val injection: TokenValueInjection[Char] = {
                 ghostExpr{
@@ -245,7 +245,7 @@ object ExampleJsonLexer:
                 case KeywordValue.LeftBracket    => leftBracketStringConc
                 case KeywordValue.RightBracket   => rightBracketStringConc
                 case KeywordValue.Broken(value)  => seqFromList(value)
-                case _                           => emptySeq
+                case _                           => emptySeq()
 
             val injection: TokenValueInjection[Char] = {
                 ghostExpr{

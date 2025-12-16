@@ -110,7 +110,7 @@ object ExamplePythonLexer:
             def toValue(v: Sequence[Char]): TokenValue = DedentValue(v.efficientList)
             def toCharacters(t: TokenValue): Sequence[Char] = t match
                 case DedentValue(value) => seqFromList(value)
-                case _ => emptySeq
+                case _ => emptySeq()
             
             val injection: TokenValueInjection[Char] = {
                 ghostExpr{
@@ -137,7 +137,7 @@ object ExamplePythonLexer:
             def toValue(v: Sequence[Char]): TokenValue = IdentValue(v.efficientList)
             def toCharacters(t: TokenValue): Sequence[Char] = t match
                 case IdentValue(value) => seqFromList(value)
-                case _ => emptySeq
+                case _ => emptySeq()
             
             val injection: TokenValueInjection[Char] = {
                 ghostExpr{
@@ -164,7 +164,7 @@ object ExamplePythonLexer:
             def toValue(v: Sequence[Char]): TokenValue = NewLineValue(v.efficientList)
             def toCharacters(t: TokenValue): Sequence[Char] = t match
                 case NewLineValue(value) => seqFromList(value)
-                case _ => emptySeq
+                case _ => emptySeq()
             
             val injection: TokenValueInjection[Char] = {
                 ghostExpr{
@@ -191,7 +191,7 @@ object ExamplePythonLexer:
             def toValue(v: Sequence[Char]): TokenValue = CommentValue(v.efficientList)
             def toCharacters(t: TokenValue): Sequence[Char] = t match
                 case CommentValue(value) => seqFromList(value)
-                case _ => emptySeq
+                case _ => emptySeq()
             
             val injection: TokenValueInjection[Char] = {
                 ghostExpr{
@@ -218,7 +218,7 @@ object ExamplePythonLexer:
             def toValue(v: Sequence[Char]): TokenValue = SpaceValue(v.efficientList)
             def toCharacters(t: TokenValue): Sequence[Char] = t match
                 case SpaceValue(value) => seqFromList(value)
-                case _ => emptySeq
+                case _ => emptySeq()
 
             val injection: TokenValueInjection[Char] = {
                 ghostExpr{
@@ -245,7 +245,7 @@ object ExamplePythonLexer:
             def toValue(v: Sequence[Char]): TokenValue = KeywordValue(v.efficientList)
             def toCharacters(t: TokenValue): Sequence[Char] = t match
                 case KeywordValue(value) => seqFromList(value)
-                case _ => emptySeq
+                case _ => emptySeq()
             
             val injection: TokenValueInjection[Char] = {
                 ghostExpr{
@@ -272,7 +272,7 @@ object ExamplePythonLexer:
             def toValue(v: Sequence[Char]): TokenValue = IdentifierValue(v.efficientList)
             def toCharacters(t: TokenValue): Sequence[Char] = t match
                 case IdentifierValue(value) => seqFromList(value)
-                case _ => emptySeq
+                case _ => emptySeq()
             
             val injection: TokenValueInjection[Char] = {
                 ghostExpr{
@@ -299,7 +299,7 @@ object ExamplePythonLexer:
             def toValue(v: Sequence[Char]): TokenValue = StringLiteralValue(v.efficientList)
             def toCharacters(t: TokenValue): Sequence[Char] = t match
                 case StringLiteralValue(value) => seqFromList(value)
-                case _ => emptySeq
+                case _ => emptySeq()
             
             val injection: TokenValueInjection[Char] = {
                 ghostExpr{
@@ -326,7 +326,7 @@ object ExamplePythonLexer:
             def toValue(v: Sequence[Char]): TokenValue = BytesLiteralValue(v.efficientList)
             def toCharacters(t: TokenValue): Sequence[Char] = t match
                 case BytesLiteralValue(value) => seqFromList(value)
-                case _ => emptySeq
+                case _ => emptySeq()
             
             val injection: TokenValueInjection[Char] = {
                 ghostExpr{
@@ -356,7 +356,7 @@ object ExamplePythonLexer:
                 IntegerValue(IntegerValueUtils.charsToBigInt(l), l)
             def toCharacters(t: TokenValue): Sequence[Char] = t match
                     case IntegerValue(_, text) => seqFromList(text)
-                    case _ => emptySeq
+                    case _ => emptySeq()
             
             val injection: TokenValueInjection[Char] = {
                 ghostExpr{
@@ -384,7 +384,7 @@ object ExamplePythonLexer:
             def toValue(v: Sequence[Char]): TokenValue = FloatLiteralValue(v.efficientList)
             def toCharacters(t: TokenValue): Sequence[Char] = t match
                 case FloatLiteralValue(value) => seqFromList(value)
-                case _ => emptySeq
+                case _ => emptySeq()
             
             val injection: TokenValueInjection[Char] = {
                 ghostExpr{
@@ -411,7 +411,7 @@ object ExamplePythonLexer:
             def toValue(v: Sequence[Char]): TokenValue = ImaginaryLiteralValue(v.efficientList)
             def toCharacters(t: TokenValue): Sequence[Char] = t match
                 case ImaginaryLiteralValue(value) => seqFromList(value)
-                case _ => emptySeq
+                case _ => emptySeq()
             
             val injection: TokenValueInjection[Char] = {
                 ghostExpr{
@@ -438,7 +438,7 @@ object ExamplePythonLexer:
             def toValue(v: Sequence[Char]): TokenValue = OperatorValue(v.efficientList)
             def toCharacters(t: TokenValue): Sequence[Char] = t match
                 case OperatorValue(value) => seqFromList(value)
-                case _ => emptySeq
+                case _ => emptySeq()
             
             val injection: TokenValueInjection[Char] = {
                 ghostExpr{
@@ -465,7 +465,7 @@ object ExamplePythonLexer:
             def toValue(v: Sequence[Char]): TokenValue = DelimiterValue(v.efficientList)
             def toCharacters(t: TokenValue): Sequence[Char] = t match
                 case DelimiterValue(value) => seqFromList(value)
-                case _ => emptySeq
+                case _ => emptySeq()
             
             val injection: TokenValueInjection[Char] = {
                 ghostExpr{
@@ -492,7 +492,7 @@ object ExamplePythonLexer:
             def toValue(v: Sequence[Char]): TokenValue = IndentationValue(v.efficientList)
             def toCharacters(t: TokenValue): Sequence[Char] = t match
                 case IndentationValue(value) => seqFromList(value)
-                case _ => emptySeq
+                case _ => emptySeq()
             
             val injection: TokenValueInjection[Char] = {
                 ghostExpr{
@@ -519,7 +519,7 @@ object ExamplePythonLexer:
             def toValue(v: Sequence[Char]): TokenValue = EOFValue(v.efficientList)
             def toCharacters(t: TokenValue): Sequence[Char] = t match
                 case EOFValue(value) => seqFromList(value)
-                case _ => emptySeq
+                case _ => emptySeq()
             
             val injection: TokenValueInjection[Char] = {
                 ghostExpr{
@@ -546,7 +546,7 @@ object ExamplePythonLexer:
             def toValue(v: Sequence[Char]): TokenValue = ErrorTokenValue(v.efficientList)
             def toCharacters(t: TokenValue): Sequence[Char] = t match
                 case ErrorTokenValue(value) => seqFromList(value)
-                case _ => emptySeq
+                case _ => emptySeq()
             
             val injection: TokenValueInjection[Char] = {
                 ghostExpr{

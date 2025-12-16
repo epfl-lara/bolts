@@ -22,6 +22,7 @@ import com.ziplex.lexer.emptySeq
 import com.ziplex.lexer.singletonSeq
 import com.ziplex.lexer.seqFromList
 
+import scala.reflect.ClassTag
 import java.io.File
 
 @State(Scope.Benchmark)
@@ -54,7 +55,8 @@ class JsonLexerBenchmark {
   @OutputTimeUnit(TimeUnit.MICROSECONDS)
   def lex_ZipperMem(): Unit = {
     val (tokens, suffix) = Lexer.lexMem(JsonLexer.rules, JsonLexerBenchmarkUtils.exampleFileContents(file))(
-      using JsonLexerBenchmarkUtils.zipperCacheUp,
+      using ClassTag.Char,
+      JsonLexerBenchmarkUtils.zipperCacheUp,
       JsonLexerBenchmarkUtils.zipperCacheDown
     )
     assert(suffix.isEmpty)
@@ -66,7 +68,8 @@ class JsonLexerBenchmark {
   def separability_pred(): Unit = {
     val tokens = JsonLexerBenchmarkUtils.exampleFileTokens(file)
     val separable =  Lexer.separableTokensMem(tokens, JsonLexer.rules)(
-      using JsonLexerBenchmarkUtils.zipperCacheUp,
+      using ClassTag.Char,
+      JsonLexerBenchmarkUtils.zipperCacheUp,
       JsonLexerBenchmarkUtils.zipperCacheDown
     )
     assert(separable)
@@ -98,7 +101,8 @@ object JsonLexerBenchmarkUtils {
 
   lazy val exampleFileTokens: Map[String, Sequence[(Token[Char])]] = exampleFileContents.map { case (name, content) =>
     val (tokens, suffix) = Lexer.lexMem(JsonLexer.rules, content)(
-      using zipperCacheUpInternal,
+      using ClassTag.Char,
+      zipperCacheUpInternal,
       zipperCacheDownInternal
     )
     assert(suffix.isEmpty)

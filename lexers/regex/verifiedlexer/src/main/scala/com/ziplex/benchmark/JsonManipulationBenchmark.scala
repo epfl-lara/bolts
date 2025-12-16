@@ -28,6 +28,7 @@ import com.ziplex.lexer.emptySeq
 import com.ziplex.lexer.singletonSeq
 import com.ziplex.lexer.seqFromList
 
+import scala.reflect.ClassTag
 import java.io.File
 import com.ziplex.lexer.VerifiedLexer.PrintableTokens
 
@@ -76,7 +77,8 @@ class JsonManipulationBenchmark {
   @OutputTimeUnit(TimeUnit.MICROSECONDS)
   def lex(): Unit = {
     val (tokens, suffix) = Lexer.lexMem(JsonLexer.rules, JsonManipulationBenchmarkUtils.fileContents(file))(
-      using JsonManipulationBenchmarkUtils.zipperCacheUp,
+      using ClassTag.Char,
+      JsonManipulationBenchmarkUtils.zipperCacheUp,
       JsonManipulationBenchmarkUtils.zipperCacheDown
     )
     assert(suffix.isEmpty)
@@ -96,11 +98,13 @@ class JsonManipulationBenchmark {
   @OutputTimeUnit(TimeUnit.MICROSECONDS)
   def lexAndCheckPrintable(): Unit = {
     val (tokens, _) = Lexer.lexMem(JsonLexer.rules, JsonManipulationBenchmarkUtils.fileContents(file))(
-      using JsonManipulationBenchmarkUtils.zipperCacheUp,
+      using ClassTag.Char,
+      JsonManipulationBenchmarkUtils.zipperCacheUp,
       JsonManipulationBenchmarkUtils.zipperCacheDown
     )
     val res = printableTokensFromTokensMem(JsonLexer.rules, tokens)(
-      using JsonManipulationBenchmarkUtils.zipperCacheUp,
+      using ClassTag.Char,
+      JsonManipulationBenchmarkUtils.zipperCacheUp,
       JsonManipulationBenchmarkUtils.zipperCacheDown
     )
     assert(res.isDefined)
@@ -123,7 +127,8 @@ class JsonManipulationBenchmark {
   def checkPrintableMemPreFilledCache(): Unit = {
     val tokens = JsonManipulationBenchmarkUtils.filePrintableTokens(file).tokens
     val res = printableTokensFromTokensMem(JsonLexer.rules, tokens)(
-      using JsonManipulationBenchmarkUtils.zipperCacheUpInternal,
+      using ClassTag.Char,
+      JsonManipulationBenchmarkUtils.zipperCacheUpInternal,
       JsonManipulationBenchmarkUtils.zipperCacheDownInternal
     )
     assert(res.isDefined)
@@ -170,7 +175,7 @@ class JsonManipulationBenchmark {
     assert(orderedSlicesWithoutIdsJustTokens.size > 0)
     val length = orderedSlicesWithoutIdsJustTokens.size
     var i = BigInt(0)
-    var recombined = emptySeq[Token[Char]]
+    var recombined = emptySeq[Token[Char]]()
     while i < length do {
       val tokens = orderedSlicesWithoutIdsJustTokens(i)
       recombined = recombined ++ tokens
@@ -182,7 +187,8 @@ class JsonManipulationBenchmark {
     assert(recombined.size > 0)
     val withBrackets = singletonSeq(JsonManipulationBenchmarkUtils.leftBracketToken) ++ recombined ++ singletonSeq(JsonManipulationBenchmarkUtils.rightBracketToken)
     val printable = Lexer.separableTokensMem(withBrackets, JsonLexer.rules)(
-      using JsonManipulationBenchmarkUtils.zipperCacheUpInternal,
+      using ClassTag.Char,
+      JsonManipulationBenchmarkUtils.zipperCacheUpInternal,
       JsonManipulationBenchmarkUtils.zipperCacheDownInternal
     )
     assert(printable)
@@ -230,7 +236,8 @@ object JsonManipulationBenchmarkUtils {
 
   lazy val filePrintableTokens: Map[String, PrintableTokens[Char]] = fileContents.map { case (name, content) =>
     val (tokens, suffix) = Lexer.lexMem(JsonLexer.rules, content)(
-      using zipperCacheUpInternal,
+      using ClassTag.Char,
+      zipperCacheUpInternal,
       zipperCacheDownInternal
     )
     assert(suffix.isEmpty)

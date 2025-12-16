@@ -60,7 +60,7 @@ object JsonManipulationExample:
     * @param path
     * @return
     */
-  @extern def openFile(path: String): Sequence[Char] = scala.io.Source.fromFile(path).iter.foldLeft[Sequence[Char]](emptySeq[Char])((acc, char) => acc.append(char))
+  @extern def openFile(path: String): Sequence[Char] = scala.io.Source.fromFile(path).iter.foldLeft[Sequence[Char]](emptySeq[Char]())((acc, char) => acc.append(char))
 
 
   /** Returns the indices of all the open braces in the token list
@@ -68,7 +68,7 @@ object JsonManipulationExample:
     * @param ts
     */
   @extern @pure def isKeywordValue(t: Token[Char], kw: KeywordValue): Boolean = t.value == kw
-  def indicesOfOpenBraces(ts: Sequence[Token[Char]], size: BigInt, from: BigInt = 0, acc: Sequence[BigInt] = emptySeq[BigInt]): Sequence[BigInt] = {
+  def indicesOfOpenBraces(ts: Sequence[Token[Char]], size: BigInt, from: BigInt = 0, acc: Sequence[BigInt] = emptySeq[BigInt]()): Sequence[BigInt] = {
     require(from >= 0 && from <= ts.size)  
     require(ts.size == size)
     require(acc.forall(i => 0 <= i && i < size))
@@ -119,7 +119,7 @@ object JsonManipulationExample:
   }.ensuring(res => res.isEmpty || usesJsonRules(res.get))
 
 
-  def slicesMulti(pt: PrintableTokens[Char], size: BigInt, indices: Sequence[BigInt], acc: Sequence[PrintableTokens[Char]] = emptySeq[PrintableTokens[Char]]): Sequence[PrintableTokens[Char]] = {
+  def slicesMulti(pt: PrintableTokens[Char], size: BigInt, indices: Sequence[BigInt], acc: Sequence[PrintableTokens[Char]] = emptySeq[PrintableTokens[Char]]()): Sequence[PrintableTokens[Char]] = {
     require(pt.size == size)
     require(indices.forall(i => 0 <= i && i < size))
     require(usesJsonRules(pt))
