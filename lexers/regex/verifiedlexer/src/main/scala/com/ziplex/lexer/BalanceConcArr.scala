@@ -19,7 +19,7 @@ import com.ziplex.lexer.IArray
 
 object BalanceConcObj:
 
-  case class BalanceConc[T](c: Conc[T])(using ct: ClassTag[T]) {
+  case class BalanceConc[T: ClassTag](c: Conc[T]){
     require(c.isBalanced)
 
     @ghost def list: List[T] = c.list
@@ -79,8 +79,8 @@ object BalanceConcObj:
       res.height >= max(this.height, ys.height) &&
       res.list == this.list ++ ys.list)
 
-    def map[B](f: T => B)(using ctb: ClassTag[B]): BalanceConc[B] = {
-      BalanceConc(c.map(f)(using ct, ctb))
+    def map[B: ClassTag](f: T => B): BalanceConc[B] = {
+      BalanceConc(c.map(f))
     }.ensuring(res => res.list == this.list.map(f) && res.isBalanced)
 
     def slice(from: BigInt, until: BigInt): BalanceConc[T] = {
@@ -278,11 +278,11 @@ object BalanceConcObj:
       }
     }.ensuring(_ == t.list.exists(p))
 
-    def map[B](f: T => B)(using ctb: ClassTag[B]): Conc[B] = {
+    def map[B: ClassTag](f: T => B): Conc[B] = {
       decreases(t.height)
       t match {
         case Empty() => Empty[B]()
-        case Leaf(xs, csize) => Leaf(xs.map(f)(using ctb), csize)
+        case Leaf(xs, csize) => Leaf(xs.map(f), csize)
         case Node(l, r, cs, ch) => 
           ghostExpr(ListUtils.lemmaMapConcat(l.list, r.list, f))
           assert((l.list ++ r.list).map(f) == (l.list.map(f) ++ r.list.map(f)))
