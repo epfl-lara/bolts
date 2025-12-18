@@ -94,6 +94,42 @@ case class TokenValueInjection[C](toValue: Sequence[C] => TokenValue, toChars: T
 } 
 
 
+object LexerInterface {
+  /**
+    * Predicate that indicates whether the rules of the two subtypes of rules
+    * i.e., separator and non-separator rules,
+    * are using each a disjoint set of characters.
+    * 
+    * In other words, the set of characters used by the separator rules is disjoint
+    * from the set of characters used by the non-separator rules.
+    *
+    * @param rules
+    *
+    * @param rules
+    * @param rulesRec
+    */
+  def sepAndNonSepRulesDisjointChars[C: ClassTag](rules: List[Rule[C]], rulesRec: List[Rule[C]]): Boolean = {
+      rulesRec match {
+        case Cons(hd, tl) => ruleDisjointCharsFromAllFromOtherType(hd, rules) && sepAndNonSepRulesDisjointChars(rules, tl)
+        case Nil()        => true
+      }
+    }
+
+  def ruleDisjointCharsFromAllFromOtherType[C: ClassTag](r: Rule[C], rules: List[Rule[C]]): Boolean = {
+    decreases(rules)
+    rules match {
+      case Cons(hd, tl) if hd.isSeparator != r.isSeparator => rulesUseDisjointChars(r, hd) && ruleDisjointCharsFromAllFromOtherType(r, tl)
+      case Cons(hd, tl)                                    => ruleDisjointCharsFromAllFromOtherType(r, tl)
+      case Nil()                                           => true
+    }
+  }
+
+  def rulesUseDisjointChars[C: ClassTag](r1: Rule[C], r2: Rule[C]): Boolean = {
+    r2.regex.usedCharacters.forall(c => !r1.regex.usedCharacters.contains(c)) &&
+    r1.regex.usedCharacters.forall(c => !r2.regex.usedCharacters.contains(c))
+  }
+}
+
 trait LexerInterface {
   /** Main function of the lexer
     *
@@ -228,40 +264,6 @@ trait LexerInterface {
 
 
   // -------------- Invertibility properties with separator tokens and rules ----------------
-  
-  /**
-    * Predicate that indicates whether the rules of the two subtypes of rules
-    * i.e., separator and non-separator rules,
-    * are using each a disjoint set of characters.
-    * 
-    * In other words, the set of characters used by the separator rules is disjoint
-    * from the set of characters used by the non-separator rules.
-    *
-    * @param rules
-    *
-    * @param rules
-    * @param rulesRec
-    */
-  def sepAndNonSepRulesDisjointChars[C: ClassTag](rules: List[Rule[C]], rulesRec: List[Rule[C]]): Boolean = {
-      rulesRec match {
-        case Cons(hd, tl) => ruleDisjointCharsFromAllFromOtherType(hd, rules) && sepAndNonSepRulesDisjointChars(rules, tl)
-        case Nil()        => true
-      }
-    }
-
-  def ruleDisjointCharsFromAllFromOtherType[C: ClassTag](r: Rule[C], rules: List[Rule[C]]): Boolean = {
-    decreases(rules)
-    rules match {
-      case Cons(hd, tl) if hd.isSeparator != r.isSeparator => rulesUseDisjointChars(r, hd) && ruleDisjointCharsFromAllFromOtherType(r, tl)
-      case Cons(hd, tl)                                    => ruleDisjointCharsFromAllFromOtherType(r, tl)
-      case Nil()                                           => true
-    }
-  }
-
-  def rulesUseDisjointChars[C: ClassTag](r1: Rule[C], r2: Rule[C]): Boolean = {
-    r2.regex.usedCharacters.forall(c => !r1.regex.usedCharacters.contains(c)) &&
-    r1.regex.usedCharacters.forall(c => !r2.regex.usedCharacters.contains(c))
-  }
 
   /** Prints back the tokens to a sequence of characters of the type C, by adding a separatorToken between each, and after the last
     *
@@ -303,7 +305,7 @@ trait LexerInterface {
     (!rules.isEmpty && 
       rulesInvariant(rules) && 
       rulesProduceEachTokenIndividually(rules, tokens) &&
-      sepAndNonSepRulesDisjointChars(rules, rules) && 
+      LexerInterface.sepAndNonSepRulesDisjointChars(rules, rules) && 
       rulesProduceIndividualToken(rules, separatorToken) &&
       tokens.forall(!_.rule.isSeparator) &&
       separatorToken.rule.isSeparator
@@ -314,7 +316,7 @@ trait LexerInterface {
     (!rules.isEmpty && 
       rulesInvariant(rules) && 
       rulesProduceEachTokenIndividually(rules, seqFromList(tokens)) &&
-      sepAndNonSepRulesDisjointChars(rules, rules) && 
+      LexerInterface.sepAndNonSepRulesDisjointChars(rules, rules) && 
       rulesProduceIndividualToken(rules, separatorToken) &&
       tokens.forall(t => !t.rule.isSeparator) &&
       separatorToken.rule.isSeparator
@@ -325,7 +327,7 @@ trait LexerInterface {
     (!rules.isEmpty && 
       rulesInvariant(rules) && 
       rulesProduceEachTokenIndividually(rules, seqFromList(tokens)) &&
-      sepAndNonSepRulesDisjointChars(rules, rules) && 
+      LexerInterface.sepAndNonSepRulesDisjointChars(rules, rules) && 
       rulesProduceIndividualToken(rules, separatorToken) &&
       tokens.forall(t => !t.rule.isSeparator) &&
       separatorToken.rule.isSeparator

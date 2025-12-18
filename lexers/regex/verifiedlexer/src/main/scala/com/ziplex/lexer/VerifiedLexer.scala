@@ -720,7 +720,7 @@ object VerifiedLexer {
       if (!rules.isEmpty && 
         rulesInvariant(rules) && 
         rulesProduceEachTokenIndividually(rules, tokens) &&
-        sepAndNonSepRulesDisjointChars(rules, rules) && 
+        LexerInterface.sepAndNonSepRulesDisjointChars(rules, rules) && 
         rulesProduceIndividualToken(rules, separatorToken) &&
         tokens.forall(!_.rule.isSeparator) &&
         separatorToken.rule.isSeparator) 
@@ -810,7 +810,7 @@ object VerifiedLexer {
       require(rulesProduceIndividualToken(rules, separatorToken))
       require(separatorToken.rule.isSeparator)
       require(l.forall(!_.rule.isSeparator))
-      require(sepAndNonSepRulesDisjointChars(rules, rules))
+      require(LexerInterface.sepAndNonSepRulesDisjointChars(rules, rules))
       decreases(l)
 
       l match {
@@ -849,7 +849,7 @@ object VerifiedLexer {
       require(rulesProduceIndividualToken(rules, separatorToken))
       require(separatorToken.rule.isSeparator)
       require(v.forall(!_.rule.isSeparator))
-      require(sepAndNonSepRulesDisjointChars(rules, rules))
+      require(LexerInterface.sepAndNonSepRulesDisjointChars(rules, rules))
       printWithSeparatorTokenWhenNeededRec(rules, v, separatorToken, from = 0)
     }.ensuring(res => res.list == printWithSeparatorTokenWhenNeededList(rules, v.list, separatorToken))
 
@@ -861,7 +861,7 @@ object VerifiedLexer {
       require(rulesProduceIndividualToken(rules, separatorToken))
       require(separatorToken.rule.isSeparator)
       require(v.forall(!_.rule.isSeparator))
-      require(sepAndNonSepRulesDisjointChars(rules, rules))
+      require(LexerInterface.sepAndNonSepRulesDisjointChars(rules, rules))
       decreases(v.size - from)
 
       ghostExpr(ListUtils.lemmaContentSubsetPreservesForall(v.list, v.dropList(from), t => !t.rule.isSeparator))
@@ -1406,7 +1406,7 @@ object VerifiedLexer {
       require(rulesProduceIndividualToken(rules, separatorToken))
       require(separatorToken.rule.isSeparator)
       require(tokens.forall(!_.rule.isSeparator))
-      require(sepAndNonSepRulesDisjointChars(rules, rules))
+      require(LexerInterface.sepAndNonSepRulesDisjointChars(rules, rules))
       decreases(tokens)
 
       tokens match {
@@ -1531,7 +1531,7 @@ object VerifiedLexer {
       if (!rules.isEmpty && 
           rulesInvariant(rules) && 
           rulesProduceEachTokenIndividually(rules, seqFromList(tokens)) &&
-          sepAndNonSepRulesDisjointChars(rules, rules) && 
+          LexerInterface.sepAndNonSepRulesDisjointChars(rules, rules) && 
           rulesProduceIndividualToken(rules, separatorToken) &&
           tokens.forall(t => !t.rule.isSeparator) &&
           separatorToken.rule.isSeparator
@@ -1553,7 +1553,7 @@ object VerifiedLexer {
       require(rulesProduceIndividualToken(rules, separatorToken))
       require(separatorToken.rule.isSeparator)
       require(tokens.forall(!_.rule.isSeparator))
-      require(sepAndNonSepRulesDisjointChars(rules, rules))
+      require(LexerInterface.sepAndNonSepRulesDisjointChars(rules, rules))
       decreases(tokens.size)
 
       tokens match {
@@ -1709,7 +1709,7 @@ object VerifiedLexer {
       if (!rules.isEmpty && 
           rulesInvariant(rules) && 
           rulesProduceEachTokenIndividually(rules, seqFromList(tokens)) &&
-          sepAndNonSepRulesDisjointChars(rules, rules) && 
+          LexerInterface.sepAndNonSepRulesDisjointChars(rules, rules) && 
           rulesProduceIndividualToken(rules, separatorToken) &&
           tokens.forall(t => !t.rule.isSeparator) &&
           separatorToken.rule.isSeparator
@@ -1817,7 +1817,7 @@ object VerifiedLexer {
       require(rulesProduceIndividualToken(rules, t2))
       require(t1.rule.isSeparator != t2.rule.isSeparator)
       require(t2.charsOf.size > 0)
-      require(sepAndNonSepRulesDisjointChars(rules, rules))
+      require(LexerInterface.sepAndNonSepRulesDisjointChars(rules, rules))
 
       assert(t1.rule.isSeparator || !t1.rule.isSeparator)
       if (!separableTokensPredicate(t1, t2, rules)) {
@@ -1911,7 +1911,7 @@ object VerifiedLexer {
       require(rulesProduceIndividualToken(rules, separatorToken))
       require(separatorToken.rule.isSeparator)
       require(l.forall(!_.rule.isSeparator))
-      require(sepAndNonSepRulesDisjointChars(rules, rules))
+      require(LexerInterface.sepAndNonSepRulesDisjointChars(rules, rules))
       decreases(l)
 
       withSeparatorTokenListPreservesRulesProduceTokens(rules, l, separatorToken)
@@ -2547,7 +2547,7 @@ object VerifiedLexer {
       require(rulesProduceIndividualToken(rules, separatorToken))
       require(separatorToken.rule.isSeparator)
       require(tokens.forall(!_.rule.isSeparator))
-      require(sepAndNonSepRulesDisjointChars(rules, rules))
+      require(LexerInterface.sepAndNonSepRulesDisjointChars(rules, rules))
 
       tokens match {
         case Cons(hd, tl) => {
@@ -2643,7 +2643,7 @@ object VerifiedLexer {
       require(!suffix.isEmpty)
       require(!rule.regex.usedCharacters.contains(suffix.head))
       require(anOtherTypeRule.regex.usedCharacters.contains(suffix.head))
-      require(sepAndNonSepRulesDisjointChars(rules, rules))
+      require(LexerInterface.sepAndNonSepRulesDisjointChars(rules, rules))
 
 
       val input = token.charsOf.list ++ suffix
@@ -3561,7 +3561,7 @@ object VerifiedLexer {
       require(!rNSep.isSeparator)
       require(rSep.isSeparator)
       require(rSep.regex.usedCharacters.contains(c))
-      require(sepAndNonSepRulesDisjointChars(rules, rulesRec))
+      require(LexerInterface.sepAndNonSepRulesDisjointChars(rules, rulesRec))
       decreases(rulesRec)
 
       rulesRec match {
@@ -3581,7 +3581,7 @@ object VerifiedLexer {
       require(rSep.regex.usedCharacters.contains(c))
       require(!rNSep.isSeparator)
       require(rSep.isSeparator)
-      require(ruleDisjointCharsFromAllFromOtherType(rNSep, rules))
+      require(LexerInterface.ruleDisjointCharsFromAllFromOtherType(rNSep, rules))
       decreases(rules)
 
       rules match {
@@ -3614,7 +3614,7 @@ object VerifiedLexer {
       require(!rNSep.isSeparator)
       require(rSep.isSeparator)
       require(rNSep.regex.usedCharacters.contains(c))
-      require(sepAndNonSepRulesDisjointChars(rules, rulesRec))
+      require(LexerInterface.sepAndNonSepRulesDisjointChars(rules, rulesRec))
       decreases(rulesRec)
       
       rulesRec match {
@@ -3634,7 +3634,7 @@ object VerifiedLexer {
       require(rNSep.regex.usedCharacters.contains(c))
       require(!rNSep.isSeparator)
       require(rSep.isSeparator)
-      require(ruleDisjointCharsFromAllFromOtherType(rNSep, rules))
+      require(LexerInterface.ruleDisjointCharsFromAllFromOtherType(rNSep, rules))
       decreases(rules)
 
       rules match {
