@@ -269,22 +269,69 @@ object MemoisationZipper {
 
 object VerifiedRegex {
   sealed trait Regex[C]:
-    lazy val nullable: Boolean = this.nullableFct
-    lazy val lostCause: Boolean = this.lostCauseFct
-    lazy val hash: Long = this.hashFct
+    def nullable: Boolean
+    def lostCause: Boolean
+    def hash: Long
   end Regex
-  case class ElementMatch[C](c: C) extends Regex[C]
-  case class Star[C](reg: Regex[C]) extends Regex[C]
-  case class Union[C](regOne: Regex[C], regTwo: Regex[C]) extends Regex[C]
-  case class Concat[C](regOne: Regex[C], regTwo: Regex[C]) extends Regex[C]
+  case class ElementMatch[C](c: C) extends Regex[C]:
+    lazy val nullableV: Boolean = this.nullableFct
+    def nullable: Boolean = nullableV
+    lazy val lostCauseV: Boolean = this.lostCauseFct
+    def lostCause: Boolean = lostCauseV
+    lazy val hashV: Long = this.hashFct
+    def hash: Long = hashV
+
+  end ElementMatch
+
+  case class Star[C](reg: Regex[C]) extends Regex[C]:
+    lazy val nullableV: Boolean = this.nullableFct
+    def nullable: Boolean = nullableV
+    lazy val lostCauseV: Boolean = this.lostCauseFct
+    def lostCause: Boolean = lostCauseV
+    lazy val hashV: Long = this.hashFct
+    def hash: Long = hashV
+  end Star
+
+  case class Union[C](regOne: Regex[C], regTwo: Regex[C]) extends Regex[C]:
+    lazy val nullableV: Boolean = this.nullableFct
+    def nullable: Boolean = nullableV
+    lazy val lostCauseV: Boolean = this.lostCauseFct
+    def lostCause: Boolean = lostCauseV
+    lazy val hashV: Long = this.hashFct
+    def hash: Long = hashV
+  end Union
+
+  case class Concat[C](regOne: Regex[C], regTwo: Regex[C]) extends Regex[C]:
+    lazy val nullableV: Boolean = this.nullableFct
+    def nullable: Boolean = nullableV
+    lazy val lostCauseV: Boolean = this.lostCauseFct
+    def lostCause: Boolean = lostCauseV
+    lazy val hashV: Long = this.hashFct
+    def hash: Long = hashV
+  end Concat
+
   /** Regex that accepts only the empty string: represents the language {""}
     */
-  case class EmptyExpr[C]() extends Regex[C]
+  case class EmptyExpr[C]() extends Regex[C]:
+    lazy val nullableV: Boolean = this.nullableFct
+    def nullable: Boolean = nullableV
+    lazy val lostCauseV: Boolean = this.lostCauseFct
+    def lostCause: Boolean = lostCauseV
+    lazy val hashV: Long = this.hashFct
+    def hash: Long = hashV
+  end EmptyExpr
 
   /** Regex that accepts nothing: represents the empty language
     */
-  case class EmptyLang[C]() extends Regex[C]
-
+  case class EmptyLang[C]() extends Regex[C]:
+    lazy val nullableV: Boolean = this.nullableFct
+    def nullable: Boolean = nullableV
+    lazy val lostCauseV: Boolean = this.lostCauseFct
+    def lostCause: Boolean = lostCauseV
+    lazy val hashV: Long = this.hashFct
+    def hash: Long = hashV
+  end EmptyLang
+  
   def generalisedUnion[C](l: List[Regex[C]]): Regex[C] = {
     require(l.forall(validRegex))
     decreases(l.size)
@@ -5440,6 +5487,7 @@ object VerifiedRegexMatcher {
   def lemmaDerivAfterDerivStepIsNullableThenFirstCharsContainsHead[C](r: Regex[C], c: C, tl: List[C]): Unit = {
     require(validRegex(r))
     require(derivative(derivativeStep(r, c), tl).nullable)
+    decreases(r)
 
     r match {
       case EmptyExpr() => {
