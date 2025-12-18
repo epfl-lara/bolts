@@ -617,6 +617,7 @@ object BalanceConcObj:
   @ghost @pure @inlineOnce @opaque
   def dropLemma[T](l: List[T], i: BigInt): Unit = {
     require(0 <= i && i <= l.size)
+    decreases(l)
     l match {
       case Nil() => ()
       case Cons(_, t) =>
@@ -635,6 +636,7 @@ object BalanceConcObj:
   @ghost @pure @inlineOnce @opaque
   def takeSliceLemma[T](l: List[T], i: BigInt): Unit = {
     require(0 <= i && i <= l.size)
+    decreases(l)
     l match {
       case Nil() => ()
       case Cons(_, t) =>
@@ -671,6 +673,7 @@ object BalanceConcObj:
 
   @ghost @pure @inlineOnce @opaque
   def sliceSplit[T](l: List[T], i: BigInt): Unit = {
+    decreases(l)
     require(0 <= i && i <= l.size)
     l match {
       case Nil() => ()
