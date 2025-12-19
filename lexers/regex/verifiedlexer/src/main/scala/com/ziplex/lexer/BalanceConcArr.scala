@@ -113,10 +113,12 @@ object BalanceConcObj:
   }
 
   def empty[T: ClassTag]: BalanceConc[T] = BalanceConc(Empty())
-  def singleton[T: ClassTag](t: T): BalanceConc[T] = BalanceConc(LeafFrom(t))
+  @inlineOnce @opaque def singleton[T: ClassTag](t: T): BalanceConc[T] = {
+    BalanceConc(LeafFrom(t))
+  }.ensuring(res => res.list == List(t) && res.isBalanced)
   def fromListB[T: ClassTag](l: List[T]): BalanceConc[T] = {
     BalanceConc(fromList(l))
-  }.ensuring(res => res.list == l)
+  }.ensuring(res => res.list == l && res.isBalanced)
 
 
   @pure @extern @inlineOnce @ghost
@@ -158,9 +160,9 @@ object BalanceConcObj:
           assert((c.list ++ List(x)) ++ xs == c.list ++ (x :: xs))
           rec(xs, c.append(x))
       }
-    }.ensuring(res => res.list == c.list ++ ll)
+    }.ensuring(res => res.list == c.list ++ ll && res.isBalanced)
     rec(l, Empty[T]())
-  }.ensuring(_.list == l)
+  }.ensuring(res => res.list == l && res.isBalanced)
 
   @pure
   def fromArray[T: ClassTag](arr: IArray[T], acc: Conc[T]): Conc[T] = {
@@ -277,18 +279,6 @@ object BalanceConcObj:
           l.exists(p) || r.exists(p)
       }
     }.ensuring(_ == t.list.exists(p))
-
-    def map[B: ClassTag](f: T => B): Conc[B] = {
-      decreases(t.height)
-      t match {
-        case Empty() => Empty[B]()
-        case Leaf(xs, csize) => Leaf(xs.map(f), csize)
-        case Node(l, r, cs, ch) => 
-          ghostExpr(ListUtils.lemmaMapConcat(l.list, r.list, f))
-          assert((l.list ++ r.list).map(f) == (l.list.map(f) ++ r.list.map(f)))
-          Node(l.map(f), r.map(f), cs, ch)
-      }
-    }.ensuring(res => res.list == t.list.map(f))
 
   extension[T: ClassTag](xs: Conc[T])
     /**
@@ -439,6 +429,19 @@ object BalanceConcObj:
           assert((l.list ++ r.list).filter(p) == (l.list.filter(p) ++ r.list.filter(p)))
           l.filter(p) ++ r.filter(p)
     }.ensuring(res => res.isBalanced && res.list == t.list.filter(p))
+
+    def map[B: ClassTag](f: T => B): Conc[B] = {
+      require(t.isBalanced)
+      decreases(t.height)
+      t match {
+        case Empty() => Empty[B]()
+        case Leaf(xs, csize) => Leaf(xs.map(f), csize)
+        case Node(l, r, cs, ch) => 
+          ghostExpr(ListUtils.lemmaMapConcat(l.list, r.list, f))
+          assert((l.list ++ r.list).map(f) == (l.list.map(f) ++ r.list.map(f)))
+          Node(l.map(f), r.map(f), cs, ch)
+      }
+    }.ensuring(res => res.list == t.list.map(f) && res.isBalanced)
 
     def append(v: T): Conc[T] = {
       require(t.isBalanced)

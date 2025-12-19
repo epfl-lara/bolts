@@ -13,5 +13,5 @@ stainless-dotty\
  src/main/scala/com/ziplex/example/AmyLexer.scala\
  src/main/scala/com/ziplex/example/PythonLexer.scala\
  --config-file=stainless.conf\
- -D-parallel=16\
+ -D-parallel=20\
  $1

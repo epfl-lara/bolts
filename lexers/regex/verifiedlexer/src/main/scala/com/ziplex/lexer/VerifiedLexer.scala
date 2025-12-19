@@ -1308,7 +1308,13 @@ object VerifiedLexer {
 
           assert(separableTokensPredicate(hd, next, rules))
 
+          assert(!VerifiedRegexMatcher.prefixMatchZipperSequence(rulesRegex(rules), hd.charsOf ++ singletonSeq(next.charsOf(0))))
+          assert(!prefixMatch(rulesRegex(rules), hd.charsOf.list ++ singletonSeq(next.charsOf(0)).list))
+
           check(hd.charsOf.list == hd.originalCharacters)
+          check(singletonSeq(next.charsOf(0)).list == List(next.originalCharacters.head))
+          check(singletonSeq(next.charsOf(0)).list == List(suffix.list.head))
+          check(singletonSeq(next.charsOf(0)).list == List(suffix.head))
           assert(maxPrefixZipperSequence(rules, seqFromList(hd.originalCharacters)).isDefined)
           check(maxPrefix(rules, hd.originalCharacters).isDefined)
           check(maxPrefix(rules, hd.charsOf.list).isDefined)
@@ -1317,6 +1323,9 @@ object VerifiedLexer {
           check(maxPrefix(rules, hd.charsOf.list).get._2.isEmpty)
           check(matchR(hd.rule.regex, hd.charsOf.list))
           check(hd.rule == hd.rule)
+          assert(!prefixMatch(rulesRegex(rules), hd.originalCharacters ++ List(suffix.head)))
+          assert(!prefixMatch(rulesRegex(rules), hd.charsOf.list ++ List(suffix.head)))
+
 
           lemmaMaxPrefWithNoPrefixMatchAllRulesThenSuffixReturnSame(rules, hd, hd.rule, suffix.list)
           
