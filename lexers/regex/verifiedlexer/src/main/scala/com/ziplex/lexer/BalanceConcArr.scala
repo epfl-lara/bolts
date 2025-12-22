@@ -3,14 +3,9 @@
 package com.ziplex.lexer
 
 import scala.reflect.ClassTag
-
-import stainless.lang.{ghost => ghostExpr, _}
-import stainless.proof._
-//import stainless.lang.StaticChecks._
 import stainless.collection._
 import ListSpecs._
 import stainless.annotation._
-import stainless.lang.StaticChecks.*
 
 import com.ziplex.lexer.ListUtils
 
