@@ -1,1 +1,1 @@
-stainless-dotty BalanceConcArr.scala Utils.scala ../../iarray/IArrays.scala --config-file=stainless.conf $1
+stainless-dotty BalanceConcArr.scala Utils.scala ../../iarray/IArrays.scala --config-file=stainless.conf "$1"
