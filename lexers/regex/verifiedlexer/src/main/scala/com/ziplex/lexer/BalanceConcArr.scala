@@ -143,7 +143,7 @@ object BalanceConcObj:
 
 
 
-  inline def LEAF_ARRAY_MAX_SIZE: BigInt = 128 // MUST BE <= 2147483647 (Int.MaxValue)
+  inline def LEAF_ARRAY_MAX_SIZE: BigInt = 4096 // MUST BE <= 2147483647 (Int.MaxValue)
 
   sealed abstract class Conc[T]
   case class Empty[T]() extends Conc[T]
