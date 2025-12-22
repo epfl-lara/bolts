@@ -7,8 +7,6 @@ import ListSpecs._
 import stainless.annotation._
 import stainless.lang.StaticChecks.*
 
-import com.ziplex.lexer.ListUtils
-
 
 object BalanceConc:
 
@@ -32,7 +30,7 @@ object BalanceConc:
         case Cons(x, xs) => 
           assert(rec(xs, c.append(x)).toList == (c.append(x)).toList ++ xs)
           assert((c.append(x)).toList == c.toList ++ List(x))
-          ghostExpr(ListUtils.lemmaTwoListsConcatAssociativity(c.toList, List(x), xs))
+          ghostExpr(lemmaConcatAssociativity(c.toList, List(x), xs))
           assert((c.toList ++ List(x)) ++ xs == c.toList ++ (x :: xs))
           rec(xs, c.append(x))
       }
@@ -100,7 +98,7 @@ object BalanceConc:
         case Empty() => true
         case Leaf(x) => p(x)
         case Node(l, r, _, _) => 
-          ghostExpr(ListUtils.lemmaForallConcat(l.toList, r.toList, p))
+          ghostExpr(lemmaForallConcat(l.toList, r.toList, p))
           l.forall(p) && r.forall(p)
       }
     }.ensuring(res => res == t.toList.forall(p))
@@ -111,7 +109,7 @@ object BalanceConc:
         case Empty() => false
         case Leaf(x) => p(x)
         case Node(l, r, _, _) => 
-          ghostExpr(ListUtils.lemmaExistsConcat(l.toList, r.toList, p))
+          ghostExpr(lemmaExistsConcat(l.toList, r.toList, p))
           l.exists(p) || r.exists(p)
       }
     }.ensuring(_ == t.toList.exists(p))
@@ -122,7 +120,7 @@ object BalanceConc:
         case Empty() => Empty[B]()
         case Leaf(x) => Leaf(f(x))
         case Node(l, r, cs, ch) => 
-          ghostExpr(ListUtils.lemmaMapConcat(l.toList, r.toList, f))
+          ghostExpr(lemmaMapConcat(l.toList, r.toList, f))
           assert((l.toList ++ r.toList).map(f) == (l.toList.map(f) ++ r.toList.map(f)))
           Node(l.map(f), r.map(f), cs, ch)
       }
@@ -260,7 +258,7 @@ object BalanceConc:
         case Leaf(x) if p(x) => t
         case Leaf(x) if !p(x) => Empty[T]()
         case Node(l, r, _, _) =>
-          ghostExpr(ListUtils.lemmaFilterConcat(l.toList, r.toList, p))
+          ghostExpr(lemmaFilterConcat(l.toList, r.toList, p))
           assert((l.toList ++ r.toList).filter(p) == (l.toList.filter(p) ++ r.toList.filter(p)))
           l.filter(p) ++ r.filter(p)
     }.ensuring(res => res.isBalanced && res.toList == t.toList.filter(p))
@@ -283,7 +281,7 @@ object BalanceConc:
         // case Node(l, r, _, _) if l.size == 1 => r
         case Node(l, r, _, _) if l.isEmpty => r.tail
         case Node(l, r, _, _) => 
-          ghostExpr(ListUtils.lemmaTailOfConcatIsTailConcat(l.toList, r.toList))
+          ghostExpr(lemmaTailOfConcatIsTailConcat(l.toList, r.toList))
           assert((l.toList ++ r.toList).tail == (l.toList.tail ++ r.toList))
           l.tail ++ r
     }.ensuring(res => res.isBalanced && res.toList == t.toList.tail)
@@ -302,7 +300,7 @@ object BalanceConc:
       t match
         case Leaf(x) => x
         case Node(l, r, _, _) => 
-          ghostExpr(ListUtils.lemmaLastOfConcatIsLastOfRhs(l.toList, r.toList))
+          ghostExpr(lemmaLastOfConcatIsLastOfRhs(l.toList, r.toList))
           r.last
     }.ensuring(res => res == t.toList.last)
 
@@ -469,6 +467,89 @@ object BalanceConc:
     res._1 == take(index) && res._2 == drop(index)
   }
 */
+
+  @ghost @pure @inlineOnce @opaque
+  def lemmaConcatAssociativity[B](
+      l1: List[B],
+      l2: List[B],
+      l3: List[B]
+  ): Unit = {
+    decreases(l1)
+    l1 match {
+      case Cons(hd, tl) => {
+        lemmaConcatAssociativity(tl, l2, l3)
+      }
+      case Nil() => ()
+    }
+  }.ensuring (_ => (l1 ++ l2) ++ l3 == l1 ++ (l2 ++ l3))
+
+  @ghost
+  @opaque
+  @inlineOnce
+  def lemmaForallConcat[B](l1: List[B], l2: List[B], p: B => Boolean): Unit = {
+    l1 match {
+      case Cons(hd1, tl1) => 
+        lemmaForallConcat(tl1, l2, p)
+      case _ => ()
+    }
+  }.ensuring(_ => (l1 ++ l2).forall(p) == (l1.forall(p) && l2.forall(p)))
+
+  @ghost
+  @opaque
+  @inlineOnce
+  def lemmaExistsConcat[B](l1: List[B], l2: List[B], p: B => Boolean): Unit = {
+    l1 match {
+      case Cons(hd1, tl1) => 
+        lemmaExistsConcat(tl1, l2, p)
+      case _ => ()
+    }
+  }.ensuring(_ => (l1 ++ l2).exists(p) == (l1.exists(p) || l2.exists(p)))
+
+  @ghost
+  @opaque
+  @inlineOnce
+  def lemmaFilterConcat[B](l1: List[B], l2: List[B], p: B => Boolean): Unit = {
+    l1 match {
+      case Cons(hd1, tl1) => 
+        lemmaFilterConcat(tl1, l2, p)
+      case _ => ()
+    }
+  }.ensuring(_ => (l1 ++ l2).filter(p) == (l1.filter(p) ++ l2.filter(p)))
+
+  @ghost
+  @opaque
+  @inlineOnce
+  def lemmaMapConcat[B, A](l1: List[B], l2: List[B], p: B => A): Unit = {
+    l1 match {
+      case Cons(hd1, tl1) => 
+        lemmaMapConcat(tl1, l2, p)
+      case _ => ()
+    }
+  }.ensuring(_ => (l1 ++ l2).map(p) == (l1.map(p) ++ l2.map(p)))
+
+  @inlineOnce
+  @opaque
+  @ghost
+  def lemmaTailOfConcatIsTailConcat[B](l1: List[B], l2: List[B]): Unit = {
+    require(!l1.isEmpty)
+    decreases(l1)
+    l1 match {
+      case Cons(hd, tl) if !tl.isEmpty => lemmaTailOfConcatIsTailConcat(tl, l2)
+      case _        => ()
+    }
+  }.ensuring (_ => (l1 ++ l2).tail == l1.tail ++ l2)
+
+  @inlineOnce
+  @opaque
+  @ghost
+  def lemmaLastOfConcatIsLastOfRhs[B](l1: List[B], l2: List[B]): Unit = {
+    require(!(l1 ++ l2).isEmpty)
+    decreases(l1)
+    l1 match {
+      case Cons(hd, tl) if !tl.isEmpty => lemmaLastOfConcatIsLastOfRhs(tl, l2)
+      case _        => ()
+    }
+  }.ensuring (_ => (l2.isEmpty && ((l1 ++ l2).last == l1.last)) || (!l2.isEmpty && (l1 ++ l2).last == l2.last))
 
 end BalanceConc
 
