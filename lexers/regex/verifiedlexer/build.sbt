@@ -15,11 +15,8 @@ assembly / assemblyMergeStrategy := {
   case x => MergeStrategy.first
 }
 
-resolvers += "Local Stainless" at "file://" + baseDirectory.value + "/stainless"
-
 libraryDependencies ++= Seq(
   "org.scalatest" %% "scalatest" % "3.2.19" % Test,
-  "ch.epfl.lara" %% "stainless-library" % "0.9.9.2-4-g2ff974d"
 )
 
 enablePlugins(StainlessPlugin, JmhPlugin)
