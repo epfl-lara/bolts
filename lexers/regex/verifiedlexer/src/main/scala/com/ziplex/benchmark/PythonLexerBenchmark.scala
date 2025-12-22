@@ -22,6 +22,7 @@ import com.ziplex.lexer.emptySeq
 import com.ziplex.lexer.singletonSeq
 import com.ziplex.lexer.seqFromList
 
+import scala.reflect.ClassTag
 import java.io.File
 
 @State(Scope.Benchmark)
@@ -56,7 +57,8 @@ class PythonLexerBenchmark {
   @OutputTimeUnit(TimeUnit.MICROSECONDS)
   def lex_ZipperMem(): Unit = {
     val (tokens, suffix) = Lexer.lexMem(PythonLexer.rules, PythonLexerBenchmarkUtils.exampleFileContents(file))(
-      using PythonLexerBenchmarkUtils.zipperCacheUp,
+      using ClassTag.Char,
+      PythonLexerBenchmarkUtils.zipperCacheUp,
       PythonLexerBenchmarkUtils.zipperCacheDown
     )
     assert(suffix.isEmpty)

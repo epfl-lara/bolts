@@ -25,7 +25,7 @@ object RegexUtils:
   extension (s: String) def * : Regex[Char] = r(s).*
   extension (s: String) def anyOf: Regex[Char] = s.toCharArray().foldRight[Regex[Char]](EmptyLang())((c, acc) => if isEmptyLang(acc) then ElementMatch(c) else Union(ElementMatch(c), acc))
   def opt(r: Regex[Char]): Regex[Char] = r | epsilon
-  extension (s: String) def toStainless: Sequence[Char] = s.toCharArray().foldLeft[Sequence[Char]](emptySeq)((acc, c) => acc.append(c))
+  extension (s: String) def toStainless: Sequence[Char] = s.toCharArray().foldLeft[Sequence[Char]](emptySeq())((acc, c) => acc.append(c))
   extension (r: Regex[Char]) def asString(): String = r match {
     case EmptyLang() => "∅"
     case EmptyExpr() => "ε"

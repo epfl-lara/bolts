@@ -23,6 +23,7 @@ import com.ziplex.lexer.emptySeq
 import com.ziplex.lexer.singletonSeq
 import com.ziplex.lexer.seqFromList
 
+import scala.reflect.ClassTag
 import java.io.File
 
 @State(Scope.Benchmark)
@@ -72,7 +73,8 @@ class AmyLexerBenchmark {
   @OutputTimeUnit(TimeUnit.MICROSECONDS)
   def lex_ZipperMem(): Unit = {
     val (tokens, suffix) = Lexer.lexMem(AmyLexer.rules, AmyLexerBenchmarkUtils.exampleFileContents(file))(
-      using AmyLexerBenchmarkUtils.zipperCacheUp,
+      using ClassTag.Char, 
+      AmyLexerBenchmarkUtils.zipperCacheUp,
       AmyLexerBenchmarkUtils.zipperCacheDown
     )
     assert(suffix.isEmpty)
@@ -203,7 +205,8 @@ class AmyLexerBenchmarkGenerated {
   @OutputTimeUnit(TimeUnit.MICROSECONDS)
   def lex_ZipperMem(): Unit = {
     val (tokens, suffix) = Lexer.lexMem(AmyLexer.rules, AmyLexerBenchmarkUtils.generatedFileContents(file))(
-      using AmyLexerBenchmarkUtils.zipperCacheUp,
+      using ClassTag.Char,
+      AmyLexerBenchmarkUtils.zipperCacheUp,
       AmyLexerBenchmarkUtils.zipperCacheDown
     )
     assert(suffix.isEmpty)

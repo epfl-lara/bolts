@@ -1,4 +1,4 @@
-package benchmark
+package benchmark.maps
 
 import java.util.concurrent.TimeUnit
 import org.openjdk.jmh.annotations.*
@@ -11,174 +11,8 @@ import com.mutablemaps.map.ListLongMap
 import stainless.collection.{List => StainlessList}
 import scala.collection.immutable
 import com.mutablemaps.map.MutableLongMapOpti.LongMapOpti
-import benchmark.BenchmarkUtil.getHashMapEmptyBuffer
+// import benchmark.maps.BenchmarkUtil.getHashMapEmptyBuffer
 import com.mutablemaps.map.EfficientFill
-
-@State(Scope.Benchmark)
-class ArrayFillBenchmark {
-  import EfficientFill.*
-  import MutableLongMap.ValueCell
-  import MutableLongMap.EmptyCell
-  import MutableLongMap.ValueCellFull
-  @Param(
-    Array(
-      "2", 
-      "4", 
-      "8", 
-      "16", 
-      "32", 
-      "64", 
-      "128", 
-      "256", 
-      "512", 
-      "1024", 
-      "2048", 
-      "4096", 
-      "8192", 
-      "16384", 
-      "32768", 
-      "65536", 
-      "131072", 
-      "262144", 
-      "524288", 
-      "1048576", 
-      "2097152", 
-      "4194304", 
-      "8388608", 
-      "16777216", 
-      "33554432"
-    )
-  )
-  var size: String = scala.compiletime.uninitialized
-
-  @Benchmark
-  @BenchmarkMode(Array(Mode.AverageTime))
-  @OutputTimeUnit(TimeUnit.MICROSECONDS)
-  def fillLong_ArrayFill(): Unit = {
-    val a = Array.fill(size.toInt)(0L)
-    val x = a(0) + 1L
-  }
-
-  @Benchmark
-  @BenchmarkMode(Array(Mode.AverageTime))
-  @OutputTimeUnit(TimeUnit.MICROSECONDS)
-  def fillLong_EfficientFill(): Unit = {
-    val a = fillByValueLong(size.toInt)(0L)
-    val x = a(0) + 1L
-  }
-
-  @Benchmark
-  @BenchmarkMode(Array(Mode.AverageTime))
-  @OutputTimeUnit(TimeUnit.MICROSECONDS)
-  def fillLong_Constructor(): Unit = {
-    val a = new Array[Long](size.toInt)
-    val x = a(0) + 1L
-  }
-
-  @Benchmark
-  @BenchmarkMode(Array(Mode.AverageTime))
-  @OutputTimeUnit(TimeUnit.MICROSECONDS)
-  def fillValueCell_ArrayFill(): Unit = {
-    val a = Array.fill(size.toInt)(EmptyCell[Long]())
-    val x = a(0).get(0L) + 1L
-  }
-
-  @Benchmark
-  @BenchmarkMode(Array(Mode.AverageTime))
-  @OutputTimeUnit(TimeUnit.MICROSECONDS)
-  def fillValueCell_EfficientFill(): Unit = {
-    val a = fillByValueValueCell(size.toInt)(EmptyCell[Long]())
-    val x = a(0).get(0L) + 1L
-  }
-
-  @Benchmark
-  @BenchmarkMode(Array(Mode.AverageTime))
-  @OutputTimeUnit(TimeUnit.MICROSECONDS)
-  def fillValueCell_Constructor(): Unit = {
-    val a = new Array[ValueCell[Long]](size.toInt)
-    if(a(0) == null){
-      val x = 1L
-    }
-  }
-}
-
-@State(Scope.Benchmark)
-class LongListMapBenchmark {
-  import BenchmarkUtilListMap.*
-  import BenchmarkUtil.*
-  // ------------------------------------------------ CREATE + UPDATE + LOOKUPS --------------------------------------------------------------------
-  @Param(Array("1", "2", "3", "4", "5", "6", "7", "8", "9"))
-  var n: String = scala.compiletime.uninitialized
-
-  @Benchmark
-  @BenchmarkMode(Array(Mode.AverageTime))
-  @OutputTimeUnit(TimeUnit.MICROSECONDS)
-  def createUpdateLookup_Verified(): Unit = {
-    val mutableMap = getVerifiedMapEmptyBuffer(16)
-    val pairs = getSmallKeyValuePairsList(n)
-    for (k, v) <- pairs do mutableMap.update(k, v)
-    end for
-
-    for (k, _) <- pairs do mutableMap(k)
-    end for
-  }
-
-  @Benchmark
-  @BenchmarkMode(Array(Mode.AverageTime))
-  @OutputTimeUnit(TimeUnit.MICROSECONDS)
-  def createUpdateLookup_Original(): Unit = {
-    val mutableMap = getOriginalMapEmptyBuffer(16)
-    val pairs = getSmallKeyValuePairsList(n)
-    for (k, v) <- pairs do mutableMap.update(k, v)
-    end for
-
-    for (k, _) <- pairs do mutableMap(k)
-    end for
-  }
-
-  @Benchmark
-  @BenchmarkMode(Array(Mode.AverageTime))
-  @OutputTimeUnit(TimeUnit.MICROSECONDS)
-  def createUpdateLookup_ListMap(): Unit = {
-    var listMap = emptyListMap
-    val pairs = getSmallKeyValuePairsList(n)
-    for (k, v) <- pairs do listMap = listMap + (k, v)
-    end for
-
-    for (k, _) <- pairs do listMap(k)
-    end for
-  }
-
-  // ------------------------------------------------ LOOKUPS --------------------------------------------------------------------
-
-  @Benchmark
-  @BenchmarkMode(Array(Mode.AverageTime))
-  @OutputTimeUnit(TimeUnit.MICROSECONDS)
-  def lookup_Verified(): Unit = {
-    val mutableMap = getVerifiedMapFilledWith2toNValues(n)
-    for (k, _) <- getSmallKeyValuePairsList(n) do mutableMap(k)
-    end for
-  }
-
-  @Benchmark
-  @BenchmarkMode(Array(Mode.AverageTime))
-  @OutputTimeUnit(TimeUnit.MICROSECONDS)
-  def lookup_Original(): Unit = {
-    val mutableMap = getOriginalMapFilledWith2toNValues(n)
-    for (k, _) <- getSmallKeyValuePairsList(n) do mutableMap(k)
-    end for
-  }
-
-  @Benchmark
-  @BenchmarkMode(Array(Mode.AverageTime))
-  @OutputTimeUnit(TimeUnit.MICROSECONDS)
-  def lookup_ListMap(): Unit = {
-    val listMap = getListMapFilledWith2toNValues(n)
-    for (k, _) <- getSmallKeyValuePairsList(n) do listMap(k)
-    end for
-  }
-
-}
 
 @State(Scope.Benchmark)
 class MutableLongMapBenchmark {
@@ -552,6 +386,7 @@ class MutableLongMapBenchmark {
 @State(Scope.Benchmark)
 class MutableLongMapBenchmarkBig {
   import BenchmarkUtilBig.*
+  import BenchmarkUtil.getHashMapEmptyBuffer
 
   @Param(
     Array(
@@ -962,6 +797,7 @@ object BenchmarkUtil {
 }
 
 object BenchmarkUtilBig {
+  import BenchmarkUtil.getHashMapEmptyBuffer
   val seed = 0x0ddba11
   Random.setSeed(seed)
 
@@ -1007,6 +843,7 @@ object BenchmarkUtilBig {
 
 object BenchmarkUtilListMap {
   import BenchmarkUtil.*
+  import BenchmarkUtil.getHashMapEmptyBuffer
 
   val smallRandomKeyValuePairsList: Map[String, Array[(Long, Long)]] =
     (1 to 9)

@@ -6,11 +6,12 @@ stainless-dotty\
  src/main/scala/com/ziplex/map/*\
  src/main/scala/com/ziplex/example/Utils.scala\
  src/main/scala/com/ziplex/lexer/Vector.scala\
- src/main/scala/com/ziplex/lexer/BalanceConc.scala\
+ src/main/scala/com/ziplex/lexer/BalanceConcArr.scala\
+ src/main/scala/com/ziplex/lexer/IArray.scala\
  src/main/scala/com/ziplex/example/JSONLexer.scala\
  src/main/scala/com/ziplex/example/JsonManipulation.scala\
  src/main/scala/com/ziplex/example/AmyLexer.scala\
  src/main/scala/com/ziplex/example/PythonLexer.scala\
  --config-file=stainless.conf\
- -D-parallel=16\
+ -D-parallel=20\
  $1

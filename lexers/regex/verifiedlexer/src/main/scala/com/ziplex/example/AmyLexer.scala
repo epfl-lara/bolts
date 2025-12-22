@@ -120,7 +120,7 @@ object ExampleAmyLexer:
                 IntegerValue(IntegerValueUtils.charsToInt(list), list)
             def toCharacters(t: TokenValue): Sequence[Char] = t match
                     case IntegerValue(_, text) => seqFromList(text)
-                    case _ => emptySeq
+                    case _ => emptySeq()
             
             val injection: TokenValueInjection[Char] = {
                 ghostExpr{
@@ -145,7 +145,7 @@ object ExampleAmyLexer:
             def toValue(v: Sequence[Char]): TokenValue = IdentifierValue(v.efficientList)
             def toCharacters(t: TokenValue): Sequence[Char] = t match
                 case IdentifierValue(value) => seqFromList(value)
-                case _ => emptySeq
+                case _ => emptySeq()
             
             val injection: TokenValueInjection[Char] = {
                 ghostExpr{
@@ -227,7 +227,7 @@ object ExampleAmyLexer:
                 case KeywordValue.Underscore        => stringUnderscoreConc
                 case KeywordValue.End               => stringEndConc
                 case KeywordValue.Broken(value)     => seqFromList(value)
-                case _                              => emptySeq
+                case _                              => emptySeq()
 
             val injection: TokenValueInjection[Char] = {
                 ghostExpr{
@@ -271,7 +271,7 @@ object ExampleAmyLexer:
                 case PrimitiveTypeValue.Boolean       => stringBooleanConc
                 case PrimitiveTypeValue.String        => stringStringConc
                 case PrimitiveTypeValue.Broken(value) => seqFromList(value)
-                case _                                => emptySeq
+                case _                                => emptySeq()
 
             val injection: TokenValueInjection[Char] = {
                 ghostExpr{
@@ -305,7 +305,7 @@ object ExampleAmyLexer:
                 case BooleanLiteralValue.True          => stringTrueConc
                 case BooleanLiteralValue.False         => stringFalseConc
                 case BooleanLiteralValue.Broken(value) => seqFromList(value)
-                case _                                 => emptySeq
+                case _                                 => emptySeq()
             val injection: TokenValueInjection[Char] = {
                 ghostExpr{
                     assert({
@@ -377,7 +377,7 @@ object ExampleAmyLexer:
                 case OperatorValue.Or            => stringOrConc
                 case OperatorValue.Concat        => stringConcatConc
                 case OperatorValue.Broken(value) => seqFromList(value)
-                case _                           => emptySeq
+                case _                           => emptySeq()
             val injection: TokenValueInjection[Char] = {
                 ghostExpr{
                     assert({
@@ -402,7 +402,7 @@ object ExampleAmyLexer:
             def toCharacters(t: TokenValue): Sequence[Char] =
                 t match
                     case StringLiteralValue(value) => seqFromList(value)
-                    case _ => emptySeq
+                    case _ => emptySeq()
 
             val injection: TokenValueInjection[Char] = {
                 ghostExpr{
@@ -427,7 +427,7 @@ object ExampleAmyLexer:
             def toValue(v: Sequence[Char]): TokenValue = DelimiterValue(v.efficientList)
             def toCharacters(t: TokenValue): Sequence[Char] = t match
                 case DelimiterValue(value) => seqFromList(value)
-                case _ => emptySeq
+                case _ => emptySeq()
             
             val injection: TokenValueInjection[Char] = {
                 ghostExpr{
@@ -453,7 +453,7 @@ object ExampleAmyLexer:
             def toCharacters(t: TokenValue): Sequence[Char] = 
                 t match
                     case WhitespaceValue(value) => seqFromList(value)
-                    case _ => emptySeq
+                    case _ => emptySeq()
             val injection: TokenValueInjection[Char] = {
                 ghostExpr{
                     assert({
@@ -478,7 +478,7 @@ object ExampleAmyLexer:
             def toCharacters(t: TokenValue): Sequence[Char] = 
                 t match
                     case CommentValue(value) => seqFromList(value)
-                    case _ => emptySeq
+                    case _ => emptySeq()
             val injection: TokenValueInjection[Char] = {
                 ghostExpr{
                     assert({

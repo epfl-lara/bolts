@@ -22,12 +22,8 @@ object Main {
     while (i < mapFilled.underlying.v.underlying.v.mask + 1) {
       val key: Long = mapFilled.underlying.v.underlying.v._keys(i)
       if(key != 0 && key != Long.MinValue) {
-        val value: ValueCell[List[(Key, Long)]] = mapFilled.underlying.v.underlying.v._values(i)
+        val value: List[(Key, Long)] = mapFilled.underlying.v.underlying.v._values(i)
         println(value)
-        value match
-          case ValueCellFull(v) => bucketSizes(v.size) = bucketSizes.getOrElse(v.size, 0) + 1
-          case EmptyCell() => ()
-        
       }
       i += 1
     }

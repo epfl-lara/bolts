@@ -2,6 +2,7 @@
   */
 package com.mutablemaps.map
 
+import scala.reflect.ClassTag
 import stainless.annotation._
 import stainless.collection._
 import stainless.equations._
@@ -29,7 +30,7 @@ def dummyMMapInterface(x: BigInt): BigInt = {
 
 object MutableMapInterface{
   @mutable
-  trait MutLongMap[V] {
+  trait MutLongMap[V: ClassTag] {
     /**
      * Invariant for the datastructure
      */
