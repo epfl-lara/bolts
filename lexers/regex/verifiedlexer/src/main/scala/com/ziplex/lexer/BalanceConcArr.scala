@@ -34,6 +34,8 @@ import stainless.lang.{ghost => ghostExpr, _}
 
 object BalanceConcObj:
 
+  inline def LEAF_ARRAY_MAX_SIZE: BigInt = 4096 // MUST BE <= 2147483647 (Int.MaxValue)
+
   extension [T: ClassTag](arr: IArray[T])
     def efficientList: List[T] = {
       def rec(i: BigInt, acc: List[T]): List[T] = {
@@ -156,9 +158,6 @@ object BalanceConcObj:
   }.ensuring(_ => bc.list == fromList(tl).prepend(hd).list)
 
 
-
-
-  inline def LEAF_ARRAY_MAX_SIZE: BigInt = 4096 // MUST BE <= 2147483647 (Int.MaxValue)
 
   sealed abstract class Conc[T]
   case class Empty[T]() extends Conc[T]
