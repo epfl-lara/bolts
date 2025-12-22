@@ -4,6 +4,7 @@ import stainless.collection._
 import stainless.annotation._
 
 import scala.annotation.tailrec
+import scala.reflect.ClassTag
 // BEGIN uncomment for verification ------------------------------------------
 import stainless.lang._
 import stainless.lang.StaticChecks._
@@ -323,6 +324,11 @@ object Vector {
     }.ensuring(res => res.list == v.list ++ ll)
     rec(l, Vector.empty)
   }.ensuring(_.list == l)
+
+  @pure @extern
+  def fromArray[T: ClassTag](arr: IArray[T]): Vector[T] = {
+    fromScala(arr._arr.toVector)
+  }.ensuring(res => res.list == arr.list)
 
   @pure @extern @inlineOnce @ghost
   def fromListHdTlConstructive[T](hd: T, tl: List[T], v: Vector[T]): Unit = {

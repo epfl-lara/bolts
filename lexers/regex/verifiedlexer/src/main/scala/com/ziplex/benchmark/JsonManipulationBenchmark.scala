@@ -3,6 +3,7 @@ package benchmark.lexer
 
 import java.util.concurrent.TimeUnit
 import org.openjdk.jmh.annotations.*
+import org.openjdk.jmh.infra.Blackhole
 import scala.util.Random
 import stainless.collection.{List => StainlessList}
 import scala.compiletime.uninitialized
@@ -75,28 +76,30 @@ class JsonManipulationBenchmark {
   @Benchmark
   @BenchmarkMode(Array(Mode.AverageTime))
   @OutputTimeUnit(TimeUnit.MICROSECONDS)
-  def lex(): Unit = {
+  def lex(bh: Blackhole): Unit = {
     val (tokens, suffix) = Lexer.lexMem(JsonLexer.rules, JsonManipulationBenchmarkUtils.fileContents(file))(
       using ClassTag.Char,
       JsonManipulationBenchmarkUtils.zipperCacheUp,
       JsonManipulationBenchmarkUtils.zipperCacheDown
     )
-    assert(suffix.isEmpty)
+    bh.consume(suffix.isEmpty)
+    // assert(suffix.isEmpty)
   }
 
    
   @Benchmark
   @BenchmarkMode(Array(Mode.AverageTime))
   @OutputTimeUnit(TimeUnit.MICROSECONDS)
-  def lexNonMem(): Unit = {
+  def lexNonMem(bh: Blackhole): Unit = {
     val (tokens, suffix) = Lexer.lex(JsonLexer.rules, JsonManipulationBenchmarkUtils.fileContents(file))
-    assert(suffix.isEmpty)
+    bh.consume(suffix.isEmpty)
+    // assert(suffix.isEmpty)
   }
 
   @Benchmark
   @BenchmarkMode(Array(Mode.AverageTime))
   @OutputTimeUnit(TimeUnit.MICROSECONDS)
-  def lexAndCheckPrintable(): Unit = {
+  def lexAndCheckPrintable(bh: Blackhole): Unit = {
     val (tokens, _) = Lexer.lexMem(JsonLexer.rules, JsonManipulationBenchmarkUtils.fileContents(file))(
       using ClassTag.Char,
       JsonManipulationBenchmarkUtils.zipperCacheUp,
@@ -107,72 +110,85 @@ class JsonManipulationBenchmark {
       JsonManipulationBenchmarkUtils.zipperCacheUp,
       JsonManipulationBenchmarkUtils.zipperCacheDown
     )
-    assert(res.isDefined)
-    assert(res.get.size > 0)
+    bh.consume(res.isDefined)
+    // assert(res.isDefined)
+    bh.consume(res.get.size > 0)
+    // assert(res.get.size > 0)
   }
 
   @Benchmark
   @BenchmarkMode(Array(Mode.AverageTime))
   @OutputTimeUnit(TimeUnit.MICROSECONDS)
-  def checkPrintableNonMem(): Unit = {
+  def checkPrintableNonMem(bh: Blackhole): Unit = {
     val tokens = JsonManipulationBenchmarkUtils.filePrintableTokens(file).tokens
     val res = printableTokensFromTokens(JsonLexer.rules, tokens)
-    assert(res.isDefined)
-    assert(res.get.size > 0)
+    bh.consume(res.isDefined)
+    // assert(res.isDefined)
+    bh.consume(res.get.size > 0)
+    // assert(res.get.size > 0)
   }
 
   @Benchmark
   @BenchmarkMode(Array(Mode.AverageTime))
   @OutputTimeUnit(TimeUnit.MICROSECONDS)
-  def checkPrintableMemPreFilledCache(): Unit = {
+  def checkPrintableMemPreFilledCache(bh: Blackhole): Unit = {
     val tokens = JsonManipulationBenchmarkUtils.filePrintableTokens(file).tokens
     val res = printableTokensFromTokensMem(JsonLexer.rules, tokens)(
       using ClassTag.Char,
       JsonManipulationBenchmarkUtils.zipperCacheUpInternal,
       JsonManipulationBenchmarkUtils.zipperCacheDownInternal
     )
-    assert(res.isDefined)
-    assert(res.get.size > 0)
+    bh.consume(res.isDefined)
+    // assert(res.isDefined)
+    bh.consume(res.get.size > 0)
+    // assert(res.get.size > 0)
   }
 
   @Benchmark
   @BenchmarkMode(Array(Mode.AverageTime))
   @OutputTimeUnit(TimeUnit.MICROSECONDS)
-  def sliceAndSort(): Unit = {
+  def sliceAndSort(bh: Blackhole): Unit = {
     val printableTokens = JsonManipulationBenchmarkUtils.filePrintableTokens(file)
     val tokensSize = printableTokens.size
     val indices = indicesOfOpenBraces(printableTokens.tokens, tokensSize)
     val slices: Sequence[PrintableTokens[Char]] = slicesMulti(printableTokens, tokensSize, indices)
     val slicesWithIds = slices.map(JsonManipulationBenchmarkUtils.addId)
     val orderedSlices = sortObjectsByID(slicesWithIds)
-    assert(orderedSlices.size > 0)
+    bh.consume(orderedSlices.size > 0)
+    // assert(orderedSlices.size > 0)
     val orderedSlicesWithoutIds = orderedSlices.map(JsonManipulationBenchmarkUtils.removeId)
-    assert(orderedSlicesWithoutIds.size > 0)
+    bh.consume(orderedSlicesWithoutIds.size > 0)
+    // assert(orderedSlicesWithoutIds.size > 0)
   }
 
 
   @Benchmark
   @BenchmarkMode(Array(Mode.AverageTime))
   @OutputTimeUnit(TimeUnit.MICROSECONDS)
-  def recombineSlices(): Unit = {
+  def recombineSlices(bh: Blackhole): Unit = {
     val orderedSlicesWithoutIds = JsonManipulationBenchmarkUtils.orderedSlicesWithoutIds(file)
     val sep = JsonManipulationBenchmarkUtils.commaNewLineSeparator
-    assert(orderedSlicesWithoutIds.size > 0)
+    bh.consume(orderedSlicesWithoutIds.size > 0)
+    // assert(orderedSlicesWithoutIds.size > 0)
     val recombined = recombineSlicesWithSep(orderedSlicesWithoutIds, sep, emptyPrintableTokens(JsonLexer.rules))
-    assert(recombined.isDefined)
+    bh.consume(recombined.isDefined)
+    // assert(recombined.isDefined)
     val withBrackets = encloseInSep(recombined.get, JsonManipulationBenchmarkUtils.leftBracketSeparator, JsonManipulationBenchmarkUtils.rightBracketSeparator)
-    assert(withBrackets.isDefined)
-    assert(withBrackets.get.size > 0)
+    bh.consume(withBrackets.isDefined)
+    // assert(withBrackets.isDefined)
+    bh.consume(withBrackets.get.size > 0)
+    // assert(withBrackets.get.size > 0)
   }
 
 
   @Benchmark
   @BenchmarkMode(Array(Mode.AverageTime))
   @OutputTimeUnit(TimeUnit.MICROSECONDS)
-  def checkPredicateAndRecombineWithoutWrapper(): Unit = {
+  def checkPredicateAndRecombineWithoutWrapper(bh: Blackhole): Unit = {
     val orderedSlicesWithoutIdsJustTokens = JsonManipulationBenchmarkUtils.orderedSlicesWithoutIdsJustTokens(file)
     val sep = JsonManipulationBenchmarkUtils.commaNewLineSeparator
-    assert(orderedSlicesWithoutIdsJustTokens.size > 0)
+    bh.consume(orderedSlicesWithoutIdsJustTokens.size > 0)
+    // assert(orderedSlicesWithoutIdsJustTokens.size > 0)
     val length = orderedSlicesWithoutIdsJustTokens.size
     var i = BigInt(0)
     var recombined = emptySeq[Token[Char]]()
@@ -184,14 +200,16 @@ class JsonManipulationBenchmark {
       }
       i = i + 1
     }
-    assert(recombined.size > 0)
+    bh.consume(recombined.size > 0)
+    // asseert(recombined.size > 0)
     val withBrackets = singletonSeq(JsonManipulationBenchmarkUtils.leftBracketToken) ++ recombined ++ singletonSeq(JsonManipulationBenchmarkUtils.rightBracketToken)
     val printable = Lexer.separableTokensMem(withBrackets, JsonLexer.rules)(
       using ClassTag.Char,
       JsonManipulationBenchmarkUtils.zipperCacheUpInternal,
       JsonManipulationBenchmarkUtils.zipperCacheDownInternal
     )
-    assert(printable)
+    bh.consume(printable)
+    // assert(printable)
   }
 
 

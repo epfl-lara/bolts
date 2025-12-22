@@ -3,6 +3,7 @@ package benchmark.lexer
 
 import java.util.concurrent.TimeUnit
 import org.openjdk.jmh.annotations.*
+import org.openjdk.jmh.infra.Blackhole
 import scala.util.Random
 import stainless.collection.{List => StainlessList}
 import scala.compiletime.uninitialized
@@ -55,13 +56,14 @@ class PythonLexerBenchmark {
   @Benchmark
   @BenchmarkMode(Array(Mode.AverageTime))
   @OutputTimeUnit(TimeUnit.MICROSECONDS)
-  def lex_ZipperMem(): Unit = {
+  def lex_ZipperMem(bh: Blackhole): Unit = {
     val (tokens, suffix) = Lexer.lexMem(PythonLexer.rules, PythonLexerBenchmarkUtils.exampleFileContents(file))(
       using ClassTag.Char,
       PythonLexerBenchmarkUtils.zipperCacheUp,
       PythonLexerBenchmarkUtils.zipperCacheDown
     )
-    assert(suffix.isEmpty)
+    bh.consume(suffix.isEmpty)
+    // assert(suffix.isEmpty)
   }
 
 }

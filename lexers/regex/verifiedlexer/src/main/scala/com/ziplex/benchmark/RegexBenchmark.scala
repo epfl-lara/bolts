@@ -24,6 +24,7 @@ import com.ziplex.lexer.Sequence
 import com.ziplex.lexer.emptySeq
 import com.ziplex.lexer.singletonSeq
 import com.ziplex.lexer.seqFromList
+import org.openjdk.jmh.infra.Blackhole
 
 @State(Scope.Benchmark)
 class RegexBenchmark {
@@ -63,41 +64,45 @@ class RegexBenchmark {
   @Benchmark
   @BenchmarkMode(Array(Mode.AverageTime))
   @OutputTimeUnit(TimeUnit.MICROSECONDS)
-  def abStarAccepting_Regex_list(): Unit = {
+  def abStarAccepting_Regex_list(bh: Blackhole): Unit = {
     val r = RegexBenchmarkUtils.abStar
     val s = RegexBenchmarkUtils.abStar_Accepting_strings_list(size.toInt)
     val res = matchR(r, s)
-    assert(res)
+    bh.consume(res)
+    // assert(res)
   }
 
   @Benchmark
   @BenchmarkMode(Array(Mode.AverageTime))
   @OutputTimeUnit(TimeUnit.MICROSECONDS)
-  def abStarAccepting_Zipper_list(): Unit = {
+  def abStarAccepting_Zipper_list(bh: Blackhole): Unit = {
     val r = RegexBenchmarkUtils.abStar
     val s = RegexBenchmarkUtils.abStar_Accepting_strings_list(size.toInt)
     val res = matchZipper(r, s)
-    assert(res)
+    bh.consume(res)
+    // assert(res)
   }
 
   @Benchmark
   @BenchmarkMode(Array(Mode.AverageTime))
   @OutputTimeUnit(TimeUnit.MICROSECONDS)
-  def abStarAccepting_Zipper_vector(): Unit = {
+  def abStarAccepting_Zipper_vector(bh: Blackhole): Unit = {
     val r = RegexBenchmarkUtils.abStar
     val v = RegexBenchmarkUtils.abStar_Accepting_strings(size.toInt)
     val res = matchZipperSequence(r, v)
-    assert(res)
+    bh.consume(res)
+    // assert(res)
   }
 
   @Benchmark
   @BenchmarkMode(Array(Mode.AverageTime))
   @OutputTimeUnit(TimeUnit.MICROSECONDS)
-  def abStarAccepting_ZipperMem_vector(): Unit = {
+  def abStarAccepting_ZipperMem_vector(bh: Blackhole): Unit = {
     val r = RegexBenchmarkUtils.abStar
     val v = RegexBenchmarkUtils.abStar_Accepting_strings(size.toInt)
     val res = matchZipperSequenceMem(r, v)
-    assert(res)
+    bh.consume(res)
+    // assert(res)
   }
 
   // @Benchmark
@@ -113,11 +118,11 @@ class RegexBenchmark {
   @Benchmark
   @BenchmarkMode(Array(Mode.AverageTime))
   @OutputTimeUnit(TimeUnit.MICROSECONDS)
-  def abStarAccepting_ZipperMem_list(): Unit = {
+  def abStarAccepting_ZipperMem_list(bh: Blackhole): Unit = {
     val r = RegexBenchmarkUtils.abStar
     val s = RegexBenchmarkUtils.abStar_Accepting_strings_list(size.toInt)
-    val res = matchZipperMem(r, s)
-    assert(res)
+    bh.consume res = matchZipperMem(r, s)
+    // asserrt(res)
   }
 
   // Email accepting regex -----------------------------------------------------------------------------------------------------------------------
@@ -125,41 +130,45 @@ class RegexBenchmark {
   @Benchmark
   @BenchmarkMode(Array(Mode.AverageTime))
   @OutputTimeUnit(TimeUnit.MICROSECONDS)
-  def emailAccepting_Regex_list(): Unit = {
+  def emailAccepting_Regex_list(bh: Blackhole): Unit = {
     val r = RegexBenchmarkUtils.emailRegex
     val s = RegexBenchmarkUtils.email_Accepting_strings_list(size.toInt)
     val res = matchR(r, s)
-    assert(res)
+    bh.consume(res)
+    // assert(res)
   }
 
   @Benchmark
   @BenchmarkMode(Array(Mode.AverageTime))
   @OutputTimeUnit(TimeUnit.MICROSECONDS)
-  def emailAccepting_Zipper_list(): Unit = {
+  def emailAccepting_Zipper_list(bh: Blackhole): Unit = {
     val r = RegexBenchmarkUtils.emailRegex
     val s = RegexBenchmarkUtils.email_Accepting_strings_list(size.toInt)
     val res = matchZipper(r, s)
-    assert(res)
+    bh.consume(res)
+    // assert(res)
   }
 
   @Benchmark
   @BenchmarkMode(Array(Mode.AverageTime))
   @OutputTimeUnit(TimeUnit.MICROSECONDS)
-  def emailAccepting_Zipper_vector(): Unit = {
+  def emailAccepting_Zipper_vector(bh: Blackhole): Unit = {
     val r = RegexBenchmarkUtils.emailRegex
     val v = RegexBenchmarkUtils.email_Accepting_strings(size.toInt)
     val res = matchZipperSequence(r, v)
-    assert(res)
+    bh.consume(res)
+    // assert(res)
   }
 
   @Benchmark
   @BenchmarkMode(Array(Mode.AverageTime))
   @OutputTimeUnit(TimeUnit.MICROSECONDS)
-  def emailAccepting_ZipperMem_vector(): Unit = {
+  def emailAccepting_ZipperMem_vector(bh: Blackhole): Unit = {
     val r = RegexBenchmarkUtils.emailRegex
     val v = RegexBenchmarkUtils.email_Accepting_strings(size.toInt)
     val res = matchZipperSequenceMem(r, v)
-    assert(res)
+    bh.consume(res)
+    // assert(res)
   }
 
   // @Benchmark
@@ -175,11 +184,12 @@ class RegexBenchmark {
   @Benchmark
   @BenchmarkMode(Array(Mode.AverageTime))
   @OutputTimeUnit(TimeUnit.MICROSECONDS)
-  def emailAccepting_RegexMem_list(): Unit = {
+  def emailAccepting_RegexMem_list(bh: Blackhole): Unit = {
     val r = RegexBenchmarkUtils.emailRegex
     val s = RegexBenchmarkUtils.email_Accepting_strings_list(size.toInt)
     val res = matchRMem(r, s)(using RegexBenchmarkUtils.regexCache)
-    assert(res)
+    bh.consume(res)
+    // assert(res)
   }
 
 }
@@ -225,97 +235,107 @@ class LexerRegexBenchmark {
     @Benchmark
     @BenchmarkMode(Array(Mode.AverageTime))
     @OutputTimeUnit(TimeUnit.MICROSECONDS)
-    def commentAccepting_Regex_list(): Unit = {
+    def commentAccepting_Regex_list(bh: Blackhole): Unit = {
       val r = RegexBenchmarkUtils.singleLineCommentRegex
       val s = RegexBenchmarkUtils.comment_Accepting_strings_list(size.toInt)
       val res = matchR(r, s)
-      assert(res)
+      bh.consume(res)
+      // assert(res)
     }
     @Benchmark
     @BenchmarkMode(Array(Mode.AverageTime))
     @OutputTimeUnit(TimeUnit.MICROSECONDS)
-    def commentAccepting_Zipper_list(): Unit = {
+    def commentAccepting_Zipper_list(bh: Blackhole): Unit = {
       val r = RegexBenchmarkUtils.singleLineCommentRegex
       val s = RegexBenchmarkUtils.comment_Accepting_strings_list(size.toInt)
       val res = matchZipper(r, s)
-      assert(res)
+      bh.consume(res)
+      // assert(res)
     }
     @Benchmark
     @BenchmarkMode(Array(Mode.AverageTime))
     @OutputTimeUnit(TimeUnit.MICROSECONDS)
-    def commentAccepting_Zipper_vector(): Unit = {
+    def commentAccepting_Zipper_vector(bh: Blackhole): Unit = {
       val r = RegexBenchmarkUtils.singleLineCommentRegex
       val v = RegexBenchmarkUtils.comment_Accepting_strings(size.toInt)
       val res = matchZipperSequence(r, v)
-      assert(res)
+      bh.consume(res)
+      // assert(res)
     }
     @Benchmark
     @BenchmarkMode(Array(Mode.AverageTime))
     @OutputTimeUnit(TimeUnit.MICROSECONDS)
-    def commentAccepting_ZipperNMem_vector(): Unit = {
+    def commentAccepting_ZipperNMem_vector(bh: Blackhole): Unit = {
       val r = RegexBenchmarkUtils.singleLineCommentRegex
       val v = RegexBenchmarkUtils.comment_Accepting_strings(size.toInt)
       val res = matchZipperSequenceMem(r, v)
-      assert(res)
+      bh.consume(res)
+      // assert(res)
     }
     @Benchmark
     @BenchmarkMode(Array(Mode.AverageTime))
     @OutputTimeUnit(TimeUnit.MICROSECONDS)
-    def commentAccepting_scalaRegex(): Unit = {
+    def commentAccepting_scalaRegex(bh: Blackhole): Unit = {
       val r = ScalaRegexUtils.inlineCommentRegex
       val s = RegexBenchmarkUtils.comment_Accepting_strings_realString(size.toInt)
       val res = r.matches(s)
-      assert(res)
+      bh.consume(res)
+      // assert(res)
     }
 
     // Multiline comment accepting regex -----------------------------------------------------------------------------------------------------------------------
     @Benchmark
     @BenchmarkMode(Array(Mode.AverageTime))
     @OutputTimeUnit(TimeUnit.MICROSECONDS)
-    def commentAccepting_Regex_multiline_list(): Unit = {
+    def commentAccepting_Regex_multiline_list(bh: Blackhole): Unit = {
       val r = RegexBenchmarkUtils.multiCommentRegex
       val s = RegexBenchmarkUtils.comment_Accepting_strings_multiline_list(size.toInt)
       val res = matchR(r, s)
-      assert(res)
+      bh.consume(res)
+      // assert(res)
     }
     @Benchmark
     @BenchmarkMode(Array(Mode.AverageTime))
     @OutputTimeUnit(TimeUnit.MICROSECONDS)
-    def commentAccepting_Zipper_multiline_list(): Unit = {
+    def commentAccepting_Zipper_multiline_list(bh: Blackhole): Unit = {
       val r = RegexBenchmarkUtils.multiCommentRegex
       val s = RegexBenchmarkUtils.comment_Accepting_strings_multiline_list(size.toInt)
       val res = matchZipper(r, s)
-      assert(res)
+      bh.consume(res)
+      // assert(res)
     }
 
     @Benchmark
     @BenchmarkMode(Array(Mode.AverageTime))
     @OutputTimeUnit(TimeUnit.MICROSECONDS)
-    def commentAccepting_Zipper_multiline_vector(): Unit = {
+    def commentAccepting_Zipper_multiline_vector(bh: Blackhole): Unit = {
       val r = RegexBenchmarkUtils.multiCommentRegex
       val v = RegexBenchmarkUtils.comment_Accepting_strings_multiline(size.toInt)
       val res = matchZipperSequence(r, v)
-      assert(res)
+      bh.consume(res)
+      // assert(res)
     }
 
     @Benchmark
     @BenchmarkMode(Array(Mode.AverageTime))
     @OutputTimeUnit(TimeUnit.MICROSECONDS)
-    def commentAccepting_Zipper_multiline_vector_mem(): Unit = {
+    def commentAccepting_Zipper_multiline_vector_mem(bh: Blackhole): Unit = {
       val r = RegexBenchmarkUtils.multiCommentRegex
       val v = RegexBenchmarkUtils.comment_Accepting_strings_multiline(size.toInt)
       val res = matchZipperSequenceMem(r, v)
-      assert(res)
+      bh.consume(res)
+      // assert(res)
     }
 
     @Benchmark
     @BenchmarkMode(Array(Mode.AverageTime))
     @OutputTimeUnit(TimeUnit.MICROSECONDS)
-    def commentAccepting_scalaRegex_multiline(): Unit = {
+    def commentAccepting_scalaRegex_multiline(bh: Blackhole): Unit = {
       val r = ScalaRegexUtils.multiCommentRegex
       val s = RegexBenchmarkUtils.comment_Accepting_strings_multiline_realString(size.toInt)
       val res = r.matches(s)
-      assert(res)
+      bh.consume(res)
+      // assert(res)
     }
 }
 

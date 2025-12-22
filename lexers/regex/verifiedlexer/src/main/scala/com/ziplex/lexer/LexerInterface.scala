@@ -1,7 +1,6 @@
 package com.ziplex.lexer
 
 import VerifiedRegex.*
-import stainless.collection.List
 import stainless.annotation.law
 import stainless.annotation.pure
 import stainless.annotation.ghost
@@ -12,6 +11,7 @@ import stainless.lang.Quantifiers.*
 import stainless.collection.List
 import stainless.collection.Cons
 import stainless.collection.Nil
+import stainless.collection.IArray
 
 import scala.annotation.tailrec
 
@@ -19,6 +19,7 @@ import com.ziplex.lexer.Vector
 import scala.reflect.ClassTag
 import com.ziplex.lexer.BalanceConcObj.BalanceConc
 import com.ziplex.lexer.BalanceConcObj
+import com.ziplex.lexer.BalanceConcObj.Empty
 
 
 // BEGIN uncomment for verification ------------------------------------------
@@ -46,10 +47,12 @@ import stainless.lang.{ghost => ghostExpr, _}
 // inline def emptySeq[T]: Sequence[T] = Vector.empty
 // inline def singletonSeq[T](t: T): Sequence[T] = Vector.singleton(t)
 // inline def seqFromList[T](l: List[T]): Sequence[T] = Vector.fromList(l)
+// inline def seqFromArray[T: ClassTag](arr: IArray[T]): Sequence[T] = Vector.fromArray(arr)
 type Sequence[T] = BalanceConc[T]
 def emptySeq[T: ClassTag](): Sequence[T] = BalanceConcObj.empty[T]
 def singletonSeq[T: ClassTag](t: T): Sequence[T] = BalanceConcObj.singleton(t)
 def seqFromList[T: ClassTag](l: List[T]): Sequence[T] = BalanceConcObj.fromListB(l)
+def seqFromArray[T: ClassTag](arr: IArray[T]): Sequence[T] = BalanceConcObj.fromArrayB(arr)
 @ghost @inlineOnce @opaque def seqFromListBHdTlConstructive[T: ClassTag](hd: T, tl: List[T], s: Sequence[T]): Unit = {
   require(s.list == seqFromList(hd :: tl).list)
       // Vector.fromListHdTlConstructive(hd, tl, s)

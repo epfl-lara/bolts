@@ -7,6 +7,7 @@ import stainless.annotation.pure
 import stainless.collection.List
 import stainless.collection.Cons
 import stainless.collection.Nil
+import stainless.collection.IArray
 
 
 import com.ziplex.lexer.{Token, Rule}
@@ -39,6 +40,7 @@ import stainless.lang.ghost as ghostExpr
 import stainless.lang.unfold
 import stainless.proof.check
 import stainless.lang.StaticChecks.*
+import com.ziplex.lexer.seqFromArray
 // END uncomment for verification --------------------------------------------
 // BEGIN imports for benchmarking -------------------------------------------
 // import stainless.lang.{ghost => _, decreases => _, unfold => _, _}
@@ -60,7 +62,7 @@ object JsonManipulationExample:
     * @param path
     * @return
     */
-  @extern def openFile(path: String): Sequence[Char] = scala.io.Source.fromFile(path).iter.foldLeft[Sequence[Char]](emptySeq[Char]())((acc, char) => acc.append(char))
+  @extern def openFile(path: String): Sequence[Char] = seqFromArray(scala.io.Source.fromFile(path).iter.foldLeft[IArray[Char]](IArray.empty[Char]())((acc, char) => acc.append(char)))
 
 
   /** Returns the indices of all the open braces in the token list

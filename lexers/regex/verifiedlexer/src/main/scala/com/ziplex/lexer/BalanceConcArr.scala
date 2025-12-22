@@ -37,6 +37,7 @@ object BalanceConcObj:
   extension [T: ClassTag](arr: IArray[T])
     def efficientList: List[T] = {
       def rec(i: BigInt, acc: List[T]): List[T] = {
+        decreases(i)
         if i <= BigInt(0) then acc
         else rec(i - 1, arr(i - 1) :: acc)
       }
@@ -144,6 +145,10 @@ object BalanceConcObj:
     BalanceConc(fromList(l))
   }.ensuring(res => res.list == l && res.isBalanced)
 
+  def fromArrayB[T: ClassTag](arr: IArray[T]): BalanceConc[T] = {
+    BalanceConc(fromArray(arr, Empty[T]()))
+  }.ensuring(res => res.list == arr.list && res.isBalanced)
+
 
   @pure @extern @inlineOnce @ghost
   def fromListHdTlConstructive[T: ClassTag](hd: T, tl: List[T], bc: BalanceConc[T]): Unit = {
@@ -226,6 +231,7 @@ object BalanceConcObj:
       case Node(l, r, _, _) => l.list ++ r.list
 
     def efficientList(acc: List[T] = Nil[T]()): List[T] = {
+      decreases(t.height)
       t match
         case Empty() => acc
         case Leaf(x, _) => x.efficientList ++ acc

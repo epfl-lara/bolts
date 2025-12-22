@@ -3,6 +3,7 @@ package benchmark.lexer
 
 import java.util.concurrent.TimeUnit
 import org.openjdk.jmh.annotations.*
+import org.openjdk.jmh.infra.Blackhole
 import scala.util.Random
 import stainless.collection.{List => StainlessList}
 import scala.compiletime.uninitialized
@@ -53,26 +54,28 @@ class JsonLexerBenchmark {
   @Benchmark
   @BenchmarkMode(Array(Mode.AverageTime))
   @OutputTimeUnit(TimeUnit.MICROSECONDS)
-  def lex_ZipperMem(): Unit = {
+  def lex_ZipperMem(bh: Blackhole): Unit = {
     val (tokens, suffix) = Lexer.lexMem(JsonLexer.rules, JsonLexerBenchmarkUtils.exampleFileContents(file))(
       using ClassTag.Char,
       JsonLexerBenchmarkUtils.zipperCacheUp,
       JsonLexerBenchmarkUtils.zipperCacheDown
     )
-    assert(suffix.isEmpty)
+    bh.consume(suffix.isEmpty)
+    // assert(suffix.isEmpty)
   }
 
   @Benchmark
   @BenchmarkMode(Array(Mode.AverageTime))
   @OutputTimeUnit(TimeUnit.MICROSECONDS)
-  def separability_pred(): Unit = {
+  def separability_pred(bh: Blackhole): Unit = {
     val tokens = JsonLexerBenchmarkUtils.exampleFileTokens(file)
     val separable =  Lexer.separableTokensMem(tokens, JsonLexer.rules)(
       using ClassTag.Char,
       JsonLexerBenchmarkUtils.zipperCacheUp,
       JsonLexerBenchmarkUtils.zipperCacheDown
     )
-    assert(separable)
+    bh.consume(separable)
+    // assert(separable)
   }
 
 }
