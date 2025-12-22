@@ -7,6 +7,7 @@ import stainless.annotation.pure
 import stainless.collection.List
 import stainless.collection.Cons
 import stainless.collection.Nil
+import stainless.collection.IArray
 
 
 import com.ziplex.lexer.{Token, Rule}
@@ -29,6 +30,7 @@ import stainless.collection.ListSpecs
 
 import scala.annotation.tailrec
 import com.ziplex.lexer.example.RegexUtils.asString
+import com.ziplex.lexer.seqFromArray
 
 // BEGIN uncomment for verification ------------------------------------------
 // import stainless.lang.Option
@@ -59,7 +61,7 @@ object JsonManipulationExample:
     * @param path
     * @return
     */
-  @extern def openFile(path: String): Sequence[Char] = scala.io.Source.fromFile(path).iter.foldLeft[Sequence[Char]](emptySeq[Char]())((acc, char) => acc.append(char))
+  @extern def openFile(path: String): Sequence[Char] = seqFromArray(scala.io.Source.fromFile(path).iter.foldLeft[IArray[Char]](IArray.empty[Char]())((acc, char) => acc.append(char)))
 
 
   /** Returns the indices of all the open braces in the token list

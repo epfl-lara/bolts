@@ -3,6 +3,7 @@ package benchmark.lexer
 
 import java.util.concurrent.TimeUnit
 import org.openjdk.jmh.annotations.*
+import org.openjdk.jmh.infra.Blackhole
 import scala.util.Random
 import stainless.collection.{List => StainlessList}
 import scala.compiletime.uninitialized
@@ -63,27 +64,29 @@ class AmyLexerBenchmark {
   @Benchmark
   @BenchmarkMode(Array(Mode.AverageTime))
   @OutputTimeUnit(TimeUnit.MICROSECONDS)
-  def lex_Zipper(): Unit = {
+  def lex_Zipper(bh: Blackhole): Unit = {
     val (tokens, suffix) = Lexer.lex(AmyLexer.rules, AmyLexerBenchmarkUtils.exampleFileContents(file))
-    assert(suffix.isEmpty)
+    bh.consume(suffix.isEmpty)
+    // assert(suffix.isEmpty)
   }
 
   @Benchmark
   @BenchmarkMode(Array(Mode.AverageTime))
   @OutputTimeUnit(TimeUnit.MICROSECONDS)
-  def lex_ZipperMem(): Unit = {
+  def lex_ZipperMem(bh: Blackhole): Unit = {
     val (tokens, suffix) = Lexer.lexMem(AmyLexer.rules, AmyLexerBenchmarkUtils.exampleFileContents(file))(
       using ClassTag.Char, 
       AmyLexerBenchmarkUtils.zipperCacheUp,
       AmyLexerBenchmarkUtils.zipperCacheDown
     )
-    assert(suffix.isEmpty)
+    bh.consume(suffix.isEmpty)
+    // assert(suffix.isEmpty)
   }
 
   @Benchmark
   @BenchmarkMode(Array(Mode.AverageTime))
   @OutputTimeUnit(TimeUnit.MICROSECONDS)
-  def lex_OriginalSilex(): Unit = {
+  def lex_OriginalSilex(bh: Blackhole): Unit = {
     val tokens = OriginalAmyLexer.run(AmyLexerBenchmarkUtils.exampleFilesJavaIo(file))
   }
  

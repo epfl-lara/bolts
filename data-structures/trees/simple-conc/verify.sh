@@ -1,0 +1,1 @@
+stainless-dotty BalanceConcArr.scala BalanceConc.scala SimpleConc.scala --config-file=stainless.conf $1

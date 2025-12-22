@@ -1,4 +1,6 @@
 // Simplification of: http://aleksandar-prokopec.com/resources/docs/lcpc-conc-trees.pdf
+import scala.reflect.ClassTag
+
 import stainless.lang.{ghost => ghostExpr, _}
 import stainless.proof._
 //import stainless.lang.StaticChecks._
@@ -7,21 +9,30 @@ import ListSpecs._
 import stainless.annotation._
 import stainless.lang.StaticChecks.*
 
+import stainless.collection.IArray
 
-object BalanceConc:
+
+object BalanceConcArr:
+
+  inline def LEAF_ARRAY_MAX_SIZE: BigInt = 128 // MUST BE <= 2147483647 (Int.MaxValue)
 
   sealed abstract class Conc[T]
   case class Empty[T]() extends Conc[T]
-  case class Leaf[T](x: T) extends Conc[T]
-  case class Node[T](left: Conc[T], right: Conc[T], 
+  case class Leaf[T: ClassTag](xs: IArray[T], csize: BigInt) extends Conc[T] {
+    require(xs.list.size <= LEAF_ARRAY_MAX_SIZE && csize == xs.list.size && csize > 0 && csize <= LEAF_ARRAY_MAX_SIZE)
+  }
+  // case class Leaf[T: ClassTag](x: T) extends Conc[T]
+  case class Node[T: ClassTag](left: Conc[T], right: Conc[T], 
                      csize: BigInt, cheight: BigInt) extends Conc[T] {
     require(csize == left.size + right.size && left != Empty[T]() && right != Empty[T]() &&
             cheight == max(left.height, right.height) + 1 &&
             0 <= cheight)
   }
 
+  @pure def LeafFrom[T: ClassTag](x: T): Conc[T] = Leaf(IArray.fill(1)(x), 1)
+
   @pure @opaque 
-  def fromList[T](l: List[T]): Conc[T] = {
+  def fromList[T: ClassTag](l: List[T]): Conc[T] = {
     def rec(ll: List[T], c: Conc[T]): Conc[T] = {
       require(c.isBalanced)
       decreases(ll.size)
@@ -38,21 +49,47 @@ object BalanceConc:
     rec(l, Empty[T]())
   }.ensuring(_.toList == l)
 
+  @pure
+  def fromArray[T: ClassTag](arr: IArray[T], acc: Conc[T]): Conc[T] = {
+    require(acc.isBalanced)
+    decreases(arr.size)
+
+    if arr.size <= LEAF_ARRAY_MAX_SIZE then 
+      if arr.size == 0 then acc
+      else acc ++ Leaf(arr, arr.size)
+    else 
+      val leftLeaf = Leaf(arr.slice(0, LEAF_ARRAY_MAX_SIZE), LEAF_ARRAY_MAX_SIZE)
+      ghostExpr({
+        val res = fromArray(arr.slice(LEAF_ARRAY_MAX_SIZE, arr.size), acc ++ leftLeaf)
+        assert((acc.toList ++ leftLeaf.toList) ++ arr.slice(LEAF_ARRAY_MAX_SIZE, arr.size).list == res.toList)
+        lemmaConcatAssociativity(acc.toList, leftLeaf.toList , arr.slice(LEAF_ARRAY_MAX_SIZE, arr.size).list)
+        assert(acc.toList ++ (leftLeaf.toList ++ arr.slice(LEAF_ARRAY_MAX_SIZE, arr.size).list) == res.toList)
+        assert(res.isBalanced)
+        sliceSplit(arr.list, LEAF_ARRAY_MAX_SIZE)
+        assert((leftLeaf.toList ++ arr.slice(LEAF_ARRAY_MAX_SIZE, arr.size).list) == arr.list)
+        assert(res.toList == (acc.toList ++ arr.list))
+      })
+      fromArray(arr.slice(LEAF_ARRAY_MAX_SIZE, arr.size), acc ++ leftLeaf)
+  }.ensuring(res => res.isBalanced && (res.toList == (acc.toList ++ arr.list)))
+
   def max(x: BigInt, y: BigInt) =
     if x < y then y else x
+  def min(x: BigInt, y: BigInt) =
+    if x < y then x else y
   def abs(x: BigInt) =
     if 0 <= x then x else -x
 
-  extension[T](t: Conc[T])
+  extension[T: ClassTag](t: Conc[T])
+    @ghost
     def toList: List[T] = t match
       case Empty() => Nil[T]()
-      case Leaf(x) => List(x)
+      case Leaf(xs, _) => xs.list
       case Node(l, r, _, _) => l.toList ++ r.toList
 
     def size: BigInt = {
       t match
         case Empty() => BigInt(0)
-        case Leaf(_) => BigInt(1)
+        case Leaf(_, csize) => csize
         case Node(_, _, csize, _) => csize
     }.ensuring(_ == t.toList.size)
 
@@ -63,13 +100,17 @@ object BalanceConc:
     def height: BigInt = 
       t match 
         case Empty() => 0
-        case Leaf(x) => 1
+        case Leaf(_, _) => 1
         case Node(_, _, _, cheight) => cheight
 
     def apply(i: BigInt): T = {
       require(0 <= i && i < t.size)
       t match
-        case Leaf(x) => assert(i == 0); x
+        case Leaf(xs, csize) => {
+          ghostExpr(assert(i >= 0 && i < csize))
+          ghostExpr(assert(xs.list.size <= LEAF_ARRAY_MAX_SIZE))
+          xs(i)
+        }
         case Node(l, r, _, _) =>
           appendIndex(l.toList, r.toList, i) // lemma
           if i < l.size then l(i)
@@ -79,16 +120,15 @@ object BalanceConc:
     def contains(v: T): Boolean = {
       t match
         case Empty() => false
-        case Leaf(x) => v == x
+        case Leaf(xs, _) => xs.contains(v)
         case Node(l, r, _, _) =>  l.contains(v) || r.contains(v)
     }.ensuring(_ == t.toList.contains(v))
-
 
     def isBalanced: Boolean = {
       t match {
         case Node(l, r, _, _) =>
           -1 <= l.height - r.height && l.height - r.height <= 1 &&
-          l.isBalanced && r.isBalanced && t.size > 1 // to avoid needlessly deep nodes otherwise the asymptotic complexity can be arbitrary large
+          l.isBalanced && r.isBalanced && !l.isEmpty && !r.isEmpty // to avoid needlessly deep nodes otherwise the asymptotic complexity can be arbitrary large
         case _ => true
       }
     }
@@ -97,7 +137,7 @@ object BalanceConc:
       decreases(t.height)
       t match {
         case Empty() => true
-        case Leaf(x) => p(x)
+        case Leaf(xs, _) => xs.forall(p)
         case Node(l, r, _, _) => 
           ghostExpr(lemmaForallConcat(l.toList, r.toList, p))
           l.forall(p) && r.forall(p)
@@ -108,18 +148,18 @@ object BalanceConc:
       decreases(t.height)
       t match {
         case Empty() => false
-        case Leaf(x) => p(x)
+        case Leaf(xs, _) => xs.exists(p)
         case Node(l, r, _, _) => 
           ghostExpr(lemmaExistsConcat(l.toList, r.toList, p))
           l.exists(p) || r.exists(p)
       }
     }.ensuring(_ == t.toList.exists(p))
 
-    def map[B](f: T => B): Conc[B] = {
+    def map[B: ClassTag](f: T => B): Conc[B] = {
       decreases(t.height)
       t match {
         case Empty() => Empty[B]()
-        case Leaf(x) => Leaf(f(x))
+        case Leaf(xs, csize) => Leaf(xs.map(f), csize)
         case Node(l, r, cs, ch) => 
           ghostExpr(lemmaMapConcat(l.toList, r.toList, f))
           assert((l.toList ++ r.toList).map(f) == (l.toList.map(f) ++ r.toList.map(f)))
@@ -127,7 +167,7 @@ object BalanceConc:
       }
     }.ensuring(res => res.toList == t.toList.map(f))
 
-  extension[T](xs: Conc[T])
+  extension[T: ClassTag](xs: Conc[T])
     /**
       * Concatenate xs with ys without preserving balancing
       *
@@ -187,7 +227,7 @@ object BalanceConc:
         res.toList == xs.toList ++ ys.toList)
 
   @ghost 
-  def appendAssocInst[T](xs: Conc[T], ys: Conc[T]): Boolean = {
+  def appendAssocInst[T: ClassTag](xs: Conc[T], ys: Conc[T]): Boolean = {
     (xs match {
       case Node(l, r, _, _) =>
         appendAssoc(l.toList, r.toList, ys.toList) && //instantiation of associativity of concatenation
@@ -212,16 +252,16 @@ object BalanceConc:
     })
   }.holds
 
-  extension[T](t: Conc[T])
+  extension[T: ClassTag](t: Conc[T])
     def slice(from: BigInt, until: BigInt): Conc[T] = {
       require(0 <= from && from <= until && until <= t.size && t.isBalanced)
       decreases(t)
       if from == until then Empty[T]()
       else 
         t match
-          case Leaf(x) => 
-            if from == 0 && until == 1 then t
-            else Empty[T]()
+          case Leaf(xs, csize) => if until - from == 0 then Empty[T]() 
+                                 else 
+                                  Leaf(xs.slice(from, until), until - from)
           case Node(l, r, _, _) =>
             ghostExpr(sliceLemma(l.toList, r.toList, from, until)) // lemma
             if l.size <= from then r.slice(from - l.size, until - l.size)
@@ -238,9 +278,20 @@ object BalanceConc:
       decreases(t)
       t match
         case Empty[T]() => (t, t)
-        case Leaf(x) => 
+        case Leaf(xs, csize) => 
           if i <= 0 then (Empty[T](), t)
-          else (t, Empty[T]())
+          else if i == csize then (t, Empty[T]())
+          else 
+            ghostExpr({
+              val (ll, lr) = xs.list.splitAtIndex(i)
+              assert(ll == xs.list.take(i))
+              assert(lr == xs.list.drop(i))
+              dropLemma(xs.list, i)
+              assert(ll == xs.list.slice(0, i))
+              
+            })
+            (Leaf(xs.slice(0, i), i), 
+                Leaf(xs.slice(i, csize), csize - i))
         case Node(l, r, _, _) =>
           ghostExpr(splitAtLemma(l.toList, r.toList, i))
           if l.size == i then (l, r)
@@ -256,8 +307,10 @@ object BalanceConc:
       require(t.isBalanced)
        t match
         case Empty[T]() => t
-        case Leaf(x) if p(x) => t
-        case Leaf(x) if !p(x) => Empty[T]()
+        case Leaf(xs, csize) => 
+          val filteredArray = xs.filter(p)
+          if filteredArray.size == 0 then Empty[T]()
+          else Leaf(filteredArray, filteredArray.size)
         case Node(l, r, _, _) =>
           ghostExpr(lemmaFilterConcat(l.toList, r.toList, p))
           assert((l.toList ++ r.toList).filter(p) == (l.toList.filter(p) ++ r.toList.filter(p)))
@@ -266,19 +319,49 @@ object BalanceConc:
 
     def append(v: T): Conc[T] = {
       require(t.isBalanced)
-      t ++ Leaf(v)
-    }.ensuring(res => res.isBalanced && res.toList == (t.toList :+ v))
+      t match
+        case Empty[T]() => Leaf(IArray.fill(1)(v), 1)
+        case Node(l, r, tsize, theight) => 
+          val newR = r.append(v)
+          if newR.height <= l.height + 1 then
+            ghostExpr(lemmaConcatAssociativity(l.toList, r.toList, List(v)))
+            l <> newR
+          else 
+            newR match
+              case Node(rl, rr, _, _) => 
+                assert(((l <> rl).height == l.height + 1))
+                ghostExpr(lemmaConcatAssociativity(l.toList, rl.toList, rr.toList))
+                ghostExpr(lemmaConcatAssociativity(l.toList, r.toList, List(v)))
+                (l <> rl) <> rr
+        case Leaf(xs, csize) => 
+          if csize < LEAF_ARRAY_MAX_SIZE then 
+            ghostExpr({
+              val newList = xs.list :+ v
+              assert(newList.size == csize + 1)
+            })
+            Leaf(xs.append(v), csize + 1)
+          else 
+            val newLeaf = Leaf(IArray.fill(1)(v), 1)
+            t <> newLeaf
+        
+    }.ensuring(res => res.isBalanced && 
+                      t.height <= res.height && res.height <= t.height + 1 && 
+                      res.toList == (t.toList :+ v))
 
     def prepend(v: T): Conc[T] = {
       require(t.isBalanced)
-      Leaf(v) ++ t
+      Leaf(IArray.fill(1)(v), 1) ++ t
     }.ensuring(res => res.isBalanced && res.toList == (Cons(v, t.toList)))
 
     def tail: Conc[T] = {
       require(t.isBalanced)
       require(!t.isEmpty)
       t match
-        case Leaf(x) => Empty[T]()
+        case Leaf(xs, csize) => 
+          if csize == 1 then Empty[T]()
+          else 
+            ghostExpr(sliceTailLemma(xs.list))
+            Leaf(xs.slice(1, csize), csize - 1)
         // case Node(l, r, _, _) if l.size == 1 => r
         case Node(l, r, _, _) if l.isEmpty => r.tail
         case Node(l, r, _, _) => 
@@ -291,7 +374,7 @@ object BalanceConc:
       require(t.isBalanced)
       require(!t.isEmpty)
       t match
-        case Leaf(x) => x
+        case Leaf(xs, csize) => xs(0)
         case Node(l, r, _, _) => l.head
     }.ensuring(res => res == t.toList.head)
 
@@ -299,19 +382,19 @@ object BalanceConc:
       require(t.isBalanced)
       require(!t.isEmpty)
       t match
-        case Leaf(x) => x
+        case Leaf(xs, csize) => xs.last
         case Node(l, r, _, _) => 
           ghostExpr(lemmaLastOfConcatIsLastOfRhs(l.toList, r.toList))
           r.last
     }.ensuring(res => res == t.toList.last)
 
 
-  extension[T](t: Conc[T])
+  extension[T: ClassTag](t: Conc[T])
     @extern
     def toStr: Vector[String] = 
       t match
         case Empty() => Vector("Empty()")
-        case Leaf(x) => Vector("Leaf(" + x.toString + ")")
+        case Leaf(xs, csize) => Vector("Leaf(" + xs.toString + ")")
         case Node(l, r, csize, _) =>
           if csize <= 4 then
             Vector("Node(" + l.toStr.head + ", " + r.toStr.head + ")")
@@ -327,12 +410,12 @@ object BalanceConc:
             lsNodecomma ++ rsIndentClosed
     end toStr
 
-  extension[T](t: Conc[T])
+  extension[T: ClassTag](t: Conc[T])
     @extern
     def toDraw: Vector[String] = // note that down is left
       t match
         case Empty() => Vector("()")
-        case Leaf(x) => Vector(x.toString)
+        case Leaf(xs, csize) => Vector(xs.toString)
         case Node(l, r, csize, _) =>
           val ls = r.toDraw
           val rs = l.toDraw      
@@ -345,24 +428,24 @@ object BalanceConc:
     end toDraw
 
   @extern
-  def show[T](t: Conc[T]): String = 
+  def show[T: ClassTag](t: Conc[T]): String = 
     t.toDraw.mkString("\n")
 
-  def mkTree(from: Int, until: Int): Conc[Int] =
+  def mkTree(from: BigInt, until: BigInt): Conc[BigInt] =
     require(0 <= from && from <= until && until <= 1_000_000)
     decreases(until - from)
     if from == until then Empty()
-    else if from + 1 == until then Leaf(from)
+    else if from + 1 == until then LeafFrom(from)
     else
       val mid = from + (until - from)/2
       mkTree(from, mid) ++ mkTree(mid, until)    
 
   @extern
   def test =
-    val c1: Conc[Int] = (1 to 8).map(Leaf(_)).foldRight[Conc[Int]](Empty())((a, b) => a <> b)
+    val c1: Conc[BigInt] = (1 to 8).map(LeafFrom[BigInt](_)).foldRight[Conc[BigInt]](Empty())((a, b) => a <> b)
     println(f"\nc1.height = ${c1.height}, isBalanced=${c1.isBalanced}")
     println(show(c1))
-    val c2: Conc[Int] = (1 to 8).map(Leaf(_)).foldLeft[Conc[Int]](Empty())((a, b) => a <> b)
+    val c2: Conc[BigInt] = (1 to 8).map(LeafFrom[BigInt](_)).foldLeft[Conc[BigInt]](Empty())((a, b) => a <> b)
     println(f"\nc2.height = ${c2.height}, isBalanced=${c2.isBalanced}")
     println(show(c2))
     val c3 = mkTree(1, 9)
@@ -470,6 +553,76 @@ object BalanceConc:
 */
 
   @ghost @pure @inlineOnce @opaque
+  def dropLemma[T](l: List[T], i: BigInt): Unit = {
+    require(0 <= i && i <= l.size)
+    l match {
+      case Nil() => ()
+      case Cons(_, t) =>
+        if i == 0 then 
+          assert(l.drop(i) == l)
+          assert(l.slice(0, l.size) == l.drop(0).take(l.size))
+          assert(l.slice(0, l.size) == l.take(l.size))
+          takeFullLemma(l)
+          assert(l == l.take(l.size))
+          takeSliceLemma(l, l.size)
+          assert(l.slice(0, l.size) == l)
+        else dropLemma(t, i - 1)
+    }
+  }.ensuring(_ => l.drop(i) == l.slice(i, l.size))
+
+  @ghost @pure @inlineOnce @opaque
+  def takeSliceLemma[T](l: List[T], i: BigInt): Unit = {
+    require(0 <= i && i <= l.size)
+    l match {
+      case Nil() => ()
+      case Cons(_, t) =>
+        if i == 0 then 
+          assert(l.take(i) == Nil[T]())
+          assert(l.slice(0, i) == Nil[T]())
+        else takeSliceLemma(t, i - 1)
+    }
+  }.ensuring(_ => l.take(i) == l.slice(0, i))
+
+  @ghost @pure @inlineOnce @opaque
+  def takeFullLemma[T](l: List[T]): Unit = {
+    decreases(l)
+    l match {
+      case Nil() => ()
+      case Cons(_, t) =>
+        takeFullLemma(t)
+    }
+  }.ensuring(_ => l.take(l.size) == l)
+
+  @ghost @pure @inlineOnce @opaque
+  def sliceTailLemma[T](l: List[T]): Unit = {
+    require(l.size > 0)
+    decreases(l)
+    l match {
+      case Nil() => ()
+      case Cons(_, t) =>
+        assert(l.tail == t)
+        assert(l.slice(1, l.size) == t.slice(0, t.size))
+        if t.size > 0 then sliceTailLemma(t)
+    }
+  }.ensuring(_ => l.tail == l.slice(1, l.size))
+
+
+  @ghost @pure @inlineOnce @opaque
+  def sliceSplit[T](l: List[T], i: BigInt): Unit = {
+    require(0 <= i && i <= l.size)
+    l match {
+      case Nil() => ()
+      case Cons(hd, tl) if i == 0 => 
+        assert(l.slice(0, i).isEmpty)
+        takeFullLemma(l)
+      case Cons(hd, tl) if i > 0  => 
+        sliceSplit(tl, i - 1)
+        assert(List(hd) ++ tl.slice(0, i - 1) == l.slice(0, i))
+    }
+  }.ensuring(_ => l.slice(0, i) ++ l.slice(i, l.size) == l)
+
+
+  @ghost @pure @inlineOnce @opaque
   def lemmaConcatAssociativity[B](
       l1: List[B],
       l2: List[B],
@@ -552,5 +705,4 @@ object BalanceConc:
     }
   }.ensuring (_ => (l2.isEmpty && ((l1 ++ l2).last == l1.last)) || (!l2.isEmpty && (l1 ++ l2).last == l2.last))
 
-end BalanceConc
-
+end BalanceConcArr

@@ -7,7 +7,6 @@ stainless-dotty\
  src/main/scala/com/ziplex/example/Utils.scala\
  src/main/scala/com/ziplex/lexer/Vector.scala\
  src/main/scala/com/ziplex/lexer/BalanceConcArr.scala\
- src/main/scala/com/ziplex/lexer/IArray.scala\
  src/main/scala/com/ziplex/example/JSONLexer.scala\
  src/main/scala/com/ziplex/example/JsonManipulation.scala\
  src/main/scala/com/ziplex/example/AmyLexer.scala\

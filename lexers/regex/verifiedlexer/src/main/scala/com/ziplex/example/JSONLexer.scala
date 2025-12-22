@@ -337,8 +337,6 @@ object ExampleJsonLexer:
             val rules = JsonLexer.rules
             assert(Lexer.rulesInvariant(rules))
             assert(!rules.isEmpty)
-
-
         }
 
     end Demo
