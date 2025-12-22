@@ -2,6 +2,7 @@
   */
 package com.mutablemaps.map
 
+import scala.reflect.ClassTag
 import stainless.annotation._
 import stainless.collection._
 import stainless.equations._
@@ -35,7 +36,7 @@ object MutableLongMap {
     * @param defaultEntry
     * @return
     */
-  def getEmptyLongMap[V](defaultEntry: Long => V): LongMap[V] = {
+  def getEmptyLongMap[V: ClassTag](defaultEntry: Long => V): LongMap[V] = {
     val m = 15
     assert(validMask(m))
     LongMap(Cell(LongMapFixedSize.getNewLongMapFixedSize(m, defaultEntry)))
@@ -46,7 +47,7 @@ object MutableLongMap {
     * @param defaultEntry
     * @return
     */
-  def getEmptyLongMap[V](defaultEntry: Long => V, initialSize: Int): LongMap[V] = {
+  def getEmptyLongMap[V: ClassTag](defaultEntry: Long => V, initialSize: Int): LongMap[V] = {
     require(validMask(initialSize - 1))
     val m = initialSize - 1
     assert(validMask(m))
@@ -54,7 +55,7 @@ object MutableLongMap {
   }.ensuring (res => res.valid && res.size == 0)
 
   @mutable
-  final case class LongMap[V](
+  final case class LongMap[V: ClassTag](
       val underlying: Cell[LongMapFixedSize[V]]
   ) extends MutLongMap[V] {
 
@@ -190,7 +191,7 @@ object MutableLongMap {
       val currentKey = underlying.v._keys(from)
       // println(f"RepackFrom: from = $from, key = $currentKey")
 
-      val currentValue = underlying.v._values(from).get(underlying.v.defaultEntry(0L))
+      val currentValue = underlying.v._values(from)
 
       @ghost val newMapListMapBefore = newMap.map
 
@@ -377,7 +378,7 @@ object MutableLongMap {
     * @param _values
     */
   @mutable
-  final case class LongMapFixedSize[V](
+  final case class LongMapFixedSize[V: ClassTag](
       val defaultEntry: Long => V,
       val mask: Int,
       var extraKeys: Int,
@@ -385,7 +386,7 @@ object MutableLongMap {
       var minValue: V,
       var _size: Int,
       val _keys: Array[Long],
-      val _values: Array[ValueCell[V]],
+      val _values: Array[V],
       var _vacant: Int
   ) {
     import LongMapFixedSize.validKeyInArray
@@ -548,7 +549,7 @@ object MutableLongMap {
                 defaultEntry
               )
             )
-            _values(index).get(defaultEntry(0L))
+            _values(index)
           }
           case _ => defaultEntry(key)
         }
@@ -707,7 +708,7 @@ object MutableLongMap {
               )
             )
 
-            _values(index) = ValueCellFull(v)
+            _values(index) = v
 
             ghostExpr(
               lemmaValidKeyInArrayIsInListMap(
@@ -797,7 +798,7 @@ object MutableLongMap {
 
             _size -= 1
             _keys(index) = Long.MinValue
-            _values(index) = ValueCellFull(defaultEntry(0L))
+            _values(index) = defaultEntry(0L)
             val tempVac = _vacant + 1
             if (tempVac > 0) {
               _vacant = tempVac
@@ -932,7 +933,7 @@ object MutableLongMap {
       ghostExpr(lemmaArrayContainsFromImpliesContainsFromZero(_keys, key, index))
       ghostExpr(lemmaValidKeyAtIImpliesCountKeysIsOne(_keys, index))
 
-      _values(index) = ValueCellFull(v)
+      _values(index) = v
 
       ghostExpr(
         lemmaValidKeyInArrayIsInListMap(
@@ -991,18 +992,18 @@ object MutableLongMap {
 
   object LongMapFixedSize {
 
-    def getNewLongMapFixedSize[V](mask: Int, defaultEntry: Long => V): LongMapFixedSize[V] = {
+    def getNewLongMapFixedSize[V: ClassTag](mask: Int, defaultEntry: Long => V): LongMapFixedSize[V] = {
       require(validMask(mask))
-
+      val defaultValue = defaultEntry(0L)
       val res = LongMapFixedSize[V](
         defaultEntry = defaultEntry,
         mask = mask,
         extraKeys = 0,
-        zeroValue = defaultEntry(0L),
-        minValue = defaultEntry(0L),
+        zeroValue = defaultValue,
+        minValue = defaultValue,
         _size = 0,
         _keys = Array.fill(mask + 1)(0L),
-        _values = Array.fill(mask + 1)(EmptyCell[V]()),
+        _values = Array.fill(mask + 1)(defaultValue),
         _vacant = 0
       )
       ghostExpr(LongMapFixedSize.lemmaArrayCountValidKeysOfFilled0ArrayIs0(res._keys, 0, mask + 1))
@@ -1283,7 +1284,7 @@ object MutableLongMap {
     @ghost
     def getCurrentListMap[V](
         _keys: Array[Long],
-        _values: Array[ValueCell[V]],
+        _values: Array[V],
         mask: Int,
         extraKeys: Int,
         zeroValue: V,
@@ -1325,7 +1326,7 @@ object MutableLongMap {
 
     }.ensuring (res =>
       (if (from < _keys.length && validKeyInArray(_keys(from)))
-         res.contains(_keys(from)) && res(_keys(from)) == _values(from).get(defaultEntry(0L))
+         res.contains(_keys(from)) && res(_keys(from)) == _values(from)
        else
          // else if (from < _keys.length) res == getCurrentListMap(from + 1) else
          true) &&
@@ -1338,7 +1339,7 @@ object MutableLongMap {
     @pure
     def getCurrentListMapNoExtraKeys[V](
         _keys: Array[Long],
-        _values: Array[ValueCell[V]],
+        _values: Array[V],
         mask: Int,
         extraKeys: Int,
         zeroValue: V,
@@ -1364,18 +1365,18 @@ object MutableLongMap {
         ListLongMapLemmas.addStillNotContains(
           getCurrentListMapNoExtraKeys(_keys, _values, mask, extraKeys, zeroValue, minValue, from + 1, defaultEntry),
           _keys(from),
-          _values(from).get(defaultEntry(0L)),
+          _values(from),
           0
         )
 
-        getCurrentListMapNoExtraKeys(_keys, _values, mask, extraKeys, zeroValue, minValue, from + 1, defaultEntry) + (_keys(from), _values(from).get(defaultEntry(0L)))
+        getCurrentListMapNoExtraKeys(_keys, _values, mask, extraKeys, zeroValue, minValue, from + 1, defaultEntry) + (_keys(from), _values(from))
       } else {
         getCurrentListMapNoExtraKeys(_keys, _values, mask, extraKeys, zeroValue, minValue, from + 1, defaultEntry)
       }
     }.ensuring (res =>
       !res.contains(0) && !res.contains(Long.MinValue) &&
         (if (from < _keys.length && validKeyInArray(_keys(from)))
-           res.contains(_keys(from)) && res(_keys(from)) == _values(from).get(defaultEntry(0L))
+           res.contains(_keys(from)) && res(_keys(from)) == _values(from)
          else if (from < _keys.length)
            res == getCurrentListMapNoExtraKeys(_keys, _values, mask, extraKeys, zeroValue, minValue, from + 1, defaultEntry)
          else res.isEmpty)
@@ -1389,7 +1390,7 @@ object MutableLongMap {
     @ghost
     def lemmaAddValidKeyToArrayThenAddPairToListMap[V](
         _keys: Array[Long],
-        _values: Array[ValueCell[V]],
+        _values: Array[V],
         mask: Int,
         extraKeys: Int,
         zeroValue: V,
@@ -1428,7 +1429,7 @@ object MutableLongMap {
         )
       val mapNoExtraKeysAfter = getCurrentListMapNoExtraKeys(
         _keys.updated(i, k),
-        _values.updated(i, ValueCellFull(v)),
+        _values.updated(i, v),
         mask,
         extraKeys,
         zeroValue,
@@ -1456,7 +1457,7 @@ object MutableLongMap {
       val mapAfter =
         getCurrentListMap(
           _keys.updated(i, k),
-          _values.updated(i, ValueCellFull(v)),
+          _values.updated(i, v),
           mask,
           extraKeys,
           zeroValue,
@@ -1513,7 +1514,7 @@ object MutableLongMap {
             defaultEntry
           ) + (k, v) == getCurrentListMap(
             _keys.updated(i, k),
-            _values.updated(i, ValueCellFull(v)),
+            _values.updated(i, v),
             mask,
             extraKeys,
             zeroValue,
@@ -1536,7 +1537,7 @@ object MutableLongMap {
         defaultEntry
       ) + (k, v) == getCurrentListMap(
         _keys.updated(i, k),
-        _values.updated(i, ValueCellFull(v)),
+        _values.updated(i, v),
         mask,
         extraKeys,
         zeroValue,
@@ -1552,7 +1553,7 @@ object MutableLongMap {
     @ghost
     def lemmaAddValidKeyToArrayThenMapNoExtrasAddPair[V](
         _keys: Array[Long],
-        _values: Array[ValueCell[V]],
+        _values: Array[V],
         mask: Int,
         extraKeys: Int,
         zeroValue: V,
@@ -1618,7 +1619,7 @@ object MutableLongMap {
           )
         val listmapNoExtrasAfter = getCurrentListMapNoExtraKeys(
           _keys.updated(i, k),
-          _values.updated(i, ValueCellFull(v)),
+          _values.updated(i, v),
           mask,
           extraKeys,
           zeroValue,
@@ -1645,7 +1646,7 @@ object MutableLongMap {
             listmapNoExtrasAfter ==
               getCurrentListMapNoExtraKeys(
                 _keys.updated(i, k),
-                _values.updated(i, ValueCellFull(v)),
+                _values.updated(i, v),
                 mask,
                 extraKeys,
                 zeroValue,
@@ -1653,15 +1654,15 @@ object MutableLongMap {
                 from + 1,
                 defaultEntry
               ) + (_keys.updated(i, k).apply(from), _values
-                .updated(i, ValueCellFull(v))
+                .updated(i, v)
                 .apply(from)
-                .get(defaultEntry(0L)))
+                )
           )
 
           ListLongMapLemmas.addSameAsAddTwiceSameKeyDiffValues(
             getCurrentListMapNoExtraKeys(
               _keys.updated(i, k),
-              _values.updated(i, ValueCellFull(v)),
+              _values.updated(i, v),
               mask,
               extraKeys,
               zeroValue,
@@ -1670,8 +1671,8 @@ object MutableLongMap {
               defaultEntry
             ),
             k,
-            _values(from).get(defaultEntry(0L)),
-            _values.updated(i, ValueCellFull(v)).apply(from).get(defaultEntry(0L))
+            _values(from),
+            _values.updated(i, v).apply(from)
           )
 
         } else {
@@ -1693,7 +1694,7 @@ object MutableLongMap {
             check(
               getCurrentListMapNoExtraKeys(
                 _keys.updated(i, k),
-                _values.updated(i, ValueCellFull(v)),
+                _values.updated(i, v),
                 mask,
                 extraKeys,
                 zeroValue,
@@ -1710,7 +1711,7 @@ object MutableLongMap {
                   minValue,
                   from + 1,
                   defaultEntry
-                ) + (k, v) + (_keys(from), _values(from).get(defaultEntry(0L)))))
+                ) + (k, v) + (_keys(from), _values(from))))
             )
 
             if (_keys(from) == k) {
@@ -1734,7 +1735,7 @@ object MutableLongMap {
               k,
               v,
               _keys(from),
-              _values(from).get(defaultEntry(0L))
+              _values(from)
             )
           }
         }
@@ -1744,7 +1745,7 @@ object MutableLongMap {
       if (from <= i)
         getCurrentListMapNoExtraKeys(
           _keys.updated(i, k),
-          _values.updated(i, ValueCellFull(v)),
+          _values.updated(i, v),
           mask,
           extraKeys,
           zeroValue,
@@ -1765,7 +1766,7 @@ object MutableLongMap {
       else
         getCurrentListMapNoExtraKeys(
           _keys.updated(i, k),
-          _values.updated(i, ValueCellFull(v)),
+          _values.updated(i, v),
           mask,
           extraKeys,
           zeroValue,
@@ -1791,7 +1792,7 @@ object MutableLongMap {
     @ghost
     def lemmaChangeValueExistingKeyToArrayThenAddPairToListMap[V](
         _keys: Array[Long],
-        _values: Array[ValueCell[V]],
+        _values: Array[V],
         mask: Int,
         extraKeys: Int,
         zeroValue: V,
@@ -1828,7 +1829,7 @@ object MutableLongMap {
       val mapNoExtraKeysAfter =
         getCurrentListMapNoExtraKeys(
           _keys,
-          _values.updated(i, ValueCellFull(v)),
+          _values.updated(i, v),
           mask,
           extraKeys,
           zeroValue,
@@ -1856,7 +1857,7 @@ object MutableLongMap {
       val mapAfter =
         getCurrentListMap(
           _keys,
-          _values.updated(i, ValueCellFull(v)),
+          _values.updated(i, v),
           mask,
           extraKeys,
           zeroValue,
@@ -1915,7 +1916,7 @@ object MutableLongMap {
         defaultEntry
       ) + (k, v) == getCurrentListMap(
         _keys,
-        _values.updated(i, ValueCellFull(v)),
+        _values.updated(i, v),
         mask,
         extraKeys,
         zeroValue,
@@ -1931,7 +1932,7 @@ object MutableLongMap {
     @ghost
     def lemmaChangeValueExistingKeyToArrayThenMapNoExtrasAddPair[V](
         _keys: Array[Long],
-        _values: Array[ValueCell[V]],
+        _values: Array[V],
         mask: Int,
         extraKeys: Int,
         zeroValue: V,
@@ -1990,7 +1991,7 @@ object MutableLongMap {
         val listmapNoExtrasAfter =
           getCurrentListMapNoExtraKeys(
             _keys,
-            _values.updated(i, ValueCellFull(v)),
+            _values.updated(i, v),
             mask,
             extraKeys,
             zeroValue,
@@ -2017,7 +2018,7 @@ object MutableLongMap {
             listmapNoExtrasAfter ==
               getCurrentListMapNoExtraKeys(
                 _keys,
-                _values.updated(i, ValueCellFull(v)),
+                _values.updated(i, v),
                 mask,
                 extraKeys,
                 zeroValue,
@@ -2025,15 +2026,15 @@ object MutableLongMap {
                 from + 1,
                 defaultEntry
               ) + (_keys(from), _values
-                .updated(i, ValueCellFull(v))
+                .updated(i, v)
                 .apply(from)
-                .get(defaultEntry(0L)))
+                )
           )
 
           ListLongMapLemmas.addSameAsAddTwiceSameKeyDiffValues(
             getCurrentListMapNoExtraKeys(
               _keys,
-              _values.updated(i, ValueCellFull(v)),
+              _values.updated(i, v),
               mask,
               extraKeys,
               zeroValue,
@@ -2042,8 +2043,8 @@ object MutableLongMap {
               defaultEntry
             ),
             k,
-            _values(from).get(defaultEntry(0L)),
-            _values.updated(i, ValueCellFull(v)).apply(from).get(defaultEntry(0L))
+            _values(from),
+            _values.updated(i, v).apply(from)
           )
 
         } else {
@@ -2066,7 +2067,7 @@ object MutableLongMap {
             check(
               getCurrentListMapNoExtraKeys(
                 _keys,
-                _values.updated(i, ValueCellFull(v)),
+                _values.updated(i, v),
                 mask,
                 extraKeys,
                 zeroValue,
@@ -2083,7 +2084,7 @@ object MutableLongMap {
                   minValue,
                   from + 1,
                   defaultEntry
-                ) + (k, v) + (_keys(from), _values(from).get(defaultEntry(0L)))))
+                ) + (k, v) + (_keys(from), _values(from))))
             )
 
             if (_keys(from) == k) {
@@ -2108,7 +2109,7 @@ object MutableLongMap {
               k,
               v,
               _keys(from),
-              _values(from).get(defaultEntry(0L))
+              _values(from)
             )
           }
         }
@@ -2118,7 +2119,7 @@ object MutableLongMap {
       if (from <= i)
         getCurrentListMapNoExtraKeys(
           _keys,
-          _values.updated(i, ValueCellFull(v)),
+          _values.updated(i, v),
           mask,
           extraKeys,
           zeroValue,
@@ -2139,7 +2140,7 @@ object MutableLongMap {
       else
         getCurrentListMapNoExtraKeys(
           _keys,
-          _values.updated(i, ValueCellFull(v)),
+          _values.updated(i, v),
           mask,
           extraKeys,
           zeroValue,
@@ -2165,7 +2166,7 @@ object MutableLongMap {
     @ghost
     def lemmaChangeZeroKeyThenAddPairToListMap[V](
         _keys: Array[Long],
-        _values: Array[ValueCell[V]],
+        _values: Array[V],
         mask: Int,
         extraKeysBefore: Int,
         extraKeysAfter: Int,
@@ -2405,7 +2406,7 @@ object MutableLongMap {
     @ghost
     def lemmaChangeLongMinValueKeyThenAddPairToListMap[V](
         _keys: Array[Long],
-        _values: Array[ValueCell[V]],
+        _values: Array[V],
         mask: Int,
         extraKeysBefore: Int,
         extraKeysAfter: Int,
@@ -2587,7 +2588,7 @@ object MutableLongMap {
     @ghost
     def lemmaRemoveValidKeyToArrayThenRemoveKeyFromListMap[V](
         _keys: Array[Long],
-        _values: Array[ValueCell[V]],
+        _values: Array[V],
         mask: Int,
         extraKeys: Int,
         zeroValue: V,
@@ -2627,7 +2628,7 @@ object MutableLongMap {
         )
       val mapNoExtraKeysAfter = getCurrentListMapNoExtraKeys(
         _keys.updated(i, Long.MinValue),
-        _values.updated(i, ValueCellFull(defaultEntry(0L))),
+        _values.updated(i, defaultEntry(0L)),
         mask,
         extraKeys,
         zeroValue,
@@ -2654,7 +2655,7 @@ object MutableLongMap {
       val mapAfter =
         getCurrentListMap(
           _keys.updated(i, Long.MinValue),
-          _values.updated(i, ValueCellFull(defaultEntry(0L))),
+          _values.updated(i, defaultEntry(0L)),
           mask,
           extraKeys,
           zeroValue,
@@ -2716,7 +2717,7 @@ object MutableLongMap {
         defaultEntry
       ) - k == getCurrentListMap(
         _keys.updated(i, Long.MinValue),
-        _values.updated(i, ValueCellFull(defaultEntry(0L))),
+        _values.updated(i, defaultEntry(0L)),
         mask,
         extraKeys,
         zeroValue,
@@ -2732,7 +2733,7 @@ object MutableLongMap {
     @ghost
     def lemmaRemoveLongMinValueKeyThenRemoveKeyFromListMap[V](
         _keys: Array[Long],
-        _values: Array[ValueCell[V]],
+        _values: Array[V],
         mask: Int,
         extraKeysBefore: Int,
         extraKeysAfter: Int,
@@ -2924,7 +2925,7 @@ object MutableLongMap {
     @ghost
     def lemmaRemoveZeroKeyThenRemoveKeyFromListMap[V](
         _keys: Array[Long],
-        _values: Array[ValueCell[V]],
+        _values: Array[V],
         mask: Int,
         extraKeysBefore: Int,
         extraKeysAfter: Int,
@@ -3127,7 +3128,7 @@ object MutableLongMap {
     @ghost
     def lemmaRemoveValidKeyFromArrayThenMapNoExtrasRemoveKey[V](
         _keys: Array[Long],
-        _values: Array[ValueCell[V]],
+        _values: Array[V],
         mask: Int,
         extraKeys: Int,
         zeroValue: V,
@@ -3190,7 +3191,7 @@ object MutableLongMap {
           )
         val listmapNoExtrasAfter = getCurrentListMapNoExtraKeys(
           _keys.updated(i, Long.MinValue),
-          _values.updated(i, ValueCellFull(defaultEntry(0L))),
+          _values.updated(i, defaultEntry(0L)),
           mask,
           extraKeys,
           zeroValue,
@@ -3317,7 +3318,7 @@ object MutableLongMap {
               defaultEntry
             ),
             _keys(from),
-            _values(from).get(defaultEntry(0L))
+            _values(from)
           )
           check(
             getCurrentListMapNoExtraKeys(
@@ -3354,7 +3355,7 @@ object MutableLongMap {
             ) - k ==
               getCurrentListMapNoExtraKeys(
                 _keys.updated(i, Long.MinValue),
-                _values.updated(i, ValueCellFull(defaultEntry(0L))),
+                _values.updated(i, defaultEntry(0L)),
                 mask,
                 extraKeys,
                 zeroValue,
@@ -3376,7 +3377,7 @@ object MutableLongMap {
             ) - k ==
               getCurrentListMapNoExtraKeys(
                 _keys.updated(i, Long.MinValue),
-                _values.updated(i, ValueCellFull(defaultEntry(0L))),
+                _values.updated(i, defaultEntry(0L)),
                 mask,
                 extraKeys,
                 zeroValue,
@@ -3404,7 +3405,7 @@ object MutableLongMap {
             check(
               getCurrentListMapNoExtraKeys(
                 _keys.updated(i, Long.MinValue),
-                _values.updated(i, ValueCellFull(defaultEntry(0L))),
+                _values.updated(i, defaultEntry(0L)),
                 mask,
                 extraKeys,
                 zeroValue,
@@ -3421,7 +3422,7 @@ object MutableLongMap {
                   minValue,
                   from + 1,
                   defaultEntry
-                ) - k + (_keys(from), _values(from).get(defaultEntry(0L)))))
+                ) - k + (_keys(from), _values(from))))
             )
 
             if (_keys(from) == k) {
@@ -3454,7 +3455,7 @@ object MutableLongMap {
                   minValue,
                   from + 1,
                   defaultEntry
-                ) + (_keys(from), _values(from).get(defaultEntry(0L)))
+                ) + (_keys(from), _values(from))
             )
             check(
               getCurrentListMapNoExtraKeys(
@@ -3469,7 +3470,7 @@ object MutableLongMap {
               ) - k ==
                 getCurrentListMapNoExtraKeys(
                   _keys.updated(i, Long.MinValue),
-                  _values.updated(i, ValueCellFull(defaultEntry(0L))),
+                  _values.updated(i, defaultEntry(0L)),
                   mask,
                   extraKeys,
                   zeroValue,
@@ -3491,7 +3492,7 @@ object MutableLongMap {
                 defaultEntry
               ),
               _keys(from),
-              _values(from).get(defaultEntry(0L)),
+              _values(from),
               k
             )
           }
@@ -3502,7 +3503,7 @@ object MutableLongMap {
       if (from <= i)
         getCurrentListMapNoExtraKeys(
           _keys.updated(i, Long.MinValue),
-          _values.updated(i, ValueCellFull(defaultEntry(0L))),
+          _values.updated(i, defaultEntry(0L)),
           mask,
           extraKeys,
           zeroValue,
@@ -3523,7 +3524,7 @@ object MutableLongMap {
       else
         getCurrentListMapNoExtraKeys(
           _keys.updated(i, Long.MinValue),
-          _values.updated(i, ValueCellFull(defaultEntry(0L))),
+          _values.updated(i, defaultEntry(0L)),
           mask,
           extraKeys,
           zeroValue,
@@ -3549,7 +3550,7 @@ object MutableLongMap {
     @ghost
     def lemmaNoChangeToArrayThenSameMapNoExtras[V](
         _keys: Array[Long],
-        _values: Array[ValueCell[V]],
+        _values: Array[V],
         mask: Int,
         extraKeysBefore: Int,
         extraKeysAfter: Int,
@@ -3622,7 +3623,7 @@ object MutableLongMap {
     @ghost
     def lemmaKeyInListMapThenSameValueInArray[V](
         _keys: Array[Long],
-        _values: Array[ValueCell[V]],
+        _values: Array[V],
         mask: Int,
         extraKeys: Int,
         zeroValue: V,
@@ -3667,7 +3668,7 @@ object MutableLongMap {
           zeroValue,
           minValue,
           k,
-          _values(i).get(defaultEntry(0L)),
+          _values(i),
           i,
           defaultEntry
         )
@@ -3709,7 +3710,7 @@ object MutableLongMap {
           minValue,
           0,
           defaultEntry
-        ).apply(k) == _values(i).get(defaultEntry(0L))
+        ).apply(k) == _values(i)
     )
 
     @opaque
@@ -3718,7 +3719,7 @@ object MutableLongMap {
     @ghost
     def lemmaKeyInListMapIsInArray[V](
         _keys: Array[Long],
-        _values: Array[ValueCell[V]],
+        _values: Array[V],
         mask: Int,
         extraKeys: Int,
         zeroValue: V,
@@ -3764,7 +3765,7 @@ object MutableLongMap {
     @ghost
     def lemmaValidKeyInArrayIsInListMap[V](
         _keys: Array[Long],
-        _values: Array[ValueCell[V]],
+        _values: Array[V],
         mask: Int,
         extraKeys: Int,
         zeroValue: V,
@@ -3808,7 +3809,7 @@ object MutableLongMap {
     @ghost
     def lemmaArrayContainsKeyThenInListMap[V](
         _keys: Array[Long],
-        _values: Array[ValueCell[V]],
+        _values: Array[V],
         mask: Int,
         extraKeys: Int,
         zeroValue: V,
@@ -3878,7 +3879,7 @@ object MutableLongMap {
     @ghost
     def lemmaListMapApplyFromThenApplyFromZero[V](
         _keys: Array[Long],
-        _values: Array[ValueCell[V]],
+        _values: Array[V],
         mask: Int,
         extraKeys: Int,
         zeroValue: V,
@@ -3935,7 +3936,7 @@ object MutableLongMap {
                 defaultEntry
               ),
               _keys(from - 1),
-              _values(from - 1).get(defaultEntry(0L)),
+              _values(from - 1),
               k
             )
             lemmaNoDuplicateFromThenFromBigger(_keys, 0, from - 1)
@@ -3963,7 +3964,7 @@ object MutableLongMap {
                 defaultEntry
               ),
               _keys(from - 1),
-              _values(from - 1).get(defaultEntry(0L)),
+              _values(from - 1),
               k
             )
           }
@@ -4003,7 +4004,7 @@ object MutableLongMap {
     @ghost
     def lemmaArrayContainsFromAndNotEqualThenContainsFromPlusOne[V](
         _keys: Array[Long],
-        _values: Array[ValueCell[V]],
+        _values: Array[V],
         mask: Int,
         extraKeys: Int,
         zeroValue: V,
@@ -4033,7 +4034,7 @@ object MutableLongMap {
     @ghost
     def lemmaListMapRecursiveValidKeyArray[V](
         _keys: Array[Long],
-        _values: Array[ValueCell[V]],
+        _values: Array[V],
         mask: Int,
         extraKeys: Int,
         zeroValue: V,
@@ -4069,7 +4070,7 @@ object MutableLongMap {
           Long.MinValue,
           minValue,
           _keys(from),
-          _values(from).get(defaultEntry(0L))
+          _values(from)
         )
         ListLongMapLemmas.addCommutativeForDiffKeys(
           getCurrentListMapNoExtraKeys(
@@ -4085,7 +4086,7 @@ object MutableLongMap {
           0L,
           zeroValue,
           _keys(from),
-          _values(from).get(defaultEntry(0L))
+          _values(from)
         )
       } else if ((extraKeys & 1) != 0 && (extraKeys & 2) == 0) {
         ListLongMapLemmas.addCommutativeForDiffKeys(
@@ -4102,7 +4103,7 @@ object MutableLongMap {
           0L,
           zeroValue,
           _keys(from),
-          _values(from).get(defaultEntry(0L))
+          _values(from)
         )
       } else if ((extraKeys & 2) != 0 && (extraKeys & 1) == 0) {
         ListLongMapLemmas.addCommutativeForDiffKeys(
@@ -4119,7 +4120,7 @@ object MutableLongMap {
           Long.MinValue,
           minValue,
           _keys(from),
-          _values(from).get(defaultEntry(0L))
+          _values(from)
         )
       }
 
@@ -4142,7 +4143,7 @@ object MutableLongMap {
         minValue,
         from + 1,
         defaultEntry
-      ) + (_keys(from), _values(from).get(defaultEntry(0L)))
+      ) + (_keys(from), _values(from))
     )
 
     @opaque
@@ -4169,7 +4170,7 @@ object MutableLongMap {
     @ghost
     def lemmaInListMapFromThenFromPlsOneIfNotEqToFstNoXMin[V](
         _keys: Array[Long],
-        _values: Array[ValueCell[V]],
+        _values: Array[V],
         mask: Int,
         extraKeys: Int,
         zeroValue: V,
@@ -4215,12 +4216,12 @@ object MutableLongMap {
               defaultEntry
             ) + (_keys(
               from
-            ), _values(from).get(defaultEntry(0L)))
+            ), _values(from))
           )
           lemmaInListMapAfterAddingDiffThenInBefore(
             k,
             _keys(from),
-            _values(from).get(defaultEntry(0L)),
+            _values(from),
             getCurrentListMapNoExtraKeys(
               _keys,
               _values,
@@ -4253,7 +4254,7 @@ object MutableLongMap {
           lemmaInListMapAfterAddingDiffThenInBefore(
             k,
             _keys(from),
-            _values(from).get(defaultEntry(0L)),
+            _values(from),
             getCurrentListMapNoExtraKeys(
               _keys,
               _values,
@@ -4288,7 +4289,7 @@ object MutableLongMap {
     @ghost
     def lemmaInListMapFromThenFromPlsOneIfNotEqToFstNoXZero[V](
         _keys: Array[Long],
-        _values: Array[ValueCell[V]],
+        _values: Array[V],
         mask: Int,
         extraKeys: Int,
         zeroValue: V,
@@ -4335,12 +4336,12 @@ object MutableLongMap {
               defaultEntry
             ) + (_keys(
               from
-            ), _values(from).get(defaultEntry(0L)))
+            ), _values(from))
           )
           lemmaInListMapAfterAddingDiffThenInBefore(
             k,
             _keys(from),
-            _values(from).get(defaultEntry(0L)),
+            _values(from),
             getCurrentListMapNoExtraKeys(
               _keys,
               _values,
@@ -4373,7 +4374,7 @@ object MutableLongMap {
           lemmaInListMapAfterAddingDiffThenInBefore(
             k,
             _keys(from),
-            _values(from).get(defaultEntry(0L)),
+            _values(from),
             getCurrentListMapNoExtraKeys(
               _keys,
               _values,
@@ -4407,7 +4408,7 @@ object MutableLongMap {
     @ghost
     def lemmaInListMapFromThenFromPlsOneIfNotEqToFstXKeys[V](
         _keys: Array[Long],
-        _values: Array[ValueCell[V]],
+        _values: Array[V],
         mask: Int,
         extraKeys: Int,
         zeroValue: V,
@@ -4452,7 +4453,7 @@ object MutableLongMap {
             defaultEntry
           ) + (_keys(
             from
-          ), _values(from).get(defaultEntry(0L))) + (0L, zeroValue)
+          ), _values(from)) + (0L, zeroValue)
         )
         lemmaInListMapAfterAddingDiffThenInBefore(
           k,
@@ -4469,12 +4470,12 @@ object MutableLongMap {
             defaultEntry
           ) + (_keys(
             from
-          ), _values(from).get(defaultEntry(0L)))
+          ), _values(from))
         )
         lemmaInListMapAfterAddingDiffThenInBefore(
           k,
           _keys(from),
-          _values(from).get(defaultEntry(0L)),
+          _values(from),
           getCurrentListMapNoExtraKeys(
             _keys,
             _values,
@@ -4537,7 +4538,7 @@ object MutableLongMap {
     @ghost
     def lemmaInListMapFromThenFromPlsOneIfNotEqToFst[V](
         _keys: Array[Long],
-        _values: Array[ValueCell[V]],
+        _values: Array[V],
         mask: Int,
         extraKeys: Int,
         zeroValue: V,
@@ -4624,7 +4625,7 @@ object MutableLongMap {
     @ghost
     def lemmaInListMapFromThenFromZero[V](
         _keys: Array[Long],
-        _values: Array[ValueCell[V]],
+        _values: Array[V],
         mask: Int,
         extraKeys: Int,
         zeroValue: V,
@@ -4677,7 +4678,7 @@ object MutableLongMap {
     @ghost
     def lemmaInListMapFromThenInFromSmaller[V](
         _keys: Array[Long],
-        _values: Array[ValueCell[V]],
+        _values: Array[V],
         mask: Int,
         extraKeys: Int,
         zeroValue: V,
@@ -4753,7 +4754,7 @@ object MutableLongMap {
     @ghost
     def lemmaInListMapFromThenInFromMinusOne[V](
         _keys: Array[Long],
-        _values: Array[ValueCell[V]],
+        _values: Array[V],
         mask: Int,
         extraKeys: Int,
         zeroValue: V,
@@ -4824,7 +4825,7 @@ object MutableLongMap {
             defaultEntry
           ),
           _keys(from - 1),
-          _values(from - 1).get(defaultEntry(0L)),
+          _values(from - 1),
           _keys(i)
         )
       }
@@ -4849,7 +4850,7 @@ object MutableLongMap {
     @ghost
     def lemmaListMapContainsThenArrayContainsFrom[V](
         _keys: Array[Long],
-        _values: Array[ValueCell[V]],
+        _values: Array[V],
         mask: Int,
         extraKeys: Int,
         zeroValue: V,
@@ -4974,7 +4975,7 @@ object MutableLongMap {
               ListLongMapLemmas.addStillNotContains(
                 ListLongMap.empty[V],
                 _keys(from),
-                _values(from).get(defaultEntry(0L)),
+                _values(from),
                 k
               )
               check(false)
@@ -5142,7 +5143,7 @@ object MutableLongMap {
     @ghost
     def lemmaInListMapThenSeekEntryFinds[V](
         _keys: Array[Long],
-        _values: Array[ValueCell[V]],
+        _values: Array[V],
         mask: Int,
         extraKeys: Int,
         zeroValue: V,
@@ -5193,7 +5194,7 @@ object MutableLongMap {
     @ghost
     def lemmaNotInListMapThenSeekEntryFindsMissingBit[V](
         _keys: Array[Long],
-        _values: Array[ValueCell[V]],
+        _values: Array[V],
         mask: Int,
         extraKeys: Int,
         zeroValue: V,
@@ -5265,7 +5266,7 @@ object MutableLongMap {
     @ghost
     def lemmaInListMapThenSeekEntryOrOpenFindsIt[V](
         _keys: Array[Long],
-        _values: Array[ValueCell[V]],
+        _values: Array[V],
         mask: Int,
         extraKeys: Int,
         zeroValue: V,
@@ -5314,7 +5315,7 @@ object MutableLongMap {
     @ghost
     def lemmaNotInListMapThenSeekEntryOrOpenFindsFreeOrNothing[V](
         _keys: Array[Long],
-        _values: Array[ValueCell[V]],
+        _values: Array[V],
         mask: Int,
         extraKeys: Int,
         zeroValue: V,
@@ -5415,7 +5416,7 @@ object MutableLongMap {
     @ghost
     def lemmaSeekEntryOrOpenReturnsValidIndex[V](
         _keys: Array[Long],
-        _values: Array[ValueCell[V]],
+        _values: Array[V],
         mask: Int,
         extraKeys: Int,
         zeroValue: V,
@@ -5448,7 +5449,7 @@ object MutableLongMap {
     @ghost
     def lemmaSeekEntryGivesInRangeIndex[V](
         _keys: Array[Long],
-        _values: Array[ValueCell[V]],
+        _values: Array[V],
         mask: Int,
         extraKeys: Int,
         zeroValue: V,
