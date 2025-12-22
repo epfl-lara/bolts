@@ -121,7 +121,8 @@ class RegexBenchmark {
   def abStarAccepting_ZipperMem_list(bh: Blackhole): Unit = {
     val r = RegexBenchmarkUtils.abStar
     val s = RegexBenchmarkUtils.abStar_Accepting_strings_list(size.toInt)
-    bh.consume res = matchZipperMem(r, s)
+    val res = matchZipperMem(r, s)
+    bh.consume(res)
     // asserrt(res)
   }
 

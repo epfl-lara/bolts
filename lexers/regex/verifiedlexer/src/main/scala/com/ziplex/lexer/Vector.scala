@@ -5,6 +5,7 @@ import stainless.annotation._
 
 import scala.annotation.tailrec
 import scala.reflect.ClassTag
+import scala.collection.immutable.ArraySeq
 // BEGIN uncomment for verification ------------------------------------------
 import stainless.lang._
 import stainless.lang.StaticChecks._
@@ -327,7 +328,7 @@ object Vector {
 
   @pure @extern
   def fromArray[T: ClassTag](arr: IArray[T]): Vector[T] = {
-    fromScala(arr._arr.toVector)
+    fromScala(ArraySeq.unsafeWrapArray(arr._arr).toVector)
   }.ensuring(res => res.list == arr.list)
 
   @pure @extern @inlineOnce @ghost
