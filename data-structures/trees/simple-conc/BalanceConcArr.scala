@@ -11,7 +11,7 @@ import stainless.lang.StaticChecks.*
 
 import com.ziplex.lexer.ListUtils
 
-import IArrays.*
+import stainless.collection.IArray
 
 
 object BalanceConcArr:
