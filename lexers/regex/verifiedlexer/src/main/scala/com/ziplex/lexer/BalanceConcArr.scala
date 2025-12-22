@@ -34,7 +34,7 @@ import stainless.lang.{ghost => ghostExpr, _}
 
 object BalanceConcObj:
 
-  inline def LEAF_ARRAY_MAX_SIZE: BigInt = 4096 // MUST BE <= 2147483647 (Int.MaxValue)
+  inline def LEAF_ARRAY_MAX_SIZE: BigInt = 1024 // MUST BE <= 2147483647 (Int.MaxValue)
 
   extension [T: ClassTag](arr: IArray[T])
     def efficientList: List[T] = {
