@@ -7,10 +7,6 @@ import ListSpecs._
 import stainless.annotation._
 import stainless.lang.StaticChecks.*
 
-import com.ziplex.lexer.ListUtils
-
-import stainless.lang.StaticChecks.*
-
 
 object BalanceConc:
 
