@@ -1,0 +1,1 @@
+stainless --strict-arithmetic=false IArrayExample.scala 

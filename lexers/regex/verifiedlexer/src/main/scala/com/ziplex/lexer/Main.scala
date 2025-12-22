@@ -23,9 +23,13 @@ import scala.reflect.ClassTag
 
 object Main {
   def main(args: Array[String]): Unit = {
-    tokenizeJsonFile("src/main/scala/com/ziplex/example/res/json/example-for-sorting.json", "src/main/scala/com/ziplex/example/res/json/example-for-sorting.json.tokens")
-    regexZipperExample()
-    exampleJsonSorting()
+    // tokenizeJsonFile("src/main/scala/com/ziplex/example/res/json/example-for-sorting.json", "src/main/scala/com/ziplex/example/res/json/example-for-sorting.json.tokens")
+    // regexZipperExample()
+    // exampleJsonSorting()
+
+    regexZipperVisualizationAOrBStarConcatC()
+    println("-\n\n====================\n\n-")
+    regexZipperVisualizationAThenBThenC()
   }
 
   def exampleJsonSorting(): Unit = {
@@ -61,4 +65,81 @@ object Main {
     assert(matchZipperSequenceMem(r, input)(using ExampleUtils.zipperCacheUp, ExampleUtils.zipperCacheDown))
 
   }
+
+  def regexZipperVisualizationAOrBStarConcatC() = {
+    val r: Regex[Char] = ("a".r | "b".r).* ~ "c".r
+    val zipper: Zipper[Char] = focus(r)
+    println(s"Regex: ${r.show()}")
+    println(s"Zipper: ${zipper.show()}")
+
+    println("\n\n")
+    val c1 = 'a'
+    println(s"After deriving wrt '$c1':")
+    val zipper1 = ZipperRegex.derivationStepZipper(zipper, c1)
+    println(s"Zipper: ${zipper1.show()}")
+    val regex1 = VerifiedRegexMatcher.derivativeStep(r, c1)
+    println(s"Regex: ${regex1.show()}")
+    
+    println("\n\n")
+    val c2 = 'b'
+    println(s"After deriving wrt '$c2':")
+    val zipper2 = ZipperRegex.derivationStepZipper(zipper, c2)
+    println(s"Zipper: ${zipper2.show()}")
+    val regex2 = VerifiedRegexMatcher.derivativeStep(r, c2)
+    println(s"Regex: ${regex2.show()}")
+    
+    println("\n\n")
+    val c3 = 'c'
+    println(s"After deriving wrt '$c3':")
+    val zipper3 = ZipperRegex.derivationStepZipper(zipper, c3)
+    println(s"Zipper: ${zipper3.show()}")
+    val regex3 = VerifiedRegexMatcher.derivativeStep(r, c3)
+    println(s"Regex: ${regex3.show()}")
+  }
+
+   def regexZipperVisualizationAThenBThenC() = {
+    val r: Regex[Char] = "a".r ~ "b".r ~ "c".r
+    val zipper: Zipper[Char] = focus(r)
+    println(s"Regex: ${r.show()}")
+    println(s"Zipper: ${zipper.show()}")
+
+    println("\n\n")
+    val c1 = 'a'
+    println(s"After deriving wrt '$c1':")
+    val zipper1 = ZipperRegex.derivationStepZipper(zipper, c1)
+    println(s"Zipper: ${zipper1.show()}")
+    val regex1 = VerifiedRegexMatcher.derivativeStep(r, c1)
+    println(s"Regex: ${regex1.show()}")
+    
+    println("\n\n")
+    val c2 = 'b'
+    println(s"After deriving wrt '$c2':")
+    val zipper2 = ZipperRegex.derivationStepZipper(zipper, c2)
+    println(s"Zipper: ${zipper2.show()}")
+    val regex2 = VerifiedRegexMatcher.derivativeStep(r, c2)
+    println(s"Regex: ${regex2.show()}")
+    
+    println("\n\n")
+    val c3 = 'c'
+    println(s"After deriving wrt '$c3':")
+    val zipper3 = ZipperRegex.derivationStepZipper(zipper, c3)
+    println(s"Zipper: ${zipper3.show()}")
+    val regex3 = VerifiedRegexMatcher.derivativeStep(r, c3)
+    println(s"Regex: ${regex3.show()}")
+  }
+
+  extension [C](r: Regex[C]) def show(): String = 
+    r match
+      case ElementMatch(c) => c.toString
+      case Star(reg) => s"(${reg.show()})*"
+      case Union(regOne, regTwo) => s"(${regOne.show()} | ${regTwo.show()})"
+      case Concat(regOne, regTwo) => s"(${regOne.show()} ~ ${regTwo.show()})"
+      case EmptyExpr() => "ε" 
+      case EmptyLang() => "∅"
+    
+  extension [C](ctx: Context[C]) def show(): String =
+    s"Context( ${ctx.exprs.map(r => s"Regex(${r.show()})").mkString(", ")} )"
+  extension [C](z: Zipper[C]) def show(): String = 
+    s"Zipper( ${z.theSet.map(_.show()).toList.mkString(", ")} )"
+
 }
