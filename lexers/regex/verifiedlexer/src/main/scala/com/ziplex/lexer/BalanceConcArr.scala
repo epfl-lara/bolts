@@ -9,7 +9,8 @@ import stainless.annotation._
 
 import com.ziplex.lexer.ListUtils
 
-import com.ziplex.lexer.IArray
+// import com.ziplex.lexer.IArray
+import stainless.collection.IArray
 
 import scala.annotation.tailrec
 // BEGIN uncomment for verification ------------------------------------------
@@ -32,6 +33,15 @@ import stainless.lang.{ghost => ghostExpr, _}
 
 
 object BalanceConcObj:
+
+  extension [T: ClassTag](arr: IArray[T])
+    def efficientList: List[T] = {
+      def rec(i: BigInt, acc: List[T]): List[T] = {
+        if i <= BigInt(0) then acc
+        else rec(i - 1, arr(i - 1) :: acc)
+      }
+      rec(arr.size, Nil[T]())
+    }.ensuring(res => res == arr.list)
 
   case class BalanceConc[T: ClassTag](c: Conc[T]){
     require(c.isBalanced)
