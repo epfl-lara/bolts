@@ -1,7 +1,7 @@
 package com.ziplex.lexer
 
 import com.ziplex.lexer.VerifiedRegexMatcher._
-import com.ziplex.lexer.VerifiedRegex.Regex
+import com.ziplex.lexer.VerifiedRegex.*
 import com.ziplex.lexer.example.RegexUtils._
 
 import com.ziplex.lexer.example.ExampleJsonLexer.*
@@ -20,6 +20,10 @@ import com.ziplex.lexer.emptySeq
 import com.ziplex.lexer.singletonSeq
 import com.ziplex.lexer.seqFromList
 import scala.reflect.ClassTag
+
+import com.ziplex.lexer.ZipperRegex.Zipper
+import com.ziplex.lexer.ZipperRegex.Context
+import com.ziplex.lexer.ZipperRegex.focus
 
 object Main {
   def main(args: Array[String]): Unit = {
