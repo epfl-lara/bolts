@@ -22,19 +22,19 @@ import com.ziplex.lexer.Vector
 
 import scala.annotation.tailrec
 // BEGIN uncomment for verification ------------------------------------------
-import stainless.lang.StaticChecks._
-import stainless.lang.{ghost => ghostExpr, _}
+// import stainless.lang.StaticChecks._
+// import stainless.lang.{ghost => ghostExpr, _}
 // END uncomment for verification --------------------------------------------
 // BEGIN imports for benchmarking -------------------------------------------
-// import stainless.lang.{ghost => _, decreases => _, unfold => _, _}
-// import com.ziplex.lexer.OptimisedChecks.*
-// import Predef.{assert => _, Ensuring => _, require => _, _}
+import stainless.lang.{ghost => _, decreases => _, unfold => _, _}
+import com.ziplex.lexer.OptimisedChecks.*
+import Predef.{assert => _, Ensuring => _, require => _, _}
 
-// @tailrec
-// def dummyAmyLexerExample(x: BigInt): BigInt = {
-//   if (x == BigInt(0)) then x
-//   else dummyAmyLexerExample(x - BigInt(1))
-// }.ensuring( res => res == BigInt(0))
+@tailrec
+def dummyAmyLexerExample(x: BigInt): BigInt = {
+  if (x == BigInt(0)) then x
+  else dummyAmyLexerExample(x - BigInt(1))
+}.ensuring( res => res == BigInt(0))
 // END imports for benchmarking ---------------------------------------------
 
 object ExampleAmyLexer:
