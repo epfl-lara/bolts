@@ -3,18 +3,32 @@
 package com.ziplex.lexer
 
 import scala.reflect.ClassTag
-
-import stainless.lang.{ghost => ghostExpr, _}
-import stainless.proof._
-//import stainless.lang.StaticChecks._
 import stainless.collection._
 import ListSpecs._
 import stainless.annotation._
-import stainless.lang.StaticChecks.*
 
 import com.ziplex.lexer.ListUtils
 
 import com.ziplex.lexer.IArray
+
+import scala.annotation.tailrec
+// BEGIN uncomment for verification ------------------------------------------
+import stainless.proof._
+import stainless.lang._
+import stainless.lang.StaticChecks.*
+import stainless.lang.{ghost => ghostExpr, _}
+// END uncomment for verification --------------------------------------------
+// BEGIN imports for benchmarking -------------------------------------------
+// import stainless.lang.{ghost => _, decreases => _, unfold => _, _}
+// import com.ziplex.lexer.OptimisedChecks.*
+// import Predef.{assert => _, Ensuring => _, require => _}
+
+// @tailrec
+// def dummyBalanceConc(x: BigInt): BigInt = {
+//   if (x == BigInt(0)) then x
+//   else dummyBalanceConc(x - BigInt(1))
+// }.ensuring( res => res == BigInt(0))
+// END imports for benchmarking ---------------------------------------------
 
 
 object BalanceConcObj:
@@ -129,7 +143,7 @@ object BalanceConcObj:
 
 
 
-  inline def LEAF_ARRAY_MAX_SIZE: BigInt = 128 // MUST BE <= 2147483647 (Int.MaxValue)
+  inline def LEAF_ARRAY_MAX_SIZE: BigInt = 4096 // MUST BE <= 2147483647 (Int.MaxValue)
 
   sealed abstract class Conc[T]
   case class Empty[T]() extends Conc[T]
@@ -237,7 +251,7 @@ object BalanceConcObj:
           xs(i)
         }
         case Node(l, r, _, _) =>
-          appendIndex(l.list, r.list, i) // lemma
+          ghostExpr(appendIndex(l.list, r.list, i))
           if i < l.size then l(i)
           else r(i - l.size)
     }.ensuring(_ == t.list(i))
