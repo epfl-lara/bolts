@@ -39,10 +39,15 @@ object BalanceConcObj:
   extension [T: ClassTag](arr: IArray[T])
     def efficientList: List[T] = {
       def rec(i: BigInt, acc: List[T]): List[T] = {
+        require(0 <= i && i <= arr.size)
+        require(acc == arr.list.drop(i))
         decreases(i)
         if i <= BigInt(0) then acc
-        else rec(i - 1, arr(i - 1) :: acc)
-      }
+        else 
+          ghostExpr(ListUtils.lemmaDropApply(arr.list, i - 1))
+          ghostExpr(ListUtils.lemmaDropTail(arr.list, i - 1))
+          rec(i - 1, arr(i - 1) :: acc)
+      }.ensuring(res => res == arr.list)
       rec(arr.size, Nil[T]())
     }.ensuring(res => res == arr.list)
 
