@@ -18,7 +18,17 @@ import com.ziplex.lexer.example.RegexUtils.*
 import com.ziplex.lexer.example.RegexUtils.digits
 import stainless.lang.Quantifiers.*
 
-import com.ziplex.lexer.Vector
+
+import com.ziplex.lexer.Sequence
+import com.ziplex.lexer.emptySeq
+import com.ziplex.lexer.singletonSeq
+import com.ziplex.lexer.seqFromList
+import com.ziplex.lexer.TokenValueInjection
+import com.ziplex.lexer.semiInverseBodyModEq
+import com.ziplex.lexer.semiInverseModEq
+import com.ziplex.lexer.equivClassesBody
+import com.ziplex.lexer.equivClasses
+
 import stainless.lang.Exception
 import scala.annotation.tailrec
 import scala.math.BigInt
@@ -44,24 +54,24 @@ import stainless.lang.unfold
 object ExamplePythonLexer:
     object Types:
 
-        case class NewLineValue(value: Vector[Char]) extends TokenValue
-        case class IdentValue(value: Vector[Char]) extends TokenValue
-        case class DedentValue(value: Vector[Char]) extends TokenValue
-        case class CommentValue(value: Vector[Char]) extends TokenValue
-        case class SpaceValue(value: Vector[Char]) extends TokenValue
+        case class NewLineValue(value: List[Char]) extends TokenValue
+        case class IdentValue(value: List[Char]) extends TokenValue
+        case class DedentValue(value: List[Char]) extends TokenValue
+        case class CommentValue(value: List[Char]) extends TokenValue
+        case class SpaceValue(value: List[Char]) extends TokenValue
 
-        case class KeywordValue(value: Vector[Char]) extends TokenValue
-        case class IdentifierValue(value: Vector[Char]) extends TokenValue
+        case class KeywordValue(value: List[Char]) extends TokenValue
+        case class IdentifierValue(value: List[Char]) extends TokenValue
 
-        case class StringLiteralValue(value: Vector[Char]) extends TokenValue
-        case class BytesLiteralValue(value: Vector[Char]) extends TokenValue
+        case class StringLiteralValue(value: List[Char]) extends TokenValue
+        case class BytesLiteralValue(value: List[Char]) extends TokenValue
 
-        case class IntegerValue(value: BigInt, text: Vector[Char]) extends TokenValue:
+        case class IntegerValue(value: BigInt, text: List[Char]) extends TokenValue:
             require(IntegerValueUtils.charsToBigInt(text) == value)
         end IntegerValue
             
         object IntegerValueUtils:
-            extension [A](v: Vector[A])
+            extension [A](v: List[A])
                 @extern @pure def mkString(inter: String): String = 
                     val sb = new StringBuilder()
                     def loop(from: BigInt): Unit =
@@ -73,7 +83,7 @@ object ExamplePythonLexer:
                             loop(from + 1)
                     loop(0)
                     sb.toString()
-            @extern def charsToBigInt(v: Vector[Char]): BigInt = 
+            @extern def charsToBigInt(v: List[Char]): BigInt = 
                 val vStr = v.mkString("")
                 if vStr.contains("0b") || vStr.contains("0B") then
                     BigInt(vStr.stripPrefix("0b").stripPrefix("0B"), 2)
@@ -85,322 +95,477 @@ object ExamplePythonLexer:
                     BigInt(vStr)
         end IntegerValueUtils
 
-        case class FloatLiteralValue(text: Vector[Char]) extends TokenValue
-        case class ImaginaryLiteralValue(text: Vector[Char]) extends TokenValue
+        case class FloatLiteralValue(text: List[Char]) extends TokenValue
+        case class ImaginaryLiteralValue(text: List[Char]) extends TokenValue
 
-        case class OperatorValue(op: Vector[Char]) extends TokenValue
-        case class DelimiterValue(del: Vector[Char]) extends TokenValue
+        case class OperatorValue(op: List[Char]) extends TokenValue
+        case class DelimiterValue(del: List[Char]) extends TokenValue
 
-        case class IndentationValue(value: Vector[Char]) extends TokenValue
+        case class IndentationValue(value: List[Char]) extends TokenValue
 
-        case class EOFValue(value: Vector[Char]) extends TokenValue
-        case class ErrorTokenValue(msg: Vector[Char]) extends TokenValue
+        case class EOFValue(value: List[Char]) extends TokenValue
+        case class ErrorTokenValue(msg: List[Char]) extends TokenValue
 
         case object DedentValueInjection:
-            def toValue(v: Vector[Char]): TokenValue = DedentValue(v)
-            def toCharacters(t: TokenValue): Vector[Char] = t match
-                case DedentValue(value) => value
-                case _ => Vector.empty
+            def toValue(v: Sequence[Char]): TokenValue = DedentValue(v.efficientList)
+            def toCharacters(t: TokenValue): Sequence[Char] = t match
+                case DedentValue(value) => seqFromList(value)
+                case _ => emptySeq()
             
-            val injection: Injection[Vector[Char], TokenValue] = {
+            val injection: TokenValueInjection[Char] = {
                 ghostExpr{
                     assert({
-                        unfold(semiInverseBody(toCharacters, toValue))
-                        semiInverseBody(toCharacters, toValue)
+                        unfold(semiInverseBodyModEq(toCharacters, toValue))
+                        semiInverseBodyModEq(toCharacters, toValue)
                     })
-                    unfold(semiInverse(toCharacters, toValue))
+                    unfold(semiInverseModEq(toCharacters, toValue))
+                    assert(semiInverseModEq(toCharacters, toValue))
                 }
-                Injection(toValue, toCharacters)
+                ghostExpr{
+                    assert({
+                        unfold(equivClassesBody(toCharacters, toValue))
+                        equivClassesBody(toCharacters, toValue)
+                    })
+                    unfold(equivClasses(toCharacters, toValue))
+                    assert(equivClasses(toCharacters, toValue))
+                }
+                TokenValueInjection(toValue, toCharacters)
             }
         end DedentValueInjection
 
         case object IdentValueInjection:
-            def toValue(v: Vector[Char]): TokenValue = IdentValue(v)
-            def toCharacters(t: TokenValue): Vector[Char] = t match
-                case IdentValue(value) => value
-                case _ => Vector.empty
+            def toValue(v: Sequence[Char]): TokenValue = IdentValue(v.efficientList)
+            def toCharacters(t: TokenValue): Sequence[Char] = t match
+                case IdentValue(value) => seqFromList(value)
+                case _ => emptySeq()
             
-            val injection: Injection[Vector[Char], TokenValue] = {
+            val injection: TokenValueInjection[Char] = {
                 ghostExpr{
                     assert({
-                        unfold(semiInverseBody(toCharacters, toValue))
-                        semiInverseBody(toCharacters, toValue)
+                        unfold(semiInverseBodyModEq(toCharacters, toValue))
+                        semiInverseBodyModEq(toCharacters, toValue)
                     })
-                    unfold(semiInverse(toCharacters, toValue))
+                    unfold(semiInverseModEq(toCharacters, toValue))
+                    assert(semiInverseModEq(toCharacters, toValue))
                 }
-                Injection(toValue, toCharacters)
+                ghostExpr{
+                    assert({
+                        unfold(equivClassesBody(toCharacters, toValue))
+                        equivClassesBody(toCharacters, toValue)
+                    })
+                    unfold(equivClasses(toCharacters, toValue))
+                    assert(equivClasses(toCharacters, toValue))
+                }
+                TokenValueInjection(toValue, toCharacters)
             }
         end IdentValueInjection
 
         case object NewLineValueInjection:
-            def toValue(v: Vector[Char]): TokenValue = NewLineValue(v)
-            def toCharacters(t: TokenValue): Vector[Char] = t match
-                case NewLineValue(value) => value
-                case _ => Vector.empty
+            def toValue(v: Sequence[Char]): TokenValue = NewLineValue(v.efficientList)
+            def toCharacters(t: TokenValue): Sequence[Char] = t match
+                case NewLineValue(value) => seqFromList(value)
+                case _ => emptySeq()
             
-            val injection: Injection[Vector[Char], TokenValue] = {
+            val injection: TokenValueInjection[Char] = {
                 ghostExpr{
                     assert({
-                        unfold(semiInverseBody(toCharacters, toValue))
-                        semiInverseBody(toCharacters, toValue)
+                        unfold(semiInverseBodyModEq(toCharacters, toValue))
+                        semiInverseBodyModEq(toCharacters, toValue)
                     })
-                    unfold(semiInverse(toCharacters, toValue))
+                    unfold(semiInverseModEq(toCharacters, toValue))
+                    assert(semiInverseModEq(toCharacters, toValue))
                 }
-                Injection(toValue, toCharacters)
+                ghostExpr{
+                    assert({
+                        unfold(equivClassesBody(toCharacters, toValue))
+                        equivClassesBody(toCharacters, toValue)
+                    })
+                    unfold(equivClasses(toCharacters, toValue))
+                    assert(equivClasses(toCharacters, toValue))
+                }
+                TokenValueInjection(toValue, toCharacters)
             }
         end NewLineValueInjection
 
         case object CommentValueInjection:
-            def toValue(v: Vector[Char]): TokenValue = CommentValue(v)
-            def toCharacters(t: TokenValue): Vector[Char] = t match
-                case CommentValue(value) => value
-                case _ => Vector.empty
+            def toValue(v: Sequence[Char]): TokenValue = CommentValue(v.efficientList)
+            def toCharacters(t: TokenValue): Sequence[Char] = t match
+                case CommentValue(value) => seqFromList(value)
+                case _ => emptySeq()
             
-            val injection: Injection[Vector[Char], TokenValue] = {
+            val injection: TokenValueInjection[Char] = {
                 ghostExpr{
                     assert({
-                        unfold(semiInverseBody(toCharacters, toValue))
-                        semiInverseBody(toCharacters, toValue)
+                        unfold(semiInverseBodyModEq(toCharacters, toValue))
+                        semiInverseBodyModEq(toCharacters, toValue)
                     })
-                    unfold(semiInverse(toCharacters, toValue))
+                    unfold(semiInverseModEq(toCharacters, toValue))
+                    assert(semiInverseModEq(toCharacters, toValue))
                 }
-                Injection(toValue, toCharacters)
+                ghostExpr{
+                    assert({
+                        unfold(equivClassesBody(toCharacters, toValue))
+                        equivClassesBody(toCharacters, toValue)
+                    })
+                    unfold(equivClasses(toCharacters, toValue))
+                    assert(equivClasses(toCharacters, toValue))
+                }
+                TokenValueInjection(toValue, toCharacters)
             }
         end CommentValueInjection
 
         case object SpaceValueInjection:
-            def toValue(v: Vector[Char]): TokenValue = SpaceValue(v)
-            def toCharacters(t: TokenValue): Vector[Char] = t match
-                case SpaceValue(value) => value
-                case _ => Vector.empty
+            def toValue(v: Sequence[Char]): TokenValue = SpaceValue(v.efficientList)
+            def toCharacters(t: TokenValue): Sequence[Char] = t match
+                case SpaceValue(value) => seqFromList(value)
+                case _ => emptySeq()
 
-            val injection: Injection[Vector[Char], TokenValue] = {
+            val injection: TokenValueInjection[Char] = {
                 ghostExpr{
                     assert({
-                        unfold(semiInverseBody(toCharacters, toValue))
-                        semiInverseBody(toCharacters, toValue)
+                        unfold(semiInverseBodyModEq(toCharacters, toValue))
+                        semiInverseBodyModEq(toCharacters, toValue)
                     })
-                    unfold(semiInverse(toCharacters, toValue))
+                    unfold(semiInverseModEq(toCharacters, toValue))
+                    assert(semiInverseModEq(toCharacters, toValue))
                 }
-                Injection(toValue, toCharacters)
+                ghostExpr{
+                    assert({
+                        unfold(equivClassesBody(toCharacters, toValue))
+                        equivClassesBody(toCharacters, toValue)
+                    })
+                    unfold(equivClasses(toCharacters, toValue))
+                    assert(equivClasses(toCharacters, toValue))
+                }
+                TokenValueInjection(toValue, toCharacters)
             }
         end SpaceValueInjection
 
         case object KeywordValueInjection:
-            def toValue(v: Vector[Char]): TokenValue = KeywordValue(v)
-            def toCharacters(t: TokenValue): Vector[Char] = t match
-                case KeywordValue(value) => value
-                case _ => Vector.empty
+            def toValue(v: Sequence[Char]): TokenValue = KeywordValue(v.efficientList)
+            def toCharacters(t: TokenValue): Sequence[Char] = t match
+                case KeywordValue(value) => seqFromList(value)
+                case _ => emptySeq()
             
-            val injection: Injection[Vector[Char], TokenValue] = {
+            val injection: TokenValueInjection[Char] = {
                 ghostExpr{
                     assert({
-                        unfold(semiInverseBody(toCharacters, toValue))
-                        semiInverseBody(toCharacters, toValue)
+                        unfold(semiInverseBodyModEq(toCharacters, toValue))
+                        semiInverseBodyModEq(toCharacters, toValue)
                     })
-                    unfold(semiInverse(toCharacters, toValue))
+                    unfold(semiInverseModEq(toCharacters, toValue))
+                    assert(semiInverseModEq(toCharacters, toValue))
                 }
-                Injection(toValue, toCharacters)
+                ghostExpr{
+                    assert({
+                        unfold(equivClassesBody(toCharacters, toValue))
+                        equivClassesBody(toCharacters, toValue)
+                    })
+                    unfold(equivClasses(toCharacters, toValue))
+                    assert(equivClasses(toCharacters, toValue))
+                }
+                TokenValueInjection(toValue, toCharacters)
             }
         end KeywordValueInjection
 
         case object IdentifierValueInjection:
-            def toValue(v: Vector[Char]): TokenValue = IdentifierValue(v)
-            def toCharacters(t: TokenValue): Vector[Char] = t match
-                case IdentifierValue(value) => value
-                case _ => Vector.empty
+            def toValue(v: Sequence[Char]): TokenValue = IdentifierValue(v.efficientList)
+            def toCharacters(t: TokenValue): Sequence[Char] = t match
+                case IdentifierValue(value) => seqFromList(value)
+                case _ => emptySeq()
             
-            val injection: Injection[Vector[Char], TokenValue] = {
+            val injection: TokenValueInjection[Char] = {
                 ghostExpr{
                     assert({
-                        unfold(semiInverseBody(toCharacters, toValue))
-                        semiInverseBody(toCharacters, toValue)
+                        unfold(semiInverseBodyModEq(toCharacters, toValue))
+                        semiInverseBodyModEq(toCharacters, toValue)
                     })
-                    unfold(semiInverse(toCharacters, toValue))
+                    unfold(semiInverseModEq(toCharacters, toValue))
+                    assert(semiInverseModEq(toCharacters, toValue))
                 }
-                Injection(toValue, toCharacters)
+                ghostExpr{
+                    assert({
+                        unfold(equivClassesBody(toCharacters, toValue))
+                        equivClassesBody(toCharacters, toValue)
+                    })
+                    unfold(equivClasses(toCharacters, toValue))
+                    assert(equivClasses(toCharacters, toValue))
+                }
+                TokenValueInjection(toValue, toCharacters)
             }
         end IdentifierValueInjection
 
         case object StringLiteralValueInjection:
-            def toValue(v: Vector[Char]): TokenValue = StringLiteralValue(v)
-            def toCharacters(t: TokenValue): Vector[Char] = t match
-                case StringLiteralValue(value) => value
-                case _ => Vector.empty
+            def toValue(v: Sequence[Char]): TokenValue = StringLiteralValue(v.efficientList)
+            def toCharacters(t: TokenValue): Sequence[Char] = t match
+                case StringLiteralValue(value) => seqFromList(value)
+                case _ => emptySeq()
             
-            val injection: Injection[Vector[Char], TokenValue] = {
+            val injection: TokenValueInjection[Char] = {
                 ghostExpr{
                     assert({
-                        unfold(semiInverseBody(toCharacters, toValue))
-                        semiInverseBody(toCharacters, toValue)
+                        unfold(semiInverseBodyModEq(toCharacters, toValue))
+                        semiInverseBodyModEq(toCharacters, toValue)
                     })
-                    unfold(semiInverse(toCharacters, toValue))
+                    unfold(semiInverseModEq(toCharacters, toValue))
+                    assert(semiInverseModEq(toCharacters, toValue))
                 }
-                Injection(toValue, toCharacters)
+                ghostExpr{
+                    assert({
+                        unfold(equivClassesBody(toCharacters, toValue))
+                        equivClassesBody(toCharacters, toValue)
+                    })
+                    unfold(equivClasses(toCharacters, toValue))
+                    assert(equivClasses(toCharacters, toValue))
+                }
+                TokenValueInjection(toValue, toCharacters)
             }
         end StringLiteralValueInjection
 
         case object BytesLiteralValueInjection:
-            def toValue(v: Vector[Char]): TokenValue = BytesLiteralValue(v)
-            def toCharacters(t: TokenValue): Vector[Char] = t match
-                case BytesLiteralValue(value) => value
-                case _ => Vector.empty
+            def toValue(v: Sequence[Char]): TokenValue = BytesLiteralValue(v.efficientList)
+            def toCharacters(t: TokenValue): Sequence[Char] = t match
+                case BytesLiteralValue(value) => seqFromList(value)
+                case _ => emptySeq()
             
-            val injection: Injection[Vector[Char], TokenValue] = {
+            val injection: TokenValueInjection[Char] = {
                 ghostExpr{
                     assert({
-                        unfold(semiInverseBody(toCharacters, toValue))
-                        semiInverseBody(toCharacters, toValue)
+                        unfold(semiInverseBodyModEq(toCharacters, toValue))
+                        semiInverseBodyModEq(toCharacters, toValue)
                     })
-                    unfold(semiInverse(toCharacters, toValue))
+                    unfold(semiInverseModEq(toCharacters, toValue))
+                    assert(semiInverseModEq(toCharacters, toValue))
                 }
-                Injection(toValue, toCharacters)
+                ghostExpr{
+                    assert({
+                        unfold(equivClassesBody(toCharacters, toValue))
+                        equivClassesBody(toCharacters, toValue)
+                    })
+                    unfold(equivClasses(toCharacters, toValue))
+                    assert(equivClasses(toCharacters, toValue))
+                }
+                TokenValueInjection(toValue, toCharacters)
             }
         end BytesLiteralValueInjection
 
 
         case object IntegerValueInjection:
-            def toValue(v: Vector[Char]): TokenValue = IntegerValue(IntegerValueUtils.charsToBigInt(v), v)
-            def toCharacters(t: TokenValue): Vector[Char] = t match
-                    case IntegerValue(_, text) => text
-                    case _ => Vector.empty
+            def toValue(v: Sequence[Char]): TokenValue = 
+                val l = v.efficientList
+                IntegerValue(IntegerValueUtils.charsToBigInt(l), l)
+            def toCharacters(t: TokenValue): Sequence[Char] = t match
+                    case IntegerValue(_, text) => seqFromList(text)
+                    case _ => emptySeq()
             
-            val injection: Injection[Vector[Char], TokenValue] = {
+            val injection: TokenValueInjection[Char] = {
                 ghostExpr{
                     assert({
-                        unfold(semiInverseBody(toCharacters, toValue))
-                        semiInverseBody(toCharacters, toValue)
+                        unfold(semiInverseBodyModEq(toCharacters, toValue))
+                        semiInverseBodyModEq(toCharacters, toValue)
                     })
-                    unfold(semiInverse(toCharacters, toValue))
+                    unfold(semiInverseModEq(toCharacters, toValue))
+                    assert(semiInverseModEq(toCharacters, toValue))
                 }
-                Injection(toValue, toCharacters)
+                ghostExpr{
+                    assert({
+                        unfold(equivClassesBody(toCharacters, toValue))
+                        equivClassesBody(toCharacters, toValue)
+                    })
+                    unfold(equivClasses(toCharacters, toValue))
+                    assert(equivClasses(toCharacters, toValue))
+                }
+                TokenValueInjection(toValue, toCharacters)
             }
         end IntegerValueInjection
 
 
         case object FloatLiteralValueInjection:
-            def toValue(v: Vector[Char]): TokenValue = FloatLiteralValue(v)
-            def toCharacters(t: TokenValue): Vector[Char] = t match
-                case FloatLiteralValue(value) => value
-                case _ => Vector.empty
+            def toValue(v: Sequence[Char]): TokenValue = FloatLiteralValue(v.efficientList)
+            def toCharacters(t: TokenValue): Sequence[Char] = t match
+                case FloatLiteralValue(value) => seqFromList(value)
+                case _ => emptySeq()
             
-            val injection: Injection[Vector[Char], TokenValue] = {
+            val injection: TokenValueInjection[Char] = {
                 ghostExpr{
                     assert({
-                        unfold(semiInverseBody(toCharacters, toValue))
-                        semiInverseBody(toCharacters, toValue)
+                        unfold(semiInverseBodyModEq(toCharacters, toValue))
+                        semiInverseBodyModEq(toCharacters, toValue)
                     })
-                    unfold(semiInverse(toCharacters, toValue))
+                    unfold(semiInverseModEq(toCharacters, toValue))
+                    assert(semiInverseModEq(toCharacters, toValue))
                 }
-                Injection(toValue, toCharacters)
+                ghostExpr{
+                    assert({
+                        unfold(equivClassesBody(toCharacters, toValue))
+                        equivClassesBody(toCharacters, toValue)
+                    })
+                    unfold(equivClasses(toCharacters, toValue))
+                    assert(equivClasses(toCharacters, toValue))
+                }
+                TokenValueInjection(toValue, toCharacters)
             }
         end FloatLiteralValueInjection
 
         case object ImaginaryLiteralValueInjection:
-            def toValue(v: Vector[Char]): TokenValue = ImaginaryLiteralValue(v)
-            def toCharacters(t: TokenValue): Vector[Char] = t match
-                case ImaginaryLiteralValue(value) => value
-                case _ => Vector.empty
+            def toValue(v: Sequence[Char]): TokenValue = ImaginaryLiteralValue(v.efficientList)
+            def toCharacters(t: TokenValue): Sequence[Char] = t match
+                case ImaginaryLiteralValue(value) => seqFromList(value)
+                case _ => emptySeq()
             
-            val injection: Injection[Vector[Char], TokenValue] = {
+            val injection: TokenValueInjection[Char] = {
                 ghostExpr{
                     assert({
-                        unfold(semiInverseBody(toCharacters, toValue))
-                        semiInverseBody(toCharacters, toValue)
+                        unfold(semiInverseBodyModEq(toCharacters, toValue))
+                        semiInverseBodyModEq(toCharacters, toValue)
                     })
-                    unfold(semiInverse(toCharacters, toValue))
+                    unfold(semiInverseModEq(toCharacters, toValue))
+                    assert(semiInverseModEq(toCharacters, toValue))
                 }
-                Injection(toValue, toCharacters)
+                ghostExpr{
+                    assert({
+                        unfold(equivClassesBody(toCharacters, toValue))
+                        equivClassesBody(toCharacters, toValue)
+                    })
+                    unfold(equivClasses(toCharacters, toValue))
+                    assert(equivClasses(toCharacters, toValue))
+                }
+                TokenValueInjection(toValue, toCharacters)
             }
         end ImaginaryLiteralValueInjection
 
         case object OperatorValueInjection:
-            def toValue(v: Vector[Char]): TokenValue = OperatorValue(v)
-            def toCharacters(t: TokenValue): Vector[Char] = t match
-                case OperatorValue(value) => value
-                case _ => Vector.empty
+            def toValue(v: Sequence[Char]): TokenValue = OperatorValue(v.efficientList)
+            def toCharacters(t: TokenValue): Sequence[Char] = t match
+                case OperatorValue(value) => seqFromList(value)
+                case _ => emptySeq()
             
-            val injection: Injection[Vector[Char], TokenValue] = {
+            val injection: TokenValueInjection[Char] = {
                 ghostExpr{
                     assert({
-                        unfold(semiInverseBody(toCharacters, toValue))
-                        semiInverseBody(toCharacters, toValue)
+                        unfold(semiInverseBodyModEq(toCharacters, toValue))
+                        semiInverseBodyModEq(toCharacters, toValue)
                     })
-                    unfold(semiInverse(toCharacters, toValue))
+                    unfold(semiInverseModEq(toCharacters, toValue))
+                    assert(semiInverseModEq(toCharacters, toValue))
                 }
-                Injection(toValue, toCharacters)
+                ghostExpr{
+                    assert({
+                        unfold(equivClassesBody(toCharacters, toValue))
+                        equivClassesBody(toCharacters, toValue)
+                    })
+                    unfold(equivClasses(toCharacters, toValue))
+                    assert(equivClasses(toCharacters, toValue))
+                }
+                TokenValueInjection(toValue, toCharacters)
             }
         end OperatorValueInjection
 
         case object DelimiterValueInjection:
-            def toValue(v: Vector[Char]): TokenValue = DelimiterValue(v)
-            def toCharacters(t: TokenValue): Vector[Char] = t match
-                case DelimiterValue(value) => value
-                case _ => Vector.empty
+            def toValue(v: Sequence[Char]): TokenValue = DelimiterValue(v.efficientList)
+            def toCharacters(t: TokenValue): Sequence[Char] = t match
+                case DelimiterValue(value) => seqFromList(value)
+                case _ => emptySeq()
             
-            val injection: Injection[Vector[Char], TokenValue] = {
+            val injection: TokenValueInjection[Char] = {
                 ghostExpr{
                     assert({
-                        unfold(semiInverseBody(toCharacters, toValue))
-                        semiInverseBody(toCharacters, toValue)
+                        unfold(semiInverseBodyModEq(toCharacters, toValue))
+                        semiInverseBodyModEq(toCharacters, toValue)
                     })
-                    unfold(semiInverse(toCharacters, toValue))
+                    unfold(semiInverseModEq(toCharacters, toValue))
+                    assert(semiInverseModEq(toCharacters, toValue))
                 }
-                Injection(toValue, toCharacters)
+                ghostExpr{
+                    assert({
+                        unfold(equivClassesBody(toCharacters, toValue))
+                        equivClassesBody(toCharacters, toValue)
+                    })
+                    unfold(equivClasses(toCharacters, toValue))
+                    assert(equivClasses(toCharacters, toValue))
+                }
+                TokenValueInjection(toValue, toCharacters)
             }
         end DelimiterValueInjection
 
         case object IndentationValueInjection:
-            def toValue(v: Vector[Char]): TokenValue = IndentationValue(v)
-            def toCharacters(t: TokenValue): Vector[Char] = t match
-                case IndentationValue(value) => value
-                case _ => Vector.empty
+            def toValue(v: Sequence[Char]): TokenValue = IndentationValue(v.efficientList)
+            def toCharacters(t: TokenValue): Sequence[Char] = t match
+                case IndentationValue(value) => seqFromList(value)
+                case _ => emptySeq()
             
-            val injection: Injection[Vector[Char], TokenValue] = {
+            val injection: TokenValueInjection[Char] = {
                 ghostExpr{
                     assert({
-                        unfold(semiInverseBody(toCharacters, toValue))
-                        semiInverseBody(toCharacters, toValue)
+                        unfold(semiInverseBodyModEq(toCharacters, toValue))
+                        semiInverseBodyModEq(toCharacters, toValue)
                     })
-                    unfold(semiInverse(toCharacters, toValue))
+                    unfold(semiInverseModEq(toCharacters, toValue))
+                    assert(semiInverseModEq(toCharacters, toValue))
                 }
-                Injection(toValue, toCharacters)
+                ghostExpr{
+                    assert({
+                        unfold(equivClassesBody(toCharacters, toValue))
+                        equivClassesBody(toCharacters, toValue)
+                    })
+                    unfold(equivClasses(toCharacters, toValue))
+                    assert(equivClasses(toCharacters, toValue))
+                }
+                TokenValueInjection(toValue, toCharacters)
             }
         end IndentationValueInjection
 
         case object EOFValueInjection:
-            def toValue(v: Vector[Char]): TokenValue = EOFValue(v)
-            def toCharacters(t: TokenValue): Vector[Char] = t match
-                case EOFValue(value) => value
-                case _ => Vector.empty
+            def toValue(v: Sequence[Char]): TokenValue = EOFValue(v.efficientList)
+            def toCharacters(t: TokenValue): Sequence[Char] = t match
+                case EOFValue(value) => seqFromList(value)
+                case _ => emptySeq()
             
-            val injection: Injection[Vector[Char], TokenValue] = {
+            val injection: TokenValueInjection[Char] = {
                 ghostExpr{
                     assert({
-                        unfold(semiInverseBody(toCharacters, toValue))
-                        semiInverseBody(toCharacters, toValue)
+                        unfold(semiInverseBodyModEq(toCharacters, toValue))
+                        semiInverseBodyModEq(toCharacters, toValue)
                     })
-                    unfold(semiInverse(toCharacters, toValue))
+                    unfold(semiInverseModEq(toCharacters, toValue))
+                    assert(semiInverseModEq(toCharacters, toValue))
                 }
-                Injection(toValue, toCharacters)
+                ghostExpr{
+                    assert({
+                        unfold(equivClassesBody(toCharacters, toValue))
+                        equivClassesBody(toCharacters, toValue)
+                    })
+                    unfold(equivClasses(toCharacters, toValue))
+                    assert(equivClasses(toCharacters, toValue))
+                }
+                TokenValueInjection(toValue, toCharacters)
             }
         end EOFValueInjection
 
         case object ErrorTokenValueInjection:
-            def toValue(v: Vector[Char]): TokenValue = ErrorTokenValue(v)
-            def toCharacters(t: TokenValue): Vector[Char] = t match
-                case ErrorTokenValue(value) => value
-                case _ => Vector.empty
+            def toValue(v: Sequence[Char]): TokenValue = ErrorTokenValue(v.efficientList)
+            def toCharacters(t: TokenValue): Sequence[Char] = t match
+                case ErrorTokenValue(value) => seqFromList(value)
+                case _ => emptySeq()
             
-            val injection: Injection[Vector[Char], TokenValue] = {
+            val injection: TokenValueInjection[Char] = {
                 ghostExpr{
                     assert({
-                        unfold(semiInverseBody(toCharacters, toValue))
-                        semiInverseBody(toCharacters, toValue)
+                        unfold(semiInverseBodyModEq(toCharacters, toValue))
+                        semiInverseBodyModEq(toCharacters, toValue)
                     })
-                    unfold(semiInverse(toCharacters, toValue))
+                    unfold(semiInverseModEq(toCharacters, toValue))
+                    assert(semiInverseModEq(toCharacters, toValue))
                 }
-                Injection(toValue, toCharacters)
+                ghostExpr{
+                    assert({
+                        unfold(equivClassesBody(toCharacters, toValue))
+                        equivClassesBody(toCharacters, toValue)
+                    })
+                    unfold(equivClasses(toCharacters, toValue))
+                    assert(equivClasses(toCharacters, toValue))
+                }
+                TokenValueInjection(toValue, toCharacters)
             }
         end ErrorTokenValueInjection
         

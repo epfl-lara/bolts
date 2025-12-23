@@ -5,13 +5,19 @@ import com.ziplex.lexer.VerifiedRegex._
 import com.ziplex.lexer.MemoisationZipper
 import com.ziplex.lexer.ZipperRegex._
 import com.ziplex.lexer.Token
-import com.ziplex.lexer.Vector
 import stainless.annotation.extern
 import scala.annotation.tailrec
+import com.ziplex.lexer.Sequence
+import com.ziplex.lexer.emptySeq
+import com.ziplex.lexer.singletonSeq
+import com.ziplex.lexer.seqFromList
+
+import stainless.collection.IArray
+import com.ziplex.lexer.seqFromArray
 
 @extern
 object RegexUtils:
-  extension (s: String) def r: Regex[Char] = s.toCharArray().toList.foldRight[Regex[Char]](EmptyExpr())((c, acc) => if isEmptyExpr(acc) then ElementMatch(c) else Concat(ElementMatch(c), acc))
+  extension (s: String) def r: Regex[Char] = s.toCharArray().foldRight[Regex[Char]](EmptyExpr())((c, acc) => if isEmptyExpr(acc) then ElementMatch(c) else Concat(ElementMatch(c), acc))
   extension (c: Char) def r: Regex[Char] = ElementMatch(c)
   extension (r: Regex[Char]) infix def | (r2: Regex[Char]): Regex[Char] = Union(r, r2)
   extension (r: Regex[Char]) def * : Regex[Char] = Star(r)
@@ -20,9 +26,9 @@ object RegexUtils:
   extension (s: String) infix def | (s2: String): Regex[Char] = r(s) | r(s2)
   extension (s: String) infix def ~ (s2: String): Regex[Char] = r(s) ~ r(s2)
   extension (s: String) def * : Regex[Char] = r(s).*
-  extension (s: String) def anyOf: Regex[Char] = s.toCharArray().toList.foldRight[Regex[Char]](EmptyLang())((c, acc) => if isEmptyLang(acc) then ElementMatch(c) else Union(ElementMatch(c), acc))
+  extension (s: String) def anyOf: Regex[Char] = s.toCharArray().foldRight[Regex[Char]](EmptyLang())((c, acc) => if isEmptyLang(acc) then ElementMatch(c) else Union(ElementMatch(c), acc))
   def opt(r: Regex[Char]): Regex[Char] = r | epsilon
-  extension (s: String) def toStainless: Vector[Char] = Vector.fromScala(s.toCharArray().toVector)
+  extension (s: String) def toStainless: Sequence[Char] = seqFromArray(s.toCharArray().foldLeft[IArray[Char]](IArray.empty())((acc, c) => acc.append(c)))
   extension (r: Regex[Char]) def asString(): String = r match {
     case EmptyLang() => "∅"
     case EmptyExpr() => "ε"
@@ -63,10 +69,10 @@ object RegexUtils:
   }
 
   extension (t: Token[Char]) def asString(): String = 
-    def replaceSpecialCharacters(l: Vector[Char]): Vector[String] = 
+    def replaceSpecialCharacters(l: Sequence[Char]): Sequence[String] = 
       t.charsOf.map(c => if c == '\t' then "\\t" else if c == '\n' then "\\n" else f"$c")
       
-    s"Token(${t.rule.tag}, \"${replaceSpecialCharacters(t.charsOf).toScala.mkString("")}\")"
+    s"Token(${t.rule.tag}, \"${replaceSpecialCharacters(t.charsOf).efficientList.mkString("")}\")"
   extension [A] (l: stainless.collection.List[A]) def mkString(inter: String) : String = l match {
     case stainless.collection.Nil() => ""
     case stainless.collection.Cons(h, t) => h.toString + (if t.isEmpty then "" else inter + t.mkString(inter))

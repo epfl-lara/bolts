@@ -9,7 +9,14 @@ import stainless.equations._
 import scala.annotation.tailrec
 import stainless.lang.Quantifiers._
 
+import com.ziplex.lexer.Sequence
+import com.ziplex.lexer.emptySeq
+import com.ziplex.lexer.singletonSeq
+import com.ziplex.lexer.seqFromList
+
 import scala.annotation.tailrec
+import scala.reflect.ClassTag
+
 // BEGIN uncomment for verification ------------------------------------------
 import stainless.lang.StaticChecks._
 import stainless.lang.{ghost => ghostExpr, _}
@@ -41,9 +48,10 @@ object VerifiedLexer {
     * @param tokens
     * @return
     */
-  def printableTokensFromTokens[C](rules: List[Rule[C]], tokens: Vector[Token[C]]): Option[PrintableTokens[C]] = {
+  def printableTokensFromTokens[C: ClassTag](rules: List[Rule[C]], tokens: Sequence[Token[C]]): Option[PrintableTokens[C]] = {
     require(!rules.isEmpty)
     require(Lexer.rulesInvariant(rules)) // this should checked at runtime before lexing
+    require(Lexer.rulesProduceEachTokenIndividuallyList(rules, tokens.list)) // this is ensured by lexing
     require(Lexer.rulesProduceEachTokenIndividually(rules, tokens)) // this is ensured by lexing
 
     if (Lexer.separableTokens(tokens, rules)) {
@@ -53,7 +61,7 @@ object VerifiedLexer {
     }
   }.ensuring(res => res.isEmpty || (res.get.rules == rules && res.get.tokens == tokens))
 
-  def printableTokensFromTokensMem[C](rules: List[Rule[C]], tokens: Vector[Token[C]])(using cacheUp: CacheUp[C], cacheDown: CacheDown[C]): Option[PrintableTokens[C]] = {
+  def printableTokensFromTokensMem[C: ClassTag](rules: List[Rule[C]], tokens: Sequence[Token[C]])(using cacheUp: CacheUp[C], cacheDown: CacheDown[C]): Option[PrintableTokens[C]] = {
     require(!rules.isEmpty)
     require(Lexer.rulesInvariant(rules)) // this should checked at runtime before lexing
     require(Lexer.rulesProduceEachTokenIndividually(rules, tokens)) // this is ensured by lexing
@@ -65,14 +73,15 @@ object VerifiedLexer {
     }
   }.ensuring(res => res.isEmpty || (res.get.rules == rules && res.get.tokens == tokens))
 
-  def emptyPrintableTokens[C](rules: List[Rule[C]]): PrintableTokens[C] = {
+  def emptyPrintableTokens[C: ClassTag](rules: List[Rule[C]]): PrintableTokens[C] = {
     require(!rules.isEmpty)
     require(Lexer.rulesInvariant(rules)) // this should checked at runtime before lexing
 
-    PrintableTokens(rules, Vector.empty[Token[C]])
+    val emptySequence = emptySeq[Token[C]]()
+    PrintableTokens(rules, emptySequence)
   }.ensuring(res => res.rules == rules && res.tokens.isEmpty)
 
-  case class PrintableTokens[C](rules: List[Rule[C]], tokens: Vector[Token[C]]) {
+  case class PrintableTokens[C: ClassTag](rules: List[Rule[C]], tokens: Sequence[Token[C]]) {
       require(!rules.isEmpty)
       require(Lexer.rulesInvariant(rules))
       require(Lexer.rulesProduceEachTokenIndividually(rules, tokens))
@@ -82,15 +91,13 @@ object VerifiedLexer {
       }.ensuring(_ => Lexer.rulesInvariant(rules) && Lexer.rulesProduceEachTokenIndividually(rules, tokens) && Lexer.separableTokens(tokens, rules))
 
       def size: BigInt = tokens.size
-      def print(): Vector[C] = {
+      def print(): Sequence[C] = {
         ghostExpr({
           Lexer.theoremInvertabilityWhenTokenListSeparable(rules, tokens.list)
-          Vector.listEqImpliesEq(Vector.fromList(tokens.list), tokens)
-          Vector.listEqImpliesEq(Lexer.lex(rules, Lexer.print(tokens))._2 , Vector.empty[C])
-          Vector.listEqImpliesEq(Lexer.lex(rules, Lexer.print(tokens))._1, tokens)
         })
         Lexer.print(tokens)
-      }.ensuring(res => Lexer.lex(rules, res) == (tokens, Vector.empty[C]))
+      }.ensuring(res => Lexer.lex(rules, res)._1.list == tokens.list &&
+                        Lexer.lex(rules, res)._2.list.isEmpty)
 
       def append(other: PrintableTokens[C]): Option[PrintableTokens[C]] = {
         require(rules == other.rules)
@@ -98,11 +105,6 @@ object VerifiedLexer {
         this.lemmaInvariant()
         if(other.tokens.isEmpty) {
           assert(this.rules == other.rules)
-          ghostExpr(Vector.listEqImpliesEq(tokens ++ other.tokens, Vector.fromList(tokens.list ++ other.tokens.list)))
-          ghostExpr(Vector.listEqImpliesEq(other.tokens , Vector.empty[Token[C]]))
-          ghostExpr(Vector.listEqImpliesEq(this.tokens ++ Vector.empty[Token[C]], this.tokens))
-
-          ghostExpr(Vector.listEqImpliesEq(this.print(), Vector.fromList(Lexer.printList(this.tokens.list))))
           ghostExpr(Lexer.lemmaPrintConcatSameAsConcatPrint(this.tokens.list, Nil[Token[C]]()))
           ghostExpr(unfold(Lexer.printList(Nil[Token[C]]())))
 
@@ -110,19 +112,12 @@ object VerifiedLexer {
           ghostExpr(unfold(other.print()))
           ghostExpr(unfold(Lexer.print(other.tokens)))
           ghostExpr(unfold(Lexer.printList(other.tokens.list)))
-          assert(Lexer.print(other.tokens) == Vector.empty[C])
-
-          ghostExpr(Vector.listEqImpliesEq(this.print() ++ Vector.empty[C], this.print()))
-
+          assert(Lexer.print(other.tokens) == emptySeq[C]())
           Some(this)
         } else if(this.tokens.isEmpty) {
-          ghostExpr(Vector.listEqImpliesEq(tokens ++ other.tokens, Vector.fromList(tokens.list ++ other.tokens.list)))
           assert(this.rules == other.rules)
-          ghostExpr(Vector.listEqImpliesEq(this.tokens , Vector.empty[Token[C]]))
-          ghostExpr(Vector.listEqImpliesEq(Vector.empty[Token[C]] ++ other.tokens, other.tokens))
-          assert(this.tokens == Vector.empty[Token[C]])
-          assert(other.tokens == Vector.empty[Token[C]] ++ other.tokens)
-          ghostExpr(Vector.listEqImpliesEq(other.print(), Vector.fromList(Lexer.printList(other.tokens.list))))
+          assert(this.tokens.list.isEmpty)
+          assert(other.tokens.list == emptySeq[Token[C]]().list ++ other.tokens.list)
           ghostExpr(Lexer.lemmaPrintConcatSameAsConcatPrint(Nil(), other.tokens.list))
 
           ghostExpr(unfold(Lexer.printList(Nil[Token[C]]())))
@@ -131,54 +126,30 @@ object VerifiedLexer {
           ghostExpr(unfold(other.print()))
           ghostExpr(unfold(Lexer.print(other.tokens)))
           ghostExpr(unfold(Lexer.printList(other.tokens.list)))
-          assert(Lexer.print(this.tokens) == Vector.empty[C])
-
-          ghostExpr(Vector.listEqImpliesEq(Vector.empty[C] ++ other.print(), other.print()))
-
+          assert(Lexer.print(this.tokens) == emptySeq[C]())
           Some(other) 
         } else {
           ghostExpr(Lexer.lemmaRulesProduceEachTokenIndividuallyThenForAnyToken(rules, this.tokens.list, this.tokens.last))
           ghostExpr(Lexer.lemmaRulesProduceEachTokenIndividuallyThenForAnyToken(rules, other.tokens.list, other.tokens.head))
           if (Lexer.separableTokensPredicate(tokens.last, other.tokens.head, rules)) {
-            ghostExpr(Vector.listEqImpliesEq(tokens ++ other.tokens, Vector.fromList(tokens.list ++ other.tokens.list)))
-            ghostExpr(Vector.listEqImpliesEq(tokens, Vector.fromList(tokens.list)))
-            ghostExpr(Vector.listEqImpliesEq(other.tokens, Vector.fromList(other.tokens.list)))
-
             ghostExpr(Lexer.tokensListTwoByTwoPredicateConcatSeparableTokensList(tokens.list, other.tokens.list, rules))
             assert(Lexer.tokensListTwoByTwoPredicateSeparable(this.tokens ++ other.tokens, 0, rules))
-
-            ghostExpr(Vector.listEqImpliesEq(this.print(), Vector.fromList(Lexer.printList(this.tokens.list))))
-            ghostExpr(Vector.listEqImpliesEq(other.print(), Vector.fromList(Lexer.printList(other.tokens.list))))
-            ghostExpr(Vector.listEqImpliesEq(this.print() ++ other.print(), Vector.fromList(Lexer.printList(this.tokens.list) ++ Lexer.printList(other.tokens.list))))
-            
-            
             ghostExpr(Lexer.lemmaPrintConcatSameAsConcatPrint(this.tokens.list, other.tokens.list))
-            assert(this.print() ++ other.print() == Vector.fromList(Lexer.printList(this.tokens.list ++ other.tokens.list)))
 
             ghostExpr(unfold(this.print()))
             ghostExpr(unfold(other.print()))
             ghostExpr(unfold(PrintableTokens(rules, tokens ++ other.tokens).print()))
-            ghostExpr(Vector.listEqImpliesEq(PrintableTokens(rules, tokens ++ other.tokens).tokens, this.tokens ++ other.tokens))
-
             ghostExpr(Lexer.lemmaPrintConcatSameAsConcatPrint(this.tokens.list, other.tokens.list))
-            assert(Lexer.printList(this.tokens.list ++ other.tokens.list) == Lexer.printList(this.tokens.list) ++ Lexer.printList(other.tokens.list))
-            assert(Lexer.print(tokens ++ other.tokens).list == Lexer.printList(tokens.list) ++ Lexer.printList(other.tokens.list))
-
-            ghostExpr(Vector.listEqImpliesEq(Lexer.print(tokens ++ other.tokens), Lexer.print(tokens) ++ Lexer.print(other.tokens)))
-            ghostExpr(Vector.listEqImpliesEq(this.print() ++ other.print(), Vector.fromList(this.print().list ++ other.print().list)))
-            ghostExpr(Vector.listEqImpliesEq(this.print() ++ other.print(), Vector.fromList(PrintableTokens(rules, tokens ++ other.tokens).print().list)))
-
             Some(PrintableTokens(rules, tokens ++ other.tokens))
           } else {
             None()
           }
         }
-      }.ensuring(res => res.isEmpty || (res.get.rules == rules && res.get.tokens == tokens ++ other.tokens && res.get.print() == this.print() ++ other.print()))
+      }.ensuring(res => res.isEmpty || (res.get.rules == rules && res.get.tokens.list == tokens.list ++ other.tokens.list && res.get.print().list == this.print().list ++ other.print().list))
 
       def slice(from: BigInt, to: BigInt): PrintableTokens[C] = {
         require(0 <= from && from <= to && to <= tokens.size)
 
-        ghostExpr(Vector.listEqImpliesEq(tokens.slice(from, to), Vector.fromList(tokens.list.slice(from, to))))
         lemmaInvariant()
         assert(Lexer.rulesInvariant(rules))
         ghostExpr(unfold(Lexer.rulesProduceEachTokenIndividually(rules, tokens)))
@@ -200,14 +171,14 @@ object VerifiedLexer {
         ghostExpr(Lexer.tokensListTwoByTwoPredicateSeparableTokensTakeList(tokens.list.drop(from), to-from, rules))
         assert(Lexer.separableTokens(tokens.slice(from, to), rules))
         PrintableTokens(rules, tokens.slice(from, to))
-      }.ensuring(res => res.rules == rules && res.tokens == tokens.slice(from, to))
+      }.ensuring(res => res.rules == rules && res.tokens.list == tokens.slice(from, to).list)
     }
 
   case object Lexer extends LexerInterface {
-    def ruleValid[C](r: Rule[C]): Boolean = {
+    def ruleValid[C: ClassTag](r: Rule[C]): Boolean = {
       validRegex(r.regex) && !r.regex.nullable && r.tag != ""
     }
-    def noDuplicateTag[C](rules: List[Rule[C]], acc: List[String] = Nil()): Boolean = {
+    def noDuplicateTag[C: ClassTag](rules: List[Rule[C]], acc: List[String] = Nil()): Boolean = {
       decreases(rules)
       rules match {
         case Nil()        => true
@@ -215,7 +186,7 @@ object VerifiedLexer {
       }
     }
     @ghost
-    def rulesValidInductive[C](rs: List[Rule[C]]): Boolean = {
+    def rulesValidInductive[C: ClassTag](rs: List[Rule[C]]): Boolean = {
       decreases(rs)
       rs match {
         case Cons(hd, tl) => ruleValid(hd) && rulesValidInductive(tl)
@@ -223,29 +194,29 @@ object VerifiedLexer {
       }
     }.ensuring(res => res == rs.forall(ruleValid))
 
-    def rulesValid[C](rs: List[Rule[C]]): Boolean = {
+    def rulesValid[C: ClassTag](rs: List[Rule[C]]): Boolean = {
       rs.forall(ruleValid)
     }.ensuring(res => res == rulesValidInductive(rs))
 
     @pure
-    override def rulesProduceIndividualToken[C](rs: List[Rule[C]], t: Token[C]): Boolean = {
+    override def rulesProduceIndividualToken[C: ClassTag](rs: List[Rule[C]], t: Token[C]): Boolean = {
       require(!rs.isEmpty)
       require(rulesInvariant(rs))
-      val (producedTs, suffix) = lex(rs, print(Vector.singleton(t)))
+      val (producedTs, suffix) = lex(rs, print(singletonSeq(t)))
       producedTs.size == 1 && producedTs(0) == t && suffix.isEmpty
     }.ensuring(res => {
-      res == (lex(rs, print(Vector.singleton(t))) == (Vector.singleton(t), Vector.empty[C]))
+      res == (lex(rs, print(singletonSeq(t)))._1.list == singletonSeq(t).list &&  lex(rs, print(singletonSeq(t)))._2.isEmpty)
     })
 
-    def rulesProduceIndividualTokenMem[C](rs: List[Rule[C]], t: Token[C])(using cacheUp: CacheUp[C], cacheDown: CacheDown[C]): Boolean = {
+    def rulesProduceIndividualTokenMem[C: ClassTag](rs: List[Rule[C]], t: Token[C])(using cacheUp: CacheUp[C], cacheDown: CacheDown[C]): Boolean = {
       require(!rs.isEmpty)
       require(rulesInvariant(rs))
-      val (producedTs, suffix) = lexMem(rs, print(Vector.singleton(t)))
+      val (producedTs, suffix) = lexMem(rs, print(singletonSeq(t)))
       producedTs.size == 1 && producedTs(0) == t && suffix.isEmpty
     }.ensuring(res => res == rulesProduceIndividualToken(rs, t))
 
     @ghost
-    def rulesProduceEachTokenIndividuallyList[C](rs: List[Rule[C]], ts: List[Token[C]]): Boolean = {
+    def rulesProduceEachTokenIndividuallyList[C: ClassTag](rs: List[Rule[C]], ts: List[Token[C]]): Boolean = {
       require(!rs.isEmpty)
       require(rulesInvariant(rs))
       decreases(ts)
@@ -255,13 +226,13 @@ object VerifiedLexer {
       }
     }.ensuring(res => res == ts.forall(t => rulesProduceIndividualToken(rs, t)))
 
-     override def rulesProduceEachTokenIndividually[C](rs: List[Rule[C]], ts: Vector[Token[C]]): Boolean = {
+     override def rulesProduceEachTokenIndividually[C: ClassTag](rs: List[Rule[C]], ts: Sequence[Token[C]]): Boolean = {
       require(!rs.isEmpty)
       require(rulesInvariant(rs))
       ts.forall(t => rulesProduceIndividualToken(rs, t))
     }
 
-    def rulesProduceEachTokenIndividuallyMem[C](rs: List[Rule[C]], ts: Vector[Token[C]])(using cacheUp: CacheUp[C], cacheDown: CacheDown[C]): Boolean = {
+    def rulesProduceEachTokenIndividuallyMem[C: ClassTag](rs: List[Rule[C]], ts: Sequence[Token[C]])(using cacheUp: CacheUp[C], cacheDown: CacheDown[C]): Boolean = {
       require(!rs.isEmpty)
       require(rulesInvariant(rs))
       decreases(ts.size)
@@ -273,7 +244,7 @@ object VerifiedLexer {
         headPred && recPred
     }.ensuring(res => res == ts.forall(t => rulesProduceIndividualToken(rs, t)))
 
-    def rulesRegex[C](rules: List[Rule[C]]): Regex[C] = {
+    def rulesRegex[C: ClassTag](rules: List[Rule[C]]): Regex[C] = {
       require(rulesValidInductive(rules))
       ghostExpr({
         def lemma(@induct rs: List[Rule[C]]): Unit = {
@@ -285,7 +256,7 @@ object VerifiedLexer {
     }
 
     @ghost
-    def tokensListTwoByTwoPredicateList[C](l: List[Token[C]], rules: List[Rule[C]], pred: (Token[C], Token[C], List[Rule[C]]) => Boolean): Boolean = {
+    def tokensListTwoByTwoPredicateList[C: ClassTag](l: List[Token[C]], rules: List[Rule[C]], pred: (Token[C], Token[C], List[Rule[C]]) => Boolean): Boolean = {
       decreases(l)
       l match {
         case Cons(hd, Cons(next, tl)) => pred(hd, next, rules) && tokensListTwoByTwoPredicateList(Cons(next, tl), rules, pred)
@@ -294,10 +265,11 @@ object VerifiedLexer {
     }
 
     @ghost
-    def tokensListTwoByTwoPredicateSeparableList[C](l: List[Token[C]], rules: List[Rule[C]]): Boolean = {
+    def tokensListTwoByTwoPredicateSeparableList[C: ClassTag](l: List[Token[C]], rules: List[Rule[C]]): Boolean = {
       require(!rules.isEmpty)
       require(rulesInvariant(rules))
-      require(rulesProduceEachTokenIndividually(rules, Vector.fromList(l)))
+      require(rulesProduceEachTokenIndividuallyList(rules, l))
+      require(rulesProduceEachTokenIndividually(rules, seqFromList(l)))
       decreases(l)
       l match {
         case Cons(hd, Cons(next, tl)) => 
@@ -316,7 +288,7 @@ object VerifiedLexer {
       }
     }
 
-     def tokensListTwoByTwoPredicate[C](v: Vector[Token[C]], from: BigInt, rules: List[Rule[C]], pred: (Token[C], Token[C], List[Rule[C]]) => Boolean): Boolean = {
+     def tokensListTwoByTwoPredicate[C: ClassTag](v: Sequence[Token[C]], from: BigInt, rules: List[Rule[C]], pred: (Token[C], Token[C], List[Rule[C]]) => Boolean): Boolean = {
       require(from >= 0 && from <= v.size)
       require(!rules.isEmpty)
       require(rulesInvariant(rules))
@@ -347,14 +319,14 @@ object VerifiedLexer {
     }.ensuring(res => res == tokensListTwoByTwoPredicateList(v.dropList(from), rules, pred))
 
 
-    override def separableTokens[C](tokens: Vector[Token[C]], rules: List[Rule[C]]): Boolean = 
+    override def separableTokens[C: ClassTag](tokens: Sequence[Token[C]], rules: List[Rule[C]]): Boolean = 
       require(!rules.isEmpty)
       require(rulesInvariant(rules))
       require(rulesProduceEachTokenIndividually(rules, tokens))
 
       tokensListTwoByTwoPredicateSeparable(tokens, from = 0, rules)
 
-    def separableTokensMem[C](tokens: Vector[Token[C]], rules: List[Rule[C]])(using cacheUp: CacheUp[C], cacheDown: CacheDown[C]): Boolean = { 
+    def separableTokensMem[C: ClassTag](tokens: Sequence[Token[C]], rules: List[Rule[C]])(using cacheUp: CacheUp[C], cacheDown: CacheDown[C]): Boolean = { 
       require(!rules.isEmpty)
       require(rulesInvariant(rules))
       require(rulesProduceEachTokenIndividually(rules, tokens))
@@ -363,7 +335,7 @@ object VerifiedLexer {
 
     
 
-    override def tokensListTwoByTwoPredicateSeparable[C](v: Vector[Token[C]], from: BigInt, rules: List[Rule[C]]): Boolean = {
+    override def tokensListTwoByTwoPredicateSeparable[C: ClassTag](v: Sequence[Token[C]], from: BigInt, rules: List[Rule[C]]): Boolean = {
       require(from >= 0 && from <= v.size)
       require(!rules.isEmpty)
       require(rulesInvariant(rules))
@@ -397,7 +369,7 @@ object VerifiedLexer {
       res == tokensListTwoByTwoPredicateSeparableList(v.dropList(from), rules)
     })
 
-    def tokensListTwoByTwoPredicateSeparableMem[C](v: Vector[Token[C]], from: BigInt, rules: List[Rule[C]])(using cacheUp: CacheUp[C], cacheDown: CacheDown[C]): Boolean = {
+    def tokensListTwoByTwoPredicateSeparableMem[C: ClassTag](v: Sequence[Token[C]], from: BigInt, rules: List[Rule[C]])(using cacheUp: CacheUp[C], cacheDown: CacheDown[C]): Boolean = {
       require(from >= 0 && from <= v.size)
       require(!rules.isEmpty)
       require(rulesInvariant(rules))
@@ -432,31 +404,31 @@ object VerifiedLexer {
         true
     }.ensuring(res => res == tokensListTwoByTwoPredicateSeparable(v, from, rules))
 
-     override def separableTokensPredicate[C](t1: Token[C], t2: Token[C], rules: List[Rule[C]]): Boolean = {
+     override def separableTokensPredicate[C: ClassTag](t1: Token[C], t2: Token[C], rules: List[Rule[C]]): Boolean = {
       require(!rules.isEmpty)
       require(rulesInvariant(rules))
       require(rulesProduceIndividualToken(rules, t1))
       require(rulesProduceIndividualToken(rules, t2))
       require(!t2.charsOf.isEmpty)
 
-      !VerifiedRegexMatcher.prefixMatchZipperVector(rulesRegex(rules), t1.charsOf ++ Vector.singleton(t2.charsOf(0)))
+      !VerifiedRegexMatcher.prefixMatchZipperSequence(rulesRegex(rules), t1.charsOf ++ singletonSeq(t2.charsOf(0)))
     }
 
-    def separableTokensPredicateMem[C](t1: Token[C], t2: Token[C], rules: List[Rule[C]])(using cacheUp: CacheUp[C], cacheDown: CacheDown[C]): Boolean = {
+    def separableTokensPredicateMem[C: ClassTag](t1: Token[C], t2: Token[C], rules: List[Rule[C]])(using cacheUp: CacheUp[C], cacheDown: CacheDown[C]): Boolean = {
       require(!rules.isEmpty)
       require(rulesInvariant(rules))
       require(rulesProduceIndividualToken(rules, t1))
       require(rulesProduceIndividualToken(rules, t2))
       require(!t2.charsOf.isEmpty)
 
-      !VerifiedRegexMatcher.prefixMatchZipperVectorMem(rulesRegex(rules), t1.charsOf ++ Vector.singleton(t2.charsOf(0)))
+      !VerifiedRegexMatcher.prefixMatchZipperSequenceMem(rulesRegex(rules), t1.charsOf ++ singletonSeq(t2.charsOf(0)))
     }.ensuring(res => res == separableTokensPredicate(t1, t2, rules))
 
-     override def rulesInvariant[C](rules: List[Rule[C]]): Boolean =
+     override def rulesInvariant[C: ClassTag](rules: List[Rule[C]]): Boolean =
       rulesValid(rules) && noDuplicateTag(rules, Nil())
     @ghost
     // @inlineOnce
-    def lexList[C](
+    def lexList[C: ClassTag](
         rules: List[Rule[C]],
         input: List[C]
     ): (List[Token[C]], List[C]) = {
@@ -484,19 +456,19 @@ object VerifiedLexer {
       * @param rules
       * @param input
       */  
-     override def lex[C](
+     override def lex[C: ClassTag](
         rules: List[Rule[C]],
-        input: Vector[C]
-    ): (Vector[Token[C]], Vector[C]) = {
+        input: Sequence[C]
+    ): (Sequence[Token[C]], Sequence[C]) = {
       decreases(input.size)
       require(!rules.isEmpty)
       require(rulesInvariant(rules))
       lexTailRec(
         rules,
         input,
-        Vector.empty,
+        emptySeq[C](),
         input,
-        Vector.empty
+        emptySeq[Token[C]]()
       )
     }.ensuring (res =>
       (if (res._1.size > 0) res._2.size < input.size && !res._1.isEmpty
@@ -505,79 +477,52 @@ object VerifiedLexer {
        res._2.list == lexList(rules, input.list)._2)
     )
 
-    def lexRec[C](
+    def lexRec[C: ClassTag](
         rules: List[Rule[C]],
-        input: Vector[C]
-    ): (Vector[Token[C]], Vector[C]) = {
+        input: Sequence[C]
+    ): (Sequence[Token[C]], Sequence[C]) = {
       decreases(input.size)
       require(!rules.isEmpty)
       require(rulesInvariant(rules))
-      maxPrefixZipperVector(rules, input) match {
+      maxPrefixZipperSequence(rules, input) match {
         case Some((token, suffix)) => {
           val (followingTokens, nextSuffix) = lexRec(rules, suffix)
           assert(token.charsOf.list ++ suffix.list == input.list)
-          ghostExpr(Vector.listEqImpliesEq(token.charsOf ++ suffix, input))
-          assert(token.charsOf ++ suffix == input)
           (followingTokens.prepend(token), nextSuffix)
         }
-        case None() => (Vector.empty, input)
+        case None() => (emptySeq[Token[C]](), input)
       }
     }.ensuring (res =>
       (if (res._1.size > 0) res._2.size < input.size && !res._1.isEmpty
-      else res._2 == input) &&
+      else res._2.list == input.list) &&
       (res._1.list == lexList(rules, input.list)._1 && 
        res._2.list == lexList(rules, input.list)._2)
     )
 
-    def lexTailRec[C](
+    def lexTailRec[C: ClassTag](
         rules: List[Rule[C]],
-        @ghost totalInput: Vector[C],
-        @ghost treated: Vector[C],
-        input: Vector[C],
-        acc: Vector[Token[C]],
-    ): (Vector[Token[C]], Vector[C]) = {
+        @ghost totalInput: Sequence[C],
+        @ghost treated: Sequence[C],
+        input: Sequence[C],
+        acc: Sequence[Token[C]],
+    ): (Sequence[Token[C]], Sequence[C]) = {
       decreases(input.size)
       require(!rules.isEmpty)
       require(rulesInvariant(rules))
-      require(totalInput == treated ++ input)
-      require(lexRec(rules, treated) == (acc, Vector.empty[C]))
-      require(lexRec(rules, totalInput) == (acc ++ lexRec(rules, input)._1, lexRec(rules, input)._2))
-      maxPrefixZipperVector(rules, input) match {
+      require(totalInput.list == treated.list ++ input.list)
+      require(lexRec(rules, treated)._1.list == acc.list)
+      require(lexRec(rules, treated)._2.list.isEmpty)
+      require(lexRec(rules, totalInput)._1.list == (acc ++ lexRec(rules, input)._1).list)
+      require(lexRec(rules, totalInput)._2.list == lexRec(rules, input)._2.list)
+      maxPrefixZipperSequence(rules, input) match {
         case Some((token, suffix)) => {
           @ghost val (followingTokens, nextSuffix) = lexRec(rules, suffix)
-          assert(token.charsOf.list ++ suffix.list == input.list)
-          ghostExpr(Vector.listEqImpliesEq(token.charsOf ++ suffix, input))
-          assert(token.charsOf ++ suffix == input)
-          assert(lexRec(rules, suffix) == (followingTokens, nextSuffix))
-          assert(treated ++ (token.charsOf ++ suffix) == totalInput)
-          ghostExpr(ListUtils.lemmaTwoListsConcatAssociativity(treated.list, token.charsOf.list, suffix.list))
-          ghostExpr(Vector.listEqImpliesEq((treated ++ token.charsOf) ++ suffix, totalInput))
-          assert(lexRec(rules, treated) == (acc, Vector.empty[C]))
+          ghostExpr(ListUtils.lemmaConcatAssociativity(treated.list, token.charsOf.list, suffix.list))
           ghostExpr(unfold(lexRec(rules, input)))
-          assert(lexRec(rules, input)._1.head == token)
-          assert(lexRec(rules, input)._1.list == List(token) ++ followingTokens.list)
-          assert(token.charsOf ++ suffix == input)
-          assert(followingTokens.prepend(token) == lexRec(rules, input)._1)
-          ghostExpr(ListUtils.lemmaTwoListsConcatAssociativity(acc.list, List(token), followingTokens.list))
-          ghostExpr(Vector.listEqImpliesEq(acc.append(token) ++ followingTokens, acc ++ lexRec(rules, input)._1))
-          assert(acc.append(token) ++ followingTokens == acc ++ lexRec(rules, input)._1)
-          assert(lexRec(rules, treated ++ token.charsOf ++ suffix) == (acc.append(token) ++ followingTokens, nextSuffix))
-          assert(lexRec(rules, suffix) == (followingTokens, nextSuffix))
-          assert(acc.append(token).list == acc.list ++ List(token) )
+          ghostExpr(ListUtils.lemmaConcatAssociativity(acc.list, List(token), followingTokens.list))
           ghostExpr(lemmaLexThenLexPrefix(rules, treated.list ++ token.charsOf.list, suffix.list, acc.append(token).list, followingTokens.list, nextSuffix.list))
-          assert(lexList(rules, treated.list ++ token.charsOf.list) == (acc.list ++ List(token), List[C]()))
 
-          assert(lexList(rules, treated.list ++ token.charsOf.list)._1 == lexRec(rules, treated ++ token.charsOf)._1.list)
-          assert(lexList(rules, treated.list ++ token.charsOf.list)._2 == lexRec(rules, treated ++ token.charsOf)._2.list)
-          assert(treated.list ++ token.charsOf.list == (treated ++ token.charsOf).list)
           ghostExpr(unfold(lexRec(rules, treated ++ token.charsOf)))
-          assert(lexRec(rules, treated ++ token.charsOf)._1.list == (acc.append(token).list))
-          assert(lexRec(rules, treated ++ token.charsOf)._2.list == List[C]())
-          ghostExpr(Vector.listEqImpliesEq(lexRec(rules, treated ++ token.charsOf)._1, acc.append(token)))
-          ghostExpr(Vector.listEqImpliesEq(lexRec(rules, treated ++ token.charsOf)._2, Vector.empty[C]))
-          assert(lexRec(rules, treated ++ token.charsOf)._1 == (acc.append(token)))
-          assert(lexRec(rules, treated ++ token.charsOf) == (acc.append(token), Vector.empty[C]))
-          assert(lexRec(rules, treated ++ token.charsOf) == (acc.append(token), Vector.empty[C]))
           @ghost val newTreated = treated ++ token.charsOf
           lexTailRec(
             rules,
@@ -588,53 +533,53 @@ object VerifiedLexer {
           )
         }
         case None() => {
-          ghostExpr(Vector.listEqImpliesEq(acc ++ Vector.empty[Token[C]], acc))
           (acc, input)
         }
       }
-    }.ensuring (res => res == lexRec(rules, totalInput) )
+    }.ensuring (res => res._1.list == lexRec(rules, totalInput)._1.list && 
+                       res._2.list == lexRec(rules, totalInput)._2.list)
 
 
-    def lexMem[C](
+    def lexMem[C: ClassTag](
         rules: List[Rule[C]],
-        input: Vector[C]
-    )(using cacheUp: CacheUp[C], cacheDown: CacheDown[C]): (Vector[Token[C]], Vector[C]) = {
+        input: Sequence[C]
+    )(using cacheUp: CacheUp[C], cacheDown: CacheDown[C]): (Sequence[Token[C]], Sequence[C]) = {
       require(!rules.isEmpty)
       require(rulesInvariant(rules))
       require(cacheUp.valid)
       require(cacheDown.valid)
       decreases(input.size)
-
-      ghostExpr(Vector.listEqImpliesEq(Vector.empty[C] ++ input, input))
-      ghostExpr(Vector.listEqImpliesEq(Vector.empty[Token[C]] ++ lexRec(rules, input)._1, lexRec(rules, input)._1))
 
       lexTailRecMem(
         rules,
         input,
-        Vector.empty,
+        emptySeq[C](),
         input,
-        Vector.empty
+        emptySeq[Token[C]]()
       )
-    }.ensuring (res => res == lex(rules, input))
+    }.ensuring (res => res._1.list == lex(rules, input)._1.list && 
+                       res._2.list == lex(rules, input)._2.list)
 
-    def lexTailRecMem[C](
+    def lexTailRecMem[C: ClassTag](
         rules: List[Rule[C]],
-        @ghost totalInput: Vector[C],
-        @ghost treated: Vector[C],
-        input: Vector[C],
-        acc: Vector[Token[C]],
-    )(using cacheUp: CacheUp[C], cacheDown: CacheDown[C]): (Vector[Token[C]], Vector[C]) = {
+        @ghost totalInput: Sequence[C],
+        @ghost treated: Sequence[C],
+        input: Sequence[C],
+        acc: Sequence[Token[C]],
+    )(using cacheUp: CacheUp[C], cacheDown: CacheDown[C]): (Sequence[Token[C]], Sequence[C]) = {
       decreases(input.size)
       require(!rules.isEmpty)
       require(rulesInvariant(rules))
       require(cacheUp.valid)
       require(cacheDown.valid)
-      require(totalInput == treated ++ input)
-      require(lexRec(rules, treated) == (acc, Vector.empty[C]))
-      require(lexRec(rules, totalInput) == (acc ++ lexRec(rules, input)._1, lexRec(rules, input)._2))
+      require(totalInput.list == treated.list ++ input.list)
+      require(lexRec(rules, treated)._1.list == acc.list)
+      require(lexRec(rules, treated)._2.list.isEmpty)
+      require(lexRec(rules, totalInput)._1.list == (acc ++ lexRec(rules, input)._1).list)
+      require(lexRec(rules, totalInput)._2.list == lexRec(rules, input)._2.list)
       unfold(lexTailRec(rules, totalInput, treated, input, acc))
       unfold(lex(rules, input))
-      maxPrefixZipperVectorMem(rules, input) match {
+      maxPrefixZipperSequenceMem(rules, input) match {
         case Some((token, suffix)) => {
           @ghost val newTreated = treated ++ token.charsOf
           lexTailRecMem(
@@ -649,10 +594,11 @@ object VerifiedLexer {
           (acc, input)
         }
       }
-    }.ensuring (res => res == lexTailRec(rules, totalInput, treated, input, acc) )
+    }.ensuring (res => res._1.list == lexTailRec(rules, totalInput, treated, input, acc)._1.list && 
+                       res._2.list == lexTailRec(rules, totalInput, treated, input, acc)._2.list)
 
     @ghost
-    def lexRegexList[C](
+    def lexRegexList[C: ClassTag](
         rules: List[Rule[C]],
         input: List[C]
     ): (List[Token[C]], List[C]) = {
@@ -677,7 +623,7 @@ object VerifiedLexer {
       * @param l
       */
     @ghost //@inlineOnce
-    def printList[C](l: List[Token[C]]): List[C] = {
+    def printList[C: ClassTag](l: List[Token[C]]): List[C] = {
       decreases(l)
       l match {
         case Cons(hd, tl) => hd.charsOf.list ++ printList(tl)
@@ -686,26 +632,26 @@ object VerifiedLexer {
     }
 
     @ghost //@inlineOnce
-    def printListTailRec[C](l: List[Token[C]], acc: List[C] = Nil()): List[C] = {
+    def printListTailRec[C: ClassTag](l: List[Token[C]], acc: List[C] = Nil()): List[C] = {
       decreases(l)
       l match {
         case Cons(hd, tl) => {
-          ListUtils.lemmaTwoListsConcatAssociativity(acc, hd.charsOf.list, printList(tl))
+          ListUtils.lemmaConcatAssociativity(acc, hd.charsOf.list, printList(tl))
           printListTailRec(tl, acc ++ hd.charsOf.list)
         }
         case Nil()        => acc
       }
     }.ensuring(res => res == acc ++ printList(l))
 
-    override def print[C](v: Vector[Token[C]]): Vector[C] = {
-      printTailRec(v)
+    override def print[C: ClassTag](v: Sequence[Token[C]]): Sequence[C] = {
+      printTailRec(v, from = 0, acc = emptySeq[C]())
     }.ensuring(res => res.list == printList(v.list))
 
-    def printRec[C](v: Vector[Token[C]], from: BigInt = 0): Vector[C] = {
+    def printRec[C: ClassTag](v: Sequence[Token[C]], from: BigInt = 0): Sequence[C] = {
       require(from >= 0 && from <= v.size)
       decreases(v.size - from)
       if from >= v.size then
-        Vector.empty
+        emptySeq[C]()
       else
         ghostExpr({
           ListUtils.lemmaDropApply(v.list, from)
@@ -714,7 +660,7 @@ object VerifiedLexer {
         v(from).charsOf ++ printRec(v, from + 1)
     }.ensuring(res => res.list == printList(v.dropList(from)))
 
-    def printTailRec[C](v: Vector[Token[C]], from: BigInt = 0, acc: Vector[C] = Vector.empty[C]): Vector[C] = {
+    def printTailRec[C: ClassTag](v: Sequence[Token[C]], from: BigInt, acc: Sequence[C]): Sequence[C] = {
       require(from >= 0 && from <= v.size)
       decreases(v.size - from)
       if from >= v.size then
@@ -734,7 +680,7 @@ object VerifiedLexer {
       * @param separatorToken
       */
     @ghost
-    def printWithSeparatorTokenList[C](l: List[Token[C]], separatorToken: Token[C]): List[C] = {
+    def printWithSeparatorTokenList[C: ClassTag](l: List[Token[C]], separatorToken: Token[C]): List[C] = {
       require(separatorToken.rule.isSeparator)
       decreases(l)
       l match {
@@ -743,18 +689,16 @@ object VerifiedLexer {
       }
     }
 
-    override def withSeparatorToken[C](v: Vector[Token[C]], separatorToken: Token[C]): Vector[Token[C]] = {
+    override def withSeparatorToken[C: ClassTag](v: Sequence[Token[C]], separatorToken: Token[C]): Sequence[Token[C]] = {
       require(separatorToken.rule.isSeparator)
-      assert(withSeparatorTokenInner(v, separatorToken).list == withSeparatorTokenList(v.list, separatorToken))
+      assert(withSeparatorTokenInner(v, separatorToken, 0, emptySeq()).list == withSeparatorTokenList(v.list, separatorToken))
       assert(printList(withSeparatorTokenList(v.list, separatorToken)) == printWithSeparatorTokenList(v.list, separatorToken))
-      assert(print(withSeparatorTokenInner(v, separatorToken)).list == printWithSeparatorTokenList(v.list, separatorToken))
-      assert(print(withSeparatorTokenInner(v, separatorToken)).list == printWithSeparatorToken(v, separatorToken).list)
-      ghostExpr(Vector.listEqImpliesEq(print(withSeparatorTokenInner(v, separatorToken)), printWithSeparatorToken(v, separatorToken)))
-      assert(print(withSeparatorTokenInner(v, separatorToken)) == printWithSeparatorToken(v, separatorToken))
-      withSeparatorTokenInner(v, separatorToken)
-    }.ensuring(res => res.list == withSeparatorTokenList(v.list, separatorToken) && print(res) == printWithSeparatorToken(v, separatorToken))
+      assert(print(withSeparatorTokenInner(v, separatorToken, 0, emptySeq())).list == printWithSeparatorTokenList(v.list, separatorToken))
+      assert(print(withSeparatorTokenInner(v, separatorToken, 0, emptySeq())).list == printWithSeparatorToken(v, separatorToken).list)
+      withSeparatorTokenInner(v, separatorToken, 0, emptySeq())
+    }.ensuring(res => res.list == withSeparatorTokenList(v.list, separatorToken) && print(res).list == printWithSeparatorToken(v, separatorToken).list)
 
-    def withSeparatorTokenInner[C](v: Vector[Token[C]], separatorToken: Token[C], from: BigInt = 0, acc: Vector[Token[C]] = Vector.empty[Token[C]]): Vector[Token[C]] = {
+    def withSeparatorTokenInner[C: ClassTag](v: Sequence[Token[C]], separatorToken: Token[C], from: BigInt , acc: Sequence[Token[C]]): Sequence[Token[C]] = {
       require(from >= 0 && from <= v.size)
       require(separatorToken.rule.isSeparator)
       decreases(v.size - from)
@@ -764,21 +708,19 @@ object VerifiedLexer {
         ghostExpr({
           ListUtils.lemmaDropApply(v.list, from)
           ListUtils.lemmaDropTail(v.list, from)
-          Vector.listEqImpliesEq(Vector.singleton(v(from)) ++ Vector.singleton(separatorToken), Vector.fromList(List(v(from), separatorToken)))
-          ListUtils.lemmaTwoListsConcatAssociativity(acc.list, List(v(from), separatorToken), withSeparatorTokenList(v.list.drop(from + 1), separatorToken))
-          assert(withSeparatorTokenInner(v, separatorToken, from + 1, acc ++ (Vector.singleton(v(from)) ++ Vector.singleton(separatorToken))).list == (acc ++ (Vector.singleton(v(from)) ++ Vector.singleton(separatorToken))).list ++ withSeparatorTokenList(v.list.drop(from + 1), separatorToken))
-          Vector.listEqImpliesEq(Vector.singleton(v(from)), Vector.fromList(List(v(from))))
-          assert((acc ++ Vector.singleton(v(from))).list == acc.list ++ List(v(from)))
+          ListUtils.lemmaConcatAssociativity(acc.list, List(v(from), separatorToken), withSeparatorTokenList(v.list.drop(from + 1), separatorToken))
+          assert(withSeparatorTokenInner(v, separatorToken, from + 1, acc ++ (singletonSeq(v(from)) ++ singletonSeq(separatorToken))).list == (acc ++ (singletonSeq(v(from)) ++ singletonSeq(separatorToken))).list ++ withSeparatorTokenList(v.list.drop(from + 1), separatorToken))
+          assert((acc ++ singletonSeq(v(from))).list == acc.list ++ List(v(from)))
         })
-        withSeparatorTokenInner(v, separatorToken, from + 1, acc ++ (Vector.singleton(v(from)) ++ Vector.singleton(separatorToken)))
+        withSeparatorTokenInner(v, separatorToken, from + 1, acc ++ (singletonSeq(v(from)) ++ singletonSeq(separatorToken)))
     }.ensuring(res => res.list == acc.list ++ withSeparatorTokenList(v.list.drop(from), separatorToken))
 
     
-    @ghost override def interleavingSeparatorTokenMakesSeparableSequence[C](rules: List[Rule[C]], tokens: Vector[Token[C]], separatorToken: Token[C]): Boolean = {
+    @ghost override def interleavingSeparatorTokenMakesSeparableSequence[C: ClassTag](rules: List[Rule[C]], tokens: Sequence[Token[C]], separatorToken: Token[C]): Boolean = {
       if (!rules.isEmpty && 
         rulesInvariant(rules) && 
         rulesProduceEachTokenIndividually(rules, tokens) &&
-        sepAndNonSepRulesDisjointChars(rules, rules) && 
+        LexerInterface.sepAndNonSepRulesDisjointChars(rules, rules) && 
         rulesProduceIndividualToken(rules, separatorToken) &&
         tokens.forall(!_.rule.isSeparator) &&
         separatorToken.rule.isSeparator) 
@@ -790,14 +732,14 @@ object VerifiedLexer {
     }
 
     @ghost
-    def withSeparatorTokenList[C](l: List[Token[C]], separatorToken: Token[C]): List[Token[C]] = {
+    def withSeparatorTokenList[C: ClassTag](l: List[Token[C]], separatorToken: Token[C]): List[Token[C]] = {
       require(separatorToken.rule.isSeparator)
       decreases(l)
       l match {
         case Cons(hd, tl) => {
           unfold(printList(hd :: separatorToken :: withSeparatorTokenList(tl, separatorToken)))
           unfold(printList(separatorToken :: withSeparatorTokenList(tl, separatorToken)))
-          ListUtils.lemmaTwoListsConcatAssociativity(hd.charsOf.list, separatorToken.charsOf.list, printList(withSeparatorTokenList(tl, separatorToken)))
+          ListUtils.lemmaConcatAssociativity(hd.charsOf.list, separatorToken.charsOf.list, printList(withSeparatorTokenList(tl, separatorToken)))
           hd :: separatorToken :: withSeparatorTokenList(tl, separatorToken)
         }
         case Nil()        => Nil[Token[C]]()
@@ -806,13 +748,13 @@ object VerifiedLexer {
 
 
     @ghost
-    def printWithSeparatorTokenListTailRec[C](l: List[Token[C]], separatorToken: Token[C], acc: List[C] = Nil[C]()): List[C] = {
+    def printWithSeparatorTokenListTailRec[C: ClassTag](l: List[Token[C]], separatorToken: Token[C], acc: List[C] = Nil[C]()): List[C] = {
       require(separatorToken.rule.isSeparator)
       decreases(l)
       l match {
         case Cons(hd, tl) => {
-          ListUtils.lemmaTwoListsConcatAssociativity(acc, hd.charsOf.list ++ separatorToken.charsOf.list, printWithSeparatorTokenList(tl, separatorToken))
-          ListUtils.lemmaTwoListsConcatAssociativity(acc, hd.charsOf.list, separatorToken.charsOf.list)
+          ListUtils.lemmaConcatAssociativity(acc, hd.charsOf.list ++ separatorToken.charsOf.list, printWithSeparatorTokenList(tl, separatorToken))
+          ListUtils.lemmaConcatAssociativity(acc, hd.charsOf.list, separatorToken.charsOf.list)
           printWithSeparatorTokenListTailRec(tl, separatorToken, acc ++ hd.charsOf.list ++ separatorToken.charsOf.list)
         }
         case Nil()        => acc
@@ -820,18 +762,18 @@ object VerifiedLexer {
     }.ensuring(res => res == acc ++ printWithSeparatorTokenList(l, separatorToken))
     
 
-    override def printWithSeparatorToken[C](v: Vector[Token[C]], separatorToken: Token[C], from: BigInt = 0): Vector[C] = {
-      require(from >= 0 && from <= v.size)
+    override def printWithSeparatorToken[C: ClassTag](v: Sequence[Token[C]], separatorToken: Token[C]): Sequence[C] = {
+      // require(from >= 0 && from <= v.size)
       require(separatorToken.rule.isSeparator)
-      printWithSeparatorTokenTailRec(v, separatorToken, from)
-    }.ensuring(res => res.list == printWithSeparatorTokenList(v.dropList(from), separatorToken))
+      printWithSeparatorTokenTailRec(v, separatorToken, 0, emptySeq[C]())
+    }.ensuring(res => res.list == printWithSeparatorTokenList(v.list, separatorToken))
 
-    def printWithSeparatorTokenRec[C](v: Vector[Token[C]], separatorToken: Token[C], from: BigInt = 0): Vector[C] = {
+    def printWithSeparatorTokenRec[C: ClassTag](v: Sequence[Token[C]], separatorToken: Token[C], from: BigInt = 0): Sequence[C] = {
       require(from >= 0 && from <= v.size)
       require(separatorToken.rule.isSeparator)
       decreases(v.size - from)
       if from >= v.size then
-        Vector.empty
+        emptySeq[C]()
       else
         ghostExpr({
           ListUtils.lemmaDropApply(v.list, from)
@@ -840,7 +782,7 @@ object VerifiedLexer {
         v(from).charsOf ++ separatorToken.charsOf ++ printWithSeparatorTokenRec(v, separatorToken, from + 1)
     }.ensuring(res => res.list == printWithSeparatorTokenList(v.dropList(from), separatorToken))
 
-    def printWithSeparatorTokenTailRec[C](v: Vector[Token[C]], separatorToken: Token[C], from: BigInt = 0, acc: Vector[C] = Vector.empty[C]): Vector[C] = {
+    def printWithSeparatorTokenTailRec[C: ClassTag](v: Sequence[Token[C]], separatorToken: Token[C], from: BigInt, acc: Sequence[C]): Sequence[C] = {
       require(from >= 0 && from <= v.size)
       require(separatorToken.rule.isSeparator)
       decreases(v.size - from)
@@ -861,14 +803,14 @@ object VerifiedLexer {
       * @param separatorToken
       */
     @ghost
-    def printWithSeparatorTokenWhenNeededList[C](rules: List[Rule[C]], l: List[Token[C]], separatorToken: Token[C]): List[C] = {
+    def printWithSeparatorTokenWhenNeededList[C: ClassTag](rules: List[Rule[C]], l: List[Token[C]], separatorToken: Token[C]): List[C] = {
       require(!rules.isEmpty)
       require(rulesInvariant(rules))
       require(rulesProduceEachTokenIndividuallyList(rules, l))
       require(rulesProduceIndividualToken(rules, separatorToken))
       require(separatorToken.rule.isSeparator)
       require(l.forall(!_.rule.isSeparator))
-      require(sepAndNonSepRulesDisjointChars(rules, rules))
+      require(LexerInterface.sepAndNonSepRulesDisjointChars(rules, rules))
       decreases(l)
 
       l match {
@@ -884,14 +826,11 @@ object VerifiedLexer {
             case Some((t, s)) if t != hd => hd.charsOf.list ++ separatorToken.charsOf.list ++ suffix
             case None() => {
               ghostExpr({
-                Vector.listEqImpliesEq(hd.charsOf, Vector.fromList(hd.charsOf.list))
-                ghostExpr(unfold(print(Vector.singleton(hd))))
-                assert(print(Vector.singleton(hd)).list == printList(List(hd)))
+                ghostExpr(unfold(print(singletonSeq(hd))))
+                assert(print(singletonSeq(hd)).list == printList(List(hd)))
                 assert(printList(List(hd)) == hd.charsOf.list)
-                ghostExpr(Vector.listEqImpliesEq(print(Vector.singleton(hd)), hd.charsOf))
-                assert(print(Vector.singleton(hd)) == hd.charsOf)
                 assert(rulesProduceIndividualToken(rules, hd))
-                assert(!lex(rules, Vector.fromList(hd.charsOf.list))._1.isEmpty)
+                assert(!lex(rules, seqFromList(hd.charsOf.list))._1.isEmpty)
                 lemmaLexIsDefinedWithStrThenLexWithSuffixIsDefined(rules, hd.charsOf.list, suffix)
               })
               check(false)
@@ -903,7 +842,18 @@ object VerifiedLexer {
       }
     }
 
-    override def printWithSeparatorTokenWhenNeeded[C](rules: List[Rule[C]], v: Vector[Token[C]], separatorToken: Token[C], from: BigInt = 0): Vector[C] = {
+    override def printWithSeparatorTokenWhenNeeded[C: ClassTag](rules: List[Rule[C]], v: Sequence[Token[C]], separatorToken: Token[C]): Sequence[C] = {
+      require(!rules.isEmpty)
+      require(rulesInvariant(rules))
+      require(rulesProduceEachTokenIndividually(rules, v))
+      require(rulesProduceIndividualToken(rules, separatorToken))
+      require(separatorToken.rule.isSeparator)
+      require(v.forall(!_.rule.isSeparator))
+      require(LexerInterface.sepAndNonSepRulesDisjointChars(rules, rules))
+      printWithSeparatorTokenWhenNeededRec(rules, v, separatorToken, from = 0)
+    }.ensuring(res => res.list == printWithSeparatorTokenWhenNeededList(rules, v.list, separatorToken))
+
+    def printWithSeparatorTokenWhenNeededRec[C: ClassTag](rules: List[Rule[C]], v: Sequence[Token[C]], separatorToken: Token[C], from: BigInt): Sequence[C] = {
       require(from >= 0 && from <= v.size)
       require(!rules.isEmpty)
       require(rulesInvariant(rules))
@@ -911,13 +861,13 @@ object VerifiedLexer {
       require(rulesProduceIndividualToken(rules, separatorToken))
       require(separatorToken.rule.isSeparator)
       require(v.forall(!_.rule.isSeparator))
-      require(sepAndNonSepRulesDisjointChars(rules, rules))
+      require(LexerInterface.sepAndNonSepRulesDisjointChars(rules, rules))
       decreases(v.size - from)
 
       ghostExpr(ListUtils.lemmaContentSubsetPreservesForall(v.list, v.dropList(from), t => !t.rule.isSeparator))
 
       if from >= v.size then
-        Vector.empty
+        emptySeq[C]()
       else {
         ghostExpr({
           ListUtils.lemmaDropApply(v.list, from)
@@ -926,25 +876,22 @@ object VerifiedLexer {
           assert(v.list.contains(v(from)))
           ListSpecs.forallContained(v.list, t => rulesProduceIndividualToken(rules, t), v(from))
         })
-        val suffix = printWithSeparatorTokenWhenNeeded(rules, v, separatorToken, from + 1)
-        val maxPrefWithoutSep = maxPrefixZipperVector(rules, v(from).charsOf ++ suffix)
+        val suffix = printWithSeparatorTokenWhenNeededRec(rules, v, separatorToken, from + 1)
+        val maxPrefWithoutSep = maxPrefixZipperSequence(rules, v(from).charsOf ++ suffix)
         maxPrefWithoutSep match {
           case Some((t, s)) if t == v(from) => v(from).charsOf ++ suffix
           case Some((t, s)) if t != v(from) => v(from).charsOf ++ separatorToken.charsOf ++ suffix
           case None() => {
             ghostExpr({
-              Vector.listEqImpliesEq(v(from).charsOf, Vector.fromList(v(from).charsOf.list))
-              ghostExpr(unfold(print(Vector.singleton(v(from)))))
-              assert(print(Vector.singleton(v(from))).list == printList(List(v(from))))
+              ghostExpr(unfold(print(singletonSeq(v(from)))))
+              assert(print(singletonSeq(v(from))).list == printList(List(v(from))))
               assert(printList(List(v(from))) == v(from).charsOf.list)
-              ghostExpr(Vector.listEqImpliesEq(print(Vector.singleton(v(from))), v(from).charsOf))
-              assert(print(Vector.singleton(v(from))) == v(from).charsOf)
               assert(rulesProduceIndividualToken(rules, v(from)))
-              assert(!lex(rules, Vector.fromList(v(from).charsOf.list))._1.isEmpty)
+              assert(!lex(rules, seqFromList(v(from).charsOf.list))._1.isEmpty)
               lemmaLexIsDefinedWithStrThenLexWithSuffixIsDefined(rules, v(from).charsOf.list, suffix.list)
             })
             check(false)
-            Vector.empty
+            emptySeq[C]()
           }
         }
       }
@@ -957,7 +904,7 @@ object VerifiedLexer {
       * @param input
       */
     @ghost
-    def maxPrefix[C](
+    def maxPrefix[C: ClassTag](
         rulesArg: List[Rule[C]],
         input: List[C]
     ): Option[(Token[C], List[C])] = {
@@ -984,18 +931,18 @@ object VerifiedLexer {
       || 
         (
           res.isDefined && (
-                            res.get._1.charsOf.list == res.get._1.originalCharacters.list && 
+                            res.get._1.charsOf.list == res.get._1.originalCharacters && 
                             res.get._2.size < input.size && 
                             res.get._1.charsOf.list ++ res.get._2 == input
                           )
-                       && res.get._1.value == res.get._1.rule.transformation.apply(res.get._1.originalCharacters)
+                       && res.get._1.value == res.get._1.rule.transformation.apply(seqFromList(res.get._1.originalCharacters))
                        && matchR(res.get._1.rule.regex, res.get._1.charsOf.list)
                        && rulesArg.contains(res.get._1.rule)
         )
       )
 
     @ghost
-    def maxPrefixZipper[C](
+    def maxPrefixZipper[C: ClassTag](
         rulesArg: List[Rule[C]],
         input: List[C]
     ): Option[(Token[C], List[C])] = {
@@ -1019,20 +966,20 @@ object VerifiedLexer {
       }
     }.ensuring (res => res == maxPrefix(rulesArg, input))
 
-    def maxPrefixZipperVector[C](
+    def maxPrefixZipperSequence[C: ClassTag](
         rulesArg: List[Rule[C]],
-        input: Vector[C]
-    ): Option[(Token[C], Vector[C])] = {
+        input: Sequence[C]
+    ): Option[(Token[C], Sequence[C])] = {
       require(rulesValidInductive(rulesArg))
       require(!rulesArg.isEmpty)
       decreases(rulesArg.size)
 
       ghostExpr(ListUtils.lemmaIsPrefixRefl(input.list, input.list))
       rulesArg match {
-        case Cons(hd, Nil()) => maxPrefixOneRuleZipperVector(hd, input)
+        case Cons(hd, Nil()) => maxPrefixOneRuleZipperSequence(hd, input)
         case Cons(hd, tl) => {
-          val currentRulePref = maxPrefixOneRuleZipperVector(hd, input)
-          val othersPrefix = maxPrefixZipperVector(tl, input)
+          val currentRulePref = maxPrefixOneRuleZipperSequence(hd, input)
+          val othersPrefix = maxPrefixZipperSequence(tl, input)
           (currentRulePref, othersPrefix) match {
             case (None(), None())   => None()
             case (c, None())        => c
@@ -1050,10 +997,10 @@ object VerifiedLexer {
                        else true)
                        )
 
-    def maxPrefixZipperVectorMem[C](
+    def maxPrefixZipperSequenceMem[C: ClassTag](
             rulesArg: List[Rule[C]],
-            input: Vector[C]
-        )(using cacheUp: CacheUp[C], cacheDown: CacheDown[C]): Option[(Token[C], Vector[C])] = {
+            input: Sequence[C]
+        )(using cacheUp: CacheUp[C], cacheDown: CacheDown[C]): Option[(Token[C], Sequence[C])] = {
           require(rulesValidInductive(rulesArg))
           require(!rulesArg.isEmpty)
           require(cacheUp.valid)
@@ -1062,10 +1009,10 @@ object VerifiedLexer {
 
           ghostExpr(ListUtils.lemmaIsPrefixRefl(input.list, input.list))
           rulesArg match {
-            case Cons(hd, Nil()) => maxPrefixOneRuleZipperVectorMem(hd, input)
+            case Cons(hd, Nil()) => maxPrefixOneRuleZipperSequenceMem(hd, input)
             case Cons(hd, tl) => {
-              val currentRulePref = maxPrefixOneRuleZipperVectorMem(hd, input)
-              val othersPrefix = maxPrefixZipperVectorMem(tl, input)
+              val currentRulePref = maxPrefixOneRuleZipperSequenceMem(hd, input)
+              val othersPrefix = maxPrefixZipperSequenceMem(tl, input)
               (currentRulePref, othersPrefix) match {
                 case (None(), None())   => None()
                 case (c, None())        => c
@@ -1074,7 +1021,7 @@ object VerifiedLexer {
               }
             }
           }
-        }.ensuring (res => res == maxPrefixZipperVector(rulesArg, input) && cacheUp.valid && cacheDown.valid)
+        }.ensuring (res => res == maxPrefixZipperSequence(rulesArg, input) && cacheUp.valid && cacheDown.valid)
 
     /** Finds the biggest prefix matching any rule in the input list of characters If nothing matched a rule, returns None Else, returns the matched
       * prefix and the remaining suffix
@@ -1083,7 +1030,7 @@ object VerifiedLexer {
       * @param input
       */
     @ghost
-    def maxPrefixOneRule[C](
+    def maxPrefixOneRule[C: ClassTag](
         rule: Rule[C],
         input: List[C]
     ): Option[(Token[C], List[C])] = {
@@ -1094,8 +1041,8 @@ object VerifiedLexer {
         None[(Token[C], List[C])]()
       } else {
         ghostExpr(longestMatchIsAcceptedByMatchOrIsEmpty(rule.regex, input))
-        ghostExpr(ForallOf((a: Vector[C]) => rule.transformation.witness(rule.transformation.f(a)) == a)(Vector.fromList(longestPrefix)))
-        Some[(Token[C], List[C])]((Token(rule.transformation.apply(Vector.fromList(longestPrefix)), rule, Vector.fromList(longestPrefix).size, Vector.fromList(longestPrefix)), suffix))
+        ghostExpr(rule.transformation.lemmaSemiInverse(seqFromList(longestPrefix)))
+        Some[(Token[C], List[C])]((Token(rule.transformation.apply(seqFromList(longestPrefix)), rule, seqFromList(longestPrefix).size, longestPrefix), suffix))
       }
 
     }.ensuring (res =>
@@ -1103,12 +1050,12 @@ object VerifiedLexer {
         rule.regex,
         res.get._1.charsOf.list
       ) && res.get._1.charsOf.list ++ res.get._2 == input && res.get._2.size < input.size && res.get._1.rule == rule
-      && res.get._1.value == res.get._1.rule.transformation.apply(res.get._1.originalCharacters)
+      && res.get._1.value == res.get._1.rule.transformation.apply(seqFromList(res.get._1.originalCharacters))
       && res.get._1.size == res.get._1.originalCharacters.size
     )
 
     @ghost
-    def maxPrefixOneRuleZipper[C](
+    def maxPrefixOneRuleZipper[C: ClassTag](
         rule: Rule[C],
         input: List[C]
     ): Option[(Token[C], List[C])] = {
@@ -1120,28 +1067,45 @@ object VerifiedLexer {
       } else {
         ghostExpr(longestMatchIsAcceptedByMatchOrIsEmpty(rule.regex, input))
         ghostExpr(rule.transformation.lemmaInv())
-        ghostExpr(assert(Forall((a: Vector[C]) => rule.transformation.witness(rule.transformation.f(a)) == a)))
-        ghostExpr(ForallOf((a: Vector[C]) => rule.transformation.witness(rule.transformation.f(a)) == a)(Vector.fromList(longestPrefix)))
-        Some[(Token[C], List[C])]((Token(rule.transformation.apply(Vector.fromList(longestPrefix)), rule, Vector.fromList(longestPrefix).size, Vector.fromList(longestPrefix)), suffix))
+        ghostExpr(rule.transformation.lemmaSemiInverse(seqFromList(longestPrefix)))
+        Some[(Token[C], List[C])]((Token(rule.transformation.apply(seqFromList(longestPrefix)), rule, longestPrefix.size, longestPrefix), suffix))
       }
     }.ensuring (res => res == maxPrefixOneRule(rule, input))
 
-    def maxPrefixOneRuleZipperVector[C](
+    def maxPrefixOneRuleZipperSequence[C: ClassTag](
         rule: Rule[C],
-        input: Vector[C]
-    ): Option[(Token[C], Vector[C])] = {
+        input: Sequence[C]
+    ): Option[(Token[C], Sequence[C])] = {
       require(ruleValid(rule))
 
-      val (longestPrefix, suffix) = findLongestMatchWithZipperVector(rule.regex, input)
+      val (longestPrefix, suffix) = findLongestMatchWithZipperSequence(rule.regex, input)
       if (longestPrefix.isEmpty) {
-        None[(Token[C], Vector[C])]()
+        None[(Token[C], Sequence[C])]()
       } else {
         ghostExpr(longestMatchIsAcceptedByMatchOrIsEmpty(rule.regex, input.list))
         ghostExpr(rule.transformation.lemmaInv())
-        ghostExpr(assert(Forall((a: Vector[C]) => rule.transformation.witness(rule.transformation.f(a)) == a)))
-        ghostExpr(ForallOf((a: Vector[C]) => rule.transformation.witness(rule.transformation.f(a)) == a)(longestPrefix))
-        ghostExpr(Vector.listEqImpliesEq(Vector.fromList(findLongestMatch(rule.regex, input.list)._1), longestPrefix))
-        Some[(Token[C], Vector[C])]((Token(rule.transformation.apply(longestPrefix), rule, longestPrefix.size, longestPrefix), suffix))
+        ghostExpr(assert(semiInverseModEq(rule.transformation.toChars, rule.transformation.toValue)))
+        ghostExpr(assert(semiInverseBodyModEq(rule.transformation.toChars, rule.transformation.toValue)))
+        ghostExpr(ForallOf((chars: Sequence[C]) => rule.transformation.toChars(rule.transformation.toValue(chars)).list == chars.list)(longestPrefix))
+        ghostExpr(ForallOf((chars: Sequence[C]) => rule.transformation.toChars(rule.transformation.toValue(chars)).list == chars.list)(seqFromList(longestPrefix.list)))
+        ghostExpr({
+          val res = Some[(Token[C], Sequence[C])]((Token(rule.transformation.apply(longestPrefix), rule, longestPrefix.size, longestPrefix.list), suffix))
+          
+          assert(res.isDefined == maxPrefixOneRule(rule, input.list).isDefined )
+          assert(res.isDefined)
+          assert(seqFromList(longestPrefix.list).list == longestPrefix.list)
+          ghostExpr(rule.transformation.lemmaEqSameImage(longestPrefix, seqFromList(longestPrefix.list)))
+          assert(rule.transformation.apply(seqFromList(longestPrefix.list)) == rule.transformation.apply(longestPrefix))
+          assert(maxPrefixOneRule(rule, input.list).get._1.value == rule.transformation.apply(longestPrefix))
+          assert(maxPrefixOneRule(rule, input.list).get._1.rule == rule)
+          assert(maxPrefixOneRule(rule, input.list).get._1.size == longestPrefix.size)
+          assert(maxPrefixOneRule(rule, input.list).get._1.originalCharacters == longestPrefix.list)
+          assert(Token(rule.transformation.apply(longestPrefix), rule, longestPrefix.size, longestPrefix.list) == maxPrefixOneRule(rule, input.list).get._1)
+          assert(res.get._1 == maxPrefixOneRule(rule, input.list).get._1)
+          assert(res.get._2.list == maxPrefixOneRule(rule, input.list).get._2)
+
+        })  
+        Some[(Token[C], Sequence[C])]((Token(rule.transformation.apply(longestPrefix), rule, longestPrefix.size, longestPrefix.list), suffix))
       }
 
     }.ensuring (res => res.isDefined == maxPrefixOneRule(rule, input.list).isDefined && 
@@ -1149,28 +1113,25 @@ object VerifiedLexer {
                           res.get._2.list == maxPrefixOneRule(rule, input.list).get._2
                        else true))
 
-     def maxPrefixOneRuleZipperVectorMem[C](
+     def maxPrefixOneRuleZipperSequenceMem[C: ClassTag](
         rule: Rule[C],
-        input: Vector[C]
-    )(using cacheUp: CacheUp[C], cacheDown: CacheDown[C]): Option[(Token[C], Vector[C])] = {
+        input: Sequence[C]
+    )(using cacheUp: CacheUp[C], cacheDown: CacheDown[C]): Option[(Token[C], Sequence[C])] = {
       require(ruleValid(rule))
       require(cacheUp.valid)
       require(cacheDown.valid)
 
-      val (longestPrefix, suffix) = findLongestMatchWithZipperVectorMem(rule.regex, input)
-      assert((longestPrefix, suffix) == findLongestMatchWithZipperVector(rule.regex, input))
+      val (longestPrefix, suffix) = findLongestMatchWithZipperSequenceMem(rule.regex, input)
+      assert((longestPrefix, suffix) == findLongestMatchWithZipperSequence(rule.regex, input))
       if (longestPrefix.isEmpty) {
-        None[(Token[C], Vector[C])]()
+        None[(Token[C], Sequence[C])]()
       } else {
         ghostExpr(longestMatchIsAcceptedByMatchOrIsEmpty(rule.regex, input.list))
-        ghostExpr(rule.transformation.lemmaInv())
-        ghostExpr(assert(Forall((a: Vector[C]) => rule.transformation.witness(rule.transformation.f(a)) == a)))
-        ghostExpr(ForallOf((a: Vector[C]) => rule.transformation.witness(rule.transformation.f(a)) == a)(longestPrefix))
-        ghostExpr(Vector.listEqImpliesEq(Vector.fromList(findLongestMatch(rule.regex, input.list)._1), longestPrefix))
-        Some[(Token[C], Vector[C])]((Token(rule.transformation.apply(longestPrefix), rule, longestPrefix.size, longestPrefix), suffix))
+        ghostExpr(rule.transformation.lemmaSemiInverse(longestPrefix))
+        Some[(Token[C], Sequence[C])]((Token(rule.transformation.apply(longestPrefix), rule, longestPrefix.size, longestPrefix.list), suffix))
       }
 
-    }.ensuring (res => res == maxPrefixOneRuleZipperVector(rule, input))
+    }.ensuring (res => res == maxPrefixOneRuleZipperSequence(rule, input))
 
     // Proofs --------------------------------------------------------------------------------------------------------------------------------
 
@@ -1181,7 +1142,7 @@ object VerifiedLexer {
     @opaque
     @inlineOnce
     @pure
-    def theoremLexSoundFirstChar[C](
+    def theoremLexSoundFirstChar[C: ClassTag](
         rules: List[Rule[C]],
         input: List[C],
         suffix: List[C],
@@ -1195,7 +1156,7 @@ object VerifiedLexer {
       require(rules.contains(r))
       require(rules.contains(otherR))
       require({
-        val (lexedTokens, lexedSuffix) = lex(rules, Vector.fromList(input))
+        val (lexedTokens, lexedSuffix) = lex(rules, seqFromList(input))
         (lexedTokens.list, lexedSuffix.list) == (tokens, suffix)
       })
       require(tokens.isEmpty || tokens.head.charsOf.size <= otherP.size)
@@ -1215,7 +1176,6 @@ object VerifiedLexer {
             lemmaMaxPrefOneRuleReturnsNoneThenNoPrefMaxRegex(otherR, otherP, input)
           }
           case Cons(hd, tl) => {
-            Vector.listEqImpliesEq(Vector.fromList(hd.charsOf.list), hd.charsOf)
             val (tok, suf) = maxPrefix(rules, input).get
             assert(hd == tok)
             ListUtils.lemmaConcatTwoListThenFirstIsPrefix(hd.charsOf.list, suf)
@@ -1241,7 +1201,6 @@ object VerifiedLexer {
             lemmaMaxPrefOneRuleReturnsNoneThenNoPrefMaxRegex(otherR, otherP, input)
           }
           case Cons(hd, tl) => {
-            Vector.listEqImpliesEq(Vector.fromList(hd.charsOf.list), hd.charsOf)
             val (tok, suf) = maxPrefix(rules, input).get
             ListUtils.lemmaConcatTwoListThenFirstIsPrefix(hd.charsOf.list, suf)
             ListUtils.lemmaSamePrefixThenSameSuffix(hd.charsOf.list, suf, hd.charsOf.list, ListUtils.getSuffix(input, hd.charsOf.list), input)
@@ -1259,7 +1218,7 @@ object VerifiedLexer {
       else tokens.size > 0 && otherP.size <= tokens.head.charsOf.size || !matchR(otherR.regex, otherP)
     )
 
-    @ghost override def maximalMunchPrinciple[C](
+    @ghost override def maximalMunchPrinciple[C: ClassTag](
         rules: List[Rule[C]],
         input: List[C],
         suffix: List[C],
@@ -1274,7 +1233,7 @@ object VerifiedLexer {
         (rules.contains(r)) &&
         (rules.contains(otherR)) &&
         ({
-          val (lexedTokens: Vector[Token[C]], lexedSuffix: Vector[C]) = lex(rules, Vector.fromList(input))
+          val (lexedTokens: Sequence[Token[C]], lexedSuffix: Sequence[C]) = lex(rules, seqFromList(input))
           (lexedTokens.list, lexedSuffix.list) == (tokens, suffix)
         }) &&
         (tokens.isEmpty || tokens.head.charsOf.list.size <= otherP.size) &&
@@ -1284,7 +1243,7 @@ object VerifiedLexer {
         (tokens.isEmpty || VerifiedRegexMatcher.matchR(r.regex, tokens.head.charsOf.list)) 
       then
         theoremLexSoundFirstChar(rules, input, suffix, tokens, r, otherR, otherP)
-        val (lexedTokens: Vector[Token[C]], lexedSuffix: Vector[C]) = lex(rules, Vector.fromList(input))
+        val (lexedTokens: Sequence[Token[C]], lexedSuffix: Sequence[C]) = lex(rules, seqFromList(input))
         assert(lexedTokens.list == tokens)
         assert(lexedSuffix.list == suffix)
         (if (ListUtils.getIndex(rules, otherR) < ListUtils.getIndex(rules, r)) !VerifiedRegexMatcher.matchR(otherR.regex, otherP)
@@ -1293,12 +1252,12 @@ object VerifiedLexer {
         true
     }
 
-    @ghost override def lexThenRulesProduceEachTokenIndividually[C](rules: List[Rule[C]], input: List[C]): Boolean = {
+    @ghost override def lexThenRulesProduceEachTokenIndividually[C: ClassTag](rules: List[Rule[C]], input: List[C]): Boolean = {
       if (!rules.isEmpty && rulesInvariant(rules)) then
-        val (tokens, suffix) = lex(rules, Vector.fromList(input))
-        assert(lex(rules, Vector.fromList(input)) == (tokens, suffix))
-        assert(rulesProduceEachTokenIndividually(rules, tokens))
+        val (tokens, suffix) = lex(rules, seqFromList(input))
+        assert(lex(rules, seqFromList(input)) == (tokens, suffix))
         lemmaLexThenRulesProducesEachTokenIndividually(rules, input, tokens.list)
+        assert(rulesProduceEachTokenIndividuallyList(rules, tokens.list))
         rulesProduceEachTokenIndividually(rules, tokens)
       else 
         true
@@ -1307,7 +1266,7 @@ object VerifiedLexer {
     // Invertability -------------------------------------------------------------------------------------------------------------------------
 
     @ghost
-    def theoremInvertabilityWhenTokenListSeparable[C](rules: List[Rule[C]], tokens: List[Token[C]]): Unit = {
+    def theoremInvertabilityWhenTokenListSeparable[C: ClassTag](rules: List[Rule[C]], tokens: List[Token[C]]): Unit = {
       require(!rules.isEmpty)
       require(rulesInvariant(rules))
       require(rulesProduceEachTokenIndividuallyList(rules, tokens))
@@ -1319,9 +1278,8 @@ object VerifiedLexer {
         case Nil() => ()
         case Cons(hd, Nil()) => ()
         case Cons(hd, Cons(next, tl)) => {
-          Vector.listEqImpliesEq(Vector.fromList(hd.charsOf.list), hd.charsOf)
-          val input: Vector[C] = print(Vector.fromList(tokens))
-          val suffix: Vector[C] = print(Vector.fromList(Cons(next, tl)))
+          val input: Sequence[C] = print(seqFromList(tokens))
+          val suffix: Sequence[C] = print(seqFromList(Cons(next, tl)))
           val (followingTokens, nextSuffix) = lex(rules, suffix)
           assert(input.list == hd.charsOf.list ++ suffix.list)
           ListUtils.lemmaConcatTwoListThenFirstIsPrefix(hd.charsOf.list, suffix.list)
@@ -1329,24 +1287,20 @@ object VerifiedLexer {
           theoremInvertabilityWhenTokenListSeparable(rules, Cons(next, tl))
           assert(lex(rules, suffix)._1.list == Cons(next, tl))
           assert(lex(rules, suffix)._2 == nextSuffix)
-          Vector.listEqImpliesEq(Vector.fromList(followingTokens.list), followingTokens)
-          Vector.listEqImpliesEq(Vector.fromList(tl), followingTokens.tail)
-          Vector.fromListHdTlConstructive(next, tl, followingTokens)
-          assert(lex(rules, suffix)._1 == Vector.fromList(Cons(next, tl)))
-          assert(Vector.fromList(Cons(next, tl)) == Vector.fromList(tl).prepend(next))
-          assert(lex(rules, suffix)._1 == Vector.fromList(tl).prepend(next))
+          seqFromListBHdTlConstructive(next, tl, followingTokens)
+          assert(lex(rules, suffix)._1.list == seqFromList(Cons(next, tl)).list)
+          assert(seqFromList(Cons(next, tl)).list == seqFromList(tl).prepend(next).list)
+          assert(lex(rules, suffix)._1.list == seqFromList(tl).prepend(next).list)
           assert(separableTokensPredicate(hd, next, rules))
           
           val prefixOpt = maxPrefix(rules, input.list)
-          // ----- to prove (!lex(rules, Vector.fromList(hd.characters.list))._1.isEmpty
-          Vector.listEqImpliesEq(hd.charsOf, Vector.fromList(hd.charsOf.list))
-          ghostExpr(unfold(print(Vector.singleton(hd))))
-          assert(print(Vector.singleton(hd)).list == printList(List(hd)))
+          // ----- to prove (!lex(rules, seqFromList(hd.characters.list))._1.isEmpty
+          ghostExpr(unfold(print(singletonSeq(hd))))
+          assert(print(singletonSeq(hd)).list == printList(List(hd)))
           assert(printList(List(hd)) == hd.charsOf.list)
-          ghostExpr(Vector.listEqImpliesEq(print(Vector.singleton(hd)), hd.charsOf))
-          assert(print(Vector.singleton(hd)) == hd.charsOf)
+          assert(print(singletonSeq(hd)).list == hd.charsOf.list)
           assert(rulesProduceIndividualToken(rules, hd))
-          assert(!lex(rules, Vector.fromList(hd.charsOf.list))._1.isEmpty)
+          assert(!lex(rules, seqFromList(hd.charsOf.list))._1.isEmpty)
           // ----- end
           lemmaLexIsDefinedWithStrThenLexWithSuffixIsDefined(rules, hd.charsOf.list, suffix.list)
 
@@ -1354,16 +1308,24 @@ object VerifiedLexer {
 
           assert(separableTokensPredicate(hd, next, rules))
 
-          check(hd.charsOf == hd.originalCharacters)
-          Vector.listEqImpliesEq(hd.charsOf, hd.originalCharacters)
-          assert(maxPrefixZipperVector(rules, hd.originalCharacters).isDefined)
-          check(maxPrefix(rules, hd.originalCharacters.list).isDefined)
+          assert(!VerifiedRegexMatcher.prefixMatchZipperSequence(rulesRegex(rules), hd.charsOf ++ singletonSeq(next.charsOf(0))))
+          assert(!prefixMatch(rulesRegex(rules), hd.charsOf.list ++ singletonSeq(next.charsOf(0)).list))
+
+          check(hd.charsOf.list == hd.originalCharacters)
+          check(singletonSeq(next.charsOf(0)).list == List(next.originalCharacters.head))
+          check(singletonSeq(next.charsOf(0)).list == List(suffix.list.head))
+          check(singletonSeq(next.charsOf(0)).list == List(suffix.head))
+          assert(maxPrefixZipperSequence(rules, seqFromList(hd.originalCharacters)).isDefined)
+          check(maxPrefix(rules, hd.originalCharacters).isDefined)
           check(maxPrefix(rules, hd.charsOf.list).isDefined)
           check(maxPrefix(rules, hd.charsOf.list).isDefined)
           check(maxPrefix(rules, hd.charsOf.list).get._1 == hd)
           check(maxPrefix(rules, hd.charsOf.list).get._2.isEmpty)
           check(matchR(hd.rule.regex, hd.charsOf.list))
           check(hd.rule == hd.rule)
+          assert(!prefixMatch(rulesRegex(rules), hd.originalCharacters ++ List(suffix.head)))
+          assert(!prefixMatch(rulesRegex(rules), hd.charsOf.list ++ List(suffix.head)))
+
 
           lemmaMaxPrefWithNoPrefixMatchAllRulesThenSuffixReturnSame(rules, hd, hd.rule, suffix.list)
           
@@ -1371,37 +1333,36 @@ object VerifiedLexer {
           assert(prefixOpt.get._2 == suffix.list)
 
           assert(hd == maxPrefixZipper(rules, input.list).get._1)
-          assert(hd == maxPrefixZipperVector(rules, input).get._1)
-          assert(prefixOpt.get._2 == maxPrefixZipperVector(rules, input).get._2.list)
-          Vector.listEqImpliesEq(suffix, maxPrefixZipperVector(rules, input).get._2)
-          assert(suffix == maxPrefixZipperVector(rules, input).get._2)
+          assert(hd == maxPrefixZipperSequence(rules, input).get._1)
+          assert(prefixOpt.get._2 == maxPrefixZipperSequence(rules, input).get._2.list)
+          assert(suffix.list == maxPrefixZipperSequence(rules, input).get._2.list)
 
-          assert(lex(rules, input)._1 == followingTokens.prepend(hd))
-          assert(lex(rules, input)._1 == (Vector.fromList(tl).prepend(next)).prepend(hd))
+          assert(lex(rules, input)._1.list == followingTokens.prepend(hd).list)
+          assert(lex(rules, input)._1.list == (seqFromList(tl).prepend(next)).prepend(hd).list)
           assert(lex(rules, input)._1.list == Cons(hd, Cons(next, tl)))
         }
       }
 
-    }.ensuring(_ => lex(rules, print(Vector.fromList(tokens)))._1.list == tokens && lex(rules, print(Vector.fromList(tokens)))._2.isEmpty)
+    }.ensuring(_ => lex(rules, print(seqFromList(tokens)))._1.list == tokens && lex(rules, print(seqFromList(tokens)))._2.isEmpty)
 
     @ghost
-    override def separableTokensThenInvertibleThroughPrinting[C](rules: List[Rule[C]], tokens: List[Token[C]]): Boolean = {
+    override def separableTokensThenInvertibleThroughPrinting[C: ClassTag](rules: List[Rule[C]], tokens: List[Token[C]]): Boolean = {
 
       if (!rules.isEmpty && 
           rulesInvariant(rules) && 
-          rulesProduceEachTokenIndividually(rules, Vector.fromList(tokens)) && 
-          tokensListTwoByTwoPredicateSeparable(Vector.fromList(tokens), 0, rules)) 
+          rulesProduceEachTokenIndividually(rules, seqFromList(tokens)) && 
+          tokensListTwoByTwoPredicateSeparable(seqFromList(tokens), 0, rules)) 
       then
         theoremInvertabilityWhenTokenListSeparable(rules, tokens)
-        assert(lex(rules, print(Vector.fromList(tokens)))._1.list == tokens)
-        lex(rules, print(Vector.fromList(tokens)))._1.list == tokens
+        assert(lex(rules, print(seqFromList(tokens)))._1.list == tokens)
+        lex(rules, print(seqFromList(tokens)))._1.list == tokens
       else 
         true
     }
 
     // IMPOSSIBLE VERSION LEFT FOR HISTORICAL REASONS !!!!!!!!!!!!!!!!!!!!!!!!
     // @ghost
-    // def theoremInvertabilityWhenTokenListSeparable[C](rules: List[Rule[C]], tokens: List[Token[C]]): Unit = {
+    // def theoremInvertabilityWhenTokenListSeparable[C: ClassTag](rules: List[Rule[C]], tokens: List[Token[C]]): Unit = {
     //   require(!rules.isEmpty)
     //   require(rulesInvariant(rules))
     //   require(rulesProduceEachTokenIndividually(rules, tokens))
@@ -1447,50 +1408,43 @@ object VerifiedLexer {
     @ghost
     @opaque
     @inlineOnce
-    def theoremInvertabilityFromTokensSepTokenWhenNeeded[C](rules: List[Rule[C]], tokens: List[Token[C]], separatorToken: Token[C]): Unit = {
+    def theoremInvertabilityFromTokensSepTokenWhenNeeded[C: ClassTag](rules: List[Rule[C]], tokens: List[Token[C]], separatorToken: Token[C]): Unit = {
       require(!rules.isEmpty)
       require(rulesInvariant(rules))
-      require(rulesProduceEachTokenIndividually(rules, Vector.fromList(tokens)))
+      require(rulesProduceEachTokenIndividually(rules, seqFromList(tokens)))
       require(rulesProduceIndividualToken(rules, separatorToken))
       require(separatorToken.rule.isSeparator)
       require(tokens.forall(!_.rule.isSeparator))
-      require(sepAndNonSepRulesDisjointChars(rules, rules))
+      require(LexerInterface.sepAndNonSepRulesDisjointChars(rules, rules))
       decreases(tokens)
 
       tokens match {
         case Cons(hd, tl) => {
-          Vector.listEqImpliesEq(Vector.fromList(hd.charsOf.list), hd.charsOf)
-          Vector.listEqImpliesEq(Vector.fromList(separatorToken.charsOf.list), separatorToken.charsOf)
           val input = printWithSeparatorTokenWhenNeededList(rules, tokens, separatorToken)
-          assert(input == printWithSeparatorTokenWhenNeeded(rules, Vector.fromList(tokens), separatorToken).list)
-          Vector.listEqImpliesEq(Vector.fromList(input), printWithSeparatorTokenWhenNeeded(rules, Vector.fromList(tokens), separatorToken))
-          assert(Vector.fromList(input) == printWithSeparatorTokenWhenNeeded(rules, Vector.fromList(tokens), separatorToken))
+          assert(input == printWithSeparatorTokenWhenNeededRec(rules, seqFromList(tokens), separatorToken, from = 0).list)
+          assert(seqFromList(input).list == printWithSeparatorTokenWhenNeededRec(rules, seqFromList(tokens), separatorToken, from = 0).list)
           val suffixWithSep = separatorToken.charsOf.list ++ printWithSeparatorTokenWhenNeededList(rules, tl, separatorToken)
-          ListUtils.lemmaTwoListsConcatAssociativity(
+          ListUtils.lemmaConcatAssociativity(
             hd.charsOf.list,
             separatorToken.charsOf.list,
             printWithSeparatorTokenWhenNeededList(rules, tl, separatorToken)
           )
           val suffixWithoutSep = printWithSeparatorTokenWhenNeededList(rules, tl, separatorToken)
-          assert(suffixWithoutSep == printWithSeparatorTokenWhenNeeded(rules, Vector.fromList(tl), separatorToken).list)
-          Vector.listEqImpliesEq(Vector.fromList(suffixWithoutSep), printWithSeparatorTokenWhenNeeded(rules, Vector.fromList(tl), separatorToken))
+          assert(suffixWithoutSep == printWithSeparatorTokenWhenNeededRec(rules, seqFromList(tl), separatorToken, from = 0).list)
           assert(input == hd.charsOf.list ++ suffixWithSep || input == hd.charsOf.list ++ suffixWithoutSep)
 
-          // ----- to prove (!lex(rules, Vector.fromList(hd.characters.list))._1.isEmpty
-          Vector.listEqImpliesEq(hd.charsOf, Vector.fromList(hd.charsOf.list))
-          Vector.listEqImpliesEq(print(Vector.singleton(hd)), hd.charsOf)
-          unfold(print(Vector.singleton(hd)))
-          assert(print(Vector.singleton(hd)).list == printList(List(hd)))
+          // ----- to prove (!lex(rules, seqFromList(hd.characters.list))._1.isEmpty
+          unfold(print(singletonSeq(hd)))
+          assert(print(singletonSeq(hd)).list == printList(List(hd)))
           assert(printList(List(hd)) == hd.charsOf.list)
-          assert(print(Vector.singleton(hd)) == hd.charsOf)
+          assert(print(singletonSeq(hd)).list == hd.charsOf.list)
           assert(rulesProduceIndividualToken(rules, hd))
-          assert(!lex(rules, Vector.fromList(hd.charsOf.list))._1.isEmpty)
+          assert(!lex(rules, seqFromList(hd.charsOf.list))._1.isEmpty)
           // ----- end
 
-          check(hd.charsOf == hd.originalCharacters)
+          check(hd.charsOf.list == hd.originalCharacters)
           ListSpecs.forallContained(tokens, t => rulesProduceIndividualToken(rules, t), hd)
-          Vector.listEqImpliesEq(hd.charsOf, hd.originalCharacters)
-          assert(maxPrefixZipperVector(rules, hd.originalCharacters).isDefined)
+          assert(maxPrefixZipperSequence(rules, seqFromList(hd.originalCharacters)).isDefined)
 
           check(maxPrefix(rules, hd.charsOf.list).isDefined)
 
@@ -1516,45 +1470,38 @@ object VerifiedLexer {
             lemmaRulesProduceEachTokenIndividuallyThenForAnyToken(rules, tokens, nextToken)
             check(rulesProduceIndividualToken(rules, nextToken))
 
-            Vector.listEqImpliesEq(separatorToken.charsOf, separatorToken.originalCharacters)
-            Vector.listEqImpliesEq(separatorToken.charsOf, Vector.fromList(separatorToken.charsOf.list))
-            ghostExpr(unfold(print(Vector.singleton(separatorToken))))
+            ghostExpr(unfold(print(singletonSeq(separatorToken))))
             unfold(rulesProduceIndividualToken(rules, separatorToken))
-            Vector.listEqImpliesEq(print(Vector.singleton(separatorToken)), separatorToken.charsOf)
-            // assert(print(Vector.singleton(separatorToken)).list == printList(List(separatorToken)))
+            // assert(print(singletonSeq(separatorToken)).list == printList(List(separatorToken)))
             // assert(printList(List(separatorToken)) == separatorToken.characters.list)
-            // assert(print(Vector.singleton(separatorToken)) == separatorToken.characters)
+            // assert(print(singletonSeq(separatorToken)) == separatorToken.characters)
             // assert(rulesProduceIndividualToken(rules, separatorToken))
-            // assert(!lex(rules, Vector.fromList(separatorToken.characters.list))._1.isEmpty)
-            // assert(maxPrefixZipperVector(rules, separatorToken.originalCharacters).isDefined)
-            // check(maxPrefix(rules, separatorToken.originalCharacters.list).isDefined)
+            // assert(!lex(rules, seqFromList(separatorToken.characters.list))._1.isEmpty)
+            // assert(maxPrefixZipperSequence(rules, separatorToken.originalCharacters).isDefined)
+            // check(maxPrefix(rules, separatorToken.originalCharacters).isDefined)
             // check(maxPrefix(rules, separatorToken.characters.list).isDefined)
             // check(maxPrefix(rules, separatorToken.characters.list).isDefined)
             // check(maxPrefix(rules, separatorToken.characters.list).get._1 == separatorToken)
             // check(maxPrefix(rules, separatorToken.characters.list).get._2.isEmpty)
-            // assert(maxPrefixZipperVector(rules, separatorToken.characters).isDefined)
+            // assert(maxPrefixZipperSequence(rules, separatorToken.characters).isDefined)
             // assert(maxPrefix(rules, separatorToken.characters.list).isDefined)
-            // assert(maxPrefixZipperVector(rules, separatorToken.characters).get._1 == separatorToken)
+            // assert(maxPrefixZipperSequence(rules, separatorToken.characters).get._1 == separatorToken)
             // assert(maxPrefix(rules, separatorToken.characters.list).get._1 == separatorToken)
             lemmaMaxPrefReturnTokenSoItsTagBelongsToTheRuleWithinToken(rules, separatorToken.charsOf.list, separatorToken)
 
             val separatorRule = separatorToken.rule
 
-            Vector.listEqImpliesEq(nextToken.charsOf, nextToken.originalCharacters)
-            Vector.listEqImpliesEq(Vector.fromList(nextToken.charsOf.list), nextToken.charsOf)
-            Vector.listEqImpliesEq(nextToken.charsOf, Vector.fromList(nextToken.charsOf.list))
-            Vector.listEqImpliesEq(print(Vector.singleton(nextToken)), nextToken.charsOf)
-            unfold(print(Vector.singleton(nextToken)))
+            unfold(print(singletonSeq(nextToken)))
             unfold(rulesProduceIndividualToken(rules, nextToken))
             ListSpecs.forallContained(tokens, (t: Token[C]) => rulesProduceIndividualToken(rules, t), nextToken)
-            // assert(print(Vector.singleton(nextToken)).list == printList(List(nextToken)))
+            // assert(print(singletonSeq(nextToken)).list == printList(List(nextToken)))
             // assert(printList(List(nextToken)) == nextToken.characters.list)
-            // assert(print(Vector.singleton(nextToken)) == nextToken.characters)
+            // assert(print(singletonSeq(nextToken)) == nextToken.characters)
             // assert(rulesProduceIndividualToken(rules, nextToken))
-            // assert(!lex(rules, Vector.fromList(nextToken.characters.list))._1.isEmpty)
-            // check(maxPrefixZipperVector(rules, nextToken.characters).isDefined)
+            // assert(!lex(rules, seqFromList(nextToken.characters.list))._1.isEmpty)
+            // check(maxPrefixZipperSequence(rules, nextToken.characters).isDefined)
             // assert(maxPrefix(rules, nextToken.characters.list).isDefined)
-            // assert(maxPrefixZipperVector(rules, nextToken.characters).get._1 == nextToken)
+            // assert(maxPrefixZipperSequence(rules, nextToken.characters).get._1 == nextToken)
             // assert(maxPrefix(rules, nextToken.characters.list).get._1 == nextToken)
             lemmaMaxPrefReturnTokenSoItsTagBelongsToTheRuleWithinToken(rules, nextToken.charsOf.list, nextToken)
             val nextTokenRule = nextToken.rule
@@ -1572,10 +1519,10 @@ object VerifiedLexer {
 
             theoremInvertabilityFromTokensSepTokenWhenNeeded(rules, tl, separatorToken)
 
-            assert(lex(rules, printWithSeparatorTokenWhenNeeded(rules, Vector.fromList(tl), separatorToken))._1.list.filter(!_.rule.isSeparator) == tl)
+            assert(lex(rules, printWithSeparatorTokenWhenNeededRec(rules, seqFromList(tl), separatorToken, from = 0))._1.list.filter(!_.rule.isSeparator) == tl)
             assert(lexList(rules, printWithSeparatorTokenWhenNeededList(rules, tl, separatorToken))._1.filter(!_.rule.isSeparator) == tl)
             assert(lexList(rules, printWithSeparatorTokenWhenNeededList(rules, tokens, separatorToken))._1.filter(!_.rule.isSeparator) == tokens)
-            assert(lex(rules, printWithSeparatorTokenWhenNeeded(rules, Vector.fromList(tokens), separatorToken))._1.list.filter(!_.rule.isSeparator) == tokens)
+            assert(lex(rules, printWithSeparatorTokenWhenNeededRec(rules, seqFromList(tokens), separatorToken, from = 0))._1.list.filter(!_.rule.isSeparator) == tokens)
           } else {
             lemmaPrintWithSepTokenWhenNeededThenMaxPrefReturnsHead(rules, tokens, separatorToken)
             theoremInvertabilityFromTokensSepTokenWhenNeeded(rules, tl, separatorToken)
@@ -1585,22 +1532,22 @@ object VerifiedLexer {
         }
         case Nil() => ()
       }
-    }.ensuring (_ => lex(rules, printWithSeparatorTokenWhenNeeded(rules, Vector.fromList(tokens), separatorToken))._1.list.filter(!_.rule.isSeparator) == tokens)
+    }.ensuring (_ => lex(rules, printWithSeparatorTokenWhenNeededRec(rules, seqFromList(tokens), separatorToken, from = 0))._1.list.filter(!_.rule.isSeparator) == tokens)
 
 
     @ghost
-    override def invertibleThroughPrintingWithSeparatorWhenNeeded[C](rules: List[Rule[C]], tokens: List[Token[C]], separatorToken: Token[C]): Boolean = {
+    override def invertibleThroughPrintingWithSeparatorWhenNeeded[C: ClassTag](rules: List[Rule[C]], tokens: List[Token[C]], separatorToken: Token[C]): Boolean = {
       if (!rules.isEmpty && 
           rulesInvariant(rules) && 
-          rulesProduceEachTokenIndividually(rules, Vector.fromList(tokens)) &&
-          sepAndNonSepRulesDisjointChars(rules, rules) && 
+          rulesProduceEachTokenIndividually(rules, seqFromList(tokens)) &&
+          LexerInterface.sepAndNonSepRulesDisjointChars(rules, rules) && 
           rulesProduceIndividualToken(rules, separatorToken) &&
           tokens.forall(t => !t.rule.isSeparator) &&
           separatorToken.rule.isSeparator
           ) 
       then 
             theoremInvertabilityFromTokensSepTokenWhenNeeded(rules, tokens, separatorToken)
-            (lex(rules, printWithSeparatorTokenWhenNeeded(rules, Vector.fromList(tokens), separatorToken))._1.list.filter(!_.rule.isSeparator) == tokens)
+            (lex(rules, printWithSeparatorTokenWhenNeededRec(rules, seqFromList(tokens), separatorToken, from = 0))._1.list.filter(!_.rule.isSeparator) == tokens)
       else 
         true
     }
@@ -1608,33 +1555,31 @@ object VerifiedLexer {
     @ghost
     @opaque
     @inlineOnce
-    def theoremInvertFromTokensSepTokenBetweenEach[C](rules: List[Rule[C]], tokens: List[Token[C]], separatorToken: Token[C]): Unit = {
+    def theoremInvertFromTokensSepTokenBetweenEach[C: ClassTag](rules: List[Rule[C]], tokens: List[Token[C]], separatorToken: Token[C]): Unit = {
       require(!rules.isEmpty)
       require(rulesInvariant(rules))
-      require(rulesProduceEachTokenIndividually(rules, Vector.fromList(tokens)))
+      require(rulesProduceEachTokenIndividually(rules, seqFromList(tokens)))
       require(rulesProduceIndividualToken(rules, separatorToken))
       require(separatorToken.rule.isSeparator)
       require(tokens.forall(!_.rule.isSeparator))
-      require(sepAndNonSepRulesDisjointChars(rules, rules))
+      require(LexerInterface.sepAndNonSepRulesDisjointChars(rules, rules))
       decreases(tokens.size)
 
       tokens match {
         case Nil() => ()
         case Cons(hd, Nil()) => {
-          // ----- to prove (!lex(rules, Vector.fromList(hd.characters.list))._1.isEmpty
-          Vector.listEqImpliesEq(hd.charsOf, Vector.fromList(hd.charsOf.list))
-          Vector.listEqImpliesEq(print(Vector.singleton(hd)), hd.charsOf)
-          unfold(print(Vector.singleton(hd)))
-          assert(print(Vector.singleton(hd)).list == printList(List(hd)))
+          // ----- to prove (!lex(rules, seqFromList(hd.characters.list))._1.isEmpty
+          unfold(print(singletonSeq(hd)))
+          assert(print(singletonSeq(hd)).list == printList(List(hd)))
           assert(printList(List(hd)) == hd.charsOf.list)
-          assert(print(Vector.singleton(hd)) == hd.charsOf)
+          assert(print(singletonSeq(hd)).list == hd.charsOf.list)
           assert(rulesProduceIndividualToken(rules, hd))
-          assert(!lex(rules, Vector.fromList(hd.charsOf.list))._1.isEmpty)
+          assert(!lex(rules, seqFromList(hd.charsOf.list))._1.isEmpty)
           // ----- end
 
           ListSpecs.forallContained(tokens, (t: Token[C]) => !t.rule.isSeparator, hd)
           assert(!hd.rule.isSeparator)
-          val input: Vector[C] = printWithSeparatorToken(Vector.fromList(tokens), separatorToken)
+          val input: Sequence[C] = printWithSeparatorToken(seqFromList(tokens), separatorToken)
           assert(input.list == hd.charsOf.list ++ separatorToken.charsOf.list)
           ListUtils.lemmaGetSuffixOnListWithItSelfIsEmpty(hd.charsOf.list)
           lemmaRulesProduceEachTokenIndividuallyThenForAnyToken(rules, tokens, hd)
@@ -1679,25 +1624,21 @@ object VerifiedLexer {
 
           assert(ret == lexList(rules, input.list))
 
-          assert(lex(rules, printWithSeparatorToken(Vector.fromList(Nil()), separatorToken))._1.list.filter(!_.rule.isSeparator).isEmpty)
+          assert(lex(rules, printWithSeparatorToken(emptySeq[Token[C]](), separatorToken))._1.list.filter(!_.rule.isSeparator).isEmpty)
           assert(lexList(rules, printWithSeparatorTokenList(Nil(), separatorToken))._1.filter(!_.rule.isSeparator).isEmpty)
           assert(lexList(rules, printWithSeparatorTokenList(tokens, separatorToken))._1.filter(!_.rule.isSeparator) == tokens)
-          assert(lex(rules, printWithSeparatorToken(Vector.fromList(tokens), separatorToken))._1.list.filter(!_.rule.isSeparator) == tokens)
+          assert(lex(rules, printWithSeparatorToken(seqFromList(tokens), separatorToken))._1.list.filter(!_.rule.isSeparator) == tokens)
 
         }
         case Cons(hd, Cons(nextT, tl)) => {
-          Vector.listEqImpliesEq(Vector.fromList(hd.charsOf.list), hd.charsOf)
-          Vector.listEqImpliesEq(Vector.fromList(separatorToken.charsOf.list), separatorToken.charsOf)
 
-          // ----- to prove (!lex(rules, Vector.fromList(hd.characters.list))._1.isEmpty
-          Vector.listEqImpliesEq(hd.charsOf, Vector.fromList(hd.charsOf.list))
-          Vector.listEqImpliesEq(print(Vector.singleton(hd)), hd.charsOf)
-          unfold(print(Vector.singleton(hd)))
-          assert(print(Vector.singleton(hd)).list == printList(List(hd)))
+          // ----- to prove (!lex(rules, seqFromList(hd.characters.list))._1.isEmpty
+          unfold(print(singletonSeq(hd)))
+          assert(print(singletonSeq(hd)).list == printList(List(hd)))
           assert(printList(List(hd)) == hd.charsOf.list)
-          assert(print(Vector.singleton(hd)) == hd.charsOf)
+          assert(print(singletonSeq(hd)).list == hd.charsOf.list)
           assert(rulesProduceIndividualToken(rules, hd))
-          assert(!lex(rules, Vector.fromList(hd.charsOf.list))._1.isEmpty)
+          assert(!lex(rules, seqFromList(hd.charsOf.list))._1.isEmpty)
           // ----- end
 
 
@@ -1711,11 +1652,9 @@ object VerifiedLexer {
           assert(suffixAfterSeparator == nextT.charsOf.list ++ separatorToken.charsOf.list ++ printWithSeparatorTokenList(tl, separatorToken))
           assert(input == hd.charsOf.list ++ separatorToken.charsOf.list ++ suffixAfterSeparator)
 
-          Vector.listEqImpliesEq(Vector.fromList(input), printWithSeparatorToken(Vector.fromList(tokens), separatorToken))
-          Vector.listEqImpliesEq(Vector.fromList(suffixAfterSeparator), printWithSeparatorToken(Vector.fromList(Cons(nextT, tl)), separatorToken))
 
 
-          ListUtils.lemmaTwoListsConcatAssociativity(hd.charsOf.list, separatorToken.charsOf.list, suffixAfterSeparator)
+          ListUtils.lemmaConcatAssociativity(hd.charsOf.list, separatorToken.charsOf.list, suffixAfterSeparator)
           assert(input == hd.charsOf.list ++ suffix)
           lemmaRulesProduceEachTokenIndividuallyThenForAnyToken(rules, tokens, hd)
           lemmaMaxPrefReturnTokenSoItsTagBelongsToTheRuleWithinToken(rules, hd.charsOf.list, hd)
@@ -1735,16 +1674,9 @@ object VerifiedLexer {
             check(false)
           }
 
-          Vector.listEqImpliesEq(separatorToken.charsOf, separatorToken.originalCharacters)
-          Vector.listEqImpliesEq(separatorToken.charsOf, Vector.fromList(separatorToken.charsOf.list))
-          unfold(print(Vector.singleton(separatorToken)))
+          unfold(print(singletonSeq(separatorToken)))
           unfold(rulesProduceIndividualToken(rules, separatorToken))
-          Vector.listEqImpliesEq(print(Vector.singleton(separatorToken)), separatorToken.charsOf)
-          Vector.listEqImpliesEq(nextT.charsOf, nextT.originalCharacters)
-          Vector.listEqImpliesEq(Vector.fromList(nextT.charsOf.list), nextT.charsOf)
-          Vector.listEqImpliesEq(nextT.charsOf, Vector.fromList(nextT.charsOf.list))
-          Vector.listEqImpliesEq(print(Vector.singleton(nextT)), nextT.charsOf)
-          unfold(print(Vector.singleton(nextT)))
+          unfold(print(singletonSeq(nextT)))
           unfold(rulesProduceIndividualToken(rules, nextT))
           ListSpecs.forallContained(tokens, (t: Token[C]) => rulesProduceIndividualToken(rules, t), nextT)
 
@@ -1771,29 +1703,29 @@ object VerifiedLexer {
 
           theoremInvertFromTokensSepTokenBetweenEach(rules, Cons(nextT, tl), separatorToken)
 
-          assert(lex(rules, printWithSeparatorToken(Vector.fromList(Cons(nextT, tl)), separatorToken))._1.list.filter(!_.rule.isSeparator) == Cons(nextT, tl))
+          assert(lex(rules, printWithSeparatorToken(seqFromList(Cons(nextT, tl)), separatorToken))._1.list.filter(!_.rule.isSeparator) == Cons(nextT, tl))
           assert(lexList(rules, printWithSeparatorTokenList(Cons(nextT, tl), separatorToken))._1.filter(!_.rule.isSeparator) == Cons(nextT, tl))
           assert(lexList(rules, printWithSeparatorTokenList(tokens, separatorToken))._1.filter(!_.rule.isSeparator) == tokens)
-          assert(lex(rules, printWithSeparatorToken(Vector.fromList(tokens), separatorToken))._1.list.filter(!_.rule.isSeparator) == tokens)
+          assert(lex(rules, printWithSeparatorToken(seqFromList(tokens), separatorToken))._1.list.filter(!_.rule.isSeparator) == tokens)
 
         }
       }
 
-    }.ensuring (_ => lex(rules, printWithSeparatorToken(Vector.fromList(tokens), separatorToken))._1.list.filter(!_.rule.isSeparator) == tokens)
+    }.ensuring (_ => lex(rules, printWithSeparatorToken(seqFromList(tokens), separatorToken))._1.list.filter(!_.rule.isSeparator) == tokens)
 
     @ghost
-    override def invertibleThroughPrintingWithSeparator[C](rules: List[Rule[C]], tokens: List[Token[C]], separatorToken: Token[C]): Boolean = {
+    override def invertibleThroughPrintingWithSeparator[C: ClassTag](rules: List[Rule[C]], tokens: List[Token[C]], separatorToken: Token[C]): Boolean = {
       if (!rules.isEmpty && 
           rulesInvariant(rules) && 
-          rulesProduceEachTokenIndividually(rules, Vector.fromList(tokens)) &&
-          sepAndNonSepRulesDisjointChars(rules, rules) && 
+          rulesProduceEachTokenIndividually(rules, seqFromList(tokens)) &&
+          LexerInterface.sepAndNonSepRulesDisjointChars(rules, rules) && 
           rulesProduceIndividualToken(rules, separatorToken) &&
           tokens.forall(t => !t.rule.isSeparator) &&
           separatorToken.rule.isSeparator
           ) 
       then 
             theoremInvertFromTokensSepTokenBetweenEach(rules, tokens, separatorToken)
-            (lex(rules, printWithSeparatorToken(Vector.fromList(tokens), separatorToken))._1.list.filter(!_.rule.isSeparator) == tokens)
+            (lex(rules, printWithSeparatorToken(seqFromList(tokens), separatorToken))._1.list.filter(!_.rule.isSeparator) == tokens)
       else 
         true
     }
@@ -1801,12 +1733,12 @@ object VerifiedLexer {
     @ghost
     @opaque
     @inlineOnce
-    def theoremInvertFromString[C](rules: List[Rule[C]], input: List[C]): Unit = {
+    def theoremInvertFromString[C: ClassTag](rules: List[Rule[C]], input: List[C]): Unit = {
       require(!rules.isEmpty)
       require(rulesInvariant(rules))
       decreases(input.size)
 
-      val (tokens, suffix) = lex(rules, Vector.fromList(input))
+      val (tokens, suffix) = lex(rules, seqFromList(input))
       if (suffix.isEmpty) {
         tokens.list match {
           case Cons(hd, Nil()) => ()
@@ -1817,17 +1749,15 @@ object VerifiedLexer {
         tokens.list match {
           case Cons(hd, Nil()) => assert(print(tokens).list ++ suffix.list == input)
           case Cons(hd, tl) => {
-            Vector.listEqImpliesEq(Vector.fromList(tokens.list), tokens)
-            Vector.listEqImpliesEq(Vector.fromList(suffix.list), suffix)
-            Vector.fromListHdTlConstructive(hd, tl, tokens)
+            seqFromListBHdTlConstructive(hd, tl, tokens)
             theoremInvertFromString(rules, maxPrefix(rules, input).get._2)
             lemmaRemovingFirstTokensCharactersPreservesLexSuffix(rules, input, tokens.list, suffix.list)
 
             assert(input == maxPrefix(rules, input).get._1.charsOf.list ++ maxPrefix(rules, input).get._2)
-            assert(input == maxPrefix(rules, input).get._1.charsOf.list ++ (print(Vector.fromList(tl)).list ++ suffix.list))
-            ListUtils.lemmaTwoListsConcatAssociativity(
+            assert(input == maxPrefix(rules, input).get._1.charsOf.list ++ (print(seqFromList(tl)).list ++ suffix.list))
+            ListUtils.lemmaConcatAssociativity(
               maxPrefix(rules, input).get._1.charsOf.list,
-              print(Vector.fromList(tl)).list,
+              print(seqFromList(tl)).list,
               suffix.list
             )
           }
@@ -1835,21 +1765,21 @@ object VerifiedLexer {
         }
       }
     }.ensuring (_ => {
-      val (tokens, suffix) = lex(rules, Vector.fromList(input))
+      val (tokens, suffix) = lex(rules, seqFromList(input))
       print(tokens).list ++ suffix.list == input
     })
 
-    @ghost override def invertibleThroughLexing[C](rules: List[Rule[C]], input: List[C]): Boolean = 
+    @ghost override def invertibleThroughLexing[C: ClassTag](rules: List[Rule[C]], input: List[C]): Boolean = 
     if (!rules.isEmpty && rulesInvariant(rules)) then
       theoremInvertFromString(rules, input)
-      val (tokens, suffix) = lex(rules, Vector.fromList(input))
+      val (tokens, suffix) = lex(rules, seqFromList(input))
       print(tokens).list ++ suffix.list == input
     else
       true
 
     // Functions -----------------------------------------------------------------------------------------------------------------------------
 
-    def getRuleFromTag[C](rules: List[Rule[C]], tag: String): Option[Rule[C]] = {
+    def getRuleFromTag[C: ClassTag](rules: List[Rule[C]], tag: String): Option[Rule[C]] = {
       require(rulesInvariant(rules))
       decreases(rules)
       rules match {
@@ -1867,7 +1797,7 @@ object VerifiedLexer {
     @ghost
     @inlineOnce
     @opaque
-    def withSeparatorTokenListPreservesRulesProduceTokens[C](rules: List[Rule[C]], l: List[Token[C]], separatorToken: Token[C]): Unit = {
+    def withSeparatorTokenListPreservesRulesProduceTokens[C: ClassTag](rules: List[Rule[C]], l: List[Token[C]], separatorToken: Token[C]): Unit = {
       require(!rules.isEmpty)
       require(rulesInvariant(rules))
       require(rulesProduceEachTokenIndividuallyList(rules, l))
@@ -1889,14 +1819,14 @@ object VerifiedLexer {
     @ghost
     @inlineOnce
     @opaque
-    def lemmaTokensOfDifferentKindsAreSeparable[C](t1: Token[C], t2: Token[C], rules: List[Rule[C]]): Unit = {
+    def lemmaTokensOfDifferentKindsAreSeparable[C: ClassTag](t1: Token[C], t2: Token[C], rules: List[Rule[C]]): Unit = {
       require(!rules.isEmpty)
       require(rulesInvariant(rules))
       require(rulesProduceIndividualToken(rules, t1))
       require(rulesProduceIndividualToken(rules, t2))
       require(t1.rule.isSeparator != t2.rule.isSeparator)
       require(t2.charsOf.size > 0)
-      require(sepAndNonSepRulesDisjointChars(rules, rules))
+      require(LexerInterface.sepAndNonSepRulesDisjointChars(rules, rules))
 
       assert(t1.rule.isSeparator || !t1.rule.isSeparator)
       if (!separableTokensPredicate(t1, t2, rules)) {
@@ -1920,13 +1850,15 @@ object VerifiedLexer {
         assert(rules.exists(r => r.regex == rr))
         val rule = ListUtils.getWitness(rules, r => r.regex == rr)
         assert(rulesProduceIndividualToken(rules, t1))
-        assert(lex(rules, print(Vector.singleton(t1))) == (Vector.singleton(t1), Vector.empty[C]))
-        assert(lexList(rules, print(Vector.singleton(t1)).list) == (List(t1), Nil[C]()))
+        assert(lex(rules, print(singletonSeq(t1)))._1.list == List(t1))
+        assert(lex(rules, print(singletonSeq(t1)))._2.isEmpty)
+        assert(lexList(rules, print(singletonSeq(t1)).list) == (List(t1), Nil[C]()))
         assert(maxPrefix(rules, t1.charsOf.list) == Some((t1, Nil[C]())))
         assert(rules.contains(t1.rule))
         assert(rulesProduceIndividualToken(rules, t2))
-        assert(lex(rules, print(Vector.singleton(t2))) == (Vector.singleton(t2), Vector.empty[C]))
-        assert(lexList(rules, print(Vector.singleton(t2)).list) == (List(t2), Nil[C]()))
+        assert(lex(rules, print(singletonSeq(t2)))._1.list == List(t2))
+        assert(lex(rules, print(singletonSeq(t2)))._2.isEmpty)
+        assert(lexList(rules, print(singletonSeq(t2)).list) == (List(t2), Nil[C]()))
         assert(maxPrefix(rules, t2.charsOf.list) == Some((t2, Nil[C]())))
         assert(rules.contains(t2.rule))
         assert(rules.contains(rule))
@@ -1981,14 +1913,14 @@ object VerifiedLexer {
     @ghost
     @inlineOnce
     @opaque
-    def printWithSeparatorTokenImpliesSeparableTokensList[C](rules: List[Rule[C]], l: List[Token[C]], separatorToken: Token[C]): Unit = {
+    def printWithSeparatorTokenImpliesSeparableTokensList[C: ClassTag](rules: List[Rule[C]], l: List[Token[C]], separatorToken: Token[C]): Unit = {
       require(!rules.isEmpty)
       require(rulesInvariant(rules))
       require(rulesProduceEachTokenIndividuallyList(rules, l))
       require(rulesProduceIndividualToken(rules, separatorToken))
       require(separatorToken.rule.isSeparator)
       require(l.forall(!_.rule.isSeparator))
-      require(sepAndNonSepRulesDisjointChars(rules, rules))
+      require(LexerInterface.sepAndNonSepRulesDisjointChars(rules, rules))
       decreases(l)
 
       withSeparatorTokenListPreservesRulesProduceTokens(rules, l, separatorToken)
@@ -2019,7 +1951,7 @@ object VerifiedLexer {
     @ghost
     @opaque
     @inlineOnce
-    def lemmaPrintConcatSameAsConcatPrint[C](tokens1: List[Token[C]], tokens2: List[Token[C]]): Unit = {
+    def lemmaPrintConcatSameAsConcatPrint[C: ClassTag](tokens1: List[Token[C]], tokens2: List[Token[C]]): Unit = {
       decreases(tokens1)
 
       tokens1 match {
@@ -2036,7 +1968,7 @@ object VerifiedLexer {
             unfold(printList(tokens1 ++ tokens2))
             assert(printList(tokens1) == hd.charsOf.list ++ printList(tl))
             assert(printList(tokens1 ++ tokens2) == hd.charsOf.list ++ printList(tl ++ tokens2))
-            ListUtils.lemmaTwoListsConcatAssociativity(hd.charsOf.list, printList(tl), printList(tokens2))
+            ListUtils.lemmaConcatAssociativity(hd.charsOf.list, printList(tl), printList(tokens2))
           }
         }
         case Nil() => ()
@@ -2047,7 +1979,7 @@ object VerifiedLexer {
     @ghost
     @opaque
     @inlineOnce
-    def lemmaLexThenRulesProducesEachTokenIndividually[C](rules: List[Rule[C]], input: List[C], tokens: List[Token[C]]): Unit = {
+    def lemmaLexThenRulesProducesEachTokenIndividually[C: ClassTag](rules: List[Rule[C]], input: List[C], tokens: List[Token[C]]): Unit = {
       require(!rules.isEmpty)
       require(rulesInvariant(rules))
       require(lexList(rules, input)._1 == tokens)
@@ -2065,8 +1997,6 @@ object VerifiedLexer {
           val tokenRule = token.rule
           assert(matchR(tokenRule.regex, token.charsOf.list))
           if (!rulesProduceIndividualToken(rules, hd)) {
-            ghostExpr(Vector.listEqImpliesEq(hd.charsOf, Vector.fromList(hd.charsOf.list)))
-            ghostExpr(Vector.listEqImpliesEq(token.charsOf, Vector.fromList(token.charsOf.list)))
             lemmaLexThenLexPrefix(rules, hd.charsOf.list, suffix, List(hd), lexList(rules, suffix)._1, lexList(rules, input)._2)
             check(false)
           }
@@ -2074,12 +2004,12 @@ object VerifiedLexer {
           lemmaLexThenRulesProducesEachTokenIndividually(rules, suffix, tl)
         }
       }
-    }.ensuring(_ => rulesProduceEachTokenIndividually(rules, Vector.fromList(tokens)))
+    }.ensuring(_ => rulesProduceEachTokenIndividually(rules, seqFromList(tokens)))
 
     @ghost
     @opaque
     @inlineOnce
-    def lemmaLexThenLexPrefix[C](rules: List[Rule[C]], prefix: List[C], suffix: List[C], prefixTokens: List[Token[C]], suffixTokens: List[Token[C]], suffixResult: List[C]): Unit = {
+    def lemmaLexThenLexPrefix[C: ClassTag](rules: List[Rule[C]], prefix: List[C], suffix: List[C], prefixTokens: List[Token[C]], suffixTokens: List[Token[C]], suffixResult: List[C]): Unit = {
       require(!rules.isEmpty)
       require(rulesInvariant(rules))
       require(!prefixTokens.isEmpty)
@@ -2092,28 +2022,22 @@ object VerifiedLexer {
       maxPrefix(rules, prefix ++ suffix) match {
         case Some((token, s)) => {
           token.lemmaCharactersSize()
-          ghostExpr(Vector.listEqImpliesEq(token.charsOf, Vector.fromList(token.charsOf.list)))
-          ghostExpr(Vector.listEqImpliesEq(token.charsOf, token.originalCharacters))
-          ghostExpr(Vector.listEqImpliesEq(Vector.fromList(token.charsOf.list), token.charsOf))
           lemmaRuleInListAndrulesValidInductiveThenRuleIsValid(token.rule, rules)
-          token.rule.transformation.lemmaInv()
 
           ListUtils.lemmaConcatTwoListThenFirstIsPrefix(token.charsOf.list, s)
           ListUtils.lemmaSamePrefixThenSameSuffix(token.charsOf.list, s, token.charsOf.list, ListUtils.getSuffix(input, token.charsOf.list), input)
 
-          check(token.value == token.rule.transformation.apply(Vector.fromList(token.charsOf.list)))
+          check(token.value == token.rule.transformation.apply(seqFromList(token.charsOf.list)))
           check(token.rule == token.rule)
           check(token.size == token.originalCharacters.size)
-          check(token.size == token.originalCharacters.list.size)
+          check(token.size == token.originalCharacters.size)
           check(token.size == token.charsOf.list.size)
-          check(token.originalCharacters == Vector.fromList(token.charsOf.list))
+          check(token.originalCharacters == token.charsOf.list)
           check(s == ListUtils.getSuffix(input, token.charsOf.list))
-          check(Some(token, s) == Some(Token(token.rule.transformation.apply(Vector.fromList(token.charsOf.list)), token.rule, token.charsOf.list.size, Vector.fromList(token.charsOf.list)), ListUtils.getSuffix(input, token.charsOf.list)))
+          check(Some(token, s) == Some(Token(token.rule.transformation.apply(seqFromList(token.charsOf.list)), token.rule, token.charsOf.list.size, token.charsOf.list), ListUtils.getSuffix(input, token.charsOf.list)))
 
 
           val (followingTokens, nextSuffix) = lexList(rules, s)
-          // assert(token.characters.list ++ suffix.list == input.list)
-          // ghostExpr(Vector.listEqImpliesEq(token.characters ++ suffix, input))
           assert(token.charsOf.list ++ s == prefix ++ suffix)
           assert(lexList(rules, prefix ++ suffix) == (List(token) ++ followingTokens, nextSuffix))
           assert(lexList(rules, s) == (followingTokens, nextSuffix))
@@ -2197,7 +2121,7 @@ object VerifiedLexer {
             assert(token.charsOf.list ++ restPrefix == prefix)
             assert(token.charsOf.list ++ restPrefix ++ suffix == prefix ++ suffix)
             assert(token.charsOf.list ++ restPrefix ++ suffix == token.charsOf.list ++ s)
-            ListUtils.lemmaTwoListsConcatAssociativity(token.charsOf.list, restPrefix, suffix)
+            ListUtils.lemmaConcatAssociativity(token.charsOf.list, restPrefix, suffix)
             assert((token.charsOf.list ++ restPrefix) ++ suffix == token.charsOf.list ++ (restPrefix ++ suffix))
             assert(prefix ++ suffix == (token.charsOf.list ++ restPrefix) ++ suffix)
             assert(prefix ++ suffix == token.charsOf.list ++ (restPrefix ++ suffix))
@@ -2213,7 +2137,7 @@ object VerifiedLexer {
               lemmaLexWithSmallerInputCannotProduceSameResults(rules, s, suffix, suffixTokens, suffixResult)
               check(false)
             }
-            ListUtils.lemmaTwoListsConcatAssociativity(List(token), prefixTokens.tail, suffixTokens)
+            ListUtils.lemmaConcatAssociativity(List(token), prefixTokens.tail, suffixTokens)
             assert(List(token) ++ prefixTokens.tail ++ suffixTokens == prefixTokens ++ suffixTokens)
             assert(lexList(rules, restPrefix ++ suffix) == (prefixTokens.tail ++ suffixTokens, suffixResult))
             lemmaLexThenLexPrefix(rules, restPrefix, suffix, prefixTokens.tail, suffixTokens, suffixResult)
@@ -2249,7 +2173,7 @@ object VerifiedLexer {
     @ghost
     @opaque
     @inlineOnce
-    def lemmaLexWithSmallerInputCannotProduceAdditionalTokens[C](rules: List[Rule[C]], longerInput: List[C], shorterInput: List[C], tokens: List[Token[C]], suffix: List[C], addTokens: List[Token[C]]): Unit = {
+    def lemmaLexWithSmallerInputCannotProduceAdditionalTokens[C: ClassTag](rules: List[Rule[C]], longerInput: List[C], shorterInput: List[C], tokens: List[Token[C]], suffix: List[C], addTokens: List[Token[C]]): Unit = {
       require(!rules.isEmpty)
       require(rulesInvariant(rules))
       require(!longerInput.isEmpty)
@@ -2282,7 +2206,7 @@ object VerifiedLexer {
     @ghost
     @opaque
     @inlineOnce
-    def lemmaLexWithSmallerInputCannotProduceSameResults[C](rules: List[Rule[C]], longerInput: List[C], shorterInput: List[C], tokens: List[Token[C]], suffix: List[C]): Unit = {
+    def lemmaLexWithSmallerInputCannotProduceSameResults[C: ClassTag](rules: List[Rule[C]], longerInput: List[C], shorterInput: List[C], tokens: List[Token[C]], suffix: List[C]): Unit = {
       require(!rules.isEmpty)
       require(rulesInvariant(rules))
       require(!longerInput.isEmpty)
@@ -2309,7 +2233,7 @@ object VerifiedLexer {
     @ghost
     @opaque
     @inlineOnce
-    def lemmaMaxPrefixThenWithShorterSuffix[C](rules: List[Rule[C]], prefix: List[C], suffix: List[C], newSuffix: List[C], token: Token[C], suffixResult: List[C], newSuffixResult: List[C]): Unit = {
+    def lemmaMaxPrefixThenWithShorterSuffix[C: ClassTag](rules: List[Rule[C]], prefix: List[C], suffix: List[C], newSuffix: List[C], token: Token[C], suffixResult: List[C], newSuffixResult: List[C]): Unit = {
       require(!rules.isEmpty)
       require(rulesInvariant(rules))
       require(suffix.size >= newSuffix.size)
@@ -2323,9 +2247,6 @@ object VerifiedLexer {
 
 
       // Common parts of the proof about token and maxPrefix
-      ghostExpr(Vector.listEqImpliesEq(token.charsOf, Vector.fromList(token.charsOf.list)))
-      ghostExpr(Vector.listEqImpliesEq(token.charsOf, token.originalCharacters))
-      ghostExpr(Vector.listEqImpliesEq(Vector.fromList(token.charsOf.list), token.charsOf))
       lemmaRuleInListAndrulesValidInductiveThenRuleIsValid(token.rule, rules)
       token.rule.transformation.lemmaInv()
 
@@ -2342,7 +2263,7 @@ object VerifiedLexer {
       assert(token.charsOf.list ++ oldNextPrefix == prefix)
       assert(prefix ++ suffix == input)
 
-      ListUtils.lemmaTwoListsConcatAssociativity(token.charsOf.list, oldNextPrefix, suffix)
+      ListUtils.lemmaConcatAssociativity(token.charsOf.list, oldNextPrefix, suffix)
       assert(input == (token.charsOf.list ++ oldNextPrefix) ++ suffix)
       assert(input == token.charsOf.list ++ (oldNextPrefix ++ suffix))
       assert(token.charsOf.list ++ suffixResult == input)
@@ -2364,18 +2285,18 @@ object VerifiedLexer {
 
       ListUtils.lemmaIsPrefixRefl(input, input)
 
-      check(token.value == token.rule.transformation.apply(Vector.fromList(token.charsOf.list)))
+      check(token.value == token.rule.transformation.apply(seqFromList(token.charsOf.list)))
       check(token.rule == token.rule)
       check(token.size == token.originalCharacters.size)
-      check(token.size == token.originalCharacters.list.size)
+      check(token.size == token.originalCharacters.size)
       check(token.size == token.charsOf.list.size)
-      check(token.originalCharacters == Vector.fromList(token.charsOf.list))
+      check(token.originalCharacters == token.charsOf.list)
       assert(token.charsOf.list ++ suffixResult == input)
       assert(token.charsOf.list ++ ListUtils.getSuffix(input, token.charsOf.list) == input)
       ListUtils.lemmaConcatTwoListThenFirstIsPrefix(token.charsOf.list, ListUtils.getSuffix(input, token.charsOf.list))
       ListUtils.lemmaSamePrefixThenSameSuffix(token.charsOf.list, suffixResult, token.charsOf.list, ListUtils.getSuffix(input, token.charsOf.list), input)
       check(suffixResult == ListUtils.getSuffix(input, token.charsOf.list))
-      check(Some(token, suffixResult) == Some(Token(token.rule.transformation.apply(Vector.fromList(token.charsOf.list)), token.rule, token.charsOf.list.size, Vector.fromList(token.charsOf.list)), ListUtils.getSuffix(input, token.charsOf.list)))
+      check(Some(token, suffixResult) == Some(Token(token.rule.transformation.apply(seqFromList(token.charsOf.list)), token.rule, token.charsOf.list.size, token.charsOf.list), ListUtils.getSuffix(input, token.charsOf.list)))
 
       
       
@@ -2384,9 +2305,6 @@ object VerifiedLexer {
           
           t.lemmaCharactersSize()
           token.lemmaCharactersSize()
-          ghostExpr(Vector.listEqImpliesEq(t.charsOf, Vector.fromList(t.charsOf.list)))
-          ghostExpr(Vector.listEqImpliesEq(t.charsOf, t.originalCharacters))
-          ghostExpr(Vector.listEqImpliesEq(Vector.fromList(t.charsOf.list), t.charsOf))
 
           lemmaRuleInListAndrulesValidInductiveThenRuleIsValid(t.rule, rules)
           
@@ -2403,7 +2321,7 @@ object VerifiedLexer {
           assert(newSuffix ++ diffWithLongerSuffix == suffix)
           assert(prefix ++ suffix == input)
           assert(prefix ++ newSuffix == newInput)
-          ListUtils.lemmaTwoListsConcatAssociativity(prefix, newSuffix, diffWithLongerSuffix)
+          ListUtils.lemmaConcatAssociativity(prefix, newSuffix, diffWithLongerSuffix)
           assert(prefix ++ newSuffix ++ diffWithLongerSuffix == input)
           assert(newInput ++ diffWithLongerSuffix == input)
           ListUtils.lemmaPrefixStaysPrefixWhenAddingToSuffix(t.charsOf.list, newInput, diffWithLongerSuffix)
@@ -2426,7 +2344,7 @@ object VerifiedLexer {
             assert(rules.contains(token.rule))
             assert(rules.contains(t.rule))
 
-            assert(maxPrefix(rules, input) == Some(Token(token.rule.transformation.apply(Vector.fromList(token.charsOf.list)), token.rule, token.charsOf.list.size, Vector.fromList(token.charsOf.list)), ListUtils.getSuffix(input, token.charsOf.list)))
+            assert(maxPrefix(rules, input) == Some(Token(token.rule.transformation.apply(seqFromList(token.charsOf.list)), token.rule, token.charsOf.list.size, token.charsOf.list), ListUtils.getSuffix(input, token.charsOf.list)))
             lemmaMaxPrefixOutputsMaxPrefix(rules, token.rule, token.charsOf.list, input, t.charsOf.list, t.rule)
             check(false)
           }
@@ -2447,7 +2365,7 @@ object VerifiedLexer {
 
           if (ListUtils.getIndex(rules, t.rule) < ListUtils.getIndex(rules, token.rule)) {
             assert(maxPrefix(rules, input) == Some((token, suffixResult)))
-            assert(maxPrefix(rules, input) == Some(Token(token.rule.transformation.apply(Vector.fromList(token.charsOf.list)), token.rule, token.charsOf.list.size, Vector.fromList(token.charsOf.list)), ListUtils.getSuffix(input, token.charsOf.list)))
+            assert(maxPrefix(rules, input) == Some(Token(token.rule.transformation.apply(seqFromList(token.charsOf.list)), token.rule, token.charsOf.list.size, token.charsOf.list), ListUtils.getSuffix(input, token.charsOf.list)))
             assert(matchR(token.rule.regex, token.charsOf.list))
             lemmaMaxPrefNoSmallerRuleMatches(rules, token.rule, token.charsOf.list, input, t.rule)
             check(false)
@@ -2480,7 +2398,7 @@ object VerifiedLexer {
     @ghost
     @opaque
     @inlineOnce
-    def lemmaMaxPrefixThenWithoutSuffix[C](rules: List[Rule[C]], input: List[C], token: Token[C], suffix: List[C]): Unit = {
+    def lemmaMaxPrefixThenWithoutSuffix[C: ClassTag](rules: List[Rule[C]], input: List[C], token: Token[C], suffix: List[C]): Unit = {
       require(!rules.isEmpty)
       require(rulesInvariant(rules))
       require(!input.isEmpty)
@@ -2502,13 +2420,7 @@ object VerifiedLexer {
           }
           t.lemmaCharactersSize()
           token.lemmaCharactersSize()
-          ghostExpr(Vector.listEqImpliesEq(t.charsOf, Vector.fromList(t.charsOf.list)))
-          ghostExpr(Vector.listEqImpliesEq(t.charsOf, t.originalCharacters))
-          ghostExpr(Vector.listEqImpliesEq(Vector.fromList(t.charsOf.list), t.charsOf))
 
-          ghostExpr(Vector.listEqImpliesEq(token.charsOf, Vector.fromList(token.charsOf.list)))
-          ghostExpr(Vector.listEqImpliesEq(token.charsOf, token.originalCharacters))
-          ghostExpr(Vector.listEqImpliesEq(Vector.fromList(token.charsOf.list), token.charsOf))
 
           ListUtils.lemmaConcatTwoListThenFirstIsPrefix(t.charsOf.list, s)
           ListUtils.lemmaSamePrefixThenSameSuffix(t.charsOf.list, s, t.charsOf.list, ListUtils.getSuffix(input, t.charsOf.list), input)
@@ -2520,14 +2432,14 @@ object VerifiedLexer {
           t.rule.transformation.lemmaInv()
           token.rule.transformation.lemmaInv()
 
-          check(t.value == t.rule.transformation.apply(Vector.fromList(t.charsOf.list)))
+          check(t.value == t.rule.transformation.apply(seqFromList(t.charsOf.list)))
           check(t.rule == t.rule)
           check(t.size == t.originalCharacters.size)
-          check(t.size == t.originalCharacters.list.size)
+          check(t.size == t.originalCharacters.size)
           check(t.size == t.charsOf.list.size)
-          check(t.originalCharacters == Vector.fromList(t.charsOf.list))
+          check(t.originalCharacters == t.charsOf.list)
           check(s == ListUtils.getSuffix(input, t.charsOf.list))
-          check(Some(t, s) == Some(Token(t.rule.transformation.apply(Vector.fromList(t.charsOf.list)), t.rule, t.charsOf.list.size, Vector.fromList(t.charsOf.list)), ListUtils.getSuffix(input, t.charsOf.list)))
+          check(Some(t, s) == Some(Token(t.rule.transformation.apply(seqFromList(t.charsOf.list)), t.rule, t.charsOf.list.size, t.charsOf.list), ListUtils.getSuffix(input, t.charsOf.list)))
 
           ListUtils.lemmaConcatTwoListThenFirstIsPrefix(input, suffix)
           ListUtils.lemmaConcatTwoListThenFirstIsPrefix(token.charsOf.list, suffix)
@@ -2535,14 +2447,14 @@ object VerifiedLexer {
           assert(ListUtils.isPrefix(input, token.charsOf.list ++ suffix))
           ListUtils.lemmaSamePrefixThenSameSuffix(token.charsOf.list, suffix, token.charsOf.list, ListUtils.getSuffix(input ++ suffix, token.charsOf.list), input ++ suffix)
 
-          check(token.value == token.rule.transformation.apply(Vector.fromList(token.charsOf.list)))
+          check(token.value == token.rule.transformation.apply(seqFromList(token.charsOf.list)))
           check(token.rule == token.rule)
           check(token.size == token.originalCharacters.size)
-          check(token.size == token.originalCharacters.list.size)
+          check(token.size == token.originalCharacters.size)
           check(token.size == token.charsOf.list.size)
-          check(token.originalCharacters == Vector.fromList(token.charsOf.list))
+          check(token.originalCharacters == token.charsOf.list)
           check(suffix == ListUtils.getSuffix(input ++ suffix, token.charsOf.list))
-          check(Some(token, suffix) == Some(Token(token.rule.transformation.apply(Vector.fromList(token.charsOf.list)), token.rule, token.charsOf.list.size, Vector.fromList(token.charsOf.list)), ListUtils.getSuffix(input ++ suffix, token.charsOf.list)))
+          check(Some(token, suffix) == Some(Token(token.rule.transformation.apply(seqFromList(token.charsOf.list)), token.rule, token.charsOf.list.size, token.charsOf.list), ListUtils.getSuffix(input ++ suffix, token.charsOf.list)))
 
 
           lemmaMaxPrefixSoFindMaxPrefOneRuleWithThisRule(rules, t.charsOf.list, input, s, t.rule)
@@ -2572,34 +2484,32 @@ object VerifiedLexer {
             assert(rules.contains(t.rule))
             assert(rules.contains(token.rule))
 
-            assert(maxPrefixOneRule(t.rule, input) == Some(Token(t.rule.transformation.apply(Vector.fromList(t.charsOf.list)), t.rule, t.charsOf.list.size, Vector.fromList(t.charsOf.list)), s))
+            assert(maxPrefixOneRule(t.rule, input) == Some(Token(t.rule.transformation.apply(seqFromList(t.charsOf.list)), t.rule, t.charsOf.list.size, t.charsOf.list), s))
 
             assert(matchR(t.rule.regex, t.charsOf.list))
 
             
-            ForallOf((a: Vector[C]) => t.rule.transformation.witness(t.rule.transformation.f(a)) == a)(Vector.fromList(t.charsOf.list))
+            t.rule.transformation.lemmaSemiInverse(seqFromList(t.charsOf.list))
             ListUtils.lemmaIsPrefixRefl(input, input)
-            assert(maxPrefixOneRule(t.rule, input) == Some(Token(t.rule.transformation.apply(Vector.fromList(t.charsOf.list)), t.rule, t.charsOf.list.size, Vector.fromList(t.charsOf.list)), ListUtils.getSuffix(input, t.charsOf.list)))
+            assert(maxPrefixOneRule(t.rule, input) == Some(Token(t.rule.transformation.apply(seqFromList(t.charsOf.list)), t.rule, t.charsOf.list.size, t.charsOf.list), ListUtils.getSuffix(input, t.charsOf.list)))
 
             assert(input.size > t.charsOf.list.size)
-            assert(maxPrefix(rules, input) == Some(Token(t.rule.transformation.apply(Vector.fromList(t.charsOf.list)), t.rule, t.charsOf.list.size, Vector.fromList(t.charsOf.list)), ListUtils.getSuffix(input, t.charsOf.list)))
+            assert(maxPrefix(rules, input) == Some(Token(t.rule.transformation.apply(seqFromList(t.charsOf.list)), t.rule, t.charsOf.list.size, t.charsOf.list), ListUtils.getSuffix(input, t.charsOf.list)))
 
             lemmaMaxPrefixOutputsMaxPrefix(rules, t.rule, t.charsOf.list, input, input, token.rule)
             check(false)
           }
 
-          ForallOf((a: Vector[C]) => t.rule.transformation.witness(t.rule.transformation.f(a)) == a)(Vector.fromList(t.charsOf.list))
+          t.rule.transformation.lemmaSemiInverse(seqFromList(t.charsOf.list))
 
           token.rule.transformation.lemmaInv()
-          ForallOf((a: Vector[C]) => token.rule.transformation.witness(token.rule.transformation.f(a)) == a)(Vector.fromList(token.charsOf.list))
-
+          token.rule.transformation.lemmaSemiInverse(seqFromList(token.charsOf.list))
           assert(t.charsOf.list.size == token.charsOf.list.size)
           assert(t.charsOf.list ++ s == input)
           assert(t.charsOf.list ++ s == token.charsOf.list)
           assert(s.isEmpty)
           assert(t.charsOf.list == token.charsOf.list)
-          ghostExpr(Vector.listEqImpliesEq(token.charsOf, t.charsOf))
-          assert(t.charsOf == token.charsOf)
+          assert(t.charsOf.list == token.charsOf.list)
           assert(t.originalCharacters == token.originalCharacters)
           assert(!rules.isEmpty)
           assert(rulesInvariant(rules))
@@ -2609,7 +2519,7 @@ object VerifiedLexer {
           if (t.rule != token.rule) {
             if (ListUtils.getIndex(rules, t.rule) < ListUtils.getIndex(rules, token.rule)) {
               assert(maxPrefix(rules, input ++ suffix) == Some((token, suffix)))
-              assert(maxPrefix(rules, input ++ suffix) == Some(Token(token.rule.transformation.apply(Vector.fromList(input)), token.rule, input.size, Vector.fromList(input)), ListUtils.getSuffix(input ++ suffix, input)))
+              assert(maxPrefix(rules, input ++ suffix) == Some(Token(token.rule.transformation.apply(seqFromList(input)), token.rule, input.size, input), ListUtils.getSuffix(input ++ suffix, input)))
               assert(matchR(token.rule.regex, input))
               lemmaMaxPrefNoSmallerRuleMatches(rules, token.rule, input, input ++ suffix, t.rule)
               check(false)
@@ -2639,23 +2549,25 @@ object VerifiedLexer {
     @ghost
     @opaque
     @inlineOnce
-    def lemmaPrintWithSepTokenWhenNeededThenMaxPrefReturnsHead[C](rules: List[Rule[C]], tokens: List[Token[C]], separatorToken: Token[C]): Unit = {
+    def lemmaPrintWithSepTokenWhenNeededThenMaxPrefReturnsHead[C: ClassTag](rules: List[Rule[C]], tokens: List[Token[C]], separatorToken: Token[C]): Unit = {
       require(!rules.isEmpty)
       require(rulesInvariant(rules))
-      require(rulesProduceEachTokenIndividually(rules, Vector.fromList(tokens)))
+      require(rulesProduceEachTokenIndividuallyList(rules, tokens))
       require(rulesProduceIndividualToken(rules, separatorToken))
       require(separatorToken.rule.isSeparator)
       require(tokens.forall(!_.rule.isSeparator))
-      require(sepAndNonSepRulesDisjointChars(rules, rules))
+      require(LexerInterface.sepAndNonSepRulesDisjointChars(rules, rules))
 
       tokens match {
         case Cons(hd, tl) => {
-          Vector.listEqImpliesEq(Vector.fromList(hd.charsOf.list), hd.charsOf)
-          Vector.listEqImpliesEq(Vector.fromList(separatorToken.charsOf.list), separatorToken.charsOf)
+
+          hd.rule.transformation.lemmaSemiInverse(hd.charsOf)
+          hd.rule.transformation.lemmaEqSameImage(hd.charsOf, seqFromList(hd.originalCharacters))
 
           lemmaMaxPrefReturnTokenSoItsTagBelongsToTheRuleWithinToken(rules, separatorToken.charsOf.list, separatorToken)
           val separatorRule = separatorToken.rule
 
+          check(maxPrefix(rules, hd.charsOf.list).isDefined)
           check(maxPrefix(rules, hd.charsOf.list).get._1 == hd)
           lemmaMaxPrefReturnTokenSoItsTagBelongsToTheRuleWithinToken(rules, hd.charsOf.list, hd)
           val rule = hd.rule
@@ -2665,7 +2577,7 @@ object VerifiedLexer {
           maxPrefWithoutSep match {
             case Some((t, s)) if t == hd => ()
             case Some((t, s)) if t != hd => {
-              ListUtils.lemmaTwoListsConcatAssociativity(hd.charsOf.list, separatorToken.charsOf.list, suffix)
+              ListUtils.lemmaConcatAssociativity(hd.charsOf.list, separatorToken.charsOf.list, suffix)
               val resSuffix: List[C] = separatorToken.charsOf.list ++ suffix
               if (!separatorRule.regex.usedCharacters.contains(separatorToken.charsOf.list.head)) {
                 lemmaRegexCannotMatchAStringContainingACharItDoesNotContain(
@@ -2677,15 +2589,13 @@ object VerifiedLexer {
               }
               lemmaNonSepRuleNotContainsCharContainedInASepRule(rules, rules, rule, separatorRule, separatorToken.charsOf.list.head)
 
-              // ----- to prove (!lex(rules, Vector.fromList(hd.characters.list))._1.isEmpty
-              Vector.listEqImpliesEq(hd.charsOf, Vector.fromList(hd.charsOf.list))
-              Vector.listEqImpliesEq(print(Vector.singleton(hd)), hd.charsOf)
-              unfold(print(Vector.singleton(hd)))
-              assert(print(Vector.singleton(hd)).list == printList(List(hd)))
+              // ----- to prove (!lex(rules, seqFromList(hd.characters.list))._1.isEmpty
+              unfold(print(singletonSeq(hd)))
+              assert(print(singletonSeq(hd)).list == printList(List(hd)))
               assert(printList(List(hd)) == hd.charsOf.list)
-              assert(print(Vector.singleton(hd)) == hd.charsOf)
+              assert(print(singletonSeq(hd)).list == hd.charsOf.list)
               assert(rulesProduceIndividualToken(rules, hd))
-              assert(!lex(rules, Vector.fromList(hd.charsOf.list))._1.isEmpty)
+              assert(!lex(rules, seqFromList(hd.charsOf.list))._1.isEmpty)
               // ----- end
               
               check(maxPrefix(rules, hd.charsOf.list).isDefined)
@@ -2693,15 +2603,13 @@ object VerifiedLexer {
               lemmaMaxPrefWithOtherTypeUsedCharAtStartOfSuffixReturnSame(rules, hd, rule, resSuffix, separatorRule)
             }
             case None() => {
-              // ----- to prove (!lex(rules, Vector.fromList(hd.characters.list))._1.isEmpty
-              Vector.listEqImpliesEq(hd.charsOf, Vector.fromList(hd.charsOf.list))
-              Vector.listEqImpliesEq(print(Vector.singleton(hd)), hd.charsOf)
-              unfold(print(Vector.singleton(hd)))
-              assert(print(Vector.singleton(hd)).list == printList(List(hd)))
+              // ----- to prove (!lex(rules, seqFromList(hd.characters.list))._1.isEmpty
+              unfold(print(singletonSeq(hd)))
+              assert(print(singletonSeq(hd)).list == printList(List(hd)))
               assert(printList(List(hd)) == hd.charsOf.list)
-              assert(print(Vector.singleton(hd)) == hd.charsOf)
+              assert(print(singletonSeq(hd)).list == hd.charsOf.list)
               assert(rulesProduceIndividualToken(rules, hd))
-              assert(!lex(rules, Vector.fromList(hd.charsOf.list))._1.isEmpty)
+              assert(!lex(rules, seqFromList(hd.charsOf.list))._1.isEmpty)
               // ----- end
               lemmaLexIsDefinedWithStrThenLexWithSuffixIsDefined(rules, hd.charsOf.list, suffix)
               check(false)
@@ -2721,7 +2629,7 @@ object VerifiedLexer {
     @ghost
     @opaque
     @inlineOnce
-    def lemmaMaxPrefWithOtherTypeUsedCharAtStartOfSuffixReturnSame[C](
+    def lemmaMaxPrefWithOtherTypeUsedCharAtStartOfSuffixReturnSame[C: ClassTag](
         rules: List[Rule[C]],
         token: Token[C],
         rule: Rule[C],
@@ -2744,9 +2652,8 @@ object VerifiedLexer {
       require(!suffix.isEmpty)
       require(!rule.regex.usedCharacters.contains(suffix.head))
       require(anOtherTypeRule.regex.usedCharacters.contains(suffix.head))
-      require(sepAndNonSepRulesDisjointChars(rules, rules))
+      require(LexerInterface.sepAndNonSepRulesDisjointChars(rules, rules))
 
-      Vector.listEqImpliesEq(Vector.fromList(token.charsOf.list), token.charsOf)
 
       val input = token.charsOf.list ++ suffix
       ListUtils.lemmaConcatTwoListThenFirstIsPrefix(token.charsOf.list, suffix)
@@ -2761,9 +2668,10 @@ object VerifiedLexer {
       assert(matchR(foundRule.regex, foundToken.charsOf.list))
       assert(foundRule == foundToken.rule)
 
-      Vector.listEqImpliesEq(Vector.fromList(foundToken.charsOf.list), foundToken.charsOf)
+      foundRule.transformation.lemmaSemiInverse(foundToken.charsOf)
+      foundRule.transformation.lemmaEqSameImage(foundToken.charsOf, seqFromList(foundToken.originalCharacters))
       foundToken.lemmaCharactersSize()
-      assert(maxPrefix(rules, input) == Some(Token(foundRule.transformation.apply(foundToken.charsOf), foundRule, foundToken.charsOf.size, foundToken.charsOf), foundSuffix))
+      assert(maxPrefix(rules, input) == Some(Token(foundRule.transformation.apply(foundToken.charsOf), foundRule, foundToken.charsOf.size, foundToken.charsOf.list), foundSuffix))
       lemmaMaxPrefixSoFindMaxPrefOneRuleWithThisRule(rules, foundToken.charsOf.list, input, foundSuffix, foundRule)
       ListUtils.lemmaSamePrefixThenSameSuffix(
         foundToken.charsOf.list,
@@ -2815,7 +2723,7 @@ object VerifiedLexer {
       }
       ListUtils.lemmaIsPrefixSameLengthThenSameList(foundToken.charsOf.list, token.charsOf.list, input)
 
-      assert(foundToken.charsOf == token.charsOf)
+      assert(foundToken.charsOf.list == token.charsOf.list)
 
       if (foundToken.rule != token.rule) {
         val foundRuleIndex = ListUtils.getIndex(rules, foundRule)
@@ -2849,7 +2757,7 @@ object VerifiedLexer {
 
 
     @ghost
-    def lemmaMaxPrefWithNoPrefixMatchAllRulesThenSuffixReturnSame[C](
+    def lemmaMaxPrefWithNoPrefixMatchAllRulesThenSuffixReturnSame[C: ClassTag](
         rules: List[Rule[C]],
         token: Token[C],
         rule: Rule[C],
@@ -2882,16 +2790,16 @@ object VerifiedLexer {
       assert(matchR(foundRule.regex, foundToken.charsOf.list))
       assert(foundRule == foundToken.rule)
 
-      Vector.listEqImpliesEq(Vector.fromList(token.charsOf.list), token.charsOf)
-      Vector.listEqImpliesEq(Vector.fromList(foundToken.charsOf.list), foundToken.charsOf)
 
       foundRule.transformation.lemmaInv()
-      assert(semiInverse(foundRule.transformation.witness, foundRule.transformation.f))
-      assert(Forall((a: Vector[C]) => foundRule.transformation.witness(foundRule.transformation.f(a)) == a))
-      ForallOf((a: Vector[C]) => foundRule.transformation.witness(foundRule.transformation.f(a)) == a)(foundToken.charsOf)
+      assert(semiInverseBodyModEq(foundRule.transformation.toChars, foundRule.transformation.toValue))
+      foundRule.transformation.lemmaSemiInverse(foundToken.charsOf)
+      assert(foundToken.rule.transformation.toChars(foundToken.rule.transformation.toValue(foundToken.charsOf)).list == foundToken.charsOf.list)
+      assert(foundToken.charsOf == foundToken.rule.transformation.toChars(foundToken.value))
 
+      foundToken.rule.transformation.lemmaEqSameImage(foundToken.charsOf, seqFromList(foundToken.originalCharacters))
       foundToken.lemmaCharactersSize()
-      assert(maxPrefix(rules, input) == Some(Token(foundRule.transformation.apply(foundToken.charsOf), foundRule, foundToken.charsOf.size, foundToken.charsOf), foundSuffix))
+      assert(maxPrefix(rules, input) == Some(Token(foundRule.transformation.apply(foundToken.charsOf), foundRule, foundToken.charsOf.size, foundToken.charsOf.list), foundSuffix))
       lemmaMaxPrefixSoFindMaxPrefOneRuleWithThisRule(rules, foundToken.charsOf.list, input, foundSuffix, foundRule)
       ListUtils.lemmaSamePrefixThenSameSuffix(
         foundToken.charsOf.list,
@@ -2928,7 +2836,7 @@ object VerifiedLexer {
       }
       assert(foundToken.charsOf.size == token.charsOf.size)
       ListUtils.lemmaIsPrefixSameLengthThenSameList(foundToken.charsOf.list, token.charsOf.list, input)
-      assert(foundToken.charsOf == token.charsOf)
+      assert(foundToken.charsOf.list == token.charsOf.list)
       ListUtils.lemmaSamePrefixThenSameSuffix(token.charsOf.list, suffix, token.charsOf.list, foundSuffix, input)
       assert(suffix == foundSuffix)
       if(foundToken.rule != token.rule) {
@@ -2952,12 +2860,12 @@ object VerifiedLexer {
     }.ensuring (_ => maxPrefix(rules, token.charsOf.list ++ suffix) == Some((token, suffix)))
 
     @ghost
-    def lemmaLexIsDefinedWithStrThenLexWithSuffixIsDefined[C](rules: List[Rule[C]], input: List[C], suffix: List[C]): Unit = {
+    def lemmaLexIsDefinedWithStrThenLexWithSuffixIsDefined[C: ClassTag](rules: List[Rule[C]], input: List[C], suffix: List[C]): Unit = {
       require(!rules.isEmpty)
       require(rulesInvariant(rules))
-      require(!lex(rules, Vector.fromList(input))._1.isEmpty)
+      require(!lex(rules, seqFromList(input))._1.isEmpty)
 
-      val (tokens, _) = lex(rules, Vector.fromList(input))
+      val (tokens, _) = lex(rules, seqFromList(input))
       val firstT = tokens.list.head
       ListUtils.lemmaConcatTwoListThenFirstIsPrefix(firstT.charsOf.list, maxPrefix(rules, input).get._2)
       ListUtils.lemmaPrefixStaysPrefixWhenAddingToSuffix(firstT.charsOf.list, input, suffix)
@@ -2976,7 +2884,7 @@ object VerifiedLexer {
     @ghost
     @opaque
     @inlineOnce
-    def lemmaMaxPrefReturnTokenSoItsTagBelongsToTheRuleWithinToken[C](rules: List[Rule[C]], input: List[C], token: Token[C]): Unit = {
+    def lemmaMaxPrefReturnTokenSoItsTagBelongsToTheRuleWithinToken[C: ClassTag](rules: List[Rule[C]], input: List[C], token: Token[C]): Unit = {
       require(rulesInvariant(rules))
       require(!rules.isEmpty)
       require(maxPrefix(rules, input).isDefined)
@@ -3008,7 +2916,7 @@ object VerifiedLexer {
     @ghost
     @opaque
     @inlineOnce
-    def lemmaGetRuleFromTagInListThenSameListWhenAddingARuleDiffTag[C](rules: List[Rule[C]], newHd: Rule[C], tag: String): Unit = {
+    def lemmaGetRuleFromTagInListThenSameListWhenAddingARuleDiffTag[C: ClassTag](rules: List[Rule[C]], newHd: Rule[C], tag: String): Unit = {
       require(rulesInvariant(Cons(newHd, rules)))
       require({
         lemmaInvariantOnRulesThenOnTail(newHd, rules)
@@ -3023,7 +2931,7 @@ object VerifiedLexer {
     @ghost
     @opaque
     @inlineOnce
-    def lemmaRemovingFirstTokensCharactersPreservesLexSuffix[C](
+    def lemmaRemovingFirstTokensCharactersPreservesLexSuffix[C: ClassTag](
         rules: List[Rule[C]],
         input: List[C],
         producedTokens: List[Token[C]],
@@ -3032,16 +2940,17 @@ object VerifiedLexer {
       require(rulesInvariant(rules))
       require(!rules.isEmpty)
       require(producedTokens.size > 0)
-      require(lex(rules, Vector.fromList(input)) == (Vector.fromList(producedTokens), Vector.fromList(suffix)))
+      require(lex(rules, seqFromList(input))._1.list == producedTokens)
+      require(lex(rules, seqFromList(input))._2.list == suffix)
     }.ensuring (_ => {
-      val (lexedTokens, lexedSuffix) = lex(rules, Vector.fromList(maxPrefix(rules, input).get._2))
+      val (lexedTokens, lexedSuffix) = lex(rules, seqFromList(maxPrefix(rules, input).get._2))
       (lexedTokens.list, lexedSuffix.list) == (producedTokens.tail, suffix)
     })
 
     @ghost
     @opaque
     @inlineOnce
-    def lemmaMaxPrefNoneThenNoRuleMatches[C](rules: List[Rule[C]], r: Rule[C], p: List[C], input: List[C]): Unit = {
+    def lemmaMaxPrefNoneThenNoRuleMatches[C: ClassTag](rules: List[Rule[C]], r: Rule[C], p: List[C], input: List[C]): Unit = {
       require(ListUtils.isPrefix(p, input))
       require(!rules.isEmpty)
       require(rulesInvariant(rules))
@@ -3058,7 +2967,7 @@ object VerifiedLexer {
     @ghost
     @opaque
     @inlineOnce
-    def lemmaMaxPrefNoSmallerRuleMatches[C](
+    def lemmaMaxPrefNoSmallerRuleMatches[C: ClassTag](
         rules: List[Rule[C]],
         r: Rule[C],
         p: List[C],
@@ -3072,8 +2981,8 @@ object VerifiedLexer {
       require(rules.contains(rBis))
       require(!p.isEmpty)
       require({
-        ForallOf((a: Vector[C]) => r.transformation.witness(r.transformation.f(a)) == a)(Vector.fromList(p))
-        maxPrefix(rules, input) == Some(Token(r.transformation.apply(Vector.fromList(p)), r, p.size, Vector.fromList(p)), ListUtils.getSuffix(input, p))
+        r.transformation.lemmaSemiInverse(seqFromList(p))
+        maxPrefix(rules, input) == Some(Token(r.transformation.apply(seqFromList(p)), r, p.size, p), ListUtils.getSuffix(input, p))
       })
       require(matchR(r.regex, p))
       require(ListUtils.getIndex(rules, rBis) < ListUtils.getIndex(rules, r))
@@ -3098,7 +3007,7 @@ object VerifiedLexer {
               lemmaRuleReturnsPrefixSmallerEqualThanGlobalMaxPref(
                 rules,
                 p,
-                Token(r.transformation.apply(Vector.fromList(p)), r, p.size, Vector.fromList(p)),
+                Token(r.transformation.apply(seqFromList(p)), r, p.size, p),
                 input,
                 ListUtils.getSuffix(input, p),
                 token.charsOf.list,
@@ -3115,7 +3024,7 @@ object VerifiedLexer {
                 check(!matchR(rBis.regex, p))
               } else {
                 lemmaNoDuplicateTagAndDiffIndexThenNoTwoRulesTagsEq(rules, rBis, r)
-                check(Some(token, suff) != Some(Token(r.transformation.apply(Vector.fromList(p)), r, p.size, Vector.fromList(p)), ListUtils.getSuffix(input, p)))
+                check(Some(token, suff) != Some(Token(r.transformation.apply(seqFromList(p)), r, p.size, p), ListUtils.getSuffix(input, p)))
                 check(!matchR(rBis.regex, p))
               }
             }
@@ -3148,7 +3057,7 @@ object VerifiedLexer {
     @ghost
     @opaque
     @inlineOnce
-    def lemmaMaxPrefixOutputsMaxPrefix[C](
+    def lemmaMaxPrefixOutputsMaxPrefix[C: ClassTag](
         rules: List[Rule[C]],
         r: Rule[C],
         p: List[C],
@@ -3169,13 +3078,13 @@ object VerifiedLexer {
         matchR(r.regex, p)
       })
       require({
-        ForallOf((a: Vector[C]) => r.transformation.witness(r.transformation.f(a)) == a)(Vector.fromList(p))
+        r.transformation.lemmaSemiInverse(seqFromList(p))
         ListUtils.lemmaIsPrefixRefl(input, input)
-        maxPrefixOneRule(r, input) == Some(Token(r.transformation.apply(Vector.fromList(p)), r, p.size, Vector.fromList(p)), ListUtils.getSuffix(input, p))
+        maxPrefixOneRule(r, input) == Some(Token(r.transformation.apply(seqFromList(p)), r, p.size, p), ListUtils.getSuffix(input, p))
       })
 
       require(pBis.size > p.size)
-      require(maxPrefix(rules, input) == Some(Token(r.transformation.apply(Vector.fromList(p)), r, p.size, Vector.fromList(p)), ListUtils.getSuffix(input, p)))
+      require(maxPrefix(rules, input) == Some(Token(r.transformation.apply(seqFromList(p)), r, p.size, p), ListUtils.getSuffix(input, p)))
 
       // For preconditions
       lemmaRuleInListAndrulesValidInductiveThenRuleIsValid(r, rules)
@@ -3190,7 +3099,7 @@ object VerifiedLexer {
     @ghost
     @opaque
     @inlineOnce
-    def lemmaMaxPrefixOutputsMaxPrefixInner[C](
+    def lemmaMaxPrefixOutputsMaxPrefixInner[C: ClassTag](
         rules: List[Rule[C]],
         r: Rule[C],
         p: List[C],
@@ -3210,17 +3119,17 @@ object VerifiedLexer {
       require(matchR(r.regex, p))
       require(ruleValid(r))
       require({
+        r.transformation.lemmaSemiInverse(seqFromList(p))
         ListUtils.lemmaIsPrefixRefl(input, input)
-        ForallOf((a: Vector[C]) => r.transformation.witness(r.transformation.f(a)) == a)(Vector.fromList(p))
-        maxPrefixOneRule(r, input) == Some(Token(r.transformation.apply(Vector.fromList(p)), r, p.size, Vector.fromList(p)), ListUtils.getSuffix(input, p))
+        maxPrefixOneRule(r, input) == Some(Token(r.transformation.apply(seqFromList(p)), r, p.size, p), ListUtils.getSuffix(input, p))
       })
 
       require(pBis.size > p.size)
 
       require(ruleValid(rBis))
       require({
-        ForallOf((a: Vector[C]) => r.transformation.witness(r.transformation.f(a)) == a)(Vector.fromList(p))
-        maxPrefix(rules, input) == Some(Token(r.transformation.apply(Vector.fromList(p)), r, p.size, Vector.fromList(p)), ListUtils.getSuffix(input, p))
+        r.transformation.lemmaSemiInverse(seqFromList(p))
+        maxPrefix(rules, input) == Some(Token(r.transformation.apply(seqFromList(p)), r, p.size, p), ListUtils.getSuffix(input, p))
       })
 
       assert(validRegex(r.regex))
@@ -3240,7 +3149,7 @@ object VerifiedLexer {
           lemmaRuleReturnsPrefixSmallerEqualThanGlobalMaxPref(
             rules,
             p,
-            Token(r.transformation.apply(Vector.fromList(p)), r, p.size, Vector.fromList(p)),
+            Token(r.transformation.apply(seqFromList(p)), r, p.size, p),
             input,
             ListUtils.getSuffix(input, p),
             pBis,
@@ -3263,7 +3172,7 @@ object VerifiedLexer {
             lemmaRuleReturnsPrefixSmallerEqualThanGlobalMaxPref(
               rules,
               p,
-              Token(r.transformation.apply(Vector.fromList(p)), r, p.size, Vector.fromList(p)),
+              Token(r.transformation.apply(seqFromList(p)), r, p.size, p),
               input,
               ListUtils.getSuffix(input, p),
               tBis.charsOf.list,
@@ -3285,7 +3194,7 @@ object VerifiedLexer {
     @ghost
     @opaque
     @inlineOnce
-    def lemmaMaxPrefixSoFindMaxPrefOneRuleWithThisRule[C](
+    def lemmaMaxPrefixSoFindMaxPrefOneRuleWithThisRule[C: ClassTag](
         rules: List[Rule[C]],
         p: List[C],
         input: List[C],
@@ -3298,15 +3207,15 @@ object VerifiedLexer {
       require(input == p ++ suffix)
       require(!p.isEmpty)
       require({
-        ForallOf((a: Vector[C]) => r.transformation.witness(r.transformation.f(a)) == a)(Vector.fromList(p))
-        maxPrefix(rules, input) == Some(Token(r.transformation.apply(Vector.fromList(p)), r, p.size, Vector.fromList(p)), suffix)
+        r.transformation.lemmaSemiInverse(seqFromList(p))
+        maxPrefix(rules, input) == Some(Token(r.transformation.apply(seqFromList(p)), r, p.size, p), suffix)
       })
       require({
         lemmaRuleInListAndrulesValidInductiveThenRuleIsValid(r, rules)
         matchR(r.regex, p)
       })
       decreases(rules.size)
-      val token: Token[C] = Token(r.transformation.apply(Vector.fromList(p)), r, p.size, Vector.fromList(p))
+      val token: Token[C] = Token(r.transformation.apply(seqFromList(p)), r, p.size, p)
       rules match {
         case Cons(hd, tl) if hd == r => {
           lemmaInvariantOnRulesThenOnTail(hd, tl)
@@ -3331,8 +3240,8 @@ object VerifiedLexer {
               check(false)
             } else {
               assert(otherTokSufOpt.get._1.rule != r)
-              assert(maxPrefixOneRule(hd, input) != Some(Token(r.transformation.apply(Vector.fromList(p)), r, p.size, Vector.fromList(p)), suffix))
-              assert(maxPrefix(tl, input) == Some(Token(r.transformation.apply(Vector.fromList(p)), r, p.size, Vector.fromList(p)), suffix))
+              assert(maxPrefixOneRule(hd, input) != Some(Token(r.transformation.apply(seqFromList(p)), r, p.size, p), suffix))
+              assert(maxPrefix(tl, input) == Some(Token(r.transformation.apply(seqFromList(p)), r, p.size, p), suffix))
               lemmaMaxPrefixSoFindMaxPrefOneRuleWithThisRule(tl, p, input, suffix, r)
             }
 
@@ -3342,12 +3251,12 @@ object VerifiedLexer {
 
       }
 
-    }.ensuring (_ => maxPrefixOneRule(r, input) == Some(Token(r.transformation.apply(Vector.fromList(p)), r, p.size, Vector.fromList(p)), suffix))
+    }.ensuring (_ => maxPrefixOneRule(r, input) == Some(Token(r.transformation.apply(seqFromList(p)), r, p.size, p), suffix))
 
     @ghost
     @opaque
     @inlineOnce
-    def lemmaNoDuplTagThenTailRulesCannotProduceHeadTagInTok[C](rHead: Rule[C], rTail: List[Rule[C]], input: List[C]): Unit = {
+    def lemmaNoDuplTagThenTailRulesCannotProduceHeadTagInTok[C: ClassTag](rHead: Rule[C], rTail: List[Rule[C]], input: List[C]): Unit = {
       require(!rTail.isEmpty)
       require(rulesInvariant(Cons(rHead, rTail)))
       decreases(rTail)
@@ -3370,7 +3279,7 @@ object VerifiedLexer {
     @ghost
     @opaque
     @inlineOnce
-    def lemmaRuleReturnsPrefixSmallerEqualThanGlobalMaxPref[C](
+    def lemmaRuleReturnsPrefixSmallerEqualThanGlobalMaxPref[C: ClassTag](
         rules: List[Rule[C]],
         p: List[C],
         t: Token[C],
@@ -3440,7 +3349,7 @@ object VerifiedLexer {
     @ghost
     @opaque
     @inlineOnce
-    def lemmaMaxPrefixReturnsNoneThenAnyRuleReturnsNone[C](
+    def lemmaMaxPrefixReturnsNoneThenAnyRuleReturnsNone[C: ClassTag](
         r: Rule[C],
         rules: List[Rule[C]],
         input: List[C]
@@ -3468,7 +3377,7 @@ object VerifiedLexer {
     @ghost
     @opaque
     @inlineOnce
-    def lemmaMaxPrefixOneRuleOutputsMaxPrefix[C](
+    def lemmaMaxPrefixOneRuleOutputsMaxPrefix[C: ClassTag](
         r: Rule[C],
         p: List[C],
         t: Token[C],
@@ -3501,7 +3410,7 @@ object VerifiedLexer {
     @ghost
     @opaque
     @inlineOnce
-    def lemmaMaxPrefOneRuleReturnsNoneThenNoPrefMaxRegex[C](
+    def lemmaMaxPrefOneRuleReturnsNoneThenNoPrefMaxRegex[C: ClassTag](
         r: Rule[C],
         p: List[C],
         input: List[C]
@@ -3517,7 +3426,7 @@ object VerifiedLexer {
     @ghost
     @opaque
     @inlineOnce
-    def lemmaRuleInListAndrulesValidInductiveThenRuleIsValid[C](r: Rule[C], rules: List[Rule[C]]): Unit = {
+    def lemmaRuleInListAndrulesValidInductiveThenRuleIsValid[C: ClassTag](r: Rule[C], rules: List[Rule[C]]): Unit = {
       require(rules.contains(r))
       require(rulesValidInductive(rules))
       decreases(rules)
@@ -3534,7 +3443,7 @@ object VerifiedLexer {
     @ghost
     @opaque
     @inlineOnce
-    def lemmaInvariantOnRulesThenOnTail[C](r: Rule[C], rules: List[Rule[C]]): Unit = {
+    def lemmaInvariantOnRulesThenOnTail[C: ClassTag](r: Rule[C], rules: List[Rule[C]]): Unit = {
       require(rulesInvariant(Cons(r, rules)))
       assert(rulesValidInductive(Cons(r, rules)) && noDuplicateTag(Cons(r, rules), Nil()))
       assert(rulesValidInductive(rules))
@@ -3548,7 +3457,7 @@ object VerifiedLexer {
     @ghost
     @opaque
     @inlineOnce
-    def lemmaNoDuplicateCanReorder[C](e1: Rule[C], e2: Rule[C], l: List[Rule[C]]): Unit = {
+    def lemmaNoDuplicateCanReorder[C: ClassTag](e1: Rule[C], e2: Rule[C], l: List[Rule[C]]): Unit = {
       require(noDuplicateTag(Cons(e1, Cons(e2, l)), List()))
 
       assert(noDuplicateTag(Cons(e1, Cons(e2, l)), List()) == noDuplicateTag(Cons(e2, l), List(e1.tag)))
@@ -3561,7 +3470,7 @@ object VerifiedLexer {
     @ghost
     @opaque
     @inlineOnce
-    def lemmaNoDuplicateSameWithAccWithSameContent[C](l: List[Rule[C]], acc: List[String], newAcc: List[String]): Unit = {
+    def lemmaNoDuplicateSameWithAccWithSameContent[C: ClassTag](l: List[Rule[C]], acc: List[String], newAcc: List[String]): Unit = {
       require(noDuplicateTag(l, acc))
       require(acc.content == newAcc.content)
       decreases(l)
@@ -3581,7 +3490,7 @@ object VerifiedLexer {
     @ghost
     @opaque
     @inlineOnce
-    def lemmaNoDupTagThenAlsoWithSubListAcc[C](acc: List[String], newAcc: List[String], rules: List[Rule[C]]): Unit = {
+    def lemmaNoDupTagThenAlsoWithSubListAcc[C: ClassTag](acc: List[String], newAcc: List[String], rules: List[Rule[C]]): Unit = {
       require(ListSpecs.subseq(newAcc, acc))
       require(noDuplicateTag(rules, acc))
       decreases(rules)
@@ -3599,7 +3508,7 @@ object VerifiedLexer {
     @ghost
     @opaque
     @inlineOnce
-    def lemmaNoDuplicateTagAndDiffIndexThenNoTwoRulesEq[C](rules: List[Rule[C]], r1: Rule[C], r2: Rule[C]): Unit = {
+    def lemmaNoDuplicateTagAndDiffIndexThenNoTwoRulesEq[C: ClassTag](rules: List[Rule[C]], r1: Rule[C], r2: Rule[C]): Unit = {
       require(rules.contains(r1))
       require(rules.contains(r2))
       require(noDuplicateTag(rules))
@@ -3610,7 +3519,7 @@ object VerifiedLexer {
     @ghost
     @opaque
     @inlineOnce
-    def lemmaNoDuplicateTagAndDiffIndexThenNoTwoRulesTagsEq[C](rules: List[Rule[C]], r1: Rule[C], r2: Rule[C]): Unit = {
+    def lemmaNoDuplicateTagAndDiffIndexThenNoTwoRulesTagsEq[C: ClassTag](rules: List[Rule[C]], r1: Rule[C], r2: Rule[C]): Unit = {
       require(rules.contains(r1))
       require(rules.contains(r2))
       require(noDuplicateTag(rules))
@@ -3631,7 +3540,7 @@ object VerifiedLexer {
     @ghost
     @opaque
     @inlineOnce
-    def lemmaNoDuplicateAndTagInAccThenRuleCannotHaveSame[C](rules: List[Rule[C]], r: Rule[C], tag: String, acc: List[String]): Unit = {
+    def lemmaNoDuplicateAndTagInAccThenRuleCannotHaveSame[C: ClassTag](rules: List[Rule[C]], r: Rule[C], tag: String, acc: List[String]): Unit = {
       require(acc.contains(tag))
       require(noDuplicateTag(rules, acc))
       require(rules.contains(r))
@@ -3647,7 +3556,7 @@ object VerifiedLexer {
     @ghost
     @opaque
     @inlineOnce
-    def lemmaNonSepRuleNotContainsCharContainedInASepRule[C](
+    def lemmaNonSepRuleNotContainsCharContainedInASepRule[C: ClassTag](
         rules: List[Rule[C]],
         rulesRec: List[Rule[C]],
         rNSep: Rule[C],
@@ -3661,7 +3570,7 @@ object VerifiedLexer {
       require(!rNSep.isSeparator)
       require(rSep.isSeparator)
       require(rSep.regex.usedCharacters.contains(c))
-      require(sepAndNonSepRulesDisjointChars(rules, rulesRec))
+      require(LexerInterface.sepAndNonSepRulesDisjointChars(rules, rulesRec))
       decreases(rulesRec)
 
       rulesRec match {
@@ -3675,13 +3584,13 @@ object VerifiedLexer {
     @ghost
     @opaque
     @inlineOnce
-    def lemmaNonSepRuleNotContainsCharContainedInASepRuleInner[C](rules: List[Rule[C]], rNSep: Rule[C], rSep: Rule[C], c: C): Unit = {
+    def lemmaNonSepRuleNotContainsCharContainedInASepRuleInner[C: ClassTag](rules: List[Rule[C]], rNSep: Rule[C], rSep: Rule[C], c: C): Unit = {
       require(rulesInvariant(rules))
       require(rules.contains(rSep))
       require(rSep.regex.usedCharacters.contains(c))
       require(!rNSep.isSeparator)
       require(rSep.isSeparator)
-      require(ruleDisjointCharsFromAllFromOtherType(rNSep, rules))
+      require(LexerInterface.ruleDisjointCharsFromAllFromOtherType(rNSep, rules))
       decreases(rules)
 
       rules match {
@@ -3700,7 +3609,7 @@ object VerifiedLexer {
     @ghost
     @opaque
     @inlineOnce
-    def lemmaSepRuleNotContainsCharContainedInANonSepRule[C](
+    def lemmaSepRuleNotContainsCharContainedInANonSepRule[C: ClassTag](
         rules: List[Rule[C]],
         rulesRec: List[Rule[C]],
         rNSep: Rule[C],
@@ -3714,7 +3623,7 @@ object VerifiedLexer {
       require(!rNSep.isSeparator)
       require(rSep.isSeparator)
       require(rNSep.regex.usedCharacters.contains(c))
-      require(sepAndNonSepRulesDisjointChars(rules, rulesRec))
+      require(LexerInterface.sepAndNonSepRulesDisjointChars(rules, rulesRec))
       decreases(rulesRec)
       
       rulesRec match {
@@ -3728,13 +3637,13 @@ object VerifiedLexer {
     @ghost
     @opaque
     @inlineOnce
-    def lemmaSepRuleNotContainsCharContainedInANonSepRuleInner[C](rules: List[Rule[C]], rNSep: Rule[C], rSep: Rule[C], c: C): Unit = {
+    def lemmaSepRuleNotContainsCharContainedInANonSepRuleInner[C: ClassTag](rules: List[Rule[C]], rNSep: Rule[C], rSep: Rule[C], c: C): Unit = {
       require(rulesInvariant(rules))
       require(rules.contains(rSep))
       require(rNSep.regex.usedCharacters.contains(c))
       require(!rNSep.isSeparator)
       require(rSep.isSeparator)
-      require(ruleDisjointCharsFromAllFromOtherType(rNSep, rules))
+      require(LexerInterface.ruleDisjointCharsFromAllFromOtherType(rNSep, rules))
       decreases(rules)
 
       rules match {
@@ -3753,7 +3662,7 @@ object VerifiedLexer {
     @ghost
     @opaque
     @inlineOnce
-    def lemmaRulesProduceEachTokenIndividuallyThenForAnyToken[C](rules: List[Rule[C]], tokens: List[Token[C]], t: Token[C]): Unit = {
+    def lemmaRulesProduceEachTokenIndividuallyThenForAnyToken[C: ClassTag](rules: List[Rule[C]], tokens: List[Token[C]], t: Token[C]): Unit = {
       require(!rules.isEmpty)
       require(rulesInvariant(rules))
       require(tokens.contains(t))
@@ -3770,7 +3679,7 @@ object VerifiedLexer {
     @ghost
     @opaque
     @inlineOnce
-    def lemmaRulesProduceEachTokenIndividuallyThenForSubSeq[C](rules: List[Rule[C]], tokens: List[Token[C]], tokensBis: List[Token[C]]): Unit = {
+    def lemmaRulesProduceEachTokenIndividuallyThenForSubSeq[C: ClassTag](rules: List[Rule[C]], tokens: List[Token[C]], tokensBis: List[Token[C]]): Unit = {
       require(!rules.isEmpty)
       require(rulesInvariant(rules))
       require(ListSpecs.subseq(tokensBis, tokens))
@@ -3793,7 +3702,7 @@ object VerifiedLexer {
     @ghost
     @opaque
     @inlineOnce
-    def lemmaRulesProduceEachTokenIndividuallyConcat[C](rules: List[Rule[C]], ts1: List[Token[C]], ts2: List[Token[C]]): Unit = {
+    def lemmaRulesProduceEachTokenIndividuallyConcat[C: ClassTag](rules: List[Rule[C]], ts1: List[Token[C]], ts2: List[Token[C]]): Unit = {
       require(!rules.isEmpty)
       require(rulesInvariant(rules))
       require(rulesProduceEachTokenIndividuallyList(rules, ts1))
@@ -3807,7 +3716,7 @@ object VerifiedLexer {
     @ghost
     @inlineOnce
     @opaque
-    def tokensListTwoByTwoPredicateConcatList[C](l1: List[Token[C]], l2: List[Token[C]], rules: List[Rule[C]], p: (Token[C], Token[C], List[Rule[C]]) => Boolean): Unit = {
+    def tokensListTwoByTwoPredicateConcatList[C: ClassTag](l1: List[Token[C]], l2: List[Token[C]], rules: List[Rule[C]], p: (Token[C], Token[C], List[Rule[C]]) => Boolean): Unit = {
       require(tokensListTwoByTwoPredicateList(l1, rules, p) && tokensListTwoByTwoPredicateList(l2, rules, p))
       require(!l1.isEmpty && !l2.isEmpty)
       require(p(l1.last, l2.head, rules))
@@ -3821,7 +3730,7 @@ object VerifiedLexer {
     @ghost
     @inlineOnce
     @opaque
-    def tokensListTwoByTwoPredicateConcatSeparableTokensList[C](l1: List[Token[C]], l2: List[Token[C]], rules: List[Rule[C]]): Unit = {
+    def tokensListTwoByTwoPredicateConcatSeparableTokensList[C: ClassTag](l1: List[Token[C]], l2: List[Token[C]], rules: List[Rule[C]]): Unit = {
       require(!rules.isEmpty)
       require(rulesInvariant(rules))
       require(rulesProduceEachTokenIndividuallyList(rules, l1) && rulesProduceEachTokenIndividuallyList(rules, l2))
@@ -3845,7 +3754,7 @@ object VerifiedLexer {
     @ghost
     @inlineOnce
     @opaque
-    def tokensListTwoByTwoPredicateSeparableTokensDropList[C](l: List[Token[C]], i: BigInt, rules: List[Rule[C]]): Unit = {
+    def tokensListTwoByTwoPredicateSeparableTokensDropList[C: ClassTag](l: List[Token[C]], i: BigInt, rules: List[Rule[C]]): Unit = {
       require(!rules.isEmpty)
       require(rulesInvariant(rules))
       require(rulesProduceEachTokenIndividuallyList(rules, l))
@@ -3872,7 +3781,7 @@ object VerifiedLexer {
     @ghost
     @inlineOnce
     @opaque
-    def tokensListTwoByTwoPredicateSeparableTokensTakeList[C](l: List[Token[C]], i: BigInt, rules: List[Rule[C]]): Unit = {
+    def tokensListTwoByTwoPredicateSeparableTokensTakeList[C: ClassTag](l: List[Token[C]], i: BigInt, rules: List[Rule[C]]): Unit = {
       require(!rules.isEmpty)
       require(rulesInvariant(rules))
       require(rulesProduceEachTokenIndividuallyList(rules, l))
@@ -3898,7 +3807,7 @@ object VerifiedLexer {
     @ghost
     @inlineOnce
     @opaque
-    def tokensListTwoByTwoPredicateInstantiate[C](l: List[Token[C]], rules: List[Rule[C]], p: (Token[C], Token[C], List[Rule[C]]) => Boolean, t1: Token[C], t2: Token[C], i: BigInt): Unit = {
+    def tokensListTwoByTwoPredicateInstantiate[C: ClassTag](l: List[Token[C]], rules: List[Rule[C]], p: (Token[C], Token[C], List[Rule[C]]) => Boolean, t1: Token[C], t2: Token[C], i: BigInt): Unit = {
       require(tokensListTwoByTwoPredicateList(l, rules, p))
       require(i >= 0 && i+1 < l.size)
       require(l(i) == t1 && l(i + 1) == t2)
@@ -3914,7 +3823,7 @@ object VerifiedLexer {
     @ghost
     @inlineOnce
     @opaque
-    def tokensListTwoByTwoPredicateInstantiateSeparableTokens[C](l: List[Token[C]], rules: List[Rule[C]], t1: Token[C], t2: Token[C], i: BigInt): Unit = {
+    def tokensListTwoByTwoPredicateInstantiateSeparableTokens[C: ClassTag](l: List[Token[C]], rules: List[Rule[C]], t1: Token[C], t2: Token[C], i: BigInt): Unit = {
       require(!rules.isEmpty)
       require(rulesInvariant(rules))
       require(rulesProduceEachTokenIndividuallyList(rules, l))
@@ -3937,7 +3846,7 @@ object VerifiedLexer {
     @ghost
     @inlineOnce
     @opaque
-    def lemmaMaxPrefixThenMatchesRulesRegex[C]( 
+    def lemmaMaxPrefixThenMatchesRulesRegex[C: ClassTag]( 
       rules: List[Rule[C]],
       input: List[C],
       token: Token[C],
@@ -3954,7 +3863,6 @@ object VerifiedLexer {
           lemmaRuleInListAndrulesValidInductiveThenRuleIsValid(rule, rules)
           matchR(rule.regex, token.charsOf.list)
         })
-        Vector.listEqImpliesEq(Vector.fromList(token.charsOf.list), token.charsOf)
 
         lemmaMaxPrefixSoFindMaxPrefOneRuleWithThisRule(rules, token.charsOf.list, input, suffix, rule)
         assert(maxPrefixOneRule(rule, input) == Some(token, suffix))

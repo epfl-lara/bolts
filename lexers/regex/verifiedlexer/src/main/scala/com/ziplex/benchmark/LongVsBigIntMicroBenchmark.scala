@@ -4,6 +4,7 @@ import java.util.concurrent.TimeUnit
 import org.openjdk.jmh.annotations.*
 import scala.util.Random
 import scala.compiletime.uninitialized
+import org.openjdk.jmh.infra.Blackhole
 
 @State(Scope.Benchmark)
 class LongVsBigIntMicroBenchmark {
@@ -49,11 +50,12 @@ class LongVsBigIntMicroBenchmark {
   @Benchmark
   @BenchmarkMode(Array(Mode.AverageTime))
   @OutputTimeUnit(TimeUnit.MICROSECONDS)
-  def compareIds_longs(): Unit = {
+  def compareIds_longs(bh: Blackhole): Unit = {
     LongVsBigIntMicroBenchmarkUtils.randomLongs(size.toInt).foreach { id =>
       LongVsBigIntMicroBenchmarkUtils.randomLongs(size.toInt).foreach { otherId =>
         val out = id == otherId
-        assert(out == out)
+        bh.consume(out == out)
+        // assert(out == out)
       }
     }
   }
@@ -61,11 +63,12 @@ class LongVsBigIntMicroBenchmark {
   @Benchmark
   @BenchmarkMode(Array(Mode.AverageTime))
   @OutputTimeUnit(TimeUnit.MICROSECONDS)
-  def compareIds_bigints(): Unit = {
+  def compareIds_bigints(bh: Blackhole): Unit = {
     LongVsBigIntMicroBenchmarkUtils.randomBigInts(size.toInt).foreach { id =>
       LongVsBigIntMicroBenchmarkUtils.randomBigInts(size.toInt).foreach { otherId =>
         val out = id == otherId
-        assert(out == out)
+        bh.consume(out == out)
+        // assert(out == out)
       }
     }
   }

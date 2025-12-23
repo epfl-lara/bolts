@@ -20,7 +20,10 @@ import stainless.lang.Quantifiers.Exists
 import stainless.lang.Quantifiers.ExistsThe
 import stainless.lang.Quantifiers.pickWitness
 
-import com.ziplex.lexer.Vector
+import com.ziplex.lexer.Sequence
+import com.ziplex.lexer.emptySeq
+import com.ziplex.lexer.singletonSeq
+import com.ziplex.lexer.seqFromList
 
 import scala.annotation.tailrec
 
@@ -266,21 +269,104 @@ object MemoisationZipper {
 
 object VerifiedRegex {
   sealed trait Regex[C]:
-    lazy val nullable: Boolean = this.nullableFct
-    lazy val lostCause: Boolean = this.lostCauseFct
-    lazy val hash: Long = this.hashFct
+    def nullable: Boolean
+    def lostCause: Boolean
+    def hash: Long
   end Regex
-  case class ElementMatch[C](c: C) extends Regex[C]
-  case class Star[C](reg: Regex[C]) extends Regex[C]
-  case class Union[C](regOne: Regex[C], regTwo: Regex[C]) extends Regex[C]
-  case class Concat[C](regOne: Regex[C], regTwo: Regex[C]) extends Regex[C]
+  case class ElementMatch[C](c: C) extends Regex[C]:
+    lazy val nullableV: Boolean = this.nullableFct
+    @inlineOnce @opaque def nullable: Boolean = {
+      nullableV
+    }.ensuring(res => res == this.nullableFct)
+    lazy val lostCauseV: Boolean = this.lostCauseFct
+    @inlineOnce @opaque def lostCause: Boolean = {
+      lostCauseV
+    }.ensuring(res => res == this.lostCauseFct)
+    lazy val hashV: Long = this.hashFct
+    @inlineOnce @opaque def hash: Long = {
+      hashV
+    }.ensuring(res => res == this.hashFct)
+
+  end ElementMatch
+
+  case class Star[C](reg: Regex[C]) extends Regex[C]:
+    lazy val nullableV: Boolean = this.nullableFct
+    @inlineOnce @opaque def nullable: Boolean = {
+      nullableV
+    }.ensuring(res => res == this.nullableFct)
+    lazy val lostCauseV: Boolean = this.lostCauseFct
+    @inlineOnce @opaque def lostCause: Boolean = {
+      lostCauseV
+    }.ensuring(res => res == this.lostCauseFct)
+    lazy val hashV: Long = this.hashFct
+    @inlineOnce @opaque def hash: Long = {
+      hashV
+    }.ensuring(res => res == this.hashFct)
+  end Star
+
+  case class Union[C](regOne: Regex[C], regTwo: Regex[C]) extends Regex[C]:
+    lazy val nullableV: Boolean = this.nullableFct
+    @inlineOnce @opaque def nullable: Boolean = {
+      nullableV
+    }.ensuring(res => res == this.nullableFct)
+    lazy val lostCauseV: Boolean = this.lostCauseFct
+    @inlineOnce @opaque def lostCause: Boolean = {
+      lostCauseV
+    }.ensuring(res => res == this.lostCauseFct)
+    lazy val hashV: Long = this.hashFct
+    @inlineOnce @opaque def hash: Long = {
+      hashV
+    }.ensuring(res => res == this.hashFct)
+  end Union
+
+  case class Concat[C](regOne: Regex[C], regTwo: Regex[C]) extends Regex[C]:
+    lazy val nullableV: Boolean = this.nullableFct
+    @inlineOnce @opaque def nullable: Boolean = {
+      nullableV
+    }.ensuring(res => res == this.nullableFct)
+    lazy val lostCauseV: Boolean = this.lostCauseFct
+    @inlineOnce @opaque def lostCause: Boolean = {
+      lostCauseV
+    }.ensuring(res => res == this.lostCauseFct)
+    lazy val hashV: Long = this.hashFct
+    @inlineOnce @opaque def hash: Long = {
+      hashV
+    }.ensuring(res => res == this.hashFct)
+  end Concat
+
   /** Regex that accepts only the empty string: represents the language {""}
     */
-  case class EmptyExpr[C]() extends Regex[C]
+  case class EmptyExpr[C]() extends Regex[C]:
+    lazy val nullableV: Boolean = this.nullableFct
+    @inlineOnce @opaque def nullable: Boolean = {
+      nullableV
+    }.ensuring(res => res == this.nullableFct)
+    lazy val lostCauseV: Boolean = this.lostCauseFct
+    @inlineOnce @opaque def lostCause: Boolean = {
+      lostCauseV
+    }.ensuring(res => res == this.lostCauseFct)
+    lazy val hashV: Long = this.hashFct
+    @inlineOnce @opaque def hash: Long = {
+      hashV
+    }.ensuring(res => res == this.hashFct)
+  end EmptyExpr
 
   /** Regex that accepts nothing: represents the empty language
     */
-  case class EmptyLang[C]() extends Regex[C]
+  case class EmptyLang[C]() extends Regex[C]:
+    lazy val nullableV: Boolean = this.nullableFct
+    @inlineOnce @opaque def nullable: Boolean = {
+      nullableV
+    }.ensuring(res => res == this.nullableFct)
+    lazy val lostCauseV: Boolean = this.lostCauseFct
+    @inlineOnce @opaque def lostCause: Boolean = {
+      lostCauseV
+    }.ensuring(res => res == this.lostCauseFct)
+    lazy val hashV: Long = this.hashFct
+    @inlineOnce @opaque def hash: Long = {
+      hashV
+    }.ensuring(res => res == this.hashFct)
+  end EmptyLang
 
   def generalisedUnion[C](l: List[Regex[C]]): Regex[C] = {
     require(l.forall(validRegex))
@@ -702,67 +788,67 @@ object ZipperRegex {
   }
 
   // @tailrec
-  def matchZipperVector[C](z: Zipper[C], input: Vector[C], i: BigInt = 0): Boolean = {
+  def matchZipperSequence[C](z: Zipper[C], input: Sequence[C], i: BigInt = 0): Boolean = {
     require(i >= 0 && i <= input.size)
     decreases(input.size  - i)
-    if i == input.size then nullableZipper(z) else matchZipperVector(derivationStepZipper(z, input(i)), input, i + 1)
+    if i == input.size then nullableZipper(z) else matchZipperSequence(derivationStepZipper(z, input(i)), input, i + 1)
   }
 
   // @tailrec
-  def matchZipperVectorMem[C](z: Zipper[C], input: Vector[C], i: BigInt = 0)(using cacheUp: MemoisationZipper.CacheUp[C], cacheDown: MemoisationZipper.CacheDown[C]): Boolean = {
+  def matchZipperSequenceMem[C](z: Zipper[C], input: Sequence[C], i: BigInt = 0)(using cacheUp: MemoisationZipper.CacheUp[C], cacheDown: MemoisationZipper.CacheDown[C]): Boolean = {
     require(i >= 0 && i <= input.size)
     decreases(input.size  - i)
-    if i == input.size then nullableZipper(z) else matchZipperVectorMem(derivationStepZipperMem(z, input(i)), input, i + 1)
-  }.ensuring(res => res == matchZipperVector(z, input, i))
+    if i == input.size then nullableZipper(z) else matchZipperSequenceMem(derivationStepZipperMem(z, input(i)), input, i + 1)
+  }.ensuring(res => res == matchZipperSequence(z, input, i))
 
   @ghost
   @inlineOnce
   @opaque
-  def lemmaMatchZipperVectorEquivalent[C](z: Zipper[C], input: Vector[C], i: BigInt = 0): Unit = {
+  def lemmaMatchZipperSequenceEquivalent[C](z: Zipper[C], input: Sequence[C], i: BigInt = 0): Unit = {
     require(i >= 0 && i <= input.size)
     decreases(input.size - i)
     if i == input.size then
       assert(input.dropList(i).isEmpty)
     else 
-      lemmaMatchZipperVectorEquivalent(derivationStepZipper(z, input(i)), input, i + 1)
+      lemmaMatchZipperSequenceEquivalent(derivationStepZipper(z, input(i)), input, i + 1)
       ListUtils.lemmaDropApply(input.list, i)
       ListUtils.lemmaDropTail(input.list, i)
       assert(input.dropList(i) == (input(i) :: input.dropList(i + 1)))
-      assert(matchZipper(z, input.dropList(i)) == matchZipperVector(z, input, i))
-  }.ensuring(_ => matchZipper(z, input.dropList(i)) == matchZipperVector(z, input, i))
+      assert(matchZipper(z, input.dropList(i)) == matchZipperSequence(z, input, i))
+  }.ensuring(_ => matchZipper(z, input.dropList(i)) == matchZipperSequence(z, input, i))
 
   def prefixMatchZipper[C](z: Zipper[C], input: List[C]): Boolean = {
     decreases(input.size)
     if (input.isEmpty) !lostCauseZipper(z) else prefixMatchZipper(derivationStepZipper(z, input.head), input.tail)
   }
 
-  def prefixMatchZipperVector[C](z: Zipper[C], input: Vector[C], i: BigInt = 0): Boolean = {
+  def prefixMatchZipperSequence[C](z: Zipper[C], input: Sequence[C], i: BigInt = 0): Boolean = {
     require(i >= 0 && i <= input.size)
     decreases(input.size - i)
-    if (i == input.size) !lostCauseZipper(z) else prefixMatchZipperVector(derivationStepZipper(z, input(i)), input, i + 1)
+    if (i == input.size) !lostCauseZipper(z) else prefixMatchZipperSequence(derivationStepZipper(z, input(i)), input, i + 1)
   }
 
-  def prefixMatchZipperVectorMem[C](z: Zipper[C], input: Vector[C], i: BigInt = 0)(using cacheUp: CacheUp[C], cacheDown: CacheDown[C]): Boolean = {
+  def prefixMatchZipperSequenceMem[C](z: Zipper[C], input: Sequence[C], i: BigInt = 0)(using cacheUp: CacheUp[C], cacheDown: CacheDown[C]): Boolean = {
     require(i >= 0 && i <= input.size)
     decreases(input.size - i)
-    if (i == input.size) !lostCauseZipper(z) else prefixMatchZipperVectorMem(derivationStepZipperMem(z, input(i)), input, i + 1)
-  }.ensuring(res => res == prefixMatchZipperVector(z, input, i))
+    if (i == input.size) !lostCauseZipper(z) else prefixMatchZipperSequenceMem(derivationStepZipperMem(z, input(i)), input, i + 1)
+  }.ensuring(res => res == prefixMatchZipperSequence(z, input, i))
 
   @ghost
   @inlineOnce
   @opaque
-  def lemmaprefixMatchZipperVectorEquivalent[C](z: Zipper[C], input: Vector[C], i: BigInt = 0): Unit = {
+  def lemmaprefixMatchZipperSequenceEquivalent[C](z: Zipper[C], input: Sequence[C], i: BigInt = 0): Unit = {
     require(i >= 0 && i <= input.size)
     decreases(input.size - i)
     if i == input.size then
       assert(input.dropList(i).isEmpty)
     else 
-      lemmaprefixMatchZipperVectorEquivalent(derivationStepZipper(z, input(i)), input, i + 1)
+      lemmaprefixMatchZipperSequenceEquivalent(derivationStepZipper(z, input(i)), input, i + 1)
       ListUtils.lemmaDropApply(input.list, i)
       ListUtils.lemmaDropTail(input.list, i)
       assert(input.dropList(i) == (input(i) :: input.dropList(i + 1)))
-      assert(prefixMatchZipper(z, input.dropList(i)) == prefixMatchZipperVector(z, input, i))
-  }.ensuring(_ => prefixMatchZipper(z, input.dropList(i)) == prefixMatchZipperVector(z, input, i))
+      assert(prefixMatchZipper(z, input.dropList(i)) == prefixMatchZipperSequence(z, input, i))
+  }.ensuring(_ => prefixMatchZipper(z, input.dropList(i)) == prefixMatchZipperSequence(z, input, i))
 
   @ghost def appendTo[C](z: Zipper[C], c: Context[C]): Zipper[C] = {
     z.map(cz => cz.concat(c))
@@ -1564,7 +1650,7 @@ object ZipperRegex {
                               lemmaFindConcatSeparationEquivalentToExists(rInner, Star(rInner), starMatched)
                               val (starS1, starS2) = findConcatSeparation(rInner, Star(rInner), Nil(), starMatched, starMatched).get
                               assert(starMatched == starS1 ++ starS2)
-                              ListUtils.lemmaTwoListsConcatAssociativity(starS1, starS2, r2Matched)
+                              ListUtils.lemmaConcatAssociativity(starS1, starS2, r2Matched)
                               assert(starS1 ++ starS2 ++ r2Matched == s)
                               assert(matchR(rInner, starS1))
                               assert(matchR(Star(rInner), starS2))
@@ -1632,7 +1718,7 @@ object ZipperRegex {
                                 mainMatchTheorem(Concat(rInner, Star(rInner)), starS)
                                 lemmaFindConcatSeparationEquivalentToExists(rInner, Star(rInner), starS)
                                 val (sInner, sStarInner) = findConcatSeparation(rInner, Star(rInner), Nil(), starS, starS).get
-                                ListUtils.lemmaTwoListsConcatAssociativity(sInner, sStarInner, r2S)
+                                ListUtils.lemmaConcatAssociativity(sInner, sStarInner, r2S)
                                 assert(matchR(rInner, sInner))
                                 assert(matchR(Star(rInner), sStarInner))
                                 lemmaStarApp(rInner, sInner, sStarInner)
@@ -2826,7 +2912,7 @@ object ZipperRegex {
 
   // --------- Find Longest Match Zipper ------------------------------
 
-  def findLongestMatchZipperFast[C](z: Zipper[C], input: Vector[C]): (Vector[C], Vector[C]) = {
+  def findLongestMatchZipperFast[C](z: Zipper[C], input: Sequence[C]): (Sequence[C], Sequence[C]) = {
     val prefixLength = findLongestMatchInnerZipperFast(z, Nil(), 0, input.list, input, input.size)
 
     ghostExpr(ListUtils.lemmaConcatSameAndSameSizesThenSameLists(
@@ -2835,11 +2921,10 @@ object ZipperRegex {
       findLongestMatchInnerZipper(z, Nil(), 0, input.list, input.list, input.size)._1,
       findLongestMatchInnerZipper(z, Nil(), 0, input.list, input.list, input.size)._2
     ))
-    ghostExpr(Vector.listEqImpliesEq(input.splitAt(prefixLength)._1 ++ input.splitAt(prefixLength)._2, input))
     input.splitAt(prefixLength)
-  }.ensuring (res => (res._1.list, res._2.list) == findLongestMatchZipper(z, input.list) && res._1 ++ res._2 == input)
+  }.ensuring (res => (res._1.list, res._2.list) == findLongestMatchZipper(z, input.list) && res._1.list ++ res._2.list == input.list)
   
-  def findLongestMatchInnerZipperFast[C](z: Zipper[C], @ghost testedP: List[C], testedPSize: BigInt, @ghost testedSuffix: List[C], totalInput: Vector[C], totalInputSize: BigInt): BigInt = {
+  def findLongestMatchInnerZipperFast[C](z: Zipper[C], @ghost testedP: List[C], testedPSize: BigInt, @ghost testedSuffix: List[C], totalInput: Sequence[C], totalInputSize: BigInt): BigInt = {
     require(testedP ++ testedSuffix == totalInput.list)
     require(testedPSize == testedP.size)
     require(totalInputSize == totalInput.size)
@@ -2902,14 +2987,13 @@ object ZipperRegex {
   }.ensuring (res => findLongestMatchInnerZipper(z, testedP, testedPSize, testedSuffix, totalInput.list, totalInputSize)._1.size == res) 
 
   // ------------------------------------------- MEMOIZATION ----------------------------------------------
-  def findLongestMatchZipperFastMem[C](z: Zipper[C], input: Vector[C])(using cacheUp: CacheUp[C], cacheDown: CacheDown[C]): (Vector[C], Vector[C]) = {
+  def findLongestMatchZipperFastMem[C](z: Zipper[C], input: Sequence[C])(using cacheUp: CacheUp[C], cacheDown: CacheDown[C]): (Sequence[C], Sequence[C]) = {
     require(cacheUp.valid)
     require(cacheDown.valid)
     val prefixLength = findLongestMatchInnerZipperFastMem(cacheUp, cacheDown, z, Nil(), 0, input.list, input, input.size)
     ghostExpr(unfold(findLongestMatchInnerZipperFastMem(cacheUp, cacheDown, z, Nil(), 0, input.list, input, input.size)))
     ghostExpr(unfold(findLongestMatchInnerZipperFast(z, Nil(), 0, input.list, input, input.size)))
     ghostExpr(unfold(findLongestMatchInnerZipper(z, Nil(), 0, input.list, input.list, input.size)))
-    ghostExpr(Vector.listEqImpliesEq(input.splitAt(prefixLength)._1 ++ input.splitAt(prefixLength)._2, input))
     ghostExpr(ListUtils.lemmaConcatSameAndSameSizesThenSameLists(
       input.splitAt(prefixLength)._1.list,
       input.splitAt(prefixLength)._2.list,
@@ -2919,7 +3003,7 @@ object ZipperRegex {
     input.splitAt(prefixLength)
   }.ensuring (res => cacheUp.valid && cacheDown.valid && res == findLongestMatchZipperFast(z, input))
   
-  def findLongestMatchInnerZipperFastMem[C](cacheUp: CacheUp[C], cacheDown: CacheDown[C], z: Zipper[C], @ghost testedP: List[C], testedPSize: BigInt, @ghost testedSuffix: List[C], totalInput: Vector[C], totalInputSize: BigInt): BigInt = {
+  def findLongestMatchInnerZipperFastMem[C](cacheUp: CacheUp[C], cacheDown: CacheDown[C], z: Zipper[C], @ghost testedP: List[C], testedPSize: BigInt, @ghost testedSuffix: List[C], totalInput: Sequence[C], totalInputSize: BigInt): BigInt = {
     require(testedP ++ testedSuffix == totalInput.list)
     require(testedPSize == testedP.size)
     require(totalInputSize == totalInput.size)
@@ -3148,7 +3232,7 @@ object ZipperRegex {
       assert(knownP ++ rest == input)
       assert(testedP ++ knownPSuffix ++ rest == input)
       assert(testedP ++ suffix == input)
-      ListUtils.lemmaTwoListsConcatAssociativity(testedP, knownPSuffix, rest)
+      ListUtils.lemmaConcatAssociativity(testedP, knownPSuffix, rest)
       assert(testedP ++ (knownPSuffix ++ rest) == input)
       ListUtils.lemmaSamePrefixThenSameSuffix(testedP, (knownPSuffix ++ rest), testedP, suffix, input)
       assert(knownPSuffix ++ rest == suffix)
@@ -3158,7 +3242,7 @@ object ZipperRegex {
       assert(testedP ++ List(suffix.head) == newP)
       assert(newP ++ newKnownPSuffix == knownP)
       assert(testedP ++ List(suffix.head) ++ newKnownPSuffix == knownP)
-      ListUtils.lemmaTwoListsConcatAssociativity(testedP, List(suffix.head), newKnownPSuffix)
+      ListUtils.lemmaConcatAssociativity(testedP, List(suffix.head), newKnownPSuffix)
       ListUtils.lemmaSamePrefixThenSameSuffix(testedP, List(suffix.head) ++ newKnownPSuffix, testedP, knownPSuffix, knownP)
       assert(knownPSuffix.tail == newKnownPSuffix) // 2
 
@@ -3367,20 +3451,20 @@ object VerifiedRegexMatcher {
     if (prefix.isEmpty) !r.lostCause else prefixMatch(derivativeStep(r, prefix.head), prefix.tail)
   }
 
-  def prefixMatchZipperVector[C](r: Regex[C], prefix: Vector[C]): Boolean = {
+  def prefixMatchZipperSequence[C](r: Regex[C], prefix: Sequence[C]): Boolean = {
     require(validRegex(r))
-    ghostExpr(ZipperRegex.lemmaprefixMatchZipperVectorEquivalent(ZipperRegex.focus(r), prefix))
+    ghostExpr(ZipperRegex.lemmaprefixMatchZipperSequenceEquivalent(ZipperRegex.focus(r), prefix))
     // ghostExpr(ZipperRegex.theoremZipperRegexEquiv(ZipperRegex.focus(r), ZipperRegex.focus(r).toList, r, prefix.list))
     ghostExpr(ZipperRegex.prefixMatchZipperRegexEquiv(ZipperRegex.focus(r), ZipperRegex.focus(r).toList, r, prefix.list))
-    ZipperRegex.prefixMatchZipperVector(ZipperRegex.focus(r), prefix)
+    ZipperRegex.prefixMatchZipperSequence(ZipperRegex.focus(r), prefix)
   }.ensuring (res => res == prefixMatch(r, prefix.list))
 
-  def prefixMatchZipperVectorMem[C](r: Regex[C], prefix: Vector[C])(using cacheUp: MemoisationZipper.CacheUp[C], cacheDown: MemoisationZipper.CacheDown[C]): Boolean = {
+  def prefixMatchZipperSequenceMem[C](r: Regex[C], prefix: Sequence[C])(using cacheUp: MemoisationZipper.CacheUp[C], cacheDown: MemoisationZipper.CacheDown[C]): Boolean = {
     require(validRegex(r))
-    ghostExpr(ZipperRegex.lemmaprefixMatchZipperVectorEquivalent(ZipperRegex.focus(r), prefix))
+    ghostExpr(ZipperRegex.lemmaprefixMatchZipperSequenceEquivalent(ZipperRegex.focus(r), prefix))
     // ghostExpr(ZipperRegex.theoremZipperRegexEquiv(ZipperRegex.focus(r), ZipperRegex.focus(r).toList, r, prefix.list))
     ghostExpr(ZipperRegex.prefixMatchZipperRegexEquiv(ZipperRegex.focus(r), ZipperRegex.focus(r).toList, r, prefix.list))
-    ZipperRegex.prefixMatchZipperVectorMem(ZipperRegex.focus(r), prefix)
+    ZipperRegex.prefixMatchZipperSequenceMem(ZipperRegex.focus(r), prefix)
   }.ensuring (res => res == prefixMatch(r, prefix.list))
   
   def matchRMem[C](r: Regex[C], input: List[C])(using cache: Cache[C]): Boolean = {
@@ -3397,11 +3481,11 @@ object VerifiedRegexMatcher {
     ZipperRegex.matchZipper(ZipperRegex.focus(r), input)
   }.ensuring (res => res == matchR(r, input))
 
-  def matchZipperVector[C](r: Regex[C], input: Vector[C]): Boolean = {
+  def matchZipperSequence[C](r: Regex[C], input: Sequence[C]): Boolean = {
     require(validRegex(r))
-    ghostExpr(ZipperRegex.lemmaMatchZipperVectorEquivalent(ZipperRegex.focus(r), input))
+    ghostExpr(ZipperRegex.lemmaMatchZipperSequenceEquivalent(ZipperRegex.focus(r), input))
     ghostExpr(ZipperRegex.theoremZipperRegexEquiv(ZipperRegex.focus(r), ZipperRegex.focus(r).toList, r, input.list))
-    ZipperRegex.matchZipperVector(ZipperRegex.focus(r), input)
+    ZipperRegex.matchZipperSequence(ZipperRegex.focus(r), input)
   }.ensuring (res => res == matchR(r, input.list))
 
   def matchZipperMem[C](r: Regex[C], input: List[C])(using cacheUp: MemoisationZipper.CacheUp[C], cacheDown: MemoisationZipper.CacheDown[C]): Boolean = {
@@ -3411,11 +3495,11 @@ object VerifiedRegexMatcher {
     ZipperRegex.matchZipperMem(ZipperRegex.focus(r), input)
   }.ensuring (res => res == matchR(r, input))
 
-  def matchZipperVectorMem[C](r: Regex[C], input: Vector[C])(using cacheUp: MemoisationZipper.CacheUp[C], cacheDown: MemoisationZipper.CacheDown[C]): Boolean = {
+  def matchZipperSequenceMem[C](r: Regex[C], input: Sequence[C])(using cacheUp: MemoisationZipper.CacheUp[C], cacheDown: MemoisationZipper.CacheDown[C]): Boolean = {
     require(validRegex(r))
-    ghostExpr(ZipperRegex.lemmaMatchZipperVectorEquivalent(ZipperRegex.focus(r), input))
+    ghostExpr(ZipperRegex.lemmaMatchZipperSequenceEquivalent(ZipperRegex.focus(r), input))
     ghostExpr(ZipperRegex.theoremZipperRegexEquiv(ZipperRegex.focus(r), ZipperRegex.focus(r).toList, r, input.list))
-    ZipperRegex.matchZipperVectorMem(ZipperRegex.focus(r), input)
+    ZipperRegex.matchZipperSequenceMem(ZipperRegex.focus(r), input)
   }.ensuring (res => res == matchR(r, input.list))
 
   // COMMENTED OUT BECAUSE NOT VERIFIED THROUGHOUT YET
@@ -3732,7 +3816,7 @@ object VerifiedRegexMatcher {
     ZipperRegex.findLongestMatchZipper(zipper, input)
   }.ensuring (res => res == findLongestMatch(r, input))
 
-  def findLongestMatchWithZipperVector[C](r: Regex[C], input: Vector[C]): (Vector[C], Vector[C]) = {
+  def findLongestMatchWithZipperSequence[C](r: Regex[C], input: Sequence[C]): (Sequence[C], Sequence[C]) = {
     require(validRegex(r))
     val zipper = ZipperRegex.focus(r)
     ghostExpr(ZipperRegex.longestMatchSameAsRegex(r, zipper, input.list))
@@ -3740,7 +3824,7 @@ object VerifiedRegexMatcher {
     ZipperRegex.findLongestMatchZipperFast(zipper, input)
   }.ensuring (res => (res._1.list, res._2.list) == findLongestMatch(r, input.list))
 
-  def findLongestMatchWithZipperVectorMem[C](r: Regex[C], input: Vector[C])(using cacheUp: CacheUp[C], cacheDown: CacheDown[C]): (Vector[C], Vector[C]) = {
+  def findLongestMatchWithZipperSequenceMem[C](r: Regex[C], input: Sequence[C])(using cacheUp: CacheUp[C], cacheDown: CacheDown[C]): (Sequence[C], Sequence[C]) = {
     require(validRegex(r))
     require(cacheUp.valid)
     require(cacheDown.valid)
@@ -4226,6 +4310,8 @@ object VerifiedRegexMatcher {
             else if(isEmptyExpr(simpR1)) {
               lemmaSimplifySound(r2, s)
               if(matchR(r2, s)) {
+                assert(r1.nullable)
+                assert(matchR(r1, Nil()))
                 lemmaR1MatchesS1AndR2MatchesS2ThenFindSeparationFindsAtLeastThem(r1, r2, Nil(), s, s, Nil(), s)
                 lemmaFindConcatSeparationEquivalentToExists(r1, r2, s)
                 check(false)
@@ -4676,7 +4762,7 @@ object VerifiedRegexMatcher {
       assert(knownP ++ rest == input)
       assert(testedP ++ knownPSuffix ++ rest == input)
       assert(testedP ++ suffix == input)
-      ListUtils.lemmaTwoListsConcatAssociativity(testedP, knownPSuffix, rest)
+      ListUtils.lemmaConcatAssociativity(testedP, knownPSuffix, rest)
       assert(testedP ++ (knownPSuffix ++ rest) == input)
       ListUtils.lemmaSamePrefixThenSameSuffix(testedP, (knownPSuffix ++ rest), testedP, suffix, input)
       assert(knownPSuffix ++ rest == suffix)
@@ -4686,7 +4772,7 @@ object VerifiedRegexMatcher {
       assert(testedP ++ List(suffix.head) == newP)
       assert(newP ++ newKnownPSuffix == knownP)
       assert(testedP ++ List(suffix.head) ++ newKnownPSuffix == knownP)
-      ListUtils.lemmaTwoListsConcatAssociativity(testedP, List(suffix.head), newKnownPSuffix)
+      ListUtils.lemmaConcatAssociativity(testedP, List(suffix.head), newKnownPSuffix)
       ListUtils.lemmaSamePrefixThenSameSuffix(testedP, List(suffix.head) ++ newKnownPSuffix, testedP, knownPSuffix, knownP)
       assert(knownPSuffix.tail == newKnownPSuffix) // 2
 
@@ -5062,7 +5148,7 @@ object VerifiedRegexMatcher {
       lemmaFindConcatSeparationEquivalentToExists(r2, r3, s22 ++ s2)
       lemmaR1MatchesS1AndR2MatchesS2ThenFindSeparationFindsAtLeastThem(r2, r3, s22, s2, s22 ++ s2, Nil(), s22 ++ s2)
       assert(matchR(Concat(r2, r3), s22 ++ s2))
-      ListUtils.lemmaTwoListsConcatAssociativity(s11, s22, s2)
+      ListUtils.lemmaConcatAssociativity(s11, s22, s2)
       assert(s11 ++ (s22 ++ s2) == s)
       lemmaR1MatchesS1AndR2MatchesS2ThenFindSeparationFindsAtLeastThem(r1, Concat(r2, r3), s11, s22 ++ s2, s, Nil(), s)
       lemmaFindConcatSeparationEquivalentToExists(r1, Concat(r2, r3), s)
@@ -5082,7 +5168,7 @@ object VerifiedRegexMatcher {
         mainMatchTheorem(r3, s22)
         
         assert(s1 ++ (s11 ++ s22) == s)
-        ListUtils.lemmaTwoListsConcatAssociativity(s1, s11, s22)
+        ListUtils.lemmaConcatAssociativity(s1, s11, s22)
 
         mainMatchTheorem(Concat(r1, r2), s1 ++ s11)
         lemmaFindConcatSeparationEquivalentToExists(r1, r2, s1 ++ s11)
@@ -5439,6 +5525,7 @@ object VerifiedRegexMatcher {
   def lemmaDerivAfterDerivStepIsNullableThenFirstCharsContainsHead[C](r: Regex[C], c: C, tl: List[C]): Unit = {
     require(validRegex(r))
     require(derivative(derivativeStep(r, c), tl).nullable)
+    decreases(r)
 
     r match {
       case EmptyExpr() => {

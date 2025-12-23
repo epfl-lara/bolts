@@ -3,13 +3,13 @@ package benchmark.lexer
 
 import java.util.concurrent.TimeUnit
 import org.openjdk.jmh.annotations.*
+import org.openjdk.jmh.infra.Blackhole
 import scala.util.Random
 import stainless.collection.{List => StainlessList}
 import scala.compiletime.uninitialized
 import com.ziplex.lexer.VerifiedLexer.Lexer
 import com.ziplex.lexer.example.ExamplePythonLexer.PythonLexer
 import com.ziplex.lexer.example.RegexUtils.*
-import com.ziplex.lexer.Vector
 import com.ziplex.lexer.MemoisationZipper
 import com.ziplex.lexer.VerifiedRegex.Regex
 import com.mutablemaps.map.Hashable
@@ -18,6 +18,12 @@ import com.ziplex.lexer.benchmark.ContextCharHashable
 import com.ziplex.lexer.benchmark.RegexCharHashable
 import com.ziplex.lexer.benchmark.RegexContextCharHashable
 
+import com.ziplex.lexer.Sequence
+import com.ziplex.lexer.emptySeq
+import com.ziplex.lexer.singletonSeq
+import com.ziplex.lexer.seqFromList
+
+import scala.reflect.ClassTag
 import java.io.File
 
 @State(Scope.Benchmark)
@@ -50,12 +56,14 @@ class PythonLexerBenchmark {
   @Benchmark
   @BenchmarkMode(Array(Mode.AverageTime))
   @OutputTimeUnit(TimeUnit.MICROSECONDS)
-  def lex_ZipperMem(): Unit = {
+  def lex_ZipperMem(bh: Blackhole): Unit = {
     val (tokens, suffix) = Lexer.lexMem(PythonLexer.rules, PythonLexerBenchmarkUtils.exampleFileContents(file))(
-      using PythonLexerBenchmarkUtils.zipperCacheUp,
+      using ClassTag.Char,
+      PythonLexerBenchmarkUtils.zipperCacheUp,
       PythonLexerBenchmarkUtils.zipperCacheDown
     )
-    assert(suffix.isEmpty)
+    bh.consume(suffix.isEmpty)
+    // assert(suffix.isEmpty)
   }
 
 }
@@ -104,7 +112,7 @@ object PythonLexerBenchmarkUtils {
         "Vector2D_802chars.py",
         "WordStats_346chars.py",
   )
-  val exampleFileContents: Map[String, Vector[Char]] = exampleFileNames.map(name => {
+  val exampleFileContents: Map[String, Sequence[Char]] = exampleFileNames.map(name => {
     val source = scala.io.Source.fromFile(s"src/main/scala/com/ziplex/example/res/python/$name")
     val lines = try source.mkString.toStainless finally source.close()
     (name -> lines)

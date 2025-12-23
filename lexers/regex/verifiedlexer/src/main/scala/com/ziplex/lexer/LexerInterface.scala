@@ -1,19 +1,26 @@
 package com.ziplex.lexer
 
 import VerifiedRegex.*
-import stainless.collection.List
 import stainless.annotation.law
 import stainless.annotation.pure
 import stainless.annotation.ghost
+import stainless.annotation.inlineOnce
+import stainless.annotation.opaque
 import stainless.lang.Quantifiers.*
 
 import stainless.collection.List
 import stainless.collection.Cons
 import stainless.collection.Nil
+import stainless.collection.IArray
 
 import scala.annotation.tailrec
 
 import com.ziplex.lexer.Vector
+import scala.reflect.ClassTag
+import com.ziplex.lexer.BalanceConcObj.BalanceConc
+import com.ziplex.lexer.BalanceConcObj
+import com.ziplex.lexer.BalanceConcObj.Empty
+
 
 // BEGIN uncomment for verification ------------------------------------------
 import stainless.lang.StaticChecks._
@@ -31,23 +38,100 @@ import stainless.lang.{ghost => ghostExpr, _}
 // }.ensuring( res => res == BigInt(0))
 // END imports for benchmarking ---------------------------------------------
 
+
+// Pick the structure used to represent the strings as sequences of characters
+// Vector is a trusted wrapper around the Vector datastructure from the Scala standard library
+// BalanceConc is a sequence implementation based on a binary tree, fully verified although slower
+
+// type Sequence[T] = Vector[T]
+// inline def emptySeq[T]: Sequence[T] = Vector.empty
+// inline def singletonSeq[T](t: T): Sequence[T] = Vector.singleton(t)
+// inline def seqFromList[T](l: List[T]): Sequence[T] = Vector.fromList(l)
+// inline def seqFromArray[T: ClassTag](arr: IArray[T]): Sequence[T] = Vector.fromArray(arr)
+type Sequence[T] = BalanceConc[T]
+def emptySeq[T: ClassTag](): Sequence[T] = BalanceConcObj.empty[T]
+def singletonSeq[T: ClassTag](t: T): Sequence[T] = BalanceConcObj.singleton(t)
+def seqFromList[T: ClassTag](l: List[T]): Sequence[T] = BalanceConcObj.fromListB(l)
+def seqFromArray[T: ClassTag](arr: IArray[T]): Sequence[T] = BalanceConcObj.fromArrayB(arr)
+@ghost @inlineOnce @opaque def seqFromListBHdTlConstructive[T: ClassTag](hd: T, tl: List[T], s: Sequence[T]): Unit = {
+  require(s.list == seqFromList(hd :: tl).list)
+      // Vector.fromListHdTlConstructive(hd, tl, s)
+      BalanceConcObj.fromListHdTlConstructive(hd, tl, s)
+  }.ensuring(_ => s.list == seqFromList(tl).prepend(hd).list)
+
 trait TokenValue
 
-case class Token[C](value: TokenValue, rule: Rule[C], size: BigInt, @ghost originalCharacters: Vector[C]) {
+final case class Token[C](value: TokenValue, rule: Rule[C], size: BigInt, @ghost originalCharacters: List[C]) {
   require(!originalCharacters.isEmpty)
-  require(originalCharacters == rule.transformation.witness(value))
+  require(originalCharacters == rule.transformation.toChars(value).list)
   require(size == originalCharacters.size)
-  def charsOf: Vector[C] = {
-    rule.transformation.witness(value)
-  }.ensuring(res => res == originalCharacters && res.list == originalCharacters.list)
+  def charsOf: Sequence[C] = {
+    rule.transformation.toChars(value)
+  }.ensuring(res => res.list == originalCharacters)
 
   def lemmaCharactersSize(): Unit = {
   }.ensuring(_ => size == originalCharacters.size)
 }
-case class Rule[C](regex: Regex[C], tag: String, isSeparator: Boolean, transformation: Injection[Vector[C], TokenValue])
+case class Rule[C](regex: Regex[C], tag: String, isSeparator: Boolean, transformation: TokenValueInjection[C])
+
+@ghost inline def semiInverseBodyModEq[C](toChars: TokenValue => Sequence[C], toValue: Sequence[C] => TokenValue): Boolean = 
+  Forall((chars: Sequence[C]) => toChars(toValue(chars)).list == chars.list)
+
+@ghost inline def equivClassesBody[C](toChars: TokenValue => Sequence[C], toValue: Sequence[C] => TokenValue): Boolean = 
+  Forall2((chars1: Sequence[C], chars2: Sequence[C]) => (chars1.list == chars2.list) ==> (toValue(chars1) == toValue(chars2)))
+
+@ghost def semiInverseModEq[C](toChars: TokenValue => Sequence[C], toValue: Sequence[C] => TokenValue): Boolean = semiInverseBodyModEq(toChars, toValue)
+@ghost def equivClasses[C](toChars: TokenValue => Sequence[C], toValue: Sequence[C] => TokenValue): Boolean = equivClassesBody(toChars, toValue)
+case class TokenValueInjection[C](toValue: Sequence[C] => TokenValue, toChars: TokenValue => Sequence[C]) {
+  require(semiInverseModEq(toChars, toValue))
+  require(equivClasses(toChars, toValue))
+  def apply(chars: Sequence[C]): TokenValue = toValue(chars)
+  @ghost def lemmaInv(): Unit = {}.ensuring(_ => semiInverseModEq(toChars, toValue) && equivClasses(toChars, toValue))
+  @ghost def lemmaSemiInverse(c: Sequence[C]): Unit = {
+    ForallOf((chars: Sequence[C]) => toChars(toValue(chars)).list == chars.list)(c)
+  }.ensuring(_ => toChars(toValue(c)).list == c.list)
+  @ghost def lemmaEqSameImage(c1: Sequence[C], c2: Sequence[C]): Unit = {
+    require(c1.list == c2.list)
+    Forall2of((chars1: Sequence[C], chars2: Sequence[C]) => (chars1.list == chars2.list) ==> (toValue(chars1) == toValue(chars2)))(c1, c2)
+  }.ensuring(_ => toValue(c1) == toValue(c2))
+} 
 
 
+object LexerInterface {
+  /**
+    * Predicate that indicates whether the rules of the two subtypes of rules
+    * i.e., separator and non-separator rules,
+    * are using each a disjoint set of characters.
+    * 
+    * In other words, the set of characters used by the separator rules is disjoint
+    * from the set of characters used by the non-separator rules.
+    *
+    * @param rules
+    *
+    * @param rules
+    * @param rulesRec
+    */
+  def sepAndNonSepRulesDisjointChars[C: ClassTag](rules: List[Rule[C]], rulesRec: List[Rule[C]]): Boolean = {
+      rulesRec match {
+        case Cons(hd, tl) => ruleDisjointCharsFromAllFromOtherType(hd, rules) && sepAndNonSepRulesDisjointChars(rules, tl)
+        case Nil()        => true
+      }
+    }
 
+  def ruleDisjointCharsFromAllFromOtherType[C: ClassTag](r: Rule[C], rules: List[Rule[C]]): Boolean = {
+    decreases(rules)
+    rules match {
+      case Cons(hd, tl) if hd.isSeparator != r.isSeparator => rulesUseDisjointChars(r, hd) && ruleDisjointCharsFromAllFromOtherType(r, tl)
+      case Cons(hd, tl)                                    => ruleDisjointCharsFromAllFromOtherType(r, tl)
+      case Nil()                                           => true
+    }
+  }
+
+  def rulesUseDisjointChars[C: ClassTag](r1: Rule[C], r2: Rule[C]): Boolean = {
+    r2.regex.usedCharacters.forall(c => !r1.regex.usedCharacters.contains(c)) &&
+    r1.regex.usedCharacters.forall(c => !r2.regex.usedCharacters.contains(c))
+  }
+}
 
 trait LexerInterface {
   /** Main function of the lexer
@@ -59,13 +143,13 @@ trait LexerInterface {
     * @param rules
     * @param input
     */
-  def lex[C](rules: List[Rule[C]], input: Vector[C]): (Vector[Token[C]], Vector[C])
+  def lex[C: ClassTag](rules: List[Rule[C]], input: Sequence[C]): (Sequence[Token[C]], Sequence[C])
 
-  /** Prints back the tokens to a vector of characters of the type C
+  /** Prints back the tokens to a sequence of characters of the type C
     *
     * @param l
     */
-  def print[C](v: Vector[Token[C]]): Vector[C]
+  def print[C: ClassTag](v: Sequence[Token[C]]): Sequence[C]
 
 
   /**
@@ -73,11 +157,11 @@ trait LexerInterface {
     *
     * @param rules
     */
-  def rulesInvariant[C](rules: List[Rule[C]]): Boolean
+  def rulesInvariant[C: ClassTag](rules: List[Rule[C]]): Boolean
 
   // -------------- Soundness property of the lexer ----------------
 
-  @law @ghost def maximalMunchPrinciple[C](
+  @law @ghost def maximalMunchPrinciple[C: ClassTag](
         rules: List[Rule[C]],
         input: List[C],
         suffix: List[C],
@@ -86,7 +170,7 @@ trait LexerInterface {
         otherR: Rule[C],
         otherP: List[C]
     ): Boolean = {
-      val (lexedTokens, lexedSuffix) = lex(rules, Vector.fromList(input))
+      val (lexedTokens, lexedSuffix) = lex(rules, seqFromList(input))
       (!rules.isEmpty) &&
       (rulesInvariant(rules)) &&
       (rules.contains(r)) &&
@@ -96,6 +180,8 @@ trait LexerInterface {
       (tokens.isEmpty || tokens.head.rule == r) &&
       (ListUtils.isPrefix(otherP, input)) &&
       (r != otherR) &&
+      (validRegex(r.regex)) && // should be guranteed by an invariant on rules
+      (validRegex(otherR.regex)) && // should be guranteed by an invariant on rules
       (tokens.isEmpty || VerifiedRegexMatcher.matchR(r.regex, tokens.head.charsOf.list)) 
       ==> 
       (if (ListUtils.getIndex(rules, otherR) < ListUtils.getIndex(rules, r)) !VerifiedRegexMatcher.matchR(otherR.regex, otherP)
@@ -113,17 +199,17 @@ trait LexerInterface {
       * @param input
       * @return
       */
-    @law @ghost def lexThenRulesProduceEachTokenIndividually[C](rules: List[Rule[C]], input: List[C]): Boolean = 
+    @law @ghost def lexThenRulesProduceEachTokenIndividually[C: ClassTag](rules: List[Rule[C]], input: List[C]): Boolean = 
       (!rules.isEmpty && rulesInvariant(rules)) ==> {
-        val (tokens, suffix) = lex(rules, Vector.fromList(input))
+        val (tokens, suffix) = lex(rules, seqFromList(input))
         rulesProduceEachTokenIndividually(rules, tokens)
       }
   // -------------- Invertibility properties String -> tokens -> String ----------------
 
-  @law @ghost def invertibleThroughLexing[C](rules: List[Rule[C]], input: List[C]): Boolean = 
+  @law @ghost def invertibleThroughLexing[C: ClassTag](rules: List[Rule[C]], input: List[C]): Boolean = 
     (!rules.isEmpty && rulesInvariant(rules)) ==> 
     {
-      val (tokens, suffix) = lex(rules, Vector.fromList(input))
+      val (tokens, suffix) = lex(rules, seqFromList(input))
       print(tokens).list ++ suffix.list == input
     }
 
@@ -139,17 +225,17 @@ trait LexerInterface {
     * @param rules
     * @return
     */
-  def separableTokens[C](tokens: Vector[Token[C]], rules: List[Rule[C]]): Boolean
+  def separableTokens[C: ClassTag](tokens: Sequence[Token[C]], rules: List[Rule[C]]): Boolean
 
   /**
-    * Predicate over a vector of tokens, that applies the separableTokensPredicate binary predicate to each pair of consecutive tokens
+    * Predicate over a sequence of tokens, that applies the separableTokensPredicate binary predicate to each pair of consecutive tokens
     *
     * @param l
     * @param rules
     * @param pred
     * @return
     */
-  def tokensListTwoByTwoPredicateSeparable[C](l: Vector[Token[C]], from: BigInt, rules: List[Rule[C]]): Boolean
+  def tokensListTwoByTwoPredicateSeparable[C: ClassTag](l: Sequence[Token[C]], from: BigInt, rules: List[Rule[C]]): Boolean
 
   /**
     * Predicate over 2 tokens, that indicates whether they are seaprable by a lexer represented by the rules
@@ -159,7 +245,7 @@ trait LexerInterface {
     * @param rules
     * @return
     */
-  def separableTokensPredicate[C](t1: Token[C], t2: Token[C], rules: List[Rule[C]]): Boolean
+  def separableTokensPredicate[C: ClassTag](t1: Token[C], t2: Token[C], rules: List[Rule[C]]): Boolean
 
   /**
     * Predicate that indicates whether the rules are compatible with the tokens
@@ -168,63 +254,29 @@ trait LexerInterface {
     * @param rules
     * @param tokens
     */
-  def rulesProduceEachTokenIndividually[C](rules: List[Rule[C]], tokens: Vector[Token[C]]): Boolean
-  def rulesProduceIndividualToken[C](rules: List[Rule[C]], token: Token[C]): Boolean
+  def rulesProduceEachTokenIndividually[C: ClassTag](rules: List[Rule[C]], tokens: Sequence[Token[C]]): Boolean
+  def rulesProduceIndividualToken[C: ClassTag](rules: List[Rule[C]], token: Token[C]): Boolean
 
-  @law @ghost def separableTokensThenInvertibleThroughPrinting[C](rules: List[Rule[C]], tokens: List[Token[C]]): Boolean = 
+  @law @ghost def separableTokensThenInvertibleThroughPrinting[C: ClassTag](rules: List[Rule[C]], tokens: List[Token[C]]): Boolean = 
     (!rules.isEmpty && 
     rulesInvariant(rules) && 
-    rulesProduceEachTokenIndividually(rules, Vector.fromList(tokens)) && 
-    tokensListTwoByTwoPredicateSeparable(Vector.fromList(tokens), 0, rules))
+    rulesProduceEachTokenIndividually(rules, seqFromList(tokens)) && 
+    tokensListTwoByTwoPredicateSeparable(seqFromList(tokens), 0, rules))
     ==>  
-    (lex(rules, print(Vector.fromList(tokens)))._1.list == tokens)
+    (lex(rules, print(seqFromList(tokens)))._1.list == tokens)
 
 
   // -------------- Invertibility properties with separator tokens and rules ----------------
-  
-  /**
-    * Predicate that indicates whether the rules of the two subtypes of rules
-    * i.e., separator and non-separator rules,
-    * are using each a disjoint set of characters.
-    * 
-    * In other words, the set of characters used by the separator rules is disjoint
-    * from the set of characters used by the non-separator rules.
-    *
-    * @param rules
-    *
-    * @param rules
-    * @param rulesRec
-    */
-  def sepAndNonSepRulesDisjointChars[C](rules: List[Rule[C]], rulesRec: List[Rule[C]]): Boolean = {
-      rulesRec match {
-        case Cons(hd, tl) => ruleDisjointCharsFromAllFromOtherType(hd, rules) && sepAndNonSepRulesDisjointChars(rules, tl)
-        case Nil()        => true
-      }
-    }
 
-  def ruleDisjointCharsFromAllFromOtherType[C](r: Rule[C], rules: List[Rule[C]]): Boolean = {
-    decreases(rules)
-    rules match {
-      case Cons(hd, tl) if hd.isSeparator != r.isSeparator => rulesUseDisjointChars(r, hd) && ruleDisjointCharsFromAllFromOtherType(r, tl)
-      case Cons(hd, tl)                                    => ruleDisjointCharsFromAllFromOtherType(r, tl)
-      case Nil()                                           => true
-    }
-  }
-
-  def rulesUseDisjointChars[C](r1: Rule[C], r2: Rule[C]): Boolean = {
-    r2.regex.usedCharacters.forall(c => !r1.regex.usedCharacters.contains(c)) &&
-    r1.regex.usedCharacters.forall(c => !r2.regex.usedCharacters.contains(c))
-  }
-
-  /** Prints back the tokens to a vector of characters of the type C, by adding a separatorToken between each, and after the last
+  /** Prints back the tokens to a sequence of characters of the type C, by adding a separatorToken between each, and after the last
     *
     * @param l
     * @param separatorToken
     */
-  def printWithSeparatorToken[C](l: Vector[Token[C]], separatorToken: Token[C], from: BigInt = 0): Vector[C]
+  def printWithSeparatorToken[C: ClassTag](l: Sequence[Token[C]], separatorToken: Token[C]): Sequence[C]
 
   /**
-    * Returns the Vector of tokens v with the separator token interleaved between each pair, as
+    * Returns the Sequence of tokens v with the separator token interleaved between each pair, as
     * t(0), sep, t(1), sep, ...., t(n), sep
     * 
     * printing this results in the same string as calling printWithSeparatorToken
@@ -235,10 +287,10 @@ trait LexerInterface {
     * @param acc
     * @return
     */
-  def withSeparatorToken[C](v: Vector[Token[C]], separatorToken: Token[C]): Vector[Token[C]] = {
+  def withSeparatorToken[C: ClassTag](v: Sequence[Token[C]], separatorToken: Token[C]): Sequence[Token[C]] = {
     require(separatorToken.rule.isSeparator)
-    ??? : Vector[Token[C]]
-  }.ensuring(res => print(res) == printWithSeparatorToken(v, separatorToken))
+    ??? : Sequence[Token[C]]
+  }.ensuring(res => print(res).list == printWithSeparatorToken(v, separatorToken).list)
 
 
   /** Prints back the tokens to a list of characters of the type C, by adding a separatorToken between tokens when the maxPrefix would return
@@ -250,39 +302,39 @@ trait LexerInterface {
       * @param l
       * @param separatorToken
       */
-  def printWithSeparatorTokenWhenNeeded[C](rules: List[Rule[C]], l: Vector[Token[C]], separatorToken: Token[C], from: BigInt = 0): Vector[C]
+  def printWithSeparatorTokenWhenNeeded[C: ClassTag](rules: List[Rule[C]], l: Sequence[Token[C]], separatorToken: Token[C]): Sequence[C]
 
-  @law @ghost def interleavingSeparatorTokenMakesSeparableSequence[C](rules: List[Rule[C]], tokens: Vector[Token[C]], separatorToken: Token[C]): Boolean =
+  @law @ghost def interleavingSeparatorTokenMakesSeparableSequence[C: ClassTag](rules: List[Rule[C]], tokens: Sequence[Token[C]], separatorToken: Token[C]): Boolean =
     (!rules.isEmpty && 
       rulesInvariant(rules) && 
       rulesProduceEachTokenIndividually(rules, tokens) &&
-      sepAndNonSepRulesDisjointChars(rules, rules) && 
+      LexerInterface.sepAndNonSepRulesDisjointChars(rules, rules) && 
       rulesProduceIndividualToken(rules, separatorToken) &&
       tokens.forall(!_.rule.isSeparator) &&
       separatorToken.rule.isSeparator
     ) ==> 
       (separableTokens(withSeparatorToken(tokens, separatorToken), rules))
 
-  @law @ghost def invertibleThroughPrintingWithSeparatorWhenNeeded[C](rules: List[Rule[C]], tokens: List[Token[C]], separatorToken: Token[C]): Boolean =
+  @law @ghost def invertibleThroughPrintingWithSeparatorWhenNeeded[C: ClassTag](rules: List[Rule[C]], tokens: List[Token[C]], separatorToken: Token[C]): Boolean =
     (!rules.isEmpty && 
       rulesInvariant(rules) && 
-      rulesProduceEachTokenIndividually(rules, Vector.fromList(tokens)) &&
-      sepAndNonSepRulesDisjointChars(rules, rules) && 
+      rulesProduceEachTokenIndividually(rules, seqFromList(tokens)) &&
+      LexerInterface.sepAndNonSepRulesDisjointChars(rules, rules) && 
       rulesProduceIndividualToken(rules, separatorToken) &&
       tokens.forall(t => !t.rule.isSeparator) &&
       separatorToken.rule.isSeparator
     ) ==>
-      (lex(rules, printWithSeparatorTokenWhenNeeded(rules, Vector.fromList(tokens), separatorToken))._1.list.filter(!_.rule.isSeparator) == tokens)
+      (lex(rules, printWithSeparatorTokenWhenNeeded(rules, seqFromList(tokens), separatorToken))._1.list.filter(!_.rule.isSeparator) == tokens)
 
-  @law @ghost def invertibleThroughPrintingWithSeparator[C](rules: List[Rule[C]], tokens: List[Token[C]], separatorToken: Token[C]): Boolean =
+  @law @ghost def invertibleThroughPrintingWithSeparator[C: ClassTag](rules: List[Rule[C]], tokens: List[Token[C]], separatorToken: Token[C]): Boolean =
     (!rules.isEmpty && 
       rulesInvariant(rules) && 
-      rulesProduceEachTokenIndividually(rules, Vector.fromList(tokens)) &&
-      sepAndNonSepRulesDisjointChars(rules, rules) && 
+      rulesProduceEachTokenIndividually(rules, seqFromList(tokens)) &&
+      LexerInterface.sepAndNonSepRulesDisjointChars(rules, rules) && 
       rulesProduceIndividualToken(rules, separatorToken) &&
       tokens.forall(t => !t.rule.isSeparator) &&
       separatorToken.rule.isSeparator
     ) ==>
-      (lex(rules, printWithSeparatorToken(Vector.fromList(tokens), separatorToken))._1.list.filter(!_.rule.isSeparator) == tokens)
+      (lex(rules, printWithSeparatorToken(seqFromList(tokens), separatorToken))._1.list.filter(!_.rule.isSeparator) == tokens)
 
 }

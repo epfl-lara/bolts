@@ -1,7 +1,7 @@
 package com.ziplex.lexer
 
 import com.ziplex.lexer.VerifiedRegexMatcher._
-import com.ziplex.lexer.VerifiedRegex.Regex
+import com.ziplex.lexer.VerifiedRegex.*
 import com.ziplex.lexer.example.RegexUtils._
 
 import com.ziplex.lexer.example.ExampleJsonLexer.*
@@ -15,17 +15,15 @@ import stainless.lang.Option
 import stainless.lang.Some
 import stainless.lang.None
 
-import com.ziplex.lexer.ZipperRegex.focus
+import com.ziplex.lexer.Sequence
+import com.ziplex.lexer.emptySeq
+import com.ziplex.lexer.singletonSeq
+import com.ziplex.lexer.seqFromList
+import scala.reflect.ClassTag
+
 import com.ziplex.lexer.ZipperRegex.Zipper
 import com.ziplex.lexer.ZipperRegex.Context
-
-import com.ziplex.lexer.VerifiedRegex.Regex
-import com.ziplex.lexer.VerifiedRegex.ElementMatch
-import com.ziplex.lexer.VerifiedRegex.Star
-import com.ziplex.lexer.VerifiedRegex.Union
-import com.ziplex.lexer.VerifiedRegex.Concat
-import com.ziplex.lexer.VerifiedRegex.EmptyExpr
-import com.ziplex.lexer.VerifiedRegex.EmptyLang
+import com.ziplex.lexer.ZipperRegex.focus
 
 object Main {
   def main(args: Array[String]): Unit = {
@@ -52,11 +50,11 @@ object Main {
     val fileContent: String = scala.io.Source.fromFile(filepath).mkString
     println("Lexing with memoization")
     println(s"File content for file '$filepath':\n$fileContent")
-    val (tokens, suffix) = Lexer.lexMem(JsonLexer.rules, fileContent.toStainless)(using ExampleUtils.zipperCacheUp, ExampleUtils.zipperCacheDown)
+    val (tokens, suffix) = Lexer.lexMem(JsonLexer.rules, fileContent.toStainless)(using ClassTag.Char, ExampleUtils.zipperCacheUp, ExampleUtils.zipperCacheDown)
     println(f"Suffix tokens for file '$filepath':\n${suffix}")
     assert(suffix.isEmpty)
     val tokenStrings = tokens.map(t => t.asString())
-    val tokenString = tokenStrings.toScala.mkString("\n")
+    val tokenString = tokenStrings.efficientList.mkString("\n")
     // Write to file
     val writer = new java.io.PrintWriter(new java.io.File(destFilePath))
     writer.write(tokenString)
@@ -66,9 +64,10 @@ object Main {
 
   def regexZipperExample() = {
     val r: Regex[Char] = ("a".r | "b".r).* ~ "c".r
-    val input: Vector[Char] = "ababc".toStainless
-    assert(matchZipperVector(r, input))
-    assert(matchZipperVectorMem(r, input)(using ExampleUtils.zipperCacheUp, ExampleUtils.zipperCacheDown))
+    val input: Sequence[Char] = "ababc".toStainless
+    assert(matchZipperSequence(r, input))
+    assert(matchZipperSequenceMem(r, input)(using ExampleUtils.zipperCacheUp, ExampleUtils.zipperCacheDown))
+
   }
 
   def regexZipperVisualizationAOrBStarConcatC() = {

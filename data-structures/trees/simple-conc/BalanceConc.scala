@@ -83,6 +83,7 @@ object BalanceConc:
         case Node(l, r, _, _) =>  l.contains(v) || r.contains(v)
     }.ensuring(_ == t.toList.contains(v))
 
+
     def isBalanced: Boolean = {
       t match {
         case Node(l, r, _, _) =>
