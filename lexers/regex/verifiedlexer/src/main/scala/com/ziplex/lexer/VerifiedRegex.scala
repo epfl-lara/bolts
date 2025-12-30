@@ -1416,6 +1416,7 @@ object ZipperRegex {
               }
               case Concat(r1, r2) => {
                 lemmaFindConcatSeparationEquivalentToExists(r1, r2, s)
+                lemmaExistCutMatchRandMatchRSpecEquivalent(r1, r2, s)
                 assert(matchR(r, s) == findConcatSeparation(r1, r2, Nil(), s, s).isDefined)
                 s match {
                   case Nil() => {
@@ -1620,8 +1621,10 @@ object ZipperRegex {
 
                           mainMatchTheorem(generalisedConcat(Cons(rOne, Cons(rTwo, tlExp))), s)
                           lemmaFindConcatSeparationEquivalentToExists(rOne, generalisedConcat(Cons(rTwo, tlExp)), s)
+                          lemmaExistCutMatchRandMatchRSpecEquivalent(rOne, generalisedConcat(Cons(rTwo, tlExp)), s)
                           mainMatchTheorem(generalisedConcat(Cons(rTwo, tlExp)), s)
                           lemmaFindConcatSeparationEquivalentToExists(rTwo, generalisedConcat(tlExp), s)
+                          lemmaExistCutMatchRandMatchRSpecEquivalent(rTwo, generalisedConcat(tlExp), s)
 
                           assert(matchZipper(z, s) == (matchZipper(zVirt1, s) || matchZipper(zVirt2, s)))
                           assert(matchZipper(z, s) == (matchR(generalisedConcat(Cons(rOne, Cons(rTwo, tlExp))), s) || matchR(generalisedConcat(Cons(rTwo, tlExp)), s)))
@@ -1656,8 +1659,10 @@ object ZipperRegex {
 
                           mainMatchTheorem(generalisedConcat(Cons(rOne, Cons(rTwo, tlExp))), s)
                           lemmaFindConcatSeparationEquivalentToExists(rOne, generalisedConcat(Cons(rTwo, tlExp)), s)
+                          lemmaExistCutMatchRandMatchRSpecEquivalent(rOne, generalisedConcat(Cons(rTwo, tlExp)), s)
                           mainMatchTheorem(generalisedConcat(Cons(rTwo, tlExp)), s)
                           lemmaFindConcatSeparationEquivalentToExists(rTwo, generalisedConcat(tlExp), s)
+                          lemmaExistCutMatchRandMatchRSpecEquivalent(rTwo, generalisedConcat(tlExp), s)
 
                           assert(matchZipper(z, s) == (matchZipper(zVirt1, s)))
                           assert(matchZipper(z, s) == (matchR(generalisedConcat(Cons(rOne, Cons(rTwo, tlExp))), s)))
@@ -1715,6 +1720,7 @@ object ZipperRegex {
                             // - r2 matches the entire string
                             mainMatchTheorem(r, s)
                             lemmaFindConcatSeparationEquivalentToExists(Star(rInner), r2, s)
+                            lemmaExistCutMatchRandMatchRSpecEquivalent(Star(rInner), r2, s)
                             val (starMatched, r2Matched) = findConcatSeparation(Star(rInner), r2, Nil(), s, s).get
                             assert(starMatched ++ r2Matched == s)
                             assert(matchR(Star(rInner), starMatched))
@@ -1739,6 +1745,8 @@ object ZipperRegex {
                               // So here, we can use the rR regex to express r
                               mainMatchTheorem(Star(rInner), starMatched)
                               lemmaFindConcatSeparationEquivalentToExists(rInner, Star(rInner), starMatched)
+                              lemmaExistCutMatchRandMatchRSpecEquivalentStar(rInner, starMatched)
+                              lemmaExistCutMatchRandMatchRSpecEquivalent(rInner, Star(rInner), starMatched)
                               val (starS1, starS2) = findConcatSeparation(rInner, Star(rInner), Nil(), starMatched, starMatched).get
                               assert(starMatched == starS1 ++ starS2)
                               ListUtils.lemmaConcatAssociativity(starS1, starS2, r2Matched)
@@ -1804,10 +1812,13 @@ object ZipperRegex {
                                 assert(matchR(Concat(Concat(rInner, Star(rInner)), r2), s))
                                 mainMatchTheorem(Concat(Concat(rInner, Star(rInner)), r2), s)
                                 lemmaFindConcatSeparationEquivalentToExists(Concat(rInner, Star(rInner)), r2, s)
+                                lemmaExistCutMatchRandMatchRSpecEquivalent(Concat(rInner, Star(rInner)), r2, s)
                                 val (starS, r2S) = findConcatSeparation(Concat(rInner, Star(rInner)), r2, Nil(), s, s).get
                                 assert(matchR(Concat(rInner, Star(rInner)), starS))
                                 mainMatchTheorem(Concat(rInner, Star(rInner)), starS)
                                 lemmaFindConcatSeparationEquivalentToExists(rInner, Star(rInner), starS)
+                                lemmaExistCutMatchRandMatchRSpecEquivalent(rInner, Star(rInner), starS)
+                                lemmaExistCutMatchRandMatchRSpecEquivalentStar(rInner, starS)
                                 val (sInner, sStarInner) = findConcatSeparation(rInner, Star(rInner), Nil(), starS, starS).get
                                 ListUtils.lemmaConcatAssociativity(sInner, sStarInner, r2S)
                                 assert(matchR(rInner, sInner))
@@ -1836,6 +1847,8 @@ object ZipperRegex {
                                 assert(matchR(r2, s))
                                 mainMatchTheorem(Star(rInner), Nil())
                                 lemmaFindConcatSeparationEquivalentToExists(rInner, Star(rInner), Nil())
+                                lemmaExistCutMatchRandMatchRSpecEquivalent(rInner, Star(rInner), Nil())
+                                lemmaExistCutMatchRandMatchRSpecEquivalentStar(rInner, Nil())
                                 lemmaTwoRegexMatchThenConcatMatchesConcatString(Star(rInner), r2, Nil(), s)
                                 assert(matchR(r, s))
                                 check(false)
@@ -1902,7 +1915,9 @@ object ZipperRegex {
             }
               case Star(rInner) => {
                 lemmaFindConcatSeparationEquivalentToExists(rInner, Star(rInner), s)
-                assert(matchR(r, s) ==  s.isEmpty || findConcatSeparation(rInner, Star(rInner), Nil(), s, s).isDefined)
+                lemmaExistCutMatchRandMatchRSpecEquivalentStar(rInner, s)
+                lemmaExistCutMatchRandMatchRSpecEquivalent(rInner, Star(rInner), s)
+                assert(matchR(r, s) ==  (s.isEmpty || findConcatSeparation(rInner, Star(rInner), Nil(), s, s).isDefined))
                 s match {
                   case Nil() => {
                     lemmaUnfocusPreservesNullability(r, z)
@@ -1954,6 +1969,8 @@ object ZipperRegex {
                     mainMatchTheorem(rR1, s)
 
                     if(matchR(rR1, s)){
+                      lemmaExistCutMatchRandMatchRSpecEquivalentStar(rInner, s)
+                      lemmaFindConcatSeparationEquivalentToExists(rInner, Star(rInner), s)
                       val (s1, s2) = findConcatSeparation(rInner, Star(rInner), Nil(), s, s).get
                       assert(s == s1 ++ s2)
                       assert(matchR(rInner, s1))
@@ -3271,7 +3288,7 @@ object ZipperRegex {
     val prefixLength = findLongestMatchInnerZipperFastV2Mem(z, from, totalInput, totalInput.size)
 
     input.splitAt(prefixLength)
-  }.ensuring (res => res == findLongestMatchZipperFastV2(z, input, totalInput))
+  }.ensuring (res => res == findLongestMatchZipperFastV2(z, input, totalInput) && cacheUp.valid && cacheDown.valid &&cacheFindLongestMatch.valid && cacheFindLongestMatch.totalInput == totalInput )
   
   @opaque
   @inlineOnce
@@ -3305,11 +3322,12 @@ object ZipperRegex {
           }
         ghostExpr(unfold(findLongestMatchInnerZipperFastV2(z, from, totalInput, totalInputSize)))
         ghostExpr(assert(result == findLongestMatchInnerZipperFastV2(z, from, totalInput, totalInputSize)))
+        cacheFindLongestMatch.lemmaInvariant()
         cacheFindLongestMatch.update(z, from, result, totalInput)
         result
       }
     }
-  }.ensuring (res => res == findLongestMatchInnerZipperFastV2(z, from, totalInput, totalInputSize) && cacheFindLongestMatch.totalInput == totalInput)
+  }.ensuring (res => res == findLongestMatchInnerZipperFastV2(z, from, totalInput, totalInputSize) && cacheUp.valid && cacheDown.valid &&cacheFindLongestMatch.valid && cacheFindLongestMatch.totalInput == totalInput)
 
   // ----------------------------- Find Longest Match Zipper Theorems ------------------------------
 
@@ -3940,6 +3958,7 @@ object VerifiedRegexMatcher {
     r match { 
       case Concat(hd, concatTl) => 
         lemmaFindConcatSeparationEquivalentToExists(hd, concatTl, s)
+        lemmaExistCutMatchRandMatchRSpecEquivalent(hd, concatTl, s)
         assert(matchRSpec(r,s) == findConcatSeparation(hd, concatTl, Nil(), s, s).isDefined)
         if(l.isEmpty) {
           check(false)
@@ -4012,9 +4031,9 @@ object VerifiedRegexMatcher {
       case EmptyLang()     => false
       case ElementMatch(c) => s == List(c)
       case Union(r1, r2)   => matchRSpec(r1, s) || matchRSpec(r2, s)
-      case Star(rInner)    => s.isEmpty || Exists((cut: (List[C], List[C])) => cut._1 ++ cut._2 == s && matchR(rInner, cut._1) && matchR(Star(rInner), cut._2)) // TODO change to use matchRSpec in the exists
+      case Star(rInner)    => s.isEmpty || Exists((cut: (List[C], List[C])) => cut._1 ++ cut._2 == s && !cut._1.isEmpty && matchRSpec(rInner, cut._1) && matchRSpec(Star(rInner), cut._2)) // TODO change to use matchRSpec in the exists
       // case Star(rInner)    => s.isEmpty || findConcatSeparation(rInner, Star(rInner), Nil(), s, s).isDefined
-      case Concat(r1, r2)  => Exists((cut: (List[C], List[C])) => cut._1 ++ cut._2 == s && matchR(r1, cut._1) && matchR(r2, cut._2)) // TODO change to use matchRSpec in the exists
+      case Concat(r1, r2)  => Exists((cut: (List[C], List[C])) => cut._1 ++ cut._2 == s && matchRSpec(r1, cut._1) && matchRSpec(r2, cut._2)) // TODO change to use matchRSpec in the exists
       // case Concat(r1, r2)  => findConcatSeparation(r1, r2, Nil(), s, s).isDefined
     }
   }
@@ -4069,8 +4088,10 @@ object VerifiedRegexMatcher {
             val cutVal = pickWitness[(List[C], List[C])]((cut: (List[C], List[C])) => cut._1 ++ cut._2 == s && matchR(rInner, cut._1) && matchR(Star(rInner), cut._2))
             mainMatchTheorem(rInner, cutVal._1)
             mainMatchTheorem(Star(rInner), cutVal._2)
-            ExistsThe(cutVal)((cut: (List[C], List[C])) => cut._1 ++ cut._2 == s && matchRSpec(rInner, cut._1) && matchRSpec(Star(rInner), cut._2))
-            assert(Exists((cut: (List[C], List[C])) => cut._1 ++ cut._2 == s && matchRSpec(rInner, cut._1) && matchRSpec(Star(rInner), cut._2)))
+            assert(!rInner.nullable)
+            assert(!cutVal._1.isEmpty)
+            ExistsThe(cutVal)((cut: (List[C], List[C])) => cut._1 ++ cut._2 == s && !cut._1.isEmpty && matchRSpec(rInner, cut._1) && matchRSpec(Star(rInner), cut._2))
+            assert(Exists((cut: (List[C], List[C])) => cut._1 ++ cut._2 == s && !cut._1.isEmpty && matchRSpec(rInner, cut._1) && matchRSpec(Star(rInner), cut._2)))
           } else {
             if (matchR(r, s)) {
               lemmaStarAppConcat(rInner, s)
@@ -4078,8 +4099,8 @@ object VerifiedRegexMatcher {
               check(false)
             }
             assert(!Exists((cut: (List[C], List[C])) => cut._1 ++ cut._2 == s && matchR(rInner, cut._1) && matchR(Star(rInner), cut._2)))
-            if((Exists((cut: (List[C], List[C])) => cut._1 ++ cut._2 == s && matchRSpec(rInner, cut._1) && matchRSpec(Star(rInner), cut._2)))) {
-              val cutVal = pickWitness[(List[C], List[C])]((cut: (List[C], List[C])) => cut._1 ++ cut._2 == s && matchRSpec(rInner, cut._1) && matchRSpec(Star(rInner), cut._2))
+            if((Exists((cut: (List[C], List[C])) => cut._1 ++ cut._2 == s && !cut._1.isEmpty && matchRSpec(rInner, cut._1) && matchRSpec(Star(rInner), cut._2)))) {
+              val cutVal = pickWitness[(List[C], List[C])]((cut: (List[C], List[C])) => cut._1 ++ cut._2 == s && !cut._1.isEmpty && matchRSpec(rInner, cut._1) && matchRSpec(Star(rInner), cut._2))
               mainMatchTheorem(rInner, cutVal._1)
               mainMatchTheorem(Star(rInner), cutVal._2)
               lemmaR1MatchesS1AndR2MatchesS2ThenFindSeparationFindsAtLeastThem(rInner, Star(rInner), cutVal._1, cutVal._2, s, Nil(), s)
@@ -4174,6 +4195,71 @@ object VerifiedRegexMatcher {
 
   }.ensuring(_ => (findConcatSeparation(r1, r2, Nil(), s, s).isDefined) == Exists((cut: (List[C], List[C])) => cut._1 ++ cut._2 == s && matchR(r1, cut._1) && matchR(r2, cut._2)))
 
+  @ghost
+  @inlineOnce
+  @opaque
+  def lemmaExistCutMatchRandMatchRSpecEquivalent[C](r1: Regex[C], r2: Regex[C], s: List[C]): Unit = {
+    require(validRegex(r1))
+    require(validRegex(r2))
+
+    if (Exists((cut: (List[C], List[C])) => cut._1 ++ cut._2 == s && matchR(r1, cut._1) && matchR(r2, cut._2))) {
+      val cut: (List[C], List[C]) = pickWitness[(List[C], List[C])]((cut: (List[C], List[C])) => cut._1 ++ cut._2 == s && matchR(r1, cut._1) && matchR(r2, cut._2))
+      assert(cut._1 ++ cut._2 == s)
+      mainMatchTheorem(r1, cut._1)
+      mainMatchTheorem(r2, cut._2)
+      assert(matchR(r1, cut._1))
+      assert(matchR(r2, cut._2))
+      ExistsThe(cut)((cut: (List[C], List[C])) => cut._1 ++ cut._2 == s && matchRSpec(r1, cut._1) && matchRSpec(r2, cut._2))
+    } else {
+      assert(!Exists((cut: (List[C], List[C])) => cut._1 ++ cut._2 == s && matchR(r1, cut._1) && matchR(r2, cut._2)))
+      if (Exists((cut: (List[C], List[C])) => cut._1 ++ cut._2 == s && matchRSpec(r1, cut._1) && matchRSpec(r2, cut._2))) {
+        val cut: (List[C], List[C]) = pickWitness[(List[C], List[C])]((cut: (List[C], List[C])) => cut._1 ++ cut._2 == s && matchRSpec(r1, cut._1) && matchRSpec(r2, cut._2))
+        val (s1, s2) = cut
+        mainMatchTheorem(r1, s1)
+        mainMatchTheorem(r2, s2)
+        assert(s1 ++ s2 == s)
+        assert(matchR(r1, s1))
+        assert(matchR(r2, s2))
+        ExistsThe((s1, s2))( (cut: (List[C], List[C])) => cut._1 ++ cut._2 == s && matchR(r1, cut._1) && matchR(r2, cut._2))
+        check(false)
+      }
+    }
+
+  }.ensuring(_ => Exists((cut: (List[C], List[C])) => cut._1 ++ cut._2 == s && matchR(r1, cut._1) && matchR(r2, cut._2)) ==
+                  Exists((cut: (List[C], List[C])) => cut._1 ++ cut._2 == s && matchRSpec(r1, cut._1) && matchRSpec(r2, cut._2)))
+
+  @ghost
+  @inlineOnce
+  @opaque
+  def lemmaExistCutMatchRandMatchRSpecEquivalentStar[C](rInner: Regex[C], s: List[C]): Unit = {
+    require(validRegex(rInner))
+    require(!rInner.nullable)
+    if (Exists((cut: (List[C], List[C])) => cut._1 ++ cut._2 == s && matchR(rInner, cut._1) && matchR(Star(rInner), cut._2))) {
+      val cut: (List[C], List[C]) = pickWitness[(List[C], List[C])]((cut: (List[C], List[C])) => cut._1 ++ cut._2 == s && matchR(rInner, cut._1) && matchR(Star(rInner), cut._2))
+      assert(cut._1 ++ cut._2 == s)
+      mainMatchTheorem(rInner, cut._1)
+      mainMatchTheorem(Star(rInner), cut._2)
+      assert(matchR(rInner, cut._1))
+      assert(matchR(Star(rInner), cut._2))
+      ExistsThe(cut)((cut: (List[C], List[C])) => cut._1 ++ cut._2 == s && !cut._1.isEmpty && matchRSpec(rInner, cut._1) && matchRSpec(Star(rInner), cut._2))
+    } else {
+      assert(!Exists((cut: (List[C], List[C])) => cut._1 ++ cut._2 == s && matchR(rInner, cut._1) && matchR(Star(rInner), cut._2)))
+      if (Exists((cut: (List[C], List[C])) => cut._1 ++ cut._2 == s && !cut._1.isEmpty && matchRSpec(rInner, cut._1) && matchRSpec(Star(rInner), cut._2))) {
+        val cut: (List[C], List[C]) = pickWitness[(List[C], List[C])]((cut: (List[C], List[C])) => cut._1 ++ cut._2 == s && !cut._1.isEmpty && matchRSpec(rInner, cut._1) && matchRSpec(Star(rInner), cut._2))
+        val (s1, s2) = cut
+        mainMatchTheorem(rInner, s1)
+        mainMatchTheorem(Star(rInner), s2)
+        assert(s1 ++ s2 == s)
+        assert(matchR(rInner, s1))
+        assert(matchR(Star(rInner), s2))
+        ExistsThe((s1, s2))( (cut: (List[C], List[C])) => cut._1 ++ cut._2 == s && matchR(rInner, cut._1) && matchR(Star(rInner), cut._2))
+        check(false)
+      }
+    }
+
+  }.ensuring(_ => Exists((cut: (List[C], List[C])) => cut._1 ++ cut._2 == s && matchR(rInner, cut._1) && matchR(Star(rInner), cut._2)) ==
+                  Exists((cut: (List[C], List[C])) => cut._1 ++ cut._2 == s && !cut._1.isEmpty && matchRSpec(rInner, cut._1) && matchRSpec(Star(rInner), cut._2)))
+
 
   def findLongestMatchWithZipper[C](r: Regex[C], input: List[C]): (List[C], List[C]) = {
     require(validRegex(r))
@@ -4227,10 +4313,11 @@ object VerifiedRegexMatcher {
     val zipper = ZipperRegex.focus(r)
     ghostExpr(ZipperRegex.longestMatchV2SameAsRegex(r, zipper, input, totalInput))
     ghostExpr(ListUtils.lemmaSizeTrEqualsSize(input.list, 0))
-    val res = ZipperRegex.findLongestMatchZipperFastV2Mem(zipper, input, totalInput)
-    ghostExpr(assert(res == ZipperRegex.findLongestMatchZipperFastV2(zipper, input, totalInput)))
-    res
-  }.ensuring (res => (res._1.list, res._2.list) == findLongestMatch(r, input.list) && cacheDown.valid && cacheUp.valid && cacheFindLongestMatch.valid)
+    ghostExpr(unfold(findLongestMatchWithZipperSequenceV2(r, input, totalInput)))
+    ghostExpr(unfold(ZipperRegex.findLongestMatchZipperFastV2Mem(zipper, input, totalInput)(using cacheUp, cacheDown, cacheFindLongestMatch)))
+    ghostExpr(assert(findLongestMatchWithZipperSequenceV2(r, input, totalInput) == ZipperRegex.findLongestMatchZipperFastV2(zipper, input, totalInput)))
+    ZipperRegex.findLongestMatchZipperFastV2Mem(zipper, input, totalInput)
+  }.ensuring (res => res == findLongestMatchWithZipperSequenceV2(r, input, totalInput) && cacheDown.valid && cacheUp.valid && cacheFindLongestMatch.valid && cacheFindLongestMatch.totalInput == totalInput)
   //  ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
   def findLongestMatch[C](r: Regex[C], input: List[C]): (List[C], List[C]) = {
@@ -4424,6 +4511,7 @@ object VerifiedRegexMatcher {
       r match {
         case Concat(EmptyExpr(), rr) => 
         lemmaFindConcatSeparationEquivalentToExists(EmptyExpr(), rr, s)
+        lemmaExistCutMatchRandMatchRSpecEquivalent(EmptyExpr(), rr, s)
         if(s.isEmpty) {
           ()
         } else {
@@ -4438,6 +4526,7 @@ object VerifiedRegexMatcher {
           ()
         } else {
           lemmaFindConcatSeparationEquivalentToExists(rr, EmptyExpr(), s)
+          lemmaExistCutMatchRandMatchRSpecEquivalent(rr, EmptyExpr(), s)
           val (s1, s2) = findConcatSeparation(rr, EmptyExpr(), Nil(), s, s).get
           assert(s2.isEmpty)
           assert(matchR(rr, s1))
@@ -4447,6 +4536,7 @@ object VerifiedRegexMatcher {
         
       case Concat(r1, r2) => 
         lemmaFindConcatSeparationEquivalentToExists(r1, r2, s)
+        lemmaExistCutMatchRandMatchRSpecEquivalent(r1, r2, s)
         if(s.isEmpty) {
           ()
         } else {
@@ -4473,6 +4563,7 @@ object VerifiedRegexMatcher {
         }
       case Star(rInner) => 
         lemmaFindConcatSeparationEquivalentToExists(rInner, Star(rInner), s)
+        lemmaExistCutMatchRandMatchRSpecEquivalentStar(rInner, s)
         if(s.isEmpty) {
           ()
         } else {
@@ -4505,6 +4596,7 @@ object VerifiedRegexMatcher {
       r match {
         case Concat(EmptyExpr(), rr) => 
         lemmaFindConcatSeparationEquivalentToExists(EmptyExpr(), rr, s)
+        lemmaExistCutMatchRandMatchRSpecEquivalent(EmptyExpr(), rr, s)
         if(s.isEmpty) {
           ()
         } else {
@@ -4518,6 +4610,7 @@ object VerifiedRegexMatcher {
         }
       case Concat(rr, EmptyExpr()) => 
         lemmaFindConcatSeparationEquivalentToExists(rr, EmptyExpr(), s)
+        lemmaExistCutMatchRandMatchRSpecEquivalent(rr, EmptyExpr(), s)
         if(s.isEmpty) {
           ()
         } else {
@@ -4532,12 +4625,14 @@ object VerifiedRegexMatcher {
         
       case Concat(r1, r2) => 
         lemmaFindConcatSeparationEquivalentToExists(r1, r2, s)
+        lemmaExistCutMatchRandMatchRSpecEquivalent(r1, r2, s)
         if(s.isEmpty) {
           ()
         } else {
           if(matchR(Concat(removeUselessConcat(r1), removeUselessConcat(r2)), s)){
             mainMatchTheorem(Concat(removeUselessConcat(r1), removeUselessConcat(r2)), s)
             lemmaFindConcatSeparationEquivalentToExists(removeUselessConcat(r1), removeUselessConcat(r2), s)
+            lemmaExistCutMatchRandMatchRSpecEquivalent(removeUselessConcat(r1), removeUselessConcat(r2), s)
             assert(findConcatSeparation(removeUselessConcat(r1), removeUselessConcat(r2), Nil(), s, s).isDefined)
             val (s1, s2) = findConcatSeparation(removeUselessConcat(r1), removeUselessConcat(r2), Nil(), s, s).get
             lemmaRemoveUselessConcatSound(r1, s1)
@@ -4564,9 +4659,11 @@ object VerifiedRegexMatcher {
         } 
       case Star(rInner) => 
         lemmaFindConcatSeparationEquivalentToExists(rInner, Star(rInner), s)
+        lemmaExistCutMatchRandMatchRSpecEquivalentStar(rInner, s)
         if(matchR(Star(removeUselessConcat(rInner)), s)) {
           mainMatchTheorem(Star(removeUselessConcat(rInner)), s)
           lemmaFindConcatSeparationEquivalentToExists(removeUselessConcat(rInner), Star(removeUselessConcat(rInner)), s)
+          lemmaExistCutMatchRandMatchRSpecEquivalentStar(removeUselessConcat(rInner), s)
           if(s.isEmpty) {
             ()
           } else {
@@ -4649,6 +4746,7 @@ object VerifiedRegexMatcher {
           ()
         } else {
           lemmaFindConcatSeparationEquivalentToExists(r1, r2, s)
+          lemmaExistCutMatchRandMatchRSpecEquivalent(r1, r2, s)
           val (s1, s2) = findConcatSeparation(r1, r2, Nil(), s, s).get
           assert(matchR(r1, s1))
           assert(matchR(r2, s2))
@@ -4675,6 +4773,7 @@ object VerifiedRegexMatcher {
             ()
           } else {
             lemmaFindConcatSeparationEquivalentToExists(rInner, Star(rInner), s)
+            lemmaExistCutMatchRandMatchRSpecEquivalentStar(rInner, s)
             assert(findConcatSeparation(rInner, Star(rInner), Nil(), s, s).isDefined)
             val r1 = rInner
             val r2 = Star(rInner)
@@ -4724,6 +4823,7 @@ object VerifiedRegexMatcher {
                 assert(matchR(r1, Nil()))
                 lemmaR1MatchesS1AndR2MatchesS2ThenFindSeparationFindsAtLeastThem(r1, r2, Nil(), s, s, Nil(), s)
                 lemmaFindConcatSeparationEquivalentToExists(r1, r2, s)
+                lemmaExistCutMatchRandMatchRSpecEquivalent(r1, r2, s)
                 check(false)
               }
             }
@@ -4733,12 +4833,14 @@ object VerifiedRegexMatcher {
               if(matchR(r1, s)) {
                 lemmaR1MatchesS1AndR2MatchesS2ThenFindSeparationFindsAtLeastThem(r1, r2, s, Nil(), s, Nil(), s)
                 lemmaFindConcatSeparationEquivalentToExists(r1, r2, s)
+                lemmaExistCutMatchRandMatchRSpecEquivalent(r1, r2, s)
                 check(false)
               }
             }
             else if(matchR(Concat(simplify(r1), simplify(r2)), s)){
               mainMatchTheorem(Concat(simplify(r1), simplify(r2)), s)
               lemmaFindConcatSeparationEquivalentToExists(simplify(r1), simplify(r2), s)
+              lemmaExistCutMatchRandMatchRSpecEquivalent(simplify(r1), simplify(r2), s)
               assert(findConcatSeparation(simplify(r1), simplify(r2), Nil(), s, s).isDefined)
               val (s1, s2) = findConcatSeparation(simplify(r1), simplify(r2), Nil(), s, s).get
               lemmaSimplifySound(r1, s1)
@@ -4795,6 +4897,7 @@ object VerifiedRegexMatcher {
                 ()
               } else {
                 lemmaFindConcatSeparationEquivalentToExists(simplify(rInner), Star(simplify(rInner)), s)
+                lemmaExistCutMatchRandMatchRSpecEquivalentStar(simplify(rInner), s)
                 assert(findConcatSeparation(simplify(rInner), Star(simplify(rInner)), Nil(), s, s).isDefined)
                 val (s1, s2) = findConcatSeparation(simplify(rInner), Star(simplify(rInner)), Nil(), s, s).get
                 assert(matchR(simplify(rInner), s1))
@@ -4943,6 +5046,7 @@ object VerifiedRegexMatcher {
         case Concat(r1, r2) => 
           if matchR(r, s) then {
             lemmaFindConcatSeparationEquivalentToExists(r1, r2, s)
+            lemmaExistCutMatchRandMatchRSpecEquivalent(r1, r2, s)
             val (s1, s2) = findConcatSeparation(r1, r2, Nil(), s, s).get
             assert(matchR(r1, s1))
             assert(matchR(r2, s2))
@@ -5050,6 +5154,7 @@ object VerifiedRegexMatcher {
     mainMatchTheorem(rRight, s)
     if(matchR(rLeft, s)){
       lemmaFindConcatSeparationEquivalentToExists(Union(r1, r2), rTail, s)
+      lemmaExistCutMatchRandMatchRSpecEquivalent(Union(r1, r2), rTail, s)
       val (s1, s2) = findConcatSeparation(Union(r1, r2), rTail, Nil(), s, s).get
       assert(matchR(Union(r1, r2), s1))
       assert(matchR(rTail, s2))
@@ -5071,6 +5176,7 @@ object VerifiedRegexMatcher {
       check(matchR(rRight, s))
     } else {
       lemmaFindConcatSeparationEquivalentToExists(Union(r1, r2), rTail, s)
+      lemmaExistCutMatchRandMatchRSpecEquivalent(Union(r1, r2), rTail, s)
       assert(!findConcatSeparation(Union(r1, r2), rTail, Nil(), s, s).isDefined)
       if(matchR(rRight, s)){
         mainMatchTheorem(Concat(r1, rTail), s)
@@ -5078,6 +5184,7 @@ object VerifiedRegexMatcher {
         assert(matchR(Concat(r1, rTail), s) || matchR(Concat(r2, rTail), s))
         if(matchR(Concat(r1, rTail), s)){
           lemmaFindConcatSeparationEquivalentToExists(r1, rTail, s)
+          lemmaExistCutMatchRandMatchRSpecEquivalent(r1, rTail, s)
           val (s1, s2) = findConcatSeparation(r1, rTail, Nil(), s, s).get
           assert(matchR(r1, s1))
           assert(matchR(rTail, s2))
@@ -5090,6 +5197,7 @@ object VerifiedRegexMatcher {
           check(false)
         } else {
           lemmaFindConcatSeparationEquivalentToExists(r2, rTail, s)
+          lemmaExistCutMatchRandMatchRSpecEquivalent(r2, rTail, s)
           val (s1, s2) = findConcatSeparation(r2, rTail, Nil(), s, s).get
           assert(matchR(r2, s1))
           assert(matchR(rTail, s2))
@@ -5578,11 +5686,13 @@ object VerifiedRegexMatcher {
     mainMatchTheorem(rR, s)
     if(matchR(rL, s)){
       lemmaFindConcatSeparationEquivalentToExists(Concat(r1, r2), r3, s)
+      lemmaExistCutMatchRandMatchRSpecEquivalent(Concat(r1, r2), r3, s)
       val (s1, s2) = findConcatSeparation(Concat(r1, r2), r3, Nil(), s, s).get
       mainMatchTheorem(Concat(r1, r2), s1)
       assert(matchR(Concat(r1, r2), s1))
       assert(matchR(r3, s2))
       lemmaFindConcatSeparationEquivalentToExists(r1, r2, s1)
+      lemmaExistCutMatchRandMatchRSpecEquivalent(r1, r2, s1)
       val (s11, s22) = findConcatSeparation(r1, r2, Nil(), s1, s1).get
       assert(matchR(r1, s11))
       assert(matchR(r2, s22))
@@ -5592,21 +5702,25 @@ object VerifiedRegexMatcher {
 
       mainMatchTheorem(Concat(r2, r3), s22 ++ s2)
       lemmaFindConcatSeparationEquivalentToExists(r2, r3, s22 ++ s2)
+      lemmaExistCutMatchRandMatchRSpecEquivalent(r2, r3, s22 ++ s2)
       lemmaR1MatchesS1AndR2MatchesS2ThenFindSeparationFindsAtLeastThem(r2, r3, s22, s2, s22 ++ s2, Nil(), s22 ++ s2)
       assert(matchR(Concat(r2, r3), s22 ++ s2))
       ListUtils.lemmaConcatAssociativity(s11, s22, s2)
       assert(s11 ++ (s22 ++ s2) == s)
       lemmaR1MatchesS1AndR2MatchesS2ThenFindSeparationFindsAtLeastThem(r1, Concat(r2, r3), s11, s22 ++ s2, s, Nil(), s)
       lemmaFindConcatSeparationEquivalentToExists(r1, Concat(r2, r3), s)
+      lemmaExistCutMatchRandMatchRSpecEquivalent(r1, Concat(r2, r3), s)
     } else {
       if(findConcatSeparation(r1, Concat(r2, r3), Nil(), s, s).isDefined){
         lemmaFindConcatSeparationEquivalentToExists(r1, Concat(r2, r3), s)
+        lemmaExistCutMatchRandMatchRSpecEquivalent(r1, Concat(r2, r3), s)
         val (s1, s2) = findConcatSeparation(r1, Concat(r2, r3), Nil(), s, s).get
         mainMatchTheorem(r1, s1)
         assert(matchR(r1, s1))
         assert(matchR(Concat(r2, r3), s2))
         mainMatchTheorem(Concat(r2, r3), s2)
         lemmaFindConcatSeparationEquivalentToExists(r2, r3, s2)
+        lemmaExistCutMatchRandMatchRSpecEquivalent(r2, r3, s2)
         val (s11, s22) = findConcatSeparation(r2, r3, Nil(), s2, s2).get
         assert(matchR(r2, s11))
         assert(matchR(r3, s22))
@@ -5618,15 +5732,18 @@ object VerifiedRegexMatcher {
 
         mainMatchTheorem(Concat(r1, r2), s1 ++ s11)
         lemmaFindConcatSeparationEquivalentToExists(r1, r2, s1 ++ s11)
+        lemmaExistCutMatchRandMatchRSpecEquivalent(r1, r2, s1 ++ s11)
         lemmaR1MatchesS1AndR2MatchesS2ThenFindSeparationFindsAtLeastThem(r1, r2, s1, s11, s1 ++ s11, Nil(), s1 ++ s11)
         assert(matchR(Concat(r1, r2), s1 ++ s11))
         
         assert((s1 ++ s11) ++ s22 == s)
         lemmaR1MatchesS1AndR2MatchesS2ThenFindSeparationFindsAtLeastThem(Concat(r1, r2), r3, s1 ++ s11, s22, s, Nil(), s)
         lemmaFindConcatSeparationEquivalentToExists(Concat(r1, r2), r3, s)
+        lemmaExistCutMatchRandMatchRSpecEquivalent(Concat(r1, r2), r3, s)
         check(false)
       }
       lemmaFindConcatSeparationEquivalentToExists(r1, Concat(r2, r3), s)
+      lemmaExistCutMatchRandMatchRSpecEquivalent(r1, Concat(r2, r3), s)
     }
     
 
