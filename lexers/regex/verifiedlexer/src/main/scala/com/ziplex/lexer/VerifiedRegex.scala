@@ -4012,9 +4012,9 @@ object VerifiedRegexMatcher {
       case EmptyLang()     => false
       case ElementMatch(c) => s == List(c)
       case Union(r1, r2)   => matchRSpec(r1, s) || matchRSpec(r2, s)
-      case Star(rInner)    => s.isEmpty || Exists((cut: (List[C], List[C])) => cut._1 ++ cut._2 == s && matchR(rInner, cut._1) && matchR(Star(rInner), cut._2))
+      case Star(rInner)    => s.isEmpty || Exists((cut: (List[C], List[C])) => cut._1 ++ cut._2 == s && matchR(rInner, cut._1) && matchR(Star(rInner), cut._2)) // TODO change to use matchRSpec in the exists
       // case Star(rInner)    => s.isEmpty || findConcatSeparation(rInner, Star(rInner), Nil(), s, s).isDefined
-      case Concat(r1, r2)  => Exists((cut: (List[C], List[C])) => cut._1 ++ cut._2 == s && matchR(r1, cut._1) && matchR(r2, cut._2))
+      case Concat(r1, r2)  => Exists((cut: (List[C], List[C])) => cut._1 ++ cut._2 == s && matchR(r1, cut._1) && matchR(r2, cut._2)) // TODO change to use matchRSpec in the exists
       // case Concat(r1, r2)  => findConcatSeparation(r1, r2, Nil(), s, s).isDefined
     }
   }
@@ -4060,12 +4060,29 @@ object VerifiedRegexMatcher {
             mainMatchTheorem(Star(rInner), cut.get._2)
             if (!matchR(r, s)) {
               lemmaFindSeparationIsDefinedThenConcatMatches(rInner, Star(rInner), cut.get._1, cut.get._2, s)
+              assert(matchR(Concat(rInner, Star(rInner)), cut.get._1 ++ cut.get._2))
+              lemmaStarApp(rInner, cut.get._1, cut.get._2)
+              assert(matchR(r, s))
               check(false)
             }
+            assert(Exists((cut: (List[C], List[C])) => cut._1 ++ cut._2 == s && matchR(rInner, cut._1) && matchR(Star(rInner), cut._2)))
+            val cutVal = pickWitness[(List[C], List[C])]((cut: (List[C], List[C])) => cut._1 ++ cut._2 == s && matchR(rInner, cut._1) && matchR(Star(rInner), cut._2))
+            mainMatchTheorem(rInner, cutVal._1)
+            mainMatchTheorem(Star(rInner), cutVal._2)
+            ExistsThe(cutVal)((cut: (List[C], List[C])) => cut._1 ++ cut._2 == s && matchRSpec(rInner, cut._1) && matchRSpec(Star(rInner), cut._2))
+            assert(Exists((cut: (List[C], List[C])) => cut._1 ++ cut._2 == s && matchRSpec(rInner, cut._1) && matchRSpec(Star(rInner), cut._2)))
           } else {
             if (matchR(r, s)) {
               lemmaStarAppConcat(rInner, s)
               lemmaConcatAcceptsStringThenFindSeparationIsDefined(rInner, Star(rInner), s)
+              check(false)
+            }
+            assert(!Exists((cut: (List[C], List[C])) => cut._1 ++ cut._2 == s && matchR(rInner, cut._1) && matchR(Star(rInner), cut._2)))
+            if((Exists((cut: (List[C], List[C])) => cut._1 ++ cut._2 == s && matchRSpec(rInner, cut._1) && matchRSpec(Star(rInner), cut._2)))) {
+              val cutVal = pickWitness[(List[C], List[C])]((cut: (List[C], List[C])) => cut._1 ++ cut._2 == s && matchRSpec(rInner, cut._1) && matchRSpec(Star(rInner), cut._2))
+              mainMatchTheorem(rInner, cutVal._1)
+              mainMatchTheorem(Star(rInner), cutVal._2)
+              lemmaR1MatchesS1AndR2MatchesS2ThenFindSeparationFindsAtLeastThem(rInner, Star(rInner), cutVal._1, cutVal._2, s, Nil(), s)
               check(false)
             }
           }
@@ -4075,10 +4092,24 @@ object VerifiedRegexMatcher {
         lemmaFindConcatSeparationEquivalentToExists(r1, r2, s)
         if (matchR(r, s)) {
           lemmaConcatAcceptsStringThenFindSeparationIsDefined(r1, r2, s)
+          assert(Exists((cut: (List[C], List[C])) => cut._1 ++ cut._2 == s && matchR(r1, cut._1) && matchR(r2, cut._2)))
+          val cutVal = pickWitness[(List[C], List[C])]((cut: (List[C], List[C])) => cut._1 ++ cut._2 == s && matchR(r1, cut._1) && matchR(r2, cut._2))
+          mainMatchTheorem(r1, cutVal._1)
+          mainMatchTheorem(r2, cutVal._2)
+          ExistsThe(cutVal)((cut: (List[C], List[C])) => cut._1 ++ cut._2 == s && matchRSpec(r1, cut._1) && matchRSpec(r2, cut._2))
+          assert(Exists((cut: (List[C], List[C])) => cut._1 ++ cut._2 == s && matchRSpec(r1, cut._1) && matchRSpec(r2, cut._2)))
         } else {
           val cut = findConcatSeparation(r1, r2, Nil(), s, s)
           if (cut.isDefined) {
             lemmaFindSeparationIsDefinedThenConcatMatches(r1, r2, cut.get._1, cut.get._2, s)
+            check(false)
+          }
+          assert(!Exists((cut: (List[C], List[C])) => cut._1 ++ cut._2 == s && matchR(r1, cut._1) && matchR(r2, cut._2)))
+          if((Exists((cut: (List[C], List[C])) => cut._1 ++ cut._2 == s && matchRSpec(r1, cut._1) && matchRSpec(r2, cut._2)))) {
+            val cutVal = pickWitness[(List[C], List[C])]((cut: (List[C], List[C])) => cut._1 ++ cut._2 == s && matchRSpec(r1, cut._1) && matchRSpec(r2, cut._2))
+            mainMatchTheorem(r1, cutVal._1)
+            mainMatchTheorem(r2, cutVal._2)
+            lemmaR1MatchesS1AndR2MatchesS2ThenFindSeparationFindsAtLeastThem(r1, r2, cutVal._1, cutVal._2, s, Nil(), s)
             check(false)
           }
         }
@@ -4171,8 +4202,9 @@ object VerifiedRegexMatcher {
     val zipper = ZipperRegex.focus(r)
     ghostExpr(ZipperRegex.longestMatchSameAsRegex(r, zipper, input.list))
     ghostExpr(ListUtils.lemmaSizeTrEqualsSize(input.list, 0))
+    ghostExpr(unfold(findLongestMatchWithZipperSequence(r, input)))
     ZipperRegex.findLongestMatchZipperFastMem(zipper, input)
-  }.ensuring (res => (res._1.list, res._2.list) == findLongestMatch(r, input.list))
+  }.ensuring (res => res == findLongestMatchWithZipperSequence(r, input) && cacheDown.valid && cacheUp.valid)
   
   @opaque
   def findLongestMatchWithZipperSequenceV2[C](r: Regex[C], input: Sequence[C], totalInput: Sequence[C]): (Sequence[C], Sequence[C]) = {
@@ -4198,7 +4230,7 @@ object VerifiedRegexMatcher {
     val res = ZipperRegex.findLongestMatchZipperFastV2Mem(zipper, input, totalInput)
     ghostExpr(assert(res == ZipperRegex.findLongestMatchZipperFastV2(zipper, input, totalInput)))
     res
-  }.ensuring (res => (res._1.list, res._2.list) == findLongestMatch(r, input.list))
+  }.ensuring (res => (res._1.list, res._2.list) == findLongestMatch(r, input.list) && cacheDown.valid && cacheUp.valid && cacheFindLongestMatch.valid)
   //  ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
   def findLongestMatch[C](r: Regex[C], input: List[C]): (List[C], List[C]) = {

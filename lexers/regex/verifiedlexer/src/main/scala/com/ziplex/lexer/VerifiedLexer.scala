@@ -1113,7 +1113,7 @@ object VerifiedLexer {
                           res.get._2.list == maxPrefixOneRule(rule, input.list).get._2
                        else true))
 
-     def maxPrefixOneRuleZipperSequenceMem[C: ClassTag](
+    def maxPrefixOneRuleZipperSequenceMem[C: ClassTag](
         rule: Rule[C],
         input: Sequence[C]
     )(using cacheUp: CacheUp[C], cacheDown: CacheDown[C]): Option[(Token[C], Sequence[C])] = {
@@ -1123,6 +1123,7 @@ object VerifiedLexer {
 
       val (longestPrefix, suffix) = findLongestMatchWithZipperSequenceMem(rule.regex, input)
       assert((longestPrefix, suffix) == findLongestMatchWithZipperSequence(rule.regex, input))
+      
       if (longestPrefix.isEmpty) {
         None[(Token[C], Sequence[C])]()
       } else {
@@ -1131,7 +1132,7 @@ object VerifiedLexer {
         Some[(Token[C], Sequence[C])]((Token(rule.transformation.apply(longestPrefix), rule, longestPrefix.size, longestPrefix.list), suffix))
       }
 
-    }.ensuring (res => res == maxPrefixOneRuleZipperSequence(rule, input))
+    }.ensuring (res => res == maxPrefixOneRuleZipperSequence(rule, input) && cacheUp.valid && cacheDown.valid)
 
     // Proofs --------------------------------------------------------------------------------------------------------------------------------
 
