@@ -1,0 +1,696 @@
+copying runtime jar...
+[info] welcome to sbt 1.9.8 (Ubuntu Java 17.0.17)
+[info] loading settings for project verifiedlexer-build-build-build from metals.sbt ...
+[info] loading project definition from /localhome/chassot/bolts/lexers/regex/verifiedlexer/project/project/project
+[info] loading settings for project verifiedlexer-build-build from metals.sbt ...
+[info] loading project definition from /localhome/chassot/bolts/lexers/regex/verifiedlexer/project/project
+[success] Generated .bloop/verifiedlexer-build-build.json
+[success] Total time: 2 s, completed Dec 22, 2025, 8:49:29 PM
+[info] loading settings for project verifiedlexer-build from metals.sbt,plugins.sbt ...
+[info] loading project definition from /localhome/chassot/bolts/lexers/regex/verifiedlexer/project
+[success] Generated .bloop/verifiedlexer-build.json
+[success] Total time: 1 s, completed Dec 22, 2025, 8:49:31 PM
+[info] loading settings for project verifiedlexer from build.sbt ...
+[info] set current project to ZipLex (in build file:/localhome/chassot/bolts/lexers/regex/verifiedlexer/)
+[info] compiling 72 Scala sources to /localhome/chassot/bolts/lexers/regex/verifiedlexer/target/scala-3.7.2/classes ...
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/main/scala/com/ziplex/lexer/BalanceConcArr.scala:262:6 
+[warn] 262 |      t match
+[warn]     |      ^
+[warn]     |      match may not be exhaustive.
+[warn]     |
+[warn]     |      It would fail on pattern case: Empty()
+[warn]     |
+[warn]     | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/main/scala/com/ziplex/lexer/BalanceConcArr.scala:344:16 
+[warn] 344 |                r match
+[warn]     |                ^
+[warn]     |                match may not be exhaustive.
+[warn]     |
+[warn]     |                It would fail on pattern case: Empty(), Leaf(_, _)
+[warn]     |
+[warn]     | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/main/scala/com/ziplex/lexer/BalanceConcArr.scala:339:10 
+[warn] 339 |          xs match
+[warn]     |          ^^
+[warn]     |          match may not be exhaustive.
+[warn]     |
+[warn]     |          It would fail on pattern case: Empty(), Leaf(_, _)
+[warn]     |
+[warn]     | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/main/scala/com/ziplex/lexer/BalanceConcArr.scala:357:16 
+[warn] 357 |                l match
+[warn]     |                ^
+[warn]     |                match may not be exhaustive.
+[warn]     |
+[warn]     |                It would fail on pattern case: Empty(), Leaf(_, _)
+[warn]     |
+[warn]     | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/main/scala/com/ziplex/lexer/BalanceConcArr.scala:352:10 
+[warn] 352 |          ys match
+[warn]     |          ^^
+[warn]     |          match may not be exhaustive.
+[warn]     |
+[warn]     |          It would fail on pattern case: Empty(), Leaf(_, _)
+[warn]     |
+[warn]     | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/main/scala/com/ziplex/lexer/BalanceConcArr.scala:403:8 
+[warn] 403 |        t match
+[warn]     |        ^
+[warn]     |        match may not be exhaustive.
+[warn]     |
+[warn]     |        It would fail on pattern case: Empty()
+[warn]     |
+[warn]     | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/main/scala/com/ziplex/lexer/BalanceConcArr.scala:485:12 
+[warn] 485 |            newR match
+[warn]     |            ^^^^
+[warn]     |            match may not be exhaustive.
+[warn]     |
+[warn]     |            It would fail on pattern case: Empty(), Leaf(_, _)
+[warn]     |
+[warn]     | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/main/scala/com/ziplex/lexer/BalanceConcArr.scala:514:6 
+[warn] 514 |      t match
+[warn]     |      ^
+[warn]     |      match may not be exhaustive.
+[warn]     |
+[warn]     |      It would fail on pattern case: Empty()
+[warn]     |
+[warn]     | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/main/scala/com/ziplex/lexer/BalanceConcArr.scala:531:6 
+[warn] 531 |      t match
+[warn]     |      ^
+[warn]     |      match may not be exhaustive.
+[warn]     |
+[warn]     |      It would fail on pattern case: Empty()
+[warn]     |
+[warn]     | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/main/scala/com/ziplex/lexer/BalanceConcArr.scala:539:6 
+[warn] 539 |      t match
+[warn]     |      ^
+[warn]     |      match may not be exhaustive.
+[warn]     |
+[warn]     |      It would fail on pattern case: Empty()
+[warn]     |
+[warn]     | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/main/scala/com/ziplex/lexer/Utils.scala:1285:4 
+[warn] 1285 |    newList match {
+[warn]      |    ^^^^^^^
+[warn]      |    match may not be exhaustive.
+[warn]      |
+[warn]      |    It would fail on pattern case: stainless.collection.Cons(_, _)
+[warn]      |
+[warn]      | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/main/scala/com/ziplex/lexer/VerifiedLexer.scala:877:8 
+[warn] 877 |        maxPrefWithoutSep match {
+[warn]     |        ^^^^^^^^^^^^^^^^^
+[warn]     |        match may not be exhaustive.
+[warn]     |
+[warn]     |        It would fail on pattern case: stainless.lang.Some(_)
+[warn]     |
+[warn]     | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/main/scala/com/ziplex/lexer/VerifiedLexer.scala:974:6 
+[warn] 974 |      rulesArg match {
+[warn]     |      ^^^^^^^^
+[warn]     |      match may not be exhaustive.
+[warn]     |
+[warn]     |      It would fail on pattern case: stainless.collection.Nil()
+[warn]     |
+[warn]     | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/main/scala/com/ziplex/lexer/VerifiedLexer.scala:1007:10 
+[warn] 1007 |          rulesArg match {
+[warn]      |          ^^^^^^^^
+[warn]      |          match may not be exhaustive.
+[warn]      |
+[warn]      |          It would fail on pattern case: stainless.collection.Nil()
+[warn]      |
+[warn]      | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/main/scala/com/ziplex/lexer/VerifiedLexer.scala:1781:6 
+[warn] 1781 |      rules match {
+[warn]      |      ^^^^^
+[warn]      |      match may not be exhaustive.
+[warn]      |
+[warn]      |      It would fail on pattern case: stainless.collection.Cons(_, _)
+[warn]      |
+[warn]      | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/main/scala/com/ziplex/lexer/VerifiedRegex.scala:445:4 
+[warn] 445 |    r match {
+[warn]     |    ^
+[warn]     |    match may not be exhaustive.
+[warn]     |
+[warn]     |    It would fail on pattern case: Concat(_, _)
+[warn]     |
+[warn]     | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/main/scala/com/ziplex/map/ListLongMap.scala:157:4 
+[warn] 157 |    l match {
+[warn]     |    ^
+[warn]     |    match may not be exhaustive.
+[warn]     |
+[warn]     |    It would fail on pattern case: stainless.collection.Cons(_, _)
+[warn]     |
+[warn]     | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/main/scala/com/ziplex/map/ListLongMap.scala:191:4 
+[warn] 191 |    l match {
+[warn]     |    ^
+[warn]     |    match may not be exhaustive.
+[warn]     |
+[warn]     |    It would fail on pattern case: stainless.collection.Cons(_, _)
+[warn]     |
+[warn]     | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/main/scala/com/ziplex/map/ListLongMap.scala:206:4 
+[warn] 206 |    l match {
+[warn]     |    ^
+[warn]     |    match may not be exhaustive.
+[warn]     |
+[warn]     |    It would fail on pattern case: stainless.collection.Cons(_, _)
+[warn]     |
+[warn]     | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/main/scala/com/ziplex/map/ListLongMap.scala:222:4 
+[warn] 222 |    l match {
+[warn]     |    ^
+[warn]     |    match may not be exhaustive.
+[warn]     |
+[warn]     |    It would fail on pattern case: stainless.collection.Cons(_, _)
+[warn]     |
+[warn]     | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/main/scala/com/ziplex/map/ListLongMap.scala:243:4 
+[warn] 243 |    l match {
+[warn]     |    ^
+[warn]     |    match may not be exhaustive.
+[warn]     |
+[warn]     |    It would fail on pattern case: stainless.collection.Cons(_, _)
+[warn]     |
+[warn]     | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/main/scala/com/ziplex/map/ListLongMap.scala:274:4 
+[warn] 274 |    l match {
+[warn]     |    ^
+[warn]     |    match may not be exhaustive.
+[warn]     |
+[warn]     |    It would fail on pattern case: stainless.collection.Cons(_, _)
+[warn]     |
+[warn]     | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/main/scala/com/ziplex/map/ListMap.scala:195:4 
+[warn] 195 |    l match {
+[warn]     |    ^
+[warn]     |    match may not be exhaustive.
+[warn]     |
+[warn]     |    It would fail on pattern case: stainless.collection.Cons(_, _)
+[warn]     |
+[warn]     | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/main/scala/com/ziplex/map/ListMap.scala:229:4 
+[warn] 229 |    l match {
+[warn]     |    ^
+[warn]     |    match may not be exhaustive.
+[warn]     |
+[warn]     |    It would fail on pattern case: stainless.collection.Cons(_, _)
+[warn]     |
+[warn]     | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/main/scala/com/ziplex/map/ListMap.scala:256:4 
+[warn] 256 |    l match {
+[warn]     |    ^
+[warn]     |    match may not be exhaustive.
+[warn]     |
+[warn]     |    It would fail on pattern case: stainless.collection.Cons(_, _)
+[warn]     |
+[warn]     | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/main/scala/com/ziplex/map/ListMap.scala:308:4 
+[warn] 308 |    l match {
+[warn]     |    ^
+[warn]     |    match may not be exhaustive.
+[warn]     |
+[warn]     |    It would fail on pattern case: stainless.collection.Cons(_, _)
+[warn]     |
+[warn]     | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/main/scala/com/ziplex/map/ListMap.scala:380:4 
+[warn] 380 |    l match {
+[warn]     |    ^
+[warn]     |    match may not be exhaustive.
+[warn]     |
+[warn]     |    It would fail on pattern case: stainless.collection.Cons(_, _)
+[warn]     |
+[warn]     | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/main/scala/com/ziplex/map/MutableLongMap.scala:362:4 
+[warn] 362 |    c match {
+[warn]     |    ^
+[warn]     |    match may not be exhaustive.
+[warn]     |
+[warn]     |    It would fail on pattern case: EmptyCell()
+[warn]     |
+[warn]     | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/main/scala/com/ziplex/map/MutableLongMap.scala:611:8 
+[warn] 611 |        seekEntryRes match {
+[warn]     |        ^^^^^^^^^^^^
+[warn]     |match may not be exhaustive.
+[warn]     |
+[warn]     |It would fail on pattern case: com.mutablemaps.map.MutableLongMap.Intermediate(_, _, _)
+[warn]     |
+[warn]     | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/main/scala/com/ziplex/map/MutableLongMap.scala:1121:6 
+[warn] 1121 |      intermediate match {
+[warn]      |      ^^^^^^^^^^^^
+[warn]      |match may not be exhaustive.
+[warn]      |
+[warn]      |It would fail on pattern case: _: com.mutablemaps.map.MutableLongMap.SeekEntryResult
+[warn]      |
+[warn]      | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/main/scala/com/ziplex/map/MutableLongMap.scala:1171:6 
+[warn] 1171 |      intermediate match {
+[warn]      |      ^^^^^^^^^^^^
+[warn]      |match may not be exhaustive.
+[warn]      |
+[warn]      |It would fail on pattern case: _: com.mutablemaps.map.MutableLongMap.SeekEntryResult
+[warn]      |
+[warn]      | longer explanation available when compiling with `-explain`
+[warn] there was 1 deprecation warning; re-run with -deprecation for details
+[warn] 32 warnings found
+[info] done compiling
+[info] compiling 46 Scala sources to /localhome/chassot/bolts/lexers/regex/verifiedlexer/target/scala-3.7.2/test-classes ...
+[info] compiling 71 Java sources to /localhome/chassot/bolts/lexers/regex/verifiedlexer/target/scala-3.7.2/classes ...
+[error] -- [E046] Cyclic Error: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/test/scala/com/ziplex/lexer/VerifiedRegexSpec.scala:15:32 
+[error] 15 |class VerifiedRegexSpec extends AnyFlatSpec with Matchers {
+[error]    |                                ^
+[error]    |                             Cyclic reference involving val <import>
+[error]    |
+[error]    |                              Run with -explain-cyclic for more details.
+[error]    |
+[error]    | longer explanation available when compiling with `-explain`
+[error] -- [E008] Not Found Error: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/test/scala/com/ziplex/lexer/VerifiedRegexSpec.scala:4:11 
+[error] 4 |import org.scalatest.matchers.should.Matchers
+[error]   |       ^^^^^^^^^^^^^
+[error]   |       value scalatest is not a member of org
+[error] -- [E008] Not Found Error: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/test/scala/com/ziplex/lexer/VerifiedRegexSpec.scala:3:11 
+[error] 3 |import org.scalatest.flatspec.AnyFlatSpec
+[error]   |       ^^^^^^^^^^^^^
+[error]   |       value scalatest is not a member of org
+[error] -- [E006] Not Found Error: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/test/scala/com/ziplex/lexer/VerifiedRegexSpec.scala:17:2 
+[error] 17 |  behavior of "Basic Regex Matching"
+[error]    |  ^^^^^^^^
+[error]    |  Not found: behavior
+[error]    |
+[error]    | longer explanation available when compiling with `-explain`
+[error] -- [E006] Not Found Error: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/test/scala/com/ziplex/lexer/VerifiedRegexSpec.scala:19:2 
+[error] 19 |  it should "match a single character" in {
+[error]    |  ^^
+[error]    |  Not found: it - did you mean io?
+[error]    |
+[error]    | longer explanation available when compiling with `-explain`
+[error] -- [E006] Not Found Error: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/test/scala/com/ziplex/lexer/VerifiedRegexSpec.scala:25:2 
+[error] 25 |  it should "not match a different single character" in {
+[error]    |  ^^
+[error]    |  Not found: it - did you mean io?
+[error]    |
+[error]    | longer explanation available when compiling with `-explain`
+[error] -- [E006] Not Found Error: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/test/scala/com/ziplex/lexer/VerifiedRegexSpec.scala:31:2 
+[error] 31 |  it should "match empty expression with empty input" in {
+[error]    |  ^^
+[error]    |  Not found: it - did you mean io?
+[error]    |
+[error]    | longer explanation available when compiling with `-explain`
+[error] -- [E006] Not Found Error: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/test/scala/com/ziplex/lexer/VerifiedRegexSpec.scala:37:2 
+[error] 37 |  it should "not match empty expression with non-empty input" in {
+[error]    |  ^^
+[error]    |  Not found: it - did you mean io?
+[error]    |
+[error]    | longer explanation available when compiling with `-explain`
+[error] -- [E006] Not Found Error: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/test/scala/com/ziplex/lexer/VerifiedRegexSpec.scala:43:2 
+[error] 43 |  it should "never match empty language" in {
+[error]    |  ^^
+[error]    |  Not found: it - did you mean io?
+[error]    |
+[error]    | longer explanation available when compiling with `-explain`
+[error] -- [E006] Not Found Error: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/test/scala/com/ziplex/lexer/VerifiedRegexSpec.scala:49:2 
+[error] 49 |  behavior of "Union Regex"
+[error]    |  ^^^^^^^^
+[error]    |  Not found: behavior
+[error]    |
+[error]    | longer explanation available when compiling with `-explain`
+[error] -- [E006] Not Found Error: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/test/scala/com/ziplex/lexer/VerifiedRegexSpec.scala:51:2 
+[error] 51 |  it should "match first alternative in union" in {
+[error]    |  ^^
+[error]    |  Not found: it - did you mean io?
+[error]    |
+[error]    | longer explanation available when compiling with `-explain`
+[error] -- [E006] Not Found Error: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/test/scala/com/ziplex/lexer/VerifiedRegexSpec.scala:57:2 
+[error] 57 |  it should "match second alternative in union" in {
+[error]    |  ^^
+[error]    |  Not found: it - did you mean io?
+[error]    |
+[error]    | longer explanation available when compiling with `-explain`
+[error] -- [E006] Not Found Error: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/test/scala/com/ziplex/lexer/VerifiedRegexSpec.scala:63:2 
+[error] 63 |  it should "not match neither alternative in union" in {
+[error]    |  ^^
+[error]    |  Not found: it - did you mean io?
+[error]    |
+[error]    | longer explanation available when compiling with `-explain`
+[error] -- [E006] Not Found Error: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/test/scala/com/ziplex/lexer/VerifiedRegexSpec.scala:69:2 
+[error] 69 |  behavior of "Concatenation Regex"
+[error]    |  ^^^^^^^^
+[error]    |  Not found: behavior
+[error]    |
+[error]    | longer explanation available when compiling with `-explain`
+[error] -- [E006] Not Found Error: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/test/scala/com/ziplex/lexer/VerifiedRegexSpec.scala:71:2 
+[error] 71 |  it should "match concatenated characters" in {
+[error]    |  ^^
+[error]    |  Not found: it - did you mean io?
+[error]    |
+[error]    | longer explanation available when compiling with `-explain`
+[error] -- [E006] Not Found Error: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/test/scala/com/ziplex/lexer/VerifiedRegexSpec.scala:77:2 
+[error] 77 |  it should "not match partial concatenation" in {
+[error]    |  ^^
+[error]    |  Not found: it - did you mean io?
+[error]    |
+[error]    | longer explanation available when compiling with `-explain`
+[error] -- [E006] Not Found Error: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/test/scala/com/ziplex/lexer/VerifiedRegexSpec.scala:83:2 
+[error] 83 |  it should "not match wrong order concatenation" in {
+[error]    |  ^^
+[error]    |  Not found: it - did you mean io?
+[error]    |
+[error]    | longer explanation available when compiling with `-explain`
+[error] -- [E006] Not Found Error: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/test/scala/com/ziplex/lexer/VerifiedRegexSpec.scala:89:2 
+[error] 89 |  behavior of "Star Regex"
+[error]    |  ^^^^^^^^
+[error]    |  Not found: behavior
+[error]    |
+[error]    | longer explanation available when compiling with `-explain`
+[error] -- [E006] Not Found Error: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/test/scala/com/ziplex/lexer/VerifiedRegexSpec.scala:91:2 
+[error] 91 |  it should "match empty string with star" in {
+[error]    |  ^^
+[error]    |  Not found: it - did you mean io?
+[error]    |
+[error]    | longer explanation available when compiling with `-explain`
+[error] -- [E006] Not Found Error: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/test/scala/com/ziplex/lexer/VerifiedRegexSpec.scala:97:2 
+[error] 97 |  it should "match single occurrence with star" in {
+[error]    |  ^^
+[error]    |  Not found: it - did you mean io?
+[error]    |
+[error]    | longer explanation available when compiling with `-explain`
+[error] -- [E006] Not Found Error: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/test/scala/com/ziplex/lexer/VerifiedRegexSpec.scala:103:2 
+[error] 103 |  it should "match multiple occurrences with star" in {
+[error]     |  ^^
+[error]     |  Not found: it - did you mean io?
+[error]     |
+[error]     | longer explanation available when compiling with `-explain`
+[error] -- [E006] Not Found Error: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/test/scala/com/ziplex/lexer/VerifiedRegexSpec.scala:109:2 
+[error] 109 |  it should "not match wrong character with star" in {
+[error]     |  ^^
+[error]     |  Not found: it - did you mean io?
+[error]     |
+[error]     | longer explanation available when compiling with `-explain`
+[error] -- [E006] Not Found Error: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/test/scala/com/ziplex/lexer/VerifiedRegexSpec.scala:115:2 
+[error] 115 |  behavior of "Complex Regex Patterns"
+[error]     |  ^^^^^^^^
+[error]     |  Not found: behavior
+[error]     |
+[error]     | longer explanation available when compiling with `-explain`
+[error] -- [E006] Not Found Error: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/test/scala/com/ziplex/lexer/VerifiedRegexSpec.scala:117:2 
+[error] 117 |  it should "match (a|b)* followed by c" in {
+[error]     |  ^^
+[error]     |  Not found: it - did you mean io?
+[error]     |
+[error]     | longer explanation available when compiling with `-explain`
+[error] -- [E006] Not Found Error: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/test/scala/com/ziplex/lexer/VerifiedRegexSpec.scala:123:2 
+[error] 123 |  it should "match (a|b)* followed by c with empty prefix" in {
+[error]     |  ^^
+[error]     |  Not found: it - did you mean io?
+[error]     |
+[error]     | longer explanation available when compiling with `-explain`
+[error] -- [E006] Not Found Error: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/test/scala/com/ziplex/lexer/VerifiedRegexSpec.scala:129:2 
+[error] 129 |  it should "not match (a|b)* without trailing c" in {
+[error]     |  ^^
+[error]     |  Not found: it - did you mean io?
+[error]     |
+[error]     | longer explanation available when compiling with `-explain`
+[error] -- [E006] Not Found Error: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/test/scala/com/ziplex/lexer/VerifiedRegexSpec.scala:135:2 
+[error] 135 |  behavior of "String Regex Extension (via RegexUtils)"
+[error]     |  ^^^^^^^^
+[error]     |  Not found: behavior
+[error]     |
+[error]     | longer explanation available when compiling with `-explain`
+[error] -- [E006] Not Found Error: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/test/scala/com/ziplex/lexer/VerifiedRegexSpec.scala:137:2 
+[error] 137 |  it should "match simple string pattern" in {
+[error]     |  ^^
+[error]     |  Not found: it - did you mean io?
+[error]     |
+[error]     | longer explanation available when compiling with `-explain`
+[error] -- [E006] Not Found Error: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/test/scala/com/ziplex/lexer/VerifiedRegexSpec.scala:143:2 
+[error] 143 |  it should "match pattern with alternatives" in {
+[error]     |  ^^
+[error]     |  Not found: it - did you mean io?
+[error]     |
+[error]     | longer explanation available when compiling with `-explain`
+[error] -- [E006] Not Found Error: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/test/scala/com/ziplex/lexer/VerifiedRegexSpec.scala:149:2 
+[error] 149 |  it should "match concatenation using ~ operator" in {
+[error]     |  ^^
+[error]     |  Not found: it - did you mean io?
+[error]     |
+[error]     | longer explanation available when compiling with `-explain`
+[error] -- [E006] Not Found Error: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/test/scala/com/ziplex/lexer/VerifiedRegexSpec.scala:155:2 
+[error] 155 |  it should "match star pattern using .* operator" in {
+[error]     |  ^^
+[error]     |  Not found: it - did you mean io?
+[error]     |
+[error]     | longer explanation available when compiling with `-explain`
+[error] -- [E006] Not Found Error: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/test/scala/com/ziplex/lexer/VerifiedRegexSpec.scala:161:2 
+[error] 161 |  behavior of "Nullable Property"
+[error]     |  ^^^^^^^^
+[error]     |  Not found: behavior
+[error]     |
+[error]     | longer explanation available when compiling with `-explain`
+[error] -- [E006] Not Found Error: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/test/scala/com/ziplex/lexer/VerifiedRegexSpec.scala:163:2 
+[error] 163 |  it should "correctly identify nullable regexes" in {
+[error]     |  ^^
+[error]     |  Not found: it - did you mean io?
+[error]     |
+[error]     | longer explanation available when compiling with `-explain`
+[warn] -- Warning: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/test/scala/com/ziplex/lexer/VerifiedRegexSpec.scala:17:11 
+[warn] 17 |  behavior of "Basic Regex Matching"
+[warn]    |           ^^
+[warn]    |Alphanumeric method of is not declared infix; it should not be used as infix operator.
+[warn]    |Instead, use method syntax .of(...) or backticked identifier `of`.
+[warn]    |The latter can be rewritten automatically under -rewrite -source 3.4-migration.
+[warn] -- Warning: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/test/scala/com/ziplex/lexer/VerifiedRegexSpec.scala:19:5 
+[warn] 19 |  it should "match a single character" in {
+[warn]    |     ^^^^^^
+[warn]    |Alphanumeric method should is not declared infix; it should not be used as infix operator.
+[warn]    |Instead, use method syntax .should(...) or backticked identifier `should`.
+[warn]    |The latter can be rewritten automatically under -rewrite -source 3.4-migration.
+[warn] -- Warning: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/test/scala/com/ziplex/lexer/VerifiedRegexSpec.scala:25:5 
+[warn] 25 |  it should "not match a different single character" in {
+[warn]    |     ^^^^^^
+[warn]    |Alphanumeric method should is not declared infix; it should not be used as infix operator.
+[warn]    |Instead, use method syntax .should(...) or backticked identifier `should`.
+[warn]    |The latter can be rewritten automatically under -rewrite -source 3.4-migration.
+[warn] -- Warning: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/test/scala/com/ziplex/lexer/VerifiedRegexSpec.scala:31:5 
+[warn] 31 |  it should "match empty expression with empty input" in {
+[warn]    |     ^^^^^^
+[warn]    |Alphanumeric method should is not declared infix; it should not be used as infix operator.
+[warn]    |Instead, use method syntax .should(...) or backticked identifier `should`.
+[warn]    |The latter can be rewritten automatically under -rewrite -source 3.4-migration.
+[warn] -- Warning: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/test/scala/com/ziplex/lexer/VerifiedRegexSpec.scala:37:5 
+[warn] 37 |  it should "not match empty expression with non-empty input" in {
+[warn]    |     ^^^^^^
+[warn]    |Alphanumeric method should is not declared infix; it should not be used as infix operator.
+[warn]    |Instead, use method syntax .should(...) or backticked identifier `should`.
+[warn]    |The latter can be rewritten automatically under -rewrite -source 3.4-migration.
+[warn] -- Warning: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/test/scala/com/ziplex/lexer/VerifiedRegexSpec.scala:43:5 
+[warn] 43 |  it should "never match empty language" in {
+[warn]    |     ^^^^^^
+[warn]    |Alphanumeric method should is not declared infix; it should not be used as infix operator.
+[warn]    |Instead, use method syntax .should(...) or backticked identifier `should`.
+[warn]    |The latter can be rewritten automatically under -rewrite -source 3.4-migration.
+[warn] -- Warning: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/test/scala/com/ziplex/lexer/VerifiedRegexSpec.scala:49:11 
+[warn] 49 |  behavior of "Union Regex"
+[warn]    |           ^^
+[warn]    |Alphanumeric method of is not declared infix; it should not be used as infix operator.
+[warn]    |Instead, use method syntax .of(...) or backticked identifier `of`.
+[warn]    |The latter can be rewritten automatically under -rewrite -source 3.4-migration.
+[warn] -- Warning: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/test/scala/com/ziplex/lexer/VerifiedRegexSpec.scala:51:5 
+[warn] 51 |  it should "match first alternative in union" in {
+[warn]    |     ^^^^^^
+[warn]    |Alphanumeric method should is not declared infix; it should not be used as infix operator.
+[warn]    |Instead, use method syntax .should(...) or backticked identifier `should`.
+[warn]    |The latter can be rewritten automatically under -rewrite -source 3.4-migration.
+[warn] -- Warning: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/test/scala/com/ziplex/lexer/VerifiedRegexSpec.scala:57:5 
+[warn] 57 |  it should "match second alternative in union" in {
+[warn]    |     ^^^^^^
+[warn]    |Alphanumeric method should is not declared infix; it should not be used as infix operator.
+[warn]    |Instead, use method syntax .should(...) or backticked identifier `should`.
+[warn]    |The latter can be rewritten automatically under -rewrite -source 3.4-migration.
+[warn] -- Warning: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/test/scala/com/ziplex/lexer/VerifiedRegexSpec.scala:63:5 
+[warn] 63 |  it should "not match neither alternative in union" in {
+[warn]    |     ^^^^^^
+[warn]    |Alphanumeric method should is not declared infix; it should not be used as infix operator.
+[warn]    |Instead, use method syntax .should(...) or backticked identifier `should`.
+[warn]    |The latter can be rewritten automatically under -rewrite -source 3.4-migration.
+[warn] -- Warning: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/test/scala/com/ziplex/lexer/VerifiedRegexSpec.scala:69:11 
+[warn] 69 |  behavior of "Concatenation Regex"
+[warn]    |           ^^
+[warn]    |Alphanumeric method of is not declared infix; it should not be used as infix operator.
+[warn]    |Instead, use method syntax .of(...) or backticked identifier `of`.
+[warn]    |The latter can be rewritten automatically under -rewrite -source 3.4-migration.
+[warn] -- Warning: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/test/scala/com/ziplex/lexer/VerifiedRegexSpec.scala:71:5 
+[warn] 71 |  it should "match concatenated characters" in {
+[warn]    |     ^^^^^^
+[warn]    |Alphanumeric method should is not declared infix; it should not be used as infix operator.
+[warn]    |Instead, use method syntax .should(...) or backticked identifier `should`.
+[warn]    |The latter can be rewritten automatically under -rewrite -source 3.4-migration.
+[warn] -- Warning: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/test/scala/com/ziplex/lexer/VerifiedRegexSpec.scala:77:5 
+[warn] 77 |  it should "not match partial concatenation" in {
+[warn]    |     ^^^^^^
+[warn]    |Alphanumeric method should is not declared infix; it should not be used as infix operator.
+[warn]    |Instead, use method syntax .should(...) or backticked identifier `should`.
+[warn]    |The latter can be rewritten automatically under -rewrite -source 3.4-migration.
+[warn] -- Warning: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/test/scala/com/ziplex/lexer/VerifiedRegexSpec.scala:83:5 
+[warn] 83 |  it should "not match wrong order concatenation" in {
+[warn]    |     ^^^^^^
+[warn]    |Alphanumeric method should is not declared infix; it should not be used as infix operator.
+[warn]    |Instead, use method syntax .should(...) or backticked identifier `should`.
+[warn]    |The latter can be rewritten automatically under -rewrite -source 3.4-migration.
+[warn] -- Warning: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/test/scala/com/ziplex/lexer/VerifiedRegexSpec.scala:89:11 
+[warn] 89 |  behavior of "Star Regex"
+[warn]    |           ^^
+[warn]    |Alphanumeric method of is not declared infix; it should not be used as infix operator.
+[warn]    |Instead, use method syntax .of(...) or backticked identifier `of`.
+[warn]    |The latter can be rewritten automatically under -rewrite -source 3.4-migration.
+[warn] -- Warning: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/test/scala/com/ziplex/lexer/VerifiedRegexSpec.scala:91:5 
+[warn] 91 |  it should "match empty string with star" in {
+[warn]    |     ^^^^^^
+[warn]    |Alphanumeric method should is not declared infix; it should not be used as infix operator.
+[warn]    |Instead, use method syntax .should(...) or backticked identifier `should`.
+[warn]    |The latter can be rewritten automatically under -rewrite -source 3.4-migration.
+[warn] -- Warning: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/test/scala/com/ziplex/lexer/VerifiedRegexSpec.scala:97:5 
+[warn] 97 |  it should "match single occurrence with star" in {
+[warn]    |     ^^^^^^
+[warn]    |Alphanumeric method should is not declared infix; it should not be used as infix operator.
+[warn]    |Instead, use method syntax .should(...) or backticked identifier `should`.
+[warn]    |The latter can be rewritten automatically under -rewrite -source 3.4-migration.
+[warn] -- Warning: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/test/scala/com/ziplex/lexer/VerifiedRegexSpec.scala:103:5 
+[warn] 103 |  it should "match multiple occurrences with star" in {
+[warn]     |     ^^^^^^
+[warn]     |Alphanumeric method should is not declared infix; it should not be used as infix operator.
+[warn]     |Instead, use method syntax .should(...) or backticked identifier `should`.
+[warn]     |The latter can be rewritten automatically under -rewrite -source 3.4-migration.
+[warn] -- Warning: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/test/scala/com/ziplex/lexer/VerifiedRegexSpec.scala:109:5 
+[warn] 109 |  it should "not match wrong character with star" in {
+[warn]     |     ^^^^^^
+[warn]     |Alphanumeric method should is not declared infix; it should not be used as infix operator.
+[warn]     |Instead, use method syntax .should(...) or backticked identifier `should`.
+[warn]     |The latter can be rewritten automatically under -rewrite -source 3.4-migration.
+[warn] -- Warning: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/test/scala/com/ziplex/lexer/VerifiedRegexSpec.scala:115:11 
+[warn] 115 |  behavior of "Complex Regex Patterns"
+[warn]     |           ^^
+[warn]     |Alphanumeric method of is not declared infix; it should not be used as infix operator.
+[warn]     |Instead, use method syntax .of(...) or backticked identifier `of`.
+[warn]     |The latter can be rewritten automatically under -rewrite -source 3.4-migration.
+[warn] -- Warning: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/test/scala/com/ziplex/lexer/VerifiedRegexSpec.scala:117:5 
+[warn] 117 |  it should "match (a|b)* followed by c" in {
+[warn]     |     ^^^^^^
+[warn]     |Alphanumeric method should is not declared infix; it should not be used as infix operator.
+[warn]     |Instead, use method syntax .should(...) or backticked identifier `should`.
+[warn]     |The latter can be rewritten automatically under -rewrite -source 3.4-migration.
+[warn] -- Warning: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/test/scala/com/ziplex/lexer/VerifiedRegexSpec.scala:123:5 
+[warn] 123 |  it should "match (a|b)* followed by c with empty prefix" in {
+[warn]     |     ^^^^^^
+[warn]     |Alphanumeric method should is not declared infix; it should not be used as infix operator.
+[warn]     |Instead, use method syntax .should(...) or backticked identifier `should`.
+[warn]     |The latter can be rewritten automatically under -rewrite -source 3.4-migration.
+[warn] -- Warning: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/test/scala/com/ziplex/lexer/VerifiedRegexSpec.scala:129:5 
+[warn] 129 |  it should "not match (a|b)* without trailing c" in {
+[warn]     |     ^^^^^^
+[warn]     |Alphanumeric method should is not declared infix; it should not be used as infix operator.
+[warn]     |Instead, use method syntax .should(...) or backticked identifier `should`.
+[warn]     |The latter can be rewritten automatically under -rewrite -source 3.4-migration.
+[warn] -- Warning: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/test/scala/com/ziplex/lexer/VerifiedRegexSpec.scala:135:11 
+[warn] 135 |  behavior of "String Regex Extension (via RegexUtils)"
+[warn]     |           ^^
+[warn]     |Alphanumeric method of is not declared infix; it should not be used as infix operator.
+[warn]     |Instead, use method syntax .of(...) or backticked identifier `of`.
+[warn]     |The latter can be rewritten automatically under -rewrite -source 3.4-migration.
+[warn] -- Warning: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/test/scala/com/ziplex/lexer/VerifiedRegexSpec.scala:137:5 
+[warn] 137 |  it should "match simple string pattern" in {
+[warn]     |     ^^^^^^
+[warn]     |Alphanumeric method should is not declared infix; it should not be used as infix operator.
+[warn]     |Instead, use method syntax .should(...) or backticked identifier `should`.
+[warn]     |The latter can be rewritten automatically under -rewrite -source 3.4-migration.
+[warn] -- Warning: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/test/scala/com/ziplex/lexer/VerifiedRegexSpec.scala:143:5 
+[warn] 143 |  it should "match pattern with alternatives" in {
+[warn]     |     ^^^^^^
+[warn]     |Alphanumeric method should is not declared infix; it should not be used as infix operator.
+[warn]     |Instead, use method syntax .should(...) or backticked identifier `should`.
+[warn]     |The latter can be rewritten automatically under -rewrite -source 3.4-migration.
+[warn] -- Warning: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/test/scala/com/ziplex/lexer/VerifiedRegexSpec.scala:149:5 
+[warn] 149 |  it should "match concatenation using ~ operator" in {
+[warn]     |     ^^^^^^
+[warn]     |Alphanumeric method should is not declared infix; it should not be used as infix operator.
+[warn]     |Instead, use method syntax .should(...) or backticked identifier `should`.
+[warn]     |The latter can be rewritten automatically under -rewrite -source 3.4-migration.
+[warn] -- Warning: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/test/scala/com/ziplex/lexer/VerifiedRegexSpec.scala:155:5 
+[warn] 155 |  it should "match star pattern using .* operator" in {
+[warn]     |     ^^^^^^
+[warn]     |Alphanumeric method should is not declared infix; it should not be used as infix operator.
+[warn]     |Instead, use method syntax .should(...) or backticked identifier `should`.
+[warn]     |The latter can be rewritten automatically under -rewrite -source 3.4-migration.
+[warn] -- Warning: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/test/scala/com/ziplex/lexer/VerifiedRegexSpec.scala:161:11 
+[warn] 161 |  behavior of "Nullable Property"
+[warn]     |           ^^
+[warn]     |Alphanumeric method of is not declared infix; it should not be used as infix operator.
+[warn]     |Instead, use method syntax .of(...) or backticked identifier `of`.
+[warn]     |The latter can be rewritten automatically under -rewrite -source 3.4-migration.
+[warn] -- Warning: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/test/scala/com/ziplex/lexer/VerifiedRegexSpec.scala:163:5 
+[warn] 163 |  it should "correctly identify nullable regexes" in {
+[warn]     |     ^^^^^^
+[warn]     |Alphanumeric method should is not declared infix; it should not be used as infix operator.
+[warn]     |Instead, use method syntax .should(...) or backticked identifier `should`.
+[warn]     |The latter can be rewritten automatically under -rewrite -source 3.4-migration.
+[warn] 30 warnings found
+[error] 33 errors found
+[info] done compiling
+[error] java.io.FileNotFoundException: /localhome/chassot/bolts/lexers/regex/verifiedlexer/target/scala-3.7.2/classes/com/ziplex/lexer/benchmark/jmh_generated/LexerRegexBenchmark_commentAccepting_Regex_list_jmhTest.class (No such file or directory)
+[error] 	at java.base/java.io.FileInputStream.open0(Native Method)
+[error] 	at java.base/java.io.FileInputStream.open(FileInputStream.java:216)
+[error] 	at java.base/java.io.FileInputStream.<init>(FileInputStream.java:157)
+[error] 	at sbt.io.Using$.$anonfun$fileInputStream$1(Using.scala:99)
+[error] 	at sbt.io.Using$$anon$3.openImpl(Using.scala:87)
+[error] 	at sbt.io.OpenFile.open(Using.scala:54)
+[error] 	at sbt.io.OpenFile.open$(Using.scala:48)
+[error] 	at sbt.io.Using$$anon$3.open(Using.scala:86)
+[error] 	at sbt.io.Using$$anon$3.open(Using.scala:86)
+[error] 	at sbt.io.Using.apply(Using.scala:26)
+[error] 	at sbt.io.IO$.transfer(IO.scala:454)
+[error] 	at sbt.io.IO$.addFileEntry$1(IO.scala:718)
+[error] 	at sbt.io.IO$.$anonfun$writeZip$6(IO.scala:726)
+[error] 	at sbt.io.IO$.$anonfun$writeZip$6$adapted(IO.scala:726)
+[error] 	at scala.collection.immutable.List.foreach(List.scala:431)
+[error] 	at sbt.io.IO$.writeZip(IO.scala:726)
+[error] 	at sbt.io.IO$.$anonfun$archive$2(IO.scala:676)
+[error] 	at sbt.io.IO$.$anonfun$archive$2$adapted(IO.scala:673)
+[error] 	at sbt.io.IO$.$anonfun$withZipOutput$1(IO.scala:773)
+[error] 	at sbt.io.IO$.$anonfun$withZipOutput$1$adapted(IO.scala:753)
+[error] 	at sbt.io.Using.apply(Using.scala:28)
+[error] 	at sbt.io.IO$.withZipOutput(IO.scala:753)
+[error] 	at sbt.io.IO$.archive(IO.scala:673)
+[error] 	at sbt.io.IO$.jar(IO.scala:638)
+[error] 	at sbt.Package$.makeJar(Package.scala:229)
+[error] 	at sbt.Package$.$anonfun$apply$4(Package.scala:152)
+[error] 	at sbt.Package$.$anonfun$apply$4$adapted(Package.scala:150)
+[error] 	at sbt.util.Tracked$.$anonfun$outputChangedW$1(Tracked.scala:129)
+[error] 	at sbt.Package$.apply(Package.scala:162)
+[error] 	at sbt.Defaults$.$anonfun$packageTask$1(Defaults.scala:1868)
+[error] 	at scala.Function1.$anonfun$compose$1(Function1.scala:49)
+[error] 	at sbt.internal.util.$tilde$greater.$anonfun$$u2219$1(TypeFunctions.scala:63)
+[error] 	at sbt.std.Transform$$anon$4.work(Transform.scala:69)
+[error] 	at sbt.Execute.$anonfun$submit$2(Execute.scala:283)
+[error] 	at sbt.internal.util.ErrorHandling$.wideConvert(ErrorHandling.scala:24)
+[error] 	at sbt.Execute.work(Execute.scala:292)
+[error] 	at sbt.Execute.$anonfun$submit$1(Execute.scala:283)
+[error] 	at sbt.ConcurrentRestrictions$$anon$4.$anonfun$submitValid$1(ConcurrentRestrictions.scala:265)
+[error] 	at sbt.CompletionService$$anon$2.call(CompletionService.scala:65)
+[error] 	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:264)
+[error] 	at java.base/java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:539)
+[error] 	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:264)
+[error] 	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1136)
+[error] 	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:635)
+[error] 	at java.base/java.lang.Thread.run(Thread.java:840)
+[error] (Compile / packageBin) java.io.FileNotFoundException: /localhome/chassot/bolts/lexers/regex/verifiedlexer/target/scala-3.7.2/classes/com/ziplex/lexer/benchmark/jmh_generated/LexerRegexBenchmark_commentAccepting_Regex_list_jmhTest.class (No such file or directory)
+[error] (Test / compileIncremental) Compilation failed
+[error] Total time: 16 s, completed Dec 22, 2025, 8:49:47 PM
