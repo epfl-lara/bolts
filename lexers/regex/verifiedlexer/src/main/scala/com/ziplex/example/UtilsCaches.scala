@@ -8,6 +8,7 @@ import com.ziplex.lexer.Token
 import com.ziplex.lexer.Vector
 import stainless.annotation.extern
 import scala.annotation.tailrec
+import com.ziplex.lexer.Sequence
 
 object ExampleUtils:
   object ContextHashable extends Hashable[Context[Char]] {
@@ -29,7 +30,15 @@ object ExampleUtils:
       r.hash * 31 + ContextHashable.hash(ctx) * 37 + c.hashCode() * 43
     }
   }
+
+  object ZipperBigIntHashable extends Hashable[(Zipper[Char], BigInt)] {
+    override def hash(k: (Zipper[Char], BigInt)): Long = {
+      val (z, b) = k
+      z.map(ContextHashable.hash).toScala.sum * b.hashCode()
+    }
+  }
   
   val zipperCacheUp: MemoisationZipper.CacheUp[Char] = MemoisationZipper.emptyUp(ContextCharHashable)
   val zipperCacheDown: MemoisationZipper.CacheDown[Char] = MemoisationZipper.emptyDown(RegexContextCharHashable)
+  def findLongestMatchCache(totalInput: Sequence[Char]) = MemoisationZipper.emptyFindLongestMatch[Char](ZipperBigIntHashable, totalInput)
 end ExampleUtils

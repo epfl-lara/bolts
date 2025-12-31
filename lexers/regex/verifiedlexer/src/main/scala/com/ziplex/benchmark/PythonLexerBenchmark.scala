@@ -23,6 +23,8 @@ import com.ziplex.lexer.emptySeq
 import com.ziplex.lexer.singletonSeq
 import com.ziplex.lexer.seqFromList
 
+import com.ziplex.lexer.example.ExampleUtils
+
 import scala.reflect.ClassTag
 import java.io.File
 
@@ -56,11 +58,25 @@ class PythonLexerBenchmark {
   @Benchmark
   @BenchmarkMode(Array(Mode.AverageTime))
   @OutputTimeUnit(TimeUnit.MICROSECONDS)
+  def lex_ZipperV1Mem(bh: Blackhole): Unit = {
+    val (tokens, suffix) = Lexer.lexV1Mem(PythonLexer.rules, PythonLexerBenchmarkUtils.exampleFileContents(file))(
+      using ClassTag.Char,
+      PythonLexerBenchmarkUtils.zipperCacheUp,
+      PythonLexerBenchmarkUtils.zipperCacheDown
+    )
+    bh.consume(suffix.isEmpty)
+    // assert(suffix.isEmpty)
+  }
+
+  @Benchmark
+  @BenchmarkMode(Array(Mode.AverageTime))
+  @OutputTimeUnit(TimeUnit.MICROSECONDS)
   def lex_ZipperMem(bh: Blackhole): Unit = {
     val (tokens, suffix) = Lexer.lexMem(PythonLexer.rules, PythonLexerBenchmarkUtils.exampleFileContents(file))(
       using ClassTag.Char,
       PythonLexerBenchmarkUtils.zipperCacheUp,
-      PythonLexerBenchmarkUtils.zipperCacheDown
+      PythonLexerBenchmarkUtils.zipperCacheDown,
+      PythonLexerBenchmarkUtils.findLongestMatchCaches(file)
     )
     bh.consume(suffix.isEmpty)
     // assert(suffix.isEmpty)
@@ -125,4 +141,8 @@ object PythonLexerBenchmarkUtils {
 
   val zipperCacheUp: MemoisationZipper.CacheUp[Char] = MemoisationZipper.emptyUp(ContextCharHashable)
   val zipperCacheDown: MemoisationZipper.CacheDown[Char] = MemoisationZipper.emptyDown(RegexContextCharHashable)
+  val findLongestMatchCaches: Map[String, MemoisationZipper.CacheFindLongestMatch[Char]] = 
+    (exampleFileContents).map(kv => 
+      (kv._1, MemoisationZipper.emptyFindLongestMatch[Char](ExampleUtils.ZipperBigIntHashable, kv._2))
+    )
 }

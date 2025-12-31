@@ -30,6 +30,10 @@ import stainless.collection.ListSpecs
 
 import scala.annotation.tailrec
 import com.ziplex.lexer.example.RegexUtils.asString
+import com.ziplex.lexer.MemoisationZipper.CacheFindLongestMatch
+import com.mutablemaps.map.MutableHashMap
+import com.mutablemaps.map.Hashable
+import com.ziplex.lexer.ZipperRegex.Zipper
 
 // BEGIN uncomment for verification ------------------------------------------
 import stainless.lang.Option
@@ -104,7 +108,7 @@ object JsonManipulationExample:
     * @param cacheDown
     * @return
     */
-  def lexAndCheckPrintable(input: Sequence[Char])(using cacheUp: MemoisationZipper.CacheUp[Char], cacheDown: MemoisationZipper.CacheDown[Char]): Option[PrintableTokens[Char]] = {
+  def lexAndCheckPrintable(input: Sequence[Char])(using cacheUp: MemoisationZipper.CacheUp[Char], cacheDown: MemoisationZipper.CacheDown[Char], cacheFindLongestMatch: CacheFindLongestMatch[Char]): Option[PrintableTokens[Char]] = {
     require(!JsonLexer.rules.isEmpty)
     require(Lexer.rulesInvariant(JsonLexer.rules))
     ghostExpr({
@@ -347,8 +351,9 @@ object JsonManipulationExample:
   }.ensuring(res => res.isEmpty || 
                     (Lexer.lex(JsonLexer.rules, res.get.print())._1.list == res.get.tokens.list && Lexer.lex(JsonLexer.rules, res.get.print())._2.isEmpty))
 
-  def main(path: String)(using cacheUp: MemoisationZipper.CacheUp[Char], cacheDown: MemoisationZipper.CacheDown[Char]): Option[Sequence[Char]] = {
+  def main(path: String, hashF: Hashable[(Zipper[Char], BigInt)])(using cacheUp: MemoisationZipper.CacheUp[Char], cacheDown: MemoisationZipper.CacheDown[Char]): Option[Sequence[Char]] = {
     val input: Sequence[Char] = openFile(path)
+    given CacheFindLongestMatch[Char] = MemoisationZipper.emptyFindLongestMatch(hashF, input)
 
     if JsonLexer.rules.isEmpty || !Lexer.rulesInvariant(JsonLexer.rules) then None()
     else

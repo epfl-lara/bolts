@@ -22,6 +22,7 @@ import com.ziplex.lexer.Sequence
 import com.ziplex.lexer.emptySeq
 import com.ziplex.lexer.singletonSeq
 import com.ziplex.lexer.seqFromList
+import com.ziplex.lexer.example.ExampleUtils
 
 import scala.reflect.ClassTag
 import java.io.File
@@ -54,11 +55,25 @@ class JsonLexerBenchmark {
   @Benchmark
   @BenchmarkMode(Array(Mode.AverageTime))
   @OutputTimeUnit(TimeUnit.MICROSECONDS)
+  def lex_ZipperV1Mem(bh: Blackhole): Unit = {
+    val (tokens, suffix) = Lexer.lexV1Mem(JsonLexer.rules, JsonLexerBenchmarkUtils.exampleFileContents(file))(
+      using ClassTag.Char,
+      JsonLexerBenchmarkUtils.zipperCacheUp,
+      JsonLexerBenchmarkUtils.zipperCacheDown
+    )
+    bh.consume(suffix.isEmpty)
+    // assert(suffix.isEmpty)
+  }
+
+  @Benchmark
+  @BenchmarkMode(Array(Mode.AverageTime))
+  @OutputTimeUnit(TimeUnit.MICROSECONDS)
   def lex_ZipperMem(bh: Blackhole): Unit = {
     val (tokens, suffix) = Lexer.lexMem(JsonLexer.rules, JsonLexerBenchmarkUtils.exampleFileContents(file))(
       using ClassTag.Char,
       JsonLexerBenchmarkUtils.zipperCacheUp,
-      JsonLexerBenchmarkUtils.zipperCacheDown
+      JsonLexerBenchmarkUtils.zipperCacheDown,
+      JsonLexerBenchmarkUtils.findLongestMatchCaches(file)
     )
     bh.consume(suffix.isEmpty)
     // assert(suffix.isEmpty)
@@ -106,7 +121,8 @@ object JsonLexerBenchmarkUtils {
     val (tokens, suffix) = Lexer.lexMem(JsonLexer.rules, content)(
       using ClassTag.Char,
       zipperCacheUpInternal,
-      zipperCacheDownInternal
+      zipperCacheDownInternal,
+      findLongestMatchCachesInternal(name)
     )
     assert(suffix.isEmpty)
     (name -> tokens)
@@ -114,7 +130,15 @@ object JsonLexerBenchmarkUtils {
 
   val zipperCacheUp: MemoisationZipper.CacheUp[Char] = MemoisationZipper.emptyUp(ContextCharHashable)
   val zipperCacheDown: MemoisationZipper.CacheDown[Char] = MemoisationZipper.emptyDown(RegexContextCharHashable)
+  val findLongestMatchCaches: Map[String, MemoisationZipper.CacheFindLongestMatch[Char]] = 
+    (exampleFileContents).map(kv => 
+      (kv._1, MemoisationZipper.emptyFindLongestMatch[Char](ExampleUtils.ZipperBigIntHashable, kv._2))
+    )
 
   val zipperCacheUpInternal: MemoisationZipper.CacheUp[Char] = MemoisationZipper.emptyUp(ContextCharHashable)
   val zipperCacheDownInternal: MemoisationZipper.CacheDown[Char] = MemoisationZipper.emptyDown(RegexContextCharHashable)
+  val findLongestMatchCachesInternal: Map[String, MemoisationZipper.CacheFindLongestMatch[Char]] = 
+    (exampleFileContents).map(kv => 
+      (kv._1, MemoisationZipper.emptyFindLongestMatch[Char](ExampleUtils.ZipperBigIntHashable, kv._2))
+    )
 }

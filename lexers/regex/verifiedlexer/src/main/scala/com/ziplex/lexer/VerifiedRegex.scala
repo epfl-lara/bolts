@@ -274,6 +274,11 @@ object MemoisationZipper {
   }
 
 
+
+  def emptyFindLongestMatch[C](hashF: Hashable[(Zipper[C], BigInt)], totalInput: Sequence[C]): CacheFindLongestMatch[C] = 
+    CacheFindLongestMatch(MutableHashMap.getEmptyHashMap[(Zipper[C], BigInt), BigInt](k => -1, hashF), totalInput)
+
+
   @ghost def validCacheMapFindLongestMatchBody[C](kv: ((Zipper[C], BigInt), BigInt), totalInput: Sequence[C]): Boolean = {
     val (z, from) = kv._1
     val v = kv._2
