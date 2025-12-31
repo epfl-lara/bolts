@@ -34,6 +34,7 @@ import com.ziplex.lexer.MemoisationZipper.CacheFindLongestMatch
 import com.mutablemaps.map.MutableHashMap
 import com.mutablemaps.map.Hashable
 import com.ziplex.lexer.ZipperRegex.Zipper
+import com.ziplex.lexer.seqFromArray
 
 // BEGIN uncomment for verification ------------------------------------------
 import stainless.lang.Option
@@ -44,7 +45,6 @@ import stainless.lang.ghost as ghostExpr
 import stainless.lang.unfold
 import stainless.proof.check
 import stainless.lang.StaticChecks.*
-import com.ziplex.lexer.seqFromArray
 // END uncomment for verification --------------------------------------------
 // BEGIN imports for benchmarking -------------------------------------------
 // import stainless.lang.{ghost => _, decreases => _, unfold => _, _}
