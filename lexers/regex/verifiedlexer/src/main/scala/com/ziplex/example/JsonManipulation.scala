@@ -34,28 +34,28 @@ import com.ziplex.lexer.MemoisationZipper.CacheFindLongestMatch
 import com.mutablemaps.map.MutableHashMap
 import com.mutablemaps.map.Hashable
 import com.ziplex.lexer.ZipperRegex.Zipper
+import com.ziplex.lexer.seqFromArray
 
 // BEGIN uncomment for verification ------------------------------------------
-import stainless.lang.Option
-import stainless.lang.Some
-import stainless.lang.None
-import stainless.lang.decreases
-import stainless.lang.ghost as ghostExpr
-import stainless.lang.unfold
-import stainless.proof.check
-import stainless.lang.StaticChecks.*
-import com.ziplex.lexer.seqFromArray
+// import stainless.lang.Option
+// import stainless.lang.Some
+// import stainless.lang.None
+// import stainless.lang.decreases
+// import stainless.lang.ghost as ghostExpr
+// import stainless.lang.unfold
+// import stainless.proof.check
+// import stainless.lang.StaticChecks.*
 // END uncomment for verification --------------------------------------------
 // BEGIN imports for benchmarking -------------------------------------------
-// import stainless.lang.{ghost => _, decreases => _, unfold => _, _}
-// import com.ziplex.lexer.OptimisedChecks.*
-// import Predef.{assert => _, Ensuring => _, require => _, println}
+import stainless.lang.{ghost => _, decreases => _, unfold => _, _}
+import com.ziplex.lexer.OptimisedChecks.*
+import Predef.{assert => _, Ensuring => _, require => _, println}
 
-// @tailrec
-// def dummyJsonManip(x: BigInt): BigInt = {
-//   if (x == BigInt(0)) then x
-//   else dummyJsonManip(x - BigInt(1))
-// }.ensuring( res => res == BigInt(0))
+@tailrec
+def dummyJsonManip(x: BigInt): BigInt = {
+  if (x == BigInt(0)) then x
+  else dummyJsonManip(x - BigInt(1))
+}.ensuring( res => res == BigInt(0))
 // END imports for benchmarking ---------------------------------------------
 
 object JsonManipulationExample:

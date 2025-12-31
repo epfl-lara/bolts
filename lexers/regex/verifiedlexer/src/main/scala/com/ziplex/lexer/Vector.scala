@@ -7,20 +7,20 @@ import scala.annotation.tailrec
 import scala.reflect.ClassTag
 import scala.collection.immutable.ArraySeq
 // BEGIN uncomment for verification ------------------------------------------
-import stainless.lang._
-import stainless.lang.StaticChecks._
-import stainless.lang.{ghost => ghostExpr, _}
+// import stainless.lang._
+// import stainless.lang.StaticChecks._
+// import stainless.lang.{ghost => ghostExpr, _}
 // END uncomment for verification --------------------------------------------
 // BEGIN imports for benchmarking -------------------------------------------
-// import stainless.lang.{ghost => _, decreases => _, unfold => _, _}
-// import com.ziplex.lexer.OptimisedChecks.*
-// import Predef.{assert => _, Ensuring => _, require => _}
+import stainless.lang.{ghost => _, decreases => _, unfold => _, _}
+import com.ziplex.lexer.OptimisedChecks.*
+import Predef.{assert => _, Ensuring => _, require => _}
 
-// @tailrec
-// def dummyVector(x: BigInt): BigInt = {
-//   if (x == BigInt(0)) then x
-//   else dummyVector(x - BigInt(1))
-// }.ensuring( res => res == BigInt(0))
+@tailrec
+def dummyVector(x: BigInt): BigInt = {
+  if (x == BigInt(0)) then x
+  else dummyVector(x - BigInt(1))
+}.ensuring( res => res == BigInt(0))
 // END imports for benchmarking ---------------------------------------------
 
 case class Vector[T](@pure @extern underlying: scala.collection.immutable.Vector[T], overflowing: List[T] = Nil[T]()) {
