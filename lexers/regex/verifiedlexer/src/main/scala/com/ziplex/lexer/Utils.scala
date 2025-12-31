@@ -975,6 +975,17 @@ object ListUtils {
   @inlineOnce
   @opaque
   @ghost
+  def lemmaConcatTwoListThenFSndIsSuffix[B](l1: List[B], l2: List[B]): Unit = {
+    decreases(l1.size)
+    l1 match {
+      case Cons(hd, tl) => lemmaConcatTwoListThenFSndIsSuffix(tl, l2)
+      case Nil()        => ()
+    }
+  }.ensuring (_ => isSuffix(l2, l1 ++ l2))
+
+  @inlineOnce
+  @opaque
+  @ghost
   def lemmaTakeIsPrefix[B](l: List[B], n: BigInt): Unit = {
     require(n >= 0)
     decreases(n)
