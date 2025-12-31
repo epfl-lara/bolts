@@ -17,7 +17,7 @@ import stainless.proof.check
 // END uncomment for verification --------------------------------------------
 // BEGIN imports for benchmarking -------------------------------------------
 // import stainless.lang.{ghost => _, decreases => _, unfold => _, _}
-// import com.mutablemaps.map.OptimisedChecks.*
+// import com.stainless.OptimisedChecks.*
 // import Predef.{assert => _, Ensuring => _, require => _}
 
 // @tailrec

@@ -24,6 +24,8 @@ import com.ziplex.lexer.emptySeq
 import com.ziplex.lexer.singletonSeq
 import com.ziplex.lexer.seqFromList
 
+import com.ziplex.lexer.example.ExampleUtils
+
 import scala.reflect.ClassTag
 import java.io.File
 
@@ -73,11 +75,25 @@ class AmyLexerBenchmark {
   @Benchmark
   @BenchmarkMode(Array(Mode.AverageTime))
   @OutputTimeUnit(TimeUnit.MICROSECONDS)
-  def lex_ZipperMem(bh: Blackhole): Unit = {
-    val (tokens, suffix) = Lexer.lexMem(AmyLexer.rules, AmyLexerBenchmarkUtils.exampleFileContents(file))(
+  def lex_ZipperV1Mem(bh: Blackhole): Unit = {
+    val (tokens, suffix) = Lexer.lexV1Mem(AmyLexer.rules, AmyLexerBenchmarkUtils.exampleFileContents(file))(
       using ClassTag.Char, 
       AmyLexerBenchmarkUtils.zipperCacheUp,
       AmyLexerBenchmarkUtils.zipperCacheDown
+    )
+    bh.consume(suffix.isEmpty)
+    // assert(suffix.isEmpty)
+  }
+
+  @Benchmark
+  @BenchmarkMode(Array(Mode.AverageTime))
+  @OutputTimeUnit(TimeUnit.MICROSECONDS)
+  def lex_ZipperV2Mem(bh: Blackhole): Unit = {
+    val (tokens, suffix) = Lexer.lexMem(AmyLexer.rules, AmyLexerBenchmarkUtils.exampleFileContents(file))(
+      using ClassTag.Char, 
+      AmyLexerBenchmarkUtils.zipperCacheUp,
+      AmyLexerBenchmarkUtils.zipperCacheDown,
+      AmyLexerBenchmarkUtils.findLongestMatchCaches(file)
     )
     bh.consume(suffix.isEmpty)
     // assert(suffix.isEmpty)
@@ -198,8 +214,28 @@ class AmyLexerBenchmarkGenerated {
   @Benchmark
   @BenchmarkMode(Array(Mode.AverageTime))
   @OutputTimeUnit(TimeUnit.MICROSECONDS)
-  def lex_Zipper(): Unit = {
+  def lex_ZipperV1(): Unit = {
+    val (tokens, suffix) = Lexer.lexV1(AmyLexer.rules, AmyLexerBenchmarkUtils.generatedFileContents(file))
+    assert(suffix.isEmpty)
+  }
+
+  @Benchmark
+  @BenchmarkMode(Array(Mode.AverageTime))
+  @OutputTimeUnit(TimeUnit.MICROSECONDS)
+  def lex_ZipperV2(): Unit = {
     val (tokens, suffix) = Lexer.lex(AmyLexer.rules, AmyLexerBenchmarkUtils.generatedFileContents(file))
+    assert(suffix.isEmpty)
+  }
+
+  @Benchmark
+  @BenchmarkMode(Array(Mode.AverageTime))
+  @OutputTimeUnit(TimeUnit.MICROSECONDS)
+  def lex_ZipperV1Mem(): Unit = {
+    val (tokens, suffix) = Lexer.lexV1Mem(AmyLexer.rules, AmyLexerBenchmarkUtils.generatedFileContents(file))(
+      using ClassTag.Char,
+      AmyLexerBenchmarkUtils.zipperCacheUp,
+      AmyLexerBenchmarkUtils.zipperCacheDown
+    )
     assert(suffix.isEmpty)
   }
 
@@ -210,7 +246,8 @@ class AmyLexerBenchmarkGenerated {
     val (tokens, suffix) = Lexer.lexMem(AmyLexer.rules, AmyLexerBenchmarkUtils.generatedFileContents(file))(
       using ClassTag.Char,
       AmyLexerBenchmarkUtils.zipperCacheUp,
-      AmyLexerBenchmarkUtils.zipperCacheDown
+      AmyLexerBenchmarkUtils.zipperCacheDown,
+      AmyLexerBenchmarkUtils.findLongestMatchCaches(file)
     )
     assert(suffix.isEmpty)
   }
@@ -352,4 +389,8 @@ object AmyLexerBenchmarkUtils {
 
   val zipperCacheUp: MemoisationZipper.CacheUp[Char] = MemoisationZipper.emptyUp(ContextCharHashable)
   val zipperCacheDown: MemoisationZipper.CacheDown[Char] = MemoisationZipper.emptyDown(RegexContextCharHashable)
+  val findLongestMatchCaches: Map[String, MemoisationZipper.CacheFindLongestMatch[Char]] = 
+    (exampleFileContents ++ generatedFileContents).map(kv => 
+      (kv._1, MemoisationZipper.emptyFindLongestMatch[Char](ExampleUtils.ZipperBigIntHashable, kv._2))
+    )
 }
