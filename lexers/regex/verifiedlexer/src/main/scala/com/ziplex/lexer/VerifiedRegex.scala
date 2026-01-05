@@ -3242,8 +3242,9 @@ object ZipperRegex {
 
   def findLongestMatchZipperFastV2[C](z: Zipper[C], input: Sequence[C], totalInput: Sequence[C]): (Sequence[C], Sequence[C]) = {
     require(ListUtils.isSuffix(input.list, totalInput.list))
-    val from = totalInput.size - input.size
-    val prefixLength = findLongestMatchInnerZipperFastV2(z, from, totalInput, totalInput.size)
+    val totalInputSize = totalInput.size
+    val from = totalInputSize - input.size
+    val prefixLength = findLongestMatchInnerZipperFastV2(z, from, totalInput, totalInputSize)
 
     input.splitAt(prefixLength)
   }.ensuring (res => res._1.list ++ res._2.list == input.list)
@@ -3264,7 +3265,7 @@ object ZipperRegex {
     require(totalInputSize == totalInput.size)
     decreases(totalInput.size - from)
     
-    if (lostCauseZipper(z) || (from == totalInputSize)) { 
+    if ((from == totalInputSize) || lostCauseZipper(z)) { 
       // We cannot match anything from here
       // so we return a size of match of 0
       // OR we are at the end of the input so can match 0 more characters
@@ -3289,8 +3290,9 @@ object ZipperRegex {
   def findLongestMatchZipperFastV2Mem[C](z: Zipper[C], input: Sequence[C], totalInput: Sequence[C])(using cacheUp: CacheUp[C], cacheDown: CacheDown[C], cacheFindLongestMatch: CacheFindLongestMatch[C]): (Sequence[C], Sequence[C]) = {
     require(ListUtils.isSuffix(input.list, totalInput.list))
     require(cacheFindLongestMatch.totalInput == totalInput)
-    val from = totalInput.size - input.size
-    val prefixLength = findLongestMatchInnerZipperFastV2Mem(z, from, totalInput, totalInput.size)
+    val totalInputSize = totalInput.size
+    val from = totalInputSize - input.size
+    val prefixLength = findLongestMatchInnerZipperFastV2Mem(z, from, totalInput, totalInputSize)
 
     input.splitAt(prefixLength)
   }.ensuring (res => res == findLongestMatchZipperFastV2(z, input, totalInput) && cacheUp.valid && cacheDown.valid &&cacheFindLongestMatch.valid && cacheFindLongestMatch.totalInput == totalInput )
@@ -3308,7 +3310,7 @@ object ZipperRegex {
       case Some(cachedResult) => cachedResult
       case None() => {
         val result = 
-          if (lostCauseZipper(z) || (from == totalInputSize)) { 
+          if ((from == totalInputSize) || lostCauseZipper(z)) { 
             // We cannot match anything from here
             // so we return a size of match of 0
             // OR we are at the end of the input so can match 0 more characters

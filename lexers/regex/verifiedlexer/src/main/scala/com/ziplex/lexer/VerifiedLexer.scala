@@ -524,6 +524,7 @@ object VerifiedLexer {
        res._2.list == lexList(rules, input.list)._2)
     )
 
+    // @tailrec
     def lexTailRec[C: ClassTag](
         rules: List[Rule[C]],
         @ghost totalInput: Sequence[C],
@@ -589,6 +590,7 @@ object VerifiedLexer {
        res._2.list == lexList(rules, input.list)._2)
     )
 
+    // @tailrec
     def lexTailRecV2[C: ClassTag](
         rules: List[Rule[C]],
         totalInput: Sequence[C],
@@ -619,7 +621,7 @@ object VerifiedLexer {
           @ghost val newTreated = treated ++ token.charsOf
           ghostExpr(ListUtils.lemmaConcatTwoListThenFSndIsSuffix(newTreated.list, suffix.list))
           ghostExpr(assert(ListUtils.isSuffix(suffix.list, totalInput.list)))
-          lexTailRec(
+          lexTailRecV2(
             rules,
             totalInput,
             newTreated,
@@ -678,6 +680,7 @@ object VerifiedLexer {
                        cacheFindLongestMatch.valid && cacheUp.valid && cacheDown.valid &&
                        cacheFindLongestMatch.totalInput == input)
 
+    // @tailrec
     def lexTailRecMem[C: ClassTag](
         rules: List[Rule[C]],
         @ghost totalInput: Sequence[C],
@@ -715,6 +718,7 @@ object VerifiedLexer {
     }.ensuring (res => res._1.list == lexTailRec(rules, totalInput, treated, input, acc)._1.list && 
                        res._2.list == lexTailRec(rules, totalInput, treated, input, acc)._2.list)
 
+    // @tailrec
     def lexTailRecV2Mem[C: ClassTag](
         rules: List[Rule[C]],
         totalInput: Sequence[C],
@@ -748,7 +752,7 @@ object VerifiedLexer {
           @ghost val newTreated = treated ++ token.charsOf
           ghostExpr(ListUtils.lemmaConcatTwoListThenFSndIsSuffix(newTreated.list, suffix.list))
           ghostExpr(assert(ListUtils.isSuffix(suffix.list, totalInput.list)))
-          lexTailRec(
+          lexTailRecV2Mem(
             rules,
             totalInput,
             newTreated,
@@ -1425,7 +1429,7 @@ object VerifiedLexer {
       require(cacheFindLongestMatch.totalInput == totalInput)
 
       val (longestPrefix, suffix) = findLongestMatchWithZipperSequenceV2Mem(rule.regex, input, totalInput)
-      assert((longestPrefix, suffix) == findLongestMatchWithZipperSequenceV2(rule.regex, input, totalInput))
+      ghostExpr(assert((longestPrefix, suffix) == findLongestMatchWithZipperSequenceV2(rule.regex, input, totalInput)))
       
       if (longestPrefix.isEmpty) {
         None[(Token[C], Sequence[C])]()
