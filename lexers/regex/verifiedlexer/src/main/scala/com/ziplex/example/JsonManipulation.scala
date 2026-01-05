@@ -120,6 +120,10 @@ object JsonManipulationExample:
       cacheDown.lemmaInvariant()
       assert(tokens.list == Lexer.lex(JsonLexer.rules, input)._1.list)
       assert(suffix.list == Lexer.lex(JsonLexer.rules, input)._2.list)
+      assert(seqFromList(input.list).list == input.list)
+      assert(Lexer.lex(JsonLexer.rules, input)._1.list == Lexer.lex(JsonLexer.rules, seqFromList(input.list))._1.list)
+      assert(Lexer.lex(JsonLexer.rules, input)._2.list == Lexer.lex(JsonLexer.rules, seqFromList(input.list))._2.list)
+
       assert(Lexer.lexThenRulesProduceEachTokenIndividually(JsonLexer.rules, input.list))
       assert(tokens.list.forall(t => Lexer.rulesProduceIndividualToken(JsonLexer.rules, t)))
       assert(tokens.forall(t => Lexer.rulesProduceIndividualToken(JsonLexer.rules, t)))
