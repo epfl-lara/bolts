@@ -220,7 +220,7 @@ object VerifiedLexer {
     }.ensuring(res => res == rulesProduceIndividualToken(rs, t))
 
     @ghost
-    def rulesProduceEachTokenIndividuallyList[C: ClassTag](rs: List[Rule[C]], ts: List[Token[C]]): Boolean = {
+    override def rulesProduceEachTokenIndividuallyList[C: ClassTag](rs: List[Rule[C]], ts: List[Token[C]]): Boolean = {
       require(!rs.isEmpty)
       require(rulesInvariant(rs))
       decreases(ts)
@@ -230,11 +230,12 @@ object VerifiedLexer {
       }
     }.ensuring(res => res == ts.forall(t => rulesProduceIndividualToken(rs, t)))
 
-     override def rulesProduceEachTokenIndividually[C: ClassTag](rs: List[Rule[C]], ts: Sequence[Token[C]]): Boolean = {
+
+    def rulesProduceEachTokenIndividually[C: ClassTag](rs: List[Rule[C]], ts: Sequence[Token[C]]): Boolean = {
       require(!rs.isEmpty)
       require(rulesInvariant(rs))
       ts.forall(t => rulesProduceIndividualToken(rs, t))
-    }
+    }.ensuring(res => res == ts.list.forall(t => rulesProduceIndividualToken(rs, t)) && res == rulesProduceEachTokenIndividuallyList(rs, ts.list))
 
     def rulesProduceEachTokenIndividuallyMem[C: ClassTag](rs: List[Rule[C]], ts: Sequence[Token[C]])(using cacheUp: CacheUp[C], cacheDown: CacheDown[C]): Boolean = {
       require(!rs.isEmpty)
@@ -726,7 +727,7 @@ object VerifiedLexer {
         input: Sequence[C],
         acc: Sequence[Token[C]],
     )(using cacheUp: CacheUp[C], cacheDown: CacheDown[C], cacheFindLongestMatch: CacheFindLongestMatch[C]): (Sequence[Token[C]], Sequence[C]) = {
-     decreases(input.size)
+      decreases(input.size)
       require(!rules.isEmpty)
       require(rulesInvariant(rules))
       require(totalInput.list == treated.list ++ input.list)
@@ -744,10 +745,26 @@ object VerifiedLexer {
       maxPrefixZipperSequenceV2Mem(rules, input, totalInput) match {
         case Some((token, suffix)) => {
           @ghost val (followingTokens, nextSuffix) = lexRec(rules, suffix)
+          ghostExpr(unfold(maxPrefixZipperSequenceV2Mem(rules, input, totalInput)))
+          ghostExpr(unfold(maxPrefixZipperSequenceV2(rules, input, totalInput)))
+          ghostExpr(unfold(maxPrefixZipperSequence(rules, input)))
+          ghostExpr(assert(maxPrefixZipperSequenceV2(rules, input, totalInput).isDefined == maxPrefix(rules, input.list).isDefined))
+          ghostExpr(assert(maxPrefixZipperSequenceV2(rules, input, totalInput).get._1 == maxPrefix(rules, input.list).get._1))
+          ghostExpr(assert(maxPrefixZipperSequenceV2(rules, input, totalInput).get._2.list == maxPrefix(rules, input.list).get._2))
+          // ghostExpr(assert(maxPrefixZipperSequence(rules, input).get._1 == token))
+          // ghostExpr(assert(maxPrefixZipperSequence(rules, input).get._2 == suffix))
           ghostExpr(ListUtils.lemmaConcatAssociativity(treated.list, token.charsOf.list, suffix.list))
           ghostExpr(unfold(lexRec(rules, input)))
+          ghostExpr(lexList(rules, input.list))
           ghostExpr(ListUtils.lemmaConcatAssociativity(acc.list, List(token), followingTokens.list))
-          ghostExpr(lemmaLexThenLexPrefix(rules, treated.list ++ token.charsOf.list, suffix.list, acc.append(token).list, followingTokens.list, nextSuffix.list))
+          @ghost val prefix = treated.list ++ token.charsOf.list
+          @ghost val prefixTokens = acc.append(token).list
+          ghostExpr(assert(prefixTokens == acc.list ++ List(token)))
+          ghostExpr(assert(lexList(rules, suffix.list) == (followingTokens.list, nextSuffix.list)))
+          ghostExpr(assert(lexList(rules, prefix ++ suffix.list) == (prefixTokens ++ followingTokens.list, nextSuffix.list)))
+          ghostExpr(assert(lexList(rules, suffix.list) == (followingTokens.list, nextSuffix.list)))
+
+          ghostExpr(lemmaLexThenLexPrefix(rules, prefix, suffix.list, acc.append(token).list, followingTokens.list, nextSuffix.list))
           ghostExpr(unfold(lexRec(rules, treated ++ token.charsOf)))
           @ghost val newTreated = treated ++ token.charsOf
           ghostExpr(ListUtils.lemmaConcatTwoListThenFSndIsSuffix(newTreated.list, suffix.list))
@@ -764,8 +781,7 @@ object VerifiedLexer {
           (acc, input)
         }
       }
-    }.ensuring (res => res._1.list == lexRec(rules, totalInput)._1.list && 
-                       res._2.list == lexRec(rules, totalInput)._2.list &&
+    }.ensuring (res => res == lexTailRecV2(rules, totalInput, treated, input, acc) &&
                        cacheFindLongestMatch.valid && cacheUp.valid && cacheDown.valid &&
                        cacheFindLongestMatch.totalInput == totalInput)
 
@@ -1238,9 +1254,9 @@ object VerifiedLexer {
           require(rulesValidInductive(rulesArg))
           require(!rulesArg.isEmpty)
           require(ListUtils.isSuffix(input.list, totalInput.list))
-          require(cacheUp.valid)
-          require(cacheDown.valid)
-          require(cacheFindLongestMatch.valid)
+          require(cacheUp.valid && cacheDown.valid && cacheFindLongestMatch.valid)
+          require(cacheFindLongestMatch.totalInput == totalInput)
+
           decreases(rulesArg.size)
 
           ghostExpr(ListUtils.lemmaIsPrefixRefl(input.list, input.list))
@@ -1257,7 +1273,7 @@ object VerifiedLexer {
               }
             }
           }
-        }.ensuring (res => res == maxPrefixZipperSequence(rulesArg, input) && 
+        }.ensuring (res => res == maxPrefixZipperSequenceV2(rulesArg, input, totalInput) && 
                            cacheUp.valid && cacheDown.valid && cacheFindLongestMatch.valid && 
                            cacheFindLongestMatch.totalInput == totalInput)
 
@@ -1565,10 +1581,10 @@ object VerifiedLexer {
     @ghost override def lexThenRulesProduceEachTokenIndividually[C: ClassTag](rules: List[Rule[C]], input: List[C]): Boolean = {
       if (!rules.isEmpty && rulesInvariant(rules)) then
         val (tokens, suffix) = lex(rules, seqFromList(input))
-        assert(lex(rules, seqFromList(input)) == (tokens, suffix))
+        assert(lex(rules, seqFromList(input))._1.list == tokens.list)
+        assert(lex(rules, seqFromList(input))._2.list == suffix.list)
         lemmaLexThenRulesProducesEachTokenIndividually(rules, input, tokens.list)
-        assert(rulesProduceEachTokenIndividuallyList(rules, tokens.list))
-        rulesProduceEachTokenIndividually(rules, tokens)
+        rulesProduceEachTokenIndividuallyList(rules, tokens.list)
       else 
         true
     }

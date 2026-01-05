@@ -202,7 +202,7 @@ trait LexerInterface {
     @law @ghost def lexThenRulesProduceEachTokenIndividually[C: ClassTag](rules: List[Rule[C]], input: List[C]): Boolean = 
       (!rules.isEmpty && rulesInvariant(rules)) ==> {
         val (tokens, suffix) = lex(rules, seqFromList(input))
-        rulesProduceEachTokenIndividually(rules, tokens)
+        rulesProduceEachTokenIndividuallyList(rules, tokens.list)
       }
   // -------------- Invertibility properties String -> tokens -> String ----------------
 
@@ -254,13 +254,13 @@ trait LexerInterface {
     * @param rules
     * @param tokens
     */
-  def rulesProduceEachTokenIndividually[C: ClassTag](rules: List[Rule[C]], tokens: Sequence[Token[C]]): Boolean
+  @ghost def rulesProduceEachTokenIndividuallyList[C: ClassTag](rules: List[Rule[C]], tokens: List[Token[C]]): Boolean
   def rulesProduceIndividualToken[C: ClassTag](rules: List[Rule[C]], token: Token[C]): Boolean
 
   @law @ghost def separableTokensThenInvertibleThroughPrinting[C: ClassTag](rules: List[Rule[C]], tokens: List[Token[C]]): Boolean = 
     (!rules.isEmpty && 
     rulesInvariant(rules) && 
-    rulesProduceEachTokenIndividually(rules, seqFromList(tokens)) && 
+    rulesProduceEachTokenIndividuallyList(rules, tokens) && 
     tokensListTwoByTwoPredicateSeparable(seqFromList(tokens), 0, rules))
     ==>  
     (lex(rules, print(seqFromList(tokens)))._1.list == tokens)
@@ -307,7 +307,7 @@ trait LexerInterface {
   @law @ghost def interleavingSeparatorTokenMakesSeparableSequence[C: ClassTag](rules: List[Rule[C]], tokens: Sequence[Token[C]], separatorToken: Token[C]): Boolean =
     (!rules.isEmpty && 
       rulesInvariant(rules) && 
-      rulesProduceEachTokenIndividually(rules, tokens) &&
+      rulesProduceEachTokenIndividuallyList(rules, tokens.list) &&
       LexerInterface.sepAndNonSepRulesDisjointChars(rules, rules) && 
       rulesProduceIndividualToken(rules, separatorToken) &&
       tokens.forall(!_.rule.isSeparator) &&
@@ -318,7 +318,7 @@ trait LexerInterface {
   @law @ghost def invertibleThroughPrintingWithSeparatorWhenNeeded[C: ClassTag](rules: List[Rule[C]], tokens: List[Token[C]], separatorToken: Token[C]): Boolean =
     (!rules.isEmpty && 
       rulesInvariant(rules) && 
-      rulesProduceEachTokenIndividually(rules, seqFromList(tokens)) &&
+      rulesProduceEachTokenIndividuallyList(rules, tokens) &&
       LexerInterface.sepAndNonSepRulesDisjointChars(rules, rules) && 
       rulesProduceIndividualToken(rules, separatorToken) &&
       tokens.forall(t => !t.rule.isSeparator) &&
@@ -329,7 +329,7 @@ trait LexerInterface {
   @law @ghost def invertibleThroughPrintingWithSeparator[C: ClassTag](rules: List[Rule[C]], tokens: List[Token[C]], separatorToken: Token[C]): Boolean =
     (!rules.isEmpty && 
       rulesInvariant(rules) && 
-      rulesProduceEachTokenIndividually(rules, seqFromList(tokens)) &&
+      rulesProduceEachTokenIndividuallyList(rules, tokens) &&
       LexerInterface.sepAndNonSepRulesDisjointChars(rules, rules) && 
       rulesProduceIndividualToken(rules, separatorToken) &&
       tokens.forall(t => !t.rule.isSeparator) &&
