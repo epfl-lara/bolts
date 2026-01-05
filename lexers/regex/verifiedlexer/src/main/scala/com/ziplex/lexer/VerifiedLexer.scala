@@ -524,7 +524,7 @@ object VerifiedLexer {
        res._2.list == lexList(rules, input.list)._2)
     )
 
-    // @tailrec
+    @tailrec
     def lexTailRec[C: ClassTag](
         rules: List[Rule[C]],
         @ghost totalInput: Sequence[C],
@@ -590,7 +590,7 @@ object VerifiedLexer {
        res._2.list == lexList(rules, input.list)._2)
     )
 
-    // @tailrec
+    @tailrec
     def lexTailRecV2[C: ClassTag](
         rules: List[Rule[C]],
         totalInput: Sequence[C],
@@ -680,7 +680,7 @@ object VerifiedLexer {
                        cacheFindLongestMatch.valid && cacheUp.valid && cacheDown.valid &&
                        cacheFindLongestMatch.totalInput == input)
 
-    // @tailrec
+    @tailrec
     def lexTailRecMem[C: ClassTag](
         rules: List[Rule[C]],
         @ghost totalInput: Sequence[C],
@@ -718,7 +718,7 @@ object VerifiedLexer {
     }.ensuring (res => res._1.list == lexTailRec(rules, totalInput, treated, input, acc)._1.list && 
                        res._2.list == lexTailRec(rules, totalInput, treated, input, acc)._2.list)
 
-    // @tailrec
+    @tailrec
     def lexTailRecV2Mem[C: ClassTag](
         rules: List[Rule[C]],
         totalInput: Sequence[C],
