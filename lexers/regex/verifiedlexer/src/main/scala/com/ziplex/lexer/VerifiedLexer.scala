@@ -744,28 +744,28 @@ object VerifiedLexer {
 
       maxPrefixZipperSequenceV2Mem(rules, input, totalInput) match {
         case Some((token, suffix)) => {
-          @ghost val (followingTokens, nextSuffix) = lexRec(rules, suffix)
-          ghostExpr(unfold(maxPrefixZipperSequenceV2Mem(rules, input, totalInput)))
-          ghostExpr(unfold(maxPrefixZipperSequenceV2(rules, input, totalInput)))
-          ghostExpr(unfold(maxPrefixZipperSequence(rules, input)))
-          ghostExpr(assert(maxPrefixZipperSequenceV2(rules, input, totalInput).isDefined == maxPrefix(rules, input.list).isDefined))
-          ghostExpr(assert(maxPrefixZipperSequenceV2(rules, input, totalInput).get._1 == maxPrefix(rules, input.list).get._1))
-          ghostExpr(assert(maxPrefixZipperSequenceV2(rules, input, totalInput).get._2.list == maxPrefix(rules, input.list).get._2))
-          // ghostExpr(assert(maxPrefixZipperSequence(rules, input).get._1 == token))
-          // ghostExpr(assert(maxPrefixZipperSequence(rules, input).get._2 == suffix))
-          ghostExpr(ListUtils.lemmaConcatAssociativity(treated.list, token.charsOf.list, suffix.list))
-          ghostExpr(unfold(lexRec(rules, input)))
-          ghostExpr(lexList(rules, input.list))
-          ghostExpr(ListUtils.lemmaConcatAssociativity(acc.list, List(token), followingTokens.list))
-          @ghost val prefix = treated.list ++ token.charsOf.list
-          @ghost val prefixTokens = acc.append(token).list
-          ghostExpr(assert(prefixTokens == acc.list ++ List(token)))
-          ghostExpr(assert(lexList(rules, suffix.list) == (followingTokens.list, nextSuffix.list)))
-          ghostExpr(assert(lexList(rules, prefix ++ suffix.list) == (prefixTokens ++ followingTokens.list, nextSuffix.list)))
-          ghostExpr(assert(lexList(rules, suffix.list) == (followingTokens.list, nextSuffix.list)))
+          ghostExpr({
+            val (followingTokens, nextSuffix) = lexRec(rules, suffix)
+            ghostExpr(unfold(maxPrefixZipperSequenceV2Mem(rules, input, totalInput)))
+            ghostExpr(unfold(maxPrefixZipperSequenceV2(rules, input, totalInput)))
+            ghostExpr(unfold(maxPrefixZipperSequence(rules, input)))
+            ghostExpr(assert(maxPrefixZipperSequenceV2(rules, input, totalInput).isDefined == maxPrefix(rules, input.list).isDefined))
+            ghostExpr(assert(maxPrefixZipperSequenceV2(rules, input, totalInput).get._1 == maxPrefix(rules, input.list).get._1))
+            ghostExpr(assert(maxPrefixZipperSequenceV2(rules, input, totalInput).get._2.list == maxPrefix(rules, input.list).get._2))
+            ghostExpr(ListUtils.lemmaConcatAssociativity(treated.list, token.charsOf.list, suffix.list))
+            ghostExpr(unfold(lexRec(rules, input)))
+            ghostExpr(lexList(rules, input.list))
+            ghostExpr(ListUtils.lemmaConcatAssociativity(acc.list, List(token), followingTokens.list))
+            val prefix = treated.list ++ token.charsOf.list
+            val prefixTokens = acc.append(token).list
+            ghostExpr(assert(prefixTokens == acc.list ++ List(token)))
+            ghostExpr(assert(lexList(rules, suffix.list) == (followingTokens.list, nextSuffix.list)))
+            ghostExpr(assert(lexList(rules, prefix ++ suffix.list) == (prefixTokens ++ followingTokens.list, nextSuffix.list)))
+            ghostExpr(assert(lexList(rules, suffix.list) == (followingTokens.list, nextSuffix.list)))
 
-          ghostExpr(lemmaLexThenLexPrefix(rules, prefix, suffix.list, acc.append(token).list, followingTokens.list, nextSuffix.list))
-          ghostExpr(unfold(lexRec(rules, treated ++ token.charsOf)))
+            ghostExpr(lemmaLexThenLexPrefix(rules, prefix, suffix.list, acc.append(token).list, followingTokens.list, nextSuffix.list))
+            ghostExpr(unfold(lexRec(rules, treated ++ token.charsOf)))
+          })
           @ghost val newTreated = treated ++ token.charsOf
           ghostExpr(ListUtils.lemmaConcatTwoListThenFSndIsSuffix(newTreated.list, suffix.list))
           ghostExpr(assert(ListUtils.isSuffix(suffix.list, totalInput.list)))
@@ -1400,13 +1400,13 @@ object VerifiedLexer {
       if (longestPrefix.isEmpty) {
         None[(Token[C], Sequence[C])]()
       } else {
-        ghostExpr(longestMatchIsAcceptedByMatchOrIsEmpty(rule.regex, input.list))
-        ghostExpr(rule.transformation.lemmaInv())
-        ghostExpr(assert(semiInverseModEq(rule.transformation.toChars, rule.transformation.toValue)))
-        ghostExpr(assert(semiInverseBodyModEq(rule.transformation.toChars, rule.transformation.toValue)))
-        ghostExpr(ForallOf((chars: Sequence[C]) => rule.transformation.toChars(rule.transformation.toValue(chars)).list == chars.list)(longestPrefix))
-        ghostExpr(ForallOf((chars: Sequence[C]) => rule.transformation.toChars(rule.transformation.toValue(chars)).list == chars.list)(seqFromList(longestPrefix.list)))
         ghostExpr({
+          longestMatchIsAcceptedByMatchOrIsEmpty(rule.regex, input.list)
+          rule.transformation.lemmaInv()
+          assert(semiInverseModEq(rule.transformation.toChars, rule.transformation.toValue))
+          assert(semiInverseBodyModEq(rule.transformation.toChars, rule.transformation.toValue))
+          ForallOf((chars: Sequence[C]) => rule.transformation.toChars(rule.transformation.toValue(chars)).list == chars.list)(longestPrefix)
+          ForallOf((chars: Sequence[C]) => rule.transformation.toChars(rule.transformation.toValue(chars)).list == chars.list)(seqFromList(longestPrefix.list))
           val res = Some[(Token[C], Sequence[C])]((Token(rule.transformation.apply(longestPrefix), rule, longestPrefix.size, longestPrefix.list), suffix))
           
           assert(res.isDefined == maxPrefixOneRule(rule, input.list).isDefined )
