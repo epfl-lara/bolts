@@ -748,7 +748,7 @@ object VerifiedLexer {
           @ghost val newTreated = treated ++ token.charsOf
           ghostExpr(ListUtils.lemmaConcatTwoListThenFSndIsSuffix(newTreated.list, suffix.list))
           ghostExpr(assert(ListUtils.isSuffix(suffix.list, totalInput.list)))
-          lexTailRec(
+          lexTailRecV2Mem(
             rules,
             totalInput,
             newTreated,
