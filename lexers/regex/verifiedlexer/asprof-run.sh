@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 # asprof-run.sh — minimal async-profiler wrapper (flamegraph by default)
+# Example usage for the lexer:
+# ./asprof-run.sh --cmd "java -jar target/scala-3.7.2/ZipLex-assembly-0.1.0-SNAPSHOT.jar" -d 20 -o lexer_mem.html
 
 set -euo pipefail
 

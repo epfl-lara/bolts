@@ -576,14 +576,43 @@ object VerifiedRegex {
     }
   }.ensuring(res => res == getLanguageWitness(r).isEmpty)
 
+  // Murmur3-style 64-bit finalizer (good avalanche; simple ops only)
+  @pure def fmix64(h0: Long): Long = {
+    val h1 = h0 ^ (h0 >>> 33)
+    val h2 = h1 * 0xff51afd7ed558ccdL
+    val h3 = h2 ^ (h2 >>> 33)
+    val h4 = h3 * 0xc4ceb9fe1a85ec53L
+    val h5 = h4 ^ (h4 >>> 33)
+    h5
+  }
+  @pure def mix1(tag: Long, a: Long): Long = fmix64(tag * 0x9e3779b97f4a7c15L + a)
+  @pure def mix2(tag: Long, a: Long, b: Long): Long = fmix64(tag * 0x9e3779b97f4a7c15L + a * 0xbf58476d1ce4e5b9L + b)
   extension[C] (r: Regex[C]) @pure def hashFct: Long = {
     r match {
-      case EmptyExpr()        => 1
-      case EmptyLang()        => 2
-      case ElementMatch(c)    => 3
-      case Star(r)            => 5 * r.hash
-      case Union(rOne, rTwo)  => 7 * rOne.hash + 13 * rTwo.hash
-      case Concat(rOne, rTwo) => 11 * rOne.hash + 17 * rTwo.hash
+      case EmptyExpr() =>
+        mix1(1L, 0L)
+
+      case EmptyLang() =>
+        mix1(2L, 0L)
+
+      case ElementMatch(c) =>
+        // critical: incorporate the element value
+        3L
+
+      case Star(r1) =>
+        mix1(4L, r1.hash)
+
+      case Union(r1, r2) =>
+        // commutative hashing (same for Union(a,b) and Union(b,a))
+        val h1 = r1.hash
+        val h2 = r2.hash
+        val lo = if (h1 <= h2) h1 else h2
+        val hi = if (h1 <= h2) h2 else h1
+        mix2(5L, lo, hi)
+
+      case Concat(r1, r2) =>
+        // order-sensitive
+        mix2(6L, r1.hash, r2.hash)
     }
   }
 
@@ -3320,7 +3349,6 @@ object ZipperRegex {
     require(totalInputSize == totalInput.size)
     require(cacheFindLongestMatch.totalInput == totalInput)
     decreases(totalInput.size - from)
-
 
     cacheFindLongestMatch.get(z, from) match {
       case Some(cachedResult) => cachedResult
