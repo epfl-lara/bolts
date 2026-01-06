@@ -681,6 +681,27 @@ object VerifiedLexer {
                        cacheFindLongestMatch.valid && cacheUp.valid && cacheDown.valid &&
                        cacheFindLongestMatch.totalInput == input)
 
+    def lexV2MemOnlyDeriv[C: ClassTag](
+        rules: List[Rule[C]],
+        input: Sequence[C]
+    )(using cacheUp: CacheUp[C], cacheDown: CacheDown[C]): (Sequence[Token[C]], Sequence[C]) = {
+      require(!rules.isEmpty)
+      require(rulesInvariant(rules))
+      require(cacheUp.valid)
+      require(cacheDown.valid)
+      decreases(input.size)
+
+      lexTailRecV2MemOnlyDeriv(
+        rules,
+        input,
+        emptySeq[C](),
+        input,
+        emptySeq[Token[C]]()
+      )
+    }.ensuring (res => res._1.list == lex(rules, input)._1.list && 
+                       res._2.list == lex(rules, input)._2.list &&
+                       cacheUp.valid && cacheDown.valid)
+
     @tailrec
     def lexTailRecMem[C: ClassTag](
         rules: List[Rule[C]],
@@ -746,25 +767,25 @@ object VerifiedLexer {
         case Some((token, suffix)) => {
           ghostExpr({
             val (followingTokens, nextSuffix) = lexRec(rules, suffix)
-            ghostExpr(unfold(maxPrefixZipperSequenceV2Mem(rules, input, totalInput)))
-            ghostExpr(unfold(maxPrefixZipperSequenceV2(rules, input, totalInput)))
-            ghostExpr(unfold(maxPrefixZipperSequence(rules, input)))
-            ghostExpr(assert(maxPrefixZipperSequenceV2(rules, input, totalInput).isDefined == maxPrefix(rules, input.list).isDefined))
-            ghostExpr(assert(maxPrefixZipperSequenceV2(rules, input, totalInput).get._1 == maxPrefix(rules, input.list).get._1))
-            ghostExpr(assert(maxPrefixZipperSequenceV2(rules, input, totalInput).get._2.list == maxPrefix(rules, input.list).get._2))
-            ghostExpr(ListUtils.lemmaConcatAssociativity(treated.list, token.charsOf.list, suffix.list))
-            ghostExpr(unfold(lexRec(rules, input)))
-            ghostExpr(lexList(rules, input.list))
-            ghostExpr(ListUtils.lemmaConcatAssociativity(acc.list, List(token), followingTokens.list))
+            unfold(maxPrefixZipperSequenceV2Mem(rules, input, totalInput))
+            unfold(maxPrefixZipperSequenceV2(rules, input, totalInput))
+            unfold(maxPrefixZipperSequence(rules, input))
+            assert(maxPrefixZipperSequenceV2(rules, input, totalInput).isDefined == maxPrefix(rules, input.list).isDefined)
+            assert(maxPrefixZipperSequenceV2(rules, input, totalInput).get._1 == maxPrefix(rules, input.list).get._1)
+            assert(maxPrefixZipperSequenceV2(rules, input, totalInput).get._2.list == maxPrefix(rules, input.list).get._2)
+            ListUtils.lemmaConcatAssociativity(treated.list, token.charsOf.list, suffix.list)
+            unfold(lexRec(rules, input))
+            lexList(rules, input.list)
+            ListUtils.lemmaConcatAssociativity(acc.list, List(token), followingTokens.list)
             val prefix = treated.list ++ token.charsOf.list
             val prefixTokens = acc.append(token).list
-            ghostExpr(assert(prefixTokens == acc.list ++ List(token)))
-            ghostExpr(assert(lexList(rules, suffix.list) == (followingTokens.list, nextSuffix.list)))
-            ghostExpr(assert(lexList(rules, prefix ++ suffix.list) == (prefixTokens ++ followingTokens.list, nextSuffix.list)))
-            ghostExpr(assert(lexList(rules, suffix.list) == (followingTokens.list, nextSuffix.list)))
+            assert(prefixTokens == acc.list ++ List(token))
+            assert(lexList(rules, suffix.list) == (followingTokens.list, nextSuffix.list))
+            assert(lexList(rules, prefix ++ suffix.list) == (prefixTokens ++ followingTokens.list, nextSuffix.list))
+            assert(lexList(rules, suffix.list) == (followingTokens.list, nextSuffix.list))
 
-            ghostExpr(lemmaLexThenLexPrefix(rules, prefix, suffix.list, acc.append(token).list, followingTokens.list, nextSuffix.list))
-            ghostExpr(unfold(lexRec(rules, treated ++ token.charsOf)))
+            lemmaLexThenLexPrefix(rules, prefix, suffix.list, acc.append(token).list, followingTokens.list, nextSuffix.list)
+            unfold(lexRec(rules, treated ++ token.charsOf))
           })
           @ghost val newTreated = treated ++ token.charsOf
           ghostExpr(ListUtils.lemmaConcatTwoListThenFSndIsSuffix(newTreated.list, suffix.list))
@@ -784,6 +805,69 @@ object VerifiedLexer {
     }.ensuring (res => res == lexTailRecV2(rules, totalInput, treated, input, acc) &&
                        cacheFindLongestMatch.valid && cacheUp.valid && cacheDown.valid &&
                        cacheFindLongestMatch.totalInput == totalInput)
+
+    // @tailrec
+    def lexTailRecV2MemOnlyDeriv[C: ClassTag](
+        rules: List[Rule[C]],
+        totalInput: Sequence[C],
+        @ghost treated: Sequence[C],
+        input: Sequence[C],
+        acc: Sequence[Token[C]],
+    )(using cacheUp: CacheUp[C], cacheDown: CacheDown[C]): (Sequence[Token[C]], Sequence[C]) = {
+      decreases(input.size)
+      require(!rules.isEmpty)
+      require(rulesInvariant(rules))
+      require(totalInput.list == treated.list ++ input.list)
+      require(lexRec(rules, treated)._1.list == acc.list)
+      require(lexRec(rules, treated)._2.list.isEmpty)
+      require(lexRec(rules, totalInput)._1.list == (acc ++ lexRec(rules, input)._1).list)
+      require(lexRec(rules, totalInput)._2.list == lexRec(rules, input)._2.list)
+      require(cacheUp.valid)
+      require(cacheDown.valid)
+      ghostExpr(ListUtils.lemmaConcatTwoListThenFSndIsSuffix(treated.list, input.list))
+      ghostExpr(assert(ListUtils.isSuffix(input.list, totalInput.list)))
+
+      maxPrefixZipperSequenceV2MemOnlyDeriv(rules, input, totalInput) match {
+        case Some((token, suffix)) => {
+          ghostExpr({
+            val (followingTokens, nextSuffix) = lexRec(rules, suffix)
+            unfold(maxPrefixZipperSequenceV2MemOnlyDeriv(rules, input, totalInput))
+            unfold(maxPrefixZipperSequenceV2(rules, input, totalInput))
+            unfold(maxPrefixZipperSequence(rules, input))
+            assert(maxPrefixZipperSequenceV2(rules, input, totalInput).isDefined == maxPrefix(rules, input.list).isDefined)
+            assert(maxPrefixZipperSequenceV2(rules, input, totalInput).get._1 == maxPrefix(rules, input.list).get._1)
+            assert(maxPrefixZipperSequenceV2(rules, input, totalInput).get._2.list == maxPrefix(rules, input.list).get._2)
+            ListUtils.lemmaConcatAssociativity(treated.list, token.charsOf.list, suffix.list)
+            unfold(lexRec(rules, input))
+            lexList(rules, input.list)
+            ListUtils.lemmaConcatAssociativity(acc.list, List(token), followingTokens.list)
+            val prefix = treated.list ++ token.charsOf.list
+            val prefixTokens = acc.append(token).list
+            assert(prefixTokens == acc.list ++ List(token))
+            assert(lexList(rules, suffix.list) == (followingTokens.list, nextSuffix.list))
+            assert(lexList(rules, prefix ++ suffix.list) == (prefixTokens ++ followingTokens.list, nextSuffix.list))
+            assert(lexList(rules, suffix.list) == (followingTokens.list, nextSuffix.list))
+
+            lemmaLexThenLexPrefix(rules, prefix, suffix.list, acc.append(token).list, followingTokens.list, nextSuffix.list)
+            unfold(lexRec(rules, treated ++ token.charsOf))
+          })
+          @ghost val newTreated = treated ++ token.charsOf
+          ghostExpr(ListUtils.lemmaConcatTwoListThenFSndIsSuffix(newTreated.list, suffix.list))
+          ghostExpr(assert(ListUtils.isSuffix(suffix.list, totalInput.list)))
+          lexTailRecV2MemOnlyDeriv(
+            rules,
+            totalInput,
+            newTreated,
+            suffix,
+            acc.append(token)
+          )
+        }
+        case None() => {
+          (acc, input)
+        }
+      }
+    }.ensuring (res => res == lexTailRecV2(rules, totalInput, treated, input, acc) &&
+                       cacheUp.valid && cacheDown.valid)
 
 
     @ghost
@@ -1277,6 +1361,35 @@ object VerifiedLexer {
                            cacheUp.valid && cacheDown.valid && cacheFindLongestMatch.valid && 
                            cacheFindLongestMatch.totalInput == totalInput)
 
+    def maxPrefixZipperSequenceV2MemOnlyDeriv[C: ClassTag](
+            rulesArg: List[Rule[C]],
+            input: Sequence[C],
+            totalInput: Sequence[C]
+        )(using cacheUp: CacheUp[C], cacheDown: CacheDown[C]): Option[(Token[C], Sequence[C])] = {
+          require(rulesValidInductive(rulesArg))
+          require(!rulesArg.isEmpty)
+          require(ListUtils.isSuffix(input.list, totalInput.list))
+          require(cacheUp.valid && cacheDown.valid)
+
+          decreases(rulesArg.size)
+
+          ghostExpr(ListUtils.lemmaIsPrefixRefl(input.list, input.list))
+          rulesArg match {
+            case Cons(hd, Nil()) => maxPrefixOneRuleZipperSequenceV2MemOnlyDeriv(hd, input, totalInput)
+            case Cons(hd, tl) => {
+              val currentRulePref = maxPrefixOneRuleZipperSequenceV2MemOnlyDeriv(hd, input, totalInput)
+              val othersPrefix = maxPrefixZipperSequenceV2MemOnlyDeriv(tl, input, totalInput)
+              (currentRulePref, othersPrefix) match {
+                case (None(), None())   => None()
+                case (c, None())        => c
+                case (None(), o)        => o
+                case (Some(c), Some(o)) => if c._1.size >= o._1.size then Some(c) else Some(o)
+              }
+            }
+          }
+        }.ensuring (res => res == maxPrefixZipperSequenceV2(rulesArg, input, totalInput) && 
+                           cacheUp.valid && cacheDown.valid)
+
     /** Finds the biggest prefix matching any rule in the input list of characters If nothing matched a rule, returns None Else, returns the matched
       * prefix and the remaining suffix
       *
@@ -1458,6 +1571,30 @@ object VerifiedLexer {
     }.ensuring (res => res == maxPrefixOneRuleZipperSequenceV2(rule, input, totalInput) && 
                        cacheUp.valid && cacheDown.valid && cacheFindLongestMatch.valid && 
                        cacheFindLongestMatch.totalInput == totalInput)
+
+    def maxPrefixOneRuleZipperSequenceV2MemOnlyDeriv[C: ClassTag](
+        rule: Rule[C],
+        input: Sequence[C],
+        totalInput: Sequence[C]
+    )(using cacheUp: CacheUp[C], cacheDown: CacheDown[C]): Option[(Token[C], Sequence[C])] = {
+      require(ruleValid(rule))
+      require(cacheUp.valid)
+      require(cacheDown.valid)
+      require(ListUtils.isSuffix(input.list, totalInput.list))
+
+      val (longestPrefix, suffix) = findLongestMatchWithZipperSequenceV2MemOnlyDeriv(rule.regex, input, totalInput)
+      ghostExpr(assert((longestPrefix, suffix) == findLongestMatchWithZipperSequenceV2(rule.regex, input, totalInput)))
+      
+      if (longestPrefix.isEmpty) {
+        None[(Token[C], Sequence[C])]()
+      } else {
+        ghostExpr(longestMatchIsAcceptedByMatchOrIsEmpty(rule.regex, input.list))
+        ghostExpr(rule.transformation.lemmaSemiInverse(longestPrefix))
+        Some[(Token[C], Sequence[C])]((Token(rule.transformation.apply(longestPrefix), rule, longestPrefix.size, longestPrefix.list), suffix))
+      }
+
+    }.ensuring (res => res == maxPrefixOneRuleZipperSequenceV2(rule, input, totalInput) && 
+                       cacheUp.valid && cacheDown.valid)
 
     // Proofs --------------------------------------------------------------------------------------------------------------------------------
 
