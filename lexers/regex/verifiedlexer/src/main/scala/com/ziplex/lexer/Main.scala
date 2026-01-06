@@ -31,10 +31,73 @@ object Main {
     // regexZipperExample()
     // exampleJsonSorting()
 
-    regexZipperVisualizationAOrBStarConcatC()
-    println("-\n\n====================\n\n-")
-    regexZipperVisualizationAThenBThenC()
+    // regexZipperVisualizationAOrBStarConcatC()
+    // println("-\n\n====================\n\n-")
+    // regexZipperVisualizationAThenBThenC()
+
+    profileJsonLexing()
   }
+
+
+  def profileJsonLexing(): Unit = {
+    val filepath = "random_data.json"
+    val fileContent: String = scala.io.Source.fromFile(filepath).mkString
+    val input: Sequence[Char] = fileContent.toStainless
+    println(f"Input size: ${input.size} characters")
+
+    var i = 0
+
+    val lexV1MemDurations = scala.collection.mutable.ListBuffer[Long]()
+    val lexV2MemOnlyDerivDurations = scala.collection.mutable.ListBuffer[Long]()
+    val lexV2MemDurations = scala.collection.mutable.ListBuffer[Long]()
+
+    val memoisationZipperEmptyUpV1 = MemoisationZipper.emptyUp(ExampleUtils.ContextCharHashable)
+    val memoisationZipperEmptyDownV1 = MemoisationZipper.emptyDown(ExampleUtils.RegexContextCharHashable)
+    val findLongestMatchCacheV1 = MemoisationZipper.emptyFindLongestMatch[Char](ExampleUtils.ZipperBigIntHashable, input)
+    while i < 60 do
+      val startV1Mem = System.currentTimeMillis()
+      val (tokens, suffix) = Lexer.lexV1Mem(JsonLexer.rules, input)(using ClassTag.Char, memoisationZipperEmptyUpV1, memoisationZipperEmptyDownV1)
+      val endV1Mem = System.currentTimeMillis()
+      assert(suffix.isEmpty)
+      if i >= 10 then
+        lexV1MemDurations += (endV1Mem - startV1Mem)
+      i += 1
+    end while
+
+    i = 0
+    val memoisationZipperEmptyUpV2 = MemoisationZipper.emptyUp(ExampleUtils.ContextCharHashable)
+    val memoisationZipperEmptyDownV2 = MemoisationZipper.emptyDown(ExampleUtils.RegexContextCharHashable)
+    val findLongestMatchCacheV2 = MemoisationZipper.emptyFindLongestMatch[Char](ExampleUtils.ZipperBigIntHashable, input)
+    while i < 60 do
+      val startV2MemOnlyDeriv = System.currentTimeMillis()
+      val (tokens, suffix) = Lexer.lexV2MemOnlyDeriv(JsonLexer.rules, input)(using ClassTag.Char, memoisationZipperEmptyUpV2, memoisationZipperEmptyDownV2)
+      val endV2MemOnlyDeriv = System.currentTimeMillis()
+      if i >= 10 then
+        lexV2MemOnlyDerivDurations += (endV2MemOnlyDeriv - startV2MemOnlyDeriv)
+      
+      i += 1
+    end while
+
+    i = 0
+    val memoisationZipperEmptyUpV22 = MemoisationZipper.emptyUp(ExampleUtils.ContextCharHashable)
+    val memoisationZipperEmptyDownV22 = MemoisationZipper.emptyDown(ExampleUtils.RegexContextCharHashable)
+    val findLongestMatchCacheV22 = MemoisationZipper.emptyFindLongestMatch[Char](ExampleUtils.ZipperBigIntHashable, input)
+    while i < 60 do
+      val startV2Mem = System.currentTimeMillis()
+      val (tokens, suffix) = Lexer.lexMem(JsonLexer.rules, input)(using ClassTag.Char, memoisationZipperEmptyUpV22, memoisationZipperEmptyDownV22, findLongestMatchCacheV22)
+      val endV2Mem = System.currentTimeMillis()
+      if i >= 10 then
+        lexV2MemDurations += (endV2Mem - startV2Mem)
+      i += 1
+    end while
+    val avgV1Mem = lexV1MemDurations.sum.toDouble / lexV1MemDurations.size
+    val avgV2MemOnlyDeriv = lexV2MemOnlyDerivDurations.sum.toDouble / lexV2MemOnlyDerivDurations.size
+    val avgV2Mem = lexV2MemDurations.sum.toDouble / lexV2MemDurations.size
+    println(f"Average lexV1Mem duration over ${lexV1MemDurations.size} runs: $avgV1Mem%.2f ms")
+    println(f"Average lexV2MemOnlyDeriv duration over ${lexV2MemOnlyDerivDurations.size} runs: $avgV2MemOnlyDeriv%.2f ms")
+    println(f"Average lexV2Mem duration over ${lexV2MemDurations.size} runs: $avgV2Mem%.2f ms")
+  }
+
 
   def exampleJsonSorting(): Unit = {
     val jsonFilePath = "src/main/scala/com/ziplex/example/res/json/example-for-sorting.json"
