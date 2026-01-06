@@ -299,11 +299,10 @@ object JsonManipulationBenchmarkUtils {
   }).toMap
 
   lazy val filePrintableTokens: Map[String, PrintableTokens[Char]] = fileContents.map { case (name, content) =>
-    val (tokens, suffix) = Lexer.lexMem(JsonLexer.rules, content)(
+    val (tokens, suffix) = Lexer.lexV1Mem(JsonLexer.rules, content)(
       using ClassTag.Char,
       zipperCacheUpInternal,
-      zipperCacheDownInternal,
-      findLongestMatchCachesInternal(name)
+      zipperCacheDownInternal
     )
     assert(suffix.isEmpty)
     (name -> printableTokensFromTokensMem(JsonLexer.rules, tokens).get)
