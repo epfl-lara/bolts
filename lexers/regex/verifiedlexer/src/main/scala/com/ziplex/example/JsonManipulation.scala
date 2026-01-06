@@ -59,6 +59,9 @@ import stainless.lang.StaticChecks.*
 // END imports for benchmarking ---------------------------------------------
 
 object JsonManipulationExample:
+  given Hashable[Char] = new Hashable[Char] {
+    override def hash(c: Char): Long = c.hashCode().toLong
+  }
 
   /**
     * Opens a file and returns its content as a Sequence[Char] for lexing

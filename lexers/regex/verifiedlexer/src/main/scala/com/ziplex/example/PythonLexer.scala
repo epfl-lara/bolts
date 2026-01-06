@@ -29,6 +29,8 @@ import com.ziplex.lexer.semiInverseModEq
 import com.ziplex.lexer.equivClassesBody
 import com.ziplex.lexer.equivClasses
 
+import com.mutablemaps.map.Hashable
+
 import stainless.lang.Exception
 import scala.annotation.tailrec
 import scala.math.BigInt
@@ -707,6 +709,9 @@ object ExamplePythonLexer:
         @extern def bytesPrefix() = "RB".r | "Rb".r | "rB".r | "rb".r | "BR".r | "bR".r | "Br".r | "br".r | "B".r | "b".r 
 
         @extern def longStringRuleGen(delimiter: Char, isBytes: Boolean = false): Rule[Char] =
+            given Hashable[Char] = new Hashable[Char] {
+                override def hash(c: Char): Long = c.hashCode().toLong
+            }
             val delimiterR = ElementMatch(delimiter)
             val delimiterFull = delimiterR ~ delimiterR ~ delimiterR
             val prefixRegex = if isBytes then bytesPrefix() else stringPrefix()
@@ -734,6 +739,9 @@ object ExamplePythonLexer:
             )
 
         @extern def shortStringRuleGen(delimiter: Char, isBytes: Boolean = false): Rule[Char] =
+            given Hashable[Char] = new Hashable[Char] {
+                override def hash(c: Char): Long = c.hashCode().toLong
+            }
             val delimiterR = ElementMatch(delimiter)
             val prefixRegex = if isBytes then bytesPrefix() else stringPrefix()
             val charsRegex = if isBytes then interval(0x00, 0x7F) else all
@@ -847,6 +855,9 @@ object ExamplePythonLexer:
         import com.ziplex.lexer.example.RegexUtils.*
         import Types.*
         @extern def main(): Unit = {
+            given Hashable[Char] = new Hashable[Char] {
+                override def hash(c: Char): Long = c.hashCode().toLong
+            }
             // Check validity of the rules
             val rules = PythonLexer.rules
             assert(Lexer.rulesInvariant(rules))

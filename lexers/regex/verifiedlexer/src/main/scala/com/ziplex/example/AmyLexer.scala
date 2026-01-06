@@ -27,6 +27,7 @@ import com.ziplex.lexer.semiInverseModEq
 import com.ziplex.lexer.equivClassesBody
 import com.ziplex.lexer.equivClasses
 import com.ziplex.lexer.TokenValueInjection
+import com.mutablemaps.map.Hashable
 
 import scala.annotation.tailrec
 // BEGIN uncomment for verification ------------------------------------------
@@ -604,7 +605,11 @@ object ExampleAmyLexer:
     object DemoPrintableTokens:
         import com.ziplex.lexer.example.RegexUtils.*
         import Types.*
+        
         @extern def main(): Unit = {
+            given Hashable[Char] = new Hashable[Char] {
+                override def hash(c: Char): Long = c.hashCode().toLong
+            }   
             // Check validity of the rules
             val rules = AmyLexer.rules
             assert(Lexer.rulesInvariant(rules))

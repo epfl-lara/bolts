@@ -17,6 +17,9 @@ import com.ziplex.lexer.seqFromArray
 
 @extern
 object RegexUtils:
+  given Hashable[Char] = new Hashable[Char] {
+    override def hash(c: Char): Long = c.hashCode().toLong
+  }
   extension (s: String) def r: Regex[Char] = s.toCharArray().foldRight[Regex[Char]](EmptyExpr())((c, acc) => if isEmptyExpr(acc) then ElementMatch(c) else Concat(ElementMatch(c), acc))
   extension (c: Char) def r: Regex[Char] = ElementMatch(c)
   extension (r: Regex[Char]) infix def | (r2: Regex[Char]): Regex[Char] = Union(r, r2)

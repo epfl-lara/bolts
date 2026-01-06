@@ -7,6 +7,7 @@ import com.ziplex.lexer.Rule
 import com.ziplex.lexer.Token
 import com.ziplex.lexer.TokenValue
 import com.ziplex.lexer.VerifiedRegex.*
+import com.mutablemaps.map.Hashable
 
 import stainless.collection.List
 import stainless.collection.Cons
@@ -333,6 +334,9 @@ object ExampleJsonLexer:
         import com.ziplex.lexer.example.RegexUtils.*
         import Types.*
         @extern def main(): Unit = {
+            given Hashable[Char] = new Hashable[Char] {
+                override def hash(c: Char): Long = c.hashCode().toLong
+            }
             // Check validity of the rules
             val rules = JsonLexer.rules
             assert(Lexer.rulesInvariant(rules))
