@@ -3303,6 +3303,18 @@ object ZipperRegex {
   
   @opaque
   @inlineOnce
+  def findLongestMatchZipperFastV2MemOnlyDeriv[C](z: Zipper[C], input: Sequence[C], totalInput: Sequence[C])(using cacheUp: CacheUp[C], cacheDown: CacheDown[C]): (Sequence[C], Sequence[C]) = {
+    require(ListUtils.isSuffix(input.list, totalInput.list))
+    val totalInputSize = totalInput.size
+    val from = totalInputSize - input.size
+    val prefixLength = findLongestMatchInnerZipperFastV2MemOnlyDeriv(z, from, totalInput, totalInputSize)
+
+    input.splitAt(prefixLength)
+  }.ensuring (res => res == findLongestMatchZipperFastV2(z, input, totalInput) && cacheUp.valid && cacheDown.valid)
+  
+
+  @opaque
+  @inlineOnce
   def findLongestMatchInnerZipperFastV2Mem[C](z: Zipper[C], from: BigInt, totalInput: Sequence[C], totalInputSize: BigInt)(using cacheUp: CacheUp[C], cacheDown: CacheDown[C], cacheFindLongestMatch: CacheFindLongestMatch[C]): BigInt = {
     require(from >= 0 && from <= totalInput.size)
     require(totalInputSize == totalInput.size)
@@ -3339,6 +3351,32 @@ object ZipperRegex {
       }
     }
   }.ensuring (res => res == findLongestMatchInnerZipperFastV2(z, from, totalInput, totalInputSize) && cacheUp.valid && cacheDown.valid &&cacheFindLongestMatch.valid && cacheFindLongestMatch.totalInput == totalInput)
+
+  @opaque
+  @inlineOnce
+  def findLongestMatchInnerZipperFastV2MemOnlyDeriv[C](z: Zipper[C], from: BigInt, totalInput: Sequence[C], totalInputSize: BigInt)(using cacheUp: CacheUp[C], cacheDown: CacheDown[C]): BigInt = {
+    require(from >= 0 && from <= totalInput.size)
+    require(totalInputSize == totalInput.size)
+    decreases(totalInput.size - from)
+
+    if ((from == totalInputSize) || lostCauseZipper(z)) { 
+      // We cannot match anything from here
+      // so we return a size of match of 0
+      // OR we are at the end of the input so can match 0 more characters
+      BigInt(0)
+    } else {
+      // We call recursively starting on the next character and see how many characters we can match from there
+      val derivedZ = derivationStepZipperMem(z, totalInput(from))
+      val recursive = findLongestMatchInnerZipperFastV2MemOnlyDeriv(derivedZ, from + 1, totalInput, totalInputSize) 
+      if (recursive > 0) {
+        // Whatever is the current derived state, we can match more characters from there so we can match 1 more character from here
+        1 + recursive
+      } else {
+        // Here we can match nothing starting at from + 1, so if we can match the current character, we can match 1 character from here, otherwise 0
+        if nullableZipper(derivedZ) then BigInt(1) else BigInt(0)
+      }
+    }
+  }.ensuring (res => res == findLongestMatchInnerZipperFastV2(z, from, totalInput, totalInputSize) && cacheUp.valid && cacheDown.valid)
 
   // ----------------------------- Find Longest Match Zipper Theorems ------------------------------
 
@@ -4329,6 +4367,21 @@ object VerifiedRegexMatcher {
     ghostExpr(assert(findLongestMatchWithZipperSequenceV2(r, input, totalInput) == ZipperRegex.findLongestMatchZipperFastV2(zipper, input, totalInput)))
     ZipperRegex.findLongestMatchZipperFastV2Mem(zipper, input, totalInput)
   }.ensuring (res => res == findLongestMatchWithZipperSequenceV2(r, input, totalInput) && cacheDown.valid && cacheUp.valid && cacheFindLongestMatch.valid && cacheFindLongestMatch.totalInput == totalInput)
+
+  @opaque
+  def findLongestMatchWithZipperSequenceV2MemOnlyDeriv[C](r: Regex[C], input: Sequence[C], totalInput: Sequence[C])(using cacheUp: CacheUp[C], cacheDown: CacheDown[C]): (Sequence[C], Sequence[C]) = {
+    require(validRegex(r))
+    require(cacheUp.valid)
+    require(cacheDown.valid)
+    require(ListUtils.isSuffix(input.list, totalInput.list))
+    val zipper = ZipperRegex.focus(r)
+    ghostExpr(ZipperRegex.longestMatchV2SameAsRegex(r, zipper, input, totalInput))
+    ghostExpr(ListUtils.lemmaSizeTrEqualsSize(input.list, 0))
+    ghostExpr(unfold(findLongestMatchWithZipperSequenceV2(r, input, totalInput)))
+    ghostExpr(unfold(ZipperRegex.findLongestMatchZipperFastV2MemOnlyDeriv(zipper, input, totalInput)(using cacheUp, cacheDown)))
+    ghostExpr(assert(findLongestMatchWithZipperSequenceV2(r, input, totalInput) == ZipperRegex.findLongestMatchZipperFastV2(zipper, input, totalInput)))
+    ZipperRegex.findLongestMatchZipperFastV2MemOnlyDeriv(zipper, input, totalInput)
+  }.ensuring (res => res == findLongestMatchWithZipperSequenceV2(r, input, totalInput) && cacheDown.valid && cacheUp.valid)
   //  ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
   def findLongestMatch[C](r: Regex[C], input: List[C]): (List[C], List[C]) = {
