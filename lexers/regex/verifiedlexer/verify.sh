@@ -1,3 +1,4 @@
+export _JAVA_OPTIONS="-Xmx32g"
 stainless-dotty\
  src/main/scala/com/ziplex/lexer/VerifiedRegex.scala\
  src/main/scala/com/ziplex/lexer/VerifiedLexer.scala\
