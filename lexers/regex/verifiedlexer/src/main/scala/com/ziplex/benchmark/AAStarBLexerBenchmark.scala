@@ -28,6 +28,7 @@ import scala.reflect.ClassTag
 import java.io.File
 
 @State(Scope.Benchmark)
+@Fork(jvmArgsAppend = Array("-Xss1G"))
 class AAStarBLexerBenchmark {
 
   @Param(
@@ -51,18 +52,18 @@ class AAStarBLexerBenchmark {
   )
   var file: String = uninitialized
 
-  // @Benchmark
-  // @BenchmarkMode(Array(Mode.AverageTime))
-  // @OutputTimeUnit(TimeUnit.MICROSECONDS)
-  // def lex_ZipperV1Mem(bh: Blackhole): Unit = {
-  //   val (tokens, suffix) = Lexer.lexV1Mem(AAStarBLexer.rules, AAStarBLexerBenchmarkUtils.fileContents(file))(
-  //     using ClassTag.Char,
-  //     AAStarBLexerBenchmarkUtils.zipperCacheUp,
-  //     AAStarBLexerBenchmarkUtils.zipperCacheDown
-  //   )
-  //   bh.consume(suffix.isEmpty)
-  //   // assert(suffix.isEmpty)
-  // }
+  @Benchmark
+  @BenchmarkMode(Array(Mode.AverageTime))
+  @OutputTimeUnit(TimeUnit.MICROSECONDS)
+  def lex_ZipperV1Mem(bh: Blackhole): Unit = {
+    val (tokens, suffix) = Lexer.lexV1Mem(AAStarBLexer.rules, AAStarBLexerBenchmarkUtils.fileContents(file))(
+      using ClassTag.Char,
+      AAStarBLexerBenchmarkUtils.zipperCacheUp,
+      AAStarBLexerBenchmarkUtils.zipperCacheDown
+    )
+    bh.consume(suffix.isEmpty)
+    // assert(suffix.isEmpty)
+  }
 
   @Benchmark
   @BenchmarkMode(Array(Mode.AverageTime))
@@ -96,17 +97,17 @@ class AAStarBLexerBenchmark {
   //   // assert(suffix.isEmpty)
   // }
 
-  // @Benchmark
-  // @BenchmarkMode(Array(Mode.AverageTime))
-  // @OutputTimeUnit(TimeUnit.MICROSECONDS)
-  // def lex_ZipperV2MemOnlyDeriv(bh: Blackhole): Unit = {
-  //   val (tokens, suffix) = Lexer.lexV2MemOnlyDeriv(AAStarBLexer.rules, AAStarBLexerBenchmarkUtils.fileContents(file))(
-  //     using ClassTag.Char,
-  //     AAStarBLexerBenchmarkUtils.zipperCacheUp,
-  //     AAStarBLexerBenchmarkUtils.zipperCacheDown)
-  //   bh.consume(suffix.isEmpty)
-  //   // assert(suffix.isEmpty)
-  // }
+  @Benchmark
+  @BenchmarkMode(Array(Mode.AverageTime))
+  @OutputTimeUnit(TimeUnit.MICROSECONDS)
+  def lex_ZipperV2MemOnlyDeriv(bh: Blackhole): Unit = {
+    val (tokens, suffix) = Lexer.lexV2MemOnlyDeriv(AAStarBLexer.rules, AAStarBLexerBenchmarkUtils.fileContents(file))(
+      using ClassTag.Char,
+      AAStarBLexerBenchmarkUtils.zipperCacheUp,
+      AAStarBLexerBenchmarkUtils.zipperCacheDown)
+    bh.consume(suffix.isEmpty)
+    // assert(suffix.isEmpty)
+  }
 
 }
 
