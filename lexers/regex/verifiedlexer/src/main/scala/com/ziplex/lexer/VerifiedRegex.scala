@@ -31,6 +31,7 @@ import scala.annotation.tailrec
 import stainless.lang.StaticChecks._
 import stainless.lang.{ghost => ghostExpr, _}
 import stainless.proof.check
+import stainless.collection.List.ifill
 // END uncomment for verification --------------------------------------------
 // BEGIN imports for benchmarking -------------------------------------------
 // import stainless.lang.{ghost => _, decreases => _, unfold => _, _}
@@ -3406,7 +3407,232 @@ object ZipperRegex {
     }
   }.ensuring (res => res == findLongestMatchInnerZipperFastV2(z, from, totalInput, totalInputSize) && cacheUp.valid && cacheDown.valid)
 
+  // ------------------------------------------- END MEMOIZATION -------------------------------------------
+  // ------------------------------------------- Tail recursive -------------------------------------------
+  /** 
+   * Returns the furthest position where the zipper is nullable when consuming input from 'from' to the end of totalInput
+   * Which is equivalent to the length of the longest match starting from 0, minus 1
+   * Meaning: if it returns i, it means that the z was nullable after consuming input from 'from' to i included
+   * 
+   * For the proof we need:
+   * - a way to relate z to derivations from z
+   * - to prove that no derivations of z are nullable after lastNullablePos
+   * 
+   * The the longest prefix length starting at i is lastNullablePos - i + 1
+   * 
+   * We will also prove that for findLongestMatchV2Rec, if the result is 0, then there is no nullable derivation from z consuming the input from 'from' to the end;
+   * and that if the result is > 0, then there is at least one nullable derivation from z consuming the input from 'from'
+   * 
+   */
+  // @tailrec
+  def furthestNullablePosition[C](z: Zipper[C], from: BigInt, totalInput: Sequence[C], totalInputSize: BigInt, lastNullablePos: BigInt): BigInt = {
+    require(from >= 0 && from <= totalInputSize)
+    require(totalInputSize == totalInput.size)
+    require(lastNullablePos >= -1 && lastNullablePos < from)
+    require(!nullableZipper(z) || lastNullablePos == from - 1)
+    decreases(totalInputSize - from)
+
+    if (from == totalInputSize || lostCauseZipper(z)) {
+      lastNullablePos
+    } else {
+      val derivedZ = derivationStepZipper(z, totalInput(from))
+      val newLastNullable = if (nullableZipper(derivedZ)) from else lastNullablePos
+      furthestNullablePosition(derivedZ, from + 1, totalInput, totalInputSize, newLastNullable)
+    }
+  }.ensuring(res => res >= -1 && res < totalInputSize && res >= lastNullablePos && (res == lastNullablePos || res >= from))
+
+  def findLongestMatchZipperSequenceV3[C](z: Zipper[C], input: Sequence[C], totalInput: Sequence[C]): (Sequence[C], Sequence[C]) = {
+    require(ListUtils.isSuffix(input.list, totalInput.list))
+    val totalInputSize = totalInput.size
+    val from = totalInputSize - input.size
+    val lastNullablePos = furthestNullablePosition(z, from, totalInput, totalInputSize, if nullableZipper(z) then from - 1 else -1)
+    val prefixLength: BigInt = lastNullablePos - from + 1
+    if (prefixLength < 0) {
+      input.splitAt(0)
+    } else {  
+      input.splitAt(prefixLength)
+    }
+  }.ensuring (res => res._1.list ++ res._2.list == input.list)
+
   // ----------------------------- Find Longest Match Zipper Theorems ------------------------------
+
+  @ghost
+  @opaque
+  @inlineOnce
+  def lemmaKnownAcceptedStringThenFromSmallPAtLeastThatV3[C](z: Zipper[C], from: BigInt, totalInput: Sequence[C], knownSize: BigInt, lastNullablePos: BigInt): Unit = {
+    require(from >= 0 && from <= totalInput.size)
+    require(knownSize >= 0 && knownSize <= (totalInput.size - from))
+    require(matchZipper(z, totalInput.list.drop(from).take(knownSize)))
+    require(lastNullablePos >= -1 && lastNullablePos < from)
+    require(!nullableZipper(z) || lastNullablePos == from - 1)
+    decreases(knownSize)
+    if totalInput.isEmpty then 
+      assert(from == 0)
+      assert(furthestNullablePosition(z, from, totalInput, totalInput.size, lastNullablePos) == lastNullablePos)
+      assert(furthestNullablePosition(z, from, totalInput, totalInput.size, lastNullablePos) == -1)
+      assert(totalInput.list.isEmpty)
+      assert(totalInput.list.drop(from).isEmpty)
+    else {
+      if (knownSize == 0) {
+        assert(furthestNullablePosition(z, from, totalInput, totalInput.size, lastNullablePos) >= lastNullablePos)
+        assert(totalInput.list.drop(from).take(knownSize).isEmpty)
+        assert(nullableZipper(z))
+        assert(lastNullablePos == from - 1)
+      } else {
+        assert(knownSize > 0)
+        if (from == totalInput.size || lostCauseZipper(z)) {
+          if (lostCauseZipper(z)) {
+            lemmaLostCauseCannotMatch(z, totalInput.list.drop(from).take(knownSize))
+            check(false)
+          }
+          assert(!lostCauseZipper(z))
+          assert(from == totalInput.size)
+          assert(totalInput.list.drop(from).isEmpty)
+          assert(nullableZipper(z))
+          assert(lastNullablePos == from - 1)
+          check(furthestNullablePosition(z, from, totalInput, totalInput.size, lastNullablePos) == lastNullablePos)
+          check(furthestNullablePosition(z, from, totalInput, totalInput.size, lastNullablePos) >= from - 1 + knownSize)
+        } else {
+          val derivedZ = derivationStepZipper(z, totalInput(from))
+          val newLastNullable: BigInt = if (nullableZipper(derivedZ)) from else lastNullablePos
+          val furthestNullable = furthestNullablePosition(derivedZ, from + 1, totalInput, totalInput.size, newLastNullable)
+          ListUtils.lemmaDropTakeAddOneLeft(totalInput.list, from, knownSize - 1)
+          assert(totalInput.list.drop(from + 1).take(knownSize - 1) == totalInput.list.drop(from).take(knownSize).tail)
+          assert(matchZipper(derivedZ, totalInput.list.drop(from + 1).take(knownSize - 1)))
+          lemmaKnownAcceptedStringThenFromSmallPAtLeastThatV3(derivedZ, from + 1, totalInput, knownSize - 1, newLastNullable)
+          assert(furthestNullable >= from - 1 + knownSize)
+          assert(furthestNullablePosition(z, from, totalInput, totalInput.size, lastNullablePos) == furthestNullable)
+          check(furthestNullablePosition(z, from, totalInput, totalInput.size, lastNullablePos) >= from - 1 + knownSize)
+        }
+      }
+    }
+  }.ensuring (_ => totalInput.isEmpty || furthestNullablePosition(z, from, totalInput, totalInput.size, lastNullablePos) >= from - 1 + knownSize)
+
+  @ghost
+  @opaque
+  @inlineOnce
+  def longestMatchIsAcceptedByMatchOrIsEmptyRecV3[C](z: Zipper[C], from: BigInt, totalInput: Sequence[C], lastNullablePos: BigInt): Unit = {
+    require(from >= 0 && from <= totalInput.size)
+    require(lastNullablePos >= -1 && lastNullablePos < from)
+    require(!nullableZipper(z) || lastNullablePos == from - 1)
+    decreases(totalInput.size - from)
+
+    if (from == totalInput.size || lostCauseZipper(z)) {
+      // lastNullablePos
+      assert(furthestNullablePosition(z, from, totalInput, totalInput.size, lastNullablePos) == lastNullablePos)
+      val prefixLength = furthestNullablePosition(z, from, totalInput, totalInput.size, lastNullablePos) - from + 1
+      assert(prefixLength <= 0 || matchZipper(z, totalInput.list.drop(from).take(prefixLength)))
+    } else {
+      val derivedZ = derivationStepZipper(z, totalInput(from))
+      val newLastNullable = if (nullableZipper(derivedZ)) from else lastNullablePos
+      // furthestNullablePosition(derivedZ, from + 1, totalInput, totalInput.size, newLastNullable)
+      assert(furthestNullablePosition(z, from, totalInput, totalInput.size, lastNullablePos) == 
+              furthestNullablePosition(derivedZ, from + 1, totalInput, totalInput.size, newLastNullable))
+      longestMatchIsAcceptedByMatchOrIsEmptyRecV3(derivedZ, from + 1, totalInput, newLastNullable)
+      val nextPrefixLength = furthestNullablePosition(derivedZ, from + 1, totalInput, totalInput.size, newLastNullable) - (from + 1) + 1
+      assert(nextPrefixLength <= 0 || matchZipper(derivedZ, totalInput.list.drop(from + 1).take(nextPrefixLength)))
+      if (nextPrefixLength <= 0) {
+        assert(furthestNullablePosition(derivedZ, from + 1, totalInput, totalInput.size, newLastNullable) <= from)
+        assert(furthestNullablePosition(derivedZ, from + 1, totalInput, totalInput.size, newLastNullable) >= newLastNullable)
+        assert(newLastNullable >= lastNullablePos)
+        assert(newLastNullable <= from)
+        assert(lastNullablePos < from)
+        assert(newLastNullable == from || newLastNullable == lastNullablePos)
+        assert(furthestNullablePosition(derivedZ, from + 1, totalInput, totalInput.size, newLastNullable) <= from )
+        if (newLastNullable == lastNullablePos) {
+          assert(newLastNullable < from)
+          assert(furthestNullablePosition(z, from, totalInput, totalInput.size, lastNullablePos) <= from)
+          val prefixLength = furthestNullablePosition(z, from, totalInput, totalInput.size, lastNullablePos) - from + 1
+          assert(prefixLength <= 1)
+          if (prefixLength == 1) {
+            assert(furthestNullablePosition(z, from, totalInput, totalInput.size, lastNullablePos) == from)
+            unfold(furthestNullablePosition(z, from, totalInput, totalInput.size, lastNullablePos))
+            unfold(furthestNullablePosition(derivedZ, from + 1, totalInput, totalInput.size, newLastNullable))
+            assert(newLastNullable == from)
+            check(false)
+          } else {
+            assert(prefixLength <= 0)
+          }
+          check(prefixLength <= 0 || matchZipper(z, totalInput.list.drop(from).take(prefixLength)))
+        } else {
+          // newLastNullable == from
+          val prefixLength = furthestNullablePosition(z, from, totalInput, totalInput.size, lastNullablePos) - from + 1
+          assert(prefixLength == 1)
+          ListUtils.lemmaDropTakeAddOneLeft(totalInput.list, from, 0)
+          assert(totalInput.list.drop(from).take(1) == List(totalInput(from)))
+          check(prefixLength <= 0 || matchZipper(z, totalInput.list.drop(from).take(prefixLength)))
+
+        }
+        val prefixLength = furthestNullablePosition(z, from, totalInput, totalInput.size, lastNullablePos) - from + 1
+        check(prefixLength <= 0 || matchZipper(z, totalInput.list.drop(from).take(prefixLength)))
+      } else {
+        val suff = totalInput.list.drop(from + 1).take(nextPrefixLength)
+        assert(matchZipper(derivedZ, suff))
+        assert(matchZipper(z, Cons(totalInput(from), suff)))
+        ListUtils.lemmaDropTakeAddOneLeft(totalInput.list, from, nextPrefixLength)
+        assert(Cons(totalInput(from), suff) == totalInput.list.drop(from).take(nextPrefixLength + 1))
+        val prefixLength = furthestNullablePosition(z, from, totalInput, totalInput.size, lastNullablePos) - from + 1
+        assert(prefixLength == nextPrefixLength + 1)
+        check(prefixLength <= 0 || matchZipper(z, totalInput.list.drop(from).take(prefixLength)))
+      }
+    }
+
+  }.ensuring (_ => {
+    val prefixLength = furthestNullablePosition(z, from, totalInput, totalInput.size, lastNullablePos) - from + 1
+    prefixLength <= 0 || matchZipper(z, totalInput.list.drop(from).take(prefixLength))
+  })
+
+  @ghost
+  @opaque
+  @inlineOnce
+  def longestMatchV3SameAsRegex[C](r: Regex[C], z: Zipper[C], input: Sequence[C], totalInput: Sequence[C]): Unit = {
+    require(validRegex(r))
+    require(unfocusZipper(z.toList) == r)
+    require(ListUtils.isSuffix(input.list, totalInput.list))
+
+    val (longestPrefixZ, suffixZ) = findLongestMatchZipperSequenceV3(z, input, totalInput)
+    val from = totalInput.size - input.size
+    val (longestPrefixR, suffixR) = findLongestMatch(r, input.list)
+
+    assert(longestPrefixZ.list ++ suffixZ.list == input.list)
+    assert(longestPrefixR ++ suffixR == input.list)
+    ListUtils.lemmaConcatTwoListThenFirstIsPrefix(longestPrefixZ.list, suffixZ.list)
+    ListUtils.lemmaConcatTwoListThenFirstIsPrefix(longestPrefixR, suffixR)
+    ListUtils.lemmaTakeIsPrefix(totalInput.list, from)
+    // val ignoredPrefix = totalInput.list.take(from)
+
+    longestMatchIsAcceptedByMatchOrIsEmptyRecV3(z, from, totalInput, if nullableZipper(z) then from - 1 else -1)
+    VerifiedRegexMatcher.longestMatchIsAcceptedByMatchOrIsEmpty(r, input.list)
+
+    assert(matchZipper(z, longestPrefixZ.list) || longestPrefixZ.isEmpty)
+    assert(matchR(r, longestPrefixR) || longestPrefixR.isEmpty)
+    theoremZipperRegexEquiv(z, z.toList, r, longestPrefixR)
+    theoremZipperRegexEquiv(z, z.toList, r, longestPrefixZ.list)
+
+    if(longestPrefixR.size > longestPrefixZ.size){
+      // longestMatchNoBiggerStringMatchV2(z, input, longestPrefixZ, longestPrefixR)
+      val matchedByR = totalInput.list.drop(from).take(longestPrefixR.size )
+      assert(totalInput.list.drop(from) == input.list)
+      ListUtils.lemmaTakeIsPrefix(input.list, longestPrefixR.size)
+      ListUtils.lemmaIsPrefixSameLengthThenSameList(matchedByR, longestPrefixR, input.list)
+      assert(input.list.take(longestPrefixR.size ) == longestPrefixR)
+      assert(matchedByR == longestPrefixR)
+      lemmaKnownAcceptedStringThenFromSmallPAtLeastThatV3(z, from, totalInput, longestPrefixR.size, if nullableZipper(z) then from - 1 else -1)
+      check(false)
+    } else if(longestPrefixZ.size > longestPrefixR.size){
+      VerifiedRegexMatcher.longestMatchNoBiggerStringMatch(r, input.list, longestPrefixR, longestPrefixZ.list)
+      check(false)
+    } else{
+      ListUtils.lemmaIsPrefixSameLengthThenSameList(longestPrefixZ.list, longestPrefixR, input.list)
+      ListUtils.lemmaSamePrefixThenSameSuffix(longestPrefixZ.list, suffixZ.list, longestPrefixR, suffixR, input.list)
+      assert(longestPrefixZ.list == longestPrefixR)
+      assert(suffixZ.list == suffixR)
+    }
+
+   
+  }.ensuring(_ => findLongestMatchZipperSequenceV3(z, input, totalInput)._1.list == findLongestMatch(r, input.list)._1 &&
+                  findLongestMatchZipperSequenceV3(z, input, totalInput)._2.list == findLongestMatch(r, input.list)._2)
+
 
   @ghost
   @opaque
