@@ -31,7 +31,6 @@ import scala.annotation.tailrec
 import stainless.lang.StaticChecks._
 import stainless.lang.{ghost => ghostExpr, _}
 import stainless.proof.check
-import stainless.collection.List.ifill
 // END uncomment for verification --------------------------------------------
 // BEGIN imports for benchmarking -------------------------------------------
 // import stainless.lang.{ghost => _, decreases => _, unfold => _, _}
