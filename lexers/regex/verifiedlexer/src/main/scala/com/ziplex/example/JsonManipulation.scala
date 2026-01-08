@@ -30,7 +30,7 @@ import stainless.collection.ListSpecs
 
 import scala.annotation.tailrec
 import com.ziplex.lexer.example.RegexUtils.asString
-import com.ziplex.lexer.MemoisationZipper.CacheFindLongestMatch
+import com.ziplex.lexer.MemoisationZipper.CacheFurthestNullable
 import com.mutablemaps.map.MutableHashMap
 import com.mutablemaps.map.Hashable
 import com.ziplex.lexer.ZipperRegex.Zipper
@@ -108,11 +108,11 @@ object JsonManipulationExample:
     * @param cacheDown
     * @return
     */
-  def lexAndCheckPrintable(input: Sequence[Char])(using cacheUp: MemoisationZipper.CacheUp[Char], cacheDown: MemoisationZipper.CacheDown[Char], cacheFindLongestMatch: CacheFindLongestMatch[Char]): Option[PrintableTokens[Char]] = {
+  def lexAndCheckPrintable(input: Sequence[Char])(using cacheUp: MemoisationZipper.CacheUp[Char], cacheDown: MemoisationZipper.CacheDown[Char], cacheFurthestNullable: CacheFurthestNullable[Char]): Option[PrintableTokens[Char]] = {
     require(!JsonLexer.rules.isEmpty)
     require(Lexer.rulesInvariant(JsonLexer.rules))
-    require(cacheUp.valid && cacheDown.valid && cacheFindLongestMatch.valid)
-    require(cacheFindLongestMatch.totalInput == input)
+    require(cacheUp.valid && cacheDown.valid && cacheFurthestNullable.valid)
+    require(cacheFurthestNullable.totalInput == input)
     
     val (tokens, suffix) = Lexer.lexMem(JsonLexer.rules, input)
     ghostExpr({
@@ -132,8 +132,8 @@ object JsonManipulationExample:
       assert(Lexer.rulesInvariant(JsonLexer.rules))
       assert(cacheUp.valid)
       assert(cacheDown.valid)
-      assert(cacheFindLongestMatch.valid)
-      assert(cacheFindLongestMatch.totalInput == input)
+      assert(cacheFurthestNullable.valid)
+      assert(cacheFurthestNullable.totalInput == input)
     })
     printableTokensFromTokens(JsonLexer.rules, tokens)
   }.ensuring(res => res.isEmpty || usesJsonRules(res.get))
@@ -365,10 +365,10 @@ object JsonManipulationExample:
   }.ensuring(res => res.isEmpty || 
                     (Lexer.lex(JsonLexer.rules, res.get.print())._1.list == res.get.tokens.list && Lexer.lex(JsonLexer.rules, res.get.print())._2.isEmpty))
 
-  def main(path: String, hashF: Hashable[(Zipper[Char], BigInt)])(using cacheUp: MemoisationZipper.CacheUp[Char], cacheDown: MemoisationZipper.CacheDown[Char]): Option[Sequence[Char]] = {
+  def main(path: String, hashF: Hashable[(Zipper[Char], BigInt, BigInt)])(using cacheUp: MemoisationZipper.CacheUp[Char], cacheDown: MemoisationZipper.CacheDown[Char]): Option[Sequence[Char]] = {
     require(cacheUp.valid && cacheDown.valid)
     val input: Sequence[Char] = openFile(path)
-    given emptyFindLongestMatch: CacheFindLongestMatch[Char] = MemoisationZipper.emptyFindLongestMatch(hashF, input)
+    given emptyFindLongestMatch: CacheFurthestNullable[Char] = MemoisationZipper.emptyFurthestNullableCache(hashF, input)
     assert(emptyFindLongestMatch.valid)
     assert(emptyFindLongestMatch.totalInput == input)
 

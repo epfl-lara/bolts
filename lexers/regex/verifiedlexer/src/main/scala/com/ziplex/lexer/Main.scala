@@ -136,7 +136,7 @@ object Main {
 
   def exampleJsonSorting(): Unit = {
     val jsonFilePath = "src/main/scala/com/ziplex/example/res/json/example-for-sorting.json"
-    val sortedOpt = JsonManipulationExample.main(jsonFilePath, ExampleUtils.ZipperBigIntHashable)(using ExampleUtils.zipperCacheUp, ExampleUtils.zipperCacheDown)
+    val sortedOpt = JsonManipulationExample.main(jsonFilePath, ExampleUtils.ZipperBigIntBigIntHashable)(using ExampleUtils.zipperCacheUp, ExampleUtils.zipperCacheDown)
     sortedOpt match {
       case Some(sorted) => println(s"Sorted JSON:\n$sorted")
       case None()       => println("Failed to parse and sort the JSON file.")
@@ -149,7 +149,7 @@ object Main {
     println("Lexing with memoization")
     println(s"File content for file '$filepath':\n$fileContent")
     val input = fileContent.toStainless
-    val (tokens, suffix) = Lexer.lexMem(JsonLexer.rules, input)(using ClassTag.Char, ExampleUtils.zipperCacheUp, ExampleUtils.zipperCacheDown, ExampleUtils.findLongestMatchCache(input))
+    val (tokens, suffix) = Lexer.lexMem(JsonLexer.rules, input)(using ClassTag.Char, ExampleUtils.zipperCacheUp, ExampleUtils.zipperCacheDown, ExampleUtils.furthestNullableCache(input))
     println(f"Suffix tokens for file '$filepath':\n${suffix}")
     assert(suffix.isEmpty)
     val tokenStrings = tokens.map(t => t.asString())
