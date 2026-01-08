@@ -363,6 +363,104 @@ object MemoisationZipper {
     }.ensuring (_ => validCacheMapFindLongestMatch(this.cache, totalInput) && totalInput == localTotalInput)
   }
 
+
+
+  def emptyFurthestNullableCache[C](hashF: Hashable[(Zipper[C], BigInt, BigInt)], totalInput: Sequence[C]): CacheFurthestNullable[C] = {
+    val emptyMap = MutableHashMap.getEmptyHashMap[(Zipper[C], BigInt, BigInt), BigInt](k => -1, hashF)
+    ghostExpr(unfold(validCacheMapFurthestNullable(emptyMap, totalInput)))
+    ghostExpr(assert(validCacheMapFurthestNullable(emptyMap, totalInput)))
+    CacheFurthestNullable(emptyMap, totalInput)
+  }.ensuring(res => res.valid)
+
+
+  @ghost def validCacheMapFurthestNullableBody[C](kv: ((Zipper[C], BigInt, BigInt), BigInt), totalInput: Sequence[C]): Boolean = {
+    val (z, from, lastNullablePos) = kv._1
+    val v = kv._2
+    from >= 0 && from <= totalInput.size &&
+    lastNullablePos >= -1 && lastNullablePos < from && 
+    (!nullableZipper(z) || lastNullablePos == from - 1) &&
+    v == furthestNullablePosition(z, from, totalInput, totalInput.size, lastNullablePos)
+  }
+  @ghost def validCacheMapFurthestNullable[C](m: HashMap[(Zipper[C], BigInt, BigInt), BigInt], totalInput: Sequence[C]): Boolean = {
+    m.valid && 
+    TupleListOpsGenK.invariantList(m.map.toList) && // Why is this needed? Without it does not verify in update...
+    m.map.forall(validCacheMapFurthestNullableBody(_, totalInput))
+  }
+
+  
+   /**
+   * Cache for the furthest nullable function
+   * for the findLongestMatchV3
+   * 
+   * Each cache is specific to one total input string
+   */
+  @mutable
+  final case class CacheFurthestNullable[C](private val cache: HashMap[(Zipper[C], BigInt, BigInt), BigInt], @pure val totalInput: Sequence[C]) {
+    require(validCacheMapFurthestNullable(cache, totalInput))
+
+    @ghost def lemmaInvariant(): Unit = {}.ensuring(_ => valid)
+    @ghost def valid: Boolean = validCacheMapFurthestNullable(cache, totalInput)
+
+    @ghost
+    @pure
+    @opaque
+    @inlineOnce
+    def lemmaIfInCacheThenValid(z: Zipper[C], from: BigInt, lastNullablePos: BigInt, localTotalInput: Sequence[C]): Unit = {
+      require(localTotalInput == totalInput)
+      require(lastNullablePos >= -1 && lastNullablePos < from)
+      require(!nullableZipper(z) || lastNullablePos == from - 1)
+      require(validCacheMapFurthestNullable(cache, totalInput))
+
+      check(validCacheMapFurthestNullable(cache, localTotalInput))
+      if (cache.contains((z, from, lastNullablePos))) {
+        ghostExpr({
+          MutableHashMap.lemmaForallPairsThenForLookup(
+            cache, 
+            (z, from, lastNullablePos), p => validCacheMapFurthestNullableBody(p, localTotalInput)
+          )
+        })
+      }
+    }.ensuring (_ => cache.contains((z, from, lastNullablePos)) ==> (from >= 0 && from <= localTotalInput.size && furthestNullablePosition(z, from, totalInput, totalInput.size, lastNullablePos) == cache((z, from, lastNullablePos))))
+    @pure
+    def contains(z: Zipper[C], from: BigInt, lastNullablePos: BigInt): Boolean = {
+      require(lastNullablePos >= -1 && lastNullablePos < from)
+      require(!nullableZipper(z) || lastNullablePos == from - 1)
+      require(validCacheMapFurthestNullable(cache, totalInput))
+      cache.contains((z, from, lastNullablePos))
+    }
+
+    @pure
+    @opaque
+    def get(z: Zipper[C], from: BigInt, lastNullablePos: BigInt): Option[BigInt] = {
+      require(lastNullablePos >= -1 && lastNullablePos < from)
+      require(!nullableZipper(z) || lastNullablePos == from - 1)
+      require(validCacheMapFurthestNullable(cache, totalInput))
+
+      if (cache.contains((z, from, lastNullablePos))) {
+        ghostExpr(lemmaIfInCacheThenValid(z, from, lastNullablePos, totalInput))
+        Some(cache((z, from, lastNullablePos)))
+      } else {
+        None()
+      }
+    }.ensuring (res => res.isEmpty || res.get == furthestNullablePosition(z, from, totalInput, totalInput.size, lastNullablePos))
+
+    @opaque
+    def update(z: Zipper[C], from: BigInt, lastNullablePos: BigInt, res: BigInt, localTotalInput: Sequence[C]): Unit = {
+      require(localTotalInput == totalInput)
+      require(validCacheMapFurthestNullable(cache, totalInput))
+      require(from >= 0 && from <= totalInput.size)
+      require(lastNullablePos >= -1 && lastNullablePos < from)
+      require(!nullableZipper(z) || lastNullablePos == from - 1)
+      require(res == furthestNullablePosition(z, from, totalInput, totalInput.size, lastNullablePos))
+
+      ghostExpr(MutableHashMap.lemmaUpdatePreservesForallPairs(cache, (z, from, lastNullablePos), res, p => validCacheMapFurthestNullableBody(p, localTotalInput)))
+
+      val _ = cache.update((z, from, lastNullablePos), res)
+      ()
+
+    }.ensuring (_ => validCacheMapFurthestNullable(this.cache, totalInput) && totalInput == localTotalInput)
+  }
+
 }
 
 object VerifiedRegex {
@@ -1028,7 +1126,7 @@ object ZipperRegex {
     def derivUpMem(c: Context[C]): Zipper[C] = derivationStepZipperUpMem(c, a)
     
     z.flatMap(derivUpMem) // rejected by stainless because of effects in the lambda's body
-  }.ensuring(res => res == derivationStepZipper(z, a))
+  }.ensuring(res => res == derivationStepZipper(z, a) && cacheUp.valid && cacheDown.valid)
 
   @extern
   def derivationStepZipperSimpMem[C](z: Zipper[C], a: C)(using cacheUp: CacheUp[C], cacheDown: CacheDown[C]): Zipper[C] = {
@@ -3425,6 +3523,7 @@ object ZipperRegex {
    * 
    */
   // @tailrec
+  @pure
   def furthestNullablePosition[C](z: Zipper[C], from: BigInt, totalInput: Sequence[C], totalInputSize: BigInt, lastNullablePos: BigInt): BigInt = {
     require(from >= 0 && from <= totalInputSize)
     require(totalInputSize == totalInput.size)
@@ -3453,6 +3552,147 @@ object ZipperRegex {
       input.splitAt(prefixLength)
     }
   }.ensuring (res => res._1.list ++ res._2.list == input.list)
+
+  // ------------------------------------------- Tailrec MEMOIZATION -------------------------------------------
+
+  case class StackFrame[C](z: Zipper[C], from: BigInt, lastNullablePos: BigInt, @ghost res: BigInt, @ghost totalInput: Sequence[C]):
+    require(from >= 0 && from <= totalInput.size)
+    require(totalInput.size == totalInput.size)
+    require(lastNullablePos >= -1 && lastNullablePos < from)
+    require(!nullableZipper(z) || lastNullablePos == from - 1)
+    require(res == furthestNullablePosition(z, from, totalInput, totalInput.size, lastNullablePos))
+
+    def lemmaInv(): Unit = {
+    }.ensuring(_ => (from >= 0 && from <= totalInput.size) &&
+                    (totalInput.size == totalInput.size) &&
+                    (lastNullablePos >= -1 && lastNullablePos < from) &&
+                    (!nullableZipper(z) || lastNullablePos == from - 1) &&
+                    (res == furthestNullablePosition(z, from, totalInput, totalInput.size, lastNullablePos)))
+  end StackFrame
+
+  type Stack[C] = List[StackFrame[C]]
+
+  @ghost 
+  @opaque
+  @inlineOnce
+  def lemmaStackPreservesForEqualRes[C](s: Stack[C], res1: BigInt, res2: BigInt): Unit = {
+      require(s.forall(frame => frame.res == res1))
+      require(res1 == res2)
+      decreases(s.size)
+      s match {
+        case Nil() => ()
+        case Cons(hd, tl) => {
+          hd.lemmaInv()
+          lemmaStackPreservesForEqualRes(tl, res1, res2)
+          assert(tl.forall(frame => frame.res == res2))
+          assert(hd.res == res1)
+          assert(hd.res == res2)
+        }
+      }
+    }.ensuring(_ => s.forall(frame => frame.res == res2))
+
+  def furthestNullablePositionStackMem[C](z: Zipper[C], from: BigInt, totalInput: Sequence[C], totalInputSize: BigInt, lastNullablePos: BigInt, stack: Stack[C] = Nil[StackFrame[C]]())(using cacheUp: CacheUp[C], cacheDown: CacheDown[C], cacheFurthestNullable: CacheFurthestNullable[C]): (BigInt, Stack[C]) = {
+    require(from >= 0 && from <= totalInputSize)
+    require(totalInputSize == totalInput.size)
+    require(lastNullablePos >= -1 && lastNullablePos < from)
+    require(!nullableZipper(z) || lastNullablePos == from - 1)
+    require(cacheUp.valid && cacheDown.valid && cacheFurthestNullable.valid)
+    require(cacheFurthestNullable.totalInput == totalInput)
+    @ghost val currentRes = furthestNullablePosition(z, from, totalInput, totalInput.size, lastNullablePos)
+    require(stack.forall(frame => frame.res == currentRes))
+    require(stack.forall(frame => frame.totalInput == totalInput))
+    decreases(totalInputSize - from)
+
+    check(stack.forall(frame => frame.res == currentRes))    
+
+
+    cacheFurthestNullable.get(z, from, lastNullablePos) match {
+      case Some(cachedRes) => {
+        assert(cachedRes == furthestNullablePosition(z, from, totalInput, totalInput.size, lastNullablePos))
+        assert(Nil[StackFrame[C]]().forall(frame => frame.res == currentRes)) 
+        (cachedRes, Nil())
+      }
+      case None() => {
+        if (from == totalInputSize || lostCauseZipper(z)) {
+          assert(furthestNullablePosition(z, from, totalInput, totalInput.size, lastNullablePos) == lastNullablePos)
+          assert(currentRes == lastNullablePos)
+          check(stack.forall(frame => frame.res == currentRes))    
+          ghostExpr(lemmaStackPreservesForEqualRes(stack, currentRes, lastNullablePos))
+          (lastNullablePos, stack)
+        } else {
+          val derivedZ = derivationStepZipperMem(z, totalInput(from))
+          val newLastNullable = if (nullableZipper(derivedZ)) from else lastNullablePos
+          val stackFrame = StackFrame(z, from, lastNullablePos, currentRes, totalInput)
+          val newStack = Cons(stackFrame, stack)
+          ghostExpr({
+            val newRes = furthestNullablePosition(derivedZ, from + 1, totalInput, totalInput.size, newLastNullable)
+            assert(furthestNullablePosition(z, from, totalInput, totalInput.size, lastNullablePos) ==
+                  furthestNullablePosition(derivedZ, from + 1, totalInput, totalInput.size, newLastNullable))
+
+            assert(currentRes == furthestNullablePosition(z, from, totalInput, totalInput.size, lastNullablePos))
+            assert(newRes == furthestNullablePosition(derivedZ, from + 1, totalInput, totalInput.size, newLastNullable))
+            assert(currentRes == newRes)
+
+            check(stack.forall(frame => frame.res == currentRes))   
+            
+            lemmaStackPreservesForEqualRes(stack, currentRes, newRes)
+            assert(stack.forall(frame => frame.res == newRes))
+            assert(stackFrame.res == currentRes)
+            assert(stackFrame.res == newRes)
+            assert(newStack.forall(frame => frame.res == newRes))
+            assert(newStack.forall(frame => frame.totalInput == totalInput))
+          })
+          furthestNullablePositionStackMem(derivedZ, from + 1, totalInput, totalInputSize, newLastNullable, newStack)
+        }
+      }
+    }
+  }.ensuring(res => res._1 == furthestNullablePosition(z, from, totalInput, totalInputSize, lastNullablePos)
+                  && res._2.forall(frame => frame.res == res._1) && 
+                  cacheUp.valid && cacheDown.valid && cacheFurthestNullable.valid && cacheFurthestNullable.totalInput == totalInput &&
+                  res._2.forall(frame => frame.totalInput == totalInput))
+
+
+  def fillUpCache[C](stack: Stack[C], totalInput: Sequence[C], res: BigInt)(using cacheFurthestNullable: CacheFurthestNullable[C]): Unit = {
+    require(cacheFurthestNullable.valid)
+    require(cacheFurthestNullable.totalInput == totalInput)
+    require(stack.forall(frame => frame.totalInput == totalInput))
+    require(stack.forall(frame => frame.res == res))
+    decreases(stack.size)
+    stack match {
+      case Nil() => ()
+      case Cons(head, tail) => {
+        cacheFurthestNullable.lemmaInvariant()
+        assert(head.res == res)
+        assert(head.from >= 0 && head.from <= totalInput.size)
+        assert(res == furthestNullablePosition(head.z, head.from, totalInput, totalInput.size, head.lastNullablePos))
+        cacheFurthestNullable.update(head.z, head.from, head.lastNullablePos, head.res, totalInput)
+        fillUpCache(tail, totalInput, res)
+      }
+    }
+  }.ensuring(_ => cacheFurthestNullable.valid && cacheFurthestNullable.totalInput == totalInput)
+
+  def findLongestMatchZipperSequenceV3Mem[C](z: Zipper[C], input: Sequence[C], totalInput: Sequence[C])(using cacheUp: CacheUp[C], cacheDown: CacheDown[C], cacheFurthestNullable: CacheFurthestNullable[C]): (Sequence[C], Sequence[C]) = {
+    require(ListUtils.isSuffix(input.list, totalInput.list))
+    require(cacheUp.valid && cacheDown.valid && cacheFurthestNullable.valid)
+    require(cacheFurthestNullable.totalInput == totalInput)
+    val totalInputSize = totalInput.size
+    val from = totalInputSize - input.size
+    val (res, stack) = furthestNullablePositionStackMem(z, from, totalInput, totalInputSize, if nullableZipper(z) then from - 1 else -1)
+    val prefixLength: BigInt = res - from + 1
+    ghostExpr({
+      check(stack.forall(frame => frame.res == res))
+      check(stack.forall(frame => frame.totalInput == totalInput))
+    })
+    
+    fillUpCache(stack, totalInput, res)
+    if (prefixLength < 0) {
+      input.splitAt(0)
+    } else {  
+      input.splitAt(prefixLength)
+    }
+  }.ensuring (res => res._1.list ++ res._2.list == input.list)
+
+  // ------------------------------------------- END Tailrec MEMOIZATION -------------------------------------------
 
   // ----------------------------- Find Longest Match Zipper Theorems ------------------------------
 
@@ -4636,6 +4876,23 @@ object VerifiedRegexMatcher {
     ghostExpr(assert(findLongestMatchWithZipperSequenceV2(r, input, totalInput) == ZipperRegex.findLongestMatchZipperFastV2(zipper, input, totalInput)))
     ZipperRegex.findLongestMatchZipperFastV2MemOnlyDeriv(zipper, input, totalInput)
   }.ensuring (res => res == findLongestMatchWithZipperSequenceV2(r, input, totalInput) && cacheDown.valid && cacheUp.valid)
+
+  @opaque
+  def findLongestMatchWithZipperSequenceV3Mem[C](r: Regex[C], input: Sequence[C], totalInput: Sequence[C])(using cacheUp: CacheUp[C], cacheDown: CacheDown[C], cacheFurthestNullable: CacheFurthestNullable[C]): (Sequence[C], Sequence[C]) = {
+    require(validRegex(r))
+    require(cacheUp.valid)
+    require(cacheDown.valid)
+    require(cacheFurthestNullable.valid)
+    require(cacheFurthestNullable.totalInput == totalInput)
+    require(ListUtils.isSuffix(input.list, totalInput.list))
+    val zipper = ZipperRegex.focus(r)
+    ghostExpr(ZipperRegex.longestMatchV3SameAsRegex(r, zipper, input, totalInput))
+    ghostExpr(ListUtils.lemmaSizeTrEqualsSize(input.list, 0))
+    ghostExpr(unfold(findLongestMatchWithZipperSequenceV2(r, input, totalInput)))
+    ghostExpr(unfold(ZipperRegex.findLongestMatchZipperSequenceV3Mem(zipper, input, totalInput)(using cacheUp, cacheDown, cacheFurthestNullable)))
+    ghostExpr(assert(findLongestMatchWithZipperSequenceV2(r, input, totalInput) == ZipperRegex.findLongestMatchZipperFastV2(zipper, input, totalInput)))
+    ZipperRegex.findLongestMatchZipperSequenceV3Mem(zipper, input, totalInput)
+  }.ensuring (res => (res._1.list, res._2.list) == findLongestMatch(r, input.list) && cacheDown.valid && cacheUp.valid && cacheFurthestNullable.valid && cacheFurthestNullable.totalInput == totalInput)
   //  ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
   def findLongestMatch[C](r: Regex[C], input: List[C]): (List[C], List[C]) = {
