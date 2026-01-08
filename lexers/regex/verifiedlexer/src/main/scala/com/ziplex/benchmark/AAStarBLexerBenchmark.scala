@@ -74,7 +74,7 @@ class AAStarBLexerBenchmark {
       using ClassTag.Char,
       AAStarBLexerBenchmarkUtils.zipperCacheUp,
       AAStarBLexerBenchmarkUtils.zipperCacheDown,
-      AAStarBLexerBenchmarkUtils.furthestNullableCachesInternal(file)
+      AAStarBLexerBenchmarkUtils.furthestNullableCaches(file)
     )
     bh.consume(suffix.isEmpty)
     // assert(suffix.isEmpty)
@@ -97,11 +97,14 @@ class AAStarBLexerBenchmark {
 }
 
 @State(Scope.Benchmark)
-@Fork(jvmArgsAppend = Array("-Xss1G", "-Xmx32g"))
+@Fork(jvmArgsAppend = Array("-Xss1G", "-Xmx48g"))
 class AAStarBLexerBenchmarkBig {
 
   @Param(
     Array(
+    "0.01",
+    "0.02",
+    "0.05",
     "0.1", 
     "0.5", 
     "1", 
@@ -118,11 +121,11 @@ class AAStarBLexerBenchmarkBig {
   @BenchmarkMode(Array(Mode.AverageTime))
   @OutputTimeUnit(TimeUnit.MICROSECONDS)
   def lex_ZipperV3Mem(bh: Blackhole): Unit = {
-    val (tokens, suffix) = Lexer.lexMem(AAStarBLexer.rules, AAStarBLexerBenchmarkBigUtils.megaBytesSequences(sizeIn100MB))(
+    val (tokens, suffix) = Lexer.lexMem(AAStarBLexer.rules, AAStarBLexerBenchmarkBigUtils.megaBytesSequences(sizeInMB))(
       using ClassTag.Char,
       AAStarBLexerBenchmarkBigUtils.zipperCacheUp,
       AAStarBLexerBenchmarkBigUtils.zipperCacheDown,
-      AAStarBLexerBenchmarkBigUtils.furthestNullableCachesLarge(sizeIn100MB)
+      AAStarBLexerBenchmarkBigUtils.furthestNullableCachesLarge(sizeInMB)
     )
     bh.consume(suffix.isEmpty)
     // assert(suffix.isEmpty)
@@ -132,7 +135,7 @@ class AAStarBLexerBenchmarkBig {
 }
 
 object AAStarBLexerBenchmarkBigUtils {
-  val mbSizes: Seq[Double] = Seq(0.1, 0.5, 1, 5, 10, 20, 30, 100)
+  val mbSizes: Seq[Double] = Seq(0.01, 0.02, 0.05, 0.1, 0.5, 1, 5, 10, 20, 30, 100)
   val megaBytesSequences: Map[String, Sequence[Char]] = (mbSizes).map { mb =>
     val sizeInChars: Int = (mb * 1_000_000).toInt
     val contentArray = IArray.tabulate(sizeInChars)(_ => 'a')
@@ -178,6 +181,10 @@ object AAStarBLexerBenchmarkUtils {
   val findLongestMatchCaches: Map[String, MemoisationZipper.CacheFindLongestMatch[Char]] = 
     (fileContents).map(kv => 
       (kv._1, MemoisationZipper.emptyFindLongestMatch[Char](ExampleUtils.ZipperBigIntHashable, kv._2))
+    )
+  val furthestNullableCaches: Map[String, MemoisationZipper.CacheFurthestNullable[Char]] = 
+    (fileContents).map(kv => 
+      (kv._1, MemoisationZipper.emptyFurthestNullableCache[Char](ExampleUtils.ZipperBigIntBigIntHashable, kv._2))
     )
 
   val zipperCacheUpInternal: MemoisationZipper.CacheUp[Char] = MemoisationZipper.emptyUp(ContextCharHashable)
