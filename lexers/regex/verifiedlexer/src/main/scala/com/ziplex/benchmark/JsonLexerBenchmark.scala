@@ -148,7 +148,7 @@ object JsonLexerBenchmarkUtils {
   }).toMap
 
   lazy val exampleFileTokens: Map[String, Sequence[(Token[Char])]] = exampleFileContents.map { case (name, content) =>
-    val (tokens, suffix) = Lexer.lexV1Mem(JsonLexer.rules, content)(
+    val (tokens, suffix) = Lexer.lexMem(JsonLexer.rules, content)(
       using ClassTag.Char,
       zipperCacheUpInternal,
       zipperCacheDownInternal,
