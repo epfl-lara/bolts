@@ -3664,7 +3664,7 @@ object ZipperRegex {
         assert(head.res == res)
         assert(head.from >= 0 && head.from <= totalInput.size)
         assert(res == furthestNullablePosition(head.z, head.from, totalInput, totalInput.size, head.lastNullablePos))
-        cacheFurthestNullable.update(head.z, head.from, head.lastNullablePos, head.res, totalInput)
+        cacheFurthestNullable.update(head.z, head.from, head.lastNullablePos, res, totalInput)
         fillUpCache(tail, totalInput, res)
       }
     }
