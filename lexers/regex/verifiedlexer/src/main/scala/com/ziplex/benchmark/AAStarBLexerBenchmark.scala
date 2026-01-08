@@ -5,7 +5,7 @@ import java.util.concurrent.TimeUnit
 import org.openjdk.jmh.annotations.*
 import org.openjdk.jmh.infra.Blackhole
 import scala.util.Random
-import stainless.collection.{List => StainlessList}
+import stainless.collection.{List => StainlessList, IArray}
 import scala.compiletime.uninitialized
 import com.ziplex.lexer.VerifiedLexer.Lexer
 import com.ziplex.lexer.example.ExampleAAStarBLexer.AAStarBLexer
@@ -22,11 +22,11 @@ import com.ziplex.lexer.Sequence
 import com.ziplex.lexer.emptySeq
 import com.ziplex.lexer.singletonSeq
 import com.ziplex.lexer.seqFromList
+import com.ziplex.lexer.seqFromArray
 import com.ziplex.lexer.example.ExampleUtils
 
 import scala.reflect.ClassTag
 import java.io.File
-import com.ziplex.lexer.emptySeq
 
 @State(Scope.Benchmark)
 @Fork(jvmArgsAppend = Array("-Xss1G", "-Xmx32g"))
@@ -96,34 +96,57 @@ class AAStarBLexerBenchmark {
 
 }
 
+@State(Scope.Benchmark)
+@Fork(jvmArgsAppend = Array("-Xss1G", "-Xmx32g"))
 class AAStarBLexerBenchmarkBig {
 
   @Param(
     Array(
-    "1",
-    "2",
-    "3",
-    "4",
-    "5",
+    "0.1", 
+    "0.5", 
+    "1", 
+    "5", 
+    "10", 
+    "20", 
+    "30", 
+    "100"
     )
   )
-  var sizeIn100MB: String = uninitialized
+  var sizeInMB: String = uninitialized
 
   @Benchmark
   @BenchmarkMode(Array(Mode.AverageTime))
   @OutputTimeUnit(TimeUnit.MICROSECONDS)
   def lex_ZipperV3Mem(bh: Blackhole): Unit = {
-    val (tokens, suffix) = Lexer.lexMem(AAStarBLexer.rules, AAStarBLexerBenchmarkUtils.megaBytesSequences(sizeIn100MB))(
+    val (tokens, suffix) = Lexer.lexMem(AAStarBLexer.rules, AAStarBLexerBenchmarkBigUtils.megaBytesSequences(sizeIn100MB))(
       using ClassTag.Char,
-      AAStarBLexerBenchmarkUtils.zipperCacheUp,
-      AAStarBLexerBenchmarkUtils.zipperCacheDown,
-      AAStarBLexerBenchmarkUtils.furthestNullableCachesInternal(sizeIn100MB)
+      AAStarBLexerBenchmarkBigUtils.zipperCacheUp,
+      AAStarBLexerBenchmarkBigUtils.zipperCacheDown,
+      AAStarBLexerBenchmarkBigUtils.furthestNullableCachesLarge(sizeIn100MB)
     )
     bh.consume(suffix.isEmpty)
     // assert(suffix.isEmpty)
   }
 
 
+}
+
+object AAStarBLexerBenchmarkBigUtils {
+  val mbSizes: Seq[Double] = Seq(0.1, 0.5, 1, 5, 10, 20, 30, 100)
+  val megaBytesSequences: Map[String, Sequence[Char]] = (mbSizes).map { mb =>
+    val sizeInChars: Int = (mb * 1_000_000).toInt
+    val contentArray = IArray.tabulate(sizeInChars)(_ => 'a')
+    val content = seqFromArray(contentArray)
+    assert(content.size == sizeInChars)
+    (s"${mb}", content)
+  }.toMap
+
+  val zipperCacheUp: MemoisationZipper.CacheUp[Char] = MemoisationZipper.emptyUp(ContextCharHashable)
+  val zipperCacheDown: MemoisationZipper.CacheDown[Char] = MemoisationZipper.emptyDown(RegexContextCharHashable)
+  val furthestNullableCachesLarge: Map[String, MemoisationZipper.CacheFurthestNullable[Char]] = 
+    (megaBytesSequences).map(kv => 
+      (kv._1, MemoisationZipper.emptyFurthestNullableCache[Char](ExampleUtils.ZipperBigIntBigIntHashable, kv._2))
+    )
 }
 
 object AAStarBLexerBenchmarkUtils {
@@ -150,17 +173,6 @@ object AAStarBLexerBenchmarkUtils {
     (name -> lines)
   }).toMap
 
-
-  val megaBytesSequences: Map[String, Sequence[Char]] = (1 to 5).map { mb =>
-    val sizeInChars = mb * 100_000_000
-    val content = emptySeq[Char]()
-    var i = 0
-    while i < sizeInChars do
-      content.append('a')
-      i += 1
-    (s"${mb}", content)
-  }.toMap
-
   val zipperCacheUp: MemoisationZipper.CacheUp[Char] = MemoisationZipper.emptyUp(ContextCharHashable)
   val zipperCacheDown: MemoisationZipper.CacheDown[Char] = MemoisationZipper.emptyDown(RegexContextCharHashable)
   val findLongestMatchCaches: Map[String, MemoisationZipper.CacheFindLongestMatch[Char]] = 
@@ -173,13 +185,5 @@ object AAStarBLexerBenchmarkUtils {
   val findLongestMatchCachesInternal: Map[String, MemoisationZipper.CacheFindLongestMatch[Char]] = 
     (fileContents).map(kv => 
       (kv._1, MemoisationZipper.emptyFindLongestMatch[Char](ExampleUtils.ZipperBigIntHashable, kv._2))
-    )
-  val furthestNullableCachesInternal: Map[String, MemoisationZipper.CacheFurthestNullable[Char]] = 
-    (fileContents).map(kv => 
-      (kv._1, MemoisationZipper.emptyFurthestNullableCache[Char](ExampleUtils.ZipperBigIntBigIntHashable, kv._2))
-    )
-  val furthestNullableCachesLarge: Map[String, MemoisationZipper.CacheFurthestNullable[Char]] = 
-    (megaBytesSequences).map(kv => 
-      (kv._1, MemoisationZipper.emptyFurthestNullableCache[Char](ExampleUtils.ZipperBigIntBigIntHashable, kv._2))
     )
 }
