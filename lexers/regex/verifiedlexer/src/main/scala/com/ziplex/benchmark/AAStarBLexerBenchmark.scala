@@ -135,9 +135,21 @@ class AAStarBLexerBenchmarkBig {
 }
 
 object AAStarBLexerBenchmarkBigUtils {
-  val mbSizes: Seq[Double] = Seq(0.01, 0.02, 0.05, 0.1, 0.5, 1, 5, 10, 20, 30, 100)
+  val mbSizes: Seq[String] = Seq(
+    "0.01",
+    "0.02",
+    "0.05",
+    "0.1", 
+    "0.5", 
+    "1", 
+    "5", 
+    "10", 
+    "20", 
+    "30", 
+    "100"
+    )
   val megaBytesSequences: Map[String, Sequence[Char]] = (mbSizes).map { mb =>
-    val sizeInChars: Int = (mb * 1_000_000).toInt
+    val sizeInChars: Int = (mb.toDouble * 1_000_000).toInt
     val contentArray = IArray.tabulate(sizeInChars)(_ => 'a')
     val content = seqFromArray(contentArray)
     assert(content.size == sizeInChars)
