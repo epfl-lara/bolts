@@ -15,6 +15,8 @@ import stainless.lang.Option
 import stainless.lang.Some
 import stainless.lang.None
 
+import stainless.collection.IArray
+
 import com.ziplex.lexer.Sequence
 import com.ziplex.lexer.emptySeq
 import com.ziplex.lexer.singletonSeq
@@ -31,15 +33,35 @@ object Main {
     // regexZipperExample()
     // exampleJsonSorting()
 
-    regexZipperVisualizationAOrBStarConcatC()
-    println("-\n\n====================\n\n-")
-    regexZipperVisualizationAThenBThenC()
+    // regexZipperVisualizationAOrBStarConcatC()
+    // println("-\n\n====================\n\n-")
+    // regexZipperVisualizationAThenBThenC()
     // regexZipperVisualizationAOrBStarConcatC()
     // println("-\n\n====================\n\n-")
     // regexZipperVisualizationAThenBThenC()
 
-    testTailRecEquivalence()
+    // testTailRecEquivalence()
     // profileJsonLexing()
+
+    testVeryLargeFile()
+  }
+
+  def testVeryLargeFile() = {
+    import com.ziplex.lexer.example.ExampleAAStarBLexer.AAStarBLexer
+    import com.ziplex.lexer.example.RegexUtils.*  
+
+
+    val sizeInChars = 100_000_000
+    val contentArray = IArray.tabulate(sizeInChars)(_ => 'a')
+    val content = seqFromArray(contentArray)
+    println(s"Lexing file with $sizeInChars 'a' characters...")
+    assert(content.size == sizeInChars)
+    val timeBefore = System.currentTimeMillis()
+    val (tokens, suffix) = Lexer.lexMem(AAStarBLexer.rules, content)(using ClassTag.Char, ExampleUtils.zipperCacheUp, ExampleUtils.zipperCacheDown, ExampleUtils.furthestNullableCache(content))
+    val timeAfter = System.currentTimeMillis()
+    assert(suffix.isEmpty)
+    println(s"Lexed $sizeInChars characters in ${timeAfter - timeBefore} ms, got ${tokens.size} tokens.")
+
   }
 
   def testTailRecEquivalence(): Unit = {
