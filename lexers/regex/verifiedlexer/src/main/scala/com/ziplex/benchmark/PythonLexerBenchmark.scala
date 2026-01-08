@@ -76,7 +76,7 @@ class PythonLexerBenchmark {
       using ClassTag.Char,
       PythonLexerBenchmarkUtils.zipperCacheUp,
       PythonLexerBenchmarkUtils.zipperCacheDown,
-      PythonLexerBenchmarkUtils.findLongestMatchCaches(file)
+      PythonLexerBenchmarkUtils.furthestNullableCaches(file)
     )
     bh.consume(suffix.isEmpty)
     // assert(suffix.isEmpty)
@@ -144,5 +144,9 @@ object PythonLexerBenchmarkUtils {
   val findLongestMatchCaches: Map[String, MemoisationZipper.CacheFindLongestMatch[Char]] = 
     (exampleFileContents).map(kv => 
       (kv._1, MemoisationZipper.emptyFindLongestMatch[Char](ExampleUtils.ZipperBigIntHashable, kv._2))
+    )
+  val furthestNullableCaches: Map[String, MemoisationZipper.CacheFurthestNullable[Char]] = 
+    (exampleFileContents).map(kv => 
+      (kv._1, MemoisationZipper.emptyFurthestNullableCache[Char](ExampleUtils.ZipperBigIntBigIntHashable, kv._2))
     )
 }

@@ -99,7 +99,18 @@ object ExampleUtils:
       step(step(mix64(0x5a5f42494749L), zHash), fold32(bHash) ^ bShape)
   }
 
+  object ZipperBigIntBigIntHashable extends Hashable[(Zipper[Char], BigInt, BigInt)] {
+    override def hash(k: (Zipper[Char], BigInt, BigInt)): Long =
+      val (z, b1, b2) = k
+      var h = mix64(0x5a5f4249474942L) // "Z_BGIB"
+      h = step(h, ZipperBigIntHashable.hash((z, b1)))
+      h = step(h, fold32(b2.hashCode().toLong) ^ 
+                     ((b2.signum.toLong << 1) ^ (b2.bitLength.toLong << 17)))
+      h
+  }
+
   val zipperCacheUp: MemoisationZipper.CacheUp[Char] = MemoisationZipper.emptyUp(ContextCharHashable)
   val zipperCacheDown: MemoisationZipper.CacheDown[Char] = MemoisationZipper.emptyDown(RegexContextCharHashable)
   def findLongestMatchCache(totalInput: Sequence[Char]) = MemoisationZipper.emptyFindLongestMatch[Char](ZipperBigIntHashable, totalInput)
+  def furthestNullableCache(totalInput: Sequence[Char]) = MemoisationZipper.emptyFurthestNullableCache[Char](ZipperBigIntBigIntHashable, totalInput)
 end ExampleUtils

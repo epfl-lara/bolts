@@ -88,12 +88,12 @@ class AmyLexerBenchmark {
   @Benchmark
   @BenchmarkMode(Array(Mode.AverageTime))
   @OutputTimeUnit(TimeUnit.MICROSECONDS)
-  def lex_ZipperV2Mem(bh: Blackhole): Unit = {
+  def lex_ZipperV3Mem(bh: Blackhole): Unit = {
     val (tokens, suffix) = Lexer.lexMem(AmyLexer.rules, AmyLexerBenchmarkUtils.exampleFileContents(file))(
       using ClassTag.Char, 
       AmyLexerBenchmarkUtils.zipperCacheUp,
       AmyLexerBenchmarkUtils.zipperCacheDown,
-      AmyLexerBenchmarkUtils.findLongestMatchCaches(file)
+      AmyLexerBenchmarkUtils.furthestNullableCaches(file)
     )
     bh.consume(suffix.isEmpty)
     // assert(suffix.isEmpty)
@@ -247,7 +247,7 @@ class AmyLexerBenchmarkGenerated {
       using ClassTag.Char,
       AmyLexerBenchmarkUtils.zipperCacheUp,
       AmyLexerBenchmarkUtils.zipperCacheDown,
-      AmyLexerBenchmarkUtils.findLongestMatchCaches(file)
+      AmyLexerBenchmarkUtils.furthestNullableCaches(file)
     )
     assert(suffix.isEmpty)
   }
@@ -392,5 +392,9 @@ object AmyLexerBenchmarkUtils {
   val findLongestMatchCaches: Map[String, MemoisationZipper.CacheFindLongestMatch[Char]] = 
     (exampleFileContents ++ generatedFileContents).map(kv => 
       (kv._1, MemoisationZipper.emptyFindLongestMatch[Char](ExampleUtils.ZipperBigIntHashable, kv._2))
+    )
+  val furthestNullableCaches: Map[String, MemoisationZipper.CacheFurthestNullable[Char]] = 
+    (exampleFileContents ++ generatedFileContents).map(kv => 
+      (kv._1, MemoisationZipper.emptyFurthestNullableCache[Char](ExampleUtils.ZipperBigIntBigIntHashable, kv._2))
     )
 }

@@ -51,32 +51,46 @@ class AAStarBLexerBenchmark {
   )
   var file: String = uninitialized
 
-  // @Benchmark
-  // @BenchmarkMode(Array(Mode.AverageTime))
-  // @OutputTimeUnit(TimeUnit.MICROSECONDS)
-  // def lex_ZipperV1Mem(bh: Blackhole): Unit = {
-  //   val (tokens, suffix) = Lexer.lexV1Mem(AAStarBLexer.rules, AAStarBLexerBenchmarkUtils.fileContents(file))(
-  //     using ClassTag.Char,
-  //     AAStarBLexerBenchmarkUtils.zipperCacheUp,
-  //     AAStarBLexerBenchmarkUtils.zipperCacheDown
-  //   )
-  //   bh.consume(suffix.isEmpty)
-  //   // assert(suffix.isEmpty)
-  // }
-
   @Benchmark
   @BenchmarkMode(Array(Mode.AverageTime))
   @OutputTimeUnit(TimeUnit.MICROSECONDS)
-  def lex_ZipperMem(bh: Blackhole): Unit = {
-    val (tokens, suffix) = Lexer.lexMem(AAStarBLexer.rules, AAStarBLexerBenchmarkUtils.fileContents(file))(
+  def lex_ZipperV1Mem(bh: Blackhole): Unit = {
+    val (tokens, suffix) = Lexer.lexV1Mem(AAStarBLexer.rules, AAStarBLexerBenchmarkUtils.fileContents(file))(
       using ClassTag.Char,
       AAStarBLexerBenchmarkUtils.zipperCacheUp,
-      AAStarBLexerBenchmarkUtils.zipperCacheDown,
-      AAStarBLexerBenchmarkUtils.findLongestMatchCaches(file)
+      AAStarBLexerBenchmarkUtils.zipperCacheDown
     )
     bh.consume(suffix.isEmpty)
     // assert(suffix.isEmpty)
   }
+
+  @Benchmark
+  @BenchmarkMode(Array(Mode.AverageTime))
+  @OutputTimeUnit(TimeUnit.MICROSECONDS)
+  def lex_ZipperV3Mem(bh: Blackhole): Unit = {
+    val (tokens, suffix) = Lexer.lexMem(AAStarBLexer.rules, AAStarBLexerBenchmarkUtils.fileContents(file))(
+      using ClassTag.Char,
+      AAStarBLexerBenchmarkUtils.zipperCacheUp,
+      AAStarBLexerBenchmarkUtils.zipperCacheDown,
+      AAStarBLexerBenchmarkUtils.furthestNullableCachesInternal(file)
+    )
+    bh.consume(suffix.isEmpty)
+    // assert(suffix.isEmpty)
+  }
+
+  // @Benchmark
+  // @BenchmarkMode(Array(Mode.AverageTime))
+  // @OutputTimeUnit(TimeUnit.MICROSECONDS)
+  // def lex_ZipperV2Mem(bh: Blackhole): Unit = {
+  //   val (tokens, suffix) = Lexer.lexV2Mem(AAStarBLexer.rules, AAStarBLexerBenchmarkUtils.fileContents(file))(
+  //     using ClassTag.Char,
+  //     AAStarBLexerBenchmarkUtils.zipperCacheUp,
+  //     AAStarBLexerBenchmarkUtils.zipperCacheDown,
+  //     AAStarBLexerBenchmarkUtils.findLongestMatchCaches(file)
+  //   )
+  //   bh.consume(suffix.isEmpty)
+  //   // assert(suffix.isEmpty)
+  // }
 
   // @Benchmark
   // @BenchmarkMode(Array(Mode.AverageTime))
@@ -146,5 +160,9 @@ object AAStarBLexerBenchmarkUtils {
   val findLongestMatchCachesInternal: Map[String, MemoisationZipper.CacheFindLongestMatch[Char]] = 
     (fileContents).map(kv => 
       (kv._1, MemoisationZipper.emptyFindLongestMatch[Char](ExampleUtils.ZipperBigIntHashable, kv._2))
+    )
+  val furthestNullableCachesInternal: Map[String, MemoisationZipper.CacheFurthestNullable[Char]] = 
+    (fileContents).map(kv => 
+      (kv._1, MemoisationZipper.emptyFurthestNullableCache[Char](ExampleUtils.ZipperBigIntBigIntHashable, kv._2))
     )
 }

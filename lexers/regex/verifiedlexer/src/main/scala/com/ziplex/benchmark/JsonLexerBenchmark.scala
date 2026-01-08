@@ -73,7 +73,7 @@ class JsonLexerBenchmark {
       using ClassTag.Char,
       JsonLexerBenchmarkUtils.zipperCacheUp,
       JsonLexerBenchmarkUtils.zipperCacheDown,
-      JsonLexerBenchmarkUtils.findLongestMatchCaches(file)
+      JsonLexerBenchmarkUtils.furthestNullableCaches(file)
     )
     bh.consume(suffix.isEmpty)
     // assert(suffix.isEmpty)
@@ -152,7 +152,7 @@ object JsonLexerBenchmarkUtils {
       using ClassTag.Char,
       zipperCacheUpInternal,
       zipperCacheDownInternal,
-      findLongestMatchCachesInternal(name)
+      furthestNullableCachesInternal(name)
     )
     assert(suffix.isEmpty)
     (name -> tokens)
@@ -164,11 +164,19 @@ object JsonLexerBenchmarkUtils {
     (exampleFileContents).map(kv => 
       (kv._1, MemoisationZipper.emptyFindLongestMatch[Char](ExampleUtils.ZipperBigIntHashable, kv._2))
     )
+  val furthestNullableCaches: Map[String, MemoisationZipper.CacheFurthestNullable[Char]] = 
+    (exampleFileContents).map(kv => 
+      (kv._1, MemoisationZipper.emptyFurthestNullableCache[Char](ExampleUtils.ZipperBigIntBigIntHashable, kv._2))
+    )
 
   val zipperCacheUpInternal: MemoisationZipper.CacheUp[Char] = MemoisationZipper.emptyUp(ContextCharHashable)
   val zipperCacheDownInternal: MemoisationZipper.CacheDown[Char] = MemoisationZipper.emptyDown(RegexContextCharHashable)
   val findLongestMatchCachesInternal: Map[String, MemoisationZipper.CacheFindLongestMatch[Char]] = 
     (exampleFileContents).map(kv => 
       (kv._1, MemoisationZipper.emptyFindLongestMatch[Char](ExampleUtils.ZipperBigIntHashable, kv._2))
+    )
+  val furthestNullableCachesInternal: Map[String, MemoisationZipper.CacheFurthestNullable[Char]] = 
+    (exampleFileContents).map(kv => 
+      (kv._1, MemoisationZipper.emptyFurthestNullableCache[Char](ExampleUtils.ZipperBigIntBigIntHashable, kv._2))
     )
 }
