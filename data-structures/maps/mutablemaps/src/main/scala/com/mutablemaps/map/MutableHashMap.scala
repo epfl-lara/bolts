@@ -17,7 +17,7 @@ import stainless.proof.check
 // END uncomment for verification --------------------------------------------
 // BEGIN imports for benchmarking -------------------------------------------
 // import stainless.lang.{ghost => _, decreases => _, unfold => _, _}
-// import com.mutablemaps.map.OptimisedChecks.*
+// import com.stainless.OptimisedChecks.*
 // import Predef.{assert => _, Ensuring => _, require => _}
 
 // @tailrec
@@ -35,14 +35,13 @@ trait Hashable[K] {
 }
 
 object MutableHashMap {
-
   /** Helper method to create a new empty HashMap
     *
     * @param defaultValue
     * @return
     */
-  def getEmptyHashMap[K, V](defaultValue: K => V, hashF: Hashable[K]): HashMap[K, V] = {
-    val initialSize = 16
+  def getEmptyHashMap[K, V](defaultValue: K => V, hashF: Hashable[K], initialSize: Int = 16): HashMap[K, V] = {
+    require(validMask(initialSize - 1))
     HashMap(Cell(MutableLongMap.getEmptyLongMap[List[(K, V)]]((l: Long) => Nil[(K, V)](), initialSize)), hashF, 0, defaultValue)
   }.ensuring (res => res.valid && res.size == 0)
 
