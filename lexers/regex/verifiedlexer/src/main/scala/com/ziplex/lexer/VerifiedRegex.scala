@@ -3661,7 +3661,7 @@ object ZipperRegex {
                   res._2.forall(frame => frame.totalInput == totalInput))
 
 
-  def fillUpCache[C](stack: Stack[C], totalInput: Sequence[C], res: BigInt)(using cacheFurthestNullable: CacheFurthestNullable[C]): Unit = {
+    def fillUpCache[C](stack: Stack[C], totalInput: Sequence[C], totalInputSize: BigInt, res: BigInt, counter: BigInt = 0)(using cacheFurthestNullable: CacheFurthestNullable[C]): Unit = {
     require(cacheFurthestNullable.valid)
     require(cacheFurthestNullable.totalInput == totalInput)
     require(stack.forall(frame => frame.totalInput == totalInput))
@@ -3670,15 +3670,20 @@ object ZipperRegex {
     stack match {
       case Nil() => ()
       case Cons(head, tail) => {
-        cacheFurthestNullable.lemmaInvariant()
-        assert(head.res == res)
-        assert(head.from >= 0 && head.from <= totalInput.size)
-        assert(res == furthestNullablePosition(head.z, head.from, totalInput, totalInput.size, head.lastNullablePos))
-        cacheFurthestNullable.update(head.z, head.from, head.lastNullablePos, res, totalInput)
-        fillUpCache(tail, totalInput, res)
+        if (totalInputSize > 1_048_576 && counter % 10 != 0) {
+          // Skip 9/10 updates to avoid enormous cache on large inputs
+        } else {
+          cacheFurthestNullable.lemmaInvariant()
+          assert(head.res == res)
+          assert(head.from >= 0 && head.from <= totalInput.size)
+          assert(res == furthestNullablePosition(head.z, head.from, totalInput, totalInput.size, head.lastNullablePos))
+          cacheFurthestNullable.update(head.z, head.from, head.lastNullablePos, res, totalInput)
+        }
+        fillUpCache(tail, totalInput, totalInputSize, res, counter + 1)
       }
     }
   }.ensuring(_ => cacheFurthestNullable.valid && cacheFurthestNullable.totalInput == totalInput)
+
 
   def findLongestMatchZipperSequenceV3Mem[C](z: Zipper[C], input: Sequence[C], totalInput: Sequence[C])(using cacheUp: CacheUp[C], cacheDown: CacheDown[C], cacheFurthestNullable: CacheFurthestNullable[C]): (Sequence[C], Sequence[C]) = {
     require(ListUtils.isSuffix(input.list, totalInput.list))
@@ -3693,7 +3698,7 @@ object ZipperRegex {
       check(stack.forall(frame => frame.totalInput == totalInput))
     })
     
-    fillUpCache(stack, totalInput, res)
+    fillUpCache(stack, totalInput, totalInputSize, res)
     if (prefixLength < 0) {
       input.splitAt(0)
     } else {  
