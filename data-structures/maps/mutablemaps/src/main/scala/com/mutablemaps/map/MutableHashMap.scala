@@ -35,14 +35,13 @@ trait Hashable[K] {
 }
 
 object MutableHashMap {
-
   /** Helper method to create a new empty HashMap
     *
     * @param defaultValue
     * @return
     */
-  def getEmptyHashMap[K, V](defaultValue: K => V, hashF: Hashable[K]): HashMap[K, V] = {
-    val initialSize = 16
+  def getEmptyHashMap[K, V](defaultValue: K => V, hashF: Hashable[K], initialSize: Int = 16): HashMap[K, V] = {
+    require(validMask(initialSize - 1))
     HashMap(Cell(MutableLongMap.getEmptyLongMap[List[(K, V)]]((l: Long) => Nil[(K, V)](), initialSize)), hashF, 0, defaultValue)
   }.ensuring (res => res.valid && res.size == 0)
 
