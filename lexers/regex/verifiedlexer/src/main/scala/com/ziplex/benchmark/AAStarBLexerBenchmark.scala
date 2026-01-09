@@ -98,7 +98,7 @@ class AAStarBLexerBenchmark {
 
 @State(Scope.Benchmark)
 @Fork(jvmArgsAppend = Array("-Xss1G", "-Xmx64g"))
-class AAStarBLexerBenchmarkBig {
+class BigAAStarBLexerBenchmark {
 
   @Param(
     Array(
