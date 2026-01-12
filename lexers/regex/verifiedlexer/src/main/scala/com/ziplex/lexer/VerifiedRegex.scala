@@ -813,6 +813,17 @@ object ZipperRegex {
   import VerifiedRegexMatcher.*
   import stainless.lang.Set
   import MemoisationZipper.*
+
+
+  /**
+   * When memoizing furthest nullable positions
+   * the cache memoizes 1/k call when the input size is bigger than this threshold
+   * 
+   * 
+   */
+  inline def FURTHEST_NULLABLE_CACHE_THRESHOLD = 1_048_576 // 2^20
+  inline def FURTHEST_NULLABLE_CACHE_K = 10
+
   
   /**
     * Context[C] represent sequences of expressions
@@ -3670,7 +3681,7 @@ object ZipperRegex {
     stack match {
       case Nil() => ()
       case Cons(head, tail) => {
-        if (totalInputSize > 1_048_576 && counter % 10 != 0) {
+        if (totalInputSize > FURTHEST_NULLABLE_CACHE_THRESHOLD && counter % FURTHEST_NULLABLE_CACHE_K != 0) {
           // Skip 9/10 updates to avoid enormous cache on large inputs
         } else {
           cacheFurthestNullable.lemmaInvariant()
