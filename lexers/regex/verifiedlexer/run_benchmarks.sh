@@ -13,4 +13,5 @@ echo "Benchmark results saved in: $DIRECTORY_PATH"
 
 echo "Run flex benchmarks by executing ./flex_benchmarks/run_benchmark.sh"
 cd ./flex_benchmarks || exit 1
+./build.sh
 ./run_benchmark.sh
