@@ -1,0 +1,29 @@
+(* *********************************************************************)
+(*                                                                     *)
+(*                 Coqlex verified lexer generator                     *)
+(*                                                                     *)
+(*             (c) 2026 Siemens Mobility SAS and Inria Saclay          *)
+(*                                                                     *)
+(*  Copyright Institut National de Recherche en Informatique et en     *)
+(*  Automatique. All rights reserved. This file is distributed under   *)
+(*  the terms of the INRIA Non-Commercial License Agreement (see the   *)
+(*  LICENSE file).                                                     *)
+(*                                                                     *)
+(* *********************************************************************)
+
+{
+   
+   Require Import String.
+   Inductive t_type :=
+    | A : t_type
+    | ASTARB : t_type.
+    
+}
+
+(** AAStarB definition - two rules: 'a' and 'a*b' **)
+
+rule read =
+  parse
+  | 'a'* 'b'    { ret ASTARB }
+  | 'a'         { ret A }
+
