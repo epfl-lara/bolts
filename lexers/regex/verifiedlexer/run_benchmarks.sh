@@ -8,3 +8,9 @@ sbt -no-colors "Jmh/run -i 5 -wi 5 -f1 -t1 com.ziplex.lexer.benchmark.lexer.Json
 sbt -no-colors "Jmh/run -i 5 -wi 5 -f1 -t1 com.ziplex.lexer.benchmark.lexer.JsonManipulationBenchmark" > "$DIRECTORY_PATH/json_manipulation_benchmark_wi_5_i_5_laraserver4.txt"
 sbt -no-colors "Jmh/run -i 5 -wi 5 -f1 -t1 com.ziplex.lexer.benchmark.LexerRegexBenchmark" > "$DIRECTORY_PATH/lexerregex_benchmark_wi_5_i_5_laraserver4.txt"
 sbt -no-colors "Jmh/run -i 5 -wi 5 -f1 -t1 com.ziplex.lexer.benchmark.RegexBenchmark" > "$DIRECTORY_PATH/regex_benchmark_wi_5_i_5_laraserver4.txt"
+
+echo "Benchmark results saved in: $DIRECTORY_PATH"
+
+echo "Run flex benchmarks by executing ./flex_benchmarks/run_benchmark.sh"
+cd ./flex_benchmarks || exit 1
+./run_benchmark.sh
