@@ -39,12 +39,16 @@ class AAStarBLexerBenchmark {
     "1000.txt",
     "10000.txt",
     "1200.txt",
+    "15000.txt",
     "200.txt",
     "2000.txt",
     "20000.txt",
+    "25000.txt",
     "300.txt",
     "30000.txt",
+    "35000.txt",
     "40000.txt",
+    "45000.txt",
     "500.0.txt",
     "500.txt",
     "5000.txt",
@@ -95,7 +99,7 @@ class AAStarBLexerBenchmark {
     // assert(suffix.isEmpty)
   }
 
-   @Benchmark
+  @Benchmark
   @BenchmarkMode(Array(Mode.AverageTime))
   @OutputTimeUnit(TimeUnit.MICROSECONDS)
   def lex_Silex(): Unit = {
@@ -110,30 +114,35 @@ class BigAAStarBLexerBenchmark {
 
   @Param(
     Array(
-    "0.01",
-    "0.02",
-    "0.05",
-    "0.1", 
-    "0.5", 
-    "1", 
-    "5", 
-    "10", 
-    "20", 
-    "30", 
-    "100"
+    "10",
+    "20",
+    "50",
+    "100", 
+    "500", 
+    "1000", 
+    "2000",
+    "4000",
+    "5000",
+    "8000",
+    "10000", 
+    "15000", 
+    "20000", 
+    "25000", 
+    "30000", 
+    "100000"
     )
   )
-  var sizeInMB: String = uninitialized
+  var sizeInKB: String = uninitialized
 
   @Benchmark
   @BenchmarkMode(Array(Mode.AverageTime))
   @OutputTimeUnit(TimeUnit.MICROSECONDS)
   def lex_ZipperV3Mem(bh: Blackhole): Unit = {
-    val (tokens, suffix) = Lexer.lexMem(AAStarBLexer.rules, AAStarBLexerBenchmarkBigUtils.megaBytesSequences(sizeInMB))(
+    val (tokens, suffix) = Lexer.lexMem(AAStarBLexer.rules, AAStarBLexerBenchmarkBigUtils.kiloBytesSequences(sizeInKB))(
       using ClassTag.Char,
       AAStarBLexerBenchmarkBigUtils.zipperCacheUp,
       AAStarBLexerBenchmarkBigUtils.zipperCacheDown,
-      AAStarBLexerBenchmarkBigUtils.furthestNullableCachesLarge(sizeInMB)
+      AAStarBLexerBenchmarkBigUtils.furthestNullableCachesLarge(sizeInKB)
     )
     bh.consume(suffix.isEmpty)
     // assert(suffix.isEmpty)
@@ -143,31 +152,36 @@ class BigAAStarBLexerBenchmark {
 }
 
 object AAStarBLexerBenchmarkBigUtils {
-  val mbSizes: Seq[String] = Seq(
-    "0.01",
-    "0.02",
-    "0.05",
-    "0.1", 
-    "0.5", 
-    "1", 
-    "5", 
-    "10", 
-    "20", 
-    "30", 
-    "100"
+  val kbSizes: Seq[String] = Seq(
+    "10",
+    "20",
+    "50",
+    "100", 
+    "500", 
+    "1000", 
+    "2000",
+    "4000",
+    "5000",
+    "8000",
+    "10000", 
+    "15000", 
+    "20000", 
+    "25000", 
+    "30000", 
+    "100000"
     )
-  val megaBytesSequences: Map[String, Sequence[Char]] = (mbSizes).map { mb =>
-    val sizeInChars: Int = (mb.toDouble * 1_000_000).toInt
+  val kiloBytesSequences: Map[String, Sequence[Char]] = (kbSizes).map { kb =>
+    val sizeInChars: Int = (kb.toDouble * 1_000).toInt
     val contentArray = IArray.tabulate(sizeInChars)(_ => 'a')
     val content = seqFromArray(contentArray)
     assert(content.size == sizeInChars)
-    (s"${mb}", content)
+    (s"${kb}", content)
   }.toMap
 
   val zipperCacheUp: MemoisationZipper.CacheUp[Char] = MemoisationZipper.emptyUp(ContextCharHashable)
   val zipperCacheDown: MemoisationZipper.CacheDown[Char] = MemoisationZipper.emptyDown(RegexContextCharHashable)
   val furthestNullableCachesLarge: Map[String, MemoisationZipper.CacheFurthestNullable[Char]] = 
-    (megaBytesSequences).map(kv => 
+    (kiloBytesSequences).map(kv => 
       (kv._1, MemoisationZipper.emptyFurthestNullableCache[Char](ExampleUtils.ZipperBigIntBigIntHashable, kv._2))
     )
 }
@@ -178,12 +192,16 @@ object AAStarBLexerBenchmarkUtils {
     "1000.txt",
     "10000.txt",
     "1200.txt",
+    "15000.txt",
     "200.txt",
     "2000.txt",
     "20000.txt",
+    "25000.txt",
     "300.txt",
     "30000.txt",
+    "35000.txt",
     "40000.txt",
+    "45000.txt",
     "500.0.txt",
     "500.txt",
     "5000.txt",
