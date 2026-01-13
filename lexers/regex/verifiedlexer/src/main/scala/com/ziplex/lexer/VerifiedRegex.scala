@@ -693,8 +693,8 @@ object VerifiedRegex {
     val h5 = h4 ^ (h4 >>> 33)
     h5
   }
-  @pure def mix1(tag: Long, a: Long): Long = fmix64(tag * 0x9e3779b97f4a7c15L + a)
-  @pure def mix2(tag: Long, a: Long, b: Long): Long = fmix64(tag * 0x9e3779b97f4a7c15L + a * 0xbf58476d1ce4e5b9L + b)
+  @pure inline def mix1(tag: Long, a: Long): Long = fmix64(tag * 0x9e3779b97f4a7c15L + a)
+  @pure inline def mix2(tag: Long, a: Long, b: Long): Long = fmix64(tag * 0x9e3779b97f4a7c15L + a * 0xbf58476d1ce4e5b9L + b)
   extension[C] (r: Regex[C]) @pure def hashFct: Long = {
     r match {
       case EmptyExpr() =>

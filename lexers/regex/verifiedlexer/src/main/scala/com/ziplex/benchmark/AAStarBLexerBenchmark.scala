@@ -24,6 +24,7 @@ import com.ziplex.lexer.singletonSeq
 import com.ziplex.lexer.seqFromList
 import com.ziplex.lexer.seqFromArray
 import com.ziplex.lexer.example.ExampleUtils
+import com.ziplex.benchmark.silex.SilexAAStarBLexer
 
 import scala.reflect.ClassTag
 import java.io.File
@@ -94,11 +95,18 @@ class AAStarBLexerBenchmark {
     // assert(suffix.isEmpty)
   }
 
+   @Benchmark
+  @BenchmarkMode(Array(Mode.AverageTime))
+  @OutputTimeUnit(TimeUnit.MICROSECONDS)
+  def lex_Silex(): Unit = {
+    val tokens = SilexAAStarBLexer.run(AAStarBLexerBenchmarkUtils.filesJavaIo(file))
+  }
+
 }
 
 @State(Scope.Benchmark)
 @Fork(jvmArgsAppend = Array("-Xss1G", "-Xmx64g"))
-class AAStarBLexerBenchmarkBig {
+class BigAAStarBLexerBenchmark {
 
   @Param(
     Array(
@@ -186,6 +194,10 @@ object AAStarBLexerBenchmarkUtils {
     val source = scala.io.Source.fromFile(s"src/main/scala/com/ziplex/benchmark/res/as/$name")
     val lines = try source.mkString.toStainless finally source.close()
     (name -> lines)
+  }).toMap
+
+  val filesJavaIo: Map[String, java.io.File] = fileNames.map(name => {
+    (name -> new java.io.File(s"src/main/scala/com/ziplex/benchmark/res/as/$name"))
   }).toMap
 
   val zipperCacheUp: MemoisationZipper.CacheUp[Char] = MemoisationZipper.emptyUp(ContextCharHashable)
