@@ -144,4 +144,3 @@ case class SourcePositioner(file: File) extends Positioner[Char, SourcePosition]
       position.copy(col = position.col + 1)
     }
 }
-
