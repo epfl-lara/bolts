@@ -63,14 +63,14 @@ class AmyLexerBenchmark {
   //   assert(suffix.isEmpty)
   // }
 
-  @Benchmark
-  @BenchmarkMode(Array(Mode.AverageTime))
-  @OutputTimeUnit(TimeUnit.MICROSECONDS)
-  def lex_Zipper(bh: Blackhole): Unit = {
-    val (tokens, suffix) = Lexer.lex(AmyLexer.rules, AmyLexerBenchmarkUtils.exampleFileContents(file))
-    bh.consume(suffix.isEmpty)
-    // assert(suffix.isEmpty)
-  }
+  // @Benchmark
+  // @BenchmarkMode(Array(Mode.AverageTime))
+  // @OutputTimeUnit(TimeUnit.MICROSECONDS)
+  // def lex_Zipper(bh: Blackhole): Unit = {
+  //   val (tokens, suffix) = Lexer.lex(AmyLexer.rules, AmyLexerBenchmarkUtils.exampleFileContents(file))
+  //   bh.consume(suffix.isEmpty)
+  //   // assert(suffix.isEmpty)
+  // }
 
   @Benchmark
   @BenchmarkMode(Array(Mode.AverageTime))
@@ -113,84 +113,25 @@ class AmyLexerBenchmarkGenerated {
   @Param(
     Array(
           "generated_code_000529chars.amy",
-          "generated_code_001058chars.amy",
-          "generated_code_001587chars.amy",
-          "generated_code_002116chars.amy",
           "generated_code_002645chars.amy",
-          "generated_code_003174chars.amy",
-          "generated_code_003703chars.amy",
-          "generated_code_004232chars.amy",
           "generated_code_004761chars.amy",
-          "generated_code_005290chars.amy",
-          "generated_code_005819chars.amy",
-          "generated_code_006348chars.amy",
           "generated_code_006877chars.amy",
-          "generated_code_007406chars.amy",
-          "generated_code_007935chars.amy",
-          "generated_code_008464chars.amy",
           "generated_code_008993chars.amy",
-          "generated_code_009522chars.amy",
-          "generated_code_010051chars.amy",
-          "generated_code_010580chars.amy",
           "generated_code_011109chars.amy",
-          "generated_code_011638chars.amy",
-          "generated_code_012167chars.amy",
-          "generated_code_012696chars.amy",
           "generated_code_013225chars.amy",
-          "generated_code_013754chars.amy",
-          "generated_code_014283chars.amy",
-          "generated_code_014812chars.amy",
           "generated_code_015341chars.amy",
-          "generated_code_015870chars.amy",
-          "generated_code_016399chars.amy",
-          "generated_code_016928chars.amy",
           "generated_code_017457chars.amy",
-          "generated_code_017986chars.amy",
-          "generated_code_018515chars.amy",
-          "generated_code_019044chars.amy",
           "generated_code_019573chars.amy",
-          "generated_code_020102chars.amy",
-          "generated_code_020631chars.amy",
-          "generated_code_021160chars.amy",
           "generated_code_021689chars.amy",
-          "generated_code_022218chars.amy",
-          "generated_code_022747chars.amy",
-          "generated_code_023276chars.amy",
           "generated_code_023805chars.amy",
-          "generated_code_024334chars.amy",
-          "generated_code_024863chars.amy",
-          "generated_code_025392chars.amy",
           "generated_code_025921chars.amy",
-          "generated_code_026450chars.amy",
-          "generated_code_026979chars.amy",
-          "generated_code_027508chars.amy",
           "generated_code_028037chars.amy",
-          "generated_code_028566chars.amy",
-          "generated_code_029095chars.amy",
-          "generated_code_029624chars.amy",
           "generated_code_030153chars.amy",
-          "generated_code_030682chars.amy",
-          "generated_code_031211chars.amy",
-          "generated_code_031740chars.amy",
           "generated_code_032269chars.amy",
-          "generated_code_032798chars.amy",
-          "generated_code_033327chars.amy",
-          "generated_code_033856chars.amy",
           "generated_code_034385chars.amy",
-          "generated_code_034914chars.amy",
-          "generated_code_035443chars.amy",
-          "generated_code_035972chars.amy",
           "generated_code_036501chars.amy",
-          "generated_code_037030chars.amy",
-          "generated_code_037559chars.amy",
-          "generated_code_038088chars.amy",
           "generated_code_038617chars.amy",
-          "generated_code_039146chars.amy",
-          "generated_code_039675chars.amy",
-          "generated_code_040204chars.amy",
           "generated_code_040733chars.amy",
-          "generated_code_041262chars.amy",
-          "generated_code_041791chars.amy",
     )
   )
   var file: String = uninitialized
@@ -211,21 +152,21 @@ class AmyLexerBenchmarkGenerated {
   //     ()
   // }
 
-  @Benchmark
-  @BenchmarkMode(Array(Mode.AverageTime))
-  @OutputTimeUnit(TimeUnit.MICROSECONDS)
-  def lex_ZipperV1(): Unit = {
-    val (tokens, suffix) = Lexer.lexV1(AmyLexer.rules, AmyLexerBenchmarkUtils.generatedFileContents(file))
-    assert(suffix.isEmpty)
-  }
+  // @Benchmark
+  // @BenchmarkMode(Array(Mode.AverageTime))
+  // @OutputTimeUnit(TimeUnit.MICROSECONDS)
+  // def lex_ZipperV1(): Unit = {
+  //   val (tokens, suffix) = Lexer.lexV1(AmyLexer.rules, AmyLexerBenchmarkUtils.generatedFileContents(file))
+  //   assert(suffix.isEmpty)
+  // }
 
-  @Benchmark
-  @BenchmarkMode(Array(Mode.AverageTime))
-  @OutputTimeUnit(TimeUnit.MICROSECONDS)
-  def lex_ZipperV2(): Unit = {
-    val (tokens, suffix) = Lexer.lex(AmyLexer.rules, AmyLexerBenchmarkUtils.generatedFileContents(file))
-    assert(suffix.isEmpty)
-  }
+  // @Benchmark
+  // @BenchmarkMode(Array(Mode.AverageTime))
+  // @OutputTimeUnit(TimeUnit.MICROSECONDS)
+  // def lex_ZipperV2(): Unit = {
+  //   val (tokens, suffix) = Lexer.lex(AmyLexer.rules, AmyLexerBenchmarkUtils.generatedFileContents(file))
+  //   assert(suffix.isEmpty)
+  // }
 
   @Benchmark
   @BenchmarkMode(Array(Mode.AverageTime))
