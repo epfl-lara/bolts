@@ -3,7 +3,7 @@
 [info] experiments, perform baseline and negative tests that provide experimental control, make sure
 [info] the benchmarking environment is safe on JVM/OS/HW level, ask for reviews from the domain experts.
 [info] Do not assume the numbers tell you what you want them to tell.
-[info] Benchmark                                 (file)  Mode  Cnt          Score         Error  Units
+[info] Benchmark                                 (file)  Mode  Cnt      Score      Error  Units
 [info] AAStarBLexerBenchmark.lex_Silex          100.txt  avgt    5        163.099 ±       8.512  us/op
 [info] AAStarBLexerBenchmark.lex_Silex         1000.txt  avgt    5       3837.244 ±      82.508  us/op
 [info] AAStarBLexerBenchmark.lex_Silex        10000.txt  avgt    5     381826.081 ±   20036.991  us/op
@@ -19,49 +19,23 @@
 [info] AAStarBLexerBenchmark.lex_Silex         5000.txt  avgt    5      99332.064 ±    6965.499  us/op
 [info] AAStarBLexerBenchmark.lex_Silex        50000.txt  avgt    5   10143061.014 ± 1184830.737  us/op
 [info] AAStarBLexerBenchmark.lex_Silex          800.txt  avgt    5       2629.117 ±     273.513  us/op
-[info] AAStarBLexerBenchmark.lex_ZipperV1Mem    100.txt  avgt    5        933.222 ±      31.622  us/op
-[info] AAStarBLexerBenchmark.lex_ZipperV1Mem   1000.txt  avgt    5      87091.040 ±    5091.843  us/op
-[info] AAStarBLexerBenchmark.lex_ZipperV1Mem  10000.txt  avgt    5    7365530.000 ±  362972.318  us/op
-[info] AAStarBLexerBenchmark.lex_ZipperV1Mem   1200.txt  avgt    5     127844.459 ±    5892.407  us/op
-[info] AAStarBLexerBenchmark.lex_ZipperV1Mem    200.txt  avgt    5       3827.145 ±     483.152  us/op
-[info] AAStarBLexerBenchmark.lex_ZipperV1Mem   2000.txt  avgt    5     369348.969 ±   18938.078  us/op
-[info] AAStarBLexerBenchmark.lex_ZipperV1Mem  20000.txt  avgt    5   30328841.986 ± 2113467.819  us/op
-[info] AAStarBLexerBenchmark.lex_ZipperV1Mem    300.txt  avgt    5       7681.755 ±     427.674  us/op
-[info] AAStarBLexerBenchmark.lex_ZipperV1Mem  30000.txt  avgt    5   57755727.618 ± 1554379.079  us/op
-[info] AAStarBLexerBenchmark.lex_ZipperV1Mem  40000.txt  avgt    5  110146948.913 ± 1080809.207  us/op
-[info] AAStarBLexerBenchmark.lex_ZipperV1Mem  500.0.txt  avgt    5          0.098 ±       0.005  us/op
-[info] AAStarBLexerBenchmark.lex_ZipperV1Mem    500.txt  avgt    5      21880.464 ±    1134.864  us/op
-[info] AAStarBLexerBenchmark.lex_ZipperV1Mem   5000.txt  avgt    5    2252659.727 ±  111357.357  us/op
-[info] AAStarBLexerBenchmark.lex_ZipperV1Mem  50000.txt  avgt    5  189084708.085 ± 3323465.898  us/op
-[info] AAStarBLexerBenchmark.lex_ZipperV1Mem    800.txt  avgt    5      57189.526 ±    5176.978  us/op
-[info] AAStarBLexerBenchmark.lex_ZipperV2Mem    100.txt  avgt    5         45.662 ±       2.031  us/op
-[info] AAStarBLexerBenchmark.lex_ZipperV2Mem   1000.txt  avgt    5        620.070 ±      75.577  us/op
-[info] AAStarBLexerBenchmark.lex_ZipperV2Mem  10000.txt  avgt    5       8614.047 ±     696.796  us/op
-[info] AAStarBLexerBenchmark.lex_ZipperV2Mem   1200.txt  avgt    5        806.905 ±      74.169  us/op
-[info] AAStarBLexerBenchmark.lex_ZipperV2Mem    200.txt  avgt    5        101.001 ±      10.454  us/op
-[info] AAStarBLexerBenchmark.lex_ZipperV2Mem   2000.txt  avgt    5       1338.750 ±      61.196  us/op
-[info] AAStarBLexerBenchmark.lex_ZipperV2Mem  20000.txt  avgt    5      23698.205 ±    9155.921  us/op
-[info] AAStarBLexerBenchmark.lex_ZipperV2Mem    300.txt  avgt    5        172.336 ±      28.410  us/op
-[info] AAStarBLexerBenchmark.lex_ZipperV2Mem  30000.txt  avgt    5      42076.445 ±    4307.976  us/op
-[info] AAStarBLexerBenchmark.lex_ZipperV2Mem  40000.txt  avgt    5      67118.203 ±   13611.586  us/op
-[info] AAStarBLexerBenchmark.lex_ZipperV2Mem  500.0.txt  avgt    5          0.394 ±       0.039  us/op
-[info] AAStarBLexerBenchmark.lex_ZipperV2Mem    500.txt  avgt    5        304.685 ±      70.756  us/op
-[info] AAStarBLexerBenchmark.lex_ZipperV2Mem   5000.txt  avgt    5       4133.720 ±     338.112  us/op
-[info] AAStarBLexerBenchmark.lex_ZipperV2Mem  50000.txt  avgt    5      80135.538 ±   34545.070  us/op
-[info] AAStarBLexerBenchmark.lex_ZipperV2Mem    800.txt  avgt    5        475.938 ±      38.516  us/op
-[info] AAStarBLexerBenchmark.lex_ZipperV3Mem    100.txt  avgt    5         85.582 ±       4.868  us/op
-[info] AAStarBLexerBenchmark.lex_ZipperV3Mem   1000.txt  avgt    5       1105.579 ±     306.000  us/op
-[info] AAStarBLexerBenchmark.lex_ZipperV3Mem  10000.txt  avgt    5      12575.486 ±     784.651  us/op
-[info] AAStarBLexerBenchmark.lex_ZipperV3Mem   1200.txt  avgt    5       1328.399 ±      91.932  us/op
-[info] AAStarBLexerBenchmark.lex_ZipperV3Mem    200.txt  avgt    5        172.360 ±      11.170  us/op
-[info] AAStarBLexerBenchmark.lex_ZipperV3Mem   2000.txt  avgt    5       2265.588 ±     121.947  us/op
-[info] AAStarBLexerBenchmark.lex_ZipperV3Mem  20000.txt  avgt    5      27745.744 ±    3198.496  us/op
-[info] AAStarBLexerBenchmark.lex_ZipperV3Mem    300.txt  avgt    5        277.995 ±      16.889  us/op
-[info] AAStarBLexerBenchmark.lex_ZipperV3Mem  30000.txt  avgt    5      47074.739 ±    4115.525  us/op
-[info] AAStarBLexerBenchmark.lex_ZipperV3Mem  40000.txt  avgt    5      67146.049 ±    8948.527  us/op
-[info] AAStarBLexerBenchmark.lex_ZipperV3Mem  500.0.txt  avgt    5          0.178 ±       0.009  us/op
-[info] AAStarBLexerBenchmark.lex_ZipperV3Mem    500.txt  avgt    5        481.753 ±      45.899  us/op
-[info] AAStarBLexerBenchmark.lex_ZipperV3Mem   5000.txt  avgt    5       6483.917 ±     357.326  us/op
-[info] AAStarBLexerBenchmark.lex_ZipperV3Mem  50000.txt  avgt    5     101053.077 ±    8178.473  us/op
-[info] AAStarBLexerBenchmark.lex_ZipperV3Mem    800.txt  avgt    5        803.017 ±      55.481  us/op
-[success] Total time: 9674 s (02:41:14), completed Jan 13, 2026, 12:46:21 PM
+[info] AAStarBLexerBenchmark.lex_ZipperV3Mem    100.txt  avgt    5     84.548 ±    3.986  us/op
+[info] AAStarBLexerBenchmark.lex_ZipperV3Mem   1000.txt  avgt    5    998.260 ±   42.509  us/op
+[info] AAStarBLexerBenchmark.lex_ZipperV3Mem  10000.txt  avgt    5  12396.884 ± 1023.570  us/op
+[info] AAStarBLexerBenchmark.lex_ZipperV3Mem   1200.txt  avgt    5   1328.493 ±   86.373  us/op
+[info] AAStarBLexerBenchmark.lex_ZipperV3Mem  15000.txt  avgt    5  19783.381 ± 1731.377  us/op
+[info] AAStarBLexerBenchmark.lex_ZipperV3Mem    200.txt  avgt    5    175.459 ±   12.722  us/op
+[info] AAStarBLexerBenchmark.lex_ZipperV3Mem   2000.txt  avgt    5   2252.142 ±   65.670  us/op
+[info] AAStarBLexerBenchmark.lex_ZipperV3Mem  20000.txt  avgt    5  29775.722 ± 1158.661  us/op
+[info] AAStarBLexerBenchmark.lex_ZipperV3Mem  25000.txt  avgt    5  38485.471 ± 2509.375  us/op
+[info] AAStarBLexerBenchmark.lex_ZipperV3Mem    300.txt  avgt    5    267.464 ±   14.996  us/op
+[info] AAStarBLexerBenchmark.lex_ZipperV3Mem  30000.txt  avgt    5  46589.609 ± 3127.910  us/op
+[info] AAStarBLexerBenchmark.lex_ZipperV3Mem  35000.txt  avgt    5  55195.146 ± 3218.722  us/op
+[info] AAStarBLexerBenchmark.lex_ZipperV3Mem  40000.txt  avgt    5  67215.863 ± 3832.375  us/op
+[info] AAStarBLexerBenchmark.lex_ZipperV3Mem  45000.txt  avgt    5  82295.493 ± 4101.089  us/op
+[info] AAStarBLexerBenchmark.lex_ZipperV3Mem  500.0.txt  avgt    5      0.174 ±    0.005  us/op
+[info] AAStarBLexerBenchmark.lex_ZipperV3Mem    500.txt  avgt    5    456.120 ±   27.639  us/op
+[info] AAStarBLexerBenchmark.lex_ZipperV3Mem   5000.txt  avgt    5   6117.366 ±  587.651  us/op
+[info] AAStarBLexerBenchmark.lex_ZipperV3Mem  50000.txt  avgt    5  92800.568 ± 6767.504  us/op
+[info] AAStarBLexerBenchmark.lex_ZipperV3Mem    800.txt  avgt    5    837.978 ±   56.286  us/op
+[success] Total time: 1928 s (32:08), completed Jan 13, 2026, 3:54:53 PM
