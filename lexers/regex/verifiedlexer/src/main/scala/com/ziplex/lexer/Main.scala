@@ -44,7 +44,6 @@ object Main {
     // profileJsonLexing()
     import com.ziplex.lexer.benchmark.lexer.AAStarBLexerBenchmarkBigUtils
     println("Starting very large file test utils...")
-    println(f"${AAStarBLexerBenchmarkBigUtils.megaBytesSequences.keySet} cached sequences for mega bytes")
     testVeryLargeFile()
   }
 
