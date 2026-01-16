@@ -3,16 +3,21 @@
 [info] experiments, perform baseline and negative tests that provide experimental control, make sure
 [info] the benchmarking environment is safe on JVM/OS/HW level, ask for reviews from the domain experts.
 [info] Do not assume the numbers tell you what you want them to tell.
-[info] Benchmark                                 (sizeInMB)  Mode  Cnt          Score          Error  Units
-[info] BigAAStarBLexerBenchmark.lex_ZipperV3Mem        0.01  avgt    5      13507.406 ±      986.799  us/op
-[info] BigAAStarBLexerBenchmark.lex_ZipperV3Mem        0.02  avgt    5      28397.982 ±     2359.771  us/op
-[info] BigAAStarBLexerBenchmark.lex_ZipperV3Mem        0.05  avgt    5      93979.787 ±     7051.685  us/op
-[info] BigAAStarBLexerBenchmark.lex_ZipperV3Mem         0.1  avgt    5     206281.077 ±    26288.906  us/op
-[info] BigAAStarBLexerBenchmark.lex_ZipperV3Mem         0.5  avgt    5    1240654.218 ±   176197.087  us/op
-[info] BigAAStarBLexerBenchmark.lex_ZipperV3Mem           1  avgt    5    2728906.496 ±   382335.292  us/op
-[info] BigAAStarBLexerBenchmark.lex_ZipperV3Mem           5  avgt    5   23162861.798 ±  3013147.447  us/op
-[info] BigAAStarBLexerBenchmark.lex_ZipperV3Mem          10  avgt    5   46453293.791 ±  5950840.208  us/op
-[info] BigAAStarBLexerBenchmark.lex_ZipperV3Mem          20  avgt    5  102499388.300 ±  6170156.197  us/op
-[info] BigAAStarBLexerBenchmark.lex_ZipperV3Mem          30  avgt    5  159890348.566 ± 12137580.072  us/op
-[info] BigAAStarBLexerBenchmark.lex_ZipperV3Mem         100  avgt    5  544886251.599 ± 96698369.555  us/op
-[success] Total time: 10854 s (03:00:54), completed Jan 9, 2026, 4:29:58 PM
+[info] Benchmark                                 (sizeInKB)  Mode  Cnt          Score          Error  Units
+[info] BigAAStarBLexerBenchmark.lex_ZipperV3Mem          10  avgt    5      12246.324 ±      989.040  us/op
+[info] BigAAStarBLexerBenchmark.lex_ZipperV3Mem          20  avgt    5      28488.277 ±     3117.565  us/op
+[info] BigAAStarBLexerBenchmark.lex_ZipperV3Mem          50  avgt    5      91374.985 ±     5570.283  us/op
+[info] BigAAStarBLexerBenchmark.lex_ZipperV3Mem         100  avgt    5     206559.624 ±    25985.108  us/op
+[info] BigAAStarBLexerBenchmark.lex_ZipperV3Mem         500  avgt    5    1193436.731 ±   145845.946  us/op
+[info] BigAAStarBLexerBenchmark.lex_ZipperV3Mem        1000  avgt    5    2702678.942 ±   429387.032  us/op
+[info] BigAAStarBLexerBenchmark.lex_ZipperV3Mem        2000  avgt    5    8409397.034 ±   461604.043  us/op
+[info] BigAAStarBLexerBenchmark.lex_ZipperV3Mem        4000  avgt    5   17209793.884 ±  1829800.342  us/op
+[info] BigAAStarBLexerBenchmark.lex_ZipperV3Mem        5000  avgt    5   22003575.691 ±  3669131.246  us/op
+[info] BigAAStarBLexerBenchmark.lex_ZipperV3Mem        8000  avgt    5   37293373.495 ±  4476967.921  us/op
+[info] BigAAStarBLexerBenchmark.lex_ZipperV3Mem       10000  avgt    5   44942943.429 ±  9220577.446  us/op
+[info] BigAAStarBLexerBenchmark.lex_ZipperV3Mem       15000  avgt    5   73631868.184 ±  3125012.260  us/op
+[info] BigAAStarBLexerBenchmark.lex_ZipperV3Mem       20000  avgt    5   96596505.281 ± 17665920.530  us/op
+[info] BigAAStarBLexerBenchmark.lex_ZipperV3Mem       25000  avgt    5  123060429.809 ± 21455108.401  us/op
+[info] BigAAStarBLexerBenchmark.lex_ZipperV3Mem       30000  avgt    5  143695898.246 ± 19570203.446  us/op
+[info] BigAAStarBLexerBenchmark.lex_ZipperV3Mem      100000  avgt    5  506838867.792 ± 12240197.449  us/op
+[success] Total time: 12354 s (03:25:54), completed Jan 13, 2026, 11:15:56 PM
