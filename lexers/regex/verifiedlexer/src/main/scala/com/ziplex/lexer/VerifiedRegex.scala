@@ -475,103 +475,19 @@ object MemoisationZipper {
 object VerifiedRegex {
   sealed trait Regex[C]:
     lazy val nullable: Boolean = this.nullableFct
-    def lostCause: Boolean
-    def hash: Long
+    lazy val lostCause: Boolean = this.lostCauseFct
+    lazy val hash: Long = this.hashFct
   end Regex
-  case class ElementMatch[C](c: C) extends Regex[C]:
-    // lazy val nullableV: Boolean = this.nullableFct
-    // @inlineOnce @opaque def nullable: Boolean = {
-    //   nullableV
-    // }.ensuring(res => res == this.nullableFct)
-    lazy val lostCauseV: Boolean = this.lostCauseFct
-    @inlineOnce @opaque def lostCause: Boolean = {
-      lostCauseV
-    }.ensuring(res => res == this.lostCauseFct)
-    lazy val hashV: Long = this.hashFct
-    @inlineOnce @opaque def hash: Long = {
-      hashV
-    }.ensuring(res => res == this.hashFct)
-
-  end ElementMatch
-
-  case class Star[C](reg: Regex[C]) extends Regex[C]:
-    // lazy val nullableV: Boolean = this.nullableFct
-    // @inlineOnce @opaque def nullable: Boolean = {
-    //   nullableV
-    // }.ensuring(res => res == this.nullableFct)
-    lazy val lostCauseV: Boolean = this.lostCauseFct
-    @inlineOnce @opaque def lostCause: Boolean = {
-      lostCauseV
-    }.ensuring(res => res == this.lostCauseFct)
-    lazy val hashV: Long = this.hashFct
-    @inlineOnce @opaque def hash: Long = {
-      hashV
-    }.ensuring(res => res == this.hashFct)
-  end Star
-
-  case class Union[C](regOne: Regex[C], regTwo: Regex[C]) extends Regex[C]:
-    // lazy val nullableV: Boolean = this.nullableFct
-    // @inlineOnce @opaque def nullable: Boolean = {
-    //   nullableV
-    // }.ensuring(res => res == this.nullableFct)
-    lazy val lostCauseV: Boolean = this.lostCauseFct
-    @inlineOnce @opaque def lostCause: Boolean = {
-      lostCauseV
-    }.ensuring(res => res == this.lostCauseFct)
-    lazy val hashV: Long = this.hashFct
-    @inlineOnce @opaque def hash: Long = {
-      hashV
-    }.ensuring(res => res == this.hashFct)
-  end Union
-
-  case class Concat[C](regOne: Regex[C], regTwo: Regex[C]) extends Regex[C]:
-    // lazy val nullableV: Boolean = this.nullableFct
-    // @inlineOnce @opaque def nullable: Boolean = {
-    //   nullableV
-    // }.ensuring(res => res == this.nullableFct)
-    lazy val lostCauseV: Boolean = this.lostCauseFct
-    @inlineOnce @opaque def lostCause: Boolean = {
-      lostCauseV
-    }.ensuring(res => res == this.lostCauseFct)
-    lazy val hashV: Long = this.hashFct
-    @inlineOnce @opaque def hash: Long = {
-      hashV
-    }.ensuring(res => res == this.hashFct)
-  end Concat
-
+  case class ElementMatch[C](c: C) extends Regex[C]
+  case class Star[C](reg: Regex[C]) extends Regex[C]
+  case class Union[C](regOne: Regex[C], regTwo: Regex[C]) extends Regex[C]
+  case class Concat[C](regOne: Regex[C], regTwo: Regex[C]) extends Regex[C]
   /** Regex that accepts only the empty string: represents the language {""}
     */
-  case class EmptyExpr[C]() extends Regex[C]:
-    // lazy val nullableV: Boolean = this.nullableFct
-    // @inlineOnce @opaque def nullable: Boolean = {
-    //   nullableV
-    // }.ensuring(res => res == this.nullableFct)
-    lazy val lostCauseV: Boolean = this.lostCauseFct
-    @inlineOnce @opaque def lostCause: Boolean = {
-      lostCauseV
-    }.ensuring(res => res == this.lostCauseFct)
-    lazy val hashV: Long = this.hashFct
-    @inlineOnce @opaque def hash: Long = {
-      hashV
-    }.ensuring(res => res == this.hashFct)
-  end EmptyExpr
-
+  case class EmptyExpr[C]() extends Regex[C]
   /** Regex that accepts nothing: represents the empty language
     */
-  case class EmptyLang[C]() extends Regex[C]:
-    // lazy val nullableV: Boolean = this.nullableFct
-    // @inlineOnce @opaque def nullable: Boolean = {
-    //   nullableV
-    // }.ensuring(res => res == this.nullableFct)
-    lazy val lostCauseV: Boolean = this.lostCauseFct
-    @inlineOnce @opaque def lostCause: Boolean = {
-      lostCauseV
-    }.ensuring(res => res == this.lostCauseFct)
-    lazy val hashV: Long = this.hashFct
-    @inlineOnce @opaque def hash: Long = {
-      hashV
-    }.ensuring(res => res == this.hashFct)
-  end EmptyLang
+  case class EmptyLang[C]() extends Regex[C]
 
   def generalisedUnion[C](l: List[Regex[C]]): Regex[C] = {
     require(l.forall(validRegex))
