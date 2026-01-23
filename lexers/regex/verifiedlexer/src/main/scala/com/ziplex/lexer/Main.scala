@@ -15,8 +15,6 @@ import stainless.lang.Option
 import stainless.lang.Some
 import stainless.lang.None
 
-import stainless.collection.IArray
-
 import com.ziplex.lexer.Sequence
 import com.ziplex.lexer.emptySeq
 import com.ziplex.lexer.singletonSeq
@@ -33,128 +31,9 @@ object Main {
     // regexZipperExample()
     // exampleJsonSorting()
 
-    // regexZipperVisualizationAOrBStarConcatC()
-    // println("-\n\n====================\n\n-")
-    // regexZipperVisualizationAThenBThenC()
-    // regexZipperVisualizationAOrBStarConcatC()
-    // println("-\n\n====================\n\n-")
-    // regexZipperVisualizationAThenBThenC()
-
-    // testTailRecEquivalence()
-    // profileJsonLexing()
-    import com.ziplex.lexer.benchmark.lexer.AAStarBLexerBenchmarkBigUtils
-    println("Starting very large file test utils...")
-    testVeryLargeFile()
-  }
-
-  def testVeryLargeFile() = {
-    import com.ziplex.lexer.example.ExampleAAStarBLexer.AAStarBLexer
-    import com.ziplex.lexer.example.RegexUtils.*  
-
-
-    val sizeInChars = 100_000_000
-    val contentArray = IArray.tabulate(sizeInChars)(_ => 'a')
-    val content = seqFromArray(contentArray)
-    println(s"Lexing file with $sizeInChars 'a' characters...")
-    assert(content.size == sizeInChars)
-    val timeBefore = System.currentTimeMillis()
-    val (tokens, suffix) = Lexer.lexMem(AAStarBLexer.rules, content)(using ClassTag.Char, ExampleUtils.zipperCacheUp, ExampleUtils.zipperCacheDown, ExampleUtils.furthestNullableCache(content))
-    val timeAfter = System.currentTimeMillis()
-    assert(suffix.isEmpty)
-    println(s"Lexed $sizeInChars characters in ${timeAfter - timeBefore} ms, got ${tokens.size} tokens.")
-
-  }
-
-  def testTailRecEquivalence(): Unit = {
-    import ZipperRegex._
-    
-    val testCases: List[(Regex[Char], String)] = List(
-      // Basic single character
-      ("a".r, "a"),
-      ("a".r, "b"),
-      ("a".r, "aa"),
-      ("a".r, ""),
-      
-      // Union
-      (("a".r | "b".r).*, "ababab"),
-      (("a".r | "b".r).*, "ababc"),
-      (("a".r | "b".r).*, ""),
-      ("a".r | "b".r, "a"),
-      ("a".r | "b".r, "b"),
-      ("a".r | "b".r, "c"),
-      
-      // Concat
-      ("a".r ~ "b".r ~ "c".r, "abc"),
-      ("a".r ~ "b".r ~ "c".r, "abcd"),
-      ("a".r ~ "b".r ~ "c".r, "ab"),
-      ("a".r ~ "b".r ~ "c".r, "a"),
-      ("a".r ~ "b".r ~ "c".r, ""),
-      
-      // Star
-      (("a".r).*, "aaaa"),
-      (("a".r).*, "aaaab"),
-      (("a".r).*, ""),
-      (("a".r).*, "b"),
-      (("a".r ~ "b".r).*, "abab"),
-      (("a".r ~ "b".r).*, "ababc"),
-      (("a".r ~ "b".r).*, "aba"),
-      
-      // Combined
-      (("a".r | "b".r).* ~ "c".r, "ababc"),
-      (("a".r | "b".r).* ~ "c".r, "abab"),
-      (("a".r | "b".r).* ~ "c".r, "c"),
-      (("a".r | "b".r).* ~ "c".r, ""),
-      
-      // Nested stars
-      ((("a".r).*).*, "aaa"),
-      ((("a".r | "b".r).*).*,  "ababab"),
-      
-      // Complex patterns
-      ("a".r ~ ("b".r).* ~ "c".r, "abbbbc"),
-      ("a".r ~ ("b".r).* ~ "c".r, "abbbbchsdfajkohoiqweyjbnfsda"),
-      ("a".r ~ ("b".r).* ~ "c".r, "aabbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbc"),
-      ("a".r ~ ("b".r).* ~ "c".r, "abbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbchfasduihsdfjsfhgjkdf"),
-      ("a".r ~ ("b".r).* ~ "c".r, "ac"),
-      ("a".r ~ ("b".r).* ~ "c".r, "abc"),
-      ("a".r ~ ("b".r).* ~ "c".r, "ab"),
-      ("a".r ~ ("b".r).* ~ "c".r, "a"),
-      
-      // Optional-like via union with empty
-      (("a".r ~ "b".r) | "a".r, "ab"),
-      (("a".r ~ "b".r) | "a".r, "a"),
-      (("a".r ~ "b".r) | "a".r, "ac"),
-      
-      // Longer inputs
-      (("a".r | "b".r | "c".r).*, "abcabcabc"),
-      (("a".r).* ~ ("b".r).*, "aaabbb"),
-      (("a".r).* ~ ("b".r).*, "aaabbbc"),
-      (("a".r).* ~ ("b".r).* ~ ("c".r).*, "aaabbbccc"),
-    )
-    
-    var passed = 0
-    var failed = 0
-    
-    for ((regex, inputStr) <- testCases) {
-      val input: Sequence[Char] = inputStr.toStainless
-      val zipper: Zipper[Char] = focus(regex)
-      val totalInputSize = input.size
-      
-      val resultOriginal = findLongestMatchInnerZipperFastV2(zipper, 0, input, totalInputSize)
-      val resultTailRec = furthestNullablePosition(zipper, 0, input, totalInputSize, -1)
-
-      val longestPrefixOriginal = findLongestMatchWithZipperSequenceV2(regex, input, input)
-      val longestPrefixV3 = findLongestMatchZipperSequenceV3(zipper, input, input)
-      
-      if (longestPrefixOriginal == longestPrefixV3) {
-        println(s"✓ PASS: regex=${regex.show()}, input=\"$inputStr\" -> $longestPrefixOriginal")
-        passed += 1
-      } else {
-        println(s"✗ FAIL: regex=${regex.show()}, input=\"$inputStr\" -> original=$longestPrefixOriginal, tailrec=$longestPrefixV3")
-        failed += 1
-      }
-    }
-    
-    println(s"\n$passed passed, $failed failed")
+    regexZipperVisualizationAOrBStarConcatC()
+    println("-\n\n====================\n\n-")
+    regexZipperVisualizationAThenBThenC()
   }
 
   def exampleJsonSorting(): Unit = {
