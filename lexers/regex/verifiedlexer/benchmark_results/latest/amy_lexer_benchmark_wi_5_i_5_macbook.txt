@@ -1,0 +1,67 @@
+[info] REMEMBER: The numbers below are just data. To gain reusable insights, you need to follow up on
+[info] why the numbers are the way they are. Use profilers (see -prof, -lprof), design factorial
+[info] experiments, perform baseline and negative tests that provide experimental control, make sure
+[info] the benchmarking environment is safe on JVM/OS/HW level, ask for reviews from the domain experts.
+[info] Do not assume the numbers tell you what you want them to tell.
+[info] Benchmark                                                             (file)  Mode  Cnt      Score      Error  Units
+[info] AmyLexerBenchmarkGenerated.lex_OriginalSilex  generated_code_000529chars.amy  avgt    5    315.749 ±   14.026  us/op
+[info] AmyLexerBenchmarkGenerated.lex_OriginalSilex  generated_code_002645chars.amy  avgt    5    395.149 ±   21.719  us/op
+[info] AmyLexerBenchmarkGenerated.lex_OriginalSilex  generated_code_004761chars.amy  avgt    5    468.927 ±    9.772  us/op
+[info] AmyLexerBenchmarkGenerated.lex_OriginalSilex  generated_code_006877chars.amy  avgt    5    530.533 ±   24.687  us/op
+[info] AmyLexerBenchmarkGenerated.lex_OriginalSilex  generated_code_008993chars.amy  avgt    5    602.788 ±   14.840  us/op
+[info] AmyLexerBenchmarkGenerated.lex_OriginalSilex  generated_code_011109chars.amy  avgt    5    675.023 ±    5.831  us/op
+[info] AmyLexerBenchmarkGenerated.lex_OriginalSilex  generated_code_013225chars.amy  avgt    5    742.201 ±   18.662  us/op
+[info] AmyLexerBenchmarkGenerated.lex_OriginalSilex  generated_code_015341chars.amy  avgt    5    803.544 ±   28.998  us/op
+[info] AmyLexerBenchmarkGenerated.lex_OriginalSilex  generated_code_017457chars.amy  avgt    5    916.790 ±   63.449  us/op
+[info] AmyLexerBenchmarkGenerated.lex_OriginalSilex  generated_code_019573chars.amy  avgt    5   1007.908 ±   26.951  us/op
+[info] AmyLexerBenchmarkGenerated.lex_OriginalSilex  generated_code_021689chars.amy  avgt    5   1030.516 ±   40.175  us/op
+[info] AmyLexerBenchmarkGenerated.lex_OriginalSilex  generated_code_023805chars.amy  avgt    5   1182.158 ±   28.367  us/op
+[info] AmyLexerBenchmarkGenerated.lex_OriginalSilex  generated_code_025921chars.amy  avgt    5   1216.011 ±   18.706  us/op
+[info] AmyLexerBenchmarkGenerated.lex_OriginalSilex  generated_code_028037chars.amy  avgt    5   1309.206 ±   46.088  us/op
+[info] AmyLexerBenchmarkGenerated.lex_OriginalSilex  generated_code_030153chars.amy  avgt    5   1395.814 ±   55.441  us/op
+[info] AmyLexerBenchmarkGenerated.lex_OriginalSilex  generated_code_032269chars.amy  avgt    5   1454.123 ±   58.303  us/op
+[info] AmyLexerBenchmarkGenerated.lex_OriginalSilex  generated_code_034385chars.amy  avgt    5   1545.441 ±   55.018  us/op
+[info] AmyLexerBenchmarkGenerated.lex_OriginalSilex  generated_code_036501chars.amy  avgt    5   1628.654 ±  108.822  us/op
+[info] AmyLexerBenchmarkGenerated.lex_OriginalSilex  generated_code_038617chars.amy  avgt    5   1679.135 ±  100.608  us/op
+[info] AmyLexerBenchmarkGenerated.lex_OriginalSilex  generated_code_040733chars.amy  avgt    5   1774.551 ±   35.318  us/op
+[info] AmyLexerBenchmarkGenerated.lex_ZipperMem      generated_code_000529chars.amy  avgt    5    177.378 ±    7.485  us/op
+[info] AmyLexerBenchmarkGenerated.lex_ZipperMem      generated_code_002645chars.amy  avgt    5   1018.552 ±   42.481  us/op
+[info] AmyLexerBenchmarkGenerated.lex_ZipperMem      generated_code_004761chars.amy  avgt    5   1918.650 ±   99.800  us/op
+[info] AmyLexerBenchmarkGenerated.lex_ZipperMem      generated_code_006877chars.amy  avgt    5   2763.509 ±  131.830  us/op
+[info] AmyLexerBenchmarkGenerated.lex_ZipperMem      generated_code_008993chars.amy  avgt    5   3921.741 ±  194.100  us/op
+[info] AmyLexerBenchmarkGenerated.lex_ZipperMem      generated_code_011109chars.amy  avgt    5   4974.792 ±  317.092  us/op
+[info] AmyLexerBenchmarkGenerated.lex_ZipperMem      generated_code_013225chars.amy  avgt    5   6154.996 ± 1329.374  us/op
+[info] AmyLexerBenchmarkGenerated.lex_ZipperMem      generated_code_015341chars.amy  avgt    5   6711.328 ±  234.844  us/op
+[info] AmyLexerBenchmarkGenerated.lex_ZipperMem      generated_code_017457chars.amy  avgt    5   7917.973 ±  376.318  us/op
+[info] AmyLexerBenchmarkGenerated.lex_ZipperMem      generated_code_019573chars.amy  avgt    5   9497.651 ±  648.597  us/op
+[info] AmyLexerBenchmarkGenerated.lex_ZipperMem      generated_code_021689chars.amy  avgt    5  10031.510 ±  833.394  us/op
+[info] AmyLexerBenchmarkGenerated.lex_ZipperMem      generated_code_023805chars.amy  avgt    5  10973.247 ±  396.233  us/op
+[info] AmyLexerBenchmarkGenerated.lex_ZipperMem      generated_code_025921chars.amy  avgt    5  12575.131 ± 1502.126  us/op
+[info] AmyLexerBenchmarkGenerated.lex_ZipperMem      generated_code_028037chars.amy  avgt    5  13063.033 ±  677.710  us/op
+[info] AmyLexerBenchmarkGenerated.lex_ZipperMem      generated_code_030153chars.amy  avgt    5  14687.704 ±  889.242  us/op
+[info] AmyLexerBenchmarkGenerated.lex_ZipperMem      generated_code_032269chars.amy  avgt    5  16338.016 ± 1003.297  us/op
+[info] AmyLexerBenchmarkGenerated.lex_ZipperMem      generated_code_034385chars.amy  avgt    5  17141.686 ±  947.315  us/op
+[info] AmyLexerBenchmarkGenerated.lex_ZipperMem      generated_code_036501chars.amy  avgt    5  18936.636 ± 1516.646  us/op
+[info] AmyLexerBenchmarkGenerated.lex_ZipperMem      generated_code_038617chars.amy  avgt    5  19933.738 ±  561.400  us/op
+[info] AmyLexerBenchmarkGenerated.lex_ZipperMem      generated_code_040733chars.amy  avgt    5  20873.217 ±  954.500  us/op
+[info] AmyLexerBenchmarkGenerated.lex_ZipperV1Mem    generated_code_000529chars.amy  avgt    5    313.023 ±   13.629  us/op
+[info] AmyLexerBenchmarkGenerated.lex_ZipperV1Mem    generated_code_002645chars.amy  avgt    5   1667.256 ±  110.609  us/op
+[info] AmyLexerBenchmarkGenerated.lex_ZipperV1Mem    generated_code_004761chars.amy  avgt    5   3120.279 ±  191.650  us/op
+[info] AmyLexerBenchmarkGenerated.lex_ZipperV1Mem    generated_code_006877chars.amy  avgt    5   4386.894 ±  179.025  us/op
+[info] AmyLexerBenchmarkGenerated.lex_ZipperV1Mem    generated_code_008993chars.amy  avgt    5   5865.083 ±  197.840  us/op
+[info] AmyLexerBenchmarkGenerated.lex_ZipperV1Mem    generated_code_011109chars.amy  avgt    5   7368.908 ±  372.654  us/op
+[info] AmyLexerBenchmarkGenerated.lex_ZipperV1Mem    generated_code_013225chars.amy  avgt    5   8693.646 ±  298.053  us/op
+[info] AmyLexerBenchmarkGenerated.lex_ZipperV1Mem    generated_code_015341chars.amy  avgt    5  10260.595 ±  715.982  us/op
+[info] AmyLexerBenchmarkGenerated.lex_ZipperV1Mem    generated_code_017457chars.amy  avgt    5  11881.784 ±  702.514  us/op
+[info] AmyLexerBenchmarkGenerated.lex_ZipperV1Mem    generated_code_019573chars.amy  avgt    5  13601.960 ±  454.423  us/op
+[info] AmyLexerBenchmarkGenerated.lex_ZipperV1Mem    generated_code_021689chars.amy  avgt    5  14994.131 ±  611.591  us/op
+[info] AmyLexerBenchmarkGenerated.lex_ZipperV1Mem    generated_code_023805chars.amy  avgt    5  16480.942 ± 1098.559  us/op
+[info] AmyLexerBenchmarkGenerated.lex_ZipperV1Mem    generated_code_025921chars.amy  avgt    5  18215.855 ±  462.863  us/op
+[info] AmyLexerBenchmarkGenerated.lex_ZipperV1Mem    generated_code_028037chars.amy  avgt    5  19588.699 ± 1243.886  us/op
+[info] AmyLexerBenchmarkGenerated.lex_ZipperV1Mem    generated_code_030153chars.amy  avgt    5  20302.014 ± 1607.050  us/op
+[info] AmyLexerBenchmarkGenerated.lex_ZipperV1Mem    generated_code_032269chars.amy  avgt    5  22223.348 ± 1044.077  us/op
+[info] AmyLexerBenchmarkGenerated.lex_ZipperV1Mem    generated_code_034385chars.amy  avgt    5  22866.594 ± 1066.750  us/op
+[info] AmyLexerBenchmarkGenerated.lex_ZipperV1Mem    generated_code_036501chars.amy  avgt    5  24706.650 ±  591.298  us/op
+[info] AmyLexerBenchmarkGenerated.lex_ZipperV1Mem    generated_code_038617chars.amy  avgt    5  26428.007 ± 1227.465  us/op
+[info] AmyLexerBenchmarkGenerated.lex_ZipperV1Mem    generated_code_040733chars.amy  avgt    5  27156.562 ± 1520.385  us/op
+[success] Total time: 6053 s (01:40:53), completed Jan 21, 2026, 1:07:31 AM
