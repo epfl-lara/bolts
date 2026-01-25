@@ -373,12 +373,12 @@ object MemoisationZipper {
 
 
 
-  def emptyFurthestNullableCache[C](hashF: Hashable[(Zipper[C], BigInt, BigInt)], totalInput: Sequence[C], initialSize: Int = 16): CacheFurthestNullable[C] = {
+  def emptyFurthestNullableCache[C](hashF: Hashable[(Zipper[C], BigInt, BigInt)], totalInput: Sequence[C], rules: List[Rule[C]], initialSize: Int = 16): CacheFurthestNullable[C] = {
     require(validMask(initialSize - 1))
     val emptyMap = MutableHashMap.getEmptyHashMap[(Zipper[C], BigInt, BigInt), BigInt](k => -1, hashF, initialSize)
     ghostExpr(unfold(validCacheMapFurthestNullable(emptyMap, totalInput)))
     ghostExpr(assert(validCacheMapFurthestNullable(emptyMap, totalInput)))
-    CacheFurthestNullable(emptyMap, totalInput)
+    CacheFurthestNullable(emptyMap, totalInput, rules)
   }.ensuring(res => res.valid)
 
 
@@ -404,11 +404,36 @@ object MemoisationZipper {
    * Each cache is specific to one total input string
    */
   @mutable
-  final case class CacheFurthestNullable[C](private val cache: HashMap[(Zipper[C], BigInt, BigInt), BigInt], @pure val totalInput: Sequence[C]) {
+  final case class CacheFurthestNullable[C](private val cache: HashMap[(Zipper[C], BigInt, BigInt), BigInt], @pure val totalInput: Sequence[C], @pure val rules: List[Rule[C]]) {
     require(validCacheMapFurthestNullable(cache, totalInput))
 
     @ghost def lemmaInvariant(): Unit = {}.ensuring(_ => valid)
     @ghost def valid: Boolean = validCacheMapFurthestNullable(cache, totalInput)
+
+    /**
+     * When memoizing furthest nullable positions
+     * the cache memoizes 1/k call when the input size is bigger than this threshold
+     * 
+     * 
+     */
+    lazy val THRESHOLD = thresholdCompute()
+    lazy val RATE = rateCompute()
+
+    /**
+     * Can depend on the rules and the input string, to bound memory consumption
+     * to a wanted amount
+     */
+    @opaque @pure def thresholdCompute(): BigInt = {
+      1_048_576 // 2^20
+    }
+
+    /**
+     * Can depend on the rules and the input string, to bound memory consumption
+     * to a wanted amount
+     */
+    @opaque @pure def rateCompute(): BigInt = {
+      BigInt(10) 
+    }.ensuring(res => res > 0)
 
     @ghost
     @pure
@@ -729,17 +754,6 @@ object ZipperRegex {
   import VerifiedRegexMatcher.*
   import stainless.lang.Set
   import MemoisationZipper.*
-
-
-  /**
-   * When memoizing furthest nullable positions
-   * the cache memoizes 1/k call when the input size is bigger than this threshold
-   * 
-   * 
-   */
-  inline def FURTHEST_NULLABLE_CACHE_THRESHOLD = 1_048_576 // 2^20
-  inline def FURTHEST_NULLABLE_CACHE_K = 10
-
   
   /**
     * Context[C] represent sequences of expressions
@@ -3597,8 +3611,8 @@ object ZipperRegex {
     stack match {
       case Nil() => ()
       case Cons(head, tail) => {
-        if (totalInputSize > FURTHEST_NULLABLE_CACHE_THRESHOLD && counter % FURTHEST_NULLABLE_CACHE_K != 0) {
-          // Skip 9/10 updates to avoid enormous cache on large inputs
+        if (totalInputSize > cacheFurthestNullable.THRESHOLD && counter % cacheFurthestNullable.RATE != 0) {
+          // Skip update to save memory
         } else {
           cacheFurthestNullable.lemmaInvariant()
           assert(head.res == res)

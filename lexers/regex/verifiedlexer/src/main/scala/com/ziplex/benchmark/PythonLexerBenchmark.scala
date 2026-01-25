@@ -147,6 +147,6 @@ object PythonLexerBenchmarkUtils {
     )
   val furthestNullableCaches: Map[String, MemoisationZipper.CacheFurthestNullable[Char]] = 
     (exampleFileContents).map(kv => 
-      (kv._1, MemoisationZipper.emptyFurthestNullableCache[Char](ExampleUtils.ZipperBigIntBigIntHashable, kv._2))
+      (kv._1, MemoisationZipper.emptyFurthestNullableCache[Char](ExampleUtils.ZipperBigIntBigIntHashable, kv._2, PythonLexer.rules))
     )
 }

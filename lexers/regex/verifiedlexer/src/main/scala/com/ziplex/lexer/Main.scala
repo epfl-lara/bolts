@@ -51,7 +51,7 @@ object Main {
     println("Lexing with memoization")
     println(s"File content for file '$filepath':\n$fileContent")
     val input = fileContent.toStainless
-    val (tokens, suffix) = Lexer.lexMem(JsonLexer.rules, input)(using ClassTag.Char, ExampleUtils.zipperCacheUp, ExampleUtils.zipperCacheDown, ExampleUtils.furthestNullableCache(input))
+    val (tokens, suffix) = Lexer.lexMem(JsonLexer.rules, input)(using ClassTag.Char, ExampleUtils.zipperCacheUp, ExampleUtils.zipperCacheDown, ExampleUtils.furthestNullableCache(input, JsonLexer.rules))
     println(f"Suffix tokens for file '$filepath':\n${suffix}")
     assert(suffix.isEmpty)
     val tokenStrings = tokens.map(t => t.asString())
