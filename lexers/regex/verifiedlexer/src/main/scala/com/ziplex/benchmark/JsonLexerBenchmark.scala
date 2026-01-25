@@ -166,7 +166,7 @@ object JsonLexerBenchmarkUtils {
     )
   val furthestNullableCaches: Map[String, MemoisationZipper.CacheFurthestNullable[Char]] = 
     (exampleFileContents).map(kv => 
-      (kv._1, MemoisationZipper.emptyFurthestNullableCache[Char](ExampleUtils.ZipperBigIntBigIntHashable, kv._2))
+      (kv._1, MemoisationZipper.emptyFurthestNullableCache[Char](ExampleUtils.ZipperBigIntBigIntHashable, kv._2, JsonLexer.rules))
     )
 
   val zipperCacheUpInternal: MemoisationZipper.CacheUp[Char] = MemoisationZipper.emptyUp(ContextCharHashable)
@@ -177,6 +177,6 @@ object JsonLexerBenchmarkUtils {
     )
   val furthestNullableCachesInternal: Map[String, MemoisationZipper.CacheFurthestNullable[Char]] = 
     (exampleFileContents).map(kv => 
-      (kv._1, MemoisationZipper.emptyFurthestNullableCache[Char](ExampleUtils.ZipperBigIntBigIntHashable, kv._2))
+      (kv._1, MemoisationZipper.emptyFurthestNullableCache[Char](ExampleUtils.ZipperBigIntBigIntHashable, kv._2, JsonLexer.rules))
     )
 }

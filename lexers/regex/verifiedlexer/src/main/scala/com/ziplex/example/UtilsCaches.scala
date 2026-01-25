@@ -9,6 +9,8 @@ import com.ziplex.lexer.Vector
 import stainless.annotation.extern
 import scala.annotation.tailrec
 import com.ziplex.lexer.Sequence
+import com.ziplex.lexer.Rule
+import stainless.collection.List
 
 object ExampleUtils:
   
@@ -112,5 +114,5 @@ object ExampleUtils:
   val zipperCacheUp: MemoisationZipper.CacheUp[Char] = MemoisationZipper.emptyUp(ContextCharHashable)
   val zipperCacheDown: MemoisationZipper.CacheDown[Char] = MemoisationZipper.emptyDown(RegexContextCharHashable)
   def findLongestMatchCache(totalInput: Sequence[Char]) = MemoisationZipper.emptyFindLongestMatch[Char](ZipperBigIntHashable, totalInput)
-  def furthestNullableCache(totalInput: Sequence[Char]) = MemoisationZipper.emptyFurthestNullableCache[Char](ZipperBigIntBigIntHashable, totalInput)
+  def furthestNullableCache(totalInput: Sequence[Char], rules: List[Rule[Char]]) = MemoisationZipper.emptyFurthestNullableCache[Char](ZipperBigIntBigIntHashable, totalInput, rules)
 end ExampleUtils

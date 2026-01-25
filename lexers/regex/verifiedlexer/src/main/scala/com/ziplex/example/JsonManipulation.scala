@@ -368,7 +368,7 @@ object JsonManipulationExample:
   def main(path: String, hashF: Hashable[(Zipper[Char], BigInt, BigInt)])(using cacheUp: MemoisationZipper.CacheUp[Char], cacheDown: MemoisationZipper.CacheDown[Char]): Option[Sequence[Char]] = {
     require(cacheUp.valid && cacheDown.valid)
     val input: Sequence[Char] = openFile(path)
-    given emptyFindLongestMatch: CacheFurthestNullable[Char] = MemoisationZipper.emptyFurthestNullableCache(hashF, input)
+    given emptyFindLongestMatch: CacheFurthestNullable[Char] = MemoisationZipper.emptyFurthestNullableCache(hashF, input, JsonLexer.rules)
     assert(emptyFindLongestMatch.valid)
     assert(emptyFindLongestMatch.totalInput == input)
 

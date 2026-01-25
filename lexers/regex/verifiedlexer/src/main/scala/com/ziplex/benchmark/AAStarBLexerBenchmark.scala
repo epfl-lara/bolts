@@ -182,7 +182,7 @@ object AAStarBLexerBenchmarkBigUtils {
   val zipperCacheDown: MemoisationZipper.CacheDown[Char] = MemoisationZipper.emptyDown(RegexContextCharHashable)
   val furthestNullableCachesLarge: Map[String, MemoisationZipper.CacheFurthestNullable[Char]] = 
     (kiloBytesSequences).map(kv => 
-      (kv._1, MemoisationZipper.emptyFurthestNullableCache[Char](ExampleUtils.ZipperBigIntBigIntHashable, kv._2))
+      (kv._1, MemoisationZipper.emptyFurthestNullableCache[Char](ExampleUtils.ZipperBigIntBigIntHashable, kv._2, AAStarBLexer.rules))
     )
 }
 
@@ -226,7 +226,7 @@ object AAStarBLexerBenchmarkUtils {
     )
   val furthestNullableCaches: Map[String, MemoisationZipper.CacheFurthestNullable[Char]] = 
     (fileContents).map(kv => 
-      (kv._1, MemoisationZipper.emptyFurthestNullableCache[Char](ExampleUtils.ZipperBigIntBigIntHashable, kv._2))
+      (kv._1, MemoisationZipper.emptyFurthestNullableCache[Char](ExampleUtils.ZipperBigIntBigIntHashable, kv._2, AAStarBLexer.rules))
     )
 
   val zipperCacheUpInternal: MemoisationZipper.CacheUp[Char] = MemoisationZipper.emptyUp(ContextCharHashable)
