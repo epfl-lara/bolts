@@ -432,8 +432,8 @@ object MemoisationZipper {
      * to a wanted amount
      */
     @opaque @pure def rateCompute(): BigInt = {
-      10 
-    }
+      BigInt(10) 
+    }.ensuring(res => res > 0)
 
     @ghost
     @pure
