@@ -1,7 +1,7 @@
 {
 "fname":"1200.txt",
  "input_len":1200,
- "times":[0.01772],
+ "times":[0.09950],
  "rest_len":0,
  "sem_tokens_len":"Some 1200"
 }
