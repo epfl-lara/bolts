@@ -20,3 +20,4 @@ smt-sessions
 # bloop etc
 .bsp
 .scala-build
+lexers/regex/.DS_Store

@@ -502,90 +502,62 @@ object ExampleAmyLexer:
     case object AmyLexer:
         import Types.*
         @extern def keywordRegex(): Regex[Char] = "abstract".r |
-                                                "case".r |
-                                                "class".r |
-                                                "def".r |
-                                                "else".r |
-                                                "extends".r |
-                                                "if".r |
-                                                "match".r |
-                                                "object".r |
-                                                "val".r |
-                                                "error".r |
-                                                "_".r |
-                                                "end".r
-        val keywordRule =
-            Rule(
-            regex = keywordRegex(),
-            tag = "keyword",
-            isSeparator = false,
-            transformation = KeywordValueInjection.injection
-            )
-        @extern def primitivTypeRegex(): Regex[Char] = "Int(32)".r | "Unit".r | "Boolean".r | "String".r
-        val primitivTypeRule =
-            Rule(
-            regex = primitivTypeRegex(),
-            tag = "primitive_type",
-            isSeparator = false,
-            transformation = PrimitiveTypeValueInjection.injection
-            )
+                                    "case".r |
+                                    "class".r |
+                                    "def".r |
+                                    "else".r |
+                                    "extends".r |
+                                    "if".r |
+                                    "match".r |
+                                    "object".r |
+                                    "val".r |
+                                    "error".r |
+                                    "_".r |
+                                    "end".r
+        val keywordRule = Rule(regex = keywordRegex(), tag = "keyword", isSeparator = false, transformation = KeywordValueInjection.injection)
+
+        @extern def primitivTypeRegex(): Regex[Char] = "Int".r | "Unit".r | "Boolean".r | "String".r
+        val primitivTypeRule = Rule(regex = primitivTypeRegex(), tag = "primitive_type", isSeparator = false, transformation = PrimitiveTypeValueInjection.injection)
+        
         @extern def booleanLiteralRegex(): Regex[Char] = "true".r | "false".r
-        val booleanLiteralRule =
-            Rule(regex = booleanLiteralRegex(), tag = "boolean_literal", isSeparator = false, transformation = BooleanLiteralValueInjection.injection)
+        val booleanLiteralRule = Rule(regex = booleanLiteralRegex(), tag = "boolean_literal", isSeparator = false, transformation = BooleanLiteralValueInjection.injection)
 
-        // oneOf("+-/*%!<") | word("==") | word("<=") | word("&&") | word("||") | word("++")
-        @extern def operatorRegex(): Regex[Char] = anyOf("+-/*%!<") | "==".r | "<=".r | "&&".r | "||".r | "++".r    
-        val operatorRule =
-            Rule(regex = operatorRegex(), tag = "operator", isSeparator = false, transformation = OperatorValueInjection.injection)
+        @extern def operatorRegex(): Regex[Char] = anyOf("+-/*%!<>") | "<=".r | ">=".r | "==".r  | "&&".r | "||".r | "++".r    
+        val operatorRule = Rule(regex = operatorRegex(), tag = "operator", isSeparator = false, transformation = OperatorValueInjection.injection)
 
-        // elem(_.isLetter) ~ many(elem(_.isLetterOrDigit) | elem('_'))
         @extern def identifierRegex(): Regex[Char] = azAZ ~ (azAZ | digits | "_".r).*
-        val identifierRule =
-            Rule(regex = identifierRegex(), tag = "identifier", isSeparator = false, transformation = IdentifierValueInjection.injection)
-
-        // many1(elem(_.isDigit))
+        val identifierRule = Rule(regex = identifierRegex(), tag = "identifier", isSeparator = false, transformation = IdentifierValueInjection.injection)
+        
         @extern def integerLiteralRegex(): Regex[Char] = digits.+
-        val integerLiteralRule =
-            Rule(regex = integerLiteralRegex(), tag = "integer_literal", isSeparator = false, transformation = IdentifierValueInjection.injection)
+        val integerLiteralRule = Rule(regex = integerLiteralRegex(), tag = "integer_literal", isSeparator = false, transformation = IntegerValueInjection.injection)
 
-        // elem('"') ~ many(elem(c => c != '"' && c != '\n')) ~ elem('"')
-        @extern def stringLiteralRegex(): Regex[Char] = "\"".r ~ (azAZ | digits | " ".r | "\t".r | specialChars).* ~ "\"".r
-        val stringLiteralRule =
-            Rule(regex = stringLiteralRegex(), tag = "string_literal", isSeparator = false, transformation = StringLiteralValueInjection.injection)
+        @extern def stringLiteralRegex(): Regex[Char] = "\"".r ~ (azAZ | digits | " ".r | "\t".r | specialCharsString.replace("\"", "").anyOf).* ~ "\"".r
+        val stringLiteralRule = Rule(regex = stringLiteralRegex(), tag = "string_literal", isSeparator = false, transformation = StringLiteralValueInjection.injection)
 
-        // oneOf(".,:;(){}[]=") | word("=>")
         @extern def delimiterRegex(): Regex[Char] = anyOf(".,:;(){}[]=") | "=>".r
-        val delimiterRule =
-            Rule(regex = delimiterRegex(), tag = "delimiter", isSeparator = false, transformation = DelimiterValueInjection.injection)
+        val delimiterRule = Rule(regex = delimiterRegex(), tag = "delimiter", isSeparator = false, transformation = DelimiterValueInjection.injection)
 
-        // many1(elem(_.isWhitespace))
         @extern def whiteSpacesRegex(): Regex[Char] = whiteSpaces.+
-        val whitespaceRule =
-            Rule(regex = whiteSpacesRegex(), tag = "whitespace", isSeparator = true, transformation = WhitespaceValueInjection.injection)
+        val whitespaceRule = Rule(regex = whiteSpacesRegex(), tag = "whitespace", isSeparator = true, transformation = WhitespaceValueInjection.injection)
 
-        // word("//") ~ many(elem(_ != '\n'))
         @extern def singleCommentRegex(): Regex[Char] = "//".r ~ (azAZ | digits | " ".r | "\t".r | specialChars).*
-        val singleCommentRule =
-            Rule(regex = singleCommentRegex(), tag = "comment", isSeparator = true, transformation = CommentValueInjection.injection)
-
-        // word("/*") ~
-        // many(elem(_ != '*') | many1(elem('*')) ~ elem(c => c != '/' && c != '*')) ~
-        // many(elem('*')) ~
-        // word("*/")
+        val singleCommentRule = Rule(regex = singleCommentRegex(), tag = "comment", isSeparator = false, transformation = CommentValueInjection.injection)
+        
         @extern def multiCommentRegex(): Regex[Char] = 
             "/*".r ~ 
-                (azAZ | digits | whiteSpaces | specialCharsString.replace("/", "").replace("*", "").r | "/".r | ("*".r ~ "*".r.* ~ (azAZ | digits | whiteSpaces | specialCharsString.replace("/", "").replace("*", "").r | "/".r))).* ~  
+                ((azAZ | digits | whiteSpaces | specialCharsString.replace("*", "").anyOf) | (("*".r.+) ~ (azAZ | digits | whiteSpaces | specialCharsString.replace("/", "").replace("*", "").anyOf))).* ~
                 "*".r.* ~
             "*/".r
-        val multiCommentRule =
-            Rule(
-            regex = multiCommentRegex(),
-            tag = "multiline_comment",
-            isSeparator = true,
-            transformation = CommentValueInjection.injection
-            )
+        val multiCommentRule = Rule(regex = multiCommentRegex(), tag = "multiline_comment", isSeparator = false, transformation = CommentValueInjection.injection )
 
-        val rules = List(
+        @extern def unclosedMultiCommentRegex(): Regex[Char] = 
+            "/*".r ~ 
+                ((azAZ | digits | whiteSpaces | specialCharsString.replace("*", "").anyOf) | (("*".r.+) ~ (azAZ | digits | whiteSpaces | specialCharsString.replace("/", "").replace("*", "").anyOf))).* ~
+                "*".r.* 
+        val unclosedMultiCommentRule = Rule(regex = unclosedMultiCommentRegex(), tag = "unclosed_multiline_comment", isSeparator = false, transformation = CommentValueInjection.injection )
+
+
+        val rules = stainless.collection.List(
             keywordRule,
             primitivTypeRule,
             booleanLiteralRule,
@@ -596,7 +568,8 @@ object ExampleAmyLexer:
             delimiterRule,
             whitespaceRule,
             singleCommentRule,
-            multiCommentRule
+            multiCommentRule,
+            unclosedMultiCommentRule
         )
     end AmyLexer
 

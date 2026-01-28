@@ -549,6 +549,12 @@ object ListUtils {
   }.ensuring (res => if (res) l.size >= prefix.size else true)
 
   @ghost
+  def isSuffix[B](suffix: List[B], l: List[B]): Boolean = {
+    decreases(suffix)
+    suffix == l.drop(l.size - suffix.size)
+  }.ensuring (res => res ==> (l.size >= suffix.size))
+
+  @ghost
   def removeLast[B](l: List[B]): List[B] = {
     require(!l.isEmpty)
     decreases(l)
@@ -712,6 +718,22 @@ object ListUtils {
         }
     }
   }.ensuring(_ => ListSpecs.subseq(l.drop(i), l))
+
+  @ghost
+  @inlineOnce
+  @opaque
+  def lemmaDropTakeAddOneLeft[B](l: List[B], i: BigInt, j: BigInt): Unit = {
+    require(i >= 0 && i < l.size)
+    require(j >= 0 && j <= l.size - i - 1)
+    decreases(l)
+
+    if(i == 0){
+      ()
+    } else {
+      lemmaDropTakeAddOneLeft(l.tail, i - 1, j )
+    }
+
+  }.ensuring(_ => Cons(l(i), l.drop(i + 1).take(j)) == l.drop(i).take(j + 1))
 
   @ghost 
   @inlineOnce
@@ -949,6 +971,33 @@ object ListUtils {
       case Nil()        => ()
     }
   }.ensuring (_ => isPrefix(l1, l1 ++ l2))
+
+  @inlineOnce
+  @opaque
+  @ghost
+  def lemmaConcatTwoListThenFSndIsSuffix[B](l1: List[B], l2: List[B]): Unit = {
+    decreases(l1.size)
+    l1 match {
+      case Cons(hd, tl) => lemmaConcatTwoListThenFSndIsSuffix(tl, l2)
+      case Nil()        => ()
+    }
+  }.ensuring (_ => isSuffix(l2, l1 ++ l2))
+
+  @inlineOnce
+  @opaque
+  @ghost
+  def lemmaTakeIsPrefix[B](l: List[B], n: BigInt): Unit = {
+    require(n >= 0)
+    decreases(n)
+    l match {
+      case Cons(hd, tl) => {
+        if (n > 0) {
+          lemmaTakeIsPrefix(tl, n - 1)
+        }
+      }
+      case Nil() => ()
+    }
+  }.ensuring (_ => isPrefix(l.take(n), l))
 
   @inlineOnce
   @opaque
@@ -1232,6 +1281,19 @@ object ListUtils {
       case Nil()        => ()
     }
   }.ensuring (_ => getSuffix(l, l).isEmpty)
+
+  @inlineOnce
+  @opaque
+  @ghost
+  def lemmaGetSuffixHeadApplyNPlusOne[B](l: List[B], p: List[B]): Unit = {
+    require(isPrefix(p, l))
+    require(p.size + 1 <= l.size)
+    decreases(p)
+    p match {
+      case Cons(hd, tl) => lemmaGetSuffixHeadApplyNPlusOne(l.tail, tl)
+      case Nil()        => ()
+    }
+  }.ensuring (_ => getSuffix(l, p).head == l(p.size))
 
   @inlineOnce
   @opaque

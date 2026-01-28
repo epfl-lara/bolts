@@ -1,0 +1,11 @@
+*.vo
+*.vos
+*.vok
+*.cmo
+*.cmi
+*.cmx
+*.o
+*.glob
+.*.aux
+prog.out
+Lib.ml

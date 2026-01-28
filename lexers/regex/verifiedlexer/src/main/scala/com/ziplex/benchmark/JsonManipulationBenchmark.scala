@@ -29,6 +29,8 @@ import com.ziplex.lexer.emptySeq
 import com.ziplex.lexer.singletonSeq
 import com.ziplex.lexer.seqFromList
 
+import com.ziplex.lexer.example.ExampleUtils
+
 import scala.reflect.ClassTag
 import java.io.File
 import com.ziplex.lexer.VerifiedLexer.PrintableTokens
@@ -76,11 +78,25 @@ class JsonManipulationBenchmark {
   @Benchmark
   @BenchmarkMode(Array(Mode.AverageTime))
   @OutputTimeUnit(TimeUnit.MICROSECONDS)
+  def lexV1(bh: Blackhole): Unit = {
+    val (tokens, suffix) = Lexer.lexV1Mem(JsonLexer.rules, JsonManipulationBenchmarkUtils.fileContents(file))(
+      using ClassTag.Char,
+      JsonManipulationBenchmarkUtils.zipperCacheUp,
+      JsonManipulationBenchmarkUtils.zipperCacheDown
+    )
+    bh.consume(suffix.isEmpty)
+    // assert(suffix.isEmpty)
+  }
+
+  @Benchmark
+  @BenchmarkMode(Array(Mode.AverageTime))
+  @OutputTimeUnit(TimeUnit.MICROSECONDS)
   def lex(bh: Blackhole): Unit = {
     val (tokens, suffix) = Lexer.lexMem(JsonLexer.rules, JsonManipulationBenchmarkUtils.fileContents(file))(
       using ClassTag.Char,
       JsonManipulationBenchmarkUtils.zipperCacheUp,
-      JsonManipulationBenchmarkUtils.zipperCacheDown
+      JsonManipulationBenchmarkUtils.zipperCacheDown,
+      JsonManipulationBenchmarkUtils.furthestNullableCaches(file)
     )
     bh.consume(suffix.isEmpty)
     // assert(suffix.isEmpty)
@@ -90,8 +106,8 @@ class JsonManipulationBenchmark {
   @Benchmark
   @BenchmarkMode(Array(Mode.AverageTime))
   @OutputTimeUnit(TimeUnit.MICROSECONDS)
-  def lexNonMem(bh: Blackhole): Unit = {
-    val (tokens, suffix) = Lexer.lex(JsonLexer.rules, JsonManipulationBenchmarkUtils.fileContents(file))
+  def lexV1NonMem(bh: Blackhole): Unit = {
+    val (tokens, suffix) = Lexer.lexV1(JsonLexer.rules, JsonManipulationBenchmarkUtils.fileContents(file))
     bh.consume(suffix.isEmpty)
     // assert(suffix.isEmpty)
   }
@@ -99,11 +115,32 @@ class JsonManipulationBenchmark {
   @Benchmark
   @BenchmarkMode(Array(Mode.AverageTime))
   @OutputTimeUnit(TimeUnit.MICROSECONDS)
-  def lexAndCheckPrintable(bh: Blackhole): Unit = {
-    val (tokens, _) = Lexer.lexMem(JsonLexer.rules, JsonManipulationBenchmarkUtils.fileContents(file))(
+  def lexAndCheckPrintableV1(bh: Blackhole): Unit = {
+    val (tokens, _) = Lexer.lexV1Mem(JsonLexer.rules, JsonManipulationBenchmarkUtils.fileContents(file))(
       using ClassTag.Char,
       JsonManipulationBenchmarkUtils.zipperCacheUp,
       JsonManipulationBenchmarkUtils.zipperCacheDown
+    )
+    val res = printableTokensFromTokensMem(JsonLexer.rules, tokens)(
+      using ClassTag.Char,
+      JsonManipulationBenchmarkUtils.zipperCacheUp,
+      JsonManipulationBenchmarkUtils.zipperCacheDown
+    )
+    bh.consume(res.isDefined)
+    // assert(res.isDefined)
+    bh.consume(res.get.size > 0)
+    // assert(res.get.size > 0)
+  }
+
+  @Benchmark
+  @BenchmarkMode(Array(Mode.AverageTime))
+  @OutputTimeUnit(TimeUnit.MICROSECONDS)
+  def lexAndCheckPrintableV3(bh: Blackhole): Unit = {
+    val (tokens, _) = Lexer.lexMem(JsonLexer.rules, JsonManipulationBenchmarkUtils.fileContents(file))(
+      using ClassTag.Char,
+      JsonManipulationBenchmarkUtils.zipperCacheUp,
+      JsonManipulationBenchmarkUtils.zipperCacheDown,
+      JsonManipulationBenchmarkUtils.furthestNullableCaches(file)
     )
     val res = printableTokensFromTokensMem(JsonLexer.rules, tokens)(
       using ClassTag.Char,
@@ -256,7 +293,8 @@ object JsonManipulationBenchmarkUtils {
     val (tokens, suffix) = Lexer.lexMem(JsonLexer.rules, content)(
       using ClassTag.Char,
       zipperCacheUpInternal,
-      zipperCacheDownInternal
+      zipperCacheDownInternal,
+      furthestNullableCachesInternal(name)
     )
     assert(suffix.isEmpty)
     (name -> printableTokensFromTokensMem(JsonLexer.rules, tokens).get)
@@ -280,6 +318,14 @@ object JsonManipulationBenchmarkUtils {
 
   given zipperCacheUpInternal: MemoisationZipper.CacheUp[Char] = MemoisationZipper.emptyUp(ContextCharHashable)
   given zipperCacheDownInternal: MemoisationZipper.CacheDown[Char] = MemoisationZipper.emptyDown(RegexContextCharHashable)
+  val findLongestMatchCachesInternal: Map[String, MemoisationZipper.CacheFindLongestMatch[Char]] = 
+    (fileContents).map(kv => 
+      (kv._1, MemoisationZipper.emptyFindLongestMatch[Char](ExampleUtils.ZipperBigIntHashable, kv._2))
+    )
+  val furthestNullableCachesInternal: Map[String, MemoisationZipper.CacheFurthestNullable[Char]] = 
+    (fileContents).map(kv => 
+      (kv._1, MemoisationZipper.emptyFurthestNullableCache[Char](ExampleUtils.ZipperBigIntBigIntHashable, kv._2, JsonLexer.rules))
+    )
 
   val (commaNewLineSeparator, leftBracketSeparator, rightBracketSeparator) = (createCommaNewLineSeparator.get, createLeftBracketSeparator.get, createRightBracketSeparator.get)
 
@@ -290,6 +336,14 @@ object JsonManipulationBenchmarkUtils {
 
   val zipperCacheUp: MemoisationZipper.CacheUp[Char] = MemoisationZipper.emptyUp(ContextCharHashable)
   val zipperCacheDown: MemoisationZipper.CacheDown[Char] = MemoisationZipper.emptyDown(RegexContextCharHashable)
+  val findLongestMatchCaches: Map[String, MemoisationZipper.CacheFindLongestMatch[Char]] = 
+    (fileContents).map(kv => 
+      (kv._1, MemoisationZipper.emptyFindLongestMatch[Char](ExampleUtils.ZipperBigIntHashable, kv._2))
+    )
+  val furthestNullableCaches: Map[String, MemoisationZipper.CacheFurthestNullable[Char]] = 
+    (fileContents).map(kv => 
+      (kv._1, MemoisationZipper.emptyFurthestNullableCache[Char](ExampleUtils.ZipperBigIntBigIntHashable, kv._2, JsonLexer.rules))
+    )
 
 
   def addId(pt: PrintableTokens[Char]): (BigInt, PrintableTokens[Char]) = (parseID(pt), pt)

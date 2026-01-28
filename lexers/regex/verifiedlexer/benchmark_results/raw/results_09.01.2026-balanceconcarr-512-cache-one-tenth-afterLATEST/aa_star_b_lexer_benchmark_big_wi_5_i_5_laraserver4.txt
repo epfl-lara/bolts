@@ -1,0 +1,631 @@
+copying runtime jar...
+[info] welcome to sbt 1.9.8 (Ubuntu Java 17.0.17)
+[info] loading settings for project verifiedlexer-build-build-build from metals.sbt ...
+[info] loading project definition from /localhome/chassot/bolts/lexers/regex/verifiedlexer/project/project/project
+[info] loading settings for project verifiedlexer-build-build from metals.sbt ...
+[info] loading project definition from /localhome/chassot/bolts/lexers/regex/verifiedlexer/project/project
+[success] Generated .bloop/verifiedlexer-build-build.json
+[success] Total time: 2 s, completed Jan 9, 2026, 1:29:02 PM
+[info] loading settings for project verifiedlexer-build from metals.sbt,plugins.sbt ...
+[info] loading project definition from /localhome/chassot/bolts/lexers/regex/verifiedlexer/project
+[success] Generated .bloop/verifiedlexer-build.json
+[success] Total time: 1 s, completed Jan 9, 2026, 1:29:04 PM
+[info] loading settings for project verifiedlexer from build.sbt ...
+[info] set current project to ZipLex (in build file:/localhome/chassot/bolts/lexers/regex/verifiedlexer/)
+[info] compiling 74 Scala sources to /localhome/chassot/bolts/lexers/regex/verifiedlexer/target/scala-3.7.2/classes ...
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/main/scala/com/ziplex/lexer/BalanceConcArr.scala:267:6 
+[warn] 267 |      t match
+[warn]     |      ^
+[warn]     |      match may not be exhaustive.
+[warn]     |
+[warn]     |      It would fail on pattern case: Empty()
+[warn]     |
+[warn]     | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/main/scala/com/ziplex/lexer/BalanceConcArr.scala:349:16 
+[warn] 349 |                r match
+[warn]     |                ^
+[warn]     |                match may not be exhaustive.
+[warn]     |
+[warn]     |                It would fail on pattern case: Empty(), Leaf(_, _)
+[warn]     |
+[warn]     | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/main/scala/com/ziplex/lexer/BalanceConcArr.scala:344:10 
+[warn] 344 |          xs match
+[warn]     |          ^^
+[warn]     |          match may not be exhaustive.
+[warn]     |
+[warn]     |          It would fail on pattern case: Empty(), Leaf(_, _)
+[warn]     |
+[warn]     | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/main/scala/com/ziplex/lexer/BalanceConcArr.scala:362:16 
+[warn] 362 |                l match
+[warn]     |                ^
+[warn]     |                match may not be exhaustive.
+[warn]     |
+[warn]     |                It would fail on pattern case: Empty(), Leaf(_, _)
+[warn]     |
+[warn]     | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/main/scala/com/ziplex/lexer/BalanceConcArr.scala:357:10 
+[warn] 357 |          ys match
+[warn]     |          ^^
+[warn]     |          match may not be exhaustive.
+[warn]     |
+[warn]     |          It would fail on pattern case: Empty(), Leaf(_, _)
+[warn]     |
+[warn]     | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/main/scala/com/ziplex/lexer/BalanceConcArr.scala:408:8 
+[warn] 408 |        t match
+[warn]     |        ^
+[warn]     |        match may not be exhaustive.
+[warn]     |
+[warn]     |        It would fail on pattern case: Empty()
+[warn]     |
+[warn]     | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/main/scala/com/ziplex/lexer/BalanceConcArr.scala:490:12 
+[warn] 490 |            newR match
+[warn]     |            ^^^^
+[warn]     |            match may not be exhaustive.
+[warn]     |
+[warn]     |            It would fail on pattern case: Empty(), Leaf(_, _)
+[warn]     |
+[warn]     | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/main/scala/com/ziplex/lexer/BalanceConcArr.scala:519:6 
+[warn] 519 |      t match
+[warn]     |      ^
+[warn]     |      match may not be exhaustive.
+[warn]     |
+[warn]     |      It would fail on pattern case: Empty()
+[warn]     |
+[warn]     | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/main/scala/com/ziplex/lexer/BalanceConcArr.scala:536:6 
+[warn] 536 |      t match
+[warn]     |      ^
+[warn]     |      match may not be exhaustive.
+[warn]     |
+[warn]     |      It would fail on pattern case: Empty()
+[warn]     |
+[warn]     | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/main/scala/com/ziplex/lexer/BalanceConcArr.scala:544:6 
+[warn] 544 |      t match
+[warn]     |      ^
+[warn]     |      match may not be exhaustive.
+[warn]     |
+[warn]     |      It would fail on pattern case: Empty()
+[warn]     |
+[warn]     | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/main/scala/com/ziplex/lexer/Utils.scala:1332:4 
+[warn] 1332 |    newList match {
+[warn]      |    ^^^^^^^
+[warn]      |    match may not be exhaustive.
+[warn]      |
+[warn]      |    It would fail on pattern case: stainless.collection.Cons(_, _)
+[warn]      |
+[warn]      | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/main/scala/com/ziplex/lexer/VerifiedLexer.scala:1233:8 
+[warn] 1233 |        maxPrefWithoutSep match {
+[warn]      |        ^^^^^^^^^^^^^^^^^
+[warn]      |        match may not be exhaustive.
+[warn]      |
+[warn]      |        It would fail on pattern case: stainless.lang.Some(_)
+[warn]      |
+[warn]      | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/main/scala/com/ziplex/lexer/VerifiedLexer.scala:1330:6 
+[warn] 1330 |      rulesArg match {
+[warn]      |      ^^^^^^^^
+[warn]      |      match may not be exhaustive.
+[warn]      |
+[warn]      |      It would fail on pattern case: stainless.collection.Nil()
+[warn]      |
+[warn]      | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/main/scala/com/ziplex/lexer/VerifiedLexer.scala:1363:10 
+[warn] 1363 |          rulesArg match {
+[warn]      |          ^^^^^^^^
+[warn]      |          match may not be exhaustive.
+[warn]      |
+[warn]      |          It would fail on pattern case: stainless.collection.Nil()
+[warn]      |
+[warn]      | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/main/scala/com/ziplex/lexer/VerifiedLexer.scala:1390:6 
+[warn] 1390 |      rulesArg match {
+[warn]      |      ^^^^^^^^
+[warn]      |      match may not be exhaustive.
+[warn]      |
+[warn]      |      It would fail on pattern case: stainless.collection.Nil()
+[warn]      |
+[warn]      | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/main/scala/com/ziplex/lexer/VerifiedLexer.scala:1426:10 
+[warn] 1426 |          rulesArg match {
+[warn]      |          ^^^^^^^^
+[warn]      |          match may not be exhaustive.
+[warn]      |
+[warn]      |          It would fail on pattern case: stainless.collection.Nil()
+[warn]      |
+[warn]      | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/main/scala/com/ziplex/lexer/VerifiedLexer.scala:1456:10 
+[warn] 1456 |          rulesArg match {
+[warn]      |          ^^^^^^^^
+[warn]      |          match may not be exhaustive.
+[warn]      |
+[warn]      |          It would fail on pattern case: stainless.collection.Nil()
+[warn]      |
+[warn]      | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/main/scala/com/ziplex/lexer/VerifiedLexer.scala:1486:10 
+[warn] 1486 |          rulesArg match {
+[warn]      |          ^^^^^^^^
+[warn]      |          match may not be exhaustive.
+[warn]      |
+[warn]      |          It would fail on pattern case: stainless.collection.Nil()
+[warn]      |
+[warn]      | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/main/scala/com/ziplex/lexer/VerifiedLexer.scala:2414:6 
+[warn] 2414 |      rules match {
+[warn]      |      ^^^^^
+[warn]      |      match may not be exhaustive.
+[warn]      |
+[warn]      |      It would fail on pattern case: stainless.collection.Cons(_, _)
+[warn]      |
+[warn]      | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/main/scala/com/ziplex/lexer/VerifiedRegex.scala:654:4 
+[warn] 654 |    r match {
+[warn]     |    ^
+[warn]     |    match may not be exhaustive.
+[warn]     |
+[warn]     |    It would fail on pattern case: Concat(_, _)
+[warn]     |
+[warn]     | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/main/scala/com/ziplex/map/ListLongMap.scala:157:4 
+[warn] 157 |    l match {
+[warn]     |    ^
+[warn]     |    match may not be exhaustive.
+[warn]     |
+[warn]     |    It would fail on pattern case: stainless.collection.Cons(_, _)
+[warn]     |
+[warn]     | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/main/scala/com/ziplex/map/ListLongMap.scala:191:4 
+[warn] 191 |    l match {
+[warn]     |    ^
+[warn]     |    match may not be exhaustive.
+[warn]     |
+[warn]     |    It would fail on pattern case: stainless.collection.Cons(_, _)
+[warn]     |
+[warn]     | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/main/scala/com/ziplex/map/ListLongMap.scala:206:4 
+[warn] 206 |    l match {
+[warn]     |    ^
+[warn]     |    match may not be exhaustive.
+[warn]     |
+[warn]     |    It would fail on pattern case: stainless.collection.Cons(_, _)
+[warn]     |
+[warn]     | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/main/scala/com/ziplex/map/ListLongMap.scala:222:4 
+[warn] 222 |    l match {
+[warn]     |    ^
+[warn]     |    match may not be exhaustive.
+[warn]     |
+[warn]     |    It would fail on pattern case: stainless.collection.Cons(_, _)
+[warn]     |
+[warn]     | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/main/scala/com/ziplex/map/ListLongMap.scala:243:4 
+[warn] 243 |    l match {
+[warn]     |    ^
+[warn]     |    match may not be exhaustive.
+[warn]     |
+[warn]     |    It would fail on pattern case: stainless.collection.Cons(_, _)
+[warn]     |
+[warn]     | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/main/scala/com/ziplex/map/ListLongMap.scala:274:4 
+[warn] 274 |    l match {
+[warn]     |    ^
+[warn]     |    match may not be exhaustive.
+[warn]     |
+[warn]     |    It would fail on pattern case: stainless.collection.Cons(_, _)
+[warn]     |
+[warn]     | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/main/scala/com/ziplex/map/ListMap.scala:195:4 
+[warn] 195 |    l match {
+[warn]     |    ^
+[warn]     |    match may not be exhaustive.
+[warn]     |
+[warn]     |    It would fail on pattern case: stainless.collection.Cons(_, _)
+[warn]     |
+[warn]     | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/main/scala/com/ziplex/map/ListMap.scala:229:4 
+[warn] 229 |    l match {
+[warn]     |    ^
+[warn]     |    match may not be exhaustive.
+[warn]     |
+[warn]     |    It would fail on pattern case: stainless.collection.Cons(_, _)
+[warn]     |
+[warn]     | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/main/scala/com/ziplex/map/ListMap.scala:256:4 
+[warn] 256 |    l match {
+[warn]     |    ^
+[warn]     |    match may not be exhaustive.
+[warn]     |
+[warn]     |    It would fail on pattern case: stainless.collection.Cons(_, _)
+[warn]     |
+[warn]     | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/main/scala/com/ziplex/map/ListMap.scala:308:4 
+[warn] 308 |    l match {
+[warn]     |    ^
+[warn]     |    match may not be exhaustive.
+[warn]     |
+[warn]     |    It would fail on pattern case: stainless.collection.Cons(_, _)
+[warn]     |
+[warn]     | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/main/scala/com/ziplex/map/ListMap.scala:380:4 
+[warn] 380 |    l match {
+[warn]     |    ^
+[warn]     |    match may not be exhaustive.
+[warn]     |
+[warn]     |    It would fail on pattern case: stainless.collection.Cons(_, _)
+[warn]     |
+[warn]     | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/main/scala/com/ziplex/map/MutableLongMap.scala:360:4 
+[warn] 360 |    c match {
+[warn]     |    ^
+[warn]     |    match may not be exhaustive.
+[warn]     |
+[warn]     |    It would fail on pattern case: EmptyCell()
+[warn]     |
+[warn]     | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/main/scala/com/ziplex/map/MutableLongMap.scala:609:8 
+[warn] 609 |        seekEntryRes match {
+[warn]     |        ^^^^^^^^^^^^
+[warn]     |match may not be exhaustive.
+[warn]     |
+[warn]     |It would fail on pattern case: com.mutablemaps.map.MutableLongMap.Intermediate(_, _, _)
+[warn]     |
+[warn]     | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/main/scala/com/ziplex/map/MutableLongMap.scala:1119:6 
+[warn] 1119 |      intermediate match {
+[warn]      |      ^^^^^^^^^^^^
+[warn]      |match may not be exhaustive.
+[warn]      |
+[warn]      |It would fail on pattern case: _: com.mutablemaps.map.MutableLongMap.SeekEntryResult
+[warn]      |
+[warn]      | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/main/scala/com/ziplex/map/MutableLongMap.scala:1169:6 
+[warn] 1169 |      intermediate match {
+[warn]      |      ^^^^^^^^^^^^
+[warn]      |match may not be exhaustive.
+[warn]      |
+[warn]      |It would fail on pattern case: _: com.mutablemaps.map.MutableLongMap.SeekEntryResult
+[warn]      |
+[warn]      | longer explanation available when compiling with `-explain`
+[warn] there was 1 deprecation warning; re-run with -deprecation for details
+[warn] 36 warnings found
+[info] done compiling
+[info] running org.openjdk.jmh.generators.bytecode.JmhBytecodeGenerator /localhome/chassot/bolts/lexers/regex/verifiedlexer/target/scala-3.7.2/classes /localhome/chassot/bolts/lexers/regex/verifiedlexer/target/scala-3.7.2/src_managed/jmh /localhome/chassot/bolts/lexers/regex/verifiedlexer/target/scala-3.7.2/resource_managed/jmh default
+Processing 1214 classes from /localhome/chassot/bolts/lexers/regex/verifiedlexer/target/scala-3.7.2/classes with "reflection" generator
+Writing out Java source to /localhome/chassot/bolts/lexers/regex/verifiedlexer/target/scala-3.7.2/src_managed/jmh and resources to /localhome/chassot/bolts/lexers/regex/verifiedlexer/target/scala-3.7.2/resource_managed/jmh
+[info] compiling 98 Java sources to /localhome/chassot/bolts/lexers/regex/verifiedlexer/target/scala-3.7.2/classes ...
+[info] done compiling
+[info] running (fork) org.openjdk.jmh.Main -i 5 -wi 5 -f1 -t1 com.ziplex.lexer.benchmark.lexer.BigAAStarBLexerBenchmark
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.17, OpenJDK 64-Bit Server VM, 17.0.17+10-Ubuntu-124.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: -Xss1G -Xmx64g
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 5 iterations, 10 s each
+[info] # Measurement: 5 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: com.ziplex.lexer.benchmark.lexer.BigAAStarBLexerBenchmark.lex_ZipperV3Mem
+[info] # Parameters: (sizeInMB = 0.01)
+[info] # Run progress: 0.00% complete, ETA 00:18:20
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 17457.764 us/op
+[info] # Warmup Iteration   2: 14936.516 us/op
+[info] # Warmup Iteration   3: 13828.752 us/op
+[info] # Warmup Iteration   4: 13556.933 us/op
+[info] # Warmup Iteration   5: 14456.524 us/op
+[info] Iteration   1: 13565.856 us/op
+[info] Iteration   2: 13695.552 us/op
+[info] Iteration   3: 13788.902 us/op
+[info] Iteration   4: 13294.338 us/op
+[info] Iteration   5: 13192.380 us/op
+[info] Result "com.ziplex.lexer.benchmark.lexer.BigAAStarBLexerBenchmark.lex_ZipperV3Mem":
+[info]   13507.406 ±(99.9%) 986.799 us/op [Average]
+[info]   (min, avg, max) = (13192.380, 13507.406, 13788.902), stdev = 256.269
+[info]   CI (99.9%): [12520.607, 14494.205] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.17, OpenJDK 64-Bit Server VM, 17.0.17+10-Ubuntu-124.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: -Xss1G -Xmx64g
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 5 iterations, 10 s each
+[info] # Measurement: 5 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: com.ziplex.lexer.benchmark.lexer.BigAAStarBLexerBenchmark.lex_ZipperV3Mem
+[info] # Parameters: (sizeInMB = 0.02)
+[info] # Run progress: 9.09% complete, ETA 00:16:46
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 37702.705 us/op
+[info] # Warmup Iteration   2: 29795.648 us/op
+[info] # Warmup Iteration   3: 29146.917 us/op
+[info] # Warmup Iteration   4: 28040.329 us/op
+[info] # Warmup Iteration   5: 29540.712 us/op
+[info] Iteration   1: 28216.402 us/op
+[info] Iteration   2: 28992.641 us/op
+[info] Iteration   3: 28732.687 us/op
+[info] Iteration   4: 27422.421 us/op
+[info] Iteration   5: 28625.758 us/op
+[info] Result "com.ziplex.lexer.benchmark.lexer.BigAAStarBLexerBenchmark.lex_ZipperV3Mem":
+[info]   28397.982 ±(99.9%) 2359.771 us/op [Average]
+[info]   (min, avg, max) = (27422.421, 28397.982, 28992.641), stdev = 612.825
+[info]   CI (99.9%): [26038.211, 30757.753] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.17, OpenJDK 64-Bit Server VM, 17.0.17+10-Ubuntu-124.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: -Xss1G -Xmx64g
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 5 iterations, 10 s each
+[info] # Measurement: 5 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: com.ziplex.lexer.benchmark.lexer.BigAAStarBLexerBenchmark.lex_ZipperV3Mem
+[info] # Parameters: (sizeInMB = 0.05)
+[info] # Run progress: 18.18% complete, ETA 00:15:05
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 150404.116 us/op
+[info] # Warmup Iteration   2: 91271.786 us/op
+[info] # Warmup Iteration   3: 105655.766 us/op
+[info] # Warmup Iteration   4: 103831.681 us/op
+[info] # Warmup Iteration   5: 94973.393 us/op
+[info] Iteration   1: 91756.815 us/op
+[info] Iteration   2: 93486.042 us/op
+[info] Iteration   3: 96030.117 us/op
+[info] Iteration   4: 92933.964 us/op
+[info] Iteration   5: 95691.995 us/op
+[info] Result "com.ziplex.lexer.benchmark.lexer.BigAAStarBLexerBenchmark.lex_ZipperV3Mem":
+[info]   93979.787 ±(99.9%) 7051.685 us/op [Average]
+[info]   (min, avg, max) = (91756.815, 93979.787, 96030.117), stdev = 1831.300
+[info]   CI (99.9%): [86928.101, 101031.472] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.17, OpenJDK 64-Bit Server VM, 17.0.17+10-Ubuntu-124.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: -Xss1G -Xmx64g
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 5 iterations, 10 s each
+[info] # Measurement: 5 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: com.ziplex.lexer.benchmark.lexer.BigAAStarBLexerBenchmark.lex_ZipperV3Mem
+[info] # Parameters: (sizeInMB = 0.1)
+[info] # Run progress: 27.27% complete, ETA 00:13:26
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 500642.538 us/op
+[info] # Warmup Iteration   2: 199881.945 us/op
+[info] # Warmup Iteration   3: 201524.375 us/op
+[info] # Warmup Iteration   4: 213484.568 us/op
+[info] # Warmup Iteration   5: 213195.853 us/op
+[info] Iteration   1: 211053.916 us/op
+[info] Iteration   2: 195609.922 us/op
+[info] Iteration   3: 203549.967 us/op
+[info] Iteration   4: 208999.914 us/op
+[info] Iteration   5: 212191.667 us/op
+[info] Result "com.ziplex.lexer.benchmark.lexer.BigAAStarBLexerBenchmark.lex_ZipperV3Mem":
+[info]   206281.077 ±(99.9%) 26288.906 us/op [Average]
+[info]   (min, avg, max) = (195609.922, 206281.077, 212191.667), stdev = 6827.145
+[info]   CI (99.9%): [179992.171, 232569.983] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.17, OpenJDK 64-Bit Server VM, 17.0.17+10-Ubuntu-124.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: -Xss1G -Xmx64g
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 5 iterations, 10 s each
+[info] # Measurement: 5 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: com.ziplex.lexer.benchmark.lexer.BigAAStarBLexerBenchmark.lex_ZipperV3Mem
+[info] # Parameters: (sizeInMB = 0.5)
+[info] # Run progress: 36.36% complete, ETA 00:11:47
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 3032377.596 us/op
+[info] # Warmup Iteration   2: 1558811.942 us/op
+[info] # Warmup Iteration   3: 1209260.439 us/op
+[info] # Warmup Iteration   4: 1269839.175 us/op
+[info] # Warmup Iteration   5: 1272075.720 us/op
+[info] Iteration   1: 1256892.050 us/op
+[info] Iteration   2: 1278401.354 us/op
+[info] Iteration   3: 1283296.552 us/op
+[info] Iteration   4: 1182345.217 us/op
+[info] Iteration   5: 1202335.917 us/op
+[info] Result "com.ziplex.lexer.benchmark.lexer.BigAAStarBLexerBenchmark.lex_ZipperV3Mem":
+[info]   1240654.218 ±(99.9%) 176197.087 us/op [Average]
+[info]   (min, avg, max) = (1182345.217, 1240654.218, 1283296.552), stdev = 45757.824
+[info]   CI (99.9%): [1064457.131, 1416851.305] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.17, OpenJDK 64-Bit Server VM, 17.0.17+10-Ubuntu-124.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: -Xss1G -Xmx64g
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 5 iterations, 10 s each
+[info] # Measurement: 5 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: com.ziplex.lexer.benchmark.lexer.BigAAStarBLexerBenchmark.lex_ZipperV3Mem
+[info] # Parameters: (sizeInMB = 1)
+[info] # Run progress: 45.45% complete, ETA 00:10:18
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 6835360.455 us/op
+[info] # Warmup Iteration   2: 3520150.323 us/op
+[info] # Warmup Iteration   3: 2997765.065 us/op
+[info] # Warmup Iteration   4: 2798813.074 us/op
+[info] # Warmup Iteration   5: 2750090.949 us/op
+[info] Iteration   1: 2769521.364 us/op
+[info] Iteration   2: 2869736.457 us/op
+[info] Iteration   3: 2730026.224 us/op
+[info] Iteration   4: 2662983.740 us/op
+[info] Iteration   5: 2612264.697 us/op
+[info] Result "com.ziplex.lexer.benchmark.lexer.BigAAStarBLexerBenchmark.lex_ZipperV3Mem":
+[info]   2728906.496 ±(99.9%) 382335.292 us/op [Average]
+[info]   (min, avg, max) = (2612264.697, 2728906.496, 2869736.457), stdev = 99291.261
+[info]   CI (99.9%): [2346571.204, 3111241.788] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.17, OpenJDK 64-Bit Server VM, 17.0.17+10-Ubuntu-124.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: -Xss1G -Xmx64g
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 5 iterations, 10 s each
+[info] # Measurement: 5 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: com.ziplex.lexer.benchmark.lexer.BigAAStarBLexerBenchmark.lex_ZipperV3Mem
+[info] # Parameters: (sizeInMB = 5)
+[info] # Run progress: 54.55% complete, ETA 00:08:45
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 40199352.556 us/op
+[info] # Warmup Iteration   2: 26891842.943 us/op
+[info] # Warmup Iteration   3: 21614545.393 us/op
+[info] # Warmup Iteration   4: 21462538.561 us/op
+[info] # Warmup Iteration   5: 23106749.646 us/op
+[info] Iteration   1: 23771117.815 us/op
+[info] Iteration   2: 22541129.458 us/op
+[info] Iteration   3: 22122693.751 us/op
+[info] Iteration   4: 23522806.909 us/op
+[info] Iteration   5: 23856561.056 us/op
+[info] Result "com.ziplex.lexer.benchmark.lexer.BigAAStarBLexerBenchmark.lex_ZipperV3Mem":
+[info]   23162861.798 ±(99.9%) 3013147.447 us/op [Average]
+[info]   (min, avg, max) = (22122693.751, 23162861.798, 23856561.056), stdev = 782504.823
+[info]   CI (99.9%): [20149714.351, 26176009.245] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.17, OpenJDK 64-Bit Server VM, 17.0.17+10-Ubuntu-124.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: -Xss1G -Xmx64g
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 5 iterations, 10 s each
+[info] # Measurement: 5 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: com.ziplex.lexer.benchmark.lexer.BigAAStarBLexerBenchmark.lex_ZipperV3Mem
+[info] # Parameters: (sizeInMB = 10)
+[info] # Run progress: 63.64% complete, ETA 00:08:23
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 78185612.751 us/op
+[info] # Warmup Iteration   2: 50983055.085 us/op
+[info] # Warmup Iteration   3: 43927673.459 us/op
+[info] # Warmup Iteration   4: 50884375.437 us/op
+[info] # Warmup Iteration   5: 46467628.146 us/op
+[info] Iteration   1: 47699094.817 us/op
+[info] Iteration   2: 44266213.739 us/op
+[info] Iteration   3: 47561729.848 us/op
+[info] Iteration   4: 47363516.288 us/op
+[info] Iteration   5: 45375914.261 us/op
+[info] Result "com.ziplex.lexer.benchmark.lexer.BigAAStarBLexerBenchmark.lex_ZipperV3Mem":
+[info]   46453293.791 ±(99.9%) 5950840.208 us/op [Average]
+[info]   (min, avg, max) = (44266213.739, 46453293.791, 47699094.817), stdev = 1545414.304
+[info]   CI (99.9%): [40502453.582, 52404133.999] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.17, OpenJDK 64-Bit Server VM, 17.0.17+10-Ubuntu-124.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: -Xss1G -Xmx64g
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 5 iterations, 10 s each
+[info] # Measurement: 5 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: com.ziplex.lexer.benchmark.lexer.BigAAStarBLexerBenchmark.lex_ZipperV3Mem
+[info] # Parameters: (sizeInMB = 20)
+[info] # Run progress: 72.73% complete, ETA 00:08:40
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 161262926.008 us/op
+[info] # Warmup Iteration   2: 106956974.471 us/op
+[info] # Warmup Iteration   3: 103362408.032 us/op
+[info] # Warmup Iteration   4: 102898930.094 us/op
+[info] # Warmup Iteration   5: 105561124.756 us/op
+[info] Iteration   1: 105005469.732 us/op
+[info] Iteration   2: 102576806.811 us/op
+[info] Iteration   3: 102416848.744 us/op
+[info] Iteration   4: 100597100.578 us/op
+[info] Iteration   5: 101900715.635 us/op
+[info] Result "com.ziplex.lexer.benchmark.lexer.BigAAStarBLexerBenchmark.lex_ZipperV3Mem":
+[info]   102499388.300 ±(99.9%) 6170156.197 us/op [Average]
+[info]   (min, avg, max) = (100597100.578, 102499388.300, 105005469.732), stdev = 1602369.970
+[info]   CI (99.9%): [96329232.103, 108669544.497] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.17, OpenJDK 64-Bit Server VM, 17.0.17+10-Ubuntu-124.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: -Xss1G -Xmx64g
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 5 iterations, 10 s each
+[info] # Measurement: 5 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: com.ziplex.lexer.benchmark.lexer.BigAAStarBLexerBenchmark.lex_ZipperV3Mem
+[info] # Parameters: (sizeInMB = 30)
+[info] # Run progress: 81.82% complete, ETA 00:09:11
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 235620325.010 us/op
+[info] # Warmup Iteration   2: 163227008.619 us/op
+[info] # Warmup Iteration   3: 162649030.928 us/op
+[info] # Warmup Iteration   4: 160414994.745 us/op
+[info] # Warmup Iteration   5: 163334622.279 us/op
+[info] Iteration   1: 163014708.353 us/op
+[info] Iteration   2: 161319518.317 us/op
+[info] Iteration   3: 160527356.587 us/op
+[info] Iteration   4: 159946677.525 us/op
+[info] Iteration   5: 154643482.047 us/op
+[info] Result "com.ziplex.lexer.benchmark.lexer.BigAAStarBLexerBenchmark.lex_ZipperV3Mem":
+[info]   159890348.566 ±(99.9%) 12137580.072 us/op [Average]
+[info]   (min, avg, max) = (154643482.047, 159890348.566, 163014708.353), stdev = 3152091.000
+[info]   CI (99.9%): [147752768.494, 172027928.638] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.17, OpenJDK 64-Bit Server VM, 17.0.17+10-Ubuntu-124.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: -Xss1G -Xmx64g
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 5 iterations, 10 s each
+[info] # Measurement: 5 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: com.ziplex.lexer.benchmark.lexer.BigAAStarBLexerBenchmark.lex_ZipperV3Mem
+[info] # Parameters: (sizeInMB = 100)
+[info] # Run progress: 90.91% complete, ETA 00:06:57
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 912468392.927 us/op
+[info] # Warmup Iteration   2: 710986548.869 us/op
+[info] # Warmup Iteration   3: 899931308.623 us/op
+[info] # Warmup Iteration   4: 813518975.907 us/op
+[info] # Warmup Iteration   5: 591232966.983 us/op
+[info] Iteration   1: 580555416.889 us/op
+[info] Iteration   2: 562061677.446 us/op
+[info] Iteration   3: 530423128.380 us/op
+[info] Iteration   4: 523519830.480 us/op
+[info] Iteration   5: 527871204.802 us/op
+[info] Result "com.ziplex.lexer.benchmark.lexer.BigAAStarBLexerBenchmark.lex_ZipperV3Mem":
+[info]   544886251.599 ±(99.9%) 96698369.555 us/op [Average]
+[info]   (min, avg, max) = (523519830.480, 544886251.599, 580555416.889), stdev = 25112259.495
+[info]   CI (99.9%): [448187882.044, 641584621.154] (assumes normal distribution)
+[info] # Run complete. Total time: 03:00:33
+[info] REMEMBER: The numbers below are just data. To gain reusable insights, you need to follow up on
+[info] why the numbers are the way they are. Use profilers (see -prof, -lprof), design factorial
+[info] experiments, perform baseline and negative tests that provide experimental control, make sure
+[info] the benchmarking environment is safe on JVM/OS/HW level, ask for reviews from the domain experts.
+[info] Do not assume the numbers tell you what you want them to tell.
+[info] Benchmark                                 (sizeInMB)  Mode  Cnt          Score          Error  Units
+[info] BigAAStarBLexerBenchmark.lex_ZipperV3Mem        0.01  avgt    5      13507.406 ±      986.799  us/op
+[info] BigAAStarBLexerBenchmark.lex_ZipperV3Mem        0.02  avgt    5      28397.982 ±     2359.771  us/op
+[info] BigAAStarBLexerBenchmark.lex_ZipperV3Mem        0.05  avgt    5      93979.787 ±     7051.685  us/op
+[info] BigAAStarBLexerBenchmark.lex_ZipperV3Mem         0.1  avgt    5     206281.077 ±    26288.906  us/op
+[info] BigAAStarBLexerBenchmark.lex_ZipperV3Mem         0.5  avgt    5    1240654.218 ±   176197.087  us/op
+[info] BigAAStarBLexerBenchmark.lex_ZipperV3Mem           1  avgt    5    2728906.496 ±   382335.292  us/op
+[info] BigAAStarBLexerBenchmark.lex_ZipperV3Mem           5  avgt    5   23162861.798 ±  3013147.447  us/op
+[info] BigAAStarBLexerBenchmark.lex_ZipperV3Mem          10  avgt    5   46453293.791 ±  5950840.208  us/op
+[info] BigAAStarBLexerBenchmark.lex_ZipperV3Mem          20  avgt    5  102499388.300 ±  6170156.197  us/op
+[info] BigAAStarBLexerBenchmark.lex_ZipperV3Mem          30  avgt    5  159890348.566 ± 12137580.072  us/op
+[info] BigAAStarBLexerBenchmark.lex_ZipperV3Mem         100  avgt    5  544886251.599 ± 96698369.555  us/op
+[success] Total time: 10854 s (03:00:54), completed Jan 9, 2026, 4:29:58 PM
