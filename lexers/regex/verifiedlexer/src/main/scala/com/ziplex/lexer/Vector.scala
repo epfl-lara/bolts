@@ -10,7 +10,6 @@ import scala.collection.immutable.ArraySeq
 import stainless.lang._
 import stainless.lang.StaticChecks._
 import stainless.lang.{ghost => ghostExpr, _}
-import com.ziplex.lexer.VerifiedLexer.Lexer.theoremInvertFromString
 // END uncomment for verification --------------------------------------------
 // BEGIN imports for benchmarking -------------------------------------------
 // import stainless.lang.{ghost => _, decreases => _, unfold => _, _}
