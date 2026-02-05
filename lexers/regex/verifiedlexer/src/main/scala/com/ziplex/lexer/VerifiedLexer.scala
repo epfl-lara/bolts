@@ -18,22 +18,22 @@ import scala.annotation.tailrec
 import scala.reflect.ClassTag
 
 // BEGIN uncomment for verification ------------------------------------------
-import stainless.lang.StaticChecks._
-import stainless.lang.{ghost => ghostExpr, _}
-import stainless.proof.check
-import com.mutablemaps.map.MutableHashMap.HashMap
-import com.mutablemaps.map.MutableHashMap
+// import stainless.lang.StaticChecks._
+// import stainless.lang.{ghost => ghostExpr, _}
+// import stainless.proof.check
+// import com.mutablemaps.map.MutableHashMap.HashMap
+// import com.mutablemaps.map.MutableHashMap
 // END uncomment for verification --------------------------------------------
 // BEGIN imports for benchmarking -------------------------------------------
-// import stainless.lang.{ghost => _, decreases => _, unfold => _, _}
-// import com.ziplex.lexer.OptimisedChecks.*
-// import Predef.{assert => _, Ensuring => _, require => _}
+import stainless.lang.{ghost => _, decreases => _, unfold => _, _}
+import com.ziplex.lexer.OptimisedChecks.*
+import Predef.{assert => _, Ensuring => _, require => _}
 
-// @tailrec
-// def dummy(x: BigInt): BigInt = {
-//   if (x == BigInt(0)) then x
-//   else dummy(x - BigInt(1))
-// }.ensuring( res => res == BigInt(0))
+@tailrec
+def dummy(x: BigInt): BigInt = {
+  if (x == BigInt(0)) then x
+  else dummy(x - BigInt(1))
+}.ensuring( res => res == BigInt(0))
 // END imports for benchmarking ---------------------------------------------
 
 
@@ -526,7 +526,7 @@ object VerifiedLexer {
        res._2.list == lexList(rules, input.list)._2)
     )
 
-    // @tailrec
+    @tailrec
     def lexTailRec[C: ClassTag](
         rules: List[Rule[C]],
         @ghost totalInput: Sequence[C],
@@ -592,7 +592,7 @@ object VerifiedLexer {
        res._2.list == lexList(rules, input.list)._2)
     )
 
-    // @tailrec
+    @tailrec
     def lexTailRecV2[C: ClassTag](
         rules: List[Rule[C]],
         totalInput: Sequence[C],
@@ -727,7 +727,7 @@ object VerifiedLexer {
                        res._2.list == lex(rules, input)._2.list &&
                        cacheUp.valid && cacheDown.valid)
 
-    // @tailrec
+    @tailrec
     def lexTailRecMem[C: ClassTag](
         rules: List[Rule[C]],
         @ghost totalInput: Sequence[C],
@@ -765,7 +765,7 @@ object VerifiedLexer {
     }.ensuring (res => res._1.list == lexTailRec(rules, totalInput, treated, input, acc)._1.list && 
                        res._2.list == lexTailRec(rules, totalInput, treated, input, acc)._2.list)
 
-    // @tailrec
+    @tailrec
     def lexTailRecV2Mem[C: ClassTag](
         rules: List[Rule[C]],
         totalInput: Sequence[C],
@@ -831,7 +831,7 @@ object VerifiedLexer {
                        cacheFindLongestMatch.valid && cacheUp.valid && cacheDown.valid &&
                        cacheFindLongestMatch.totalInput == totalInput)
 
-    // @tailrec
+    @tailrec
     def lexTailRecV2MemOnlyDeriv[C: ClassTag](
         rules: List[Rule[C]],
         totalInput: Sequence[C],
