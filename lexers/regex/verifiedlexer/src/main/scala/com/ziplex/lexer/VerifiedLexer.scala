@@ -40,12 +40,9 @@ def dummy(x: BigInt): BigInt = {
 object VerifiedLexer {
   import VerifiedRegex._
   import ZipperRegex.Zipper
-  import ZipperRegex.Zipper
   import VerifiedRegexMatcher._
   import com.ziplex.lexer.MemoisationZipper.CacheUp
   import com.ziplex.lexer.MemoisationZipper.CacheDown
-  import com.ziplex.lexer.MemoisationZipper.CacheFindLongestMatch
-  import com.ziplex.lexer.MemoisationZipper.CacheFurthestNullable
   import com.ziplex.lexer.MemoisationZipper.CacheFindLongestMatch
   import com.ziplex.lexer.MemoisationZipper.CacheFurthestNullable
 
@@ -220,12 +217,10 @@ object VerifiedLexer {
       require(!rs.isEmpty)
       require(rulesInvariant(rs))
       val (producedTs, suffix) = lexV1Mem(rs, print(singletonSeq(t)))
-      val (producedTs, suffix) = lexV1Mem(rs, print(singletonSeq(t)))
       producedTs.size == 1 && producedTs(0) == t && suffix.isEmpty
     }.ensuring(res => res == rulesProduceIndividualToken(rs, t))
 
     @ghost
-    override def rulesProduceEachTokenIndividuallyList[C: ClassTag](rs: List[Rule[C]], ts: List[Token[C]]): Boolean = {
     override def rulesProduceEachTokenIndividuallyList[C: ClassTag](rs: List[Rule[C]], ts: List[Token[C]]): Boolean = {
       require(!rs.isEmpty)
       require(rulesInvariant(rs))
@@ -836,7 +831,7 @@ object VerifiedLexer {
                        cacheFindLongestMatch.valid && cacheUp.valid && cacheDown.valid &&
                        cacheFindLongestMatch.totalInput == totalInput)
 
-    // @tailrec
+    @tailrec
     def lexTailRecV2MemOnlyDeriv[C: ClassTag](
         rules: List[Rule[C]],
         totalInput: Sequence[C],
