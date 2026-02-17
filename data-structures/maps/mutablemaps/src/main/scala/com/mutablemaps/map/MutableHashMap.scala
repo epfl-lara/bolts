@@ -380,10 +380,7 @@ object MutableHashMap {
     require(hm.map.forall(p))
     require(hm.contains(k))
 
-    TupleListOpsGenK.lemmaGetValueByKeyImpliesContainsTuple(hm.map.toList, k, hm.apply(k))
-    assert(hm.map.toList.contains((k, hm.apply(k))))
-    assert(hm.map.toList.forall(p))
-    ListSpecs.forallContained(hm.map.toList, p, (k, hm.apply(k)))
+    hm.map.lemmaForallPairsThenForLookup(k, p)
   }.ensuring(_ => p((k, hm.apply(k))))
 
 
@@ -416,7 +413,7 @@ object MutableHashMap {
     
     if(success) {
       assert(snap.map.eq(mapAfter))
-      TupleListOpsGenK.lemmaInsertNoDuplicatedKeysPreservesForall(oldMap.toList, k, v, p)
+      oldMap.lemmaUpdatePreservesForallPairs(k, v, p)
       assert(mapAfter.forall(p))
       TupleListOpsGenK.lemmaForallSubset(snap.map.toList, mapAfter.toList, p)
     } else {
@@ -462,7 +459,7 @@ object MutableHashMap {
     if(success) {
       assert(snap.map.eq(mapAfter))
       assert(oldMap.forall(p))
-      TupleListOpsGenK.lemmaForallSubset(mapAfter.toList, oldMap.toList, p)
+      oldMap.lemmaRemovePreservesForallPairs(k, p)
       TupleListOpsGenK.lemmaForallSubset(snap.map.toList, mapAfter.toList, p)
     } else {
       assert(snap.map.eq(oldMap))
