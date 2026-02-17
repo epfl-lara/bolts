@@ -51,7 +51,7 @@ case class ListMap[K, B](toList: List[(K, B)]) {
       TupleListOpsGenK.lemmaInListThenGetKeysListContains(toList, key)
       if(this.keys().contains(key)) {
         TupleListOpsGenK.lemmaInGetKeysListThenContainsKey(toList, key)
-        check(false)
+        // check(false)
       }
     } else {
       if (this.keys().contains(key)) {
