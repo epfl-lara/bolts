@@ -139,11 +139,10 @@ case class ListMap[K, B](toList: List[(K, B)]) {
   }
 
   /**
-    * This lemma proves that a property `p` that .holds for all pairs of the map, .holds for a key and its value.
+    * This lemma proves that a property `p` that holds for all pairs of the map holds for a key and its value.
     * 
     * Useful to build caches using this map.
     *
-    * @param hm
     * @param k
     * @param p
     */
@@ -163,11 +162,10 @@ case class ListMap[K, B](toList: List[(K, B)]) {
 
 
   /**
-    * This lemma proves that inserting a new pair preserves the property `p` that .holds for all pairs of the map.
+    * This lemma proves that inserting a new pair preserves the property `p` that holds for all pairs of the map.
     * 
     * Useful to build caches using this map.
     *
-    * @param hm
     * @param k
     * @param v
     * @param p
@@ -185,12 +183,11 @@ case class ListMap[K, B](toList: List[(K, B)]) {
     TupleListOpsGenK.lemmaInsertNoDuplicatedKeysPreservesForall(this.toList, k, v, p)
   }.ensuring(_ => (this + (k, v)).forall(p))
 
-    /**
-    * This lemma proves that removing a pair preserves the property `p` that .holds for all pairs of the map.
+  /**
+    * This lemma proves that removing a pair preserves the property `p` that holds for all pairs of the map.
     * 
     * Useful to build caches using this map.
     *
-    * @param hm
     * @param k
     * @param p
     */
