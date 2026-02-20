@@ -3,7 +3,7 @@
 package com.mutablemaps.map
 
 import stainless.annotation._
-import stainless.collection.{ListMap => ListMapStainless, ListMapLemmas => ListMapLemmasStainless, _}
+import stainless.collection.{ListMap => ListMapStainless, ListMapLemmas => ListMapLemmasStainless, TupleListOpsGenK => TupleListOpsGenKStainless, _}
 import stainless.equations._
 import stainless.lang.Cell
 import MutableLongMap._
@@ -380,7 +380,10 @@ object MutableHashMap {
     require(hm.map.forall(p))
     require(hm.contains(k))
 
-    hm.map.lemmaForallPairsThenForLookup(k, p)
+    TupleListOpsGenK.lemmaGetValueByKeyImpliesContainsTuple(hm.map.toList, k, hm.apply(k))
+    assert(hm.map.toList.contains((k, hm.apply(k))))
+    assert(hm.map.toList.forall(p))
+    ListSpecs.forallContained(hm.map.toList, p, (k, hm.apply(k)))
   }.ensuring(_ => p((k, hm.apply(k))))
 
 
@@ -413,7 +416,7 @@ object MutableHashMap {
     
     if(success) {
       assert(snap.map.eq(mapAfter))
-      oldMap.lemmaUpdatePreservesForallPairs(k, v, p)
+      TupleListOpsGenK.lemmaInsertNoDuplicatedKeysPreservesForall(oldMap.toList, k, v, p)
       assert(mapAfter.forall(p))
       TupleListOpsGenK.lemmaForallSubset(snap.map.toList, mapAfter.toList, p)
     } else {
@@ -459,7 +462,7 @@ object MutableHashMap {
     if(success) {
       assert(snap.map.eq(mapAfter))
       assert(oldMap.forall(p))
-      oldMap.lemmaRemovePreservesForallPairs(k, p)
+      TupleListOpsGenK.lemmaForallSubset(mapAfter.toList, oldMap.toList, p)
       TupleListOpsGenK.lemmaForallSubset(snap.map.toList, mapAfter.toList, p)
     } else {
       assert(snap.map.eq(oldMap))
@@ -1642,4 +1645,3 @@ object MutableHashMap {
 
   }.ensuring (_ => !l.contains((key, v)))
 }
-

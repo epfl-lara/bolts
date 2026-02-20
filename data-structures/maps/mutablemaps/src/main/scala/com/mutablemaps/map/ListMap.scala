@@ -4,7 +4,7 @@
 package com.mutablemaps.map
 
 import stainless.annotation._
-import stainless.collection._
+import stainless.collection.{ListMap => ListMapStainless, TupleListOpsGenK => TupleListOpsGenKStainless, _}
 import stainless.equations._
 import stainless.lang._
 import stainless.proof.check
@@ -123,7 +123,8 @@ case class ListMap[K, B](toList: List[(K, B)]) {
     ListMap(TupleListOpsGenK.removePresrvNoDuplicatedKeys(toList, key))
   }.ensuring(res =>
     !res.contains(key)
-      && this.keys().content - key == res.keys().content
+      && this.keys().content - key == res.keys().content 
+      && TupleListOpsGenK.invariantList(res.toList)
   )
 
   def --(keys: List[K]): ListMap[K, B] = {
@@ -201,11 +202,18 @@ case class ListMap[K, B](toList: List[(K, B)]) {
     val mapAfter = this - k
     TupleListOpsGenK.lemmaForallSubset(mapAfter.toList, this.toList, p)
   }.ensuring(_ => (this - k).forall(p))
+
+  @opaque
+  @inlineOnce
+  @ghost
+  def lemmaInvariant(): Unit = {
+
+  }.ensuring(_ => TupleListOpsGenK.invariantList(this.toList) && TupleListOpsGenK.noDuplicatedKeys(this.toList))
 }
 
 object TupleListOpsGenK {
 
-  // @inline
+  @inline
   def invariantList[K, B](l: List[(K, B)]): Boolean = {
     noDuplicatedKeys(l)
   }
