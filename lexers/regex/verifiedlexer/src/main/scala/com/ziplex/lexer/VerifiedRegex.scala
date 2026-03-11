@@ -3541,7 +3541,7 @@ object ZipperRegex {
       }
     }.ensuring(_ => frames.forall(frame => frame.res == res2))
 
-  def furthestNullablePositionStackMem[C](z: Zipper[C], from: BigInt, totalInput: Sequence[C], totalInputSize: BigInt, lastNullablePos: BigInt, stack: MutStack[C])(using cacheUp: CacheUp[C], cacheDown: CacheDown[C], cacheFurthestNullable: CacheFurthestNullable[C]): BigInt = {
+  def furthestNullablePositionStackMem[C](z: Zipper[C], from: BigInt, totalInput: Sequence[C], totalInputSize: BigInt, lastNullablePos: BigInt)(using cacheUp: CacheUp[C], cacheDown: CacheDown[C], cacheFurthestNullable: CacheFurthestNullable[C], stack: MutStack[C]): BigInt = {
     require(from >= 0 && from <= totalInputSize)
     require(totalInputSize == totalInput.size)
     require(lastNullablePos >= -1 && lastNullablePos < from)
@@ -3593,7 +3593,7 @@ object ZipperRegex {
             assert(newFrames.forall(frame => frame.totalInput == totalInput))
           })
           stack.frames = newFrames
-          furthestNullablePositionStackMem(derivedZ, from + 1, totalInput, totalInputSize, newLastNullable, stack)
+          furthestNullablePositionStackMem(derivedZ, from + 1, totalInput, totalInputSize, newLastNullable)
         }
       }
     }
@@ -3634,7 +3634,7 @@ object ZipperRegex {
     val totalInputSize = totalInput.size
     val from = totalInputSize - input.size
     val mutStack = MutStack(List[StackFrame[C]]())
-    val res = furthestNullablePositionStackMem(z, from, totalInput, totalInputSize, if nullableZipper(z) then from - 1 else -1, mutStack)
+    val res = furthestNullablePositionStackMem(z, from, totalInput, totalInputSize, if nullableZipper(z) then from - 1 else -1)(using cacheUp, cacheDown, cacheFurthestNullable, mutStack)
     val prefixLength: BigInt = res - from + 1
     ghostExpr({
       check(mutStack.frames.forall(frame => frame.res == res))
