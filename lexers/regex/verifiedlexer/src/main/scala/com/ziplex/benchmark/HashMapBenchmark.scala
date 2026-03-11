@@ -1,3 +1,4 @@
+package com.ziplex.lexer
 package benchmark.maps
 
 import java.util.concurrent.TimeUnit
