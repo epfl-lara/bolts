@@ -3520,16 +3520,16 @@ object ZipperRegex {
                     (res == furthestNullablePosition(z, from, totalInput, totalInput.size, lastNullablePos)))
   end StackFrame
 
-  type Stack[C] = List[StackFrame[C]]
+  case class MutStack[C](var frames: List[StackFrame[C]])
 
   @ghost 
   @opaque
   @inlineOnce
-  def lemmaStackPreservesForEqualRes[C](s: Stack[C], res1: BigInt, res2: BigInt): Unit = {
-      require(s.forall(frame => frame.res == res1))
+  def lemmaStackPreservesForEqualRes[C](frames: List[StackFrame[C]], res1: BigInt, res2: BigInt): Unit = {
+      require(frames.forall(frame => frame.res == res1))
       require(res1 == res2)
-      decreases(s.size)
-      s match {
+      decreases(frames.length)
+      frames match {
         case Nil() => ()
         case Cons(hd, tl) => {
           hd.lemmaInv()
@@ -3539,9 +3539,9 @@ object ZipperRegex {
           assert(hd.res == res2)
         }
       }
-    }.ensuring(_ => s.forall(frame => frame.res == res2))
+    }.ensuring(_ => frames.forall(frame => frame.res == res2))
 
-  def furthestNullablePositionStackMem[C](z: Zipper[C], from: BigInt, totalInput: Sequence[C], totalInputSize: BigInt, lastNullablePos: BigInt, stack: Stack[C] = Nil[StackFrame[C]]())(using cacheUp: CacheUp[C], cacheDown: CacheDown[C], cacheFurthestNullable: CacheFurthestNullable[C]): (BigInt, Stack[C]) = {
+  def furthestNullablePositionStackMem[C](z: Zipper[C], from: BigInt, totalInput: Sequence[C], totalInputSize: BigInt, lastNullablePos: BigInt, stack: MutStack[C])(using cacheUp: CacheUp[C], cacheDown: CacheDown[C], cacheFurthestNullable: CacheFurthestNullable[C]): BigInt = {
     require(from >= 0 && from <= totalInputSize)
     require(totalInputSize == totalInput.size)
     require(lastNullablePos >= -1 && lastNullablePos < from)
@@ -3549,31 +3549,31 @@ object ZipperRegex {
     require(cacheUp.valid && cacheDown.valid && cacheFurthestNullable.valid)
     require(cacheFurthestNullable.totalInput == totalInput)
     @ghost val currentRes = furthestNullablePosition(z, from, totalInput, totalInput.size, lastNullablePos)
-    require(stack.forall(frame => frame.res == currentRes))
-    require(stack.forall(frame => frame.totalInput == totalInput))
+    require(stack.frames.forall(frame => frame.res == currentRes))
+    require(stack.frames.forall(frame => frame.totalInput == totalInput))
     decreases(totalInputSize - from)
 
-    check(stack.forall(frame => frame.res == currentRes))    
+    check(stack.frames.forall(frame => frame.res == currentRes))    
 
 
     cacheFurthestNullable.get(z, from, lastNullablePos) match {
       case Some(cachedRes) => {
         assert(cachedRes == furthestNullablePosition(z, from, totalInput, totalInput.size, lastNullablePos))
         assert(Nil[StackFrame[C]]().forall(frame => frame.res == currentRes)) 
-        (cachedRes, stack)
+        cachedRes
       }
       case None() => {
         if (from == totalInputSize || lostCauseZipper(z)) {
           assert(furthestNullablePosition(z, from, totalInput, totalInput.size, lastNullablePos) == lastNullablePos)
           assert(currentRes == lastNullablePos)
-          check(stack.forall(frame => frame.res == currentRes))    
-          ghostExpr(lemmaStackPreservesForEqualRes(stack, currentRes, lastNullablePos))
-          (lastNullablePos, stack)
+          check(stack.frames.forall(frame => frame.res == currentRes))    
+          ghostExpr(lemmaStackPreservesForEqualRes(stack.frames, currentRes, lastNullablePos))
+          lastNullablePos
         } else {
           val derivedZ = derivationStepZipperMem(z, totalInput(from))
           val newLastNullable = if (nullableZipper(derivedZ)) from else lastNullablePos
           val stackFrame = StackFrame(z, from, lastNullablePos, currentRes, totalInput)
-          val newStack = Cons(stackFrame, stack)
+          val newFrames = Cons(stackFrame, stack.frames)
           ghostExpr({
             val newRes = furthestNullablePosition(derivedZ, from + 1, totalInput, totalInput.size, newLastNullable)
             assert(furthestNullablePosition(z, from, totalInput, totalInput.size, lastNullablePos) ==
@@ -3583,32 +3583,33 @@ object ZipperRegex {
             assert(newRes == furthestNullablePosition(derivedZ, from + 1, totalInput, totalInput.size, newLastNullable))
             assert(currentRes == newRes)
 
-            check(stack.forall(frame => frame.res == currentRes))   
+            check(stack.frames.forall(frame => frame.res == currentRes))   
             
-            lemmaStackPreservesForEqualRes(stack, currentRes, newRes)
-            assert(stack.forall(frame => frame.res == newRes))
+            lemmaStackPreservesForEqualRes(stack.frames, currentRes, newRes)
+            assert(stack.frames.forall(frame => frame.res == newRes))
             assert(stackFrame.res == currentRes)
             assert(stackFrame.res == newRes)
-            assert(newStack.forall(frame => frame.res == newRes))
-            assert(newStack.forall(frame => frame.totalInput == totalInput))
+            assert(newFrames.forall(frame => frame.res == newRes))
+            assert(newFrames.forall(frame => frame.totalInput == totalInput))
           })
-          furthestNullablePositionStackMem(derivedZ, from + 1, totalInput, totalInputSize, newLastNullable, newStack)
+          stack.frames = newFrames
+          furthestNullablePositionStackMem(derivedZ, from + 1, totalInput, totalInputSize, newLastNullable, stack)
         }
       }
     }
-  }.ensuring(res => res._1 == furthestNullablePosition(z, from, totalInput, totalInputSize, lastNullablePos)
-                  && res._2.forall(frame => frame.res == res._1) && 
+  }.ensuring(res => res == furthestNullablePosition(z, from, totalInput, totalInputSize, lastNullablePos)
+                  && stack.frames.forall(frame => frame.res == res) && 
                   cacheUp.valid && cacheDown.valid && cacheFurthestNullable.valid && cacheFurthestNullable.totalInput == totalInput &&
-                  res._2.forall(frame => frame.totalInput == totalInput))
+                  stack.frames.forall(frame => frame.totalInput == totalInput))
 
 
-    def fillUpCache[C](stack: Stack[C], totalInput: Sequence[C], totalInputSize: BigInt, res: BigInt, counter: BigInt = 0)(using cacheFurthestNullable: CacheFurthestNullable[C]): Unit = {
+    def fillUpCache[C](frames: List[StackFrame[C]], totalInput: Sequence[C], totalInputSize: BigInt, res: BigInt, counter: BigInt = 0)(using cacheFurthestNullable: CacheFurthestNullable[C]): Unit = {
     require(cacheFurthestNullable.valid)
     require(cacheFurthestNullable.totalInput == totalInput)
-    require(stack.forall(frame => frame.totalInput == totalInput))
-    require(stack.forall(frame => frame.res == res))
-    decreases(stack.size)
-    stack match {
+    require(frames.forall(frame => frame.totalInput == totalInput))
+    require(frames.forall(frame => frame.res == res))
+    decreases(frames.size)
+    frames match {
       case Nil() => ()
       case Cons(head, tail) => {
         if (totalInputSize > cacheFurthestNullable.THRESHOLD && counter % cacheFurthestNullable.RATE != 0) {
@@ -3632,14 +3633,15 @@ object ZipperRegex {
     require(cacheFurthestNullable.totalInput == totalInput)
     val totalInputSize = totalInput.size
     val from = totalInputSize - input.size
-    val (res, stack) = furthestNullablePositionStackMem(z, from, totalInput, totalInputSize, if nullableZipper(z) then from - 1 else -1)
+    val mutStack = MutStack(List[StackFrame[C]]())
+    val res = furthestNullablePositionStackMem(z, from, totalInput, totalInputSize, if nullableZipper(z) then from - 1 else -1, mutStack)
     val prefixLength: BigInt = res - from + 1
     ghostExpr({
-      check(stack.forall(frame => frame.res == res))
-      check(stack.forall(frame => frame.totalInput == totalInput))
+      check(mutStack.frames.forall(frame => frame.res == res))
+      check(mutStack.frames.forall(frame => frame.totalInput == totalInput))
     })
     
-    fillUpCache(stack, totalInput, totalInputSize, res)
+    fillUpCache(mutStack.frames, totalInput, totalInputSize, res)
     if (prefixLength < 0) {
       input.splitAt(0)
     } else {  
