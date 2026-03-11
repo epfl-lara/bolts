@@ -3560,7 +3560,7 @@ object ZipperRegex {
       case Some(cachedRes) => {
         assert(cachedRes == furthestNullablePosition(z, from, totalInput, totalInput.size, lastNullablePos))
         assert(Nil[StackFrame[C]]().forall(frame => frame.res == currentRes)) 
-        (cachedRes, Nil())
+        (cachedRes, stack)
       }
       case None() => {
         if (from == totalInputSize || lostCauseZipper(z)) {
