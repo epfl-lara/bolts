@@ -1,0 +1,1944 @@
+copying runtime jar...
+[info] welcome to sbt 1.9.8 (Ubuntu Java 17.0.18)
+[info] loading settings for project verifiedlexer-build-build-build from metals.sbt ...
+[info] loading project definition from /localhome/chassot/bolts/lexers/regex/verifiedlexer/project/project/project
+[info] loading settings for project verifiedlexer-build-build from metals.sbt ...
+[info] loading project definition from /localhome/chassot/bolts/lexers/regex/verifiedlexer/project/project
+[success] Generated .bloop/verifiedlexer-build-build.json
+[success] Total time: 3 s, completed Mar 12, 2026, 3:46:35 PM
+[info] loading settings for project verifiedlexer-build from metals.sbt,plugins.sbt ...
+[info] loading project definition from /localhome/chassot/bolts/lexers/regex/verifiedlexer/project
+[success] Generated .bloop/verifiedlexer-build.json
+[success] Total time: 1 s, completed Mar 12, 2026, 3:46:37 PM
+[info] loading settings for project verifiedlexer from build.sbt ...
+[info] set current project to ZipLex (in build file:/localhome/chassot/bolts/lexers/regex/verifiedlexer/)
+[info] compiling 76 Scala sources to /localhome/chassot/bolts/lexers/regex/verifiedlexer/target/scala-3.7.2/classes ...
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/main/scala/com/ziplex/lexer/BalanceConcArr.scala:267:6 
+[warn] 267 |      t match
+[warn]     |      ^
+[warn]     |      match may not be exhaustive.
+[warn]     |
+[warn]     |      It would fail on pattern case: Empty()
+[warn]     |
+[warn]     | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/main/scala/com/ziplex/lexer/BalanceConcArr.scala:349:16 
+[warn] 349 |                r match
+[warn]     |                ^
+[warn]     |                match may not be exhaustive.
+[warn]     |
+[warn]     |                It would fail on pattern case: Empty(), Leaf(_, _)
+[warn]     |
+[warn]     | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/main/scala/com/ziplex/lexer/BalanceConcArr.scala:344:10 
+[warn] 344 |          xs match
+[warn]     |          ^^
+[warn]     |          match may not be exhaustive.
+[warn]     |
+[warn]     |          It would fail on pattern case: Empty(), Leaf(_, _)
+[warn]     |
+[warn]     | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/main/scala/com/ziplex/lexer/BalanceConcArr.scala:362:16 
+[warn] 362 |                l match
+[warn]     |                ^
+[warn]     |                match may not be exhaustive.
+[warn]     |
+[warn]     |                It would fail on pattern case: Empty(), Leaf(_, _)
+[warn]     |
+[warn]     | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/main/scala/com/ziplex/lexer/BalanceConcArr.scala:357:10 
+[warn] 357 |          ys match
+[warn]     |          ^^
+[warn]     |          match may not be exhaustive.
+[warn]     |
+[warn]     |          It would fail on pattern case: Empty(), Leaf(_, _)
+[warn]     |
+[warn]     | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/main/scala/com/ziplex/lexer/BalanceConcArr.scala:408:8 
+[warn] 408 |        t match
+[warn]     |        ^
+[warn]     |        match may not be exhaustive.
+[warn]     |
+[warn]     |        It would fail on pattern case: Empty()
+[warn]     |
+[warn]     | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/main/scala/com/ziplex/lexer/BalanceConcArr.scala:490:12 
+[warn] 490 |            newR match
+[warn]     |            ^^^^
+[warn]     |            match may not be exhaustive.
+[warn]     |
+[warn]     |            It would fail on pattern case: Empty(), Leaf(_, _)
+[warn]     |
+[warn]     | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/main/scala/com/ziplex/lexer/BalanceConcArr.scala:519:6 
+[warn] 519 |      t match
+[warn]     |      ^
+[warn]     |      match may not be exhaustive.
+[warn]     |
+[warn]     |      It would fail on pattern case: Empty()
+[warn]     |
+[warn]     | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/main/scala/com/ziplex/lexer/BalanceConcArr.scala:536:6 
+[warn] 536 |      t match
+[warn]     |      ^
+[warn]     |      match may not be exhaustive.
+[warn]     |
+[warn]     |      It would fail on pattern case: Empty()
+[warn]     |
+[warn]     | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/main/scala/com/ziplex/lexer/BalanceConcArr.scala:544:6 
+[warn] 544 |      t match
+[warn]     |      ^
+[warn]     |      match may not be exhaustive.
+[warn]     |
+[warn]     |      It would fail on pattern case: Empty()
+[warn]     |
+[warn]     | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/main/scala/com/ziplex/lexer/Utils.scala:1332:4 
+[warn] 1332 |    newList match {
+[warn]      |    ^^^^^^^
+[warn]      |    match may not be exhaustive.
+[warn]      |
+[warn]      |    It would fail on pattern case: stainless.collection.Cons(_, _)
+[warn]      |
+[warn]      | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/main/scala/com/ziplex/lexer/VerifiedLexer.scala:1233:8 
+[warn] 1233 |        maxPrefWithoutSep match {
+[warn]      |        ^^^^^^^^^^^^^^^^^
+[warn]      |        match may not be exhaustive.
+[warn]      |
+[warn]      |        It would fail on pattern case: stainless.lang.Some(_)
+[warn]      |
+[warn]      | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/main/scala/com/ziplex/lexer/VerifiedLexer.scala:1330:6 
+[warn] 1330 |      rulesArg match {
+[warn]      |      ^^^^^^^^
+[warn]      |      match may not be exhaustive.
+[warn]      |
+[warn]      |      It would fail on pattern case: stainless.collection.Nil()
+[warn]      |
+[warn]      | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/main/scala/com/ziplex/lexer/VerifiedLexer.scala:1363:10 
+[warn] 1363 |          rulesArg match {
+[warn]      |          ^^^^^^^^
+[warn]      |          match may not be exhaustive.
+[warn]      |
+[warn]      |          It would fail on pattern case: stainless.collection.Nil()
+[warn]      |
+[warn]      | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/main/scala/com/ziplex/lexer/VerifiedLexer.scala:1390:6 
+[warn] 1390 |      rulesArg match {
+[warn]      |      ^^^^^^^^
+[warn]      |      match may not be exhaustive.
+[warn]      |
+[warn]      |      It would fail on pattern case: stainless.collection.Nil()
+[warn]      |
+[warn]      | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/main/scala/com/ziplex/lexer/VerifiedLexer.scala:1426:10 
+[warn] 1426 |          rulesArg match {
+[warn]      |          ^^^^^^^^
+[warn]      |          match may not be exhaustive.
+[warn]      |
+[warn]      |          It would fail on pattern case: stainless.collection.Nil()
+[warn]      |
+[warn]      | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/main/scala/com/ziplex/lexer/VerifiedLexer.scala:1456:10 
+[warn] 1456 |          rulesArg match {
+[warn]      |          ^^^^^^^^
+[warn]      |          match may not be exhaustive.
+[warn]      |
+[warn]      |          It would fail on pattern case: stainless.collection.Nil()
+[warn]      |
+[warn]      | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/main/scala/com/ziplex/lexer/VerifiedLexer.scala:1486:10 
+[warn] 1486 |          rulesArg match {
+[warn]      |          ^^^^^^^^
+[warn]      |          match may not be exhaustive.
+[warn]      |
+[warn]      |          It would fail on pattern case: stainless.collection.Nil()
+[warn]      |
+[warn]      | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/main/scala/com/ziplex/lexer/VerifiedLexer.scala:2414:6 
+[warn] 2414 |      rules match {
+[warn]      |      ^^^^^
+[warn]      |      match may not be exhaustive.
+[warn]      |
+[warn]      |      It would fail on pattern case: stainless.collection.Cons(_, _)
+[warn]      |
+[warn]      | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/main/scala/com/ziplex/lexer/VerifiedRegex.scala:595:4 
+[warn] 595 |    r match {
+[warn]     |    ^
+[warn]     |    match may not be exhaustive.
+[warn]     |
+[warn]     |    It would fail on pattern case: Concat(_, _)
+[warn]     |
+[warn]     | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/main/scala/com/ziplex/map/ListLongMap.scala:157:4 
+[warn] 157 |    l match {
+[warn]     |    ^
+[warn]     |    match may not be exhaustive.
+[warn]     |
+[warn]     |    It would fail on pattern case: stainless.collection.Cons(_, _)
+[warn]     |
+[warn]     | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/main/scala/com/ziplex/map/ListLongMap.scala:191:4 
+[warn] 191 |    l match {
+[warn]     |    ^
+[warn]     |    match may not be exhaustive.
+[warn]     |
+[warn]     |    It would fail on pattern case: stainless.collection.Cons(_, _)
+[warn]     |
+[warn]     | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/main/scala/com/ziplex/map/ListLongMap.scala:206:4 
+[warn] 206 |    l match {
+[warn]     |    ^
+[warn]     |    match may not be exhaustive.
+[warn]     |
+[warn]     |    It would fail on pattern case: stainless.collection.Cons(_, _)
+[warn]     |
+[warn]     | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/main/scala/com/ziplex/map/ListLongMap.scala:222:4 
+[warn] 222 |    l match {
+[warn]     |    ^
+[warn]     |    match may not be exhaustive.
+[warn]     |
+[warn]     |    It would fail on pattern case: stainless.collection.Cons(_, _)
+[warn]     |
+[warn]     | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/main/scala/com/ziplex/map/ListLongMap.scala:243:4 
+[warn] 243 |    l match {
+[warn]     |    ^
+[warn]     |    match may not be exhaustive.
+[warn]     |
+[warn]     |    It would fail on pattern case: stainless.collection.Cons(_, _)
+[warn]     |
+[warn]     | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/main/scala/com/ziplex/map/ListLongMap.scala:274:4 
+[warn] 274 |    l match {
+[warn]     |    ^
+[warn]     |    match may not be exhaustive.
+[warn]     |
+[warn]     |    It would fail on pattern case: stainless.collection.Cons(_, _)
+[warn]     |
+[warn]     | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/main/scala/com/ziplex/map/ListMap.scala:195:4 
+[warn] 195 |    l match {
+[warn]     |    ^
+[warn]     |    match may not be exhaustive.
+[warn]     |
+[warn]     |    It would fail on pattern case: stainless.collection.Cons(_, _)
+[warn]     |
+[warn]     | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/main/scala/com/ziplex/map/ListMap.scala:229:4 
+[warn] 229 |    l match {
+[warn]     |    ^
+[warn]     |    match may not be exhaustive.
+[warn]     |
+[warn]     |    It would fail on pattern case: stainless.collection.Cons(_, _)
+[warn]     |
+[warn]     | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/main/scala/com/ziplex/map/ListMap.scala:256:4 
+[warn] 256 |    l match {
+[warn]     |    ^
+[warn]     |    match may not be exhaustive.
+[warn]     |
+[warn]     |    It would fail on pattern case: stainless.collection.Cons(_, _)
+[warn]     |
+[warn]     | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/main/scala/com/ziplex/map/ListMap.scala:308:4 
+[warn] 308 |    l match {
+[warn]     |    ^
+[warn]     |    match may not be exhaustive.
+[warn]     |
+[warn]     |    It would fail on pattern case: stainless.collection.Cons(_, _)
+[warn]     |
+[warn]     | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/main/scala/com/ziplex/map/ListMap.scala:380:4 
+[warn] 380 |    l match {
+[warn]     |    ^
+[warn]     |    match may not be exhaustive.
+[warn]     |
+[warn]     |    It would fail on pattern case: stainless.collection.Cons(_, _)
+[warn]     |
+[warn]     | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/main/scala/com/ziplex/map/MutableLongMap.scala:360:4 
+[warn] 360 |    c match {
+[warn]     |    ^
+[warn]     |    match may not be exhaustive.
+[warn]     |
+[warn]     |    It would fail on pattern case: EmptyCell()
+[warn]     |
+[warn]     | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/main/scala/com/ziplex/map/MutableLongMap.scala:609:8 
+[warn] 609 |        seekEntryRes match {
+[warn]     |        ^^^^^^^^^^^^
+[warn]     |match may not be exhaustive.
+[warn]     |
+[warn]     |It would fail on pattern case: com.mutablemaps.map.MutableLongMap.Intermediate(_, _, _)
+[warn]     |
+[warn]     | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/main/scala/com/ziplex/map/MutableLongMap.scala:1119:6 
+[warn] 1119 |      intermediate match {
+[warn]      |      ^^^^^^^^^^^^
+[warn]      |match may not be exhaustive.
+[warn]      |
+[warn]      |It would fail on pattern case: _: com.mutablemaps.map.MutableLongMap.SeekEntryResult
+[warn]      |
+[warn]      | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/main/scala/com/ziplex/map/MutableLongMap.scala:1169:6 
+[warn] 1169 |      intermediate match {
+[warn]      |      ^^^^^^^^^^^^
+[warn]      |match may not be exhaustive.
+[warn]      |
+[warn]      |It would fail on pattern case: _: com.mutablemaps.map.MutableLongMap.SeekEntryResult
+[warn]      |
+[warn]      | longer explanation available when compiling with `-explain`
+[warn] there was 1 deprecation warning; re-run with -deprecation for details
+[warn] 36 warnings found
+[info] done compiling
+[info] running org.openjdk.jmh.generators.bytecode.JmhBytecodeGenerator /localhome/chassot/bolts/lexers/regex/verifiedlexer/target/scala-3.7.2/classes /localhome/chassot/bolts/lexers/regex/verifiedlexer/target/scala-3.7.2/src_managed/jmh /localhome/chassot/bolts/lexers/regex/verifiedlexer/target/scala-3.7.2/resource_managed/jmh default
+Processing 1255 classes from /localhome/chassot/bolts/lexers/regex/verifiedlexer/target/scala-3.7.2/classes with "reflection" generator
+Writing out Java source to /localhome/chassot/bolts/lexers/regex/verifiedlexer/target/scala-3.7.2/src_managed/jmh and resources to /localhome/chassot/bolts/lexers/regex/verifiedlexer/target/scala-3.7.2/resource_managed/jmh
+[info] compiling 99 Java sources to /localhome/chassot/bolts/lexers/regex/verifiedlexer/target/scala-3.7.2/classes ...
+[info] done compiling
+[info] running (fork) org.openjdk.jmh.Main -i 3 -wi 2 -f1 -t1 com.ziplex.lexer.benchmark.maps.MutableHashMapBenchmarkBig
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.18, OpenJDK 64-Bit Server VM, 17.0.18+8-Ubuntu-124.04.1
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 2 iterations, 10 s each
+[info] # Measurement: 3 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: com.ziplex.lexer.benchmark.maps.MutableHashMapBenchmarkBig.updateRemoveUpdate_ImmutableHashMap
+[info] # Parameters: (nKeys = 131072)
+[info] # Run progress: 0.00% complete, ETA 00:56:40
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 239025.935 us/op
+[info] # Warmup Iteration   2: 126521.556 us/op
+[info] Iteration   1: 130768.695 us/op
+[info] Iteration   2: 126381.663 us/op
+[info] Iteration   3: 124168.234 us/op
+[info] Result "com.ziplex.lexer.benchmark.maps.MutableHashMapBenchmarkBig.updateRemoveUpdate_ImmutableHashMap":
+[info]   127106.197 ±(99.9%) 61287.050 us/op [Average]
+[info]   (min, avg, max) = (124168.234, 127106.197, 130768.695), stdev = 3359.350
+[info]   CI (99.9%): [65819.147, 188393.247] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.18, OpenJDK 64-Bit Server VM, 17.0.18+8-Ubuntu-124.04.1
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 2 iterations, 10 s each
+[info] # Measurement: 3 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: com.ziplex.lexer.benchmark.maps.MutableHashMapBenchmarkBig.updateRemoveUpdate_ImmutableHashMap
+[info] # Parameters: (nKeys = 655360)
+[info] # Run progress: 1.47% complete, ETA 00:57:10
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 1248641.078 us/op
+[info] # Warmup Iteration   2: 910077.330 us/op
+[info] Iteration   1: 817616.299 us/op
+[info] Iteration   2: 804761.154 us/op
+[info] Iteration   3: 770965.952 us/op
+[info] Result "com.ziplex.lexer.benchmark.maps.MutableHashMapBenchmarkBig.updateRemoveUpdate_ImmutableHashMap":
+[info]   797781.135 ±(99.9%) 439595.819 us/op [Average]
+[info]   (min, avg, max) = (770965.952, 797781.135, 817616.299), stdev = 24095.730
+[info]   CI (99.9%): [358185.316, 1237376.954] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.18, OpenJDK 64-Bit Server VM, 17.0.18+8-Ubuntu-124.04.1
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 2 iterations, 10 s each
+[info] # Measurement: 3 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: com.ziplex.lexer.benchmark.maps.MutableHashMapBenchmarkBig.updateRemoveUpdate_ImmutableHashMap
+[info] # Parameters: (nKeys = 1179648)
+[info] # Run progress: 2.94% complete, ETA 00:57:54
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 2270060.975 us/op
+[info] # Warmup Iteration   2: 1921240.766 us/op
+[info] Iteration   1: 1603657.906 us/op
+[info] Iteration   2: 1519238.910 us/op
+[info] Iteration   3: 1578550.449 us/op
+[info] Result "com.ziplex.lexer.benchmark.maps.MutableHashMapBenchmarkBig.updateRemoveUpdate_ImmutableHashMap":
+[info]   1567149.088 ±(99.9%) 790846.965 us/op [Average]
+[info]   (min, avg, max) = (1519238.910, 1567149.088, 1603657.906), stdev = 43348.991
+[info]   CI (99.9%): [776302.123, 2357996.053] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.18, OpenJDK 64-Bit Server VM, 17.0.18+8-Ubuntu-124.04.1
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 2 iterations, 10 s each
+[info] # Measurement: 3 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: com.ziplex.lexer.benchmark.maps.MutableHashMapBenchmarkBig.updateRemoveUpdate_ImmutableHashMap
+[info] # Parameters: (nKeys = 1703936)
+[info] # Run progress: 4.41% complete, ETA 00:58:28
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 3736713.452 us/op
+[info] # Warmup Iteration   2: 3067019.749 us/op
+[info] Iteration   1: 2645022.100 us/op
+[info] Iteration   2: 2507037.676 us/op
+[info] Iteration   3: 2470689.753 us/op
+[info] Result "com.ziplex.lexer.benchmark.maps.MutableHashMapBenchmarkBig.updateRemoveUpdate_ImmutableHashMap":
+[info]   2540916.510 ±(99.9%) 1677904.169 us/op [Average]
+[info]   (min, avg, max) = (2470689.753, 2540916.510, 2645022.100), stdev = 91971.589
+[info]   CI (99.9%): [863012.341, 4218820.678] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.18, OpenJDK 64-Bit Server VM, 17.0.18+8-Ubuntu-124.04.1
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 2 iterations, 10 s each
+[info] # Measurement: 3 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: com.ziplex.lexer.benchmark.maps.MutableHashMapBenchmarkBig.updateRemoveUpdate_ImmutableHashMap
+[info] # Parameters: (nKeys = 2228224)
+[info] # Run progress: 5.88% complete, ETA 00:58:27
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 5263520.453 us/op
+[info] # Warmup Iteration   2: 4403708.430 us/op
+[info] Iteration   1: 3732170.704 us/op
+[info] Iteration   2: 3526669.843 us/op
+[info] Iteration   3: 3504592.054 us/op
+[info] Result "com.ziplex.lexer.benchmark.maps.MutableHashMapBenchmarkBig.updateRemoveUpdate_ImmutableHashMap":
+[info]   3587810.867 ±(99.9%) 2289691.061 us/op [Average]
+[info]   (min, avg, max) = (3504592.054, 3587810.867, 3732170.704), stdev = 125505.693
+[info]   CI (99.9%): [1298119.806, 5877501.928] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.18, OpenJDK 64-Bit Server VM, 17.0.18+8-Ubuntu-124.04.1
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 2 iterations, 10 s each
+[info] # Measurement: 3 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: com.ziplex.lexer.benchmark.maps.MutableHashMapBenchmarkBig.updateRemoveUpdate_ImmutableHashMap
+[info] # Parameters: (nKeys = 2752512)
+[info] # Run progress: 7.35% complete, ETA 00:57:59
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 6979328.470 us/op
+[info] # Warmup Iteration   2: 4565893.185 us/op
+[info] Iteration   1: 4521195.928 us/op
+[info] Iteration   2: 4378199.488 us/op
+[info] Iteration   3: 4323735.825 us/op
+[info] Result "com.ziplex.lexer.benchmark.maps.MutableHashMapBenchmarkBig.updateRemoveUpdate_ImmutableHashMap":
+[info]   4407710.413 ±(99.9%) 1860572.988 us/op [Average]
+[info]   (min, avg, max) = (4323735.825, 4407710.413, 4521195.928), stdev = 101984.284
+[info]   CI (99.9%): [2547137.425, 6268283.401] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.18, OpenJDK 64-Bit Server VM, 17.0.18+8-Ubuntu-124.04.1
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 2 iterations, 10 s each
+[info] # Measurement: 3 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: com.ziplex.lexer.benchmark.maps.MutableHashMapBenchmarkBig.updateRemoveUpdate_ImmutableHashMap
+[info] # Parameters: (nKeys = 3276800)
+[info] # Run progress: 8.82% complete, ETA 00:59:19
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 7740939.939 us/op
+[info] # Warmup Iteration   2: 6703595.156 us/op
+[info] Iteration   1: 6012523.048 us/op
+[info] Iteration   2: 5751055.617 us/op
+[info] Iteration   3: 5544653.268 us/op
+[info] Result "com.ziplex.lexer.benchmark.maps.MutableHashMapBenchmarkBig.updateRemoveUpdate_ImmutableHashMap":
+[info]   5769410.644 ±(99.9%) 4277684.706 us/op [Average]
+[info]   (min, avg, max) = (5544653.268, 5769410.644, 6012523.048), stdev = 234474.333
+[info]   CI (99.9%): [1491725.938, 10047095.351] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.18, OpenJDK 64-Bit Server VM, 17.0.18+8-Ubuntu-124.04.1
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 2 iterations, 10 s each
+[info] # Measurement: 3 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: com.ziplex.lexer.benchmark.maps.MutableHashMapBenchmarkBig.updateRemoveUpdate_ImmutableHashMap
+[info] # Parameters: (nKeys = 3801088)
+[info] # Run progress: 10.29% complete, ETA 00:59:24
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 10302878.199 us/op
+[info] # Warmup Iteration   2: 7906827.992 us/op
+[info] Iteration   1: 7400407.858 us/op
+[info] Iteration   2: 6806263.955 us/op
+[info] Iteration   3: 6754320.804 us/op
+[info] Result "com.ziplex.lexer.benchmark.maps.MutableHashMapBenchmarkBig.updateRemoveUpdate_ImmutableHashMap":
+[info]   6986997.539 ±(99.9%) 6548850.799 us/op [Average]
+[info]   (min, avg, max) = (6754320.804, 6986997.539, 7400407.858), stdev = 358964.610
+[info]   CI (99.9%): [438146.739, 13535848.338] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.18, OpenJDK 64-Bit Server VM, 17.0.18+8-Ubuntu-124.04.1
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 2 iterations, 10 s each
+[info] # Measurement: 3 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: com.ziplex.lexer.benchmark.maps.MutableHashMapBenchmarkBig.updateRemoveUpdate_ImmutableHashMap
+[info] # Parameters: (nKeys = 4325376)
+[info] # Run progress: 11.76% complete, ETA 00:59:45
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 10968768.450 us/op
+[info] # Warmup Iteration   2: 8721666.934 us/op
+[info] Iteration   1: 7558946.635 us/op
+[info] Iteration   2: 7238195.697 us/op
+[info] Iteration   3: 7642996.212 us/op
+[info] Result "com.ziplex.lexer.benchmark.maps.MutableHashMapBenchmarkBig.updateRemoveUpdate_ImmutableHashMap":
+[info]   7480046.181 ±(99.9%) 3897280.440 us/op [Average]
+[info]   (min, avg, max) = (7238195.697, 7480046.181, 7642996.212), stdev = 213623.092
+[info]   CI (99.9%): [3582765.741, 11377326.621] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.18, OpenJDK 64-Bit Server VM, 17.0.18+8-Ubuntu-124.04.1
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 2 iterations, 10 s each
+[info] # Measurement: 3 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: com.ziplex.lexer.benchmark.maps.MutableHashMapBenchmarkBig.updateRemoveUpdate_ImmutableHashMap
+[info] # Parameters: (nKeys = 4849664)
+[info] # Run progress: 13.24% complete, ETA 01:00:21
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 10325166.119 us/op
+[info] # Warmup Iteration   2: 8782199.234 us/op
+[info] Iteration   1: 7478914.569 us/op
+[info] Iteration   2: 7343731.678 us/op
+[info] Iteration   3: 7579525.534 us/op
+[info] Result "com.ziplex.lexer.benchmark.maps.MutableHashMapBenchmarkBig.updateRemoveUpdate_ImmutableHashMap":
+[info]   7467390.593 ±(99.9%) 2158571.423 us/op [Average]
+[info]   (min, avg, max) = (7343731.678, 7467390.593, 7579525.534), stdev = 118318.583
+[info]   CI (99.9%): [5308819.170, 9625962.016] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.18, OpenJDK 64-Bit Server VM, 17.0.18+8-Ubuntu-124.04.1
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 2 iterations, 10 s each
+[info] # Measurement: 3 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: com.ziplex.lexer.benchmark.maps.MutableHashMapBenchmarkBig.updateRemoveUpdate_ImmutableHashMap
+[info] # Parameters: (nKeys = 5373952)
+[info] # Run progress: 14.71% complete, ETA 01:00:30
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 11220163.687 us/op
+[info] # Warmup Iteration   2: 8820521.717 us/op
+[info] Iteration   1: 7638379.990 us/op
+[info] Iteration   2: 7321398.353 us/op
+[info] Iteration   3: 7585949.639 us/op
+[info] Result "com.ziplex.lexer.benchmark.maps.MutableHashMapBenchmarkBig.updateRemoveUpdate_ImmutableHashMap":
+[info]   7515242.660 ±(99.9%) 3099766.171 us/op [Average]
+[info]   (min, avg, max) = (7321398.353, 7515242.660, 7638379.990), stdev = 169908.644
+[info]   CI (99.9%): [4415476.490, 10615008.831] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.18, OpenJDK 64-Bit Server VM, 17.0.18+8-Ubuntu-124.04.1
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 2 iterations, 10 s each
+[info] # Measurement: 3 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: com.ziplex.lexer.benchmark.maps.MutableHashMapBenchmarkBig.updateRemoveUpdate_ImmutableHashMap
+[info] # Parameters: (nKeys = 5898240)
+[info] # Run progress: 16.18% complete, ETA 01:00:32
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 11508487.751 us/op
+[info] # Warmup Iteration   2: 9000168.836 us/op
+[info] Iteration   1: 7609965.422 us/op
+[info] Iteration   2: 7474588.526 us/op
+[info] Iteration   3: 7891626.802 us/op
+[info] Result "com.ziplex.lexer.benchmark.maps.MutableHashMapBenchmarkBig.updateRemoveUpdate_ImmutableHashMap":
+[info]   7658726.917 ±(99.9%) 3881391.916 us/op [Average]
+[info]   (min, avg, max) = (7474588.526, 7658726.917, 7891626.802), stdev = 212752.188
+[info]   CI (99.9%): [3777335.001, 11540118.832] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.18, OpenJDK 64-Bit Server VM, 17.0.18+8-Ubuntu-124.04.1
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 2 iterations, 10 s each
+[info] # Measurement: 3 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: com.ziplex.lexer.benchmark.maps.MutableHashMapBenchmarkBig.updateRemoveUpdate_ImmutableHashMap
+[info] # Parameters: (nKeys = 6422528)
+[info] # Run progress: 17.65% complete, ETA 01:00:28
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 11636937.623 us/op
+[info] # Warmup Iteration   2: 10007975.668 us/op
+[info] Iteration   1: 9139025.096 us/op
+[info] Iteration   2: 7830284.312 us/op
+[info] Iteration   3: 7879320.241 us/op
+[info] Result "com.ziplex.lexer.benchmark.maps.MutableHashMapBenchmarkBig.updateRemoveUpdate_ImmutableHashMap":
+[info]   8282876.549 ±(99.9%) 13534135.890 us/op [Average]
+[info]   (min, avg, max) = (7830284.312, 8282876.549, 9139025.096), stdev = 741851.657
+[info]   CI (99.9%): [≈ 0, 21817012.440] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.18, OpenJDK 64-Bit Server VM, 17.0.18+8-Ubuntu-124.04.1
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 2 iterations, 10 s each
+[info] # Measurement: 3 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: com.ziplex.lexer.benchmark.maps.MutableHashMapBenchmarkBig.updateRemoveUpdate_ImmutableHashMap
+[info] # Parameters: (nKeys = 6946816)
+[info] # Run progress: 19.12% complete, ETA 00:59:56
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 12052844.085 us/op
+[info] # Warmup Iteration   2: 10079300.517 us/op
+[info] Iteration   1: 8269262.458 us/op
+[info] Iteration   2: 8076345.894 us/op
+[info] Iteration   3: 7672992.893 us/op
+[info] Result "com.ziplex.lexer.benchmark.maps.MutableHashMapBenchmarkBig.updateRemoveUpdate_ImmutableHashMap":
+[info]   8006200.415 ±(99.9%) 5550849.812 us/op [Average]
+[info]   (min, avg, max) = (7672992.893, 8006200.415, 8269262.458), stdev = 304260.809
+[info]   CI (99.9%): [2455350.603, 13557050.226] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.18, OpenJDK 64-Bit Server VM, 17.0.18+8-Ubuntu-124.04.1
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 2 iterations, 10 s each
+[info] # Measurement: 3 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: com.ziplex.lexer.benchmark.maps.MutableHashMapBenchmarkBig.updateRemoveUpdate_ImmutableHashMap
+[info] # Parameters: (nKeys = 7471104)
+[info] # Run progress: 20.59% complete, ETA 00:59:14
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 12101168.515 us/op
+[info] # Warmup Iteration   2: 8958037.717 us/op
+[info] Iteration   1: 8448476.146 us/op
+[info] Iteration   2: 7933928.462 us/op
+[info] Iteration   3: 8358598.835 us/op
+[info] Result "com.ziplex.lexer.benchmark.maps.MutableHashMapBenchmarkBig.updateRemoveUpdate_ImmutableHashMap":
+[info]   8247001.147 ±(99.9%) 5013883.593 us/op [Average]
+[info]   (min, avg, max) = (7933928.462, 8247001.147, 8448476.146), stdev = 274827.878
+[info]   CI (99.9%): [3233117.555, 13260884.740] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.18, OpenJDK 64-Bit Server VM, 17.0.18+8-Ubuntu-124.04.1
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 2 iterations, 10 s each
+[info] # Measurement: 3 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: com.ziplex.lexer.benchmark.maps.MutableHashMapBenchmarkBig.updateRemoveUpdate_ImmutableHashMap
+[info] # Parameters: (nKeys = 7995392)
+[info] # Run progress: 22.06% complete, ETA 00:59:00
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 11467619.426 us/op
+[info] # Warmup Iteration   2: 10685767.421 us/op
+[info] Iteration   1: 8363826.897 us/op
+[info] Iteration   2: 8175995.208 us/op
+[info] Iteration   3: 8462319.781 us/op
+[info] Result "com.ziplex.lexer.benchmark.maps.MutableHashMapBenchmarkBig.updateRemoveUpdate_ImmutableHashMap":
+[info]   8334047.295 ±(99.9%) 2653854.009 us/op [Average]
+[info]   (min, avg, max) = (8175995.208, 8334047.295, 8462319.781), stdev = 145466.693
+[info]   CI (99.9%): [5680193.286, 10987901.304] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.18, OpenJDK 64-Bit Server VM, 17.0.18+8-Ubuntu-124.04.1
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 2 iterations, 10 s each
+[info] # Measurement: 3 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: com.ziplex.lexer.benchmark.maps.MutableHashMapBenchmarkBig.updateRemoveUpdate_ImmutableHashMap
+[info] # Parameters: (nKeys = 8388608)
+[info] # Run progress: 23.53% complete, ETA 00:58:13
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 12068243.449 us/op
+[info] # Warmup Iteration   2: 8789407.851 us/op
+[info] Iteration   1: 8224602.773 us/op
+[info] Iteration   2: 7776065.948 us/op
+[info] Iteration   3: 7914169.846 us/op
+[info] Result "com.ziplex.lexer.benchmark.maps.MutableHashMapBenchmarkBig.updateRemoveUpdate_ImmutableHashMap":
+[info]   7971612.855 ±(99.9%) 4190940.708 us/op [Average]
+[info]   (min, avg, max) = (7776065.948, 7971612.855, 8224602.773), stdev = 229719.602
+[info]   CI (99.9%): [3780672.148, 12162553.563] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.18, OpenJDK 64-Bit Server VM, 17.0.18+8-Ubuntu-124.04.1
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 2 iterations, 10 s each
+[info] # Measurement: 3 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: com.ziplex.lexer.benchmark.maps.MutableHashMapBenchmarkBig.updateRemoveUpdate_OriginalHashMap
+[info] # Parameters: (nKeys = 131072)
+[info] # Run progress: 25.00% complete, ETA 00:57:40
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 45330.104 us/op
+[info] # Warmup Iteration   2: 40553.641 us/op
+[info] Iteration   1: 34302.288 us/op
+[info] Iteration   2: 33489.343 us/op
+[info] Iteration   3: 34084.891 us/op
+[info] Result "com.ziplex.lexer.benchmark.maps.MutableHashMapBenchmarkBig.updateRemoveUpdate_OriginalHashMap":
+[info]   33958.841 ±(99.9%) 7678.337 us/op [Average]
+[info]   (min, avg, max) = (33489.343, 33958.841, 34302.288), stdev = 420.876
+[info]   CI (99.9%): [26280.504, 41637.178] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.18, OpenJDK 64-Bit Server VM, 17.0.18+8-Ubuntu-124.04.1
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 2 iterations, 10 s each
+[info] # Measurement: 3 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: com.ziplex.lexer.benchmark.maps.MutableHashMapBenchmarkBig.updateRemoveUpdate_OriginalHashMap
+[info] # Parameters: (nKeys = 655360)
+[info] # Run progress: 26.47% complete, ETA 00:55:45
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 299089.671 us/op
+[info] # Warmup Iteration   2: 257075.915 us/op
+[info] Iteration   1: 254518.662 us/op
+[info] Iteration   2: 216436.444 us/op
+[info] Iteration   3: 220162.975 us/op
+[info] Result "com.ziplex.lexer.benchmark.maps.MutableHashMapBenchmarkBig.updateRemoveUpdate_OriginalHashMap":
+[info]   230372.694 ±(99.9%) 383006.353 us/op [Average]
+[info]   (min, avg, max) = (216436.444, 230372.694, 254518.662), stdev = 20993.871
+[info]   CI (99.9%): [≈ 0, 613379.047] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.18, OpenJDK 64-Bit Server VM, 17.0.18+8-Ubuntu-124.04.1
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 2 iterations, 10 s each
+[info] # Measurement: 3 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: com.ziplex.lexer.benchmark.maps.MutableHashMapBenchmarkBig.updateRemoveUpdate_OriginalHashMap
+[info] # Parameters: (nKeys = 1179648)
+[info] # Run progress: 27.94% complete, ETA 00:53:58
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 597502.574 us/op
+[info] # Warmup Iteration   2: 497221.709 us/op
+[info] Iteration   1: 478503.428 us/op
+[info] Iteration   2: 516047.517 us/op
+[info] Iteration   3: 501686.078 us/op
+[info] Result "com.ziplex.lexer.benchmark.maps.MutableHashMapBenchmarkBig.updateRemoveUpdate_OriginalHashMap":
+[info]   498745.674 ±(99.9%) 345608.595 us/op [Average]
+[info]   (min, avg, max) = (478503.428, 498745.674, 516047.517), stdev = 18943.973
+[info]   CI (99.9%): [153137.079, 844354.270] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.18, OpenJDK 64-Bit Server VM, 17.0.18+8-Ubuntu-124.04.1
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 2 iterations, 10 s each
+[info] # Measurement: 3 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: com.ziplex.lexer.benchmark.maps.MutableHashMapBenchmarkBig.updateRemoveUpdate_OriginalHashMap
+[info] # Parameters: (nKeys = 1703936)
+[info] # Run progress: 29.41% complete, ETA 00:52:19
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 1200471.564 us/op
+[info] # Warmup Iteration   2: 925435.730 us/op
+[info] Iteration   1: 906495.558 us/op
+[info] Iteration   2: 840276.502 us/op
+[info] Iteration   3: 832951.067 us/op
+[info] Result "com.ziplex.lexer.benchmark.maps.MutableHashMapBenchmarkBig.updateRemoveUpdate_OriginalHashMap":
+[info]   859907.709 ±(99.9%) 739092.871 us/op [Average]
+[info]   (min, avg, max) = (832951.067, 859907.709, 906495.558), stdev = 40512.174
+[info]   CI (99.9%): [120814.838, 1599000.581] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.18, OpenJDK 64-Bit Server VM, 17.0.18+8-Ubuntu-124.04.1
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 2 iterations, 10 s each
+[info] # Measurement: 3 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: com.ziplex.lexer.benchmark.maps.MutableHashMapBenchmarkBig.updateRemoveUpdate_OriginalHashMap
+[info] # Parameters: (nKeys = 2228224)
+[info] # Run progress: 30.88% complete, ETA 00:50:47
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 1466426.290 us/op
+[info] # Warmup Iteration   2: 1151377.474 us/op
+[info] Iteration   1: 1106058.125 us/op
+[info] Iteration   2: 1045391.242 us/op
+[info] Iteration   3: 1078029.125 us/op
+[info] Result "com.ziplex.lexer.benchmark.maps.MutableHashMapBenchmarkBig.updateRemoveUpdate_OriginalHashMap":
+[info]   1076492.831 ±(99.9%) 553926.956 us/op [Average]
+[info]   (min, avg, max) = (1045391.242, 1076492.831, 1106058.125), stdev = 30362.606
+[info]   CI (99.9%): [522565.874, 1630419.787] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.18, OpenJDK 64-Bit Server VM, 17.0.18+8-Ubuntu-124.04.1
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 2 iterations, 10 s each
+[info] # Measurement: 3 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: com.ziplex.lexer.benchmark.maps.MutableHashMapBenchmarkBig.updateRemoveUpdate_OriginalHashMap
+[info] # Parameters: (nKeys = 2752512)
+[info] # Run progress: 32.35% complete, ETA 00:49:19
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 1784935.805 us/op
+[info] # Warmup Iteration   2: 1457100.279 us/op
+[info] Iteration   1: 1556274.065 us/op
+[info] Iteration   2: 1485315.212 us/op
+[info] Iteration   3: 1374531.145 us/op
+[info] Result "com.ziplex.lexer.benchmark.maps.MutableHashMapBenchmarkBig.updateRemoveUpdate_OriginalHashMap":
+[info]   1472040.141 ±(99.9%) 1671048.606 us/op [Average]
+[info]   (min, avg, max) = (1374531.145, 1472040.141, 1556274.065), stdev = 91595.813
+[info]   CI (99.9%): [≈ 0, 3143088.747] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.18, OpenJDK 64-Bit Server VM, 17.0.18+8-Ubuntu-124.04.1
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 2 iterations, 10 s each
+[info] # Measurement: 3 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: com.ziplex.lexer.benchmark.maps.MutableHashMapBenchmarkBig.updateRemoveUpdate_OriginalHashMap
+[info] # Parameters: (nKeys = 3276800)
+[info] # Run progress: 33.82% complete, ETA 00:47:55
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 2366133.937 us/op
+[info] # Warmup Iteration   2: 1847378.450 us/op
+[info] Iteration   1: 2138230.673 us/op
+[info] Iteration   2: 2070726.312 us/op
+[info] Iteration   3: 1898129.251 us/op
+[info] Result "com.ziplex.lexer.benchmark.maps.MutableHashMapBenchmarkBig.updateRemoveUpdate_OriginalHashMap":
+[info]   2035695.412 ±(99.9%) 2259022.742 us/op [Average]
+[info]   (min, avg, max) = (1898129.251, 2035695.412, 2138230.673), stdev = 123824.659
+[info]   CI (99.9%): [≈ 0, 4294718.154] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.18, OpenJDK 64-Bit Server VM, 17.0.18+8-Ubuntu-124.04.1
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 2 iterations, 10 s each
+[info] # Measurement: 3 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: com.ziplex.lexer.benchmark.maps.MutableHashMapBenchmarkBig.updateRemoveUpdate_OriginalHashMap
+[info] # Parameters: (nKeys = 3801088)
+[info] # Run progress: 35.29% complete, ETA 00:46:37
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 2797640.410 us/op
+[info] # Warmup Iteration   2: 2539987.508 us/op
+[info] Iteration   1: 2664371.043 us/op
+[info] Iteration   2: 2244280.070 us/op
+[info] Iteration   3: 2334098.857 us/op
+[info] Result "com.ziplex.lexer.benchmark.maps.MutableHashMapBenchmarkBig.updateRemoveUpdate_OriginalHashMap":
+[info]   2414249.990 ±(99.9%) 4035833.894 us/op [Average]
+[info]   (min, avg, max) = (2244280.070, 2414249.990, 2664371.043), stdev = 221217.674
+[info]   CI (99.9%): [≈ 0, 6450083.884] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.18, OpenJDK 64-Bit Server VM, 17.0.18+8-Ubuntu-124.04.1
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 2 iterations, 10 s each
+[info] # Measurement: 3 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: com.ziplex.lexer.benchmark.maps.MutableHashMapBenchmarkBig.updateRemoveUpdate_OriginalHashMap
+[info] # Parameters: (nKeys = 4325376)
+[info] # Run progress: 36.76% complete, ETA 00:45:20
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 3334326.392 us/op
+[info] # Warmup Iteration   2: 2529965.328 us/op
+[info] Iteration   1: 2454109.330 us/op
+[info] Iteration   2: 2729508.192 us/op
+[info] Iteration   3: 2235579.425 us/op
+[info] Result "com.ziplex.lexer.benchmark.maps.MutableHashMapBenchmarkBig.updateRemoveUpdate_OriginalHashMap":
+[info]   2473065.649 ±(99.9%) 4515493.217 us/op [Average]
+[info]   (min, avg, max) = (2235579.425, 2473065.649, 2729508.192), stdev = 247509.420
+[info]   CI (99.9%): [≈ 0, 6988558.866] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.18, OpenJDK 64-Bit Server VM, 17.0.18+8-Ubuntu-124.04.1
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 2 iterations, 10 s each
+[info] # Measurement: 3 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: com.ziplex.lexer.benchmark.maps.MutableHashMapBenchmarkBig.updateRemoveUpdate_OriginalHashMap
+[info] # Parameters: (nKeys = 4849664)
+[info] # Run progress: 38.24% complete, ETA 00:44:04
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 3047191.892 us/op
+[info] # Warmup Iteration   2: 2555348.281 us/op
+[info] Iteration   1: 2677490.431 us/op
+[info] Iteration   2: 2936973.127 us/op
+[info] Iteration   3: 2708573.779 us/op
+[info] Result "com.ziplex.lexer.benchmark.maps.MutableHashMapBenchmarkBig.updateRemoveUpdate_OriginalHashMap":
+[info]   2774345.779 ±(99.9%) 2585032.139 us/op [Average]
+[info]   (min, avg, max) = (2677490.431, 2774345.779, 2936973.127), stdev = 141694.334
+[info]   CI (99.9%): [189313.640, 5359377.918] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.18, OpenJDK 64-Bit Server VM, 17.0.18+8-Ubuntu-124.04.1
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 2 iterations, 10 s each
+[info] # Measurement: 3 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: com.ziplex.lexer.benchmark.maps.MutableHashMapBenchmarkBig.updateRemoveUpdate_OriginalHashMap
+[info] # Parameters: (nKeys = 5373952)
+[info] # Run progress: 39.71% complete, ETA 00:42:52
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 3042028.603 us/op
+[info] # Warmup Iteration   2: 2748074.436 us/op
+[info] Iteration   1: 2733758.889 us/op
+[info] Iteration   2: 2745218.391 us/op
+[info] Iteration   3: 2717829.190 us/op
+[info] Result "com.ziplex.lexer.benchmark.maps.MutableHashMapBenchmarkBig.updateRemoveUpdate_OriginalHashMap":
+[info]   2732268.823 ±(99.9%) 250947.235 us/op [Average]
+[info]   (min, avg, max) = (2717829.190, 2732268.823, 2745218.391), stdev = 13755.265
+[info]   CI (99.9%): [2481321.588, 2983216.058] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.18, OpenJDK 64-Bit Server VM, 17.0.18+8-Ubuntu-124.04.1
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 2 iterations, 10 s each
+[info] # Measurement: 3 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: com.ziplex.lexer.benchmark.maps.MutableHashMapBenchmarkBig.updateRemoveUpdate_OriginalHashMap
+[info] # Parameters: (nKeys = 5898240)
+[info] # Run progress: 41.18% complete, ETA 00:41:40
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 3440950.017 us/op
+[info] # Warmup Iteration   2: 2711718.615 us/op
+[info] Iteration   1: 2635173.763 us/op
+[info] Iteration   2: 2595226.725 us/op
+[info] Iteration   3: 2359739.510 us/op
+[info] Result "com.ziplex.lexer.benchmark.maps.MutableHashMapBenchmarkBig.updateRemoveUpdate_OriginalHashMap":
+[info]   2530046.666 ±(99.9%) 2715333.866 us/op [Average]
+[info]   (min, avg, max) = (2359739.510, 2530046.666, 2635173.763), stdev = 148836.612
+[info]   CI (99.9%): [≈ 0, 5245380.532] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.18, OpenJDK 64-Bit Server VM, 17.0.18+8-Ubuntu-124.04.1
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 2 iterations, 10 s each
+[info] # Measurement: 3 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: com.ziplex.lexer.benchmark.maps.MutableHashMapBenchmarkBig.updateRemoveUpdate_OriginalHashMap
+[info] # Parameters: (nKeys = 6422528)
+[info] # Run progress: 42.65% complete, ETA 00:40:27
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 3373632.109 us/op
+[info] # Warmup Iteration   2: 2797688.456 us/op
+[info] Iteration   1: 2619797.093 us/op
+[info] Iteration   2: 2774026.468 us/op
+[info] Iteration   3: 2517822.139 us/op
+[info] Result "com.ziplex.lexer.benchmark.maps.MutableHashMapBenchmarkBig.updateRemoveUpdate_OriginalHashMap":
+[info]   2637215.233 ±(99.9%) 2353207.451 us/op [Average]
+[info]   (min, avg, max) = (2517822.139, 2637215.233, 2774026.468), stdev = 128987.241
+[info]   CI (99.9%): [284007.783, 4990422.684] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.18, OpenJDK 64-Bit Server VM, 17.0.18+8-Ubuntu-124.04.1
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 2 iterations, 10 s each
+[info] # Measurement: 3 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: com.ziplex.lexer.benchmark.maps.MutableHashMapBenchmarkBig.updateRemoveUpdate_OriginalHashMap
+[info] # Parameters: (nKeys = 6946816)
+[info] # Run progress: 44.12% complete, ETA 00:39:15
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 3413392.721 us/op
+[info] # Warmup Iteration   2: 2998500.023 us/op
+[info] Iteration   1: 2773778.089 us/op
+[info] Iteration   2: 3117294.366 us/op
+[info] Iteration   3: 2536861.435 us/op
+[info] Result "com.ziplex.lexer.benchmark.maps.MutableHashMapBenchmarkBig.updateRemoveUpdate_OriginalHashMap":
+[info]   2809311.297 ±(99.9%) 5324309.529 us/op [Average]
+[info]   (min, avg, max) = (2536861.435, 2809311.297, 3117294.366), stdev = 291843.371
+[info]   CI (99.9%): [≈ 0, 8133620.826] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.18, OpenJDK 64-Bit Server VM, 17.0.18+8-Ubuntu-124.04.1
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 2 iterations, 10 s each
+[info] # Measurement: 3 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: com.ziplex.lexer.benchmark.maps.MutableHashMapBenchmarkBig.updateRemoveUpdate_OriginalHashMap
+[info] # Parameters: (nKeys = 7471104)
+[info] # Run progress: 45.59% complete, ETA 00:38:07
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 3397853.407 us/op
+[info] # Warmup Iteration   2: 2824795.142 us/op
+[info] Iteration   1: 2808454.716 us/op
+[info] Iteration   2: 2734002.203 us/op
+[info] Iteration   3: 2519982.455 us/op
+[info] Result "com.ziplex.lexer.benchmark.maps.MutableHashMapBenchmarkBig.updateRemoveUpdate_OriginalHashMap":
+[info]   2687479.791 ±(99.9%) 2732134.518 us/op [Average]
+[info]   (min, avg, max) = (2519982.455, 2687479.791, 2808454.716), stdev = 149757.512
+[info]   CI (99.9%): [≈ 0, 5419614.310] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.18, OpenJDK 64-Bit Server VM, 17.0.18+8-Ubuntu-124.04.1
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 2 iterations, 10 s each
+[info] # Measurement: 3 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: com.ziplex.lexer.benchmark.maps.MutableHashMapBenchmarkBig.updateRemoveUpdate_OriginalHashMap
+[info] # Parameters: (nKeys = 7995392)
+[info] # Run progress: 47.06% complete, ETA 00:37:00
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 3637257.495 us/op
+[info] # Warmup Iteration   2: 3046341.229 us/op
+[info] Iteration   1: 2966907.268 us/op
+[info] Iteration   2: 3020217.286 us/op
+[info] Iteration   3: 2292176.102 us/op
+[info] Result "com.ziplex.lexer.benchmark.maps.MutableHashMapBenchmarkBig.updateRemoveUpdate_OriginalHashMap":
+[info]   2759766.885 ±(99.9%) 7403700.631 us/op [Average]
+[info]   (min, avg, max) = (2292176.102, 2759766.885, 3020217.286), stdev = 405821.814
+[info]   CI (99.9%): [≈ 0, 10163467.516] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.18, OpenJDK 64-Bit Server VM, 17.0.18+8-Ubuntu-124.04.1
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 2 iterations, 10 s each
+[info] # Measurement: 3 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: com.ziplex.lexer.benchmark.maps.MutableHashMapBenchmarkBig.updateRemoveUpdate_OriginalHashMap
+[info] # Parameters: (nKeys = 8388608)
+[info] # Run progress: 48.53% complete, ETA 00:35:56
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 3519868.943 us/op
+[info] # Warmup Iteration   2: 2735666.316 us/op
+[info] Iteration   1: 2942738.814 us/op
+[info] Iteration   2: 2520872.430 us/op
+[info] Iteration   3: 2380931.114 us/op
+[info] Result "com.ziplex.lexer.benchmark.maps.MutableHashMapBenchmarkBig.updateRemoveUpdate_OriginalHashMap":
+[info]   2614847.453 ±(99.9%) 5335484.266 us/op [Average]
+[info]   (min, avg, max) = (2380931.114, 2614847.453, 2942738.814), stdev = 292455.896
+[info]   CI (99.9%): [≈ 0, 7950331.719] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.18, OpenJDK 64-Bit Server VM, 17.0.18+8-Ubuntu-124.04.1
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 2 iterations, 10 s each
+[info] # Measurement: 3 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: com.ziplex.lexer.benchmark.maps.MutableHashMapBenchmarkBig.updateRemoveUpdate_VerifiedHashMap
+[info] # Parameters: (nKeys = 131072)
+[info] # Run progress: 50.00% complete, ETA 00:34:48
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 91138.730 us/op
+[info] # Warmup Iteration   2: 77162.348 us/op
+[info] Iteration   1: 67824.113 us/op
+[info] Iteration   2: 64662.501 us/op
+[info] Iteration   3: 62805.173 us/op
+[info] Result "com.ziplex.lexer.benchmark.maps.MutableHashMapBenchmarkBig.updateRemoveUpdate_VerifiedHashMap":
+[info]   65097.262 ±(99.9%) 46294.520 us/op [Average]
+[info]   (min, avg, max) = (62805.173, 65097.262, 67824.113), stdev = 2537.559
+[info]   CI (99.9%): [18802.743, 111391.782] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.18, OpenJDK 64-Bit Server VM, 17.0.18+8-Ubuntu-124.04.1
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 2 iterations, 10 s each
+[info] # Measurement: 3 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: com.ziplex.lexer.benchmark.maps.MutableHashMapBenchmarkBig.updateRemoveUpdate_VerifiedHashMap
+[info] # Parameters: (nKeys = 655360)
+[info] # Run progress: 51.47% complete, ETA 00:33:37
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 643523.109 us/op
+[info] # Warmup Iteration   2: 509317.131 us/op
+[info] Iteration   1: 509359.382 us/op
+[info] Iteration   2: 519479.008 us/op
+[info] Iteration   3: 517399.714 us/op
+[info] Result "com.ziplex.lexer.benchmark.maps.MutableHashMapBenchmarkBig.updateRemoveUpdate_VerifiedHashMap":
+[info]   515412.701 ±(99.9%) 97502.194 us/op [Average]
+[info]   (min, avg, max) = (509359.382, 515412.701, 519479.008), stdev = 5344.424
+[info]   CI (99.9%): [417910.507, 612914.896] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.18, OpenJDK 64-Bit Server VM, 17.0.18+8-Ubuntu-124.04.1
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 2 iterations, 10 s each
+[info] # Measurement: 3 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: com.ziplex.lexer.benchmark.maps.MutableHashMapBenchmarkBig.updateRemoveUpdate_VerifiedHashMap
+[info] # Parameters: (nKeys = 1179648)
+[info] # Run progress: 52.94% complete, ETA 00:32:29
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 1398663.803 us/op
+[info] # Warmup Iteration   2: 1065524.531 us/op
+[info] Iteration   1: 1123148.060 us/op
+[info] Iteration   2: 1257028.961 us/op
+[info] Iteration   3: 1344579.566 us/op
+[info] Result "com.ziplex.lexer.benchmark.maps.MutableHashMapBenchmarkBig.updateRemoveUpdate_VerifiedHashMap":
+[info]   1241585.529 ±(99.9%) 2034551.586 us/op [Average]
+[info]   (min, avg, max) = (1123148.060, 1241585.529, 1344579.566), stdev = 111520.638
+[info]   CI (99.9%): [≈ 0, 3276137.116] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.18, OpenJDK 64-Bit Server VM, 17.0.18+8-Ubuntu-124.04.1
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 2 iterations, 10 s each
+[info] # Measurement: 3 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: com.ziplex.lexer.benchmark.maps.MutableHashMapBenchmarkBig.updateRemoveUpdate_VerifiedHashMap
+[info] # Parameters: (nKeys = 1703936)
+[info] # Run progress: 54.41% complete, ETA 00:31:22
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 2004350.412 us/op
+[info] # Warmup Iteration   2: 1542507.223 us/op
+[info] Iteration   1: 1586855.979 us/op
+[info] Iteration   2: 1551491.482 us/op
+[info] Iteration   3: 1458261.126 us/op
+[info] Result "com.ziplex.lexer.benchmark.maps.MutableHashMapBenchmarkBig.updateRemoveUpdate_VerifiedHashMap":
+[info]   1532202.862 ±(99.9%) 1211965.139 us/op [Average]
+[info]   (min, avg, max) = (1458261.126, 1532202.862, 1586855.979), stdev = 66431.899
+[info]   CI (99.9%): [320237.723, 2744168.002] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.18, OpenJDK 64-Bit Server VM, 17.0.18+8-Ubuntu-124.04.1
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 2 iterations, 10 s each
+[info] # Measurement: 3 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: com.ziplex.lexer.benchmark.maps.MutableHashMapBenchmarkBig.updateRemoveUpdate_VerifiedHashMap
+[info] # Parameters: (nKeys = 2228224)
+[info] # Run progress: 55.88% complete, ETA 00:30:16
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 3076618.153 us/op
+[info] # Warmup Iteration   2: 2497037.800 us/op
+[info] Iteration   1: 2510532.964 us/op
+[info] Iteration   2: 2182265.175 us/op
+[info] Iteration   3: 2160930.534 us/op
+[info] Result "com.ziplex.lexer.benchmark.maps.MutableHashMapBenchmarkBig.updateRemoveUpdate_VerifiedHashMap":
+[info]   2284576.224 ±(99.9%) 3575310.168 us/op [Average]
+[info]   (min, avg, max) = (2160930.534, 2284576.224, 2510532.964), stdev = 195974.815
+[info]   CI (99.9%): [≈ 0, 5859886.392] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.18, OpenJDK 64-Bit Server VM, 17.0.18+8-Ubuntu-124.04.1
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 2 iterations, 10 s each
+[info] # Measurement: 3 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: com.ziplex.lexer.benchmark.maps.MutableHashMapBenchmarkBig.updateRemoveUpdate_VerifiedHashMap
+[info] # Parameters: (nKeys = 2752512)
+[info] # Run progress: 57.35% complete, ETA 00:29:13
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 3978521.039 us/op
+[info] # Warmup Iteration   2: 3995989.240 us/op
+[info] Iteration   1: 3518072.742 us/op
+[info] Iteration   2: 3266602.029 us/op
+[info] Iteration   3: 3071840.731 us/op
+[info] Result "com.ziplex.lexer.benchmark.maps.MutableHashMapBenchmarkBig.updateRemoveUpdate_VerifiedHashMap":
+[info]   3285505.167 ±(99.9%) 4081408.576 us/op [Average]
+[info]   (min, avg, max) = (3071840.731, 3285505.167, 3518072.742), stdev = 223715.776
+[info]   CI (99.9%): [≈ 0, 7366913.743] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.18, OpenJDK 64-Bit Server VM, 17.0.18+8-Ubuntu-124.04.1
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 2 iterations, 10 s each
+[info] # Measurement: 3 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: com.ziplex.lexer.benchmark.maps.MutableHashMapBenchmarkBig.updateRemoveUpdate_VerifiedHashMap
+[info] # Parameters: (nKeys = 3276800)
+[info] # Run progress: 58.82% complete, ETA 00:28:13
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 5548461.925 us/op
+[info] # Warmup Iteration   2: 4106477.607 us/op
+[info] Iteration   1: 3791084.784 us/op
+[info] Iteration   2: 3689120.012 us/op
+[info] Iteration   3: 3570963.602 us/op
+[info] Result "com.ziplex.lexer.benchmark.maps.MutableHashMapBenchmarkBig.updateRemoveUpdate_VerifiedHashMap":
+[info]   3683722.799 ±(99.9%) 2009724.800 us/op [Average]
+[info]   (min, avg, max) = (3570963.602, 3683722.799, 3791084.784), stdev = 110159.798
+[info]   CI (99.9%): [1673998.000, 5693447.599] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.18, OpenJDK 64-Bit Server VM, 17.0.18+8-Ubuntu-124.04.1
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 2 iterations, 10 s each
+[info] # Measurement: 3 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: com.ziplex.lexer.benchmark.maps.MutableHashMapBenchmarkBig.updateRemoveUpdate_VerifiedHashMap
+[info] # Parameters: (nKeys = 3801088)
+[info] # Run progress: 60.29% complete, ETA 00:27:10
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 5417535.901 us/op
+[info] # Warmup Iteration   2: 4422493.372 us/op
+[info] Iteration   1: 4195560.441 us/op
+[info] Iteration   2: 5271280.169 us/op
+[info] Iteration   3: 4374360.221 us/op
+[info] Result "com.ziplex.lexer.benchmark.maps.MutableHashMapBenchmarkBig.updateRemoveUpdate_VerifiedHashMap":
+[info]   4613733.610 ±(99.9%) 10516172.131 us/op [Average]
+[info]   (min, avg, max) = (4195560.441, 4613733.610, 5271280.169), stdev = 576426.880
+[info]   CI (99.9%): [≈ 0, 15129905.741] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.18, OpenJDK 64-Bit Server VM, 17.0.18+8-Ubuntu-124.04.1
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 2 iterations, 10 s each
+[info] # Measurement: 3 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: com.ziplex.lexer.benchmark.maps.MutableHashMapBenchmarkBig.updateRemoveUpdate_VerifiedHashMap
+[info] # Parameters: (nKeys = 4325376)
+[info] # Run progress: 61.76% complete, ETA 00:26:10
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 5904652.279 us/op
+[info] # Warmup Iteration   2: 4843833.685 us/op
+[info] Iteration   1: 4567736.354 us/op
+[info] Iteration   2: 4418784.973 us/op
+[info] Iteration   3: 4153799.859 us/op
+[info] Result "com.ziplex.lexer.benchmark.maps.MutableHashMapBenchmarkBig.updateRemoveUpdate_VerifiedHashMap":
+[info]   4380107.062 ±(99.9%) 3825001.760 us/op [Average]
+[info]   (min, avg, max) = (4153799.859, 4380107.062, 4567736.354), stdev = 209661.253
+[info]   CI (99.9%): [555105.302, 8205108.821] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.18, OpenJDK 64-Bit Server VM, 17.0.18+8-Ubuntu-124.04.1
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 2 iterations, 10 s each
+[info] # Measurement: 3 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: com.ziplex.lexer.benchmark.maps.MutableHashMapBenchmarkBig.updateRemoveUpdate_VerifiedHashMap
+[info] # Parameters: (nKeys = 4849664)
+[info] # Run progress: 63.24% complete, ETA 00:25:14
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 6312203.281 us/op
+[info] # Warmup Iteration   2: 4990854.984 us/op
+[info] Iteration   1: 4744445.344 us/op
+[info] Iteration   2: 4136782.816 us/op
+[info] Iteration   3: 4266231.685 us/op
+[info] Result "com.ziplex.lexer.benchmark.maps.MutableHashMapBenchmarkBig.updateRemoveUpdate_VerifiedHashMap":
+[info]   4382486.615 ±(99.9%) 5839411.913 us/op [Average]
+[info]   (min, avg, max) = (4136782.816, 4382486.615, 4744445.344), stdev = 320077.871
+[info]   CI (99.9%): [≈ 0, 10221898.529] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.18, OpenJDK 64-Bit Server VM, 17.0.18+8-Ubuntu-124.04.1
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 2 iterations, 10 s each
+[info] # Measurement: 3 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: com.ziplex.lexer.benchmark.maps.MutableHashMapBenchmarkBig.updateRemoveUpdate_VerifiedHashMap
+[info] # Parameters: (nKeys = 5373952)
+[info] # Run progress: 64.71% complete, ETA 00:24:17
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 5923612.325 us/op
+[info] # Warmup Iteration   2: 5025961.494 us/op
+[info] Iteration   1: 4677918.362 us/op
+[info] Iteration   2: 4567646.535 us/op
+[info] Iteration   3: 4223583.534 us/op
+[info] Result "com.ziplex.lexer.benchmark.maps.MutableHashMapBenchmarkBig.updateRemoveUpdate_VerifiedHashMap":
+[info]   4489716.144 ±(99.9%) 4323411.753 us/op [Average]
+[info]   (min, avg, max) = (4223583.534, 4489716.144, 4677918.362), stdev = 236980.787
+[info]   CI (99.9%): [166304.391, 8813127.896] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.18, OpenJDK 64-Bit Server VM, 17.0.18+8-Ubuntu-124.04.1
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 2 iterations, 10 s each
+[info] # Measurement: 3 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: com.ziplex.lexer.benchmark.maps.MutableHashMapBenchmarkBig.updateRemoveUpdate_VerifiedHashMap
+[info] # Parameters: (nKeys = 5898240)
+[info] # Run progress: 66.18% complete, ETA 00:23:20
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 6075375.159 us/op
+[info] # Warmup Iteration   2: 5112268.734 us/op
+[info] Iteration   1: 5034791.520 us/op
+[info] Iteration   2: 5072875.163 us/op
+[info] Iteration   3: 4545350.675 us/op
+[info] Result "com.ziplex.lexer.benchmark.maps.MutableHashMapBenchmarkBig.updateRemoveUpdate_VerifiedHashMap":
+[info]   4884339.119 ±(99.9%) 5367111.742 us/op [Average]
+[info]   (min, avg, max) = (4545350.675, 4884339.119, 5072875.163), stdev = 294189.505
+[info]   CI (99.9%): [≈ 0, 10251450.862] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.18, OpenJDK 64-Bit Server VM, 17.0.18+8-Ubuntu-124.04.1
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 2 iterations, 10 s each
+[info] # Measurement: 3 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: com.ziplex.lexer.benchmark.maps.MutableHashMapBenchmarkBig.updateRemoveUpdate_VerifiedHashMap
+[info] # Parameters: (nKeys = 6422528)
+[info] # Run progress: 67.65% complete, ETA 00:22:18
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 6267803.212 us/op
+[info] # Warmup Iteration   2: 6340613.211 us/op
+[info] Iteration   1: 5490188.465 us/op
+[info] Iteration   2: 5373520.613 us/op
+[info] Iteration   3: 5311532.234 us/op
+[info] Result "com.ziplex.lexer.benchmark.maps.MutableHashMapBenchmarkBig.updateRemoveUpdate_VerifiedHashMap":
+[info]   5391747.104 ±(99.9%) 1654924.470 us/op [Average]
+[info]   (min, avg, max) = (5311532.234, 5391747.104, 5490188.465), stdev = 90711.994
+[info]   CI (99.9%): [3736822.634, 7046671.573] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.18, OpenJDK 64-Bit Server VM, 17.0.18+8-Ubuntu-124.04.1
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 2 iterations, 10 s each
+[info] # Measurement: 3 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: com.ziplex.lexer.benchmark.maps.MutableHashMapBenchmarkBig.updateRemoveUpdate_VerifiedHashMap
+[info] # Parameters: (nKeys = 6946816)
+[info] # Run progress: 69.12% complete, ETA 00:21:16
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 6789271.626 us/op
+[info] # Warmup Iteration   2: 5159640.185 us/op
+[info] Iteration   1: 5017376.218 us/op
+[info] Iteration   2: 4813624.997 us/op
+[info] Iteration   3: 5044697.363 us/op
+[info] Result "com.ziplex.lexer.benchmark.maps.MutableHashMapBenchmarkBig.updateRemoveUpdate_VerifiedHashMap":
+[info]   4958566.192 ±(99.9%) 2303523.674 us/op [Average]
+[info]   (min, avg, max) = (4813624.997, 4958566.192, 5044697.363), stdev = 126263.905
+[info]   CI (99.9%): [2655042.519, 7262089.866] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.18, OpenJDK 64-Bit Server VM, 17.0.18+8-Ubuntu-124.04.1
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 2 iterations, 10 s each
+[info] # Measurement: 3 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: com.ziplex.lexer.benchmark.maps.MutableHashMapBenchmarkBig.updateRemoveUpdate_VerifiedHashMap
+[info] # Parameters: (nKeys = 7471104)
+[info] # Run progress: 70.59% complete, ETA 00:20:14
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 6539759.450 us/op
+[info] # Warmup Iteration   2: 5766115.877 us/op
+[info] Iteration   1: 5407076.955 us/op
+[info] Iteration   2: 5097152.369 us/op
+[info] Iteration   3: 4741754.811 us/op
+[info] Result "com.ziplex.lexer.benchmark.maps.MutableHashMapBenchmarkBig.updateRemoveUpdate_VerifiedHashMap":
+[info]   5081994.711 ±(99.9%) 6073699.560 us/op [Average]
+[info]   (min, avg, max) = (4741754.811, 5081994.711, 5407076.955), stdev = 332919.968
+[info]   CI (99.9%): [≈ 0, 11155694.271] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.18, OpenJDK 64-Bit Server VM, 17.0.18+8-Ubuntu-124.04.1
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 2 iterations, 10 s each
+[info] # Measurement: 3 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: com.ziplex.lexer.benchmark.maps.MutableHashMapBenchmarkBig.updateRemoveUpdate_VerifiedHashMap
+[info] # Parameters: (nKeys = 7995392)
+[info] # Run progress: 72.06% complete, ETA 00:19:14
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 6892068.470 us/op
+[info] # Warmup Iteration   2: 5573795.733 us/op
+[info] Iteration   1: 5537083.668 us/op
+[info] Iteration   2: 5611712.004 us/op
+[info] Iteration   3: 5088400.933 us/op
+[info] Result "com.ziplex.lexer.benchmark.maps.MutableHashMapBenchmarkBig.updateRemoveUpdate_VerifiedHashMap":
+[info]   5412398.868 ±(99.9%) 5164080.387 us/op [Average]
+[info]   (min, avg, max) = (5088400.933, 5412398.868, 5611712.004), stdev = 283060.671
+[info]   CI (99.9%): [248318.481, 10576479.255] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.18, OpenJDK 64-Bit Server VM, 17.0.18+8-Ubuntu-124.04.1
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 2 iterations, 10 s each
+[info] # Measurement: 3 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: com.ziplex.lexer.benchmark.maps.MutableHashMapBenchmarkBig.updateRemoveUpdate_VerifiedHashMap
+[info] # Parameters: (nKeys = 8388608)
+[info] # Run progress: 73.53% complete, ETA 00:18:12
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 6197499.162 us/op
+[info] # Warmup Iteration   2: 5201294.103 us/op
+[info] Iteration   1: 4883908.639 us/op
+[info] Iteration   2: 4530655.527 us/op
+[info] Iteration   3: 4247164.853 us/op
+[info] Result "com.ziplex.lexer.benchmark.maps.MutableHashMapBenchmarkBig.updateRemoveUpdate_VerifiedHashMap":
+[info]   4553909.673 ±(99.9%) 5819897.051 us/op [Average]
+[info]   (min, avg, max) = (4247164.853, 4553909.673, 4883908.639), stdev = 319008.196
+[info]   CI (99.9%): [≈ 0, 10373806.724] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.18, OpenJDK 64-Bit Server VM, 17.0.18+8-Ubuntu-124.04.1
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 2 iterations, 10 s each
+[info] # Measurement: 3 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: com.ziplex.lexer.benchmark.maps.MutableHashMapBenchmarkBig.updateRemoveUpdate_VerifiedMutableLongMap
+[info] # Parameters: (nKeys = 131072)
+[info] # Run progress: 75.00% complete, ETA 00:17:13
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 48477.299 us/op
+[info] # Warmup Iteration   2: 31890.133 us/op
+[info] Iteration   1: 30683.182 us/op
+[info] Iteration   2: 29389.618 us/op
+[info] Iteration   3: 28569.520 us/op
+[info] Result "com.ziplex.lexer.benchmark.maps.MutableHashMapBenchmarkBig.updateRemoveUpdate_VerifiedMutableLongMap":
+[info]   29547.440 ±(99.9%) 19441.106 us/op [Average]
+[info]   (min, avg, max) = (28569.520, 29547.440, 30683.182), stdev = 1065.633
+[info]   CI (99.9%): [10106.335, 48988.546] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.18, OpenJDK 64-Bit Server VM, 17.0.18+8-Ubuntu-124.04.1
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 2 iterations, 10 s each
+[info] # Measurement: 3 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: com.ziplex.lexer.benchmark.maps.MutableHashMapBenchmarkBig.updateRemoveUpdate_VerifiedMutableLongMap
+[info] # Parameters: (nKeys = 655360)
+[info] # Run progress: 76.47% complete, ETA 00:16:09
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 262015.420 us/op
+[info] # Warmup Iteration   2: 223087.971 us/op
+[info] Iteration   1: 192968.575 us/op
+[info] Iteration   2: 193350.701 us/op
+[info] Iteration   3: 190954.845 us/op
+[info] Result "com.ziplex.lexer.benchmark.maps.MutableHashMapBenchmarkBig.updateRemoveUpdate_VerifiedMutableLongMap":
+[info]   192424.707 ±(99.9%) 23483.259 us/op [Average]
+[info]   (min, avg, max) = (190954.845, 192424.707, 193350.701), stdev = 1287.197
+[info]   CI (99.9%): [168941.448, 215907.966] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.18, OpenJDK 64-Bit Server VM, 17.0.18+8-Ubuntu-124.04.1
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 2 iterations, 10 s each
+[info] # Measurement: 3 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: com.ziplex.lexer.benchmark.maps.MutableHashMapBenchmarkBig.updateRemoveUpdate_VerifiedMutableLongMap
+[info] # Parameters: (nKeys = 1179648)
+[info] # Run progress: 77.94% complete, ETA 00:15:06
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 526726.889 us/op
+[info] # Warmup Iteration   2: 459655.875 us/op
+[info] Iteration   1: 394143.104 us/op
+[info] Iteration   2: 389063.105 us/op
+[info] Iteration   3: 391841.370 us/op
+[info] Result "com.ziplex.lexer.benchmark.maps.MutableHashMapBenchmarkBig.updateRemoveUpdate_VerifiedMutableLongMap":
+[info]   391682.526 ±(99.9%) 46406.952 us/op [Average]
+[info]   (min, avg, max) = (389063.105, 391682.526, 394143.104), stdev = 2543.722
+[info]   CI (99.9%): [345275.574, 438089.479] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.18, OpenJDK 64-Bit Server VM, 17.0.18+8-Ubuntu-124.04.1
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 2 iterations, 10 s each
+[info] # Measurement: 3 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: com.ziplex.lexer.benchmark.maps.MutableHashMapBenchmarkBig.updateRemoveUpdate_VerifiedMutableLongMap
+[info] # Parameters: (nKeys = 1703936)
+[info] # Run progress: 79.41% complete, ETA 00:14:03
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 805308.457 us/op
+[info] # Warmup Iteration   2: 707781.903 us/op
+[info] Iteration   1: 640397.515 us/op
+[info] Iteration   2: 572506.496 us/op
+[info] Iteration   3: 586653.604 us/op
+[info] Result "com.ziplex.lexer.benchmark.maps.MutableHashMapBenchmarkBig.updateRemoveUpdate_VerifiedMutableLongMap":
+[info]   599852.538 ±(99.9%) 653460.636 us/op [Average]
+[info]   (min, avg, max) = (572506.496, 599852.538, 640397.515), stdev = 35818.382
+[info]   CI (99.9%): [≈ 0, 1253313.174] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.18, OpenJDK 64-Bit Server VM, 17.0.18+8-Ubuntu-124.04.1
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 2 iterations, 10 s each
+[info] # Measurement: 3 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: com.ziplex.lexer.benchmark.maps.MutableHashMapBenchmarkBig.updateRemoveUpdate_VerifiedMutableLongMap
+[info] # Parameters: (nKeys = 2228224)
+[info] # Run progress: 80.88% complete, ETA 00:13:01
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 1027330.466 us/op
+[info] # Warmup Iteration   2: 903828.901 us/op
+[info] Iteration   1: 864338.852 us/op
+[info] Iteration   2: 790670.296 us/op
+[info] Iteration   3: 735052.705 us/op
+[info] Result "com.ziplex.lexer.benchmark.maps.MutableHashMapBenchmarkBig.updateRemoveUpdate_VerifiedMutableLongMap":
+[info]   796687.284 ±(99.9%) 1183155.716 us/op [Average]
+[info]   (min, avg, max) = (735052.705, 796687.284, 864338.852), stdev = 64852.757
+[info]   CI (99.9%): [≈ 0, 1979843.000] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.18, OpenJDK 64-Bit Server VM, 17.0.18+8-Ubuntu-124.04.1
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 2 iterations, 10 s each
+[info] # Measurement: 3 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: com.ziplex.lexer.benchmark.maps.MutableHashMapBenchmarkBig.updateRemoveUpdate_VerifiedMutableLongMap
+[info] # Parameters: (nKeys = 2752512)
+[info] # Run progress: 82.35% complete, ETA 00:12:00
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 1384459.277 us/op
+[info] # Warmup Iteration   2: 1128609.927 us/op
+[info] Iteration   1: 1149759.020 us/op
+[info] Iteration   2: 1012507.733 us/op
+[info] Iteration   3: 939493.146 us/op
+[info] Result "com.ziplex.lexer.benchmark.maps.MutableHashMapBenchmarkBig.updateRemoveUpdate_VerifiedMutableLongMap":
+[info]   1033919.966 ±(99.9%) 1947622.903 us/op [Average]
+[info]   (min, avg, max) = (939493.146, 1033919.966, 1149759.020), stdev = 106755.783
+[info]   CI (99.9%): [≈ 0, 2981542.869] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.18, OpenJDK 64-Bit Server VM, 17.0.18+8-Ubuntu-124.04.1
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 2 iterations, 10 s each
+[info] # Measurement: 3 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: com.ziplex.lexer.benchmark.maps.MutableHashMapBenchmarkBig.updateRemoveUpdate_VerifiedMutableLongMap
+[info] # Parameters: (nKeys = 3276800)
+[info] # Run progress: 83.82% complete, ETA 00:10:58
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 1556165.090 us/op
+[info] # Warmup Iteration   2: 1252274.516 us/op
+[info] Iteration   1: 1258410.891 us/op
+[info] Iteration   2: 1184164.218 us/op
+[info] Iteration   3: 1116887.423 us/op
+[info] Result "com.ziplex.lexer.benchmark.maps.MutableHashMapBenchmarkBig.updateRemoveUpdate_VerifiedMutableLongMap":
+[info]   1186487.511 ±(99.9%) 1291479.208 us/op [Average]
+[info]   (min, avg, max) = (1116887.423, 1186487.511, 1258410.891), stdev = 70790.333
+[info]   CI (99.9%): [≈ 0, 2477966.719] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.18, OpenJDK 64-Bit Server VM, 17.0.18+8-Ubuntu-124.04.1
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 2 iterations, 10 s each
+[info] # Measurement: 3 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: com.ziplex.lexer.benchmark.maps.MutableHashMapBenchmarkBig.updateRemoveUpdate_VerifiedMutableLongMap
+[info] # Parameters: (nKeys = 3801088)
+[info] # Run progress: 85.29% complete, ETA 00:09:57
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 1827640.905 us/op
+[info] # Warmup Iteration   2: 1527929.007 us/op
+[info] Iteration   1: 1593503.044 us/op
+[info] Iteration   2: 1480881.129 us/op
+[info] Iteration   3: 1344501.451 us/op
+[info] Result "com.ziplex.lexer.benchmark.maps.MutableHashMapBenchmarkBig.updateRemoveUpdate_VerifiedMutableLongMap":
+[info]   1472961.875 ±(99.9%) 2274801.601 us/op [Average]
+[info]   (min, avg, max) = (1344501.451, 1472961.875, 1593503.044), stdev = 124689.552
+[info]   CI (99.9%): [≈ 0, 3747763.475] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.18, OpenJDK 64-Bit Server VM, 17.0.18+8-Ubuntu-124.04.1
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 2 iterations, 10 s each
+[info] # Measurement: 3 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: com.ziplex.lexer.benchmark.maps.MutableHashMapBenchmarkBig.updateRemoveUpdate_VerifiedMutableLongMap
+[info] # Parameters: (nKeys = 4325376)
+[info] # Run progress: 86.76% complete, ETA 00:08:57
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 1910376.192 us/op
+[info] # Warmup Iteration   2: 1699012.692 us/op
+[info] Iteration   1: 1574636.095 us/op
+[info] Iteration   2: 1474108.821 us/op
+[info] Iteration   3: 1466421.995 us/op
+[info] Result "com.ziplex.lexer.benchmark.maps.MutableHashMapBenchmarkBig.updateRemoveUpdate_VerifiedMutableLongMap":
+[info]   1505055.637 ±(99.9%) 1101572.221 us/op [Average]
+[info]   (min, avg, max) = (1466421.995, 1505055.637, 1574636.095), stdev = 60380.891
+[info]   CI (99.9%): [403483.416, 2606627.858] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.18, OpenJDK 64-Bit Server VM, 17.0.18+8-Ubuntu-124.04.1
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 2 iterations, 10 s each
+[info] # Measurement: 3 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: com.ziplex.lexer.benchmark.maps.MutableHashMapBenchmarkBig.updateRemoveUpdate_VerifiedMutableLongMap
+[info] # Parameters: (nKeys = 4849664)
+[info] # Run progress: 88.24% complete, ETA 00:07:57
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 1902197.782 us/op
+[info] # Warmup Iteration   2: 1709879.927 us/op
+[info] Iteration   1: 1734873.112 us/op
+[info] Iteration   2: 1571469.973 us/op
+[info] Iteration   3: 1481586.188 us/op
+[info] Result "com.ziplex.lexer.benchmark.maps.MutableHashMapBenchmarkBig.updateRemoveUpdate_VerifiedMutableLongMap":
+[info]   1595976.424 ±(99.9%) 2342666.690 us/op [Average]
+[info]   (min, avg, max) = (1481586.188, 1595976.424, 1734873.112), stdev = 128409.466
+[info]   CI (99.9%): [≈ 0, 3938643.114] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.18, OpenJDK 64-Bit Server VM, 17.0.18+8-Ubuntu-124.04.1
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 2 iterations, 10 s each
+[info] # Measurement: 3 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: com.ziplex.lexer.benchmark.maps.MutableHashMapBenchmarkBig.updateRemoveUpdate_VerifiedMutableLongMap
+[info] # Parameters: (nKeys = 5373952)
+[info] # Run progress: 89.71% complete, ETA 00:06:56
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 2029450.937 us/op
+[info] # Warmup Iteration   2: 1722637.007 us/op
+[info] Iteration   1: 1740594.951 us/op
+[info] Iteration   2: 1706208.091 us/op
+[info] Iteration   3: 1449467.719 us/op
+[info] Result "com.ziplex.lexer.benchmark.maps.MutableHashMapBenchmarkBig.updateRemoveUpdate_VerifiedMutableLongMap":
+[info]   1632090.254 ±(99.9%) 2902349.601 us/op [Average]
+[info]   (min, avg, max) = (1449467.719, 1632090.254, 1740594.951), stdev = 159087.575
+[info]   CI (99.9%): [≈ 0, 4534439.854] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.18, OpenJDK 64-Bit Server VM, 17.0.18+8-Ubuntu-124.04.1
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 2 iterations, 10 s each
+[info] # Measurement: 3 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: com.ziplex.lexer.benchmark.maps.MutableHashMapBenchmarkBig.updateRemoveUpdate_VerifiedMutableLongMap
+[info] # Parameters: (nKeys = 5898240)
+[info] # Run progress: 91.18% complete, ETA 00:05:56
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 1950766.832 us/op
+[info] # Warmup Iteration   2: 1783518.568 us/op
+[info] Iteration   1: 1783401.017 us/op
+[info] Iteration   2: 1605759.046 us/op
+[info] Iteration   3: 1569074.456 us/op
+[info] Result "com.ziplex.lexer.benchmark.maps.MutableHashMapBenchmarkBig.updateRemoveUpdate_VerifiedMutableLongMap":
+[info]   1652744.840 ±(99.9%) 2091252.499 us/op [Average]
+[info]   (min, avg, max) = (1569074.456, 1652744.840, 1783401.017), stdev = 114628.606
+[info]   CI (99.9%): [≈ 0, 3743997.339] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.18, OpenJDK 64-Bit Server VM, 17.0.18+8-Ubuntu-124.04.1
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 2 iterations, 10 s each
+[info] # Measurement: 3 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: com.ziplex.lexer.benchmark.maps.MutableHashMapBenchmarkBig.updateRemoveUpdate_VerifiedMutableLongMap
+[info] # Parameters: (nKeys = 6422528)
+[info] # Run progress: 92.65% complete, ETA 00:04:56
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 2228279.127 us/op
+[info] # Warmup Iteration   2: 1881068.889 us/op
+[info] Iteration   1: 1916410.521 us/op
+[info] Iteration   2: 1634163.852 us/op
+[info] Iteration   3: 1676755.160 us/op
+[info] Result "com.ziplex.lexer.benchmark.maps.MutableHashMapBenchmarkBig.updateRemoveUpdate_VerifiedMutableLongMap":
+[info]   1742443.177 ±(99.9%) 2775923.876 us/op [Average]
+[info]   (min, avg, max) = (1634163.852, 1742443.177, 1916410.521), stdev = 152157.755
+[info]   CI (99.9%): [≈ 0, 4518367.053] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.18, OpenJDK 64-Bit Server VM, 17.0.18+8-Ubuntu-124.04.1
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 2 iterations, 10 s each
+[info] # Measurement: 3 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: com.ziplex.lexer.benchmark.maps.MutableHashMapBenchmarkBig.updateRemoveUpdate_VerifiedMutableLongMap
+[info] # Parameters: (nKeys = 6946816)
+[info] # Run progress: 94.12% complete, ETA 00:03:57
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 2370721.122 us/op
+[info] # Warmup Iteration   2: 1960286.640 us/op
+[info] Iteration   1: 1957826.324 us/op
+[info] Iteration   2: 1727006.136 us/op
+[info] Iteration   3: 1784728.891 us/op
+[info] Result "com.ziplex.lexer.benchmark.maps.MutableHashMapBenchmarkBig.updateRemoveUpdate_VerifiedMutableLongMap":
+[info]   1823187.117 ±(99.9%) 2191432.304 us/op [Average]
+[info]   (min, avg, max) = (1727006.136, 1823187.117, 1957826.324), stdev = 120119.799
+[info]   CI (99.9%): [≈ 0, 4014619.421] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.18, OpenJDK 64-Bit Server VM, 17.0.18+8-Ubuntu-124.04.1
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 2 iterations, 10 s each
+[info] # Measurement: 3 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: com.ziplex.lexer.benchmark.maps.MutableHashMapBenchmarkBig.updateRemoveUpdate_VerifiedMutableLongMap
+[info] # Parameters: (nKeys = 7471104)
+[info] # Run progress: 95.59% complete, ETA 00:02:57
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 2360202.777 us/op
+[info] # Warmup Iteration   2: 2019326.465 us/op
+[info] Iteration   1: 1947608.963 us/op
+[info] Iteration   2: 1707772.951 us/op
+[info] Iteration   3: 1693836.564 us/op
+[info] Result "com.ziplex.lexer.benchmark.maps.MutableHashMapBenchmarkBig.updateRemoveUpdate_VerifiedMutableLongMap":
+[info]   1783072.826 ±(99.9%) 2602699.693 us/op [Average]
+[info]   (min, avg, max) = (1693836.564, 1783072.826, 1947608.963), stdev = 142662.753
+[info]   CI (99.9%): [≈ 0, 4385772.519] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.18, OpenJDK 64-Bit Server VM, 17.0.18+8-Ubuntu-124.04.1
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 2 iterations, 10 s each
+[info] # Measurement: 3 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: com.ziplex.lexer.benchmark.maps.MutableHashMapBenchmarkBig.updateRemoveUpdate_VerifiedMutableLongMap
+[info] # Parameters: (nKeys = 7995392)
+[info] # Run progress: 97.06% complete, ETA 00:01:58
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 2339673.474 us/op
+[info] # Warmup Iteration   2: 2051838.573 us/op
+[info] Iteration   1: 2086562.188 us/op
+[info] Iteration   2: 1827460.006 us/op
+[info] Iteration   3: 1752108.662 us/op
+[info] Result "com.ziplex.lexer.benchmark.maps.MutableHashMapBenchmarkBig.updateRemoveUpdate_VerifiedMutableLongMap":
+[info]   1888710.285 ±(99.9%) 3200642.006 us/op [Average]
+[info]   (min, avg, max) = (1752108.662, 1888710.285, 2086562.188), stdev = 175437.988
+[info]   CI (99.9%): [≈ 0, 5089352.291] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.18, OpenJDK 64-Bit Server VM, 17.0.18+8-Ubuntu-124.04.1
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 2 iterations, 10 s each
+[info] # Measurement: 3 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: com.ziplex.lexer.benchmark.maps.MutableHashMapBenchmarkBig.updateRemoveUpdate_VerifiedMutableLongMap
+[info] # Parameters: (nKeys = 8388608)
+[info] # Run progress: 98.53% complete, ETA 00:00:59
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 2202754.870 us/op
+[info] # Warmup Iteration   2: 1955371.914 us/op
+[info] Iteration   1: 1893385.876 us/op
+[info] Iteration   2: 1763624.417 us/op
+[info] Iteration   3: 1755752.758 us/op
+[info] Result "com.ziplex.lexer.benchmark.maps.MutableHashMapBenchmarkBig.updateRemoveUpdate_VerifiedMutableLongMap":
+[info]   1804254.350 ±(99.9%) 1410065.387 us/op [Average]
+[info]   (min, avg, max) = (1755752.758, 1804254.350, 1893385.876), stdev = 77290.442
+[info]   CI (99.9%): [394188.964, 3214319.737] (assumes normal distribution)
+[info] # Run complete. Total time: 01:07:01
+[info] REMEMBER: The numbers below are just data. To gain reusable insights, you need to follow up on
+[info] why the numbers are the way they are. Use profilers (see -prof, -lprof), design factorial
+[info] experiments, perform baseline and negative tests that provide experimental control, make sure
+[info] the benchmarking environment is safe on JVM/OS/HW level, ask for reviews from the domain experts.
+[info] Do not assume the numbers tell you what you want them to tell.
+[info] Benchmark                                                             (nKeys)  Mode  Cnt        Score          Error  Units
+[info] MutableHashMapBenchmarkBig.updateRemoveUpdate_ImmutableHashMap         131072  avgt    3   127106.197 ±    61287.050  us/op
+[info] MutableHashMapBenchmarkBig.updateRemoveUpdate_ImmutableHashMap         655360  avgt    3   797781.135 ±   439595.819  us/op
+[info] MutableHashMapBenchmarkBig.updateRemoveUpdate_ImmutableHashMap        1179648  avgt    3  1567149.088 ±   790846.965  us/op
+[info] MutableHashMapBenchmarkBig.updateRemoveUpdate_ImmutableHashMap        1703936  avgt    3  2540916.510 ±  1677904.169  us/op
+[info] MutableHashMapBenchmarkBig.updateRemoveUpdate_ImmutableHashMap        2228224  avgt    3  3587810.867 ±  2289691.061  us/op
+[info] MutableHashMapBenchmarkBig.updateRemoveUpdate_ImmutableHashMap        2752512  avgt    3  4407710.413 ±  1860572.988  us/op
+[info] MutableHashMapBenchmarkBig.updateRemoveUpdate_ImmutableHashMap        3276800  avgt    3  5769410.644 ±  4277684.706  us/op
+[info] MutableHashMapBenchmarkBig.updateRemoveUpdate_ImmutableHashMap        3801088  avgt    3  6986997.539 ±  6548850.799  us/op
+[info] MutableHashMapBenchmarkBig.updateRemoveUpdate_ImmutableHashMap        4325376  avgt    3  7480046.181 ±  3897280.440  us/op
+[info] MutableHashMapBenchmarkBig.updateRemoveUpdate_ImmutableHashMap        4849664  avgt    3  7467390.593 ±  2158571.423  us/op
+[info] MutableHashMapBenchmarkBig.updateRemoveUpdate_ImmutableHashMap        5373952  avgt    3  7515242.660 ±  3099766.171  us/op
+[info] MutableHashMapBenchmarkBig.updateRemoveUpdate_ImmutableHashMap        5898240  avgt    3  7658726.917 ±  3881391.916  us/op
+[info] MutableHashMapBenchmarkBig.updateRemoveUpdate_ImmutableHashMap        6422528  avgt    3  8282876.549 ± 13534135.890  us/op
+[info] MutableHashMapBenchmarkBig.updateRemoveUpdate_ImmutableHashMap        6946816  avgt    3  8006200.415 ±  5550849.812  us/op
+[info] MutableHashMapBenchmarkBig.updateRemoveUpdate_ImmutableHashMap        7471104  avgt    3  8247001.147 ±  5013883.593  us/op
+[info] MutableHashMapBenchmarkBig.updateRemoveUpdate_ImmutableHashMap        7995392  avgt    3  8334047.295 ±  2653854.009  us/op
+[info] MutableHashMapBenchmarkBig.updateRemoveUpdate_ImmutableHashMap        8388608  avgt    3  7971612.855 ±  4190940.708  us/op
+[info] MutableHashMapBenchmarkBig.updateRemoveUpdate_OriginalHashMap          131072  avgt    3    33958.841 ±     7678.337  us/op
+[info] MutableHashMapBenchmarkBig.updateRemoveUpdate_OriginalHashMap          655360  avgt    3   230372.694 ±   383006.353  us/op
+[info] MutableHashMapBenchmarkBig.updateRemoveUpdate_OriginalHashMap         1179648  avgt    3   498745.674 ±   345608.595  us/op
+[info] MutableHashMapBenchmarkBig.updateRemoveUpdate_OriginalHashMap         1703936  avgt    3   859907.709 ±   739092.871  us/op
+[info] MutableHashMapBenchmarkBig.updateRemoveUpdate_OriginalHashMap         2228224  avgt    3  1076492.831 ±   553926.956  us/op
+[info] MutableHashMapBenchmarkBig.updateRemoveUpdate_OriginalHashMap         2752512  avgt    3  1472040.141 ±  1671048.606  us/op
+[info] MutableHashMapBenchmarkBig.updateRemoveUpdate_OriginalHashMap         3276800  avgt    3  2035695.412 ±  2259022.742  us/op
+[info] MutableHashMapBenchmarkBig.updateRemoveUpdate_OriginalHashMap         3801088  avgt    3  2414249.990 ±  4035833.894  us/op
+[info] MutableHashMapBenchmarkBig.updateRemoveUpdate_OriginalHashMap         4325376  avgt    3  2473065.649 ±  4515493.217  us/op
+[info] MutableHashMapBenchmarkBig.updateRemoveUpdate_OriginalHashMap         4849664  avgt    3  2774345.779 ±  2585032.139  us/op
+[info] MutableHashMapBenchmarkBig.updateRemoveUpdate_OriginalHashMap         5373952  avgt    3  2732268.823 ±   250947.235  us/op
+[info] MutableHashMapBenchmarkBig.updateRemoveUpdate_OriginalHashMap         5898240  avgt    3  2530046.666 ±  2715333.866  us/op
+[info] MutableHashMapBenchmarkBig.updateRemoveUpdate_OriginalHashMap         6422528  avgt    3  2637215.233 ±  2353207.451  us/op
+[info] MutableHashMapBenchmarkBig.updateRemoveUpdate_OriginalHashMap         6946816  avgt    3  2809311.297 ±  5324309.529  us/op
+[info] MutableHashMapBenchmarkBig.updateRemoveUpdate_OriginalHashMap         7471104  avgt    3  2687479.791 ±  2732134.518  us/op
+[info] MutableHashMapBenchmarkBig.updateRemoveUpdate_OriginalHashMap         7995392  avgt    3  2759766.885 ±  7403700.631  us/op
+[info] MutableHashMapBenchmarkBig.updateRemoveUpdate_OriginalHashMap         8388608  avgt    3  2614847.453 ±  5335484.266  us/op
+[info] MutableHashMapBenchmarkBig.updateRemoveUpdate_VerifiedHashMap          131072  avgt    3    65097.262 ±    46294.520  us/op
+[info] MutableHashMapBenchmarkBig.updateRemoveUpdate_VerifiedHashMap          655360  avgt    3   515412.701 ±    97502.194  us/op
+[info] MutableHashMapBenchmarkBig.updateRemoveUpdate_VerifiedHashMap         1179648  avgt    3  1241585.529 ±  2034551.586  us/op
+[info] MutableHashMapBenchmarkBig.updateRemoveUpdate_VerifiedHashMap         1703936  avgt    3  1532202.862 ±  1211965.139  us/op
+[info] MutableHashMapBenchmarkBig.updateRemoveUpdate_VerifiedHashMap         2228224  avgt    3  2284576.224 ±  3575310.168  us/op
+[info] MutableHashMapBenchmarkBig.updateRemoveUpdate_VerifiedHashMap         2752512  avgt    3  3285505.167 ±  4081408.576  us/op
+[info] MutableHashMapBenchmarkBig.updateRemoveUpdate_VerifiedHashMap         3276800  avgt    3  3683722.799 ±  2009724.800  us/op
+[info] MutableHashMapBenchmarkBig.updateRemoveUpdate_VerifiedHashMap         3801088  avgt    3  4613733.610 ± 10516172.131  us/op
+[info] MutableHashMapBenchmarkBig.updateRemoveUpdate_VerifiedHashMap         4325376  avgt    3  4380107.062 ±  3825001.760  us/op
+[info] MutableHashMapBenchmarkBig.updateRemoveUpdate_VerifiedHashMap         4849664  avgt    3  4382486.615 ±  5839411.913  us/op
+[info] MutableHashMapBenchmarkBig.updateRemoveUpdate_VerifiedHashMap         5373952  avgt    3  4489716.144 ±  4323411.753  us/op
+[info] MutableHashMapBenchmarkBig.updateRemoveUpdate_VerifiedHashMap         5898240  avgt    3  4884339.119 ±  5367111.742  us/op
+[info] MutableHashMapBenchmarkBig.updateRemoveUpdate_VerifiedHashMap         6422528  avgt    3  5391747.104 ±  1654924.470  us/op
+[info] MutableHashMapBenchmarkBig.updateRemoveUpdate_VerifiedHashMap         6946816  avgt    3  4958566.192 ±  2303523.674  us/op
+[info] MutableHashMapBenchmarkBig.updateRemoveUpdate_VerifiedHashMap         7471104  avgt    3  5081994.711 ±  6073699.560  us/op
+[info] MutableHashMapBenchmarkBig.updateRemoveUpdate_VerifiedHashMap         7995392  avgt    3  5412398.868 ±  5164080.387  us/op
+[info] MutableHashMapBenchmarkBig.updateRemoveUpdate_VerifiedHashMap         8388608  avgt    3  4553909.673 ±  5819897.051  us/op
+[info] MutableHashMapBenchmarkBig.updateRemoveUpdate_VerifiedMutableLongMap   131072  avgt    3    29547.440 ±    19441.106  us/op
+[info] MutableHashMapBenchmarkBig.updateRemoveUpdate_VerifiedMutableLongMap   655360  avgt    3   192424.707 ±    23483.259  us/op
+[info] MutableHashMapBenchmarkBig.updateRemoveUpdate_VerifiedMutableLongMap  1179648  avgt    3   391682.526 ±    46406.952  us/op
+[info] MutableHashMapBenchmarkBig.updateRemoveUpdate_VerifiedMutableLongMap  1703936  avgt    3   599852.538 ±   653460.636  us/op
+[info] MutableHashMapBenchmarkBig.updateRemoveUpdate_VerifiedMutableLongMap  2228224  avgt    3   796687.284 ±  1183155.716  us/op
+[info] MutableHashMapBenchmarkBig.updateRemoveUpdate_VerifiedMutableLongMap  2752512  avgt    3  1033919.966 ±  1947622.903  us/op
+[info] MutableHashMapBenchmarkBig.updateRemoveUpdate_VerifiedMutableLongMap  3276800  avgt    3  1186487.511 ±  1291479.208  us/op
+[info] MutableHashMapBenchmarkBig.updateRemoveUpdate_VerifiedMutableLongMap  3801088  avgt    3  1472961.875 ±  2274801.601  us/op
+[info] MutableHashMapBenchmarkBig.updateRemoveUpdate_VerifiedMutableLongMap  4325376  avgt    3  1505055.637 ±  1101572.221  us/op
+[info] MutableHashMapBenchmarkBig.updateRemoveUpdate_VerifiedMutableLongMap  4849664  avgt    3  1595976.424 ±  2342666.690  us/op
+[info] MutableHashMapBenchmarkBig.updateRemoveUpdate_VerifiedMutableLongMap  5373952  avgt    3  1632090.254 ±  2902349.601  us/op
+[info] MutableHashMapBenchmarkBig.updateRemoveUpdate_VerifiedMutableLongMap  5898240  avgt    3  1652744.840 ±  2091252.499  us/op
+[info] MutableHashMapBenchmarkBig.updateRemoveUpdate_VerifiedMutableLongMap  6422528  avgt    3  1742443.177 ±  2775923.876  us/op
+[info] MutableHashMapBenchmarkBig.updateRemoveUpdate_VerifiedMutableLongMap  6946816  avgt    3  1823187.117 ±  2191432.304  us/op
+[info] MutableHashMapBenchmarkBig.updateRemoveUpdate_VerifiedMutableLongMap  7471104  avgt    3  1783072.826 ±  2602699.693  us/op
+[info] MutableHashMapBenchmarkBig.updateRemoveUpdate_VerifiedMutableLongMap  7995392  avgt    3  1888710.285 ±  3200642.006  us/op
+[info] MutableHashMapBenchmarkBig.updateRemoveUpdate_VerifiedMutableLongMap  8388608  avgt    3  1804254.350 ±  1410065.387  us/op
+[success] Total time: 4039 s (01:07:19), completed Mar 12, 2026, 4:53:56 PM
