@@ -50,8 +50,9 @@ object RegexUtils:
 
   val AZ: Regex[Char] = anyOf(AZString)
   val az: Regex[Char] = anyOf(azString)
-  val azAZ: Regex[Char] = az | AZ
+  val azAZ: Regex[Char] = anyOf(AZString + azString)
   val digits: Regex[Char] = anyOf(digitsString)
+  val azAZDigits: Regex[Char] = anyOf(AZString + azString + digitsString)
   val whiteSpaces: Regex[Char] = anyOf(whiteSpacesString)
   val epsilon: Regex[Char] = EmptyExpr()
   val specialChars: Regex[Char] = anyOf(specialCharsString)
