@@ -852,7 +852,7 @@ object OrderedTupleListOpsGenK {
       case _ => ()
     }
 
-  }.ensuring (_ =>
+  }.ensuring(_ =>
     l.content ++ Set((newKey, newValue)) == insertStrictlySorted(
       l,
       newKey,
@@ -984,7 +984,7 @@ object OrderedListMapLemmas {
       a1: K,
       b1: B
   ): Unit = {
-      OrderedTupleListOpsGenK.lemmaRemoveThenInsertStrictlySortedIsSameAsInsert(lm.toList, a1, b1)(using lm.ordd)
+    OrderedTupleListOpsGenK.lemmaRemoveThenInsertStrictlySortedIsSameAsInsert(lm.toList, a1, b1)(using lm.ordd)
   }.ensuring(_ => lm - a1 + (a1, b1) == lm + (a1, b1))
 
   @opaque
@@ -1193,7 +1193,7 @@ object OrderedListMapLemmas {
       }
       case Nil() =>
 
-  }.ensuring (_ => lm.toList.forall(p => lm.contains(p._1)))
+  }.ensuring(_ => lm.toList.forall(p => lm.contains(p._1)))
 
   @opaque
   @inlineOnce
@@ -1208,7 +1208,7 @@ object OrderedListMapLemmas {
         lemmaInsertPairStillContainsAll(lm, t, k, v)
       case Nil() => ()
     }
-  }.ensuring (_ => l.forall(p => (lm + (k, v)).contains(p._1)))
+  }.ensuring(_ => l.forall(p => (lm + (k, v)).contains(p._1)))
 
   @opaque
   @inlineOnce
@@ -1236,7 +1236,7 @@ object OrderedListMapLemmas {
     require(lm.get(a) == Some[B](b))
 
     OrderedTupleListOpsGenK.lemmaGetValueByKeyImpliesContainsTuple(lm.toList, a, b)(using lm.ordd)
-  }.ensuring (_ => lm.toList.contains((a, b)))
+  }.ensuring(_ => lm.toList.contains((a, b)))
 
   @opaque
   def keysOfSound[K, B](@induct lm: OrderedListMap[K, B], value: B): Unit = {
@@ -1257,10 +1257,9 @@ object OrderedListMapLemmas {
       key,
       value
     )(using lm.ordd)
-  }.ensuring (_ =>
+  }.ensuring(_ =>
     lm.toList.content ++ Set(
       (key, value)
     ) == (lm + (key, value)).toList.content
   )
 }
-

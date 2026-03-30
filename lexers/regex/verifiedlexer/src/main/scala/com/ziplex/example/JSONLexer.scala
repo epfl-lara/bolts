@@ -269,16 +269,16 @@ object ExampleJsonLexer:
   case object JsonLexer:
     import Types.*
 
-    @extern def wsCharRe: Regex[Char] = (' '.r | '\t'.r | '\n'.r | '\r'.r).+
-    @extern def expPartRe: Regex[Char] = ('e'.r | 'E'.r) ~ opt('-'.r | '+'.r) ~ digits.+
+    @extern def wsCharRe: Regex[Char] = whiteSpaces.+
+    @extern def expPartRe: Regex[Char] = anyOf("eE") ~ opt(anyOf("+-")) ~ digits.+
     @extern def intRe: Regex[Char] = opt('-'.r) ~ ('0'.r.+ | anyOf("123456789") ~ digits.*)
     @extern def decimalRe: Regex[Char] = intRe ~ '.'.r ~ digits.+
     @extern def floatRe: Regex[Char] = decimalRe ~ opt(expPartRe)
     @extern def puncRe: Regex[Char] = anyOf("!#$%&()*+,-./:;<=>?@[]^_`{|}~\\")
-    @extern def unicodeDigitsRe: Regex[Char] = digits | anyOf("abcdef") | anyOf("ABCDEF")
+    @extern def unicodeDigitsRe: Regex[Char] = anyOf("0123456789ABCDEFabcdef")
     @extern def fourUnicodeDigitsRe: Regex[Char] = unicodeDigitsRe ~ unicodeDigitsRe ~ unicodeDigitsRe ~ unicodeDigitsRe
     @extern def unicodeCodepointRe: Regex[Char] = '\\'.r ~ 'u'.r ~ fourUnicodeDigitsRe
-    @extern def jsonCharRe: Regex[Char] = unicodeCodepointRe | AZ | az | digits | (' '.r | '\t'.r | '\n'.r) | puncRe | "\\\"".r | "\\\\".r
+    @extern def jsonCharRe: Regex[Char] = unicodeCodepointRe | azAZDigits | anyOf(" \t\n") | puncRe | "\\\"".r | "\\\\".r
     @extern def jsonStringRe: Regex[Char] = '\"'.r ~ jsonCharRe.* ~ '\"'.r
     @extern def trueRe: Regex[Char] = "true".r
     @extern def falseRe: Regex[Char] = "false".r

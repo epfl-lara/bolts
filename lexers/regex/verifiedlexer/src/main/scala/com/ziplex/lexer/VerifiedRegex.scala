@@ -25,6 +25,8 @@ import com.ziplex.lexer.emptySeq
 import com.ziplex.lexer.singletonSeq
 import com.ziplex.lexer.seqFromList
 
+import stainless.lang.Set
+
 import scala.annotation.tailrec
 
 // BEGIN uncomment for verification ------------------------------------------
@@ -504,6 +506,7 @@ object VerifiedRegex {
     lazy val hash: Long = this.hashFct
   end Regex
   case class ElementMatch[C](c: C) extends Regex[C]
+  case class ElementSet[C](cs: Set[C]) extends Regex[C]
   case class Star[C](reg: Regex[C]) extends Regex[C]
   case class Union[C](regOne: Regex[C], regTwo: Regex[C]) extends Regex[C]
   case class Concat[C](regOne: Regex[C], regTwo: Regex[C]) extends Regex[C]
@@ -539,6 +542,7 @@ object VerifiedRegex {
     decreases(r)
     r match {
       case ElementMatch(c)    => true
+      case ElementSet(cs)     => true
       case Star(r)            => !r.nullable && validRegex(r) 
       case Union(rOne, rTwo)  => validRegex(rOne) && validRegex(rTwo)
       case Concat(rOne, rTwo) => validRegex(rOne) && validRegex(rTwo)
@@ -552,6 +556,7 @@ object VerifiedRegex {
     decreases(r)
     r match {
       case ElementMatch(c)    => BigInt(1)
+      case ElementSet(cs)     => BigInt(1)
       case Star(r)            => BigInt(1) + regexDepth(r)
       case Union(rOne, rTwo)  => BigInt(1) + Utils.maxBigInt(regexDepth(rOne), regexDepth(rTwo))
       case Concat(rOne, rTwo) => BigInt(1) + Utils.maxBigInt(regexDepth(rOne), regexDepth(rTwo))
@@ -572,6 +577,7 @@ object VerifiedRegex {
     decreases(r)
     r match {
       case ElementMatch(c)    => BigInt(1)
+      case ElementSet(cs)     => BigInt(1)
       case Star(r)            => BigInt(1) + regexDepthTotal(r)
       case Union(rOne, rTwo)  => BigInt(1) + regexDepthTotal(rOne) + regexDepthTotal(rTwo)
       case Concat(rOne, rTwo) => BigInt(1) + regexDepthTotal(rOne) + regexDepthTotal(rTwo)
@@ -585,6 +591,7 @@ object VerifiedRegex {
       case EmptyExpr()        => Nil[C]()
       case EmptyLang()        => Nil[C]()
       case ElementMatch(c)    => List(c)
+      case ElementSet(cs)     => cs.toList
       case Star(r)            => r.usedCharacters
       case Union(rOne, rTwo)  => rOne.usedCharacters ++ rTwo.usedCharacters
       case Concat(rOne, rTwo) => rOne.usedCharacters ++ rTwo.usedCharacters
@@ -596,10 +603,11 @@ object VerifiedRegex {
       case EmptyExpr()                           => Nil[C]()
       case EmptyLang()                           => Nil[C]()
       case ElementMatch(c)                       => List(c)
+      case ElementSet(cs)                        => cs.toList
       case Star(r)                               => r.firstChars
       case Union(rOne, rTwo)                     => rOne.firstChars ++ rTwo.firstChars
       case Concat(rOne, rTwo) if rOne.nullable   => rOne.firstChars ++ rTwo.firstChars
-      case Concat(rOne, rTwo) if !rOne.nullable  => rOne.firstChars
+      case Concat(rOne, rTwo)                    => rOne.firstChars
     }
   }
 
@@ -608,6 +616,7 @@ object VerifiedRegex {
       case EmptyExpr()        => true
       case EmptyLang()        => false
       case ElementMatch(c)    => false
+      case ElementSet(cs)     => false
       case Star(r)            => true
       case Union(rOne, rTwo)  => rOne.nullable || rTwo.nullable
       case Concat(rOne, rTwo) => rOne.nullable && rTwo.nullable
@@ -619,6 +628,7 @@ object VerifiedRegex {
       case EmptyExpr()        => false
       case EmptyLang()        => true
       case ElementMatch(c)    => false
+      case ElementSet(cs)     => cs.isEmpty
       case Star(r)            => false
       case Union(rOne, rTwo)  => rOne.lostCause && rTwo.lostCause
       case Concat(rOne, rTwo) => rOne.lostCause || rTwo.lostCause
@@ -648,6 +658,9 @@ object VerifiedRegex {
         // critical: incorporate the element value
         3L
 
+      case ElementSet(cs) =>
+        7L
+
       case Star(r1) =>
         mix1(4L, r1.hash)
 
@@ -675,6 +688,7 @@ object VerifiedRegex {
       case EmptyExpr()        => Some(List())
       case EmptyLang()        => None()
       case ElementMatch(c)    => Some(List(c))
+      case ElementSet(cs)     => if (cs.isEmpty) None() else Some(List(cs.toList.head))
       case Star(r)            => Some(List())
       case Union(rOne, rTwo)  => 
         getLanguageWitness(rOne) match
@@ -718,6 +732,22 @@ object VerifiedRegex {
       case ElementMatch(cc) => c == cc
     }
   }
+
+  def isElementSet[C](r: Regex[C]): Boolean = {
+    r match {
+      case ElementSet(_) => true
+      case _             => false
+    }
+  }
+
+  @ghost
+  def elementSetContainsChar[C](r: Regex[C], c: C): Boolean = {
+    require(isElementSet(r))
+    r match {
+      case ElementSet(cs) => cs.contains(c)
+    }
+  }
+
   // @ghost
   def isStar[C](r: Regex[C]): Boolean = {
     r match {
@@ -752,7 +782,6 @@ object VerifiedRegex {
 object ZipperRegex {
   import VerifiedRegex.*
   import VerifiedRegexMatcher.*
-  import stainless.lang.Set
   import MemoisationZipper.*
   
   /**
@@ -887,6 +916,7 @@ object ZipperRegex {
     decreases(regexDepth(expr))
     expr match {
       case ElementMatch(c) if c == a => Set(context)
+      case ElementSet(cs) if cs.contains(a) => Set(context)
       case Union(rOne, rTwo) => derivationStepZipperDown(rOne, context, a) ++ derivationStepZipperDown(rTwo, context, a)
       case Concat(rOne, rTwo) if rOne.nullable => derivationStepZipperDown(rOne, context.prepend(rTwo), a) ++ derivationStepZipperDown(rTwo, context, a)
       case Concat(rOne, rTwo) => derivationStepZipperDown(rOne, context.prepend(rTwo), a)
@@ -1057,6 +1087,7 @@ object ZipperRegex {
       case None() => {
         val res: Zipper[C] = expr match {
           case ElementMatch(c) if c == a => Set(context)
+          case ElementSet(cs) if cs.contains(a) => Set(context)
           case Union(rOne, rTwo) => derivationStepZipperDownMem(rOne, context, a) ++ derivationStepZipperDownMem(rTwo, context, a)
           case Concat(rOne, rTwo) if rOne.nullable => derivationStepZipperDownMem(rOne, context.prepend(rTwo), a) ++ derivationStepZipperDownMem(rTwo, context, a)
           case Concat(rOne, rTwo) => derivationStepZipperDownMem(rOne, context.prepend(rTwo), a)
@@ -3520,16 +3551,16 @@ object ZipperRegex {
                     (res == furthestNullablePosition(z, from, totalInput, totalInput.size, lastNullablePos)))
   end StackFrame
 
-  type Stack[C] = List[StackFrame[C]]
+  case class MutStack[C](var frames: List[StackFrame[C]])
 
   @ghost 
   @opaque
   @inlineOnce
-  def lemmaStackPreservesForEqualRes[C](s: Stack[C], res1: BigInt, res2: BigInt): Unit = {
-      require(s.forall(frame => frame.res == res1))
+  def lemmaStackPreservesForEqualRes[C](frames: List[StackFrame[C]], res1: BigInt, res2: BigInt): Unit = {
+      require(frames.forall(frame => frame.res == res1))
       require(res1 == res2)
-      decreases(s.size)
-      s match {
+      decreases(frames.length)
+      frames match {
         case Nil() => ()
         case Cons(hd, tl) => {
           hd.lemmaInv()
@@ -3539,9 +3570,9 @@ object ZipperRegex {
           assert(hd.res == res2)
         }
       }
-    }.ensuring(_ => s.forall(frame => frame.res == res2))
+    }.ensuring(_ => frames.forall(frame => frame.res == res2))
 
-  def furthestNullablePositionStackMem[C](z: Zipper[C], from: BigInt, totalInput: Sequence[C], totalInputSize: BigInt, lastNullablePos: BigInt, stack: Stack[C] = Nil[StackFrame[C]]())(using cacheUp: CacheUp[C], cacheDown: CacheDown[C], cacheFurthestNullable: CacheFurthestNullable[C]): (BigInt, Stack[C]) = {
+  def furthestNullablePositionStackMem[C](z: Zipper[C], from: BigInt, totalInput: Sequence[C], totalInputSize: BigInt, lastNullablePos: BigInt)(using cacheUp: CacheUp[C], cacheDown: CacheDown[C], cacheFurthestNullable: CacheFurthestNullable[C], stack: MutStack[C]): BigInt = {
     require(from >= 0 && from <= totalInputSize)
     require(totalInputSize == totalInput.size)
     require(lastNullablePos >= -1 && lastNullablePos < from)
@@ -3549,31 +3580,31 @@ object ZipperRegex {
     require(cacheUp.valid && cacheDown.valid && cacheFurthestNullable.valid)
     require(cacheFurthestNullable.totalInput == totalInput)
     @ghost val currentRes = furthestNullablePosition(z, from, totalInput, totalInput.size, lastNullablePos)
-    require(stack.forall(frame => frame.res == currentRes))
-    require(stack.forall(frame => frame.totalInput == totalInput))
+    require(stack.frames.forall(frame => frame.res == currentRes))
+    require(stack.frames.forall(frame => frame.totalInput == totalInput))
     decreases(totalInputSize - from)
 
-    check(stack.forall(frame => frame.res == currentRes))    
+    check(stack.frames.forall(frame => frame.res == currentRes))    
 
 
     cacheFurthestNullable.get(z, from, lastNullablePos) match {
       case Some(cachedRes) => {
         assert(cachedRes == furthestNullablePosition(z, from, totalInput, totalInput.size, lastNullablePos))
         assert(Nil[StackFrame[C]]().forall(frame => frame.res == currentRes)) 
-        (cachedRes, Nil())
+        cachedRes
       }
       case None() => {
         if (from == totalInputSize || lostCauseZipper(z)) {
           assert(furthestNullablePosition(z, from, totalInput, totalInput.size, lastNullablePos) == lastNullablePos)
           assert(currentRes == lastNullablePos)
-          check(stack.forall(frame => frame.res == currentRes))    
-          ghostExpr(lemmaStackPreservesForEqualRes(stack, currentRes, lastNullablePos))
-          (lastNullablePos, stack)
+          check(stack.frames.forall(frame => frame.res == currentRes))    
+          ghostExpr(lemmaStackPreservesForEqualRes(stack.frames, currentRes, lastNullablePos))
+          lastNullablePos
         } else {
           val derivedZ = derivationStepZipperMem(z, totalInput(from))
           val newLastNullable = if (nullableZipper(derivedZ)) from else lastNullablePos
           val stackFrame = StackFrame(z, from, lastNullablePos, currentRes, totalInput)
-          val newStack = Cons(stackFrame, stack)
+          val newFrames = Cons(stackFrame, stack.frames)
           ghostExpr({
             val newRes = furthestNullablePosition(derivedZ, from + 1, totalInput, totalInput.size, newLastNullable)
             assert(furthestNullablePosition(z, from, totalInput, totalInput.size, lastNullablePos) ==
@@ -3583,32 +3614,33 @@ object ZipperRegex {
             assert(newRes == furthestNullablePosition(derivedZ, from + 1, totalInput, totalInput.size, newLastNullable))
             assert(currentRes == newRes)
 
-            check(stack.forall(frame => frame.res == currentRes))   
+            check(stack.frames.forall(frame => frame.res == currentRes))   
             
-            lemmaStackPreservesForEqualRes(stack, currentRes, newRes)
-            assert(stack.forall(frame => frame.res == newRes))
+            lemmaStackPreservesForEqualRes(stack.frames, currentRes, newRes)
+            assert(stack.frames.forall(frame => frame.res == newRes))
             assert(stackFrame.res == currentRes)
             assert(stackFrame.res == newRes)
-            assert(newStack.forall(frame => frame.res == newRes))
-            assert(newStack.forall(frame => frame.totalInput == totalInput))
+            assert(newFrames.forall(frame => frame.res == newRes))
+            assert(newFrames.forall(frame => frame.totalInput == totalInput))
           })
-          furthestNullablePositionStackMem(derivedZ, from + 1, totalInput, totalInputSize, newLastNullable, newStack)
+          stack.frames = newFrames
+          furthestNullablePositionStackMem(derivedZ, from + 1, totalInput, totalInputSize, newLastNullable)
         }
       }
     }
-  }.ensuring(res => res._1 == furthestNullablePosition(z, from, totalInput, totalInputSize, lastNullablePos)
-                  && res._2.forall(frame => frame.res == res._1) && 
+  }.ensuring(res => res == furthestNullablePosition(z, from, totalInput, totalInputSize, lastNullablePos)
+                  && stack.frames.forall(frame => frame.res == res) && 
                   cacheUp.valid && cacheDown.valid && cacheFurthestNullable.valid && cacheFurthestNullable.totalInput == totalInput &&
-                  res._2.forall(frame => frame.totalInput == totalInput))
+                  stack.frames.forall(frame => frame.totalInput == totalInput))
 
 
-    def fillUpCache[C](stack: Stack[C], totalInput: Sequence[C], totalInputSize: BigInt, res: BigInt, counter: BigInt = 0)(using cacheFurthestNullable: CacheFurthestNullable[C]): Unit = {
+    def fillUpCache[C](frames: List[StackFrame[C]], totalInput: Sequence[C], totalInputSize: BigInt, res: BigInt, counter: BigInt = 0)(using cacheFurthestNullable: CacheFurthestNullable[C]): Unit = {
     require(cacheFurthestNullable.valid)
     require(cacheFurthestNullable.totalInput == totalInput)
-    require(stack.forall(frame => frame.totalInput == totalInput))
-    require(stack.forall(frame => frame.res == res))
-    decreases(stack.size)
-    stack match {
+    require(frames.forall(frame => frame.totalInput == totalInput))
+    require(frames.forall(frame => frame.res == res))
+    decreases(frames.size)
+    frames match {
       case Nil() => ()
       case Cons(head, tail) => {
         if (totalInputSize > cacheFurthestNullable.THRESHOLD && counter % cacheFurthestNullable.RATE != 0) {
@@ -3632,14 +3664,15 @@ object ZipperRegex {
     require(cacheFurthestNullable.totalInput == totalInput)
     val totalInputSize = totalInput.size
     val from = totalInputSize - input.size
-    val (res, stack) = furthestNullablePositionStackMem(z, from, totalInput, totalInputSize, if nullableZipper(z) then from - 1 else -1)
+    val mutStack = MutStack(List[StackFrame[C]]())
+    val res = furthestNullablePositionStackMem(z, from, totalInput, totalInputSize, if nullableZipper(z) then from - 1 else -1)(using cacheUp, cacheDown, cacheFurthestNullable, mutStack)
     val prefixLength: BigInt = res - from + 1
     ghostExpr({
-      check(stack.forall(frame => frame.res == res))
-      check(stack.forall(frame => frame.totalInput == totalInput))
+      check(mutStack.frames.forall(frame => frame.res == res))
+      check(mutStack.frames.forall(frame => frame.totalInput == totalInput))
     })
     
-    fillUpCache(stack, totalInput, totalInputSize, res)
+    fillUpCache(mutStack.frames, totalInput, totalInputSize, res)
     if (prefixLength < 0) {
       input.splitAt(0)
     } else {  
@@ -4200,6 +4233,7 @@ object VerifiedRegexMatcher {
       case EmptyExpr()       => EmptyLang()
       case EmptyLang()       => EmptyLang()
       case ElementMatch(c)   => if (a == c) EmptyExpr() else EmptyLang()
+      case ElementSet(cs)    => if (cs.contains(a)) EmptyExpr() else EmptyLang()
       case Union(rOne, rTwo) => Union(derivativeStep(rOne, a), derivativeStep(rTwo, a))
       case Star(rInner)      => Concat(derivativeStep(rInner, a), Star(rInner))
       case Concat(rOne, rTwo) => {
@@ -4222,6 +4256,7 @@ object VerifiedRegexMatcher {
           case EmptyExpr()       => EmptyLang()
           case EmptyLang()       => EmptyLang()
           case ElementMatch(c)   => if (a == c) EmptyExpr() else EmptyLang()
+          case ElementSet(cs)    => if (cs.contains(a)) EmptyExpr() else EmptyLang()
           case Union(rOne, rTwo) => Union(derivativeStepMem(rOne, a)(using cache), derivativeStepMem(rTwo, a)(using cache))
           case Star(rInner)      => Concat(derivativeStepMem(rInner, a)(using cache), Star(rInner))
           case Concat(rOne, rTwo) => {
@@ -5239,6 +5274,7 @@ object VerifiedRegexMatcher {
     r match {
       case EmptyLang() => EmptyLang()
       case ElementMatch(c) => ElementMatch(c)
+      case ElementSet(cs) => ElementSet(cs)
       case EmptyExpr() => EmptyExpr()
       case Star(rInner) => 
         val simpInner = simplify(rInner)

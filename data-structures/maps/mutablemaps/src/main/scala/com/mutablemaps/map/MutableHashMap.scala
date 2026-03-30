@@ -3,7 +3,7 @@
 package com.mutablemaps.map
 
 import stainless.annotation._
-import stainless.collection.{ListMap => ListMapStainless, ListMapLemmas => ListMapLemmasStainless, _}
+import stainless.collection.{ListMap => ListMapStainless, ListMapLemmas => ListMapLemmasStainless, TupleListOpsGenK => TupleListOpsGenKStainless, _}
 import stainless.equations._
 import stainless.lang.Cell
 import MutableLongMap._
@@ -1645,4 +1645,3 @@ object MutableHashMap {
 
   }.ensuring (_ => !l.contains((key, v)))
 }
-

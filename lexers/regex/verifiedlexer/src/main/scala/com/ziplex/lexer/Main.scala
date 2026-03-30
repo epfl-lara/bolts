@@ -34,6 +34,9 @@ object Main {
     regexZipperVisualizationAOrBStarConcatC()
     println("-\n\n====================\n\n-")
     regexZipperVisualizationAThenBThenC()
+    println("-\n\n====================\n\n-")
+    testElementSetRegex()
+    testElementSetRegex2()
   }
 
   def exampleJsonSorting(): Unit = {
@@ -62,6 +65,28 @@ object Main {
     writer.close()
     println("Done!")
   }
+
+  def testElementSetRegex() = {
+    val r: Regex[Char] = anyOf("abc") ~ "e".r
+    val inputStr: String = "ae"
+    val input: Sequence[Char] = inputStr.toStainless
+    println(s"Testing regex: ${r.show()} on input: ${inputStr}")
+    println(s"Match result: ${matchZipperSequence(r, input)}")
+    println(s"Match result memoized: ${matchZipperSequenceMem(r, input)(using ExampleUtils.zipperCacheUp, ExampleUtils.zipperCacheDown)}")
+    assert(matchZipperSequence(r, input))
+    assert(matchZipperSequenceMem(r, input)(using ExampleUtils.zipperCacheUp, ExampleUtils.zipperCacheDown))
+  }
+  def testElementSetRegex2() = {
+    val r: Regex[Char] = anyOf("abc").* ~ "e".r
+    val inputStr: String = "abbcbbbbabbabbcbbbbcbbbcbbbcbcbcbcbbcbce"
+    val input: Sequence[Char] = inputStr.toStainless
+    println(s"Testing regex: ${r.show()} on input: ${inputStr}")
+    println(s"Match result: ${matchZipperSequence(r, input)}")
+    println(s"Match result memoized: ${matchZipperSequenceMem(r, input)(using ExampleUtils.zipperCacheUp, ExampleUtils.zipperCacheDown)}")
+    assert(matchZipperSequence(r, input))
+    assert(matchZipperSequenceMem(r, input)(using ExampleUtils.zipperCacheUp, ExampleUtils.zipperCacheDown))
+  }
+
 
   def regexZipperExample() = {
     val r: Regex[Char] = ("a".r | "b".r).* ~ "c".r
@@ -136,6 +161,7 @@ object Main {
   extension [C](r: Regex[C]) def show(): String = 
     r match
       case ElementMatch(c) => c.toString
+      case ElementSet(cs) => s"[${cs.toScala.mkString(",")}]"
       case Star(reg) => s"(${reg.show()})*"
       case Union(regOne, regTwo) => s"(${regOne.show()} | ${regTwo.show()})"
       case Concat(regOne, regTwo) => s"(${regOne.show()} ~ ${regTwo.show()})"

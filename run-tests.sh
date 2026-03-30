@@ -12,11 +12,21 @@ if [[ "$1" = "--admit-vcs" ]]; then
   ADMIT_VCS=true
   shift # Remove the flag from the arguments
 fi
+# Add a --lite flag to run only a subset of the tests
+if [[ "$1" = "--lite" ]]; then
+  LITE=true
+  shift # Remove the flag from the arguments
+fi
 if [[ "$#" = 1 ]]; then
   STAINLESS="$1"
 fi
 
-TC_TESTS=`cat tctests.txt`
+if [ "$LITE" = true ]; then
+  echo "Running in lite mode, only a subset of the tests will be run."
+  TC_TESTS=`cat tctests_lite.txt`
+else
+  TC_TESTS=`cat tctests.txt`
+fi
 echo "**************************"
 echo "Type Checking vcgen tests:"
 echo $TC_TESTS

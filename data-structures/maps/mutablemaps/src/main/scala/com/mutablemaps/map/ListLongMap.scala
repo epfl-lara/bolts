@@ -523,7 +523,6 @@ object TupleListOps {
     }
   }.ensuring(_ => containsKey(l, key))
 
-
   @opaque
   @inlineOnce
   def lemmaContainsKeyImpliesGetValueByKeyDefined[B](
@@ -673,7 +672,7 @@ object TupleListOps {
     require(invariantList(l))
     require(!containsKey(l, newKey))
 
-  }.ensuring (_ =>
+  }.ensuring(_ =>
     l.content ++ Set((newKey, newValue)) == insertStrictlySorted(
       l,
       newKey,
@@ -987,7 +986,7 @@ object ListLongMapLemmas {
     require(lm.get(a) == Some[B](b))
 
     TupleListOps.lemmaGetValueByKeyImpliesContainsTuple(lm.toList, a, b)
-  }.ensuring (_ => lm.toList.contains((a, b)))
+  }.ensuring(_ => lm.toList.contains((a, b)))
 
   @opaque
   def keysOfSound[B](@induct lm: ListLongMap[B], value: B): Unit = {
@@ -1008,7 +1007,7 @@ object ListLongMapLemmas {
       key,
       value
     )
-  }.ensuring (_ =>
+  }.ensuring(_ =>
     lm.toList.content ++ Set(
       (key, value)
     ) == (lm + (key, value)).toList.content
