@@ -1,6 +1,7 @@
 name := "ZipLex"
 version := "0.1.0-SNAPSHOT"
-scalaVersion :="3.7.2" 
+scalaOrganization := "ch.epfl.lara"
+scalaVersion := "3.8.3-RC1-bin-20260218-bb6fc60-NIGHTLY"
 
 run / fork := true
 
@@ -14,4 +15,9 @@ assembly / assemblyMergeStrategy := {
   case x => MergeStrategy.first
 }
 
+excludeDependencies ++= Seq(
+      ExclusionRule("org.scala-lang", "scala-library"),
+      ExclusionRule("org.scala-lang", "scala3-library_3"),
+      ExclusionRule("org.scala-lang", "scala3-compiler_3"),
+    )
 enablePlugins(StainlessPlugin, JmhPlugin)
