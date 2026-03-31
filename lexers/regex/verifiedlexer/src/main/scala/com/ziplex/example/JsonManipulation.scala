@@ -270,6 +270,8 @@ object JsonManipulationExample:
     val sepSequence = singletonSeq(commaToken) ++ singletonSeq(newLineToken)
     if !Lexer.rulesProduceEachTokenIndividuallyMem(JsonLexer.rules, sepSequence) then None()
     else 
+      assert(Lexer.rulesProduceEachTokenIndividuallyMem(JsonLexer.rules, sepSequence))
+      assert(Lexer.rulesProduceEachTokenIndividually(JsonLexer.rules, sepSequence))
       printableTokensFromTokens(JsonLexer.rules, sepSequence)
   }.ensuring(res => res.isEmpty || usesJsonRules(res.get))
 
@@ -280,6 +282,8 @@ object JsonManipulationExample:
     val sepSequence = singletonSeq(leftBracketToken)
     if !Lexer.rulesProduceEachTokenIndividuallyMem(JsonLexer.rules, sepSequence) then None()
     else 
+      assert(Lexer.rulesProduceEachTokenIndividuallyMem(JsonLexer.rules, sepSequence))
+      assert(Lexer.rulesProduceEachTokenIndividually(JsonLexer.rules, sepSequence))
       printableTokensFromTokens(JsonLexer.rules, sepSequence)
   }.ensuring(res => res.isEmpty || usesJsonRules(res.get))
 
@@ -290,6 +294,8 @@ object JsonManipulationExample:
     val sepSequence = singletonSeq(rightBracketToken)
     if !Lexer.rulesProduceEachTokenIndividuallyMem(JsonLexer.rules, sepSequence) then None()
     else 
+      assert(Lexer.rulesProduceEachTokenIndividuallyMem(JsonLexer.rules, sepSequence))
+      assert(Lexer.rulesProduceEachTokenIndividually(JsonLexer.rules, sepSequence))
       printableTokensFromTokens(JsonLexer.rules, sepSequence)
   }.ensuring(res => res.isEmpty || usesJsonRules(res.get))
 
