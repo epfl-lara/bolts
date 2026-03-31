@@ -2568,19 +2568,19 @@ Writing out Java source to /localhome/chassot/bolts/lexers/regex/verifiedlexer/t
 [info] the benchmarking environment is safe on JVM/OS/HW level, ask for reviews from the domain experts.
 [info] Do not assume the numbers tell you what you want them to tell.
 [info] Benchmark                                                 (file)  Mode  Cnt       Score       Error  Units
-[info] JsonLexerBenchmark.lex_ZipperMem             102_23677chars.json  avgt    5   62534.080 ±  6708.549  us/op
-[info] JsonLexerBenchmark.lex_ZipperMem             122_28308chars.json  avgt    5   74839.505 ±  7899.036  us/op
-[info] JsonLexerBenchmark.lex_ZipperMem             142_32958chars.json  avgt    5   87922.488 ±  9985.652  us/op
-[info] JsonLexerBenchmark.lex_ZipperMem             162_37599chars.json  avgt    5  105903.466 ±  8868.046  us/op
-[info] JsonLexerBenchmark.lex_ZipperMem             182_42231chars.json  avgt    5  123767.610 ± 23037.754  us/op
-[info] JsonLexerBenchmark.lex_ZipperMem             202_46879chars.json  avgt    5  139235.603 ± 22211.779  us/op
-[info] JsonLexerBenchmark.lex_ZipperMem             222_51521chars.json  avgt    5  148706.953 ±  8523.725  us/op
-[info] JsonLexerBenchmark.lex_ZipperMem               22_5115chars.json  avgt    5   11484.731 ±  1120.922  us/op
-[info] JsonLexerBenchmark.lex_ZipperMem             242_56154chars.json  avgt    5  163789.912 ±  9138.239  us/op
-[info] JsonLexerBenchmark.lex_ZipperMem                 2_456chars.json  avgt    5     847.946 ±    60.382  us/op
-[info] JsonLexerBenchmark.lex_ZipperMem               42_9755chars.json  avgt    5   23505.996 ±  1705.234  us/op
-[info] JsonLexerBenchmark.lex_ZipperMem              62_14377chars.json  avgt    5   35697.764 ±  1666.694  us/op
-[info] JsonLexerBenchmark.lex_ZipperMem              82_19037chars.json  avgt    5   48450.898 ±  4998.652  us/op
+[info] JsonLexerBenchmark.lex_ZipperMemElementSet             102_23677chars.json  avgt    5   62534.080 ±  6708.549  us/op
+[info] JsonLexerBenchmark.lex_ZipperMemElementSet             122_28308chars.json  avgt    5   74839.505 ±  7899.036  us/op
+[info] JsonLexerBenchmark.lex_ZipperMemElementSet             142_32958chars.json  avgt    5   87922.488 ±  9985.652  us/op
+[info] JsonLexerBenchmark.lex_ZipperMemElementSet             162_37599chars.json  avgt    5  105903.466 ±  8868.046  us/op
+[info] JsonLexerBenchmark.lex_ZipperMemElementSet             182_42231chars.json  avgt    5  123767.610 ± 23037.754  us/op
+[info] JsonLexerBenchmark.lex_ZipperMemElementSet             202_46879chars.json  avgt    5  139235.603 ± 22211.779  us/op
+[info] JsonLexerBenchmark.lex_ZipperMemElementSet             222_51521chars.json  avgt    5  148706.953 ±  8523.725  us/op
+[info] JsonLexerBenchmark.lex_ZipperMemElementSet               22_5115chars.json  avgt    5   11484.731 ±  1120.922  us/op
+[info] JsonLexerBenchmark.lex_ZipperMemElementSet             242_56154chars.json  avgt    5  163789.912 ±  9138.239  us/op
+[info] JsonLexerBenchmark.lex_ZipperMemElementSet                 2_456chars.json  avgt    5     847.946 ±    60.382  us/op
+[info] JsonLexerBenchmark.lex_ZipperMemElementSet               42_9755chars.json  avgt    5   23505.996 ±  1705.234  us/op
+[info] JsonLexerBenchmark.lex_ZipperMemElementSet              62_14377chars.json  avgt    5   35697.764 ±  1666.694  us/op
+[info] JsonLexerBenchmark.lex_ZipperMemElementSet              82_19037chars.json  avgt    5   48450.898 ±  4998.652  us/op
 [info] JsonLexerBenchmark.lex_ZipperV1Mem           102_23677chars.json  avgt    5   51884.895 ±  3103.550  us/op
 [info] JsonLexerBenchmark.lex_ZipperV1Mem           122_28308chars.json  avgt    5   61916.684 ±  2823.766  us/op
 [info] JsonLexerBenchmark.lex_ZipperV1Mem           142_32958chars.json  avgt    5   74191.951 ±  8487.553  us/op
