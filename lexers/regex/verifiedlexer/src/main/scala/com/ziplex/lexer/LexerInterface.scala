@@ -111,14 +111,14 @@ object LexerInterface {
     * @param rules
     * @param rulesRec
     */
-  def sepAndNonSepRulesDisjointChars[C: ClassTag](rules: List[Rule[C]], rulesRec: List[Rule[C]]): Boolean = {
+  @ghost def sepAndNonSepRulesDisjointChars[C: ClassTag](rules: List[Rule[C]], rulesRec: List[Rule[C]]): Boolean = {
       rulesRec match {
         case Cons(hd, tl) => ruleDisjointCharsFromAllFromOtherType(hd, rules) && sepAndNonSepRulesDisjointChars(rules, tl)
         case Nil()        => true
       }
     }
 
-  def ruleDisjointCharsFromAllFromOtherType[C: ClassTag](r: Rule[C], rules: List[Rule[C]]): Boolean = {
+  @ghost def ruleDisjointCharsFromAllFromOtherType[C: ClassTag](r: Rule[C], rules: List[Rule[C]]): Boolean = {
     decreases(rules)
     rules match {
       case Cons(hd, tl) if hd.isSeparator != r.isSeparator => rulesUseDisjointChars(r, hd) && ruleDisjointCharsFromAllFromOtherType(r, tl)
@@ -127,7 +127,7 @@ object LexerInterface {
     }
   }
 
-  def rulesUseDisjointChars[C: ClassTag](r1: Rule[C], r2: Rule[C]): Boolean = {
+  @ghost def rulesUseDisjointChars[C: ClassTag](r1: Rule[C], r2: Rule[C]): Boolean = {
     r2.regex.usedCharacters.forall(c => !r1.regex.usedCharacters.contains(c)) &&
     r1.regex.usedCharacters.forall(c => !r2.regex.usedCharacters.contains(c))
   }

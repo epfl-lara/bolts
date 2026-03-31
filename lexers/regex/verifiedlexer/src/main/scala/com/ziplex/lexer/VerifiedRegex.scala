@@ -586,7 +586,7 @@ object VerifiedRegex {
     }
   }.ensuring (res => res > 0)
 
-  extension[C] (r: Regex[C]) @pure def usedCharacters: List[C] = {
+  extension[C] (r: Regex[C]) @pure @ghost def usedCharacters: List[C] = {
     r match {
       case EmptyExpr()        => Nil[C]()
       case EmptyLang()        => Nil[C]()
@@ -598,7 +598,7 @@ object VerifiedRegex {
     }
   }
 
-  extension[C] (r: Regex[C]) @pure def firstChars: List[C] = {
+  extension[C] (r: Regex[C]) @pure @ghost def firstChars: List[C] = {
     r match {
       case EmptyExpr()                           => Nil[C]()
       case EmptyLang()                           => Nil[C]()
@@ -5562,6 +5562,7 @@ object VerifiedRegexMatcher {
       case EmptyLang() => ()
       case EmptyExpr() => ()
       case ElementMatch(c2) => ()
+      case ElementSet(cs) => ()
       case Union(r1, r2) => 
           lemmaDerivativeStepFixPointLostCause(r1, c)
           lemmaDerivativeStepFixPointLostCause(r2, c)
@@ -5637,6 +5638,7 @@ object VerifiedRegexMatcher {
       case EmptyExpr()        => ()
       case EmptyLang()        => ()
       case ElementMatch(c)    => ()
+      case ElementSet(cs)    => ()
       case Star(r)            => ()
       case Union(rOne, rTwo)  => 
         getLanguageWitness(rOne) match
@@ -6457,6 +6459,7 @@ object VerifiedRegexMatcher {
       case EmptyExpr()     => check(false)
       case EmptyLang()     => ()
       case ElementMatch(a) => ()
+      case ElementSet(s)   => ()
       case Union(rOne, rTwo) => {
         if (rOne.nullable) {
           check(false)
@@ -6511,6 +6514,22 @@ object VerifiedRegexMatcher {
       }
       case ElementMatch(a) => {
         if (c == a) {
+          assert(derivativeStep(r, c) == EmptyExpr[C]())
+          if (tl.isEmpty) {
+            assert(r.usedCharacters.contains(c))
+            assert(derivative(derivativeStep(r, c), tl).nullable)
+          } else {
+            lemmaEmptyLangDerivativeIsAFixPoint(derivativeStep(derivativeStep(r, c), tl.head), tl.tail)
+            check(false)
+          }
+        } else {
+          assert(derivativeStep(r, c) == EmptyLang[C]())
+          lemmaEmptyLangDerivativeIsAFixPoint(derivativeStep(r, c), tl)
+          check(false)
+        }
+      }
+      case ElementSet(cs) => {
+        if (cs.contains(c)) {
           assert(derivativeStep(r, c) == EmptyExpr[C]())
           if (tl.isEmpty) {
             assert(r.usedCharacters.contains(c))
@@ -6609,6 +6628,7 @@ object VerifiedRegexMatcher {
       case EmptyExpr()     => ()
       case EmptyLang()     => ()
       case ElementMatch(c) => ()
+      case ElementSet(s)   => ()
       case Union(rOne, rTwo) => {
         lemmaDerivativeStepDoesNotAddCharToUsedCharacters(rOne, c, cNot)
         lemmaDerivativeStepDoesNotAddCharToUsedCharacters(rTwo, c, cNot)
@@ -6654,6 +6674,7 @@ object VerifiedRegexMatcher {
       case EmptyExpr()     => ()
       case EmptyLang()     => ()
       case ElementMatch(c) => ()
+      case ElementSet(s)   => ()
       case Star(r)         => lemmaUsedCharsContainsAllFirstChars(r, c)
       case Union(rOne, rTwo) =>
         if (rOne.firstChars.contains(c)) {
@@ -6695,6 +6716,22 @@ object VerifiedRegexMatcher {
       }
       case ElementMatch(a) => {
         if (c == a) {
+          assert(derivativeStep(r, c) == EmptyExpr[C]())
+          if (tl.isEmpty) {
+            assert(r.firstChars.contains(c))
+            assert(derivative(derivativeStep(r, c), tl).nullable)
+          } else {
+            lemmaEmptyLangDerivativeIsAFixPoint(derivativeStep(derivativeStep(r, c), tl.head), tl.tail)
+            check(false)
+          }
+        } else {
+          assert(derivativeStep(r, c) == EmptyLang[C]())
+          lemmaEmptyLangDerivativeIsAFixPoint(derivativeStep(r, c), tl)
+          check(false)
+        }
+      }
+      case ElementSet(cs) => {
+        if (cs.contains(c)) {
           assert(derivativeStep(r, c) == EmptyExpr[C]())
           if (tl.isEmpty) {
             assert(r.firstChars.contains(c))
