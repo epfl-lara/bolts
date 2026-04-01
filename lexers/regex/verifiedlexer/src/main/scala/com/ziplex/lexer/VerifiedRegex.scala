@@ -1485,6 +1485,7 @@ object ZipperRegex {
               case EmptyExpr() => lemmaZipperOfEmptyExprMatchesOnlyEmptyString(z, s)
               case EmptyLang() => lemmaZipperStartingWithEmptyLangMatchesNothing(z, Context(List(r)), s)
               case ElementMatch(a) => lemmaElementMatchZipperAcceptsOnlyThisChar(z, Context(List(ElementMatch(a))), a, s)
+              case ElementSet(as) => lemmaElementSetZipperAcceptsOnlyOneOfTheseChars(z, Context(List(ElementSet(as))), as, s)
               case Union(r1, r2) => {
                 mainMatchTheorem(r1, s)
                 mainMatchTheorem(r2, s)
@@ -1624,6 +1625,12 @@ object ZipperRegex {
 
                       r1 match {
                         case ElementMatch(c) if c == shd => {
+                          assert(zDerivDown == Set(Context(tlExp)))
+                          val zVirt = Set(Context(tlExp))
+                          theoremZipperRegexEquiv(zVirt, List(Context(tlExp)), generalisedConcat(tlExp), stl)
+                          assert(matchR(r, s) == matchZipper(z, s))
+                        }
+                        case ElementSet(cs) if cs.contains(shd) => {
                           assert(zDerivDown == Set(Context(tlExp)))
                           val zVirt = Set(Context(tlExp))
                           theoremZipperRegexEquiv(zVirt, List(Context(tlExp)), generalisedConcat(tlExp), stl)
@@ -3011,6 +3018,62 @@ object ZipperRegex {
     }
   }.ensuring(_ => matchZipper(z, s) == (s == List(a)))
 
+  @ghost
+  @opaque
+  @inlineOnce
+  def lemmaElementSetZipperAcceptsOnlyOneOfTheseChars[C](z: Zipper[C], c: Context[C], cs: Set[C], s: List[C]): Unit = {
+    require(z == Set(c)) 
+    require(!c.isEmpty)
+    require(c.head == ElementSet[C](cs))
+    require(c.tail.isEmpty)
+    s match {
+      case Cons(hd, tl) if cs.contains(hd) => {
+        val deriv: Zipper[C] = derivationStepZipper(z, s.head)
+        val derivUp = derivationStepZipperUp(c, s.head)
+        assert(derivUp == Set(Context(List())))
+        unfold(z.flatMapPost(c => derivationStepZipperUp(c, hd))(Context[C](List())))
+        assert(deriv.contains(Context[C](List())))
+        if(deriv != Set(Context[C](List()))) {
+          assert(deriv.exists(c => c != Context[C](List())))
+          val witness = SetUtils.getWitness(deriv, (c: Context[C]) => c != Context[C](List()))
+          unfold(z.flatMapPost(c => derivationStepZipperUp(c, hd))(witness))
+          assert(deriv.contains(witness))
+          assert(z.exists(c => derivationStepZipperUp(c, s.head).contains(witness)))
+          val witnessContext = SetUtils.getWitness(z, (c: Context[C]) => derivationStepZipperUp(c, s.head).contains(witness))
+          assert(z.contains(witnessContext))
+          check(false)
+        }
+        check(deriv == Set(Context[C](List()))) 
+        if(tl.isEmpty) {
+          lemmaZipperOfEmptyContextMatchesEmptyString(Set(Context(List())), tl)
+          check(matchZipper(z, s))
+
+        } else {
+          lemmaZipperOfEmptyContextMatchesEmptyString(deriv, tl)
+          check(!matchZipper(z, s))
+        }
+      }
+      case Cons(shd, tl) if !cs.contains(shd) => {
+        val deriv: Zipper[C] = derivationStepZipper(z, shd)
+        val derivUp = derivationStepZipperUp(c, shd)
+        assert(derivUp == Set())
+        if(!deriv.isEmpty){
+          val hd = deriv.toList.head
+          val f: Context[C] => Zipper[C] = ct => derivationStepZipperUp(ct, shd)
+          assert(z.flatMap(f).contains(hd))
+          assert(deriv.contains(hd))
+          unfold(z.flatMapPost(f)(hd))
+          assert(z.exists(context => derivationStepZipperUp(context, s.head).contains(hd)))
+          assert(z == Set(c))
+          check(false)
+        }
+        assert(deriv.isEmpty)
+        lemmaEmptyZipperMatchesNothing(deriv, tl)
+        }
+      case Nil() => 
+        check(!nullableContext(c))
+    }
+  }.ensuring(_ => matchZipper(z, s) == (s.size == 1 && cs.contains(s.head)))
 
   @ghost
   @opaque
