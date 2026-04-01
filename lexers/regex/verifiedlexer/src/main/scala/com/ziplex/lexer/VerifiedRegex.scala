@@ -2648,6 +2648,10 @@ object ZipperRegex {
         SetUtils.lemmaMapOnSingletonSet(Set(c), c, f)
         check(derivationStepZipperDown(r, c.concat(auxCtx), a) == appendTo(derivationStepZipperDown(r, c, a), auxCtx))
       }
+      case ElementSet(cs) if cs.contains(a) => {
+        SetUtils.lemmaMapOnSingletonSet(Set(c), c, f)
+        check(derivationStepZipperDown(r, c.concat(auxCtx), a) == appendTo(derivationStepZipperDown(r, c, a), auxCtx))
+      }
       case Union(rOne, rTwo) => {
         assert(derivationStepZipperDown(r, c.concat(auxCtx), a) == derivationStepZipperDown(rOne, c.concat(auxCtx), a) ++ derivationStepZipperDown(rTwo, c.concat(auxCtx), a))
         lemmaDerivativeStepZipperDownConcatCtxSameAsAppendTo(c, rOne, a, auxCtx)
@@ -4563,6 +4567,7 @@ object VerifiedRegexMatcher {
       case EmptyExpr()     => s.isEmpty
       case EmptyLang()     => false
       case ElementMatch(c) => s == List(c)
+      case ElementSet(cs)  => s.size == 1 && cs.contains(s.head)
       case Union(r1, r2)   => matchRSpec(r1, s) || matchRSpec(r2, s)
       case Star(rInner)    => s.isEmpty || Exists((cut: (List[C], List[C])) => cut._1 ++ cut._2 == s && !cut._1.isEmpty && matchRSpec(rInner, cut._1) && matchRSpec(Star(rInner), cut._2)) // TODO change to use matchRSpec in the exists
       // case Star(rInner)    => s.isEmpty || findConcatSeparation(rInner, Star(rInner), Nil(), s, s).isDefined
@@ -4581,6 +4586,7 @@ object VerifiedRegexMatcher {
       case EmptyExpr()     => ()
       case EmptyLang()     => ()
       case ElementMatch(c) => ()
+      case ElementSet(cs) => ()
       case Union(r1, r2) => {
         if (matchR(r, s)) {
           lemmaRegexUnionAcceptsThenOneOfTheTwoAccepts(r1, r2, s)
@@ -5600,6 +5606,7 @@ object VerifiedRegexMatcher {
         case EmptyLang() => ()
         case EmptyExpr() => ()
         case ElementMatch(c) => ()
+        case ElementSet(cs) => ()
         case Union(r1, r2) => 
             lemmaLostCauseCannotMatch(r1, s)
             lemmaLostCauseCannotMatch(r2, s)
