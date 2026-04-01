@@ -52,18 +52,18 @@ class JsonLexerBenchmark {
   var file: String = uninitialized
 
 
-  @Benchmark
-  @BenchmarkMode(Array(Mode.AverageTime))
-  @OutputTimeUnit(TimeUnit.MICROSECONDS)
-  def lex_ZipperV1Mem(bh: Blackhole): Unit = {
-    val (tokens, suffix) = Lexer.lexV1Mem(JsonLexer.rules, JsonLexerBenchmarkUtils.exampleFileContents(file))(
-      using ClassTag.Char,
-      JsonLexerBenchmarkUtils.zipperCacheUp,
-      JsonLexerBenchmarkUtils.zipperCacheDown
-    )
-    bh.consume(suffix.isEmpty)
-    // assert(suffix.isEmpty)
-  }
+  // @Benchmark
+  // @BenchmarkMode(Array(Mode.AverageTime))
+  // @OutputTimeUnit(TimeUnit.MICROSECONDS)
+  // def lex_ZipperV1Mem(bh: Blackhole): Unit = {
+  //   val (tokens, suffix) = Lexer.lexV1Mem(JsonLexer.rules, JsonLexerBenchmarkUtils.exampleFileContents(file))(
+  //     using ClassTag.Char,
+  //     JsonLexerBenchmarkUtils.zipperCacheUp,
+  //     JsonLexerBenchmarkUtils.zipperCacheDown
+  //   )
+  //   bh.consume(suffix.isEmpty)
+  //   // assert(suffix.isEmpty)
+  // }
 
   @Benchmark
   @BenchmarkMode(Array(Mode.AverageTime))
@@ -79,23 +79,23 @@ class JsonLexerBenchmark {
     // assert(suffix.isEmpty)
   }
 
-  @Benchmark
-  @BenchmarkMode(Array(Mode.AverageTime))
-  @OutputTimeUnit(TimeUnit.MICROSECONDS)
-  def lex_ZipperV1NonMem(bh: Blackhole): Unit = {
-    val (tokens, suffix) = Lexer.lexV1(JsonLexer.rules, JsonLexerBenchmarkUtils.exampleFileContents(file))
-    bh.consume(suffix.isEmpty)
-    // assert(suffix.isEmpty)
-  }
+  // @Benchmark
+  // @BenchmarkMode(Array(Mode.AverageTime))
+  // @OutputTimeUnit(TimeUnit.MICROSECONDS)
+  // def lex_ZipperV1NonMem(bh: Blackhole): Unit = {
+  //   val (tokens, suffix) = Lexer.lexV1(JsonLexer.rules, JsonLexerBenchmarkUtils.exampleFileContents(file))
+  //   bh.consume(suffix.isEmpty)
+  //   // assert(suffix.isEmpty)
+  // }
 
-  @Benchmark
-  @BenchmarkMode(Array(Mode.AverageTime))
-  @OutputTimeUnit(TimeUnit.MICROSECONDS)
-  def lex_ZipperV2NonMem(bh: Blackhole): Unit = {
-    val (tokens, suffix) = Lexer.lex(JsonLexer.rules, JsonLexerBenchmarkUtils.exampleFileContents(file))
-    bh.consume(suffix.isEmpty)
-    // assert(suffix.isEmpty)
-  }
+  // @Benchmark
+  // @BenchmarkMode(Array(Mode.AverageTime))
+  // @OutputTimeUnit(TimeUnit.MICROSECONDS)
+  // def lex_ZipperV2NonMem(bh: Blackhole): Unit = {
+  //   val (tokens, suffix) = Lexer.lex(JsonLexer.rules, JsonLexerBenchmarkUtils.exampleFileContents(file))
+  //   bh.consume(suffix.isEmpty)
+  //   // assert(suffix.isEmpty)
+  // }
 
   @Benchmark
   @BenchmarkMode(Array(Mode.AverageTime))
@@ -112,16 +112,37 @@ class JsonLexerBenchmark {
   @Benchmark
   @BenchmarkMode(Array(Mode.AverageTime))
   @OutputTimeUnit(TimeUnit.MICROSECONDS)
-  def separability_pred(bh: Blackhole): Unit = {
-    val tokens = JsonLexerBenchmarkUtils.exampleFileTokens(file)
-    val separable =  Lexer.separableTokensMem(tokens, JsonLexer.rules)(
+  def lex_ZipperV3NonMem(bh: Blackhole): Unit = {
+    val (tokens, suffix) = Lexer.lexV3(JsonLexer.rules, JsonLexerBenchmarkUtils.exampleFileContents(file))
+    bh.consume(suffix.isEmpty)
+    // assert(suffix.isEmpty)
+  }
+
+  @Benchmark
+  @BenchmarkMode(Array(Mode.AverageTime))
+  @OutputTimeUnit(TimeUnit.MICROSECONDS)
+  def lex_ZipperV3MemDeriv(bh: Blackhole): Unit = {
+    val (tokens, suffix) = Lexer.lexV3MemDeriv(JsonLexer.rules, JsonLexerBenchmarkUtils.exampleFileContents(file))(
       using ClassTag.Char,
       JsonLexerBenchmarkUtils.zipperCacheUp,
-      JsonLexerBenchmarkUtils.zipperCacheDown
-    )
-    bh.consume(separable)
-    // assert(separable)
+      JsonLexerBenchmarkUtils.zipperCacheDown)
+    bh.consume(suffix.isEmpty)
+    // assert(suffix.isEmpty)
   }
+
+  // @Benchmark
+  // @BenchmarkMode(Array(Mode.AverageTime))
+  // @OutputTimeUnit(TimeUnit.MICROSECONDS)
+  // def separability_pred(bh: Blackhole): Unit = {
+  //   val tokens = JsonLexerBenchmarkUtils.exampleFileTokens(file)
+  //   val separable =  Lexer.separableTokensMem(tokens, JsonLexer.rules)(
+  //     using ClassTag.Char,
+  //     JsonLexerBenchmarkUtils.zipperCacheUp,
+  //     JsonLexerBenchmarkUtils.zipperCacheDown
+  //   )
+  //   bh.consume(separable)
+  //   // assert(separable)
+  // }
 
 }
 
