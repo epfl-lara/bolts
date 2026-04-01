@@ -2028,7 +2028,7 @@ object ZipperRegex {
                       assert(r == generalisedConcat(hd.exprs))
                       assert(regexDepth(r) >= regexDepth(generalisedConcat(tlExp)))
                       unfold(zipperDepth(List(Context(tlExp))))
-                      unfold(zipperDepth(zipperDepth(zl)))
+                      unfold(zipperDepth(zl))
                       assert(zipperDepth(zl) >= zipperDepth(List(Context(tlExp))))
 
                       theoremZipperRegexEquiv(zTail, List(Context(tlExp)), generalisedConcat(tlExp), s)
