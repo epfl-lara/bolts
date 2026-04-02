@@ -2027,10 +2027,9 @@ object ZipperRegex {
 
                       assert(r == generalisedConcat(hd.exprs))
                       assert(regexDepth(r) >= regexDepth(generalisedConcat(tlExp)))
-                      unfold(zipperDepth(List(Context(tlExp))))
-                      unfold(zipperDepth(zl))
-                      assert(zipperDepth(zl) >= zipperDepth(List(Context(tlExp))))
-
+                      lemmaContextTailDecreasesTotalDepth(hd.exprs)
+                      lemmaZipperToListIsListOfArg(tlExp)
+                      check(zTail.toList == List(Context(tlExp)))
                       theoremZipperRegexEquiv(zTail, List(Context(tlExp)), generalisedConcat(tlExp), s)
                       assert(matchR(generalisedConcat(tlExp), s) == matchZipper(zTail, s))
 
@@ -2198,6 +2197,19 @@ object ZipperRegex {
     
 
   }.ensuring(_ => matchR(r, s) == matchZipper(z, s))
+
+  @ghost
+  @opaque
+  @inlineOnce
+  def lemmaZipperToListIsListOfArg[C](lExp: List[Regex[C]]): Unit = {
+    require(lExp.forall(validRegex))
+  }.ensuring(_ => Set(Context(lExp)).toList == List(Context(lExp)))
+
+  @ghost
+  @opaque
+  @inlineOnce
+  def lemmaContextTailDecreasesTotalDepth[C](lExp: List[Regex[C]]): Unit = {
+  }.ensuring(_ => lExp.isEmpty || contextDepthTotal(Context(lExp)) > contextDepthTotal(Context(lExp.tail)))
 
   @ghost  
   @opaque
