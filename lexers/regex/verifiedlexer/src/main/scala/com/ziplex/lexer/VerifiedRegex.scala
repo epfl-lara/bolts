@@ -1628,13 +1628,13 @@ object ZipperRegex {
                           assert(zDerivDown == Set(Context(tlExp)))
                           val zVirt = Set(Context(tlExp))
                           theoremZipperRegexEquiv(zVirt, List(Context(tlExp)), generalisedConcat(tlExp), stl)
-                          assert(matchR(r, s) == matchZipper(z, s))
+                          check(matchR(r, s) == matchZipper(z, s))
                         }
                         case ElementSet(cs) if cs.contains(shd) => {
                           assert(zDerivDown == Set(Context(tlExp)))
                           val zVirt = Set(Context(tlExp))
                           theoremZipperRegexEquiv(zVirt, List(Context(tlExp)), generalisedConcat(tlExp), stl)
-                          assert(matchR(r, s) == matchZipper(z, s))
+                          check(matchR(r, s) == matchZipper(z, s))
                         }
                         case Union(rOne, rTwo) => {
                           assert(zDerivDown == derivationStepZipperDown(rOne, Context(tlExp), shd) ++ derivationStepZipperDown(rTwo, Context(tlExp), shd))
@@ -2019,21 +2019,22 @@ object ZipperRegex {
                           check(matchR(r, s) == matchZipper(z, s))
                         }
                       }
+                      check(matchR(r, s) == matchZipper(z, s))
 
-                      val zTail = Set(Context(tlExp))
-                      val zDerivTail = derivationStepZipper(zTail, shd)
-                      SetUtils.lemmaFlatMapOnSingletonSet(zTail, Context(tlExp), (c: Context[C]) => derivationStepZipperUp(c, shd))
-                      assert(zDerivUpUp == zDerivTail)
+                      // val zTail = Set(Context(tlExp))
+                      // val zDerivTail = derivationStepZipper(zTail, shd)
+                      // SetUtils.lemmaFlatMapOnSingletonSet(zTail, Context(tlExp), (c: Context[C]) => derivationStepZipperUp(c, shd))
+                      // assert(zDerivUpUp == zDerivTail)
 
-                      lemmaContextTailDecreasesTotalDepth(hd.exprs)
-                      lemmaZipperToListIsListOfArg(tlExp)
+                      // lemmaContextTailDecreasesTotalDepth(hd.exprs)
+                      // lemmaZipperToListIsListOfArg(tlExp)
 
-                      assert(r == generalisedConcat(hd.exprs))
-                      assert(r == Concat(hd.exprs.head, generalisedConcat(hd.exprs.tail)))
-                      assert(regexDepth(r) >= regexDepth(generalisedConcat(tlExp)))
+                      // assert(r == generalisedConcat(hd.exprs))
+                      // assert(r == Concat(hd.exprs.head, generalisedConcat(hd.exprs.tail)))
+                      // assert(regexDepth(r) >= regexDepth(generalisedConcat(tlExp)))
 
-                      theoremZipperRegexEquiv(zTail, List(Context(tlExp)), generalisedConcat(tlExp), s)
-                      assert(matchR(generalisedConcat(tlExp), s) == matchZipper(zTail, s))
+                      // theoremZipperRegexEquiv(zTail, List(Context(tlExp)), generalisedConcat(tlExp), s)
+                      // assert(matchR(generalisedConcat(tlExp), s) == matchZipper(zTail, s))
 
                       check(matchR(r, s) == matchZipper(z, s))
                     
