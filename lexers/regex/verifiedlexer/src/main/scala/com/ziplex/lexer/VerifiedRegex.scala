@@ -2025,11 +2025,13 @@ object ZipperRegex {
                       SetUtils.lemmaFlatMapOnSingletonSet(zTail, Context(tlExp), (c: Context[C]) => derivationStepZipperUp(c, shd))
                       assert(zDerivUpUp == zDerivTail)
 
-                      assert(r == generalisedConcat(hd.exprs))
-                      assert(regexDepth(r) >= regexDepth(generalisedConcat(tlExp)))
                       lemmaContextTailDecreasesTotalDepth(hd.exprs)
                       lemmaZipperToListIsListOfArg(tlExp)
-                      check(zTail.toList == List(Context(tlExp)))
+
+                      assert(r == generalisedConcat(hd.exprs))
+                      assert(r == Concat(hd.exprs.head, generalisedConcat(hd.exprs.tail)))
+                      assert(regexDepth(r) >= regexDepth(generalisedConcat(tlExp)))
+
                       theoremZipperRegexEquiv(zTail, List(Context(tlExp)), generalisedConcat(tlExp), s)
                       assert(matchR(generalisedConcat(tlExp), s) == matchZipper(zTail, s))
 
@@ -2209,6 +2211,7 @@ object ZipperRegex {
   @opaque
   @inlineOnce
   def lemmaContextTailDecreasesTotalDepth[C](lExp: List[Regex[C]]): Unit = {
+    require(lExp.forall(validRegex))
   }.ensuring(_ => lExp.isEmpty || contextDepthTotal(Context(lExp)) > contextDepthTotal(Context(lExp.tail)))
 
   @ghost  
