@@ -355,6 +355,7 @@ object JsonManipulationExample:
           case Some(objs) => {
             encloseInSep(objs, leftBr, rightBr) match
               case Some(newTokens) => 
+                check(usesJsonRules(newTokens))
                 // Now we have a PrintableTokens instance with all our objects, separated by comma and new line, and enclosed in brackets
                 val printed: Sequence[Char] = newTokens.print()
                 // if we lex then again, we get the same tokens
