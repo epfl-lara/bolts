@@ -353,6 +353,8 @@ object JsonManipulationExample:
         val recombined: Option[PrintableTokens[Char]] = recombineSlicesWithSep(orderedSlices.map(removeId), sep, emptyPrintableTokens(JsonLexer.rules))
         recombined match
           case Some(objs) => {
+            assert(recombined.get == objs)
+            assert(usesJsonRules(objs))
             encloseInSep(objs, leftBr, rightBr) match
               case Some(newTokens) => 
                 check(usesJsonRules(newTokens))
