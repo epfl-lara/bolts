@@ -44,10 +44,10 @@ def dummyInterface(x: BigInt): BigInt = {
 // BalanceConc is a sequence implementation based on a binary tree, fully verified although slower
 
 // type Sequence[T] = Vector[T]
-// inline def emptySeq[T]: Sequence[T] = Vector.empty
-// inline def singletonSeq[T](t: T): Sequence[T] = Vector.singleton(t)
-// inline def seqFromList[T](l: List[T]): Sequence[T] = Vector.fromList(l)
-// inline def seqFromArray[T: ClassTag](arr: IArray[T]): Sequence[T] = Vector.fromArray(arr)
+// def emptySeq[T](): Sequence[T] = Vector.empty
+// def singletonSeq[T](t: T): Sequence[T] = Vector.singleton(t)
+// def seqFromList[T](l: List[T]): Sequence[T] = Vector.fromList(l)
+// def seqFromArray[T: ClassTag](arr: IArray[T]): Sequence[T] = Vector.fromArray(arr)
 type Sequence[T] = BalanceConc[T]
 def emptySeq[T: ClassTag](): Sequence[T] = BalanceConcObj.empty[T]
 def singletonSeq[T: ClassTag](t: T): Sequence[T] = BalanceConcObj.singleton(t)
