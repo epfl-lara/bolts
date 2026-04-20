@@ -4986,6 +4986,8 @@ object VerifiedRegexMatcher {
     require(validRegex(r))
     require(cacheUp.valid)
     require(cacheDown.valid)
+    require(cacheFurthestNullable.valid)
+    require(cacheFurthestNullable.totalInput == totalInput)
     require(ListUtils.isSuffix(input.list, totalInput.list))
     val zipper = ZipperRegex.focus(r)
     ghostExpr(ZipperRegex.longestMatchV3SameAsRegex(r, zipper, input, totalInput))
