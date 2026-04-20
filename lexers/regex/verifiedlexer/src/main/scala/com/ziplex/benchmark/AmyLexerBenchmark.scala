@@ -43,15 +43,15 @@ class AmyLexerBenchmark {
     bh.consume(suffix.isEmpty)
   }
 
-  @Benchmark
-  def lex_ZipperV1Mem_Warm(state: WarmAmyExampleV1MemState, bh: Blackhole): Unit = {
-    val (tokens, suffix) = Lexer.lexV1Mem(AmyLexer.rules, state.content)(
-      using ClassTag.Char,
-      state.zipperCacheUp,
-      state.zipperCacheDown
-    )
-    bh.consume(suffix.isEmpty)
-  }
+  // @Benchmark
+  // def lex_ZipperV1Mem_Warm(state: WarmAmyExampleV1MemState, bh: Blackhole): Unit = {
+  //   val (tokens, suffix) = Lexer.lexV1Mem(AmyLexer.rules, state.content)(
+  //     using ClassTag.Char,
+  //     state.zipperCacheUp,
+  //     state.zipperCacheDown
+  //   )
+  //   bh.consume(suffix.isEmpty)
+  // }
 
   @Benchmark
   def lex_ZipperV3Mem(state: FreshAmyExampleV3MemState, bh: Blackhole): Unit = {
@@ -64,16 +64,16 @@ class AmyLexerBenchmark {
     bh.consume(suffix.isEmpty)
   }
 
-  @Benchmark
-  def lex_ZipperV3Mem_Warm(state: WarmAmyExampleV3MemState, bh: Blackhole): Unit = {
-    val (tokens, suffix) = Lexer.lexMem(AmyLexer.rules, state.content)(
-      using ClassTag.Char,
-      state.zipperCacheUp,
-      state.zipperCacheDown,
-      state.furthestNullableCache
-    )
-    bh.consume(suffix.isEmpty)
-  }
+  // @Benchmark
+  // def lex_ZipperV3Mem_Warm(state: WarmAmyExampleV3MemState, bh: Blackhole): Unit = {
+  //   val (tokens, suffix) = Lexer.lexMem(AmyLexer.rules, state.content)(
+  //     using ClassTag.Char,
+  //     state.zipperCacheUp,
+  //     state.zipperCacheDown,
+  //     state.furthestNullableCache
+  //   )
+  //   bh.consume(suffix.isEmpty)
+  // }
 
   @Benchmark
   def lex_OriginalSilex(state: AmyExampleFileState, bh: Blackhole): Unit = {
@@ -96,15 +96,15 @@ class AmyLexerBenchmarkGenerated {
     assert(suffix.isEmpty)
   }
 
-  @Benchmark
-  def lex_ZipperV1Mem_Warm(state: WarmAmyGeneratedV1MemState): Unit = {
-    val (tokens, suffix) = Lexer.lexV1Mem(AmyLexer.rules, state.content)(
-      using ClassTag.Char,
-      state.zipperCacheUp,
-      state.zipperCacheDown
-    )
-    assert(suffix.isEmpty)
-  }
+  // @Benchmark
+  // def lex_ZipperV1Mem_Warm(state: WarmAmyGeneratedV1MemState): Unit = {
+  //   val (tokens, suffix) = Lexer.lexV1Mem(AmyLexer.rules, state.content)(
+  //     using ClassTag.Char,
+  //     state.zipperCacheUp,
+  //     state.zipperCacheDown
+  //   )
+  //   assert(suffix.isEmpty)
+  // }
 
   @Benchmark
   def lex_ZipperMem(state: FreshAmyGeneratedV3MemState): Unit = {
@@ -117,16 +117,16 @@ class AmyLexerBenchmarkGenerated {
     assert(suffix.isEmpty)
   }
 
-  @Benchmark
-  def lex_ZipperMem_Warm(state: WarmAmyGeneratedV3MemState): Unit = {
-    val (tokens, suffix) = Lexer.lexMem(AmyLexer.rules, state.content)(
-      using ClassTag.Char,
-      state.zipperCacheUp,
-      state.zipperCacheDown,
-      state.furthestNullableCache
-    )
-    assert(suffix.isEmpty)
-  }
+  // @Benchmark
+  // def lex_ZipperMem_Warm(state: WarmAmyGeneratedV3MemState): Unit = {
+  //   val (tokens, suffix) = Lexer.lexMem(AmyLexer.rules, state.content)(
+  //     using ClassTag.Char,
+  //     state.zipperCacheUp,
+  //     state.zipperCacheDown,
+  //     state.furthestNullableCache
+  //   )
+  //   assert(suffix.isEmpty)
+  // }
 
   @Benchmark
   def lex_OriginalSilex(state: AmyGeneratedFileState): Unit = {

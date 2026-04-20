@@ -42,15 +42,15 @@ class PythonLexerBenchmark {
     bh.consume(suffix.isEmpty)
   }
 
-  @Benchmark
-  def lex_ZipperV1Mem_Warm(state: WarmPythonV1MemState, bh: Blackhole): Unit = {
-    val (tokens, suffix) = Lexer.lexV1Mem(PythonLexer.rules, state.content)(
-      using ClassTag.Char,
-      state.zipperCacheUp,
-      state.zipperCacheDown
-    )
-    bh.consume(suffix.isEmpty)
-  }
+  // @Benchmark
+  // def lex_ZipperV1Mem_Warm(state: WarmPythonV1MemState, bh: Blackhole): Unit = {
+  //   val (tokens, suffix) = Lexer.lexV1Mem(PythonLexer.rules, state.content)(
+  //     using ClassTag.Char,
+  //     state.zipperCacheUp,
+  //     state.zipperCacheDown
+  //   )
+  //   bh.consume(suffix.isEmpty)
+  // }
 
   @Benchmark
   def lex_ZipperMem(state: FreshPythonV3MemState, bh: Blackhole): Unit = {
@@ -63,16 +63,16 @@ class PythonLexerBenchmark {
     bh.consume(suffix.isEmpty)
   }
 
-  @Benchmark
-  def lex_ZipperMem_Warm(state: WarmPythonV3MemState, bh: Blackhole): Unit = {
-    val (tokens, suffix) = Lexer.lexMem(PythonLexer.rules, state.content)(
-      using ClassTag.Char,
-      state.zipperCacheUp,
-      state.zipperCacheDown,
-      state.furthestNullableCache
-    )
-    bh.consume(suffix.isEmpty)
-  }
+  // @Benchmark
+  // def lex_ZipperMem_Warm(state: WarmPythonV3MemState, bh: Blackhole): Unit = {
+  //   val (tokens, suffix) = Lexer.lexMem(PythonLexer.rules, state.content)(
+  //     using ClassTag.Char,
+  //     state.zipperCacheUp,
+  //     state.zipperCacheDown,
+  //     state.furthestNullableCache
+  //   )
+  //   bh.consume(suffix.isEmpty)
+  // }
 }
 
 object CPythonInterface {

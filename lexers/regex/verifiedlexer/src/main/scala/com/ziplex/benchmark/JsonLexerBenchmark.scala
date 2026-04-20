@@ -40,15 +40,15 @@ class JsonLexerBenchmark {
     bh.consume(suffix.isEmpty)
   }
 
-  @Benchmark
-  def lex_ZipperV1Mem_Warm(state: WarmLexV1MemState, bh: Blackhole): Unit = {
-    val (tokens, suffix) = Lexer.lexV1Mem(JsonLexer.rules, state.content)(
-      using ClassTag.Char,
-      state.zipperCacheUp,
-      state.zipperCacheDown
-    )
-    bh.consume(suffix.isEmpty)
-  }
+  // @Benchmark
+  // def lex_ZipperV1Mem_Warm(state: WarmLexV1MemState, bh: Blackhole): Unit = {
+  //   val (tokens, suffix) = Lexer.lexV1Mem(JsonLexer.rules, state.content)(
+  //     using ClassTag.Char,
+  //     state.zipperCacheUp,
+  //     state.zipperCacheDown
+  //   )
+  //   bh.consume(suffix.isEmpty)
+  // }
 
   @Benchmark
   def lex_ZipperMem(state: FreshLexMemState, bh: Blackhole): Unit = {
@@ -94,15 +94,15 @@ class JsonLexerBenchmark {
     bh.consume(suffix.isEmpty)
   }
 
-  @Benchmark
-  def lex_ZipperV2MemOnlyDeriv_Warm(state: WarmLexV2MemOnlyDerivState, bh: Blackhole): Unit = {
-    val (tokens, suffix) = Lexer.lexV2MemOnlyDeriv(JsonLexer.rules, state.content)(
-      using ClassTag.Char,
-      state.zipperCacheUp,
-      state.zipperCacheDown
-    )
-    bh.consume(suffix.isEmpty)
-  }
+  // @Benchmark
+  // def lex_ZipperV2MemOnlyDeriv_Warm(state: WarmLexV2MemOnlyDerivState, bh: Blackhole): Unit = {
+  //   val (tokens, suffix) = Lexer.lexV2MemOnlyDeriv(JsonLexer.rules, state.content)(
+  //     using ClassTag.Char,
+  //     state.zipperCacheUp,
+  //     state.zipperCacheDown
+  //   )
+  //   bh.consume(suffix.isEmpty)
+  // }
 
   @Benchmark
   def lex_ZipperV3NonMem(state: FileState, bh: Blackhole): Unit = {

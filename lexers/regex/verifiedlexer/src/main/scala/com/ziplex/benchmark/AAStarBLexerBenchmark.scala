@@ -43,15 +43,15 @@ class AAStarBLexerBenchmark {
     bh.consume(suffix.isEmpty)
   }
 
-  @Benchmark
-  def lex_ZipperV1Mem_Warm(state: WarmAAStarBLexV1MemState, bh: Blackhole): Unit = {
-    val (tokens, suffix) = Lexer.lexV1Mem(AAStarBLexer.rules, state.content)(
-      using ClassTag.Char,
-      state.zipperCacheUp,
-      state.zipperCacheDown
-    )
-    bh.consume(suffix.isEmpty)
-  }
+  // @Benchmark
+  // def lex_ZipperV1Mem_Warm(state: WarmAAStarBLexV1MemState, bh: Blackhole): Unit = {
+  //   val (tokens, suffix) = Lexer.lexV1Mem(AAStarBLexer.rules, state.content)(
+  //     using ClassTag.Char,
+  //     state.zipperCacheUp,
+  //     state.zipperCacheDown
+  //   )
+  //   bh.consume(suffix.isEmpty)
+  // }
 
   @Benchmark
   def lex_ZipperV3Mem(state: FreshAAStarBLexV3MemState, bh: Blackhole): Unit = {
@@ -64,16 +64,16 @@ class AAStarBLexerBenchmark {
     bh.consume(suffix.isEmpty)
   }
 
-  @Benchmark
-  def lex_ZipperV3Mem_Warm(state: WarmAAStarBLexV3MemState, bh: Blackhole): Unit = {
-    val (tokens, suffix) = Lexer.lexMem(AAStarBLexer.rules, state.content)(
-      using ClassTag.Char,
-      state.zipperCacheUp,
-      state.zipperCacheDown,
-      state.furthestNullableCache
-    )
-    bh.consume(suffix.isEmpty)
-  }
+  // @Benchmark
+  // def lex_ZipperV3Mem_Warm(state: WarmAAStarBLexV3MemState, bh: Blackhole): Unit = {
+  //   val (tokens, suffix) = Lexer.lexMem(AAStarBLexer.rules, state.content)(
+  //     using ClassTag.Char,
+  //     state.zipperCacheUp,
+  //     state.zipperCacheDown,
+  //     state.furthestNullableCache
+  //   )
+  //   bh.consume(suffix.isEmpty)
+  // }
 
   @Benchmark
   def lex_ZipperV2Mem(state: FreshAAStarBLexV2MemState, bh: Blackhole): Unit = {
@@ -86,16 +86,16 @@ class AAStarBLexerBenchmark {
     bh.consume(suffix.isEmpty)
   }
 
-  @Benchmark
-  def lex_ZipperV2Mem_Warm(state: WarmAAStarBLexV2MemState, bh: Blackhole): Unit = {
-    val (tokens, suffix) = Lexer.lexV2Mem(AAStarBLexer.rules, state.content)(
-      using ClassTag.Char,
-      state.zipperCacheUp,
-      state.zipperCacheDown,
-      state.findLongestMatchCache
-    )
-    bh.consume(suffix.isEmpty)
-  }
+  // @Benchmark
+  // def lex_ZipperV2Mem_Warm(state: WarmAAStarBLexV2MemState, bh: Blackhole): Unit = {
+  //   val (tokens, suffix) = Lexer.lexV2Mem(AAStarBLexer.rules, state.content)(
+  //     using ClassTag.Char,
+  //     state.zipperCacheUp,
+  //     state.zipperCacheDown,
+  //     state.findLongestMatchCache
+  //   )
+  //   bh.consume(suffix.isEmpty)
+  // }
 
   @Benchmark
   def lex_Silex(state: AAStarBLexFileState): Unit = {
@@ -119,16 +119,16 @@ class BigAAStarBLexerBenchmark {
     bh.consume(suffix.isEmpty)
   }
 
-  @Benchmark
-  def lex_ZipperV3Mem_Warm(state: WarmBigAAStarBLexV3MemState, bh: Blackhole): Unit = {
-    val (tokens, suffix) = Lexer.lexMem(AAStarBLexer.rules, state.content)(
-      using ClassTag.Char,
-      state.zipperCacheUp,
-      state.zipperCacheDown,
-      state.furthestNullableCache
-    )
-    bh.consume(suffix.isEmpty)
-  }
+  // @Benchmark
+  // def lex_ZipperV3Mem_Warm(state: WarmBigAAStarBLexV3MemState, bh: Blackhole): Unit = {
+  //   val (tokens, suffix) = Lexer.lexMem(AAStarBLexer.rules, state.content)(
+  //     using ClassTag.Char,
+  //     state.zipperCacheUp,
+  //     state.zipperCacheDown,
+  //     state.furthestNullableCache
+  //   )
+  //   bh.consume(suffix.isEmpty)
+  // }
 }
 
 @State(Scope.Thread)
