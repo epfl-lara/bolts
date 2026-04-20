@@ -9,7 +9,7 @@ Usage:
 - <model_dir>: directory that already contains JSON "model" files like 162.json
 - <output_dir>: directory where new JSON files will be written (created if missing)
 
-For each "JsonLexerBenchmark.lex_ZipperMem" line, this script extracts:
+For each configured benchmark function line, this script extracts:
   - fname: first number before '_' with '.json' suffix (e.g., 162.json)
   - input_len: second number (characters) (e.g., 37599)
   - times: list with a single element = Score (us/op) converted to seconds
@@ -27,28 +27,30 @@ from typing import Dict, Tuple
 
 # Matches lines like:
 # [info] JsonLexerBenchmark.lex_ZipperMem      162_37599chars.json  avgt    5  61450.770 ± 4116.365  us/op
-LINE_RE = re.compile(
-    r"""
-    ^\s*\[info\]\s+JsonLexerBenchmark\.lex_ZipperMem   # the benchmark name we care about
-    \s+
-    (?P<num>\d+)_(?P<chars>\d+)chars\.json             # e.g., 162_37599chars.json
-    \s+\S+\s+\d+\s+
-    (?P<score>\d+(?:\.\d+)?)                           # Score column (microseconds per op)
-    \s+±\s+\d+(?:\.\d+)?\s+us/op\s*$
-    """,
-    re.VERBOSE,
-)
+def make_line_re(benchmark_function_name: str):
+    return re.compile(
+        r"""
+        ^\s*\[info\]\s+JsonLexerBenchmark\.""" + benchmark_function_name + r"""   # the benchmark name we care about
+        \s+
+        (?P<num>\d+)_(?P<chars>\d+)chars\.json             # e.g., 162_37599chars.json
+        \s+\S+\s+\d+\s+
+        (?P<score>\d+(?:\.\d+)?)                           # Score column (microseconds per op)
+        \s+±\s+\d+(?:\.\d+)?\s+us/op\s*$
+        """,
+        re.VERBOSE,
+    )
 
-def parse_input(txt_path: Path) -> Dict[str, Tuple[int, float]]:
+def parse_input(txt_path: Path, benchmark_function_name: str) -> Dict[str, Tuple[int, float]]:
     """
     Returns a dict:
       key: fname like '162.json'
       value: (input_len, time_seconds)
     """
     results: Dict[str, Tuple[int, float]] = {}
+    line_re = make_line_re(benchmark_function_name)
     with txt_path.open("r", encoding="utf-8") as f:
         for line in f:
-            m = LINE_RE.match(line)
+            m = line_re.match(line)
             if not m:
                 continue
             num = m.group("num")         # e.g., '162'
@@ -102,37 +104,47 @@ def main():
 
     output_dir.mkdir(parents=True, exist_ok=True)
 
-    parsed = parse_input(input_txt)
-    if not parsed:
-        raise SystemExit("No matching 'lex_ZipperMem' lines found in the input.")
+    benchmark_targets = {
+        "lex_ZipperMem": "Ziplex",
+        "lex_ZipperV3NonMem": "ZiplexNoMem",
+        "lex_ZipperV3MemDeriv": "ZiplexMemDeriv",
+    }
 
     written = 0
     skipped = 0
 
-    for fname, (input_len, time_seconds) in parsed.items():
-        try:
-            sem_tokens_len = read_model_sem_tokens(model_dir, fname)
-        except (FileNotFoundError, KeyError, ValueError) as e:
-            # If the model file is missing or malformed, skip this entry but continue others.
-            print(f"[warn] Skipping {fname}: {e}")
-            skipped += 1
+    for benchmark_function_name, output_prefix in benchmark_targets.items():
+        parsed = parse_input(input_txt, benchmark_function_name)
+        if not parsed:
+            print(f"[warn] No matching '{benchmark_function_name}' lines found in the input.")
             continue
 
-        out_obj = {
-            "fname": fname,
-            "input_len": input_len,
-            "times": [time_seconds],
-            "rest_len": 0,
-            "sem_tokens_len": sem_tokens_len,
-        }
+        target_dir = output_dir / output_prefix
+        target_dir.mkdir(parents=True, exist_ok=True)
 
-        out_path = output_dir / fname
-        with out_path.open("w", encoding="utf-8") as f:
-            json.dump(out_obj, f, ensure_ascii=False, indent=2)
+        for fname, (input_len, time_seconds) in parsed.items():
+            try:
+                sem_tokens_len = read_model_sem_tokens(model_dir, fname)
+            except (FileNotFoundError, KeyError, ValueError) as e:
+                # If the model file is missing or malformed, skip this entry but continue others.
+                print(f"[warn] Skipping {output_prefix}/{fname}: {e}")
+                skipped += 1
+                continue
 
-        written += 1
-        # Optional: feedback on each file
-        print(f"[ok] Wrote {out_path}")
+            out_obj = {
+                "fname": fname,
+                "input_len": input_len,
+                "times": [time_seconds],
+                "rest_len": 0,
+                "sem_tokens_len": sem_tokens_len,
+            }
+
+            out_path = target_dir / fname
+            with out_path.open("w", encoding="utf-8") as f:
+                json.dump(out_obj, f, ensure_ascii=False, indent=2)
+
+            written += 1
+            print(f"[ok] Wrote {out_path}")
 
     print(f"\nDone. Wrote {written} file(s). Skipped {skipped} due to missing/invalid model files.")
 
