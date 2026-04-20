@@ -3600,7 +3600,7 @@ object ZipperRegex {
   }.ensuring (res => res._1.list ++ res._2.list == input.list)
 
 
-  @pure
+  
   def furthestNullablePositionMemDeriv[C](z: Zipper[C], from: BigInt, totalInput: Sequence[C], totalInputSize: BigInt, lastNullablePos: BigInt)(using cacheUp: CacheUp[C], cacheDown: CacheDown[C]): BigInt = {
     require(from >= 0 && from <= totalInputSize)
     require(totalInputSize == totalInput.size)
@@ -3615,7 +3615,7 @@ object ZipperRegex {
       val newLastNullable = if (nullableZipper(derivedZ)) from else lastNullablePos
       furthestNullablePositionMemDeriv(derivedZ, from + 1, totalInput, totalInputSize, newLastNullable)
     }
-  }.ensuring(res => res >= -1 && res < totalInputSize && res >= lastNullablePos && (res == lastNullablePos || res >= from))
+  }.ensuring(res => res >= -1 && res < totalInputSize && res >= lastNullablePos && (res == lastNullablePos || res >= from) && cacheUp.valid && cacheDown.valid && res == furthestNullablePosition(z, from, totalInput, totalInputSize, lastNullablePos))
 
   def findLongestMatchZipperSequenceV3MemDeriv[C](z: Zipper[C], input: Sequence[C], totalInput: Sequence[C])(using cacheUp: CacheUp[C], cacheDown: CacheDown[C]): (Sequence[C], Sequence[C]) = {
     require(ListUtils.isSuffix(input.list, totalInput.list))
