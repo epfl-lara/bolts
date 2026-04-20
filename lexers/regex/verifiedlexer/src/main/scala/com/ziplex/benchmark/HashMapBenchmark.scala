@@ -10,7 +10,6 @@ import com.mutablemaps.map.MutableLongMap
 import stainless.collection.{List => StainlessList}
 import scala.collection.immutable
 import com.mutablemaps.map.MutableHashMap
-import com.mutablemaps.map.MutableLongMap
 import com.mutablemaps.map.Hashable
 import com.mutablemaps.map.ListMap
 import stainless.lang.Heap.get
