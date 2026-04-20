@@ -586,7 +586,7 @@ object VerifiedRegex {
     }
   }.ensuring (res => res > 0)
 
-  extension[C] (r: Regex[C]) @pure def usedCharacters: List[C] = {
+  extension[C] (r: Regex[C]) @pure @ghost def usedCharacters: List[C] = {
     r match {
       case EmptyExpr()        => Nil[C]()
       case EmptyLang()        => Nil[C]()
@@ -598,7 +598,7 @@ object VerifiedRegex {
     }
   }
 
-  extension[C] (r: Regex[C]) @pure def firstChars: List[C] = {
+  extension[C] (r: Regex[C]) @pure @ghost def firstChars: List[C] = {
     r match {
       case EmptyExpr()                           => Nil[C]()
       case EmptyLang()                           => Nil[C]()
@@ -1485,6 +1485,7 @@ object ZipperRegex {
               case EmptyExpr() => lemmaZipperOfEmptyExprMatchesOnlyEmptyString(z, s)
               case EmptyLang() => lemmaZipperStartingWithEmptyLangMatchesNothing(z, Context(List(r)), s)
               case ElementMatch(a) => lemmaElementMatchZipperAcceptsOnlyThisChar(z, Context(List(ElementMatch(a))), a, s)
+              case ElementSet(as) => lemmaElementSetZipperAcceptsOnlyOneOfTheseChars(z, Context(List(ElementSet(as))), as, s)
               case Union(r1, r2) => {
                 mainMatchTheorem(r1, s)
                 mainMatchTheorem(r2, s)
@@ -1515,8 +1516,6 @@ object ZipperRegex {
                     val derivZR1 = derivationStepZipper(zR1, shd)
                     val derivZR2 = derivationStepZipper(zR2, shd)
 
-                    val derivUpZR1 = derivationStepZipperUp(Context(List(r1)), shd)
-                    val derivUpZR2 = derivationStepZipperUp(Context(List(r2)), shd)
                     SetUtils.lemmaFlatMapOnSingletonSet(zR1, Context(List(r1)), (c: Context[C]) => derivationStepZipperUp(c, shd))
                     SetUtils.lemmaFlatMapOnSingletonSet(zR2, Context(List(r2)), (c: Context[C]) => derivationStepZipperUp(c, shd))
 
@@ -1596,9 +1595,7 @@ object ZipperRegex {
                         assert(r == generalisedConcat(hd.exprs))
                         assert(hd.exprs == List(r))
                         assert(zipperDepth(List(Context(List(r1, r2)))) < zipperDepth(List(Context(List(r))))) // Measure
-                        assert(zipperDepth(List(Context(List(r1, r2)))) < zipperDepth(List(Context(List(r))))) // Measure
                         theoremZipperRegexEquiv(zR1, List(Context(List(r1, r2))), Concat(r1, r2), s)
-                        theoremZipperRegexEquiv(zR2, List(Context(List(r2))), r2, s)
                       }
                     } else {
                       // Here, we are in the case where the Concat is the result of generalisedConcat
@@ -1627,7 +1624,13 @@ object ZipperRegex {
                           assert(zDerivDown == Set(Context(tlExp)))
                           val zVirt = Set(Context(tlExp))
                           theoremZipperRegexEquiv(zVirt, List(Context(tlExp)), generalisedConcat(tlExp), stl)
-                          assert(matchR(r, s) == matchZipper(z, s))
+                          check(matchR(r, s) == matchZipper(z, s))
+                        }
+                        case ElementSet(cs) if cs.contains(shd) => {
+                          assert(zDerivDown == Set(Context(tlExp)))
+                          val zVirt = Set(Context(tlExp))
+                          theoremZipperRegexEquiv(zVirt, List(Context(tlExp)), generalisedConcat(tlExp), stl)
+                          check(matchR(r, s) == matchZipper(z, s))
                         }
                         case Union(rOne, rTwo) => {
                           assert(zDerivDown == derivationStepZipperDown(rOne, Context(tlExp), shd) ++ derivationStepZipperDown(rTwo, Context(tlExp), shd))
@@ -1714,12 +1717,10 @@ object ZipperRegex {
                           val zVirt2 = Set(Context(Cons(rTwo, tlExp)))
 
                           val zVirt1Deriv = derivationStepZipper(zVirt1, shd)
-                          val zVirt1DerivUp = derivationStepZipperUp(Context(Cons(rOne, Cons(rTwo, tlExp))), shd)
                           SetUtils.lemmaFlatMapOnSingletonSet(zVirt1, Context(Cons(rOne, Cons(rTwo, tlExp))), (c: Context[C]) => derivationStepZipperUp(c, shd))
                           assert(zVirt1Deriv == derivationStepZipperDown(rOne, Context(Cons(rTwo, tlExp)), shd) ++ derivationStepZipperUp(Context(Cons(rTwo, tlExp)), shd))
 
                           val zVirt2Deriv = derivationStepZipper(zVirt2, shd)
-                          val zVirt2DerivUp = derivationStepZipperUp(Context(Cons(rTwo, tlExp)), shd)
                           SetUtils.lemmaFlatMapOnSingletonSet(zVirt2, Context(Cons(rTwo, tlExp)), (c: Context[C]) => derivationStepZipperUp(c, shd))
 
                           if(rTwo.nullable){
@@ -1764,7 +1765,6 @@ object ZipperRegex {
                           val zVirt1 = Set(Context(Cons(rOne, Cons(rTwo, tlExp))))
 
                           val zVirt1Deriv = derivationStepZipper(zVirt1, shd)
-                          val zVirt1DerivUp = derivationStepZipperUp(Context(Cons(rOne, Cons(rTwo, tlExp))), shd)
                           SetUtils.lemmaFlatMapOnSingletonSet(zVirt1, Context(Cons(rOne, Cons(rTwo, tlExp))), (c: Context[C]) => derivationStepZipperUp(c, shd))
                           assert(zVirt1Deriv == derivationStepZipperDown(rOne, Context(Cons(rTwo, tlExp)), shd))
 
@@ -1801,8 +1801,6 @@ object ZipperRegex {
                           val zR1 = Set(Context(Cons(rInner, Cons(Star(rInner), tlExp))))
                           val derivZR1 = derivationStepZipper(zR1, shd)
 
-                          val derivUpZR1 = derivationStepZipperUp(Context(Cons(rInner, Cons(Star(rInner), tlExp))), shd)
-
                           SetUtils.lemmaFlatMapOnSingletonSet(zR1, Context(Cons(rInner, Cons(Star(rInner), tlExp))), (c: Context[C]) => derivationStepZipperUp(c, shd))
                           val derivDownZR1 = derivationStepZipperDown(rInner, Context(Cons(Star(rInner), tlExp)), shd)
                           
@@ -1819,11 +1817,7 @@ object ZipperRegex {
                           val subZR1 = Set(Context(List(rInner)))
                           val subZR2 = Set(Context(Cons(Star(rInner), tlExp)))
 
-                          val derivSubZR1 = derivationStepZipper(subZR1, shd)
                           val derivSubZR2 = derivationStepZipper(subZR2, shd)
-
-                          val derivUpSubZR1 = derivationStepZipperUp(Context(List(rInner)), shd)
-                          val derivUpSubZR2 = derivationStepZipperUp(Context(Cons(Star(rInner), tlExp)), shd)
 
                           SetUtils.lemmaFlatMapOnSingletonSet(subZR1, Context(List(rInner)), (c: Context[C]) => derivationStepZipperUp(c, shd))
                           SetUtils.lemmaFlatMapOnSingletonSet(subZR2, Context(Cons(Star(rInner), tlExp)), (c: Context[C]) => derivationStepZipperUp(c, shd))
@@ -1902,7 +1896,6 @@ object ZipperRegex {
                               if(matchZipper(zDerivDown, stl)){
                                 // Then we know that
                                 assert(matchZipper(zR1, s))
-                                assert(zR1 == Set(Context(Cons(rInner, Cons(Star(rInner), tlExp)))))
                                 assert(zR1 == Set(Context(Cons(rInner, Cons(Star(rInner), tlExp)))))
 
                                 SetUtils.lemmaMapOnSingletonSet(subZR1, Context(List(rInner)), c => c.concat(Context(Cons(Star(rInner), tlExp))))
@@ -2012,18 +2005,22 @@ object ZipperRegex {
                           check(matchR(r, s) == matchZipper(z, s))
                         }
                       }
+                      check(matchR(r, s) == matchZipper(z, s))
 
-                      val zTail = Set(Context(tlExp))
-                      val zDerivTail = derivationStepZipper(zTail, shd)
-                      SetUtils.lemmaFlatMapOnSingletonSet(zTail, Context(tlExp), (c: Context[C]) => derivationStepZipperUp(c, shd))
-                      assert(zDerivUpUp == zDerivTail)
+                      // val zTail = Set(Context(tlExp))
+                      // val zDerivTail = derivationStepZipper(zTail, shd)
+                      // SetUtils.lemmaFlatMapOnSingletonSet(zTail, Context(tlExp), (c: Context[C]) => derivationStepZipperUp(c, shd))
+                      // assert(zDerivUpUp == zDerivTail)
 
-                      assert(r == generalisedConcat(hd.exprs))
-                      assert(regexDepth(r) >= regexDepth(generalisedConcat(tlExp)))
-                      assert(zipperDepth(zl) >= zipperDepth(List(Context(tlExp))))
+                      // lemmaContextTailDecreasesTotalDepth(hd.exprs)
+                      // lemmaZipperToListIsListOfArg(tlExp)
 
-                      theoremZipperRegexEquiv(zTail, List(Context(tlExp)), generalisedConcat(tlExp), s)
-                      assert(matchR(generalisedConcat(tlExp), s) == matchZipper(zTail, s))
+                      // assert(r == generalisedConcat(hd.exprs))
+                      // assert(r == Concat(hd.exprs.head, generalisedConcat(hd.exprs.tail)))
+                      // assert(regexDepth(r) >= regexDepth(generalisedConcat(tlExp)))
+
+                      // theoremZipperRegexEquiv(zTail, List(Context(tlExp)), generalisedConcat(tlExp), s)
+                      // assert(matchR(generalisedConcat(tlExp), s) == matchZipper(zTail, s))
 
                       check(matchR(r, s) == matchZipper(z, s))
                     
@@ -2053,8 +2050,6 @@ object ZipperRegex {
                     val zR1 = Set(Context(List(rInner, Star(rInner))))
                     val derivZR1 = derivationStepZipper(zR1, shd)
 
-                    val derivUpZR1 = derivationStepZipperUp(Context(List(rInner, Star(rInner))), shd)
-
                     SetUtils.lemmaFlatMapOnSingletonSet(zR1, Context(List(rInner, Star(rInner))), (c: Context[C]) => derivationStepZipperUp(c, shd))
                     val derivDownZR1 = derivationStepZipperDown(rInner, Context(List(Star(rInner))), shd)
 
@@ -2071,11 +2066,7 @@ object ZipperRegex {
                     val subZR1 = Set(Context(List(rInner)))
                     val subZR2 = Set(Context(List(Star(rInner))))
 
-                    val derivSubZR1 = derivationStepZipper(subZR1, shd)
                     val derivSubZR2 = derivationStepZipper(subZR2, shd)
-
-                    val derivUpSubZR1 = derivationStepZipperUp(Context(List(rInner)), shd)
-                    val derivUpSubZR2 = derivationStepZipperUp(Context(List(Star(rInner))), shd)
 
                     SetUtils.lemmaFlatMapOnSingletonSet(subZR1, Context(List(rInner)), (c: Context[C]) => derivationStepZipperUp(c, shd))
                     SetUtils.lemmaFlatMapOnSingletonSet(subZR2, Context(List(Star(rInner))), (c: Context[C]) => derivationStepZipperUp(c, shd))
@@ -2189,6 +2180,20 @@ object ZipperRegex {
     
 
   }.ensuring(_ => matchR(r, s) == matchZipper(z, s))
+
+  @ghost
+  @opaque
+  @inlineOnce
+  def lemmaZipperToListIsListOfArg[C](lExp: List[Regex[C]]): Unit = {
+    require(lExp.forall(validRegex))
+  }.ensuring(_ => Set(Context(lExp)).toList == List(Context(lExp)))
+
+  @ghost
+  @opaque
+  @inlineOnce
+  def lemmaContextTailDecreasesTotalDepth[C](lExp: List[Regex[C]]): Unit = {
+    require(lExp.forall(validRegex))
+  }.ensuring(_ => lExp.isEmpty || contextDepthTotal(Context(lExp)) > contextDepthTotal(Context(lExp.tail)))
 
   @ghost  
   @opaque
@@ -2648,6 +2653,10 @@ object ZipperRegex {
         SetUtils.lemmaMapOnSingletonSet(Set(c), c, f)
         check(derivationStepZipperDown(r, c.concat(auxCtx), a) == appendTo(derivationStepZipperDown(r, c, a), auxCtx))
       }
+      case ElementSet(cs) if cs.contains(a) => {
+        SetUtils.lemmaMapOnSingletonSet(Set(c), c, f)
+        check(derivationStepZipperDown(r, c.concat(auxCtx), a) == appendTo(derivationStepZipperDown(r, c, a), auxCtx))
+      }
       case Union(rOne, rTwo) => {
         assert(derivationStepZipperDown(r, c.concat(auxCtx), a) == derivationStepZipperDown(rOne, c.concat(auxCtx), a) ++ derivationStepZipperDown(rTwo, c.concat(auxCtx), a))
         lemmaDerivativeStepZipperDownConcatCtxSameAsAppendTo(c, rOne, a, auxCtx)
@@ -3007,6 +3016,62 @@ object ZipperRegex {
     }
   }.ensuring(_ => matchZipper(z, s) == (s == List(a)))
 
+  @ghost
+  @opaque
+  @inlineOnce
+  def lemmaElementSetZipperAcceptsOnlyOneOfTheseChars[C](z: Zipper[C], c: Context[C], cs: Set[C], s: List[C]): Unit = {
+    require(z == Set(c)) 
+    require(!c.isEmpty)
+    require(c.head == ElementSet[C](cs))
+    require(c.tail.isEmpty)
+    s match {
+      case Cons(hd, tl) if cs.contains(hd) => {
+        val deriv: Zipper[C] = derivationStepZipper(z, s.head)
+        val derivUp = derivationStepZipperUp(c, s.head)
+        assert(derivUp == Set(Context(List())))
+        unfold(z.flatMapPost(c => derivationStepZipperUp(c, hd))(Context[C](List())))
+        assert(deriv.contains(Context[C](List())))
+        if(deriv != Set(Context[C](List()))) {
+          assert(deriv.exists(c => c != Context[C](List())))
+          val witness = SetUtils.getWitness(deriv, (c: Context[C]) => c != Context[C](List()))
+          unfold(z.flatMapPost(c => derivationStepZipperUp(c, hd))(witness))
+          assert(deriv.contains(witness))
+          assert(z.exists(c => derivationStepZipperUp(c, s.head).contains(witness)))
+          val witnessContext = SetUtils.getWitness(z, (c: Context[C]) => derivationStepZipperUp(c, s.head).contains(witness))
+          assert(z.contains(witnessContext))
+          check(false)
+        }
+        check(deriv == Set(Context[C](List()))) 
+        if(tl.isEmpty) {
+          lemmaZipperOfEmptyContextMatchesEmptyString(Set(Context(List())), tl)
+          check(matchZipper(z, s))
+
+        } else {
+          lemmaZipperOfEmptyContextMatchesEmptyString(deriv, tl)
+          check(!matchZipper(z, s))
+        }
+      }
+      case Cons(shd, tl) if !cs.contains(shd) => {
+        val deriv: Zipper[C] = derivationStepZipper(z, shd)
+        val derivUp = derivationStepZipperUp(c, shd)
+        assert(derivUp == Set())
+        if(!deriv.isEmpty){
+          val hd = deriv.toList.head
+          val f: Context[C] => Zipper[C] = ct => derivationStepZipperUp(ct, shd)
+          assert(z.flatMap(f).contains(hd))
+          assert(deriv.contains(hd))
+          unfold(z.flatMapPost(f)(hd))
+          assert(z.exists(context => derivationStepZipperUp(context, s.head).contains(hd)))
+          assert(z == Set(c))
+          check(false)
+        }
+        assert(deriv.isEmpty)
+        lemmaEmptyZipperMatchesNothing(deriv, tl)
+        }
+      case Nil() => 
+        check(!nullableContext(c))
+    }
+  }.ensuring(_ => matchZipper(z, s) == (s.size == 1 && cs.contains(s.head)))
 
   @ghost
   @opaque
@@ -4595,6 +4660,7 @@ object VerifiedRegexMatcher {
       case EmptyExpr()     => s.isEmpty
       case EmptyLang()     => false
       case ElementMatch(c) => s == List(c)
+      case ElementSet(cs)  => s.size == 1 && cs.contains(s.head)
       case Union(r1, r2)   => matchRSpec(r1, s) || matchRSpec(r2, s)
       case Star(rInner)    => s.isEmpty || Exists((cut: (List[C], List[C])) => cut._1 ++ cut._2 == s && !cut._1.isEmpty && matchRSpec(rInner, cut._1) && matchRSpec(Star(rInner), cut._2)) // TODO change to use matchRSpec in the exists
       // case Star(rInner)    => s.isEmpty || findConcatSeparation(rInner, Star(rInner), Nil(), s, s).isDefined
@@ -4613,6 +4679,7 @@ object VerifiedRegexMatcher {
       case EmptyExpr()     => ()
       case EmptyLang()     => ()
       case ElementMatch(c) => ()
+      case ElementSet(cs) => ()
       case Union(r1, r2) => {
         if (matchR(r, s)) {
           lemmaRegexUnionAcceptsThenOneOfTheTwoAccepts(r1, r2, s)
@@ -5622,6 +5689,7 @@ object VerifiedRegexMatcher {
       case EmptyLang() => ()
       case EmptyExpr() => ()
       case ElementMatch(c2) => ()
+      case ElementSet(cs) => ()
       case Union(r1, r2) => 
           lemmaDerivativeStepFixPointLostCause(r1, c)
           lemmaDerivativeStepFixPointLostCause(r2, c)
@@ -5659,6 +5727,7 @@ object VerifiedRegexMatcher {
         case EmptyLang() => ()
         case EmptyExpr() => ()
         case ElementMatch(c) => ()
+        case ElementSet(cs) => ()
         case Union(r1, r2) => 
             lemmaLostCauseCannotMatch(r1, s)
             lemmaLostCauseCannotMatch(r2, s)
@@ -5697,6 +5766,7 @@ object VerifiedRegexMatcher {
       case EmptyExpr()        => ()
       case EmptyLang()        => ()
       case ElementMatch(c)    => ()
+      case ElementSet(cs)    => ()
       case Star(r)            => ()
       case Union(rOne, rTwo)  => 
         getLanguageWitness(rOne) match
@@ -6517,6 +6587,7 @@ object VerifiedRegexMatcher {
       case EmptyExpr()     => check(false)
       case EmptyLang()     => ()
       case ElementMatch(a) => ()
+      case ElementSet(s)   => ()
       case Union(rOne, rTwo) => {
         if (rOne.nullable) {
           check(false)
@@ -6571,6 +6642,22 @@ object VerifiedRegexMatcher {
       }
       case ElementMatch(a) => {
         if (c == a) {
+          assert(derivativeStep(r, c) == EmptyExpr[C]())
+          if (tl.isEmpty) {
+            assert(r.usedCharacters.contains(c))
+            assert(derivative(derivativeStep(r, c), tl).nullable)
+          } else {
+            lemmaEmptyLangDerivativeIsAFixPoint(derivativeStep(derivativeStep(r, c), tl.head), tl.tail)
+            check(false)
+          }
+        } else {
+          assert(derivativeStep(r, c) == EmptyLang[C]())
+          lemmaEmptyLangDerivativeIsAFixPoint(derivativeStep(r, c), tl)
+          check(false)
+        }
+      }
+      case ElementSet(cs) => {
+        if (cs.contains(c)) {
           assert(derivativeStep(r, c) == EmptyExpr[C]())
           if (tl.isEmpty) {
             assert(r.usedCharacters.contains(c))
@@ -6669,6 +6756,7 @@ object VerifiedRegexMatcher {
       case EmptyExpr()     => ()
       case EmptyLang()     => ()
       case ElementMatch(c) => ()
+      case ElementSet(s)   => ()
       case Union(rOne, rTwo) => {
         lemmaDerivativeStepDoesNotAddCharToUsedCharacters(rOne, c, cNot)
         lemmaDerivativeStepDoesNotAddCharToUsedCharacters(rTwo, c, cNot)
@@ -6714,6 +6802,7 @@ object VerifiedRegexMatcher {
       case EmptyExpr()     => ()
       case EmptyLang()     => ()
       case ElementMatch(c) => ()
+      case ElementSet(s)   => ()
       case Star(r)         => lemmaUsedCharsContainsAllFirstChars(r, c)
       case Union(rOne, rTwo) =>
         if (rOne.firstChars.contains(c)) {
@@ -6755,6 +6844,22 @@ object VerifiedRegexMatcher {
       }
       case ElementMatch(a) => {
         if (c == a) {
+          assert(derivativeStep(r, c) == EmptyExpr[C]())
+          if (tl.isEmpty) {
+            assert(r.firstChars.contains(c))
+            assert(derivative(derivativeStep(r, c), tl).nullable)
+          } else {
+            lemmaEmptyLangDerivativeIsAFixPoint(derivativeStep(derivativeStep(r, c), tl.head), tl.tail)
+            check(false)
+          }
+        } else {
+          assert(derivativeStep(r, c) == EmptyLang[C]())
+          lemmaEmptyLangDerivativeIsAFixPoint(derivativeStep(r, c), tl)
+          check(false)
+        }
+      }
+      case ElementSet(cs) => {
+        if (cs.contains(c)) {
           assert(derivativeStep(r, c) == EmptyExpr[C]())
           if (tl.isEmpty) {
             assert(r.firstChars.contains(c))
