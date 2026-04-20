@@ -109,6 +109,27 @@ class JsonLexerBenchmark {
     // assert(suffix.isEmpty)
   }
 
+   @Benchmark
+  @BenchmarkMode(Array(Mode.AverageTime))
+  @OutputTimeUnit(TimeUnit.MICROSECONDS)
+  def lex_ZipperV3NonMem(bh: Blackhole): Unit = {
+    val (tokens, suffix) = Lexer.lexV3(JsonLexer.rules, JsonLexerBenchmarkUtils.exampleFileContents(file))
+    bh.consume(suffix.isEmpty)
+    // assert(suffix.isEmpty)
+  }
+
+  @Benchmark
+  @BenchmarkMode(Array(Mode.AverageTime))
+  @OutputTimeUnit(TimeUnit.MICROSECONDS)
+  def lex_ZipperV3MemDeriv(bh: Blackhole): Unit = {
+    val (tokens, suffix) = Lexer.lexV3MemDeriv(JsonLexer.rules, JsonLexerBenchmarkUtils.exampleFileContents(file))(
+      using ClassTag.Char,
+      JsonLexerBenchmarkUtils.zipperCacheUp,
+      JsonLexerBenchmarkUtils.zipperCacheDown)
+    bh.consume(suffix.isEmpty)
+    // assert(suffix.isEmpty)
+  }
+  
   @Benchmark
   @BenchmarkMode(Array(Mode.AverageTime))
   @OutputTimeUnit(TimeUnit.MICROSECONDS)
