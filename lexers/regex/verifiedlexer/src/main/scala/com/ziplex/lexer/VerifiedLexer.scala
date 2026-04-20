@@ -1976,17 +1976,39 @@ object VerifiedLexer {
       require(ListUtils.isSuffix(input.list, totalInput.list))
 
       val (longestPrefix, suffix) = findLongestMatchWithZipperSequenceV3MemDeriv(rule.regex, input, totalInput)
-      ghostExpr(assert((longestPrefix, suffix) == findLongestMatchWithZipperSequenceV3(rule.regex, input, totalInput)))
-      
-      if (longestPrefix.isEmpty) {
+       if (longestPrefix.isEmpty) {
         None[(Token[C], Sequence[C])]()
       } else {
-        ghostExpr(longestMatchIsAcceptedByMatchOrIsEmpty(rule.regex, input.list))
-        ghostExpr(rule.transformation.lemmaSemiInverse(longestPrefix))
+        ghostExpr({
+          longestMatchIsAcceptedByMatchOrIsEmpty(rule.regex, input.list)
+          rule.transformation.lemmaInv()
+          assert(semiInverseModEq(rule.transformation.toChars, rule.transformation.toValue))
+          assert(semiInverseBodyModEq(rule.transformation.toChars, rule.transformation.toValue))
+          ForallOf((chars: Sequence[C]) => rule.transformation.toChars(rule.transformation.toValue(chars)).list == chars.list)(longestPrefix)
+          ForallOf((chars: Sequence[C]) => rule.transformation.toChars(rule.transformation.toValue(chars)).list == chars.list)(seqFromList(longestPrefix.list))
+          val res = Some[(Token[C], Sequence[C])]((Token(rule.transformation.apply(longestPrefix), rule, longestPrefix.size, longestPrefix.list), suffix))
+          
+          assert(res.isDefined == maxPrefixOneRule(rule, input.list).isDefined )
+          assert(res.isDefined)
+          assert(seqFromList(longestPrefix.list).list == longestPrefix.list)
+          ghostExpr(rule.transformation.lemmaEqSameImage(longestPrefix, seqFromList(longestPrefix.list)))
+          assert(rule.transformation.apply(seqFromList(longestPrefix.list)) == rule.transformation.apply(longestPrefix))
+          assert(maxPrefixOneRule(rule, input.list).get._1.value == rule.transformation.apply(longestPrefix))
+          assert(maxPrefixOneRule(rule, input.list).get._1.rule == rule)
+          assert(maxPrefixOneRule(rule, input.list).get._1.size == longestPrefix.size)
+          assert(maxPrefixOneRule(rule, input.list).get._1.originalCharacters == longestPrefix.list)
+          assert(Token(rule.transformation.apply(longestPrefix), rule, longestPrefix.size, longestPrefix.list) == maxPrefixOneRule(rule, input.list).get._1)
+          assert(res.get._1 == maxPrefixOneRule(rule, input.list).get._1)
+          assert(res.get._2.list == maxPrefixOneRule(rule, input.list).get._2)
+
+        })
         Some[(Token[C], Sequence[C])]((Token(rule.transformation.apply(longestPrefix), rule, longestPrefix.size, longestPrefix.list), suffix))
       }
 
-    }.ensuring (res => res == maxPrefixOneRuleZipperSequenceV3(rule, input, totalInput) && 
+    }.ensuring (res => res.isDefined == maxPrefixOneRule(rule, input.list).isDefined && 
+                       (if res.isDefined then res.get._1 == maxPrefixOneRule(rule, input.list).get._1 && 
+                          res.get._2.list == maxPrefixOneRule(rule, input.list).get._2
+                       else true) &&
                        cacheUp.valid && cacheDown.valid)
 
 
