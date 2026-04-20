@@ -35,197 +35,177 @@ import scala.reflect.ClassTag
 import java.io.File
 import com.ziplex.lexer.VerifiedLexer.PrintableTokens
 
-@State(Scope.Benchmark)
+@BenchmarkMode(Array(Mode.AverageTime))
+@OutputTimeUnit(TimeUnit.MICROSECONDS)
 class JsonManipulationBenchmark {
 
-  @Param(
-    Array(
-      "0001_2079chars.json",
-      "0002_4157chars.json",
-      "0010_20776chars.json",
-      "0015_31167chars.json",
-      "0020_41560chars.json",
-      "0025_51950chars.json",
-      "0030_62339chars.json",
-      "0035_72724chars.json",
-      "0050_103898chars.json",
-      "0070_145455chars.json",
-      "0090_187013chars.json",
-      "0120_249345chars.json",
-      "0150_311687chars.json",
-      "0200_415578chars.json",
-      "0300_623361chars.json",
-      "0400_831171chars.json",
-      "0500_1038945chars.json",
-      // "0700_1454528chars.json",
-      // "0900_1870102chars.json",
-      // "1200_2493458chars.json",
-      // "1500_3116843chars.json",
-      // "2000_4155777chars.json",
-      // "3000_6233659chars.json",
-      // "4000_8311543chars.json",
-      // "5000_10389457chars.json",
-      // "7000_14545249chars.json",
-      // "9000_18700977chars.json",
-
-    )
-  )
-
-
-  var file: String = uninitialized
-
-
   @Benchmark
-  @BenchmarkMode(Array(Mode.AverageTime))
-  @OutputTimeUnit(TimeUnit.MICROSECONDS)
-  def lexV1(bh: Blackhole): Unit = {
-    val (tokens, suffix) = Lexer.lexV1Mem(JsonLexer.rules, JsonManipulationBenchmarkUtils.fileContents(file))(
+  def lexV1(state: FreshLexV1State, bh: Blackhole): Unit = {
+    val (tokens, suffix) = Lexer.lexV1Mem(JsonLexer.rules, state.content)(
       using ClassTag.Char,
-      JsonManipulationBenchmarkUtils.zipperCacheUp,
-      JsonManipulationBenchmarkUtils.zipperCacheDown
+      state.zipperCacheUp,
+      state.zipperCacheDown
     )
     bh.consume(suffix.isEmpty)
-    // assert(suffix.isEmpty)
   }
 
   @Benchmark
-  @BenchmarkMode(Array(Mode.AverageTime))
-  @OutputTimeUnit(TimeUnit.MICROSECONDS)
-  def lex(bh: Blackhole): Unit = {
-    val (tokens, suffix) = Lexer.lexMem(JsonLexer.rules, JsonManipulationBenchmarkUtils.fileContents(file))(
+  def lexV1_Warm(state: WarmLexV1State, bh: Blackhole): Unit = {
+    val (tokens, suffix) = Lexer.lexV1Mem(JsonLexer.rules, state.content)(
       using ClassTag.Char,
-      JsonManipulationBenchmarkUtils.zipperCacheUp,
-      JsonManipulationBenchmarkUtils.zipperCacheDown,
-      JsonManipulationBenchmarkUtils.furthestNullableCaches(file)
+      state.zipperCacheUp,
+      state.zipperCacheDown
     )
     bh.consume(suffix.isEmpty)
-    // assert(suffix.isEmpty)
-  }
-
-   
-  @Benchmark
-  @BenchmarkMode(Array(Mode.AverageTime))
-  @OutputTimeUnit(TimeUnit.MICROSECONDS)
-  def lexV1NonMem(bh: Blackhole): Unit = {
-    val (tokens, suffix) = Lexer.lexV1(JsonLexer.rules, JsonManipulationBenchmarkUtils.fileContents(file))
-    bh.consume(suffix.isEmpty)
-    // assert(suffix.isEmpty)
   }
 
   @Benchmark
-  @BenchmarkMode(Array(Mode.AverageTime))
-  @OutputTimeUnit(TimeUnit.MICROSECONDS)
-  def lexAndCheckPrintableV1(bh: Blackhole): Unit = {
-    val (tokens, _) = Lexer.lexV1Mem(JsonLexer.rules, JsonManipulationBenchmarkUtils.fileContents(file))(
+  def lex(state: FreshLexV3State, bh: Blackhole): Unit = {
+    val (tokens, suffix) = Lexer.lexMem(JsonLexer.rules, state.content)(
       using ClassTag.Char,
-      JsonManipulationBenchmarkUtils.zipperCacheUp,
-      JsonManipulationBenchmarkUtils.zipperCacheDown
+      state.zipperCacheUp,
+      state.zipperCacheDown,
+      state.furthestNullableCache
+    )
+    bh.consume(suffix.isEmpty)
+  }
+
+  @Benchmark
+  def lex_Warm(state: WarmLexV3State, bh: Blackhole): Unit = {
+    val (tokens, suffix) = Lexer.lexMem(JsonLexer.rules, state.content)(
+      using ClassTag.Char,
+      state.zipperCacheUp,
+      state.zipperCacheDown,
+      state.furthestNullableCache
+    )
+    bh.consume(suffix.isEmpty)
+  }
+
+  @Benchmark
+  def lexV1NonMem(state: FileState, bh: Blackhole): Unit = {
+    val (tokens, suffix) = Lexer.lexV1(JsonLexer.rules, state.content)
+    bh.consume(suffix.isEmpty)
+  }
+
+  @Benchmark
+  def lexAndCheckPrintableV1(state: FreshLexAndPrintableV1State, bh: Blackhole): Unit = {
+    val (tokens, _) = Lexer.lexV1Mem(JsonLexer.rules, state.content)(
+      using ClassTag.Char,
+      state.zipperCacheUp,
+      state.zipperCacheDown
     )
     val res = printableTokensFromTokensMem(JsonLexer.rules, tokens)(
       using ClassTag.Char,
-      JsonManipulationBenchmarkUtils.zipperCacheUp,
-      JsonManipulationBenchmarkUtils.zipperCacheDown
+      state.zipperCacheUp,
+      state.zipperCacheDown
     )
     bh.consume(res.isDefined)
-    // assert(res.isDefined)
     bh.consume(res.get.size > 0)
-    // assert(res.get.size > 0)
   }
 
   @Benchmark
-  @BenchmarkMode(Array(Mode.AverageTime))
-  @OutputTimeUnit(TimeUnit.MICROSECONDS)
-  def lexAndCheckPrintableV3(bh: Blackhole): Unit = {
-    val (tokens, _) = Lexer.lexMem(JsonLexer.rules, JsonManipulationBenchmarkUtils.fileContents(file))(
+  def lexAndCheckPrintableV1_Warm(state: WarmLexAndPrintableV1State, bh: Blackhole): Unit = {
+    val (tokens, _) = Lexer.lexV1Mem(JsonLexer.rules, state.content)(
       using ClassTag.Char,
-      JsonManipulationBenchmarkUtils.zipperCacheUp,
-      JsonManipulationBenchmarkUtils.zipperCacheDown,
-      JsonManipulationBenchmarkUtils.furthestNullableCaches(file)
+      state.zipperCacheUp,
+      state.zipperCacheDown
     )
     val res = printableTokensFromTokensMem(JsonLexer.rules, tokens)(
       using ClassTag.Char,
-      JsonManipulationBenchmarkUtils.zipperCacheUp,
-      JsonManipulationBenchmarkUtils.zipperCacheDown
+      state.zipperCacheUp,
+      state.zipperCacheDown
     )
     bh.consume(res.isDefined)
-    // assert(res.isDefined)
     bh.consume(res.get.size > 0)
-    // assert(res.get.size > 0)
   }
 
   @Benchmark
-  @BenchmarkMode(Array(Mode.AverageTime))
-  @OutputTimeUnit(TimeUnit.MICROSECONDS)
-  def checkPrintableNonMem(bh: Blackhole): Unit = {
-    val tokens = JsonManipulationBenchmarkUtils.filePrintableTokens(file).tokens
+  def lexAndCheckPrintableV3(state: FreshLexAndPrintableV3State, bh: Blackhole): Unit = {
+    val (tokens, _) = Lexer.lexMem(JsonLexer.rules, state.content)(
+      using ClassTag.Char,
+      state.zipperCacheUp,
+      state.zipperCacheDown,
+      state.furthestNullableCache
+    )
+    val res = printableTokensFromTokensMem(JsonLexer.rules, tokens)(
+      using ClassTag.Char,
+      state.zipperCacheUp,
+      state.zipperCacheDown
+    )
+    bh.consume(res.isDefined)
+    bh.consume(res.get.size > 0)
+  }
+
+  @Benchmark
+  def lexAndCheckPrintableV3_Warm(state: WarmLexAndPrintableV3State, bh: Blackhole): Unit = {
+    val (tokens, _) = Lexer.lexMem(JsonLexer.rules, state.content)(
+      using ClassTag.Char,
+      state.zipperCacheUp,
+      state.zipperCacheDown,
+      state.furthestNullableCache
+    )
+    val res = printableTokensFromTokensMem(JsonLexer.rules, tokens)(
+      using ClassTag.Char,
+      state.zipperCacheUp,
+      state.zipperCacheDown
+    )
+    bh.consume(res.isDefined)
+    bh.consume(res.get.size > 0)
+  }
+
+  @Benchmark
+  def checkPrintableNonMem(state: PrintableTokensState, bh: Blackhole): Unit = {
+    val tokens = state.printableTokens.tokens
     val res = printableTokensFromTokens(JsonLexer.rules, tokens)
     bh.consume(res.isDefined)
-    // assert(res.isDefined)
     bh.consume(res.get.size > 0)
-    // assert(res.get.size > 0)
   }
 
   @Benchmark
-  @BenchmarkMode(Array(Mode.AverageTime))
-  @OutputTimeUnit(TimeUnit.MICROSECONDS)
-  def checkPrintableMemPreFilledCache(bh: Blackhole): Unit = {
-    val tokens = JsonManipulationBenchmarkUtils.filePrintableTokens(file).tokens
+  def checkPrintableMemPreFilledCache(state: WarmCheckPrintableState, bh: Blackhole): Unit = {
+    val tokens = state.printableTokens.tokens
     val res = printableTokensFromTokensMem(JsonLexer.rules, tokens)(
       using ClassTag.Char,
-      JsonManipulationBenchmarkUtils.zipperCacheUpInternal,
-      JsonManipulationBenchmarkUtils.zipperCacheDownInternal
+      state.zipperCacheUp,
+      state.zipperCacheDown
     )
     bh.consume(res.isDefined)
-    // assert(res.isDefined)
     bh.consume(res.get.size > 0)
-    // assert(res.get.size > 0)
   }
 
   @Benchmark
-  @BenchmarkMode(Array(Mode.AverageTime))
-  @OutputTimeUnit(TimeUnit.MICROSECONDS)
-  def sliceAndSort(bh: Blackhole): Unit = {
-    val printableTokens = JsonManipulationBenchmarkUtils.filePrintableTokens(file)
+  def sliceAndSort(state: PrintableTokensState, bh: Blackhole): Unit = {
+    val printableTokens = state.printableTokens
     val tokensSize = printableTokens.size
     val indices = indicesOfOpenBraces(printableTokens.tokens, tokensSize)
     val slices: Sequence[PrintableTokens[Char]] = slicesMulti(printableTokens, tokensSize, indices)
     val slicesWithIds = slices.map(JsonManipulationBenchmarkUtils.addId)
     val orderedSlices = sortObjectsByID(slicesWithIds)
     bh.consume(orderedSlices.size > 0)
-    // assert(orderedSlices.size > 0)
     val orderedSlicesWithoutIds = orderedSlices.map(JsonManipulationBenchmarkUtils.removeId)
     bh.consume(orderedSlicesWithoutIds.size > 0)
-    // assert(orderedSlicesWithoutIds.size > 0)
   }
 
-
   @Benchmark
-  @BenchmarkMode(Array(Mode.AverageTime))
-  @OutputTimeUnit(TimeUnit.MICROSECONDS)
-  def recombineSlices(bh: Blackhole): Unit = {
-    val orderedSlicesWithoutIds = JsonManipulationBenchmarkUtils.orderedSlicesWithoutIds(file)
+  def recombineSlices(state: OrderedSlicesState, bh: Blackhole): Unit = {
+    val orderedSlicesWithoutIds = state.orderedSlicesWithoutIds
     val sep = JsonManipulationBenchmarkUtils.commaNewLineSeparator
     bh.consume(orderedSlicesWithoutIds.size > 0)
-    // assert(orderedSlicesWithoutIds.size > 0)
     val recombined = recombineSlicesWithSep(orderedSlicesWithoutIds, sep, emptyPrintableTokens(JsonLexer.rules))
     bh.consume(recombined.isDefined)
-    // assert(recombined.isDefined)
-    val withBrackets = encloseInSep(recombined.get, JsonManipulationBenchmarkUtils.leftBracketSeparator, JsonManipulationBenchmarkUtils.rightBracketSeparator)
+    val withBrackets = encloseInSep(
+      recombined.get,
+      JsonManipulationBenchmarkUtils.leftBracketSeparator,
+      JsonManipulationBenchmarkUtils.rightBracketSeparator
+    )
     bh.consume(withBrackets.isDefined)
-    // assert(withBrackets.isDefined)
     bh.consume(withBrackets.get.size > 0)
-    // assert(withBrackets.get.size > 0)
   }
 
-
   @Benchmark
-  @BenchmarkMode(Array(Mode.AverageTime))
-  @OutputTimeUnit(TimeUnit.MICROSECONDS)
-  def checkPredicateAndRecombineWithoutWrapper(bh: Blackhole): Unit = {
-    val orderedSlicesWithoutIdsJustTokens = JsonManipulationBenchmarkUtils.orderedSlicesWithoutIdsJustTokens(file)
-    val sep = JsonManipulationBenchmarkUtils.commaNewLineSeparator
+  def checkPredicateAndRecombineWithoutWrapper(state: OrderedSlicesTokensState, bh: Blackhole): Unit = {
+    val orderedSlicesWithoutIdsJustTokens = state.orderedSlicesWithoutIdsJustTokens
     bh.consume(orderedSlicesWithoutIdsJustTokens.size > 0)
-    // assert(orderedSlicesWithoutIdsJustTokens.size > 0)
     val length = orderedSlicesWithoutIdsJustTokens.size
     var i = BigInt(0)
     var recombined = emptySeq[Token[Char]]()
@@ -233,24 +213,327 @@ class JsonManipulationBenchmark {
       val tokens = orderedSlicesWithoutIdsJustTokens(i)
       recombined = recombined ++ tokens
       if i < length - 1 then {
-        recombined = recombined ++ singletonSeq(JsonManipulationBenchmarkUtils.commaToken) ++ singletonSeq(JsonManipulationBenchmarkUtils.newLineToken)
+        recombined =
+          recombined ++
+            singletonSeq(JsonManipulationBenchmarkUtils.commaToken) ++
+            singletonSeq(JsonManipulationBenchmarkUtils.newLineToken)
       }
       i = i + 1
     }
     bh.consume(recombined.size > 0)
-    // asseert(recombined.size > 0)
-    val withBrackets = singletonSeq(JsonManipulationBenchmarkUtils.leftBracketToken) ++ recombined ++ singletonSeq(JsonManipulationBenchmarkUtils.rightBracketToken)
+    val withBrackets =
+      singletonSeq(JsonManipulationBenchmarkUtils.leftBracketToken) ++
+        recombined ++
+        singletonSeq(JsonManipulationBenchmarkUtils.rightBracketToken)
     val printable = Lexer.separableTokensMem(withBrackets, JsonLexer.rules)(
       using ClassTag.Char,
-      JsonManipulationBenchmarkUtils.zipperCacheUpInternal,
-      JsonManipulationBenchmarkUtils.zipperCacheDownInternal
+      state.zipperCacheUp,
+      state.zipperCacheDown
     )
     bh.consume(printable)
-    // assert(printable)
   }
 
+  @Benchmark
+  def checkPredicateAndRecombineWithoutWrapper_Warm(state: WarmOrderedSlicesTokensState, bh: Blackhole): Unit = {
+    val orderedSlicesWithoutIdsJustTokens = state.orderedSlicesWithoutIdsJustTokens
+    bh.consume(orderedSlicesWithoutIdsJustTokens.size > 0)
+    val length = orderedSlicesWithoutIdsJustTokens.size
+    var i = BigInt(0)
+    var recombined = emptySeq[Token[Char]]()
+    while i < length do {
+      val tokens = orderedSlicesWithoutIdsJustTokens(i)
+      recombined = recombined ++ tokens
+      if i < length - 1 then {
+        recombined =
+          recombined ++
+            singletonSeq(JsonManipulationBenchmarkUtils.commaToken) ++
+            singletonSeq(JsonManipulationBenchmarkUtils.newLineToken)
+      }
+      i = i + 1
+    }
+    bh.consume(recombined.size > 0)
+    val withBrackets =
+      singletonSeq(JsonManipulationBenchmarkUtils.leftBracketToken) ++
+        recombined ++
+        singletonSeq(JsonManipulationBenchmarkUtils.rightBracketToken)
+    val printable = Lexer.separableTokensMem(withBrackets, JsonLexer.rules)(
+      using ClassTag.Char,
+      state.zipperCacheUp,
+      state.zipperCacheDown
+    )
+    bh.consume(printable)
+  }
+}
 
- 
+@State(Scope.Thread)
+class FileState {
+  @Param(Array(
+    "0001_2079chars.json",
+    "0002_4157chars.json",
+    "0010_20776chars.json",
+    "0015_31167chars.json",
+    "0020_41560chars.json",
+    "0025_51950chars.json",
+    "0030_62339chars.json",
+    "0035_72724chars.json",
+    "0050_103898chars.json",
+    "0070_145455chars.json",
+    "0090_187013chars.json",
+    "0120_249345chars.json",
+    "0150_311687chars.json",
+    "0200_415578chars.json",
+    "0300_623361chars.json",
+    "0400_831171chars.json",
+    "0500_1038945chars.json",
+  ))
+  var file: String = uninitialized
+
+  var content: Sequence[Char] = uninitialized
+
+  @Setup(Level.Trial)
+  def setupFile(): Unit = {
+    content = JsonManipulationBenchmarkUtils.fileContents(file)
+  }
+}
+
+@State(Scope.Thread)
+class FreshLexV1State extends FileState {
+  var zipperCacheUp: MemoisationZipper.CacheUp[Char] = uninitialized
+  var zipperCacheDown: MemoisationZipper.CacheDown[Char] = uninitialized
+
+  @Setup(Level.Iteration)
+  def setupCaches(): Unit = {
+    zipperCacheUp = MemoisationZipper.emptyUp(ContextCharHashable)
+    zipperCacheDown = MemoisationZipper.emptyDown(RegexContextCharHashable)
+  }
+}
+
+@State(Scope.Thread)
+class WarmLexV1State extends FreshLexV1State {
+  @Setup(Level.Iteration)
+  def warm(): Unit = {
+    val (_, suffix) = Lexer.lexV1Mem(JsonLexer.rules, content)(
+      using ClassTag.Char,
+      zipperCacheUp,
+      zipperCacheDown
+    )
+    assert(suffix.isEmpty)
+  }
+}
+
+@State(Scope.Thread)
+class FreshLexV3State extends FileState {
+  var zipperCacheUp: MemoisationZipper.CacheUp[Char] = uninitialized
+  var zipperCacheDown: MemoisationZipper.CacheDown[Char] = uninitialized
+  var furthestNullableCache: MemoisationZipper.CacheFurthestNullable[Char] = uninitialized
+
+  @Setup(Level.Iteration)
+  def setupCaches(): Unit = {
+    zipperCacheUp = MemoisationZipper.emptyUp(ContextCharHashable)
+    zipperCacheDown = MemoisationZipper.emptyDown(RegexContextCharHashable)
+    furthestNullableCache =
+      MemoisationZipper.emptyFurthestNullableCache[Char](
+        ExampleUtils.ZipperBigIntBigIntHashable,
+        content,
+        JsonLexer.rules
+      )
+  }
+}
+
+@State(Scope.Thread)
+class WarmLexV3State extends FreshLexV3State {
+  @Setup(Level.Iteration)
+  def warm(): Unit = {
+    val (_, suffix) = Lexer.lexMem(JsonLexer.rules, content)(
+      using ClassTag.Char,
+      zipperCacheUp,
+      zipperCacheDown,
+      furthestNullableCache
+    )
+    assert(suffix.isEmpty)
+  }
+}
+
+@State(Scope.Thread)
+class FreshLexAndPrintableV1State extends FileState {
+  var zipperCacheUp: MemoisationZipper.CacheUp[Char] = uninitialized
+  var zipperCacheDown: MemoisationZipper.CacheDown[Char] = uninitialized
+
+  @Setup(Level.Iteration)
+  def setupCaches(): Unit = {
+    zipperCacheUp = MemoisationZipper.emptyUp(ContextCharHashable)
+    zipperCacheDown = MemoisationZipper.emptyDown(RegexContextCharHashable)
+  }
+}
+
+@State(Scope.Thread)
+class WarmLexAndPrintableV1State extends FreshLexAndPrintableV1State {
+  @Setup(Level.Iteration)
+  def warm(): Unit = {
+    val (tokens, suffix) = Lexer.lexV1Mem(JsonLexer.rules, content)(
+      using ClassTag.Char,
+      zipperCacheUp,
+      zipperCacheDown
+    )
+    assert(suffix.isEmpty)
+    val res = printableTokensFromTokensMem(JsonLexer.rules, tokens)(
+      using ClassTag.Char,
+      zipperCacheUp,
+      zipperCacheDown
+    )
+    assert(res.isDefined)
+  }
+}
+
+@State(Scope.Thread)
+class FreshLexAndPrintableV3State extends FileState {
+  var zipperCacheUp: MemoisationZipper.CacheUp[Char] = uninitialized
+  var zipperCacheDown: MemoisationZipper.CacheDown[Char] = uninitialized
+  var furthestNullableCache: MemoisationZipper.CacheFurthestNullable[Char] = uninitialized
+
+  @Setup(Level.Iteration)
+  def setupCaches(): Unit = {
+    zipperCacheUp = MemoisationZipper.emptyUp(ContextCharHashable)
+    zipperCacheDown = MemoisationZipper.emptyDown(RegexContextCharHashable)
+    furthestNullableCache =
+      MemoisationZipper.emptyFurthestNullableCache[Char](
+        ExampleUtils.ZipperBigIntBigIntHashable,
+        content,
+        JsonLexer.rules
+      )
+  }
+}
+
+@State(Scope.Thread)
+class WarmLexAndPrintableV3State extends FreshLexAndPrintableV3State {
+  @Setup(Level.Iteration)
+  def warm(): Unit = {
+    val (tokens, suffix) = Lexer.lexMem(JsonLexer.rules, content)(
+      using ClassTag.Char,
+      zipperCacheUp,
+      zipperCacheDown,
+      furthestNullableCache
+    )
+    assert(suffix.isEmpty)
+    val res = printableTokensFromTokensMem(JsonLexer.rules, tokens)(
+      using ClassTag.Char,
+      zipperCacheUp,
+      zipperCacheDown
+    )
+    assert(res.isDefined)
+  }
+}
+
+@State(Scope.Thread)
+class PrintableTokensState extends FileState {
+  var printableTokens: PrintableTokens[Char] = uninitialized
+
+  @Setup(Level.Iteration)
+  def setupPrintableTokens(): Unit = {
+    val lexUp = MemoisationZipper.emptyUp(ContextCharHashable)
+    val lexDown = MemoisationZipper.emptyDown(RegexContextCharHashable)
+    val furthestNullableCache =
+      MemoisationZipper.emptyFurthestNullableCache[Char](
+        ExampleUtils.ZipperBigIntBigIntHashable,
+        content,
+        JsonLexer.rules
+      )
+
+    val (tokens, suffix) = Lexer.lexMem(JsonLexer.rules, content)(
+      using ClassTag.Char,
+      lexUp,
+      lexDown,
+      furthestNullableCache
+    )
+    assert(suffix.isEmpty)
+
+    printableTokens = printableTokensFromTokensMem(JsonLexer.rules, tokens)(
+      using ClassTag.Char,
+      MemoisationZipper.emptyUp(ContextCharHashable),
+      MemoisationZipper.emptyDown(RegexContextCharHashable)
+    ).get
+  }
+}
+
+@State(Scope.Thread)
+class WarmCheckPrintableState extends PrintableTokensState {
+  var zipperCacheUp: MemoisationZipper.CacheUp[Char] = uninitialized
+  var zipperCacheDown: MemoisationZipper.CacheDown[Char] = uninitialized
+
+  @Setup(Level.Iteration)
+  def setupWarmCache(): Unit = {
+    zipperCacheUp = MemoisationZipper.emptyUp(ContextCharHashable)
+    zipperCacheDown = MemoisationZipper.emptyDown(RegexContextCharHashable)
+    val res = printableTokensFromTokensMem(JsonLexer.rules, printableTokens.tokens)(
+      using ClassTag.Char,
+      zipperCacheUp,
+      zipperCacheDown
+    )
+    assert(res.isDefined)
+  }
+}
+
+@State(Scope.Thread)
+class OrderedSlicesState extends PrintableTokensState {
+  var orderedSlicesWithoutIds: Sequence[PrintableTokens[Char]] = uninitialized
+
+  @Setup(Level.Iteration)
+  def setupOrderedSlices(): Unit = {
+    val pt = printableTokens
+    val tokensSize = pt.size
+    val indices = indicesOfOpenBraces(pt.tokens, tokensSize)
+    val slices: Sequence[PrintableTokens[Char]] = slicesMulti(pt, tokensSize, indices)
+    val slicesWithIds = slices.map(JsonManipulationBenchmarkUtils.addId)
+    val orderedSlices = sortObjectsByID(slicesWithIds)
+    assert(orderedSlices.size > 0)
+    orderedSlicesWithoutIds = orderedSlices.map(JsonManipulationBenchmarkUtils.removeId)
+    assert(orderedSlicesWithoutIds.size > 0)
+  }
+}
+
+@State(Scope.Thread)
+class OrderedSlicesTokensState extends OrderedSlicesState {
+  var orderedSlicesWithoutIdsJustTokens: Sequence[Sequence[Token[Char]]] = uninitialized
+  var zipperCacheUp: MemoisationZipper.CacheUp[Char] = uninitialized
+  var zipperCacheDown: MemoisationZipper.CacheDown[Char] = uninitialized
+
+  @Setup(Level.Iteration)
+  def setupTokensAndCaches(): Unit = {
+    orderedSlicesWithoutIdsJustTokens = orderedSlicesWithoutIds.map(_.tokens)
+    zipperCacheUp = MemoisationZipper.emptyUp(ContextCharHashable)
+    zipperCacheDown = MemoisationZipper.emptyDown(RegexContextCharHashable)
+  }
+}
+
+@State(Scope.Thread)
+class WarmOrderedSlicesTokensState extends OrderedSlicesTokensState {
+  @Setup(Level.Iteration)
+  def warm(): Unit = {
+    val length = orderedSlicesWithoutIdsJustTokens.size
+    var i = BigInt(0)
+    var recombined = emptySeq[Token[Char]]()
+    while i < length do {
+      val tokens = orderedSlicesWithoutIdsJustTokens(i)
+      recombined = recombined ++ tokens
+      if i < length - 1 then {
+        recombined =
+          recombined ++
+            singletonSeq(JsonManipulationBenchmarkUtils.commaToken) ++
+            singletonSeq(JsonManipulationBenchmarkUtils.newLineToken)
+      }
+      i = i + 1
+    }
+    val withBrackets =
+      singletonSeq(JsonManipulationBenchmarkUtils.leftBracketToken) ++
+        recombined ++
+        singletonSeq(JsonManipulationBenchmarkUtils.rightBracketToken)
+    val printable = Lexer.separableTokensMem(withBrackets, JsonLexer.rules)(
+      using ClassTag.Char,
+      zipperCacheUp,
+      zipperCacheDown
+    )
+    assert(printable)
+  }
 }
 
 object JsonManipulationBenchmarkUtils {
@@ -272,79 +555,25 @@ object JsonManipulationBenchmarkUtils {
     "0300_623361chars.json",
     "0400_831171chars.json",
     "0500_1038945chars.json",
-    // "0700_1454528chars.json",
-    // "0900_1870102chars.json",
-    // "1200_2493458chars.json",
-    // "1500_3116843chars.json",
-    // "2000_4155777chars.json",
-    // "3000_6233659chars.json",
-    // "4000_8311543chars.json",
-    // "5000_10389457chars.json",
-    // "7000_14545249chars.json",
-    // "9000_18700977chars.json",
   )
-  val fileContents: Map[String, Sequence[Char]] = fileNames.map(name => {
+
+  val fileContents: Map[String, Sequence[Char]] = fileNames.map { name =>
     val source = scala.io.Source.fromFile(s"src/main/scala/com/ziplex/benchmark/res/json-manip/$name")
     val lines = try source.mkString.toStainless finally source.close()
-    (name -> lines)
-  }).toMap
+    name -> lines
+  }.toMap
 
-  lazy val filePrintableTokens: Map[String, PrintableTokens[Char]] = fileContents.map { case (name, content) =>
-    val (tokens, suffix) = Lexer.lexMem(JsonLexer.rules, content)(
-      using ClassTag.Char,
-      zipperCacheUpInternal,
-      zipperCacheDownInternal,
-      furthestNullableCachesInternal(name)
-    )
-    assert(suffix.isEmpty)
-    (name -> printableTokensFromTokensMem(JsonLexer.rules, tokens).get)
-  }
+  val (commaNewLineSeparator, leftBracketSeparator, rightBracketSeparator) =
+    (createCommaNewLineSeparator.get, createLeftBracketSeparator.get, createRightBracketSeparator.get)
 
-  lazy val orderedSlicesWithoutIds: Map[String, Sequence[PrintableTokens[Char]]] = filePrintableTokens.map { case (name, pt) =>
-    val tokensSize = pt.size
-    val indices = indicesOfOpenBraces(pt.tokens, tokensSize)
-    val slices: Sequence[PrintableTokens[Char]] = slicesMulti(pt, tokensSize, indices)
-    val slicesWithIds = slices.map(JsonManipulationBenchmarkUtils.addId)
-    val orderedSlices = sortObjectsByID(slicesWithIds)
-    assert(orderedSlices.size > 0)
-    val orderedSlicesWithoutIds = orderedSlices.map(JsonManipulationBenchmarkUtils.removeId)
-    assert(orderedSlicesWithoutIds.size > 0)
-    (name -> orderedSlicesWithoutIds)
-  }
-
-  lazy val orderedSlicesWithoutIdsJustTokens: Map[String, Sequence[Sequence[Token[Char]]]] = orderedSlicesWithoutIds.map { case (name, pts) =>
-    (name -> pts.map(_.tokens))
-  }
-
-  given zipperCacheUpInternal: MemoisationZipper.CacheUp[Char] = MemoisationZipper.emptyUp(ContextCharHashable)
-  given zipperCacheDownInternal: MemoisationZipper.CacheDown[Char] = MemoisationZipper.emptyDown(RegexContextCharHashable)
-  val findLongestMatchCachesInternal: Map[String, MemoisationZipper.CacheFindLongestMatch[Char]] = 
-    (fileContents).map(kv => 
-      (kv._1, MemoisationZipper.emptyFindLongestMatch[Char](ExampleUtils.ZipperBigIntHashable, kv._2))
-    )
-  val furthestNullableCachesInternal: Map[String, MemoisationZipper.CacheFurthestNullable[Char]] = 
-    (fileContents).map(kv => 
-      (kv._1, MemoisationZipper.emptyFurthestNullableCache[Char](ExampleUtils.ZipperBigIntBigIntHashable, kv._2, JsonLexer.rules))
-    )
-
-  val (commaNewLineSeparator, leftBracketSeparator, rightBracketSeparator) = (createCommaNewLineSeparator.get, createLeftBracketSeparator.get, createRightBracketSeparator.get)
-
-  val commaToken = Token(KeywordValueInjection.injection(singletonSeq(',')), JsonLexer.commaRule, BigInt(1), stainless.collection.List(','))
-  val newLineToken = Token(WhitespaceValueInjection.injection(singletonSeq('\n')), JsonLexer.whitespaceRule, BigInt(1), stainless.collection.List('\n'))
-  val leftBracketToken = Token(KeywordValueInjection.injection(singletonSeq('[')), JsonLexer.lBracketRule, BigInt(1), stainless.collection.List('['))
-  val rightBracketToken = Token(KeywordValueInjection.injection(singletonSeq(']')), JsonLexer.rBracketRule, BigInt(1), stainless.collection.List(']'))
-
-  val zipperCacheUp: MemoisationZipper.CacheUp[Char] = MemoisationZipper.emptyUp(ContextCharHashable)
-  val zipperCacheDown: MemoisationZipper.CacheDown[Char] = MemoisationZipper.emptyDown(RegexContextCharHashable)
-  val findLongestMatchCaches: Map[String, MemoisationZipper.CacheFindLongestMatch[Char]] = 
-    (fileContents).map(kv => 
-      (kv._1, MemoisationZipper.emptyFindLongestMatch[Char](ExampleUtils.ZipperBigIntHashable, kv._2))
-    )
-  val furthestNullableCaches: Map[String, MemoisationZipper.CacheFurthestNullable[Char]] = 
-    (fileContents).map(kv => 
-      (kv._1, MemoisationZipper.emptyFurthestNullableCache[Char](ExampleUtils.ZipperBigIntBigIntHashable, kv._2, JsonLexer.rules))
-    )
-
+  val commaToken =
+    Token(KeywordValueInjection.injection(singletonSeq(',')), JsonLexer.commaRule, BigInt(1), stainless.collection.List(','))
+  val newLineToken =
+    Token(WhitespaceValueInjection.injection(singletonSeq('\n')), JsonLexer.whitespaceRule, BigInt(1), stainless.collection.List('\n'))
+  val leftBracketToken =
+    Token(KeywordValueInjection.injection(singletonSeq('[')), JsonLexer.lBracketRule, BigInt(1), stainless.collection.List('['))
+  val rightBracketToken =
+    Token(KeywordValueInjection.injection(singletonSeq(']')), JsonLexer.rBracketRule, BigInt(1), stainless.collection.List(']'))
 
   def addId(pt: PrintableTokens[Char]): (BigInt, PrintableTokens[Char]) = (parseID(pt), pt)
   def removeId(t: (BigInt, PrintableTokens[Char])): PrintableTokens[Char] = t._2
