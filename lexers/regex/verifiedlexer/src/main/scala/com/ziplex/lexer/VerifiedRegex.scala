@@ -1516,8 +1516,6 @@ object ZipperRegex {
                     val derivZR1 = derivationStepZipper(zR1, shd)
                     val derivZR2 = derivationStepZipper(zR2, shd)
 
-                    val derivUpZR1 = derivationStepZipperUp(Context(List(r1)), shd)
-                    val derivUpZR2 = derivationStepZipperUp(Context(List(r2)), shd)
                     SetUtils.lemmaFlatMapOnSingletonSet(zR1, Context(List(r1)), (c: Context[C]) => derivationStepZipperUp(c, shd))
                     SetUtils.lemmaFlatMapOnSingletonSet(zR2, Context(List(r2)), (c: Context[C]) => derivationStepZipperUp(c, shd))
 
@@ -1597,9 +1595,7 @@ object ZipperRegex {
                         assert(r == generalisedConcat(hd.exprs))
                         assert(hd.exprs == List(r))
                         assert(zipperDepth(List(Context(List(r1, r2)))) < zipperDepth(List(Context(List(r))))) // Measure
-                        assert(zipperDepth(List(Context(List(r1, r2)))) < zipperDepth(List(Context(List(r))))) // Measure
                         theoremZipperRegexEquiv(zR1, List(Context(List(r1, r2))), Concat(r1, r2), s)
-                        theoremZipperRegexEquiv(zR2, List(Context(List(r2))), r2, s)
                       }
                     } else {
                       // Here, we are in the case where the Concat is the result of generalisedConcat
@@ -1721,12 +1717,10 @@ object ZipperRegex {
                           val zVirt2 = Set(Context(Cons(rTwo, tlExp)))
 
                           val zVirt1Deriv = derivationStepZipper(zVirt1, shd)
-                          val zVirt1DerivUp = derivationStepZipperUp(Context(Cons(rOne, Cons(rTwo, tlExp))), shd)
                           SetUtils.lemmaFlatMapOnSingletonSet(zVirt1, Context(Cons(rOne, Cons(rTwo, tlExp))), (c: Context[C]) => derivationStepZipperUp(c, shd))
                           assert(zVirt1Deriv == derivationStepZipperDown(rOne, Context(Cons(rTwo, tlExp)), shd) ++ derivationStepZipperUp(Context(Cons(rTwo, tlExp)), shd))
 
                           val zVirt2Deriv = derivationStepZipper(zVirt2, shd)
-                          val zVirt2DerivUp = derivationStepZipperUp(Context(Cons(rTwo, tlExp)), shd)
                           SetUtils.lemmaFlatMapOnSingletonSet(zVirt2, Context(Cons(rTwo, tlExp)), (c: Context[C]) => derivationStepZipperUp(c, shd))
 
                           if(rTwo.nullable){
@@ -1771,7 +1765,6 @@ object ZipperRegex {
                           val zVirt1 = Set(Context(Cons(rOne, Cons(rTwo, tlExp))))
 
                           val zVirt1Deriv = derivationStepZipper(zVirt1, shd)
-                          val zVirt1DerivUp = derivationStepZipperUp(Context(Cons(rOne, Cons(rTwo, tlExp))), shd)
                           SetUtils.lemmaFlatMapOnSingletonSet(zVirt1, Context(Cons(rOne, Cons(rTwo, tlExp))), (c: Context[C]) => derivationStepZipperUp(c, shd))
                           assert(zVirt1Deriv == derivationStepZipperDown(rOne, Context(Cons(rTwo, tlExp)), shd))
 
@@ -1808,8 +1801,6 @@ object ZipperRegex {
                           val zR1 = Set(Context(Cons(rInner, Cons(Star(rInner), tlExp))))
                           val derivZR1 = derivationStepZipper(zR1, shd)
 
-                          val derivUpZR1 = derivationStepZipperUp(Context(Cons(rInner, Cons(Star(rInner), tlExp))), shd)
-
                           SetUtils.lemmaFlatMapOnSingletonSet(zR1, Context(Cons(rInner, Cons(Star(rInner), tlExp))), (c: Context[C]) => derivationStepZipperUp(c, shd))
                           val derivDownZR1 = derivationStepZipperDown(rInner, Context(Cons(Star(rInner), tlExp)), shd)
                           
@@ -1826,11 +1817,7 @@ object ZipperRegex {
                           val subZR1 = Set(Context(List(rInner)))
                           val subZR2 = Set(Context(Cons(Star(rInner), tlExp)))
 
-                          val derivSubZR1 = derivationStepZipper(subZR1, shd)
                           val derivSubZR2 = derivationStepZipper(subZR2, shd)
-
-                          val derivUpSubZR1 = derivationStepZipperUp(Context(List(rInner)), shd)
-                          val derivUpSubZR2 = derivationStepZipperUp(Context(Cons(Star(rInner), tlExp)), shd)
 
                           SetUtils.lemmaFlatMapOnSingletonSet(subZR1, Context(List(rInner)), (c: Context[C]) => derivationStepZipperUp(c, shd))
                           SetUtils.lemmaFlatMapOnSingletonSet(subZR2, Context(Cons(Star(rInner), tlExp)), (c: Context[C]) => derivationStepZipperUp(c, shd))
@@ -1909,7 +1896,6 @@ object ZipperRegex {
                               if(matchZipper(zDerivDown, stl)){
                                 // Then we know that
                                 assert(matchZipper(zR1, s))
-                                assert(zR1 == Set(Context(Cons(rInner, Cons(Star(rInner), tlExp)))))
                                 assert(zR1 == Set(Context(Cons(rInner, Cons(Star(rInner), tlExp)))))
 
                                 SetUtils.lemmaMapOnSingletonSet(subZR1, Context(List(rInner)), c => c.concat(Context(Cons(Star(rInner), tlExp))))
@@ -2064,8 +2050,6 @@ object ZipperRegex {
                     val zR1 = Set(Context(List(rInner, Star(rInner))))
                     val derivZR1 = derivationStepZipper(zR1, shd)
 
-                    val derivUpZR1 = derivationStepZipperUp(Context(List(rInner, Star(rInner))), shd)
-
                     SetUtils.lemmaFlatMapOnSingletonSet(zR1, Context(List(rInner, Star(rInner))), (c: Context[C]) => derivationStepZipperUp(c, shd))
                     val derivDownZR1 = derivationStepZipperDown(rInner, Context(List(Star(rInner))), shd)
 
@@ -2082,11 +2066,7 @@ object ZipperRegex {
                     val subZR1 = Set(Context(List(rInner)))
                     val subZR2 = Set(Context(List(Star(rInner))))
 
-                    val derivSubZR1 = derivationStepZipper(subZR1, shd)
                     val derivSubZR2 = derivationStepZipper(subZR2, shd)
-
-                    val derivUpSubZR1 = derivationStepZipperUp(Context(List(rInner)), shd)
-                    val derivUpSubZR2 = derivationStepZipperUp(Context(List(Star(rInner))), shd)
 
                     SetUtils.lemmaFlatMapOnSingletonSet(subZR1, Context(List(rInner)), (c: Context[C]) => derivationStepZipperUp(c, shd))
                     SetUtils.lemmaFlatMapOnSingletonSet(subZR2, Context(List(Star(rInner))), (c: Context[C]) => derivationStepZipperUp(c, shd))
