@@ -45,6 +45,8 @@ import stainless.lang.ghost as ghostExpr
 import stainless.lang.unfold
 import stainless.proof.check
 import stainless.lang.StaticChecks.*
+import stainless.annotation.opaque
+import stainless.annotation.inlineOnce
 // END uncomment for verification --------------------------------------------
 // BEGIN imports for benchmarking -------------------------------------------
 // import stainless.lang.{ghost => _, decreases => _, unfold => _, _}
@@ -262,6 +264,8 @@ object JsonManipulationExample:
 
 
 
+  @opaque
+  @inlineOnce
   def createCommaNewLineSeparator(using cacheUp: MemoisationZipper.CacheUp[Char], cacheDown: MemoisationZipper.CacheDown[Char]): Option[PrintableTokens[Char]] = {
     require(!JsonLexer.rules.isEmpty)
     require(Lexer.rulesInvariant(JsonLexer.rules))
@@ -275,6 +279,8 @@ object JsonManipulationExample:
       printableTokensFromTokens(JsonLexer.rules, sepSequence)
   }.ensuring(res => res.isEmpty || usesJsonRules(res.get))
 
+  @opaque
+  @inlineOnce
   def createLeftBracketSeparator(using cacheUp: MemoisationZipper.CacheUp[Char], cacheDown: MemoisationZipper.CacheDown[Char]): Option[PrintableTokens[Char]] = {
     require(!JsonLexer.rules.isEmpty)
     require(Lexer.rulesInvariant(JsonLexer.rules))
@@ -287,6 +293,8 @@ object JsonManipulationExample:
       printableTokensFromTokens(JsonLexer.rules, sepSequence)
   }.ensuring(res => res.isEmpty || usesJsonRules(res.get))
 
+  @opaque
+  @inlineOnce
   def createRightBracketSeparator(using cacheUp: MemoisationZipper.CacheUp[Char], cacheDown: MemoisationZipper.CacheDown[Char]): Option[PrintableTokens[Char]] = {
     require(!JsonLexer.rules.isEmpty)
     require(Lexer.rulesInvariant(JsonLexer.rules))
