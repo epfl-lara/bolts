@@ -2,7 +2,7 @@
   "fname": "62.json",
   "input_len": 14377,
   "times": [
-    0.022607309000000003
+    0.022405489
   ],
   "rest_len": 0,
   "sem_tokens_len": "Some 4464"
