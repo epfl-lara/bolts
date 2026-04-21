@@ -1975,8 +1975,12 @@ object VerifiedLexer {
       require(cacheDown.valid)
       require(ListUtils.isSuffix(input.list, totalInput.list))
 
-      val (longestPrefix, suffix) = findLongestMatchWithZipperSequenceV3MemDeriv(rule.regex, input, totalInput)
-       if (longestPrefix.isEmpty) {
+      val (longestPrefix: Sequence[C], suffix: Sequence[C]) = findLongestMatchWithZipperSequenceV3MemDeriv(rule.regex, input, totalInput)
+      assert((longestPrefix, suffix) == findLongestMatch(rule.regex, input.list))
+      unfold(findLongestMatchWithZipperSequenceV3(rule.regex, input, totalInput))
+      assert(findLongestMatchWithZipperSequenceV3(rule.regex, input, totalInput) == findLongestMatch(rule.regex, input.list))
+      // assert(findLongestMatchWithZipperSequenceV3(rule.regex, input, totalInput) == (longestPrefix, suffix))
+      if (longestPrefix.isEmpty) {
         None[(Token[C], Sequence[C])]()
       } else {
         ghostExpr({
@@ -2009,7 +2013,7 @@ object VerifiedLexer {
                        (if res.isDefined then res.get._1 == maxPrefixOneRule(rule, input.list).get._1 && 
                           res.get._2.list == maxPrefixOneRule(rule, input.list).get._2
                        else true) &&
-                       cacheUp.valid && cacheDown.valid)
+                       cacheUp.valid && cacheDown.valid && res == maxPrefixOneRuleZipperSequenceV3(rule, input, totalInput))
 
 
     def maxPrefixOneRuleZipperSequenceV3Mem[C: ClassTag](
