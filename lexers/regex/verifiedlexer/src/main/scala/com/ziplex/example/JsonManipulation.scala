@@ -110,6 +110,8 @@ object JsonManipulationExample:
     * @param cacheDown
     * @return
     */
+  @opaque
+  @inlineOnce
   def lexAndCheckPrintable(input: Sequence[Char])(using cacheUp: MemoisationZipper.CacheUp[Char], cacheDown: MemoisationZipper.CacheDown[Char], cacheFurthestNullable: CacheFurthestNullable[Char]): Option[PrintableTokens[Char]] = {
     require(!JsonLexer.rules.isEmpty)
     require(Lexer.rulesInvariant(JsonLexer.rules))
@@ -393,6 +395,7 @@ object JsonManipulationExample:
     else
       lexAndCheckPrintable(input) match {
         case Some(printableTokens) if printableTokens.size > 0 => {
+          assert(usesJsonRules(printableTokens))
           // Now we have a PrintableTokens instance with our tokens, with the invariant that they are separable, as an R-Path
           processJson(printableTokens) match {
             case Some(newTokens) => Some(newTokens.print())
