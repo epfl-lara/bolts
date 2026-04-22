@@ -83,27 +83,27 @@ class JsonManipulationBenchmark {
     bh.consume(suffix.isEmpty)
   }
 
-  @Benchmark
-  def lexV1NonMem(state: FileStateJsonManipulation, bh: Blackhole): Unit = {
-    val (tokens, suffix) = Lexer.lexV1(JsonLexer.rules, state.content)
-    bh.consume(suffix.isEmpty)
-  }
+  // @Benchmark
+  // def lexV1NonMem(state: FileStateJsonManipulation, bh: Blackhole): Unit = {
+  //   val (tokens, suffix) = Lexer.lexV1(JsonLexer.rules, state.content)
+  //   bh.consume(suffix.isEmpty)
+  // }
 
-  @Benchmark
-  def lexAndCheckPrintableV1(state: FreshLexAndPrintableV1State, bh: Blackhole): Unit = {
-    val (tokens, _) = Lexer.lexV1Mem(JsonLexer.rules, state.content)(
-      using ClassTag.Char,
-      state.zipperCacheUp,
-      state.zipperCacheDown
-    )
-    val res = printableTokensFromTokensMem(JsonLexer.rules, tokens)(
-      using ClassTag.Char,
-      state.zipperCacheUp,
-      state.zipperCacheDown
-    )
-    bh.consume(res.isDefined)
-    bh.consume(res.get.size > 0)
-  }
+  // @Benchmark
+  // def lexAndCheckPrintableV1(state: FreshLexAndPrintableV1State, bh: Blackhole): Unit = {
+  //   val (tokens, _) = Lexer.lexV1Mem(JsonLexer.rules, state.content)(
+  //     using ClassTag.Char,
+  //     state.zipperCacheUp,
+  //     state.zipperCacheDown
+  //   )
+  //   val res = printableTokensFromTokensMem(JsonLexer.rules, tokens)(
+  //     using ClassTag.Char,
+  //     state.zipperCacheUp,
+  //     state.zipperCacheDown
+  //   )
+  //   bh.consume(res.isDefined)
+  //   bh.consume(res.get.size > 0)
+  // }
 
   // @Benchmark
   // def lexAndCheckPrintableV1_Warm(state: WarmLexAndPrintableV1State, bh: Blackhole): Unit = {
@@ -481,6 +481,7 @@ class OrderedSlicesState extends PrintableTokensState {
 
   @Setup(Level.Iteration)
   def setupOrderedSlices(): Unit = {
+    setupPrintableTokens()
     val pt = printableTokens
     val tokensSize = pt.size
     val indices = indicesOfOpenBraces(pt.tokens, tokensSize)
@@ -501,6 +502,7 @@ class OrderedSlicesTokensState extends OrderedSlicesState {
 
   @Setup(Level.Iteration)
   def setupTokensAndCaches(): Unit = {
+    setupOrderedSlices()
     orderedSlicesWithoutIdsJustTokens = orderedSlicesWithoutIds.map(_.tokens)
     zipperCacheUp = MemoisationZipper.emptyUp(ContextCharHashable)
     zipperCacheDown = MemoisationZipper.emptyDown(RegexContextCharHashable)
@@ -511,6 +513,7 @@ class OrderedSlicesTokensState extends OrderedSlicesState {
 class WarmOrderedSlicesTokensState extends OrderedSlicesTokensState {
   @Setup(Level.Iteration)
   def warm(): Unit = {
+    setupTokensAndCaches()
     val length = orderedSlicesWithoutIdsJustTokens.size
     var i = BigInt(0)
     var recombined = emptySeq[Token[Char]]()

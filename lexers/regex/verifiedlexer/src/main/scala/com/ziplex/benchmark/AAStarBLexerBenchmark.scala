@@ -33,15 +33,15 @@ import java.io.File
 @Fork(jvmArgsAppend = Array("-Xss1G", "-Xmx32g"))
 class AAStarBLexerBenchmark {
 
-  @Benchmark
-  def lex_ZipperV1Mem(state: FreshAAStarBLexV1MemState, bh: Blackhole): Unit = {
-    val (tokens, suffix) = Lexer.lexV1Mem(AAStarBLexer.rules, state.content)(
-      using ClassTag.Char,
-      state.zipperCacheUp,
-      state.zipperCacheDown
-    )
-    bh.consume(suffix.isEmpty)
-  }
+  // @Benchmark
+  // def lex_ZipperV1Mem(state: FreshAAStarBLexV1MemState, bh: Blackhole): Unit = {
+  //   val (tokens, suffix) = Lexer.lexV1Mem(AAStarBLexer.rules, state.content)(
+  //     using ClassTag.Char,
+  //     state.zipperCacheUp,
+  //     state.zipperCacheDown
+  //   )
+  //   bh.consume(suffix.isEmpty)
+  // }
 
   // @Benchmark
   // def lex_ZipperV1Mem_Warm(state: WarmAAStarBLexV1MemState, bh: Blackhole): Unit = {
