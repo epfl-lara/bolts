@@ -40,6 +40,8 @@ import com.mutablemaps.map.MutableHashMap
 import com.mutablemaps.map.Hashable
 import com.ziplex.lexer.ZipperRegex.Zipper
 import com.ziplex.lexer.seqFromArray
+import stainless.annotation.opaque
+import stainless.annotation.inlineOnce
 
 // BEGIN uncomment for verification ------------------------------------------
 // import stainless.lang.Option
@@ -113,6 +115,8 @@ object JsonManipulationExample:
     * @param cacheDown
     * @return
     */
+  @opaque
+  @inlineOnce
   def lexAndCheckPrintable(input: Sequence[Char])(using cacheUp: MemoisationZipper.CacheUp[Char], cacheDown: MemoisationZipper.CacheDown[Char], cacheFurthestNullable: CacheFurthestNullable[Char]): Option[PrintableTokens[Char]] = {
     require(!JsonLexer.rules.isEmpty)
     require(Lexer.rulesInvariant(JsonLexer.rules))
@@ -125,6 +129,7 @@ object JsonManipulationExample:
       cacheDown.lemmaInvariant()
       assert(tokens.list == Lexer.lex(JsonLexer.rules, input)._1.list)
       assert(suffix.list == Lexer.lex(JsonLexer.rules, input)._2.list)
+      unfold(seqFromList(input.list))
       assert(seqFromList(input.list).list == input.list)
       assert(Lexer.lex(JsonLexer.rules, input)._1.list == Lexer.lex(JsonLexer.rules, seqFromList(input.list))._1.list)
       assert(Lexer.lex(JsonLexer.rules, input)._2.list == Lexer.lex(JsonLexer.rules, seqFromList(input.list))._2.list)
@@ -267,6 +272,8 @@ object JsonManipulationExample:
 
 
 
+  @opaque
+  @inlineOnce
   def createCommaNewLineSeparator(using cacheUp: MemoisationZipper.CacheUp[Char], cacheDown: MemoisationZipper.CacheDown[Char]): Option[PrintableTokens[Char]] = {
     require(!JsonLexer.rules.isEmpty)
     require(Lexer.rulesInvariant(JsonLexer.rules))
@@ -280,6 +287,8 @@ object JsonManipulationExample:
       printableTokensFromTokens(JsonLexer.rules, sepSequence)
   }.ensuring(res => res.isEmpty || usesJsonRules(res.get))
 
+  @opaque
+  @inlineOnce
   def createLeftBracketSeparator(using cacheUp: MemoisationZipper.CacheUp[Char], cacheDown: MemoisationZipper.CacheDown[Char]): Option[PrintableTokens[Char]] = {
     require(!JsonLexer.rules.isEmpty)
     require(Lexer.rulesInvariant(JsonLexer.rules))
@@ -292,6 +301,8 @@ object JsonManipulationExample:
       printableTokensFromTokens(JsonLexer.rules, sepSequence)
   }.ensuring(res => res.isEmpty || usesJsonRules(res.get))
 
+  @opaque
+  @inlineOnce
   def createRightBracketSeparator(using cacheUp: MemoisationZipper.CacheUp[Char], cacheDown: MemoisationZipper.CacheDown[Char]): Option[PrintableTokens[Char]] = {
     require(!JsonLexer.rules.isEmpty)
     require(Lexer.rulesInvariant(JsonLexer.rules))
@@ -390,6 +401,7 @@ object JsonManipulationExample:
     else
       lexAndCheckPrintable(input) match {
         case Some(printableTokens) if printableTokens.size > 0 => {
+          assert(usesJsonRules(printableTokens))
           // Now we have a PrintableTokens instance with our tokens, with the invariant that they are separable, as an R-Path
           processJson(printableTokens) match {
             case Some(newTokens) => Some(newTokens.print())
