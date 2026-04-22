@@ -124,6 +124,7 @@ object JsonManipulationExample:
       cacheDown.lemmaInvariant()
       assert(tokens.list == Lexer.lex(JsonLexer.rules, input)._1.list)
       assert(suffix.list == Lexer.lex(JsonLexer.rules, input)._2.list)
+      unfold(seqFromList(input.list))
       assert(seqFromList(input.list).list == input.list)
       assert(Lexer.lex(JsonLexer.rules, input)._1.list == Lexer.lex(JsonLexer.rules, seqFromList(input.list))._1.list)
       assert(Lexer.lex(JsonLexer.rules, input)._2.list == Lexer.lex(JsonLexer.rules, seqFromList(input.list))._2.list)
