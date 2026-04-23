@@ -15,6 +15,7 @@
   - [Setup - Installation instructions](#setup---installation-instructions)
     - [Verification](#verification)
     - [Running the project](#running-the-project)
+  - [Using the Docker image](#using-the-docker-image)
   - [Verify the project](#verify-the-project)
     - [Generate report and SMT queries for analysis](#generate-report-and-smt-queries-for-analysis)
     - [SMT Queries](#smt-queries)
@@ -147,6 +148,20 @@ mutablemap
 Now the project is ready to run, both the main class and the benchmarks.
 
 If it does not work, please refer to [this manual](https://epfl-lara.github.io/stainless/installation.html#usage-within-an-existing-project).
+
+## Using the Docker image
+
+To run a container with the Docker image, you can use the following command:
+
+```bash
+  docker run --rm -it \
+    --name stainless-ziplex-artifact \
+    --memory=36g \
+    --memory-swap=48g \
+    stainless-ziplex /bin/bash
+```
+
+Make sure that the memory limits in docker desktop are high enough to avoid stainless being killed by the OOM killer. We recommend setting the memory limit to at least 32GB.
 
 ## Verify the project
 
