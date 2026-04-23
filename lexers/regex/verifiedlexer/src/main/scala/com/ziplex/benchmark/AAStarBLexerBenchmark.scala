@@ -29,12 +29,112 @@ import com.ziplex.benchmark.silex.SilexAAStarBLexer
 import scala.reflect.ClassTag
 import java.io.File
 
-@State(Scope.Benchmark)
+@BenchmarkMode(Array(Mode.AverageTime))
+@OutputTimeUnit(TimeUnit.MICROSECONDS)
 @Fork(jvmArgsAppend = Array("-Xss1G", "-Xmx32g"))
 class AAStarBLexerBenchmark {
 
-  @Param(
-    Array(
+  // @Benchmark
+  // def lex_ZipperV1Mem(state: FreshAAStarBLexV1MemState, bh: Blackhole): Unit = {
+  //   val (tokens, suffix) = Lexer.lexV1Mem(AAStarBLexer.rules, state.content)(
+  //     using ClassTag.Char,
+  //     state.zipperCacheUp,
+  //     state.zipperCacheDown
+  //   )
+  //   bh.consume(suffix.isEmpty)
+  // }
+
+  // @Benchmark
+  // def lex_ZipperV1Mem_Warm(state: WarmAAStarBLexV1MemState, bh: Blackhole): Unit = {
+  //   val (tokens, suffix) = Lexer.lexV1Mem(AAStarBLexer.rules, state.content)(
+  //     using ClassTag.Char,
+  //     state.zipperCacheUp,
+  //     state.zipperCacheDown
+  //   )
+  //   bh.consume(suffix.isEmpty)
+  // }
+
+  @Benchmark
+  def lex_ZipperV3Mem(state: FreshAAStarBLexV3MemState, bh: Blackhole): Unit = {
+    val (tokens, suffix) = Lexer.lexMem(AAStarBLexer.rules, state.content)(
+      using ClassTag.Char,
+      state.zipperCacheUp,
+      state.zipperCacheDown,
+      state.furthestNullableCache
+    )
+    bh.consume(suffix.isEmpty)
+  }
+
+  // @Benchmark
+  // def lex_ZipperV3Mem_Warm(state: WarmAAStarBLexV3MemState, bh: Blackhole): Unit = {
+  //   val (tokens, suffix) = Lexer.lexMem(AAStarBLexer.rules, state.content)(
+  //     using ClassTag.Char,
+  //     state.zipperCacheUp,
+  //     state.zipperCacheDown,
+  //     state.furthestNullableCache
+  //   )
+  //   bh.consume(suffix.isEmpty)
+  // }
+
+  @Benchmark
+  def lex_ZipperV2Mem(state: FreshAAStarBLexV2MemState, bh: Blackhole): Unit = {
+    val (tokens, suffix) = Lexer.lexV2Mem(AAStarBLexer.rules, state.content)(
+      using ClassTag.Char,
+      state.zipperCacheUp,
+      state.zipperCacheDown,
+      state.findLongestMatchCache
+    )
+    bh.consume(suffix.isEmpty)
+  }
+
+  // @Benchmark
+  // def lex_ZipperV2Mem_Warm(state: WarmAAStarBLexV2MemState, bh: Blackhole): Unit = {
+  //   val (tokens, suffix) = Lexer.lexV2Mem(AAStarBLexer.rules, state.content)(
+  //     using ClassTag.Char,
+  //     state.zipperCacheUp,
+  //     state.zipperCacheDown,
+  //     state.findLongestMatchCache
+  //   )
+  //   bh.consume(suffix.isEmpty)
+  // }
+
+  @Benchmark
+  def lex_Silex(state: AAStarBLexFileState): Unit = {
+    val tokens = SilexAAStarBLexer.run(state.fileJavaIo)
+  }
+}
+
+@BenchmarkMode(Array(Mode.AverageTime))
+@OutputTimeUnit(TimeUnit.MICROSECONDS)
+@Fork(jvmArgsAppend = Array("-Xss1G", "-Xmx64g"))
+class BigAAStarBLexerBenchmark {
+
+  @Benchmark
+  def lex_ZipperV3Mem(state: FreshBigAAStarBLexV3MemState, bh: Blackhole): Unit = {
+    val (tokens, suffix) = Lexer.lexMem(AAStarBLexer.rules, state.content)(
+      using ClassTag.Char,
+      state.zipperCacheUp,
+      state.zipperCacheDown,
+      state.furthestNullableCache
+    )
+    bh.consume(suffix.isEmpty)
+  }
+
+  // @Benchmark
+  // def lex_ZipperV3Mem_Warm(state: WarmBigAAStarBLexV3MemState, bh: Blackhole): Unit = {
+  //   val (tokens, suffix) = Lexer.lexMem(AAStarBLexer.rules, state.content)(
+  //     using ClassTag.Char,
+  //     state.zipperCacheUp,
+  //     state.zipperCacheDown,
+  //     state.furthestNullableCache
+  //   )
+  //   bh.consume(suffix.isEmpty)
+  // }
+}
+
+@State(Scope.Thread)
+class AAStarBLexFileState {
+  @Param(Array(
     "100000.txt",
     "10000.txt",
     "1000.txt",
@@ -82,101 +182,170 @@ class AAStarBLexerBenchmark {
     "92500.txt",
     "95000.txt",
     "97500.txt",
-    )
-  )
+  ))
   var file: String = uninitialized
 
-  @Benchmark
-  @BenchmarkMode(Array(Mode.AverageTime))
-  @OutputTimeUnit(TimeUnit.MICROSECONDS)
-  def lex_ZipperV1Mem(bh: Blackhole): Unit = {
-    val (tokens, suffix) = Lexer.lexV1Mem(AAStarBLexer.rules, AAStarBLexerBenchmarkUtils.fileContents(file))(
-      using ClassTag.Char,
-      AAStarBLexerBenchmarkUtils.zipperCacheUp,
-      AAStarBLexerBenchmarkUtils.zipperCacheDown
-    )
-    bh.consume(suffix.isEmpty)
-    // assert(suffix.isEmpty)
-  }
+  var content: Sequence[Char] = uninitialized
+  var fileJavaIo: java.io.File = uninitialized
 
-  @Benchmark
-  @BenchmarkMode(Array(Mode.AverageTime))
-  @OutputTimeUnit(TimeUnit.MICROSECONDS)
-  def lex_ZipperV3Mem(bh: Blackhole): Unit = {
-    val (tokens, suffix) = Lexer.lexMem(AAStarBLexer.rules, AAStarBLexerBenchmarkUtils.fileContents(file))(
-      using ClassTag.Char,
-      AAStarBLexerBenchmarkUtils.zipperCacheUp,
-      AAStarBLexerBenchmarkUtils.zipperCacheDown,
-      AAStarBLexerBenchmarkUtils.furthestNullableCaches(file)
-    )
-    bh.consume(suffix.isEmpty)
-    // assert(suffix.isEmpty)
+  @Setup(Level.Trial)
+  def setupFile(): Unit = {
+    content = AAStarBLexerBenchmarkUtils.fileContents(file)
+    fileJavaIo = AAStarBLexerBenchmarkUtils.filesJavaIo(file)
   }
-
-  @Benchmark
-  @BenchmarkMode(Array(Mode.AverageTime))
-  @OutputTimeUnit(TimeUnit.MICROSECONDS)
-  def lex_ZipperV2Mem(bh: Blackhole): Unit = {
-    val (tokens, suffix) = Lexer.lexV2Mem(AAStarBLexer.rules, AAStarBLexerBenchmarkUtils.fileContents(file))(
-      using ClassTag.Char,
-      AAStarBLexerBenchmarkUtils.zipperCacheUp,
-      AAStarBLexerBenchmarkUtils.zipperCacheDown,
-      AAStarBLexerBenchmarkUtils.findLongestMatchCaches(file)
-    )
-    bh.consume(suffix.isEmpty)
-    // assert(suffix.isEmpty)
-  }
-
-  @Benchmark
-  @BenchmarkMode(Array(Mode.AverageTime))
-  @OutputTimeUnit(TimeUnit.MICROSECONDS)
-  def lex_Silex(): Unit = {
-    val tokens = SilexAAStarBLexer.run(AAStarBLexerBenchmarkUtils.filesJavaIo(file))
-  }
-
 }
 
-@State(Scope.Benchmark)
-@Fork(jvmArgsAppend = Array("-Xss1G", "-Xmx64g"))
-class BigAAStarBLexerBenchmark {
+@State(Scope.Thread)
+class FreshAAStarBLexV1MemState extends AAStarBLexFileState {
+  var zipperCacheUp: MemoisationZipper.CacheUp[Char] = uninitialized
+  var zipperCacheDown: MemoisationZipper.CacheDown[Char] = uninitialized
 
-  @Param(
-    Array(
+  @Setup(Level.Iteration)
+  def setupCaches(): Unit = {
+    zipperCacheUp = MemoisationZipper.emptyUp(ContextCharHashable)
+    zipperCacheDown = MemoisationZipper.emptyDown(RegexContextCharHashable)
+  }
+}
+
+@State(Scope.Thread)
+class WarmAAStarBLexV1MemState extends FreshAAStarBLexV1MemState {
+  @Setup(Level.Iteration)
+  def warm(): Unit = {
+    val (_, suffix) = Lexer.lexV1Mem(AAStarBLexer.rules, content)(
+      using ClassTag.Char,
+      zipperCacheUp,
+      zipperCacheDown
+    )
+    assert(suffix.isEmpty)
+  }
+}
+
+@State(Scope.Thread)
+class FreshAAStarBLexV3MemState extends AAStarBLexFileState {
+  var zipperCacheUp: MemoisationZipper.CacheUp[Char] = uninitialized
+  var zipperCacheDown: MemoisationZipper.CacheDown[Char] = uninitialized
+  var furthestNullableCache: MemoisationZipper.CacheFurthestNullable[Char] = uninitialized
+
+  @Setup(Level.Iteration)
+  def setupCaches(): Unit = {
+    zipperCacheUp = MemoisationZipper.emptyUp(ContextCharHashable)
+    zipperCacheDown = MemoisationZipper.emptyDown(RegexContextCharHashable)
+    furthestNullableCache =
+      MemoisationZipper.emptyFurthestNullableCache[Char](
+        ExampleUtils.ZipperBigIntBigIntHashable,
+        content,
+        AAStarBLexer.rules
+      )
+  }
+}
+
+@State(Scope.Thread)
+class WarmAAStarBLexV3MemState extends FreshAAStarBLexV3MemState {
+  @Setup(Level.Iteration)
+  def warm(): Unit = {
+    val (_, suffix) = Lexer.lexMem(AAStarBLexer.rules, content)(
+      using ClassTag.Char,
+      zipperCacheUp,
+      zipperCacheDown,
+      furthestNullableCache
+    )
+    assert(suffix.isEmpty)
+  }
+}
+
+@State(Scope.Thread)
+class FreshAAStarBLexV2MemState extends AAStarBLexFileState {
+  var zipperCacheUp: MemoisationZipper.CacheUp[Char] = uninitialized
+  var zipperCacheDown: MemoisationZipper.CacheDown[Char] = uninitialized
+  var findLongestMatchCache: MemoisationZipper.CacheFindLongestMatch[Char] = uninitialized
+
+  @Setup(Level.Iteration)
+  def setupCaches(): Unit = {
+    zipperCacheUp = MemoisationZipper.emptyUp(ContextCharHashable)
+    zipperCacheDown = MemoisationZipper.emptyDown(RegexContextCharHashable)
+    findLongestMatchCache =
+      MemoisationZipper.emptyFindLongestMatch[Char](
+        ExampleUtils.ZipperBigIntHashable,
+        content
+      )
+  }
+}
+
+@State(Scope.Thread)
+class WarmAAStarBLexV2MemState extends FreshAAStarBLexV2MemState {
+  @Setup(Level.Iteration)
+  def warm(): Unit = {
+    val (_, suffix) = Lexer.lexV2Mem(AAStarBLexer.rules, content)(
+      using ClassTag.Char,
+      zipperCacheUp,
+      zipperCacheDown,
+      findLongestMatchCache
+    )
+    assert(suffix.isEmpty)
+  }
+}
+
+@State(Scope.Thread)
+class BigAAStarBLexSizeState {
+  @Param(Array(
     "10",
     "20",
     "50",
-    "100", 
-    "500", 
-    "1000", 
+    "100",
+    "500",
+    "1000",
     "2000",
     "4000",
     "5000",
     "8000",
-    "10000", 
-    "15000", 
-    "20000", 
-    "25000", 
-    "30000", 
+    "10000",
+    "15000",
+    "20000",
+    "25000",
+    "30000",
     "100000"
-    )
-  )
+  ))
   var sizeInKB: String = uninitialized
 
-  @Benchmark
-  @BenchmarkMode(Array(Mode.AverageTime))
-  @OutputTimeUnit(TimeUnit.MICROSECONDS)
-  def lex_ZipperV3Mem(bh: Blackhole): Unit = {
-    val (tokens, suffix) = Lexer.lexMem(AAStarBLexer.rules, AAStarBLexerBenchmarkBigUtils.kiloBytesSequences(sizeInKB))(
-      using ClassTag.Char,
-      AAStarBLexerBenchmarkBigUtils.zipperCacheUp,
-      AAStarBLexerBenchmarkBigUtils.zipperCacheDown,
-      AAStarBLexerBenchmarkBigUtils.furthestNullableCachesLarge(sizeInKB)
-    )
-    bh.consume(suffix.isEmpty)
-    // assert(suffix.isEmpty)
+  var content: Sequence[Char] = uninitialized
+
+  @Setup(Level.Trial)
+  def setupContent(): Unit = {
+    content = AAStarBLexerBenchmarkBigUtils.kiloBytesSequences(sizeInKB)
   }
+}
 
+@State(Scope.Thread)
+class FreshBigAAStarBLexV3MemState extends BigAAStarBLexSizeState {
+  var zipperCacheUp: MemoisationZipper.CacheUp[Char] = uninitialized
+  var zipperCacheDown: MemoisationZipper.CacheDown[Char] = uninitialized
+  var furthestNullableCache: MemoisationZipper.CacheFurthestNullable[Char] = uninitialized
 
+  @Setup(Level.Iteration)
+  def setupCaches(): Unit = {
+    zipperCacheUp = MemoisationZipper.emptyUp(ContextCharHashable)
+    zipperCacheDown = MemoisationZipper.emptyDown(RegexContextCharHashable)
+    furthestNullableCache =
+      MemoisationZipper.emptyFurthestNullableCache[Char](
+        ExampleUtils.ZipperBigIntBigIntHashable,
+        content,
+        AAStarBLexer.rules
+      )
+  }
+}
+
+@State(Scope.Thread)
+class WarmBigAAStarBLexV3MemState extends FreshBigAAStarBLexV3MemState {
+  @Setup(Level.Iteration)
+  def warm(): Unit = {
+    val (_, suffix) = Lexer.lexMem(AAStarBLexer.rules, content)(
+      using ClassTag.Char,
+      zipperCacheUp,
+      zipperCacheDown,
+      furthestNullableCache
+    )
+    assert(suffix.isEmpty)
+  }
 }
 
 object AAStarBLexerBenchmarkBigUtils {
@@ -184,34 +353,28 @@ object AAStarBLexerBenchmarkBigUtils {
     "10",
     "20",
     "50",
-    "100", 
-    "500", 
-    "1000", 
+    "100",
+    "500",
+    "1000",
     "2000",
     "4000",
     "5000",
     "8000",
-    "10000", 
-    "15000", 
-    "20000", 
-    "25000", 
-    "30000", 
+    "10000",
+    "15000",
+    "20000",
+    "25000",
+    "30000",
     "100000"
-    )
-  val kiloBytesSequences: Map[String, Sequence[Char]] = (kbSizes).map { kb =>
+  )
+
+  val kiloBytesSequences: Map[String, Sequence[Char]] = kbSizes.map { kb =>
     val sizeInChars: Int = (kb.toDouble * 1_000).toInt
     val contentArray = IArray.tabulate(sizeInChars)(_ => 'a')
     val content = seqFromArray(contentArray)
     assert(content.size == sizeInChars)
-    (s"${kb}", content)
+    kb -> content
   }.toMap
-
-  val zipperCacheUp: MemoisationZipper.CacheUp[Char] = MemoisationZipper.emptyUp(ContextCharHashable)
-  val zipperCacheDown: MemoisationZipper.CacheDown[Char] = MemoisationZipper.emptyDown(RegexContextCharHashable)
-  val furthestNullableCachesLarge: Map[String, MemoisationZipper.CacheFurthestNullable[Char]] = 
-    (kiloBytesSequences).map(kv => 
-      (kv._1, MemoisationZipper.emptyFurthestNullableCache[Char](ExampleUtils.ZipperBigIntBigIntHashable, kv._2, AAStarBLexer.rules))
-    )
 }
 
 object AAStarBLexerBenchmarkUtils {
@@ -264,31 +427,14 @@ object AAStarBLexerBenchmarkUtils {
     "95000.txt",
     "97500.txt",
   )
-  val fileContents: Map[String, Sequence[Char]] = fileNames.map(name => {
+
+  val fileContents: Map[String, Sequence[Char]] = fileNames.map { name =>
     val source = scala.io.Source.fromFile(s"src/main/scala/com/ziplex/benchmark/res/as/$name")
     val lines = try source.mkString.toStainless finally source.close()
-    (name -> lines)
-  }).toMap
+    name -> lines
+  }.toMap
 
-  val filesJavaIo: Map[String, java.io.File] = fileNames.map(name => {
-    (name -> new java.io.File(s"src/main/scala/com/ziplex/benchmark/res/as/$name"))
-  }).toMap
-
-  val zipperCacheUp: MemoisationZipper.CacheUp[Char] = MemoisationZipper.emptyUp(ContextCharHashable)
-  val zipperCacheDown: MemoisationZipper.CacheDown[Char] = MemoisationZipper.emptyDown(RegexContextCharHashable)
-  val findLongestMatchCaches: Map[String, MemoisationZipper.CacheFindLongestMatch[Char]] = 
-    (fileContents).map(kv => 
-      (kv._1, MemoisationZipper.emptyFindLongestMatch[Char](ExampleUtils.ZipperBigIntHashable, kv._2))
-    )
-  val furthestNullableCaches: Map[String, MemoisationZipper.CacheFurthestNullable[Char]] = 
-    (fileContents).map(kv => 
-      (kv._1, MemoisationZipper.emptyFurthestNullableCache[Char](ExampleUtils.ZipperBigIntBigIntHashable, kv._2, AAStarBLexer.rules))
-    )
-
-  val zipperCacheUpInternal: MemoisationZipper.CacheUp[Char] = MemoisationZipper.emptyUp(ContextCharHashable)
-  val zipperCacheDownInternal: MemoisationZipper.CacheDown[Char] = MemoisationZipper.emptyDown(RegexContextCharHashable)
-  val findLongestMatchCachesInternal: Map[String, MemoisationZipper.CacheFindLongestMatch[Char]] = 
-    (fileContents).map(kv => 
-      (kv._1, MemoisationZipper.emptyFindLongestMatch[Char](ExampleUtils.ZipperBigIntHashable, kv._2))
-    )
+  val filesJavaIo: Map[String, java.io.File] = fileNames.map { name =>
+    name -> new java.io.File(s"src/main/scala/com/ziplex/benchmark/res/as/$name")
+  }.toMap
 }
