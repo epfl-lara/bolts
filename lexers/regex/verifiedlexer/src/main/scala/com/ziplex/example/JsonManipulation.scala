@@ -35,8 +35,8 @@ import com.mutablemaps.map.MutableHashMap
 import com.mutablemaps.map.Hashable
 import com.ziplex.lexer.ZipperRegex.Zipper
 import com.ziplex.lexer.seqFromArray
-import stainless.annotation.inlineOnce
 import stainless.annotation.opaque
+import stainless.annotation.inlineOnce
 
 // BEGIN uncomment for verification ------------------------------------------
 import stainless.lang.Option
