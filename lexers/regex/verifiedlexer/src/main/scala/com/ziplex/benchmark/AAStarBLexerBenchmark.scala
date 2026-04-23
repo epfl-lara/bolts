@@ -28,6 +28,7 @@ import com.ziplex.benchmark.silex.SilexAAStarBLexer
 
 import scala.reflect.ClassTag
 import java.io.File
+
 @BenchmarkMode(Array(Mode.AverageTime))
 @OutputTimeUnit(TimeUnit.MICROSECONDS)
 @Fork(jvmArgsAppend = Array("-Xss1G", "-Xmx32g"))
