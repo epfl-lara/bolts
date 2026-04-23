@@ -1,3 +1,6 @@
+/** Author: Samuel Chassot
+  */
+
 package com.ziplex.lexer
 
 import com.ziplex.lexer.VerifiedRegexMatcher._
