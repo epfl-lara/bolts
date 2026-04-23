@@ -176,6 +176,8 @@ To verify the whole project, run the `verify.sh` script at the root of the proje
 
 This script assumes that `stainless` is available in your PATH, along with `z3` and `cvc5`; see Section Setup above for more information about how to install it if you are not using the docker image.
 
+If you are using the docker image, make sure you are on the `main` branch in the local git repository in `/ziplex`.
+
 ### Generate report and SMT queries for analysis
 
 To generate Stainless json report and the SMT queries that analyzed in the `Benchmark Data Analysis.ipynb` Jupyter notebook, run:
@@ -198,6 +200,8 @@ To run the main class, you can use the following command:
 
 This will run the `main` method in the `Main` object, which contains some demo code to visualize the regex zipper.
 
+If you are using the docker image, make sure you are on the `benchmarks` branch in the local git repository in `/ziplex`.
+
 ## Run benchmarks
 
 ### Run all Scala benchmarks
@@ -205,17 +209,28 @@ This will run the `main` method in the `Main` object, which contains some demo c
 #### Prepare scala files
 
 Before running the benchmarks, some imports must be modified to import special versions of ghost functions that are properly erased to enable
-optimizations like "tailrec" to be applied by the Scala compiler. To do so, run the following command at the root of the project:
+optimizations like "tailrec" to be applied by the Scala compiler.
 
-```bash
-  git apply prepare_to_run_benchmark.patch
+If you are using the docker image, switch to the `benchmarks` branch in the local git repository in `/ziplex`. In this branch, the necessary imports are already uncommented and the files are ready to be benchmarked.
+
+To do it manually, look for such blocks in import sections:
+
+```scala
+// BEGIN uncomment for verification ------------------------------------------
+import ...
+// END uncomment for verification --------------------------------------------
+// BEGIN imports for benchmarking -------------------------------------------
+// import ...
+
+// @tailrec
+// def dummyExample(x: BigInt): BigInt = {
+//   if (x == BigInt(0)) then x
+//   else dummyExample(x - BigInt(1))
+// }.ensuring( res => res == BigInt(0))
+// END imports for benchmarking ---------------------------------------------
 ```
 
-This will modify the imports of all executed files. After running the benchmarks, you can revert the changes by running:
-
-```bash
-  git checkout -- .
-```
+and uncomment the "imports for benchmarking" section, while commenting out the "imports for verification" section. This will import the versions of ghost functions that are properly erased for benchmarking, and comment out the versions that are not erased and are needed for verification.
 
 #### Execute benchmarks
 
