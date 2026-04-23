@@ -117,6 +117,10 @@ The complete instructions can be found on [this page](https://epfl-lara.github.i
 
 To use Stainless, you need to download SMT solvers separately. For this project, we recommend using Z3 and cvc5 as the `verify.sh` script assumes these two solvers are available in your PATH.
 
+The versions we used are:
+- Z3 version 4.15.4 (download from github releases: https://github.com/Z3Prover/z3/releases
+- cvc5 version 1.3.3 (download from github releases: https://github.com/cvc5/cvc5/releases
+
 ### Running the project
 
 To run this project, you need to install the Stainless sbt plugin. To do so, follow these steps:
