@@ -19,6 +19,7 @@
   - [Verify the project](#verify-the-project)
     - [Generate report and SMT queries for analysis](#generate-report-and-smt-queries-for-analysis)
     - [SMT Queries](#smt-queries)
+  - [Run the main class](#run-the-main-class)
   - [Run benchmarks](#run-benchmarks)
     - [Run all Scala benchmarks](#run-all-scala-benchmarks)
       - [Prepare scala files](#prepare-scala-files)
@@ -108,7 +109,7 @@ The project is organized around three main parts: verified lexer/regex core logi
 
 ## Setup - Installation instructions
 
-If you are using the Docker image, you can skip the setup instructions and go directly to the "Verification" section.
+If you are using the Docker image, you can skip the setup instructions and go directly to the [Using the Docker image](#using-the-docker-image) section.
 
 ### Verification
 
@@ -163,6 +164,8 @@ To run a container with the Docker image, you can use the following command:
 
 Make sure that the memory limits in docker desktop are high enough to avoid stainless being killed by the OOM killer. We recommend setting the memory limit to at least 32GB.
 
+You can then go into `/ziplex` and follow the instructions below to verify the project and run the benchmarks. The `verify.sh` script is configured to use the Z3 and cvc5 solvers that are installed in the Docker image, so you can run it without any additional configuration.
+
 ## Verify the project
 
 To verify the whole project, run the `verify.sh` script at the root of the project:
@@ -171,7 +174,7 @@ To verify the whole project, run the `verify.sh` script at the root of the proje
   ./verify.sh
 ```
 
-This script assumes that `stainless` is available in your PATH, along with `z3` and `cvc5`; see Section Setup above for more information about how to install it.
+This script assumes that `stainless` is available in your PATH, along with `z3` and `cvc5`; see Section Setup above for more information about how to install it if you are not using the docker image.
 
 ### Generate report and SMT queries for analysis
 
@@ -184,6 +187,16 @@ To generate Stainless json report and the SMT queries that analyzed in the `Benc
 ### SMT Queries
 
 We provide the SMT queries generated during verification in the `smt_queries` folder. These queries were generated using the command above, then filtered out to keep only the query corresponding to the solver verifying the VC. Indeed, Stainless runs multiple solvers in parallel, and we are only interested in the one that actually verified the VC. Other queries are incomplete, as Stainless calls the solver multiple times for each VC, with different functions gradully unfolded, and stops as soon as one of the solvers manages to verify the VC.
+
+## Run the main class
+
+To run the main class, you can use the following command:
+
+```bash
+  sbt "runMain com.ziplex.lexer.Main"
+```
+
+This will run the `main` method in the `Main` object, which contains some demo code to visualize the regex zipper.
 
 ## Run benchmarks
 
