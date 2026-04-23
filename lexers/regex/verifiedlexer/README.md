@@ -1,6 +1,113 @@
 # Verified Lexer based on Regex derivatives
 
-## Setup
+## Table of contents
+
+- [Verified Lexer based on Regex derivatives](#verified-lexer-based-on-regex-derivatives)
+  - [Table of contents](#table-of-contents)
+  - [Structure of the project](#structure-of-the-project)
+    - [Summary](#summary)
+    - [Lexer and regular expression matching verified implementations](#lexer-and-regular-expression-matching-verified-implementations)
+    - [Verified mutable maps used for memoization](#verified-mutable-maps-used-for-memoization)
+    - [Example lexers and applications](#example-lexers-and-applications)
+    - [Benchmarks and result processing](#benchmarks-and-result-processing)
+    - [Entry points and specifications](#entry-points-and-specifications)
+    - [Main correctness theorem(s)](#main-correctness-theorems)
+  - [Setup - Installation instructions](#setup---installation-instructions)
+    - [Verification](#verification)
+    - [Running the project](#running-the-project)
+  - [Verify the project](#verify-the-project)
+    - [Generate report and SMT queries for analysis](#generate-report-and-smt-queries-for-analysis)
+    - [SMT Queries](#smt-queries)
+  - [Run benchmarks](#run-benchmarks)
+    - [Run all Scala benchmarks](#run-all-scala-benchmarks)
+      - [Prepare scala files](#prepare-scala-files)
+      - [Execute benchmarks](#execute-benchmarks)
+    - [Coqlex benchmarks](#coqlex-benchmarks)
+    - [Prepare data for analysis](#prepare-data-for-analysis)
+    - [Analyze data](#analyze-data)
+
+## Structure of the project
+
+The project is organized around three main parts: verified lexer/regex core logic, verified mutable hash tables, example lexers and applications, and benchmarking/analysis tooling.
+
+### Summary
+
+| What | Where | Key symbols / notes |
+| --- | --- | --- |
+| Regular expression matching engine | [src/main/scala/com/ziplex/lexer/VerifiedRegex.scala](src/main/scala/com/ziplex/lexer/VerifiedRegex.scala) | Regular expression constructors, derivative computation, Zipper-based representation, regular expression specifications, lemmas and theorems |
+| Lexer implementation | [src/main/scala/com/ziplex/lexer/VerifiedLexer.scala](src/main/scala/com/ziplex/lexer/VerifiedLexer.scala) | `VerifiedLexer`, `Lexer`, `lex`, `lexMem`, memoized variants |
+| Interface + specs | [src/main/scala/com/ziplex/lexer/LexerInterface.scala](src/main/scala/com/ziplex/lexer/LexerInterface.scala) | Interface for lexers `LexerInterface` and main specifications including the longest match theorem and invertibility laws |
+| Sequence structures | [src/main/scala/com/ziplex/lexer/BalanceConcArr.scala](src/main/scala/com/ziplex/lexer/BalanceConcArr.scala), [src/main/scala/com/ziplex/lexer/Vector.scala](src/main/scala/com/ziplex/lexer/Vector.scala) | Verified `BalanceConc` + trusted wrapper `Vector` |
+| Verified HashMap | [src/main/scala/com/ziplex/map/](src/main/scala/com/ziplex/map/) | Reusable verified mutable maps used for memoization in Ziplex  |
+| Example lexers | [src/main/scala/com/ziplex/example/](src/main/scala/com/ziplex/example/) | JSON, `a` and `a*b` rules, Amy, Python |
+| Demo entry point | [src/main/scala/com/ziplex/lexer/Main.scala](src/main/scala/com/ziplex/lexer/Main.scala) | `main(args: Array[String])` |
+| Benchmarks | [src/main/scala/com/ziplex/benchmark/](src/main/scala/com/ziplex/benchmark/), [run_benchmarks.sh](run_benchmarks.sh) | Benchmark suite |
+| Result analysis | [benchmark_results/](benchmark_results/), [benchmark_results/Benchmark Data Analysis.ipynb](benchmark_results/Benchmark%20Data%20Analysis.ipynb) | Data extraction + plots/notebook analysis |
+
+### Lexer and regular expression matching verified implementations
+
+- `src/main/scala/com/ziplex/lexer/VerifiedRegex.scala`
+  - `object VerifiedRegex` contains the regular expression data type definitions, derivative computation, and predicates over regular expressions.
+  - `object ZipperRegex` contains the zipper-based representation of regular expressions and associated operations, as well as the main correctness lemmas/theorems relating the zipper representation to the original regular expression semantics, with the main theorem being `def theoremZipperRegexEquiv`.
+  - `object VerifiedRegexMatcher` contains the main regular expression matching function based on derivatives (`def matchR`) and its correctness proof of which the main theorem is `def mainMatchTheorem`.
+  - `object MemoisationRegex` and `object MemoisationZipper` contain the memoization caches and associated lemmas/theorems for the regular expression matching functions. These are memoizing derivatives.
+- `src/main/scala/com/ziplex/lexer/LexerInterface.scala`
+  - Main interface and formal specifications (`trait LexerInterface`).
+  - Declares core laws such as `maximalMunchPrinciple`, `invertibleThroughLexing`, and separator-based invertibility laws. These are the main correctness theorems about the lexer.
+  - Declares associated types such as `Token`, `Rule`, `TokenValue`, as well as semi-inverse functions to represent invertible string to token value transformations.
+  - The type alias `Sequence[T]` is defined here. To swap the `BalanceConc` structure with a different sequence structure, one would only need to modify this alias and implement the methods `singletonSeq`, `seqFromList`, and `seqFromArray` accordingly, as well as the associated lemma `seqFromListBHdTlConstructive`. The code need to use the trusted `Vector` wrapper is commented out as an example.
+- `src/main/scala/com/ziplex/lexer/VerifiedLexer.scala`
+  - Main lexer implementation (`object VerifiedLexer`, `case object Lexer`) and proof lemmas/theorems. `case object Lexer` implements the `LexerInterface` and proves the associated laws.
+  - Contains the memoized and non-memoized lexing functions (`lex`, `lexV1Mem`, `lexMem`, etc.).
+  - `case class PrintableTokens` is the wrapper for separable token lists that can be printed back to strings while preserving the invertibility properties.
+- `src/main/scala/com/ziplex/lexer/BalanceConcArr.scala`, `src/main/scala/com/ziplex/lexer/Vector.scala`
+  - Sequence data structures used by the lexer (verified `BalanceConc` and a `Vector` wrapper) to represent token and character sequences.
+
+### Verified mutable maps used for memoization
+
+- Files in `src/main/scala/com/ziplex/map/` (package `com.mutablemaps.map`)
+  - Verified hash maps / long maps and utilities used by memoization caches in the lexer. The maps are reusable and can be used in other contexts. The verified `LongMap` was published at IJCAR 2024 as "Verifying a Realistic Mutable Hash Table" (https://doi.org/10.1007/978-3-031-63498-7_18). The `object MutableHashMap` is introduced in this work.
+
+### Example lexers and applications
+
+- `src/main/scala/com/ziplex/example/JSONLexer.scala`
+  - Verified JSON lexer definition (`ExampleJsonLexer`).
+- `src/main/scala/com/ziplex/example/AAStarBLexer.scala`, `AmyLexer.scala`, `PythonLexer.scala`
+  - Additional example grammars/lexers used for evaluation.
+- `src/main/scala/com/ziplex/example/JsonManipulation.scala`
+  - Example verified application logic that mainupulate tokenized JSON while preserving the invertibility of the lexing-printing processes.
+- `src/main/scala/com/ziplex/lexer/Main.scala`
+  - Demo executable entry point (regex zipper visualization and example runners).
+
+### Benchmarks and result processing
+
+- `src/main/scala/com/ziplex/benchmark/`
+  - JMH benchmarks for lexer variants and related microbenchmarks.
+- `run_benchmarks.sh`
+  - Top-level script to execute benchmark suites.
+- `benchmark_results/`
+  - Raw results, extraction scripts, and analysis notebook (`Benchmark Data Analysis.ipynb`).
+
+### Entry points and specifications
+
+- Main lexing entry point: `Lexer.lex` in `VerifiedLexer.scala`.
+- High-performance memoized entry points: `Lexer.lexMem` in `VerifiedLexer.scala`.
+  - The lexer provides additional lexing methods such as `Lexer.lexV1Mem`, `Lexer.lexV2Mem`, `Lexer.lexV3Mem*`. These are variants of the main `lex` and `lexMem` methods with different memoization strategies and optimizations. They are used for benchmarking and performance analysis, but the main entry points are `lex` and `lexMem`.
+- Main specification contract: `trait LexerInterface` in `LexerInterface.scala`.
+  - The methods in `VerifiedLexer.Lexer` implement this interface and prove the associated laws.
+
+### Main correctness theorem(s)
+
+- Lexing invertibility:
+  - `invertibleThroughLexing` in `LexerInterface.scala`: this theorem states that lexing a string and printing the produced tokens gives back the original string.
+  - `separableTokensThenInvertibleThroughPrinting` in `LexerInterface.scala`: this theorem states that if a token list follows the R-Path condition for separability and each token is individually producible by the rules, then printing and lexing gives back the same token list.
+  - `interleavingSeparatorTokenMakesSeparableSequence`, `invertibleThroughPrintingWithSeparatorWhenNeeded`, `invertibleThroughPrintingWithSeparator` in `LexerInterface.scala`: these theorems state that if a special separator token is interleaved with other tokens, then printing the tokens and lexing back the printed string gives back the same token list. This allows to ensure invertibility even for non-separable token lists, by interleaving a special separator token between tokens that would otherwise violate the separability condition.
+- Lexing longest match semantics, or maximal munch principle:
+  - `maximalMunchPrinciple` in `LexerInterface.scala`: this theorem states that if a string can be lexed into a token list, then the produced token list is maximal in the sense that no token can be replaced by a longer token that would still match the same substring. This captures the longest match semantics of lexing as well as rules priority.
+
+## Setup - Installation instructions
+
+If you are using the Docker image, you can skip the setup instructions and go directly to the "Verification" section.
 
 ### Verification
 
@@ -37,7 +144,7 @@ Now the project is ready to run, both the main class and the benchmarks.
 
 If it does not work, please refer to [this manual](https://epfl-lara.github.io/stainless/installation.html#usage-within-an-existing-project).
 
-## Verification
+## Verify the project
 
 To verify the whole project, run the `verify.sh` script at the root of the project:
 
