@@ -1,8 +1,8 @@
-# Verified Lexer based on Regex derivatives
+# Ziplex: A Verified Inveritble Lexer
 
 ## Table of contents
 
-- [Verified Lexer based on Regex derivatives](#verified-lexer-based-on-regex-derivatives)
+- [Ziplex: A Verified Inveritble Lexer](#ziplex-a-verified-inveritble-lexer)
   - [Table of contents](#table-of-contents)
   - [Structure of the project](#structure-of-the-project)
     - [Summary](#summary)
