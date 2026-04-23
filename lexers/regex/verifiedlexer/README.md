@@ -111,7 +111,7 @@ If you are using the Docker image, you can skip the setup instructions and go di
 
 ### Verification
 
-To verify the project, you need to install the Stainless verifier. You can find the installation instructions [on the official Github page](https://github.com/epfl-lara/stainless). Use the version 0.9.9.1.
+To verify the project, you need to install the Stainless verifier. You can find the installation instructions [on the official Github page](https://github.com/epfl-lara/stainless). Use the version 0.9.9.3.
 
 The complete instructions can be found on [this page](https://epfl-lara.github.io/stainless/installation.html), but we recommend using the package manager way if your system is supported. Otherwise, you can download the release from Github.
 
@@ -121,7 +121,7 @@ To use Stainless, you need to download SMT solvers separately. For this project,
 
 To run this project, you need to install the Stainless sbt plugin. To do so, follow these steps:
 
-1. Download the following archive: [Stainless SBT plugin download](https://github.com/epfl-lara/stainless/releases/download/v0.9.9.1/sbt-stainless.zip)
+1. Download the following archive: [Stainless SBT plugin download](https://github.com/epfl-lara/stainless/releases/download/v0.9.9.3/sbt-stainless.zip)
 2. Unzip the archive, it should contain a `project` folder and a `stainless` folder.
 3. copy the `project/lib` folder into the `project` of this sbt project.
 4. copy the `stainless` folder into the root of this sbt project.
