@@ -1,3 +1,6 @@
+/** Author: Samuel Chassot
+  */
+
 package benchmark.lexer
 
 import java.util.concurrent.TimeUnit

@@ -1,3 +1,6 @@
+/** Author: Samuel Chassot
+  */
+
 package com.ziplex.lexer.example
 
 import stainless.annotation.extern

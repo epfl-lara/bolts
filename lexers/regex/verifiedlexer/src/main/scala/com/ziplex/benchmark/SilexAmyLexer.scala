@@ -1,3 +1,6 @@
+/** Author: Samuel Chassot
+  */
+
 package com.ziplex.benchmark.original
 import java.io.File
 
