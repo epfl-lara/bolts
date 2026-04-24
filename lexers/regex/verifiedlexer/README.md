@@ -19,7 +19,7 @@
       - [Prepare scala files](#prepare-scala-files)
       - [Benchmark smoke test](#benchmark-smoke-test)
       - [Execute benchmarks](#execute-benchmarks)
-        - [Time frame](#time-frame)
+        - [Time frame and log feedback](#time-frame-and-log-feedback)
     - [Coqlex benchmarks](#coqlex-benchmarks)
     - [Prepare data for analysis](#prepare-data-for-analysis)
     - [Analyze data](#analyze-data)
@@ -186,6 +186,8 @@ To run a smoke test of the benchmarks, you can run the `./run_benchmarks_smoke.s
 
 This will execute a small subset of the benchmarks (only the `JsonLexerBenchmarkSmoke` benchmark) with a single iteration and a single warmup iteration, to check that the benchmarks run correctly and produce results. The results will be saved in a folder named `benchmark_results/raw/results_<current-date>`.
 
+Running this smoke test should take 1 to 2 minutes.
+
 #### Execute benchmarks
 
 To run all benchmarks, simply run the following command at the root of the project:
@@ -196,9 +198,11 @@ To run all benchmarks, simply run the following command at the root of the proje
 
 This will create a `benchmark_results/raw/<current-date>` folder containing the results of the benchmarks.
 
-##### Time frame
+##### Time frame and log feedback
 
 Running all the benchmarks can around 24 hours or more, depending on the machine and the level of parallelism. The benchmarks are configured to run with a single thread to avoid any issues with parallel execution and to get more stable results, but you can modify the `run_benchmarks.sh` script to run with less iterations or warmup iterations, although this may affect the stability of the results.
+
+While the benchmarks are running, the logs will be written in the `benchmark_results/raw/<current-date>` folder, and you can check the progress by looking at the logs. Each benchmark will produce a log file with the name of the benchmark and the configuration used (number of iterations, warmup iterations, etc.). You can check these logs to see which benchmarks have finished and which are still running.
 
 ### Coqlex benchmarks
 
