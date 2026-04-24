@@ -4,6 +4,25 @@
 
 - [Ziplex: A Verified Inveritble Lexer](#ziplex-a-verified-inveritble-lexer)
   - [Table of contents](#table-of-contents)
+  - [Setup - Installation instructions](#setup---installation-instructions)
+    - [Verification](#verification)
+    - [Running the project](#running-the-project)
+  - [Using the Docker image](#using-the-docker-image)
+  - [Verify the project](#verify-the-project)
+    - [Verification smoke test](#verification-smoke-test)
+    - [Time and memory consumption](#time-and-memory-consumption)
+    - [Generate report and SMT queries for analysis](#generate-report-and-smt-queries-for-analysis)
+    - [SMT Queries](#smt-queries)
+  - [Run the main class](#run-the-main-class)
+  - [Run benchmarks](#run-benchmarks)
+    - [Run all Scala benchmarks](#run-all-scala-benchmarks)
+      - [Prepare scala files](#prepare-scala-files)
+      - [Benchmark smoke test](#benchmark-smoke-test)
+      - [Execute benchmarks](#execute-benchmarks)
+        - [Time frame](#time-frame)
+    - [Coqlex benchmarks](#coqlex-benchmarks)
+    - [Prepare data for analysis](#prepare-data-for-analysis)
+    - [Analyze data](#analyze-data)
   - [Structure of the project](#structure-of-the-project)
     - [Summary](#summary)
     - [Lexer and regular expression matching verified implementations](#lexer-and-regular-expression-matching-verified-implementations)
@@ -12,21 +31,208 @@
     - [Benchmarks and result processing](#benchmarks-and-result-processing)
     - [Entry points and specifications](#entry-points-and-specifications)
     - [Main correctness theorem(s)](#main-correctness-theorems)
-  - [Setup - Installation instructions](#setup---installation-instructions)
-    - [Verification](#verification)
-    - [Running the project](#running-the-project)
-  - [Using the Docker image](#using-the-docker-image)
-  - [Verify the project](#verify-the-project)
-    - [Generate report and SMT queries for analysis](#generate-report-and-smt-queries-for-analysis)
-    - [SMT Queries](#smt-queries)
-  - [Run the main class](#run-the-main-class)
-  - [Run benchmarks](#run-benchmarks)
-    - [Run all Scala benchmarks](#run-all-scala-benchmarks)
-      - [Prepare scala files](#prepare-scala-files)
-      - [Execute benchmarks](#execute-benchmarks)
-    - [Coqlex benchmarks](#coqlex-benchmarks)
-    - [Prepare data for analysis](#prepare-data-for-analysis)
-    - [Analyze data](#analyze-data)
+
+## Setup - Installation instructions
+
+If you are using the Docker image, you can skip the setup instructions and go directly to the [Using the Docker image](#using-the-docker-image) section.
+
+### Verification
+
+To verify the project, you need to install the Stainless verifier. You can find the installation instructions [on the official Github page](https://github.com/epfl-lara/stainless). Use the version 0.9.9.3.
+
+The complete instructions can be found on [this page](https://epfl-lara.github.io/stainless/installation.html), but we recommend using the package manager way if your system is supported. Otherwise, you can download the release from Github.
+
+To use Stainless, you need to download SMT solvers separately. For this project, we recommend using Z3 and cvc5 as the `verify.sh` script assumes these two solvers are available in your PATH.
+
+The versions we used are:
+
+- Z3 version 4.15.4 download from github releases: https://github.com/Z3Prover/z3/releases
+- cvc5 version 1.3.3 download from github releases: https://github.com/cvc5/cvc5/releases
+
+### Running the project
+
+If you are using the docker image, you can skip this 
+
+To run this project, you need to install the Stainless sbt plugin. To do so, follow these steps:
+
+1. Download the following archive: [Stainless SBT plugin download](https://github.com/epfl-lara/stainless/releases/download/v0.9.9.3/sbt-stainless.zip)
+2. Unzip the archive, it should contain a `project` folder and a `stainless` folder.
+3. copy the `project/lib` folder into the `project` of this sbt project.
+4. copy the `stainless` folder into the root of this sbt project.
+
+You should obtain the following folder structure:
+
+```
+mutablemap
+├── build.sbt
+├── project
+│   ├── build.properties
+│   └── lib                     <--------
+│       └── sbt-stainless.jar   <--------
+├── sbt-stainless.zip
+├── src/
+└── stainless/                  <--------
+```
+
+Now the project is ready to run, both the main class and the benchmarks.
+
+If it does not work, please refer to [this manual](https://epfl-lara.github.io/stainless/installation.html#usage-within-an-existing-project).
+
+## Using the Docker image
+
+To run a container with the Docker image, you can use the following command:
+
+```bash
+  docker run --rm -it \
+    --name stainless-ziplex-artifact \
+    --memory=36g \
+    --memory-swap=48g \
+    stainless-ziplex /bin/bash
+```
+
+Make sure that the memory limits in docker desktop are high enough to avoid stainless being killed by the OOM killer. We recommend setting the memory limit to at least 32GB.
+
+You can then go into `/ziplex` and follow the instructions below to verify the project and run the benchmarks. The `verify.sh` script is configured to use the Z3 and cvc5 solvers that are installed in the Docker image, so you can run it without any additional configuration.
+
+## Verify the project
+
+To verify the whole project, run the `verify.sh` script at the root of the project:
+
+```bash
+  ./verify.sh
+```
+
+This script assumes that `stainless` is available in your PATH, along with `z3` and `cvc5`; see Section Setup above for more information about how to install it if you are not using the docker image.
+
+If you are using the docker image, make sure you are on the `main` branch in the local git repository in `/ziplex`.
+
+### Verification smoke test
+
+To verify your setup, you can run the `verify_smoke.sh` script at the root of the project:
+
+```bash
+  ./verify_smoke.sh
+```
+
+This will verify only the main lexing function `VerifiedLexer.Lexer.lex`. If this verification runs successfully, then your setup is correct and you can proceed to verify the whole project with `./verify.sh`. This smoke test can take up to 3 minutes to run.
+
+### Time and memory consumption
+
+While verifying Ziplex, memory consumption can go up to 32GB and the verification can take up to 3 hours, depending on the level of parallelism. We recommend running the verification with at least 32GB of RAM allowed to be used by the container (or on the machine) to avoid issues with the OOM killer.
+
+If you want to increase the level of parallelism, you can modify the `verify.sh` script to modify the `-D-parallel=2` option. This will run the verification with 2 parallel threads, you can increase this number to speed up the verification. In our experience, running with 4 or 8 parallel threads reduces the verification time to around 1 to 1.5 hours.
+
+### Generate report and SMT queries for analysis
+
+To generate Stainless json report and the SMT queries that analyzed in the `Benchmark Data Analysis.ipynb` Jupyter notebook, run:
+
+```bash
+  ./verify.sh "--json --debug=smt"
+```
+
+### SMT Queries
+
+We provide the SMT queries generated during verification in the `smt_queries` folder. These queries were generated using the command above, then filtered out to keep only the query corresponding to the solver verifying the VC. Indeed, Stainless runs multiple solvers in parallel, and we are only interested in the one that actually verified the VC. Other queries are incomplete, as Stainless calls the solver multiple times for each VC, with different functions gradully unfolded, and stops as soon as one of the solvers manages to verify the VC.
+
+## Run the main class
+
+To run the main class, you can use the following command:
+
+```bash
+  sbt "runMain com.ziplex.lexer.Main"
+```
+
+This will run the `main` method in the `Main` object, which contains some demo code to visualize the regex zipper.
+
+If you are using the docker image, make sure you are on the `benchmarks` branch in the local git repository in `/ziplex`.
+
+## Run benchmarks
+
+### Run all Scala benchmarks
+
+#### Prepare scala files
+
+Before running the benchmarks, some imports must be modified to import special versions of ghost functions that are properly erased to enable
+optimizations like "tailrec" to be applied by the Scala compiler.
+
+If you are using the docker image, switch to the `benchmarks` branch in the local git repository in `/ziplex`. In this branch, the necessary imports are already uncommented and the files are ready to be benchmarked.
+
+To do it manually, look for such blocks in import sections:
+
+```scala
+// BEGIN uncomment for verification ------------------------------------------
+import ...
+// END uncomment for verification --------------------------------------------
+// BEGIN imports for benchmarking -------------------------------------------
+// import ...
+
+// @tailrec
+// def dummyExample(x: BigInt): BigInt = {
+//   if (x == BigInt(0)) then x
+//   else dummyExample(x - BigInt(1))
+// }.ensuring( res => res == BigInt(0))
+// END imports for benchmarking ---------------------------------------------
+```
+
+and uncomment the "imports for benchmarking" section, while commenting out the "imports for verification" section. This will import the versions of ghost functions that are properly erased for benchmarking, and comment out the versions that are not erased and are needed for verification.
+
+#### Benchmark smoke test
+
+To run a smoke test of the benchmarks, you can run the `./run_benchmarks_smoke.sh` script at the root of the project:
+
+```bash
+  ./run_benchmarks_smoke.sh
+```
+
+This will execute a small subset of the benchmarks (only the `JsonLexerBenchmarkSmoke` benchmark) with a single iteration and a single warmup iteration, to check that the benchmarks run correctly and produce results. The results will be saved in a folder named `benchmark_results/raw/results_<current-date>`.
+
+#### Execute benchmarks
+
+To run all benchmarks, simply run the following command at the root of the project:
+
+```bash
+  ./run_benchmarks.sh
+```
+
+This will create a `benchmark_results/raw/<current-date>` folder containing the results of the benchmarks.
+
+##### Time frame
+
+Running all the benchmarks can around 24 hours or more, depending on the machine and the level of parallelism. The benchmarks are configured to run with a single thread to avoid any issues with parallel execution and to get more stable results, but you can modify the `run_benchmarks.sh` script to run with less iterations or warmup iterations, although this may affect the stability of the results.
+
+### Coqlex benchmarks
+
+To run the Coqlex benchmarks, we use the original evaluation pipeline[Coqlex repository](https://gitlab.inria.fr/wouedrao/coqlex/-/tree/master).
+
+Because we added new grammars to the Coqlex benchmark suite, we provide a copy of the repository with the new lexers in `coqlex-fork/Comparison/AAStarB`. We added this `coqlex-fork/Comparison/AAStarB/` folder and modified the `Makefile` to run the benchmarks for the grammar `a` and `a*b`.
+
+For the grammar `a` and `a*b`, we provide a new coqlex lexer in `coqlex-fork/Comparison/AAStarB/Lexers/Coqlex`, and a new Verbatim++ lexer in `coqlex-fork/Comparison/AAStarB/Lexers/Verbatim`. The Coqlex lexer is built automatically when running the benchmark. The Verbatim++ lexer is generated using the Verbatim++ official repository in `Verbatim`. The lexer for the grammar `a` and `a*b` is located in `Verbatim/ExamuB/Lexer` and is compiled by running `make` in `Verbatim`. The generated `.ml` files must then be copied to `coqlex-fork/Comparison/AAStarB/Lexers/Verbatim` before running the benchmarks (we already compiled and copy the files).
+
+To run the Coqlex benchmarks, follow these steps:
+
+1. Install the dependencies listed in the Coqlex repository README.
+2. Navigate to the `coqlex-fork` folder and run `make`. 
+3. Run the benchmarks by running `make compare_json` and `make compare_aastarb` in `./coqlex-fork/`.
+
+You can also rely on the data already present in the `from_coqlex` folder, which contains the results of the Coqlex benchmarks run on our machine.
+
+If you decide to run the benchmarks yourself, make sure to copy the results in the `from_coqlex/Comparison/JSON/results` and `from_coqlex/Comparison/AAStarB/results`folders.
+
+### Prepare data for analysis
+
+To prepare the data for analysis, run the following command in the `benchmark_results` directory:
+
+```bash
+  ./extract_data.sh benchmark_results/raw/<date-of-benchmark>
+```
+
+This will process the raw logs in usable data files and move them in the `benchmark_results/latest` folder. This also write data in the correct format in the `from_coqlex/Comparison/JSON/results/ZipLex` folder to compare with the Coqlex benchmark suite. For the analysis script to work, you need to have the Coqlex results in the `from_coqlex/Comparison/JSON/results` and `from_coqlex/Comparison/AAStarB/results` folders for the other lexers, see previous section.
+
+This will also extract the data from the `flex` benchmark results, which are located in `flex_benchmarks` and are run by the `run_benchmarks.sh` script.
+
+### Analyze data
+
+The analysis of the data is done in the `Benchmark Data Analysis.ipynb` notebook. Make sure to install the required dependencies listed in `benchmark_results/requirements.txt` using pip. `Benchmark Data Analysis.ipynb` loads the data from the `benchmark_results/latest` folder and the `from_coqlex` folder to produce the analysis and plots. It also analyzes the Stainless report and SMT queries generated using the `./verify.sh "--json --debug=smt"` command, if they are placed in the `benchmark_results/latest` folder.
 
 ## Structure of the project
 
@@ -106,172 +312,3 @@ The project is organized around three main parts: verified lexer/regex core logi
   - `interleavingSeparatorTokenMakesSeparableSequence`, `invertibleThroughPrintingWithSeparatorWhenNeeded`, `invertibleThroughPrintingWithSeparator` in `LexerInterface.scala`: these theorems state that if a special separator token is interleaved with other tokens, then printing the tokens and lexing back the printed string gives back the same token list. This allows to ensure invertibility even for non-separable token lists, by interleaving a special separator token between tokens that would otherwise violate the separability condition.
 - Lexing longest match semantics, or maximal munch principle:
   - `maximalMunchPrinciple` in `LexerInterface.scala`: this theorem states that if a string can be lexed into a token list, then the produced token list is maximal in the sense that no token can be replaced by a longer token that would still match the same substring. This captures the longest match semantics of lexing as well as rules priority.
-
-## Setup - Installation instructions
-
-If you are using the Docker image, you can skip the setup instructions and go directly to the [Using the Docker image](#using-the-docker-image) section.
-
-### Verification
-
-To verify the project, you need to install the Stainless verifier. You can find the installation instructions [on the official Github page](https://github.com/epfl-lara/stainless). Use the version 0.9.9.3.
-
-The complete instructions can be found on [this page](https://epfl-lara.github.io/stainless/installation.html), but we recommend using the package manager way if your system is supported. Otherwise, you can download the release from Github.
-
-To use Stainless, you need to download SMT solvers separately. For this project, we recommend using Z3 and cvc5 as the `verify.sh` script assumes these two solvers are available in your PATH.
-
-The versions we used are:
-- Z3 version 4.15.4 (download from github releases: https://github.com/Z3Prover/z3/releases
-- cvc5 version 1.3.3 (download from github releases: https://github.com/cvc5/cvc5/releases
-
-### Running the project
-
-To run this project, you need to install the Stainless sbt plugin. To do so, follow these steps:
-
-1. Download the following archive: [Stainless SBT plugin download](https://github.com/epfl-lara/stainless/releases/download/v0.9.9.3/sbt-stainless.zip)
-2. Unzip the archive, it should contain a `project` folder and a `stainless` folder.
-3. copy the `project/lib` folder into the `project` of this sbt project.
-4. copy the `stainless` folder into the root of this sbt project.
-
-You should obtain the following folder structure:
-
-```
-mutablemap
-├── build.sbt
-├── project
-│   ├── build.properties
-│   └── lib                     <--------
-│       └── sbt-stainless.jar   <--------
-├── sbt-stainless.zip
-├── src/
-└── stainless/                  <--------
-```
-
-Now the project is ready to run, both the main class and the benchmarks.
-
-If it does not work, please refer to [this manual](https://epfl-lara.github.io/stainless/installation.html#usage-within-an-existing-project).
-
-## Using the Docker image
-
-To run a container with the Docker image, you can use the following command:
-
-```bash
-  docker run --rm -it \
-    --name stainless-ziplex-artifact \
-    --memory=36g \
-    --memory-swap=48g \
-    stainless-ziplex /bin/bash
-```
-
-Make sure that the memory limits in docker desktop are high enough to avoid stainless being killed by the OOM killer. We recommend setting the memory limit to at least 32GB.
-
-You can then go into `/ziplex` and follow the instructions below to verify the project and run the benchmarks. The `verify.sh` script is configured to use the Z3 and cvc5 solvers that are installed in the Docker image, so you can run it without any additional configuration.
-
-## Verify the project
-
-To verify the whole project, run the `verify.sh` script at the root of the project:
-
-```bash
-  ./verify.sh
-```
-
-This script assumes that `stainless` is available in your PATH, along with `z3` and `cvc5`; see Section Setup above for more information about how to install it if you are not using the docker image.
-
-If you are using the docker image, make sure you are on the `main` branch in the local git repository in `/ziplex`.
-
-### Generate report and SMT queries for analysis
-
-To generate Stainless json report and the SMT queries that analyzed in the `Benchmark Data Analysis.ipynb` Jupyter notebook, run:
-
-```bash
-  ./verify.sh "--json --debug=smt"
-```
-
-### SMT Queries
-
-We provide the SMT queries generated during verification in the `smt_queries` folder. These queries were generated using the command above, then filtered out to keep only the query corresponding to the solver verifying the VC. Indeed, Stainless runs multiple solvers in parallel, and we are only interested in the one that actually verified the VC. Other queries are incomplete, as Stainless calls the solver multiple times for each VC, with different functions gradully unfolded, and stops as soon as one of the solvers manages to verify the VC.
-
-## Run the main class
-
-To run the main class, you can use the following command:
-
-```bash
-  sbt "runMain com.ziplex.lexer.Main"
-```
-
-This will run the `main` method in the `Main` object, which contains some demo code to visualize the regex zipper.
-
-If you are using the docker image, make sure you are on the `benchmarks` branch in the local git repository in `/ziplex`.
-
-## Run benchmarks
-
-### Run all Scala benchmarks
-
-#### Prepare scala files
-
-Before running the benchmarks, some imports must be modified to import special versions of ghost functions that are properly erased to enable
-optimizations like "tailrec" to be applied by the Scala compiler.
-
-If you are using the docker image, switch to the `benchmarks` branch in the local git repository in `/ziplex`. In this branch, the necessary imports are already uncommented and the files are ready to be benchmarked.
-
-To do it manually, look for such blocks in import sections:
-
-```scala
-// BEGIN uncomment for verification ------------------------------------------
-import ...
-// END uncomment for verification --------------------------------------------
-// BEGIN imports for benchmarking -------------------------------------------
-// import ...
-
-// @tailrec
-// def dummyExample(x: BigInt): BigInt = {
-//   if (x == BigInt(0)) then x
-//   else dummyExample(x - BigInt(1))
-// }.ensuring( res => res == BigInt(0))
-// END imports for benchmarking ---------------------------------------------
-```
-
-and uncomment the "imports for benchmarking" section, while commenting out the "imports for verification" section. This will import the versions of ghost functions that are properly erased for benchmarking, and comment out the versions that are not erased and are needed for verification.
-
-#### Execute benchmarks
-
-To run all benchmarks, simply run the following command at the root of the project:
-
-```bash
-  ./run_benchmarks.sh
-```
-
-This will create a `benchmark_results/raw/<current-date>` folder containing the results of the benchmarks.
-
-### Coqlex benchmarks
-
-To run the Coqlex benchmarks, we use the original evaluation pipeline[Coqlex repository](https://gitlab.inria.fr/wouedrao/coqlex/-/tree/master).
-
-Because we added new grammars to the Coqlex benchmark suite, we provide a copy of the repository with the new lexers in `coqlex-fork/Comparison/AAStarB`. We added this `coqlex-fork/Comparison/AAStarB/` folder and modified the `Makefile` to run the benchmarks for the grammar `a` and `a*b`.
-
-For the grammar `a` and `a*b`, we provide a new coqlex lexer in `coqlex-fork/Comparison/AAStarB/Lexers/Coqlex`, and a new Verbatim++ lexer in `coqlex-fork/Comparison/AAStarB/Lexers/Verbatim`. The Coqlex lexer is built automatically when running the benchmark. The Verbatim++ lexer is generated using the Verbatim++ official repository in `Verbatim`. The lexer for the grammar `a` and `a*b` is located in `Verbatim/ExamuB/Lexer` and is compiled by running `make` in `Verbatim`. The generated `.ml` files must then be copied to `coqlex-fork/Comparison/AAStarB/Lexers/Verbatim` before running the benchmarks (we already compiled and copy the files).
-
-To run the Coqlex benchmarks, follow these steps:
-
-1. Install the dependencies listed in the Coqlex repository README.
-2. Navigate to the `coqlex-fork` folder and run `make`. 
-3. Run the benchmarks by running `make compare_json` and `make compare_aastarb` in `./coqlex-fork/`.
-
-You can also rely on the data already present in the `from_coqlex` folder, which contains the results of the Coqlex benchmarks run on our machine.
-
-If you decide to run the benchmarks yourself, make sure to copy the results in the `from_coqlex/Comparison/JSON/results` and `from_coqlex/Comparison/AAStarB/results`folders.
-
-### Prepare data for analysis
-
-To prepare the data for analysis, run the following command in the `benchmark_results` directory:
-
-```bash
-  ./extract_data.sh benchmark_results/raw/<date-of-benchmark>
-```
-
-This will process the raw logs in usable data files and move them in the `benchmark_results/latest` folder. This also write data in the correct format in the `from_coqlex/Comparison/JSON/results/ZipLex` folder to compare with the Coqlex benchmark suite. For the analysis script to work, you need to have the Coqlex results in the `from_coqlex/Comparison/JSON/results` and `from_coqlex/Comparison/AAStarB/results` folders for the other lexers, see previous section.
-
-This will also extract the data from the `flex` benchmark results, which are located in `flex_benchmarks` and are run by the `run_benchmarks.sh` script.
-
-### Analyze data
-
-The analysis of the data is done in the `Benchmark Data Analysis.ipynb` notebook. Make sure to install the required dependencies listed in `benchmark_results/requirements.txt` using pip. `Benchmark Data Analysis.ipynb` loads the data from the `benchmark_results/latest` folder and the `from_coqlex` folder to produce the analysis and plots. It also analyzes the Stainless report and SMT queries generated using the `./verify.sh "--json --debug=smt"` command, if they are placed in the `benchmark_results/latest` folder.
