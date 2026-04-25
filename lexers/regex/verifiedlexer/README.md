@@ -200,7 +200,13 @@ This will create a `benchmark_results/raw/<current-date>` folder containing the 
 
 ##### Time frame and log feedback
 
-Running all the benchmarks can around 24 hours or more, depending on the machine and the level of parallelism. The benchmarks are configured to run with a single thread to avoid any issues with parallel execution and to get more stable results, but you can modify the `run_benchmarks.sh` script to run with less iterations or warmup iterations, although this may affect the stability of the results.
+Running all the benchmarks can around 24 hours or more, depending on the machine and the level of parallelism. The benchmarks are configured to run with a single thread to avoid any issues with parallel execution and to get more stable results, but you can run the `./run_benchmarks.sh` script with less iterations and warmup iterations by passing them as arguments to the script, for example:
+
+```bash
+  ./run_benchmarks.sh 1 1
+```
+
+You can also run `./run_benchmarks.sh -h` to see the usage instructions and available options.
 
 While the benchmarks are running, the logs will be written in the `benchmark_results/raw/<current-date>` folder, and you can check the progress by looking at the logs. Each benchmark will produce a log file with the name of the benchmark and the configuration used (number of iterations, warmup iterations, etc.). You can check these logs to see which benchmarks have finished and which are still running.
 
