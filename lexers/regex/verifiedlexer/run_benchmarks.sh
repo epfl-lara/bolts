@@ -29,7 +29,13 @@ WARM_ITERATIONS="${2:-5}"
 # Create a directory named results_{current date} if it doesn't exist
 DIRECTORY_NAME="results_$(date +'%d.%m.%Y')"
 DIRECTORY_PATH="./benchmark_results/raw/$DIRECTORY_NAME"
+
+rm -rf /ziplex/target/stainless_3/stainless-library_3-0.9.9.3-sources/META-INF/MANIFEST.MF
+
 cd ./benchmark_results/raw && mkdir -p "$DIRECTORY_NAME" && cd - || exit 1
+echo "Running benchmarks..."
+echo "See benchmark results in: $DIRECTORY_PATH"
+
 sbt -no-colors "Jmh/run -i $ITERATIONS -wi $WARM_ITERATIONS -f1 -t1 com.ziplex.lexer.benchmark.lexer.JsonLexerBenchmark" > "$DIRECTORY_PATH/json_lexer_benchmark_wi_${WARM_ITERATIONS}_i_${ITERATIONS}.txt"
 sbt -no-colors "Jmh/run -i $ITERATIONS -wi $WARM_ITERATIONS -f1 -t1 com.ziplex.lexer.benchmark.lexer.AAStarBLexerBenchmark" > "$DIRECTORY_PATH/aa_star_b_lexer_benchmark_wi_${WARM_ITERATIONS}_i_${ITERATIONS}.txt"
 sbt -no-colors "Jmh/run -i $ITERATIONS -wi $WARM_ITERATIONS -f1 -t1 com.ziplex.lexer.benchmark.lexer.BigAAStarBLexerBenchmark" > "$DIRECTORY_PATH/aa_star_b_lexer_benchmark_big_wi_${WARM_ITERATIONS}_i_${ITERATIONS}.txt"
