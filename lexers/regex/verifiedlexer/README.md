@@ -120,7 +120,13 @@ This will verify only the main lexing function `VerifiedLexer.Lexer.lex`. If thi
 
 While verifying Ziplex, memory consumption can go up to 32GB and the verification can take up to 3 hours, depending on the level of parallelism. We recommend running the verification with at least 32GB of RAM allowed to be used by the container (or on the machine) to avoid issues with the OOM killer.
 
-If you want to increase the level of parallelism, you can modify the `verify.sh` script to modify the `-D-parallel=2` option. This will run the verification with 2 parallel threads, you can increase this number to speed up the verification. In our experience, running with 4 or 8 parallel threads reduces the verification time to around 1 to 1.5 hours.
+If you want to increase the level of parallelism, you can modify pass the corresponding option to `verify.sh`. In our experience, running with 4 or 8 parallel threads can reduce the verification time to around 1 to 1.5 hours.
+
+```bash
+  ./verify.sh -p 4
+```
+
+You can run `./verify.sh -h` to see the usage instructions and available options.
 
 ### Generate report and SMT queries for analysis
 
