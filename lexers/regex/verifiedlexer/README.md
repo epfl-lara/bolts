@@ -159,6 +159,8 @@ If you are using the docker image, make sure you are on the `benchmarks` branch 
 
 ## Run benchmarks
 
+If you are using the docker image, make sure you are on the `benchmarks` branch in the local git repository in `/ziplex`.
+
 ### Run all Scala benchmarks
 
 #### Prepare scala files
@@ -233,7 +235,7 @@ For the grammar `a` and `a*b`, we provide a new coqlex lexer in `coqlex-fork/Com
 
 To run the Coqlex benchmarks, follow these steps:
 
-1. Install the dependencies listed in the Coqlex repository README.
+1. Install the dependencies listed in the Coqlex repository README (already done in the docker image).
 2. Navigate to the `coqlex-fork` folder and run `make`. 
 3. Run the benchmarks by running `make compare_json` and `make compare_aastarb` in `./coqlex-fork/`.
 
