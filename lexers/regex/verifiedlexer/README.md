@@ -4,6 +4,7 @@
 
 - [Ziplex: A Verified Inveritble Lexer](#ziplex-a-verified-inveritble-lexer)
   - [Table of contents](#table-of-contents)
+  - [Availability](#availability)
   - [Setup - Installation instructions](#setup---installation-instructions)
     - [Verification](#verification)
     - [Running the project](#running-the-project)
@@ -31,6 +32,10 @@
     - [Benchmarks and result processing](#benchmarks-and-result-processing)
     - [Entry points and specifications](#entry-points-and-specifications)
     - [Main correctness theorem(s)](#main-correctness-theorems)
+
+## Availability
+
+The code for the Ziplex project is also available on GitHub on the [Bolts repository](https://github.com/epfl-lara/bolts).
 
 ## Setup - Installation instructions
 
@@ -213,6 +218,8 @@ Running all the benchmarks can around 24 hours or more, depending on the machine
 ```
 
 You can also run `./run_benchmarks.sh -h` to see the usage instructions and available options.
+
+With 1 iteration and 1 warmup iteration, the benchmarks should run in around 2-4 hours, depending on the machine. With more iterations, the time will increase accordingly.
 
 While the benchmarks are running, the logs will be written in the `benchmark_results/raw/<current-date>` folder, and you can check the progress by looking at the logs. Each benchmark will produce a log file with the name of the benchmark and the configuration used (number of iterations, warmup iterations, etc.). You can check these logs to see which benchmarks have finished and which are still running.
 
