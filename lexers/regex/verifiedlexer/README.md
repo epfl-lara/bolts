@@ -84,7 +84,7 @@ If it does not work, please refer to [this manual](https://epfl-lara.github.io/s
 To run a container with the Docker image, you can use the following command:
 
 ```bash
-  docker run --rm -it \                                                                                                                                                                                                                             took  1m 22s
+  docker run --rm -it \
   -p 8888:8888 \
   --name ziplex \
   ziplex
@@ -278,6 +278,8 @@ This will also extract the data from the `flex` benchmark results, which are loc
 The analysis of the data is done in the `Benchmark Data Analysis.ipynb` notebook. Make sure to install the required dependencies listed in `benchmark_results/requirements.txt` using pip. `Benchmark Data Analysis.ipynb` loads the data from the `benchmark_results/latest` folder and the `from_coqlex` folder to produce the analysis and plots. It also analyzes the Stainless report and SMT queries generated using the `./verify.sh --json --debug=smt` command, if they are placed in the `benchmark_results/latest` folder.
 
 If you are using the docker image, you can access the notebook at `http://localhost:8888` and log in with the token `ziplex`. The notebook is located in the `benchmark_results` folder. You can also run the notebook in VSCode if you have attached to the container using VSCode Remote Containers.
+
+Plots are generated in the `benchmark_results/plots` folder. The file names of the plots are prefixed with the figure number in the paper.
 
 ## Structure of the project
 
