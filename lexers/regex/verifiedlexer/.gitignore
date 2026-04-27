@@ -41,3 +41,5 @@ stainless-stack-trace.txt
 .venv
 
 **/plots
+
+**/*.smt2
