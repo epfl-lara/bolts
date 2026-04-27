@@ -161,7 +161,7 @@ To generate Stainless json report and the SMT queries that analyzed in the `Benc
 
 ### SMT Queries
 
-We provide the SMT queries generated during verification in the `smt_queries` folder. These queries were generated using the command above, then filtered out to keep only the query corresponding to the solver verifying the VC. Indeed, Stainless runs multiple solvers in parallel, and we are only interested in the one that actually verified the VC. Other queries are incomplete, as Stainless calls the solver multiple times for each VC, with different functions gradully unfolded, and stops as soon as one of the solvers manages to verify the VC.
+We provide the SMT queries generated during verification in the `./benchmark_results/smt-sessions-filtered` folder. These queries were generated using the command above, then filtered out to keep only the query corresponding to the solver verifying the VC. Indeed, Stainless runs multiple solvers in parallel, and we are only interested in the one that actually verified the VC. Other queries are incomplete, as Stainless calls the solver multiple times for each VC, with different functions gradully unfolded, and stops as soon as one of the solvers manages to verify the VC.
 
 ## Run the main class
 
