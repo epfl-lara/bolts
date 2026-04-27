@@ -4,11 +4,11 @@
 
 - [Ziplex: A Verified Inveritble Lexer](#ziplex-a-verified-inveritble-lexer)
   - [Table of contents](#table-of-contents)
-  - [Availability](#availability)
   - [Setup - Installation instructions](#setup---installation-instructions)
     - [Verification](#verification)
     - [Running the project](#running-the-project)
   - [Using the Docker image](#using-the-docker-image)
+    - [VSCode Remote Containers](#vscode-remote-containers)
   - [Verify the project](#verify-the-project)
     - [Verification smoke test](#verification-smoke-test)
     - [Time and memory consumption](#time-and-memory-consumption)
@@ -33,10 +33,6 @@
     - [Entry points and specifications](#entry-points-and-specifications)
     - [Main correctness theorem(s)](#main-correctness-theorems)
 
-## Availability
-
-The code for the Ziplex project is also available on GitHub on the [Bolts repository](https://github.com/epfl-lara/bolts).
-
 ## Setup - Installation instructions
 
 If you are using the Docker image, you can skip the setup instructions and go directly to the [Using the Docker image](#using-the-docker-image) section.
@@ -56,7 +52,7 @@ The versions we used are:
 
 ### Running the project
 
-If you are using the docker image, you can skip this 
+If you are using the docker image, you can skip this section and go directly to the [Using the Docker image](#using-the-docker-image) section.
 
 To run this project, you need to install the Stainless sbt plugin. To do so, follow these steps:
 
@@ -88,16 +84,38 @@ If it does not work, please refer to [this manual](https://epfl-lara.github.io/s
 To run a container with the Docker image, you can use the following command:
 
 ```bash
-  docker run --rm -it \
-    --name stainless-ziplex-artifact \
-    --memory=36g \
-    --memory-swap=48g \
-    stainless-ziplex /bin/bash
+  docker run --rm -it \                                                                                                                                                                                                                             took  1m 22s
+  -p 8888:8888 \
+  --name ziplex \
+  ziplex
 ```
+
+This will start a container with the name `ziplex` that exposes a Jupyter notebook on port 8888. You can access the notebook by going to `http://localhost:8888` in your web browser and using the token `ziplex` to log in.
 
 Make sure that the memory limits in docker desktop are high enough to avoid stainless being killed by the OOM killer. We recommend setting the memory limit to at least 32GB.
 
-You can then go into `/ziplex` and follow the instructions below to verify the project and run the benchmarks. The `verify.sh` script is configured to use the Z3 and cvc5 solvers that are installed in the Docker image, so you can run it without any additional configuration.
+You can then run `docker exec -it ziplex bash` to get a terminal in the running container, and navigate to the `/ziplex` folder to access the code and run the verification and benchmarks.
+
+The `verify.sh` script (see below) is configured to use the Z3 and cvc5 solvers that are installed in the Docker image, so you can run it without any additional configuration.
+
+### VSCode Remote Containers
+
+Alternatively, we suggest to attach a Vscode instance to the running container to easily navigate the code and run the verification and benchmarks from the terminal in VSCode. This also allows to monitor the progress of the benchmarks by looking at the logs in real time, and to use the jupyter notebook to analyze the results. To do so, follow these steps:
+
+1. Start the container with this command:
+
+  ```bash
+    docker run \
+      -d \
+      --name stainless-ziplex-artifact \
+      --memory=36g \
+      --memory-swap=48g \
+      -p 2222:22 \
+      stainless-ziplex tail -f /dev/null
+  ```
+
+2. Open the command palette in VSCode and select "Attach to running container", then select the `stainless-ziplex-artifact` container.
+3. Once connected to the container, open the `/ziplex` folder in VSCode, and open a terminal in VSCode to run the verification and benchmarks.
 
 ## Verify the project
 
@@ -258,6 +276,8 @@ This will also extract the data from the `flex` benchmark results, which are loc
 ### Analyze data
 
 The analysis of the data is done in the `Benchmark Data Analysis.ipynb` notebook. Make sure to install the required dependencies listed in `benchmark_results/requirements.txt` using pip. `Benchmark Data Analysis.ipynb` loads the data from the `benchmark_results/latest` folder and the `from_coqlex` folder to produce the analysis and plots. It also analyzes the Stainless report and SMT queries generated using the `./verify.sh "--json --debug=smt"` command, if they are placed in the `benchmark_results/latest` folder.
+
+If you are using the docker image, you can access the notebook at `http://localhost:8888` and log in with the token `ziplex`. The notebook is located in the `benchmark_results` folder. You can also run the notebook in VSCode if you have attached to the container using VSCode Remote Containers.
 
 ## Structure of the project
 
