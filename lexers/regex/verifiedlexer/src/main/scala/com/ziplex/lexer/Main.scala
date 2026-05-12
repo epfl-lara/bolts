@@ -47,6 +47,9 @@ object Main {
     println("-\n\n====================\n\n-")
     println("Benchmarking lexing of JSON files with memoization:")
     benchLexMemJsonFiles()
+    println("-\n\n====================\n\n-")]
+    println("Benchmarking lexing of JSON files with lex with no memoization:")
+    benchLexV3JsonFiles()
   }
 
   def benchLexMemJsonFiles(): Unit = {
@@ -77,6 +80,31 @@ object Main {
         )
         val t0 = System.nanoTime()
         val (_, suffix) = Lexer.lexMem(JsonLexer.rules, content)(using ClassTag.Char, up, down, furthest)
+        val t1 = System.nanoTime()
+        assert(suffix.isEmpty)
+        times(i) = (t1 - t0).toDouble / 1e6
+      }
+      val mean = times.sum / n
+      val variance = times.map(t => (t - mean) * (t - mean)).sum / (n - 1)
+      val ci = tCrit * math.sqrt(variance) / math.sqrt(n)
+      println(f"$name: avg $mean%.3f ms ± $ci%.3f ms (99.9%% CI, n=$n)")
+    }
+  }
+
+  def benchLexV3JsonFiles(): Unit = {
+    val n = 10
+    val tCrit = 31.599
+    JsonLexerBenchmarkUtils.exampleFileNames.foreach { name =>
+      val content = JsonLexerBenchmarkUtils.exampleFileContents(name)
+      val warmups = 2
+      for (_ <- 0 until warmups) {
+        val (_, suffix) = Lexer.lexV3(JsonLexer.rules, content)
+        assert(suffix.isEmpty)
+      }
+      val times = Array.ofDim[Double](n)
+      for (i <- 0 until n) {
+        val t0 = System.nanoTime()
+        val (_, suffix) = Lexer.lexV3(JsonLexer.rules, content)
         val t1 = System.nanoTime()
         assert(suffix.isEmpty)
         times(i) = (t1 - t0).toDouble / 1e6
