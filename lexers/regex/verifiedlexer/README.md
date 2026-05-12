@@ -107,15 +107,31 @@ Alternatively, we suggest to attach a Vscode instance to the running container t
   ```bash
     docker run \
       -d \
-      --name stainless-ziplex-artifact \
-      --memory=36g \
+      --name ziplex-artifact \
+      --memory=32g \
       --memory-swap=48g \
       -p 2222:22 \
-      stainless-ziplex tail -f /dev/null
+      ziplex tail -f /dev/null
   ```
 
 2. Open the command palette in VSCode and select "Attach to running container", then select the `stainless-ziplex-artifact` container.
 3. Once connected to the container, open the `/ziplex` folder in VSCode, and open a terminal in VSCode to run the verification and benchmarks.
+
+To instantiate a container with this command, you need to set the allowed memory for Docker to at least 32GB in the Docker Desktop settings, otherwise the OOM killer will kill the Stainless process during verification. We also recommend setting the swap memory to at least 4GB. For this configuration, you need to have strictly more than 32GB of RAM on your machine. We tested this configuration on a machine with 36GB of RAM.
+
+If you want to allocate less memory to the container, you can go as low as 28GB of memory, but you'll need to use the alternative verification script `verify_smaller_memory_footprint.sh` that is configured to verify the project with a smaller memory footprint, by splitting the verification into different stainless invocations. This might increase the total verification time and note that you cannot generate the smt queries for analysis with this smaller memory footprint configuration, but it can be useful if you want to verify the project on a machine with less available memory. 
+
+For this configuaration, you need to allow at least 28GB of memory in the Docker Desktop settings. This works on a machine with 32GB of RAM. You can then run the container with the following command:
+
+```bash
+  docker run \
+    -d \
+    --name ziplex-artifact \
+    --memory=28g \
+    --memory-swap=48g \
+    -p 2222:22 \
+    ziplex tail -f /dev/null
+```
 
 ## Verify the project
 
@@ -150,6 +166,8 @@ If you want to increase the level of parallelism, you can modify pass the corres
 ```
 
 You can run `./verify.sh -h` to see the usage instructions and available options.
+
+To use a smaller memory footprint configuration, you can use the `verify_smaller_memory_footprint.sh` script instead, as explained in the [Using the Docker image](#using-the-docker-image) section.
 
 ### Generate report and SMT queries for analysis
 

@@ -13,6 +13,10 @@ import com.ziplex.lexer.VerifiedLexer.Lexer
 import com.ziplex.lexer.example.JsonManipulationExample
 import com.ziplex.lexer.example.RegexUtils._
 import com.ziplex.lexer.example.ExampleUtils
+import com.ziplex.lexer.MemoisationZipper
+import com.ziplex.lexer.benchmark.ContextCharHashable
+import com.ziplex.lexer.benchmark.RegexContextCharHashable
+import com.ziplex.lexer.benchmark.lexer.JsonLexerBenchmarkUtils
 
 import stainless.lang.Option
 import stainless.lang.Some
@@ -40,6 +44,36 @@ object Main {
     println("-\n\n====================\n\n-")
     testElementSetRegex()
     testElementSetRegex2()
+    println("-\n\n====================\n\n-")
+    println("Benchmarking lexing of JSON files with memoization:")
+    benchLexMemJsonFiles()
+  }
+
+  def benchLexMemJsonFiles(): Unit = {
+    val n = 10
+    val tCrit = 31.599
+    JsonLexerBenchmarkUtils.exampleFileNames.foreach { name =>
+      val content = JsonLexerBenchmarkUtils.exampleFileContents(name)
+      val times = Array.ofDim[Double](n)
+      for (i <- 0 until n) {
+        val up = MemoisationZipper.emptyUp(ContextCharHashable)
+        val down = MemoisationZipper.emptyDown(RegexContextCharHashable)
+        val furthest = MemoisationZipper.emptyFurthestNullableCache[Char](
+          ExampleUtils.ZipperBigIntBigIntHashable,
+          content,
+          JsonLexer.rules
+        )
+        val t0 = System.nanoTime()
+        val (_, suffix) = Lexer.lexMem(JsonLexer.rules, content)(using ClassTag.Char, up, down, furthest)
+        val t1 = System.nanoTime()
+        assert(suffix.isEmpty)
+        times(i) = (t1 - t0).toDouble / 1e6
+      }
+      val mean = times.sum / n
+      val variance = times.map(t => (t - mean) * (t - mean)).sum / (n - 1)
+      val ci = tCrit * math.sqrt(variance) / math.sqrt(n)
+      println(f"$name: avg $mean%.3f ms ± $ci%.3f ms (99.9%% CI, n=$n)")
+    }
   }
 
   def exampleJsonSorting(): Unit = {
