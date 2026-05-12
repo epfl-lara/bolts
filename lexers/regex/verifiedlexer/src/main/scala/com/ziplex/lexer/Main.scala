@@ -54,6 +54,18 @@ object Main {
     val tCrit = 31.599
     JsonLexerBenchmarkUtils.exampleFileNames.foreach { name =>
       val content = JsonLexerBenchmarkUtils.exampleFileContents(name)
+      val warmups = 2
+      for (_ <- 0 until warmups) {
+        val up = MemoisationZipper.emptyUp(ContextCharHashable)
+        val down = MemoisationZipper.emptyDown(RegexContextCharHashable)
+        val furthest = MemoisationZipper.emptyFurthestNullableCache[Char](
+          ExampleUtils.ZipperBigIntBigIntHashable,
+          content,
+          JsonLexer.rules
+        )
+        val (_, suffix) = Lexer.lexMem(JsonLexer.rules, content)(using ClassTag.Char, up, down, furthest)
+        assert(suffix.isEmpty)
+      }
       val times = Array.ofDim[Double](n)
       for (i <- 0 until n) {
         val up = MemoisationZipper.emptyUp(ContextCharHashable)
