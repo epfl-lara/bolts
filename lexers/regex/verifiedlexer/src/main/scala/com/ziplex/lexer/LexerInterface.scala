@@ -51,7 +51,7 @@ def dummyInterface(x: BigInt): BigInt = {
 // def singletonSeq[T](t: T): Sequence[T] = Vector.singleton(t)
 // def seqFromList[T](l: List[T]): Sequence[T] = Vector.fromList(l)
 // def seqFromArray[T: ClassTag](arr: IArray[T]): Sequence[T] = Vector.fromArray(arr)
-type Sequence[T] = BalanceConc[T]
+type Sequence[@specialized(Char) T] = BalanceConc[T]
 def emptySeq[T: ClassTag](): Sequence[T] = BalanceConcObj.empty[T]
 def singletonSeq[T: ClassTag](t: T): Sequence[T] = BalanceConcObj.singleton(t)
 def seqFromList[T: ClassTag](l: List[T]): Sequence[T] = BalanceConcObj.fromListB(l)
@@ -64,7 +64,7 @@ def seqFromArray[T: ClassTag](arr: IArray[T]): Sequence[T] = BalanceConcObj.from
 
 trait TokenValue
 
-final case class Token[C](value: TokenValue, rule: Rule[C], size: BigInt, @ghost originalCharacters: List[C]) {
+final case class Token[@specialized(Char) C](value: TokenValue, rule: Rule[C], size: BigInt, @ghost originalCharacters: List[C]) {
   require(!originalCharacters.isEmpty)
   require(originalCharacters == rule.transformation.toChars(value).list)
   require(size == originalCharacters.size)
@@ -75,7 +75,7 @@ final case class Token[C](value: TokenValue, rule: Rule[C], size: BigInt, @ghost
   def lemmaCharactersSize(): Unit = {
   }.ensuring(_ => size == originalCharacters.size)
 }
-case class Rule[C](regex: Regex[C], tag: String, isSeparator: Boolean, transformation: TokenValueInjection[C])
+case class Rule[@specialized(Char) C](regex: Regex[C], tag: String, isSeparator: Boolean, transformation: TokenValueInjection[C])
 
 @ghost inline def semiInverseBodyModEq[C](toChars: TokenValue => Sequence[C], toValue: Sequence[C] => TokenValue): Boolean = 
   Forall((chars: Sequence[C]) => toChars(toValue(chars)).list == chars.list)
@@ -146,13 +146,13 @@ trait LexerInterface {
     * @param rules
     * @param input
     */
-  def lex[C: ClassTag](rules: List[Rule[C]], input: Sequence[C]): (Sequence[Token[C]], Sequence[C])
+  def lex[@specialized(Char) C: ClassTag](rules: List[Rule[C]], input: Sequence[C]): (Sequence[Token[C]], Sequence[C])
 
   /** Prints back the tokens to a sequence of characters of the type C
     *
     * @param l
     */
-  def print[C: ClassTag](v: Sequence[Token[C]]): Sequence[C]
+  def print[@specialized(Char) C: ClassTag](v: Sequence[Token[C]]): Sequence[C]
 
 
   /**
@@ -160,7 +160,7 @@ trait LexerInterface {
     *
     * @param rules
     */
-  def rulesInvariant[C: ClassTag](rules: List[Rule[C]]): Boolean
+  def rulesInvariant[@specialized(Char) C: ClassTag](rules: List[Rule[C]]): Boolean
 
   // -------------- Soundness property of the lexer ----------------
 
@@ -228,7 +228,7 @@ trait LexerInterface {
     * @param rules
     * @return
     */
-  def separableTokens[C: ClassTag](tokens: Sequence[Token[C]], rules: List[Rule[C]]): Boolean
+  def separableTokens[@specialized(Char) C: ClassTag](tokens: Sequence[Token[C]], rules: List[Rule[C]]): Boolean
 
   /**
     * Predicate over a sequence of tokens, that applies the separableTokensPredicate binary predicate to each pair of consecutive tokens
@@ -238,7 +238,7 @@ trait LexerInterface {
     * @param pred
     * @return
     */
-  def tokensListTwoByTwoPredicateSeparable[C: ClassTag](l: Sequence[Token[C]], from: BigInt, rules: List[Rule[C]]): Boolean
+  def tokensListTwoByTwoPredicateSeparable[@specialized(Char) C: ClassTag](l: Sequence[Token[C]], from: BigInt, rules: List[Rule[C]]): Boolean
 
   /**
     * Predicate over 2 tokens, that indicates whether they are seaprable by a lexer represented by the rules
@@ -248,7 +248,7 @@ trait LexerInterface {
     * @param rules
     * @return
     */
-  def separableTokensPredicate[C: ClassTag](t1: Token[C], t2: Token[C], rules: List[Rule[C]]): Boolean
+  def separableTokensPredicate[@specialized(Char) C: ClassTag](t1: Token[C], t2: Token[C], rules: List[Rule[C]]): Boolean
 
   /**
     * Predicate that indicates whether the rules are compatible with the tokens
@@ -276,7 +276,7 @@ trait LexerInterface {
     * @param l
     * @param separatorToken
     */
-  def printWithSeparatorToken[C: ClassTag](l: Sequence[Token[C]], separatorToken: Token[C]): Sequence[C]
+  def printWithSeparatorToken[@specialized(Char) C: ClassTag](l: Sequence[Token[C]], separatorToken: Token[C]): Sequence[C]
 
   /**
     * Returns the Sequence of tokens v with the separator token interleaved between each pair, as
@@ -290,7 +290,7 @@ trait LexerInterface {
     * @param acc
     * @return
     */
-  def withSeparatorToken[C: ClassTag](v: Sequence[Token[C]], separatorToken: Token[C]): Sequence[Token[C]] = {
+  def withSeparatorToken[@specialized(Char) C: ClassTag](v: Sequence[Token[C]], separatorToken: Token[C]): Sequence[Token[C]] = {
     require(separatorToken.rule.isSeparator)
     ??? : Sequence[Token[C]]
   }.ensuring(res => print(res).list == printWithSeparatorToken(v, separatorToken).list)
@@ -305,7 +305,7 @@ trait LexerInterface {
       * @param l
       * @param separatorToken
       */
-  def printWithSeparatorTokenWhenNeeded[C: ClassTag](rules: List[Rule[C]], l: Sequence[Token[C]], separatorToken: Token[C]): Sequence[C]
+  def printWithSeparatorTokenWhenNeeded[@specialized(Char) C: ClassTag](rules: List[Rule[C]], l: Sequence[Token[C]], separatorToken: Token[C]): Sequence[C]
 
   @law @ghost def interleavingSeparatorTokenMakesSeparableSequence[C: ClassTag](rules: List[Rule[C]], tokens: Sequence[Token[C]], separatorToken: Token[C]): Boolean =
     (!rules.isEmpty && 

@@ -462,7 +462,7 @@ object VerifiedLexer {
       * @param rules
       * @param input
       */  
-     override def lex[C: ClassTag](
+     override def lex[@specialized(Char) C: ClassTag](
         rules: List[Rule[C]],
         input: Sequence[C]
     ): (Sequence[Token[C]], Sequence[C]) = {
@@ -483,7 +483,7 @@ object VerifiedLexer {
        res._2.list == lexList(rules, input.list)._2)
     )
 
-    def lexV1[C: ClassTag](
+    def lexV1[@specialized(Char) C: ClassTag](
         rules: List[Rule[C]],
         input: Sequence[C]
     ): (Sequence[Token[C]], Sequence[C]) = {
@@ -504,7 +504,7 @@ object VerifiedLexer {
        res._2.list == lexList(rules, input.list)._2)
     )
 
-    def lexRec[C: ClassTag](
+    def lexRec[@specialized(Char) C: ClassTag](
         rules: List[Rule[C]],
         input: Sequence[C]
     ): (Sequence[Token[C]], Sequence[C]) = {
@@ -527,7 +527,7 @@ object VerifiedLexer {
     )
 
     @tailrec
-    def lexTailRec[C: ClassTag](
+    def lexTailRec[@specialized(Char) C: ClassTag](
         rules: List[Rule[C]],
         @ghost totalInput: Sequence[C],
         @ghost treated: Sequence[C],
@@ -567,7 +567,7 @@ object VerifiedLexer {
     }.ensuring (res => res._1.list == lexRec(rules, totalInput)._1.list && 
                        res._2.list == lexRec(rules, totalInput)._2.list)
 
-    def lexRecV2[C: ClassTag](
+    def lexRecV2[@specialized(Char) C: ClassTag](
         rules: List[Rule[C]],
         input: Sequence[C],
         totalInput: Sequence[C]
@@ -593,7 +593,7 @@ object VerifiedLexer {
     )
 
     @tailrec
-    def lexTailRecV2[C: ClassTag](
+    def lexTailRecV2[@specialized(Char) C: ClassTag](
         rules: List[Rule[C]],
         totalInput: Sequence[C],
         @ghost treated: Sequence[C],
@@ -638,7 +638,7 @@ object VerifiedLexer {
     }.ensuring (res => res._1.list == lexRec(rules, totalInput)._1.list && 
                        res._2.list == lexRec(rules, totalInput)._2.list)
 
-    def lexV1Mem[C: ClassTag](
+    def lexV1Mem[@specialized(Char) C: ClassTag](
         rules: List[Rule[C]],
         input: Sequence[C]
     )(using cacheUp: CacheUp[C], cacheDown: CacheDown[C]): (Sequence[Token[C]], Sequence[C]) = {
@@ -658,7 +658,7 @@ object VerifiedLexer {
     }.ensuring (res => res._1.list == lex(rules, input)._1.list && 
                        res._2.list == lex(rules, input)._2.list)
 
-    def lexMem[C: ClassTag](
+    def lexMem[@specialized(Char) C: ClassTag](
         rules: List[Rule[C]],
         input: Sequence[C]
     )(using cacheUp: CacheUp[C], cacheDown: CacheDown[C], cacheFurthestNullable: CacheFurthestNullable[C]): (Sequence[Token[C]], Sequence[C]) = {
@@ -682,7 +682,7 @@ object VerifiedLexer {
                        cacheFurthestNullable.valid && cacheUp.valid && cacheDown.valid &&
                        cacheFurthestNullable.totalInput == input)
 
-    def lexV2Mem[C: ClassTag](
+    def lexV2Mem[@specialized(Char) C: ClassTag](
         rules: List[Rule[C]],
         input: Sequence[C]
     )(using cacheUp: CacheUp[C], cacheDown: CacheDown[C], cacheFindLongestMatch: CacheFindLongestMatch[C]): (Sequence[Token[C]], Sequence[C]) = {
@@ -706,7 +706,7 @@ object VerifiedLexer {
                        cacheFindLongestMatch.valid && cacheUp.valid && cacheDown.valid &&
                        cacheFindLongestMatch.totalInput == input)
 
-    def lexV2MemOnlyDeriv[C: ClassTag](
+    def lexV2MemOnlyDeriv[@specialized(Char) C: ClassTag](
         rules: List[Rule[C]],
         input: Sequence[C]
     )(using cacheUp: CacheUp[C], cacheDown: CacheDown[C]): (Sequence[Token[C]], Sequence[C]) = {
@@ -727,7 +727,7 @@ object VerifiedLexer {
                        res._2.list == lex(rules, input)._2.list &&
                        cacheUp.valid && cacheDown.valid)
 
-    def lexV3[C: ClassTag](
+    def lexV3[@specialized(Char) C: ClassTag](
         rules: List[Rule[C]],
         input: Sequence[C]
     ): (Sequence[Token[C]], Sequence[C]) = {
@@ -744,7 +744,7 @@ object VerifiedLexer {
     }.ensuring (res => res._1.list == lex(rules, input)._1.list && 
                        res._2.list == lex(rules, input)._2.list)
 
-    def lexV3MemDeriv[C: ClassTag](
+    def lexV3MemDeriv[@specialized(Char) C: ClassTag](
         rules: List[Rule[C]],
         input: Sequence[C]
     )(using cacheUp: CacheUp[C], cacheDown: CacheDown[C]): (Sequence[Token[C]], Sequence[C]) = {
@@ -766,7 +766,7 @@ object VerifiedLexer {
                        cacheUp.valid && cacheDown.valid)
 
     @tailrec
-    def lexTailRecMem[C: ClassTag](
+    def lexTailRecMem[@specialized(Char) C: ClassTag](
         rules: List[Rule[C]],
         @ghost totalInput: Sequence[C],
         @ghost treated: Sequence[C],
@@ -804,7 +804,7 @@ object VerifiedLexer {
                        res._2.list == lexTailRec(rules, totalInput, treated, input, acc)._2.list)
 
     @tailrec
-    def lexTailRecV2Mem[C: ClassTag](
+    def lexTailRecV2Mem[@specialized(Char) C: ClassTag](
         rules: List[Rule[C]],
         totalInput: Sequence[C],
         @ghost treated: Sequence[C],
@@ -870,7 +870,7 @@ object VerifiedLexer {
                        cacheFindLongestMatch.totalInput == totalInput)
 
     @tailrec
-    def lexTailRecV2MemOnlyDeriv[C: ClassTag](
+    def lexTailRecV2MemOnlyDeriv[@specialized(Char) C: ClassTag](
         rules: List[Rule[C]],
         totalInput: Sequence[C],
         @ghost treated: Sequence[C],
@@ -933,7 +933,7 @@ object VerifiedLexer {
                        cacheUp.valid && cacheDown.valid)
 
     @tailrec
-    def lexTailRecV3[C: ClassTag](
+    def lexTailRecV3[@specialized(Char) C: ClassTag](
         rules: List[Rule[C]],
         totalInput: Sequence[C],
         @ghost treated: Sequence[C],
@@ -979,7 +979,7 @@ object VerifiedLexer {
                        res._2.list == lexRec(rules, totalInput)._2.list)
 
     @tailrec
-    def lexTailRecV3MemDeriv[C: ClassTag](
+    def lexTailRecV3MemDeriv[@specialized(Char) C: ClassTag](
         rules: List[Rule[C]],
         totalInput: Sequence[C],
         @ghost treated: Sequence[C],
@@ -1029,7 +1029,7 @@ object VerifiedLexer {
                        cacheUp.valid && cacheDown.valid)
 
 
-    def lexTailRecV3Mem[C: ClassTag](
+    def lexTailRecV3Mem[@specialized(Char) C: ClassTag](
         rules: List[Rule[C]],
         totalInput: Sequence[C],
         @ghost treated: Sequence[C],
@@ -1084,7 +1084,7 @@ object VerifiedLexer {
 
 
     @ghost
-    def lexRegexList[C: ClassTag](
+    def lexRegexList[@specialized(Char) C: ClassTag](
         rules: List[Rule[C]],
         input: List[C]
     ): (List[Token[C]], List[C]) = {
@@ -1109,7 +1109,7 @@ object VerifiedLexer {
       * @param l
       */
     @ghost //@inlineOnce
-    def printList[C: ClassTag](l: List[Token[C]]): List[C] = {
+    def printList[@specialized(Char) C: ClassTag](l: List[Token[C]]): List[C] = {
       decreases(l)
       l match {
         case Cons(hd, tl) => hd.charsOf.list ++ printList(tl)
@@ -1118,7 +1118,7 @@ object VerifiedLexer {
     }
 
     @ghost //@inlineOnce
-    def printListTailRec[C: ClassTag](l: List[Token[C]], acc: List[C] = Nil()): List[C] = {
+    def printListTailRec[@specialized(Char) C: ClassTag](l: List[Token[C]], acc: List[C] = Nil()): List[C] = {
       decreases(l)
       l match {
         case Cons(hd, tl) => {
@@ -1129,11 +1129,11 @@ object VerifiedLexer {
       }
     }.ensuring(res => res == acc ++ printList(l))
 
-    override def print[C: ClassTag](v: Sequence[Token[C]]): Sequence[C] = {
+    override def print[@specialized(Char) C: ClassTag](v: Sequence[Token[C]]): Sequence[C] = {
       printTailRec(v, from = 0, acc = emptySeq[C]())
     }.ensuring(res => res.list == printList(v.list))
 
-    def printRec[C: ClassTag](v: Sequence[Token[C]], from: BigInt = 0): Sequence[C] = {
+    def printRec[@specialized(Char) C: ClassTag](v: Sequence[Token[C]], from: BigInt = 0): Sequence[C] = {
       require(from >= 0 && from <= v.size)
       decreases(v.size - from)
       if from >= v.size then
@@ -1146,7 +1146,7 @@ object VerifiedLexer {
         v(from).charsOf ++ printRec(v, from + 1)
     }.ensuring(res => res.list == printList(v.dropList(from)))
 
-    def printTailRec[C: ClassTag](v: Sequence[Token[C]], from: BigInt, acc: Sequence[C]): Sequence[C] = {
+    def printTailRec[@specialized(Char) C: ClassTag](v: Sequence[Token[C]], from: BigInt, acc: Sequence[C]): Sequence[C] = {
       require(from >= 0 && from <= v.size)
       decreases(v.size - from)
       if from >= v.size then
@@ -1175,7 +1175,7 @@ object VerifiedLexer {
       }
     }
 
-    override def withSeparatorToken[C: ClassTag](v: Sequence[Token[C]], separatorToken: Token[C]): Sequence[Token[C]] = {
+    override def withSeparatorToken[@specialized(Char) C: ClassTag](v: Sequence[Token[C]], separatorToken: Token[C]): Sequence[Token[C]] = {
       require(separatorToken.rule.isSeparator)
       assert(withSeparatorTokenInner(v, separatorToken, 0, emptySeq()).list == withSeparatorTokenList(v.list, separatorToken))
       assert(printList(withSeparatorTokenList(v.list, separatorToken)) == printWithSeparatorTokenList(v.list, separatorToken))
@@ -1248,7 +1248,7 @@ object VerifiedLexer {
     }.ensuring(res => res == acc ++ printWithSeparatorTokenList(l, separatorToken))
     
 
-    override def printWithSeparatorToken[C: ClassTag](v: Sequence[Token[C]], separatorToken: Token[C]): Sequence[C] = {
+    override def printWithSeparatorToken[@specialized(Char) C: ClassTag](v: Sequence[Token[C]], separatorToken: Token[C]): Sequence[C] = {
       // require(from >= 0 && from <= v.size)
       require(separatorToken.rule.isSeparator)
       printWithSeparatorTokenTailRec(v, separatorToken, 0, emptySeq[C]())
@@ -1328,7 +1328,7 @@ object VerifiedLexer {
       }
     }
 
-    override def printWithSeparatorTokenWhenNeeded[C: ClassTag](rules: List[Rule[C]], v: Sequence[Token[C]], separatorToken: Token[C]): Sequence[C] = {
+    override def printWithSeparatorTokenWhenNeeded[@specialized(Char) C: ClassTag](rules: List[Rule[C]], v: Sequence[Token[C]], separatorToken: Token[C]): Sequence[C] = {
       require(!rules.isEmpty)
       require(rulesInvariant(rules))
       require(rulesProduceEachTokenIndividually(rules, v))
@@ -1452,7 +1452,7 @@ object VerifiedLexer {
       }
     }.ensuring (res => res == maxPrefix(rulesArg, input))
 
-    def maxPrefixZipperSequence[C: ClassTag](
+    def maxPrefixZipperSequence[@specialized(Char) C: ClassTag](
         rulesArg: List[Rule[C]],
         input: Sequence[C]
     ): Option[(Token[C], Sequence[C])] = {
@@ -1483,7 +1483,7 @@ object VerifiedLexer {
                        else true)
                        )
 
-    def maxPrefixZipperSequenceMem[C: ClassTag](
+    def maxPrefixZipperSequenceMem[@specialized(Char) C: ClassTag](
             rulesArg: List[Rule[C]],
             input: Sequence[C]
         )(using cacheUp: CacheUp[C], cacheDown: CacheDown[C]): Option[(Token[C], Sequence[C])] = {
@@ -1509,7 +1509,7 @@ object VerifiedLexer {
           }
         }.ensuring (res => res == maxPrefixZipperSequence(rulesArg, input) && cacheUp.valid && cacheDown.valid)
 
-    def maxPrefixZipperSequenceV2[C: ClassTag](
+    def maxPrefixZipperSequenceV2[@specialized(Char) C: ClassTag](
         rulesArg: List[Rule[C]],
         input: Sequence[C],
         totalInput: Sequence[C]
@@ -1543,7 +1543,7 @@ object VerifiedLexer {
                        else true)
                        )
 
-    def maxPrefixZipperSequenceV2Mem[C: ClassTag](
+    def maxPrefixZipperSequenceV2Mem[@specialized(Char) C: ClassTag](
             rulesArg: List[Rule[C]],
             input: Sequence[C],
             totalInput: Sequence[C]
@@ -1574,7 +1574,7 @@ object VerifiedLexer {
                            cacheUp.valid && cacheDown.valid && cacheFindLongestMatch.valid && 
                            cacheFindLongestMatch.totalInput == totalInput)
 
-    def maxPrefixZipperSequenceV2MemOnlyDeriv[C: ClassTag](
+    def maxPrefixZipperSequenceV2MemOnlyDeriv[@specialized(Char) C: ClassTag](
             rulesArg: List[Rule[C]],
             input: Sequence[C],
             totalInput: Sequence[C]
@@ -1603,7 +1603,7 @@ object VerifiedLexer {
         }.ensuring (res => res == maxPrefixZipperSequenceV2(rulesArg, input, totalInput) && 
                            cacheUp.valid && cacheDown.valid)
 
-    def maxPrefixZipperSequenceV3[C: ClassTag](
+    def maxPrefixZipperSequenceV3[@specialized(Char) C: ClassTag](
             rulesArg: List[Rule[C]],
             input: Sequence[C],
             totalInput: Sequence[C]
@@ -1637,7 +1637,7 @@ object VerifiedLexer {
                        else true)
                        )
 
-    def maxPrefixZipperSequenceV3MemDeriv[C: ClassTag](
+    def maxPrefixZipperSequenceV3MemDeriv[@specialized(Char) C: ClassTag](
             rulesArg: List[Rule[C]],
             input: Sequence[C],
             totalInput: Sequence[C]
@@ -1672,7 +1672,7 @@ object VerifiedLexer {
                        else true) && 
                       cacheUp.valid && cacheDown.valid)
 
-    def maxPrefixZipperSequenceV3Mem[C: ClassTag](
+    def maxPrefixZipperSequenceV3Mem[@specialized(Char) C: ClassTag](
             rulesArg: List[Rule[C]],
             input: Sequence[C],
             totalInput: Sequence[C]
@@ -1716,7 +1716,7 @@ object VerifiedLexer {
       * @param input
       */
     @ghost
-    def maxPrefixOneRule[C: ClassTag](
+    def maxPrefixOneRule[@specialized(Char) C: ClassTag](
         rule: Rule[C],
         input: List[C]
     ): Option[(Token[C], List[C])] = {
@@ -1741,7 +1741,7 @@ object VerifiedLexer {
     )
 
     @ghost
-    def maxPrefixOneRuleZipper[C: ClassTag](
+    def maxPrefixOneRuleZipper[@specialized(Char) C: ClassTag](
         rule: Rule[C],
         input: List[C]
     ): Option[(Token[C], List[C])] = {
@@ -1758,7 +1758,7 @@ object VerifiedLexer {
       }
     }.ensuring (res => res == maxPrefixOneRule(rule, input))
 
-    def maxPrefixOneRuleZipperSequence[C: ClassTag](
+    def maxPrefixOneRuleZipperSequence[@specialized(Char) C: ClassTag](
         rule: Rule[C],
         input: Sequence[C]
     ): Option[(Token[C], Sequence[C])] = {
@@ -1799,7 +1799,7 @@ object VerifiedLexer {
                           res.get._2.list == maxPrefixOneRule(rule, input.list).get._2
                        else true))
 
-    def maxPrefixOneRuleZipperSequenceMem[C: ClassTag](
+    def maxPrefixOneRuleZipperSequenceMem[@specialized(Char) C: ClassTag](
         rule: Rule[C],
         input: Sequence[C]
     )(using cacheUp: CacheUp[C], cacheDown: CacheDown[C]): Option[(Token[C], Sequence[C])] = {
@@ -1820,7 +1820,7 @@ object VerifiedLexer {
 
     }.ensuring (res => res == maxPrefixOneRuleZipperSequence(rule, input) && cacheUp.valid && cacheDown.valid)
 
-    def maxPrefixOneRuleZipperSequenceV2[C: ClassTag](
+    def maxPrefixOneRuleZipperSequenceV2[@specialized(Char) C: ClassTag](
         rule: Rule[C],
         input: Sequence[C],
         totalInput: Sequence[C]
@@ -1864,7 +1864,7 @@ object VerifiedLexer {
                        else true))
 
 
-    def maxPrefixOneRuleZipperSequenceV2Mem[C: ClassTag](
+    def maxPrefixOneRuleZipperSequenceV2Mem[@specialized(Char) C: ClassTag](
         rule: Rule[C],
         input: Sequence[C],
         totalInput: Sequence[C]
@@ -1891,7 +1891,7 @@ object VerifiedLexer {
                        cacheUp.valid && cacheDown.valid && cacheFindLongestMatch.valid && 
                        cacheFindLongestMatch.totalInput == totalInput)
 
-    def maxPrefixOneRuleZipperSequenceV2MemOnlyDeriv[C: ClassTag](
+    def maxPrefixOneRuleZipperSequenceV2MemOnlyDeriv[@specialized(Char) C: ClassTag](
         rule: Rule[C],
         input: Sequence[C],
         totalInput: Sequence[C]
@@ -1915,7 +1915,7 @@ object VerifiedLexer {
     }.ensuring (res => res == maxPrefixOneRuleZipperSequenceV2(rule, input, totalInput) && 
                        cacheUp.valid && cacheDown.valid)
 
-    def maxPrefixOneRuleZipperSequenceV3[C: ClassTag](
+    def maxPrefixOneRuleZipperSequenceV3[@specialized(Char) C: ClassTag](
         rule: Rule[C],
         input: Sequence[C],
         totalInput: Sequence[C]
@@ -1958,7 +1958,7 @@ object VerifiedLexer {
                           res.get._2.list == maxPrefixOneRule(rule, input.list).get._2
                        else true))
 
-    def maxPrefixOneRuleZipperSequenceV3MemDeriv[C: ClassTag](
+    def maxPrefixOneRuleZipperSequenceV3MemDeriv[@specialized(Char) C: ClassTag](
         rule: Rule[C],
         input: Sequence[C],
         totalInput: Sequence[C]
@@ -2005,7 +2005,7 @@ object VerifiedLexer {
                        cacheUp.valid && cacheDown.valid)
 
 
-    def maxPrefixOneRuleZipperSequenceV3Mem[C: ClassTag](
+    def maxPrefixOneRuleZipperSequenceV3Mem[@specialized(Char) C: ClassTag](
         rule: Rule[C],
         input: Sequence[C],
         totalInput: Sequence[C]

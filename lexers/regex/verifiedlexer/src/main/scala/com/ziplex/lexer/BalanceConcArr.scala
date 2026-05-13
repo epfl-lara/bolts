@@ -51,7 +51,7 @@ object BalanceConcObj:
       rec(arr.size, Nil[T]())
     }.ensuring(res => res == arr.list)
 
-  case class BalanceConc[T: ClassTag](c: Conc[T]){
+  case class BalanceConc[@specialized(Char) T: ClassTag](c: Conc[T]){
     require(c.isBalanced)
 
     @ghost def list: List[T] = c.list

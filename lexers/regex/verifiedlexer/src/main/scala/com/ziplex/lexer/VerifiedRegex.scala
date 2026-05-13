@@ -64,7 +64,7 @@ object MemoisationRegex {
   def empty[C](hashF: Hashable[(Regex[C], C)]): Cache[C] = Cache(MutableHashMap.getEmptyHashMap[(Regex[C], C), Regex[C]](k => EmptyLang[C](), hashF))
 
   @mutable
-  final case class Cache[C](private val cache: HashMap[(Regex[C], C), Regex[C]]) {
+  final case class Cache[@specialized(Char) C](private val cache: HashMap[(Regex[C], C), Regex[C]]) {
     require(validCacheMap(cache))
 
     @ghost def valid: Boolean = validCacheMap(cache)
@@ -162,7 +162,7 @@ object MemoisationZipper {
 
 
   @mutable
-  final case class CacheUp[C](private val cache: HashMap[(Context[C], C), Zipper[C]]) {
+  final case class CacheUp[@specialized(Char) C](private val cache: HashMap[(Context[C], C), Zipper[C]]) {
     require(validCacheMapUp(cache))
 
     @ghost def lemmaInvariant(): Unit = {}.ensuring(_ => valid)
@@ -220,7 +220,7 @@ object MemoisationZipper {
   }
 
   @mutable
-  final case class CacheDown[C](private val cache: HashMap[(Regex[C], Context[C], C), Zipper[C]]) {
+  final case class CacheDown[@specialized(Char) C](private val cache: HashMap[(Regex[C], Context[C], C), Zipper[C]]) {
     require(validCacheMapDown(cache))
 
     @ghost def lemmaInvariant(): Unit = {}.ensuring(_ => valid)
@@ -312,7 +312,7 @@ object MemoisationZipper {
    * Each cache is specific to one total input string
    */
   @mutable
-  final case class CacheFindLongestMatch[C](private val cache: HashMap[(Zipper[C], BigInt), BigInt], @pure val totalInput: Sequence[C]) {
+  final case class CacheFindLongestMatch[@specialized(Char) C](private val cache: HashMap[(Zipper[C], BigInt), BigInt], @pure val totalInput: Sequence[C]) {
     require(validCacheMapFindLongestMatch(cache, totalInput))
 
     @ghost def lemmaInvariant(): Unit = {}.ensuring(_ => valid)
@@ -406,7 +406,7 @@ object MemoisationZipper {
    * Each cache is specific to one total input string
    */
   @mutable
-  final case class CacheFurthestNullable[C](private val cache: HashMap[(Zipper[C], BigInt, BigInt), BigInt], @pure val totalInput: Sequence[C], @pure val rules: List[Rule[C]]) {
+  final case class CacheFurthestNullable[@specialized(Char) C](private val cache: HashMap[(Zipper[C], BigInt, BigInt), BigInt], @pure val totalInput: Sequence[C], @pure val rules: List[Rule[C]]) {
     require(validCacheMapFurthestNullable(cache, totalInput))
 
     @ghost def lemmaInvariant(): Unit = {}.ensuring(_ => valid)
@@ -500,22 +500,22 @@ object MemoisationZipper {
 }
 
 object VerifiedRegex {
-  sealed trait Regex[C]:
+  sealed trait Regex[@specialized(Char) C]:
     lazy val nullable: Boolean = this.nullableFct
     lazy val lostCause: Boolean = this.lostCauseFct
     lazy val hash: Long = this.hashFct
   end Regex
-  case class ElementMatch[C](c: C) extends Regex[C]
-  case class ElementSet[C](cs: Set[C]) extends Regex[C]
-  case class Star[C](reg: Regex[C]) extends Regex[C]
-  case class Union[C](regOne: Regex[C], regTwo: Regex[C]) extends Regex[C]
-  case class Concat[C](regOne: Regex[C], regTwo: Regex[C]) extends Regex[C]
+  case class ElementMatch[@specialized(Char) C](c: C) extends Regex[C]
+  case class ElementSet[@specialized(Char) C](cs: Set[C]) extends Regex[C]
+  case class Star[@specialized(Char) C](reg: Regex[C]) extends Regex[C]
+  case class Union[@specialized(Char) C](regOne: Regex[C], regTwo: Regex[C]) extends Regex[C]
+  case class Concat[@specialized(Char) C](regOne: Regex[C], regTwo: Regex[C]) extends Regex[C]
   /** Regex that accepts only the empty string: represents the language {""}
     */
-  case class EmptyExpr[C]() extends Regex[C]
+  case class EmptyExpr[@specialized(Char) C]() extends Regex[C]
   /** Regex that accepts nothing: represents the empty language
     */
-  case class EmptyLang[C]() extends Regex[C]
+  case class EmptyLang[@specialized(Char) C]() extends Regex[C]
 
   def generalisedUnion[C](l: List[Regex[C]]): Regex[C] = {
     require(l.forall(validRegex))
@@ -788,7 +788,7 @@ object ZipperRegex {
     * Context[C] represent sequences of expressions
     * Zipper[C] are sets of Context[C], and they represent disjunctions of expressions
     */
-  case class Context[C](exprs: List[Regex[C]]){
+  case class Context[@specialized(Char) C](exprs: List[Regex[C]]){
     require(exprs.forall(validRegex))
 
     lazy val lostCause: Boolean = exprs.exists(r => r.lostCause)
@@ -813,7 +813,7 @@ object ZipperRegex {
       Context(exprs ++ that.exprs)
     }
   }
-  type Zipper[C] = Set[Context[C]]
+  type Zipper[@specialized(Char) C] = Set[Context[C]]
 
   @ghost
   def unfocusZipper[C](zl: List[Context[C]]): Regex[C] = {
