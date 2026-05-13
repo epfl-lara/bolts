@@ -30,6 +30,15 @@ WARM_ITERATIONS="${2:-5}"
 DIRECTORY_NAME="results_$(date +'%d.%m.%Y')"
 DIRECTORY_PATH="./benchmark_results/raw/$DIRECTORY_NAME"
 
+# Save current SDKMAN java default so we can restore it on exit
+CURRENT_JAVA=$(sdk current java | awk '{print $NF}')
+restore_java() {
+	if [ -n "$CURRENT_JAVA" ] && [ "$CURRENT_JAVA" != "(none)" ]; then
+		sdk default java "$CURRENT_JAVA"
+	fi
+}
+trap restore_java EXIT
+
 rm -rf /ziplex/target/stainless_3/stainless-library_3-0.9.9.3-sources/META-INF/MANIFEST.MF
 
 cd ./benchmark_results/raw && mkdir -p "$DIRECTORY_NAME" && cd - || exit 1
@@ -50,6 +59,9 @@ echo "Running benchmarks with oracle graalvm jvm..."
 sdk default java 21.0.11-graal
 
 sbt -no-colors "Jmh/run -i $ITERATIONS -wi $WARM_ITERATIONS -f1 -t1 com.ziplex.lexer.benchmark.lexer.JsonLexerBenchmark" > "$DIRECTORY_PATH/json_lexer_benchmark_wi_${WARM_ITERATIONS}_i_${ITERATIONS}_graal.txt"
+
+echo "Restore java default to: $CURRENT_JAVA"
+sdk default java "$CURRENT_JAVA"
 
 echo "Benchmark results saved in: $DIRECTORY_PATH"
 
