@@ -29,7 +29,7 @@ def dummyMutableHashMap(x: BigInt): BigInt = {
 
 import MutableMapInterface.MutableMap
 
-trait Hashable[K] {
+trait Hashable[@specialized(Char) K] {
   @pure
   def hash(k: K): Long
 }
@@ -40,14 +40,14 @@ object MutableHashMap {
     * @param defaultValue
     * @return
     */
-  def getEmptyHashMap[K, V](defaultValue: K => V, hashF: Hashable[K], initialSize: Int = 16): HashMap[K, V] = {
+  def getEmptyHashMap[@specialized(Char) K, V](defaultValue: K => V, hashF: Hashable[K], initialSize: Int = 16): HashMap[K, V] = {
     require(validMask(initialSize - 1))
     HashMap(Cell(MutableLongMap.getEmptyLongMap[List[(K, V)]]((l: Long) => Nil[(K, V)](), initialSize)), hashF, 0, defaultValue)
   }.ensuring (res => res.valid && res.size == 0)
 
 
   @mutable
-  final case class HashMap[K, V](
+  final case class HashMap[@specialized(Char) K, V](
       val underlying: Cell[LongMap[List[(K, V)]]],
       val hashF: Hashable[K],
       var _size: Int,
