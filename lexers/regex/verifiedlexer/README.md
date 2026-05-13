@@ -5,6 +5,7 @@
 - [Ziplex: A Verified Inveritble Lexer](#ziplex-a-verified-inveritble-lexer)
   - [Table of contents](#table-of-contents)
   - [Setup - Installation instructions](#setup---installation-instructions)
+    - [SDKMAN for JVM switching](#sdkman-for-jvm-switching)
     - [Verification](#verification)
     - [Running the project](#running-the-project)
   - [Using the Docker image](#using-the-docker-image)
@@ -36,6 +37,24 @@
 ## Setup - Installation instructions
 
 If you are using the Docker image, you can skip the setup instructions and go directly to the [Using the Docker image](#using-the-docker-image) section.
+
+### SDKMAN for JVM switching
+
+Some benchmarking scripts switch the active JVM. Please install SDKMAN so those scripts can select the required JDK version.
+
+Install and initialize SDKMAN (see https://sdkman.io), then ensure the following works:
+
+```bash
+sdk version
+```
+
+Note: `run_benchmarks.sh` sources the SDKMAN init script to make `sdk` available in non-interactive shells.
+If SDKMAN is installed in a non-default location, set the `SDKMAN_DIR` environment variable before running the script.
+
+The JVMs we used for benchmarking are:
+
+- `21.ea.35-open` or `21.0.2-open` depending on what is available at the time of running the benchmarks. Both are OpenJDK 21 versions.
+- `21.0.11-graal`
 
 ### Verification
 
