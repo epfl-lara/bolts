@@ -3,9 +3,10 @@
 Parse JMH-style benchmark output and emit per-file JSONs based on a model directory.
 
 Usage:
-  python make_jsons.py <input_txt> <model_dir> <output_dir>
+    python make_jsons.py <openjdk_txt> <graal_txt> <model_dir> <output_dir>
 
-- <input_txt>: path to the .txt file containing the [info] lines
+- <openjdk_txt>: path to the .txt file containing the [info] lines for OpenJDK
+- <graal_txt>: path to the .txt file containing the [info] lines for GraalVM
 - <model_dir>: directory that already contains JSON "model" files like 162.json
 - <output_dir>: directory where new JSON files will be written (created if missing)
 
@@ -87,17 +88,22 @@ def read_model_sem_tokens(model_dir: Path, fname: str):
 
 def main():
     ap = argparse.ArgumentParser(description="Create JSONs from JMH output, modeled after existing files.")
-    ap.add_argument("input_txt", type=Path, help="Path to input .txt file")
+    ap.add_argument("openjdk_txt", type=Path, help="Path to OpenJDK .txt file")
+    ap.add_argument("graal_txt", type=Path, help="Path to GraalVM .txt file")
     ap.add_argument("model_dir", type=Path, help="Directory with model JSON files (read-only)")
     ap.add_argument("output_dir", type=Path, help="Directory to write new JSON files")
     args = ap.parse_args()
 
-    input_txt: Path = args.input_txt
+    openjdk_txt: Path = args.openjdk_txt
+    graal_txt: Path = args.graal_txt
     model_dir: Path = args.model_dir
     output_dir: Path = args.output_dir
 
-    if not input_txt.is_file():
-        raise SystemExit(f"Input file not found: {input_txt}")
+    if not openjdk_txt.is_file():
+        raise SystemExit(f"OpenJDK input file not found: {openjdk_txt}")
+
+    if not graal_txt.is_file():
+        raise SystemExit(f"GraalVM input file not found: {graal_txt}")
 
     if not model_dir.is_dir():
         raise SystemExit(f"Model directory not found: {model_dir}")
@@ -105,19 +111,19 @@ def main():
     output_dir.mkdir(parents=True, exist_ok=True)
 
     benchmark_targets = {
-        "lex_ZipperMem": "Ziplex",
-        "lex_ZipperV3NonMem": "ZiplexNoMem",
-        "lex_ZipperV3MemDeriv": "ZiplexMemDeriv",
-        "lex_ZipperMemGraal": "ZiplexGraal",
-        "lex_ZipperV3NonMemGraal": "ZiplexNoMemGraal",
-        "lex_ZipperV3MemDerivGraal": "ZiplexMemDerivGraal",
+        (openjdk_txt, "lex_ZipperMem"): "Ziplex",
+        (openjdk_txt, "lex_ZipperV3NonMem"): "ZiplexNoMem",
+        (openjdk_txt, "lex_ZipperV3MemDeriv"): "ZiplexMemDeriv",
+        (graal_txt, "lex_ZipperMem"): "ZiplexGraal",
+        (graal_txt, "lex_ZipperV3NonMem"): "ZiplexNoMemGraal",
+        (graal_txt, "lex_ZipperV3MemDeriv"): "ZiplexMemDerivGraal",
     }
 
     written = 0
     skipped = 0
 
-    for benchmark_function_name, output_prefix in benchmark_targets.items():
-        parsed = parse_input(input_txt, benchmark_function_name)
+    for (source_txt, benchmark_function_name), output_prefix in benchmark_targets.items():
+        parsed = parse_input(source_txt, benchmark_function_name)
         if not parsed:
             print(f"[warn] No matching '{benchmark_function_name}' lines found in the input.")
             continue
