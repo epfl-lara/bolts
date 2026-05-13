@@ -9,7 +9,8 @@ if [ -n "$SDKMAN_DIR" ] && [ -s "$SDKMAN_DIR/bin/sdkman-init.sh" ]; then
 fi
 
 # Save current SDKMAN java default so we can restore it on exit
-CURRENT_JAVA=$(sdk current java | awk '{print $NF}')
+CURRENT_JAVA=$(sdk current java | awk '{print $NF}' | xargs)
+echo "Current SDKMAN Java version: $CURRENT_JAVA"
 restore_java() {
 	if [ -n "$CURRENT_JAVA" ] && [ "$CURRENT_JAVA" != "(none)" ]; then
 		sdk default java "$CURRENT_JAVA"
