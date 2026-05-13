@@ -30,6 +30,15 @@ WARM_ITERATIONS="${2:-5}"
 DIRECTORY_NAME="results_$(date +'%d.%m.%Y')"
 DIRECTORY_PATH="./benchmark_results/raw/$DIRECTORY_NAME"
 
+# Load SDKMAN if available (non-interactive shells do not source it by default)
+if [ -z "$SDKMAN_DIR" ] && [ -d "$HOME/.sdkman" ]; then
+	SDKMAN_DIR="$HOME/.sdkman"
+fi
+if [ -n "$SDKMAN_DIR" ] && [ -s "$SDKMAN_DIR/bin/sdkman-init.sh" ]; then
+	# shellcheck source=/dev/null
+	. "$SDKMAN_DIR/bin/sdkman-init.sh"
+fi
+
 # Save current SDKMAN java default so we can restore it on exit
 CURRENT_JAVA=$(sdk current java | awk '{print $NF}')
 restore_java() {
