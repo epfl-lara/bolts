@@ -22,7 +22,16 @@ DIRECTORY_NAME="results_$(date +'%d.%m.%Y')"
 DIRECTORY_PATH="./benchmark_results/raw/$DIRECTORY_NAME"
 cd ./benchmark_results/raw && mkdir -p "$DIRECTORY_NAME" && cd - || exit 1
 echo "Running smoke test benchmarks with openjdk ..."
-sdk default java 21.ea.35-open
+OPENJDK_VERSION=""
+if sdk default java 21.ea.35-open; then
+	OPENJDK_VERSION="21.ea.35-open"
+elif sdk default java 21.0.2-open; then
+	OPENJDK_VERSION="21.0.2-open"
+else
+	echo "Error: No supported OpenJDK 21 found (expected 21.ea.35-open or 21.0.2-open)." >&2
+	exit 1
+fi
+echo "Using OpenJDK: $OPENJDK_VERSION"
 
 sbt -no-colors "Jmh/run -i 1 -wi 1 -f1 -t1 com.ziplex.lexer.benchmark.lexer.JsonLexerBenchmarkSmoke" > "$DIRECTORY_PATH/json_lexer_benchmark_smoke_wi_1_i_1.txt"
 

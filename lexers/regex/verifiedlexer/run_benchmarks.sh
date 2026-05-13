@@ -52,7 +52,16 @@ rm -rf /ziplex/target/stainless_3/stainless-library_3-0.9.9.3-sources/META-INF/M
 
 cd ./benchmark_results/raw && mkdir -p "$DIRECTORY_NAME" && cd - || exit 1
 echo "Running benchmarks with open jdk jvm..."
-sdk default java 21.ea.35-open
+OPENJDK_VERSION=""
+if sdk default java 21.ea.35-open; then
+	OPENJDK_VERSION="21.ea.35-open"
+elif sdk default java 21.0.2-open; then
+	OPENJDK_VERSION="21.0.2-open"
+else
+	echo "Error: No supported OpenJDK 21 found (expected 21.ea.35-open or 21.0.2-open)." >&2
+	exit 1
+fi
+echo "Using OpenJDK: $OPENJDK_VERSION"
 echo "See benchmark results in: $DIRECTORY_PATH"
 
 sbt -no-colors "Jmh/run -i $ITERATIONS -wi $WARM_ITERATIONS -f1 -t1 com.ziplex.lexer.benchmark.lexer.JsonLexerBenchmark" > "$DIRECTORY_PATH/json_lexer_benchmark_wi_${WARM_ITERATIONS}_i_${ITERATIONS}.txt"

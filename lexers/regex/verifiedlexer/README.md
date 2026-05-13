@@ -53,10 +53,8 @@ If SDKMAN is installed in a non-default location, set the `SDKMAN_DIR` environme
 
 The JVMs we used for benchmarking are:
 
-- `21.ea.35-open`
+- `21.ea.35-open` or `21.0.2-open` depending on what is available at the time of running the benchmarks. Both are OpenJDK 21 versions.
 - `21.0.11-graal`
-
-
 
 ### Verification
 
