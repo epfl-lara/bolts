@@ -108,6 +108,9 @@ def main():
         "lex_ZipperMem": "Ziplex",
         "lex_ZipperV3NonMem": "ZiplexNoMem",
         "lex_ZipperV3MemDeriv": "ZiplexMemDeriv",
+        "lex_ZipperMemGraal": "ZiplexGraal",
+        "lex_ZipperV3NonMemGraal": "ZiplexNoMemGraal",
+        "lex_ZipperV3MemDerivGraal": "ZiplexMemDerivGraal",
     }
 
     written = 0
