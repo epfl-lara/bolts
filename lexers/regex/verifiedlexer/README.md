@@ -48,10 +48,15 @@ Install and initialize SDKMAN (see https://sdkman.io), then ensure the following
 sdk version
 ```
 
+Note: `run_benchmarks.sh` sources the SDKMAN init script to make `sdk` available in non-interactive shells.
+If SDKMAN is installed in a non-default location, set the `SDKMAN_DIR` environment variable before running the script.
+
 The JVMs we used for benchmarking are:
 
 - `21.ea.35-open`
 - `21.0.11-graal`
+
+
 
 ### Verification
 
