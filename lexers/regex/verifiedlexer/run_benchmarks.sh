@@ -74,9 +74,11 @@ sbt -no-colors "Jmh/run -i $ITERATIONS -wi $WARM_ITERATIONS -f1 -t1 com.ziplex.l
 
 echo "Running benchmarks with oracle graalvm jvm..."
 
-sdk default java 21.0.11-graal
-
-sbt -no-colors "Jmh/run -i $ITERATIONS -wi $WARM_ITERATIONS -f1 -t1 com.ziplex.lexer.benchmark.lexer.JsonLexerBenchmark" > "$DIRECTORY_PATH/json_lexer_benchmark_wi_${WARM_ITERATIONS}_i_${ITERATIONS}_graal.txt"
+if sdk default java 21.0.11-graal; then
+	sbt -no-colors "Jmh/run -i $ITERATIONS -wi $WARM_ITERATIONS -f1 -t1 com.ziplex.lexer.benchmark.lexer.JsonLexerBenchmark" > "$DIRECTORY_PATH/json_lexer_benchmark_wi_${WARM_ITERATIONS}_i_${ITERATIONS}_graal.txt"
+else
+	echo "Warning: GraalVM 21.0.11-graal not available; skipping GraalVM benchmark." >&2
+fi
 
 echo "Restore java default to: $CURRENT_JAVA"
 sdk default java "$CURRENT_JAVA"

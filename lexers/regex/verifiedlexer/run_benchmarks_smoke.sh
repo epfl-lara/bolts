@@ -36,8 +36,13 @@ echo "Using OpenJDK: $OPENJDK_VERSION"
 sbt -no-colors "Jmh/run -i 1 -wi 1 -f1 -t1 com.ziplex.lexer.benchmark.lexer.JsonLexerBenchmarkSmoke" > "$DIRECTORY_PATH/json_lexer_benchmark_smoke_wi_1_i_1.txt"
 
 echo "Running smoke test benchmarks with oracle graalvm jvm..."
-sdk default java 21.0.11-graal
-sbt -no-colors "Jmh/run -i 1 -wi 1 -f1 -t1 com.ziplex.lexer.benchmark.lexer.JsonLexerBenchmarkSmoke" > "$DIRECTORY_PATH/json_lexer_benchmark_smoke_wi_1_i_1.txt"
+
+if ! sdk default java 21.0.11-graal; then
+	echo "Error: GraalVM 21.0.11-graal is not available via SDKMAN." >&2
+	exit 1
+fi
+
+sbt -no-colors "Jmh/run -i 1 -wi 1 -f1 -t1 com.ziplex.lexer.benchmark.lexer.JsonLexerBenchmarkSmoke" > "$DIRECTORY_PATH/json_lexer_benchmark_smoke_wi_1_i_1_graal.txt"
 
 echo "Restore java default to: $CURRENT_JAVA"
 sdk default java "$CURRENT_JAVA"
