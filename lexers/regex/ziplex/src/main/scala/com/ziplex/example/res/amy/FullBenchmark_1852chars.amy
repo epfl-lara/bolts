@@ -1,0 +1,69 @@
+object FullBenchmark
+  // ADT for lists of integers
+  abstract class List
+  case class Nil() extends List
+  case class Cons(h: Int(32), t: List) extends List
+
+  // Factorial function
+  def fact(n: Int(32)): Int(32) = {
+    if (n < 2) { 1 }
+    else { n * fact(n - 1) }
+  }
+
+  // Naive Fibonacci function
+  def fib(n: Int(32)): Int(32) = {
+    if (n < 2) { n }
+    else { fib(n - 1) + fib(n - 2) }
+  }
+
+  // Sum all elements in a list
+  def sum(l: List): Int(32) = {
+    l match {
+      case Nil() => 0
+      case Cons(h, t) => h + sum(t)
+    }
+  }
+
+  // Helper function to reverse a list
+  def revHelper(l: List, acc: List): List = {
+    l match {
+      case Nil() => acc
+      case Cons(h, t) => revHelper(t, Cons(h, acc))
+    }
+  }
+
+  // Reverse a list
+  def reverse(l: List): List = {
+    revHelper(l, Nil())
+  }
+
+  // Build a list of integers from m to n
+  def range(m: Int(32), n: Int(32)): List = {
+    if (n < m) { Nil() }
+    else { Cons(m, range(m + 1, n)) }
+  }
+
+  // Convert a list of integers to a string
+  def listToString(l: List): String = {
+    l match {
+      case Nil() => ""
+      case Cons(h, t) =>
+        Std.intToString(h) ++ (if (t match { case Nil() => true; case _ => false })
+                                { "" }
+                              else
+                                { ", " ++ listToString(t) })
+    }
+  }
+
+  val fact10: Int(32) = fact(10);
+  val fib10: Int(32) = fib(10);
+  val list1: List = range(1, 10);
+  val listSum: Int(32) = sum(list1);
+  val listRev: List = reverse(list1);
+
+  Std.printString("10! = " ++ Std.intToString(fact10));
+  Std.printString("Fib(10) = " ++ Std.intToString(fib10));
+  Std.printString("List: [" ++ listToString(list1) ++ "]");
+  Std.printString("Sum of list: " ++ Std.intToString(listSum));
+  Std.printString("Reversed list: [" ++ listToString(listRev) ++ "]")
+end FullBenchmark

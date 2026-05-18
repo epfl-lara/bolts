@@ -1,0 +1,6 @@
+*
+
+!.gitignore
+!main.ml
+!compile.sh
+!json_lexer.vl

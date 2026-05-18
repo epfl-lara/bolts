@@ -1,0 +1,1614 @@
+copying runtime jar...
+[info] welcome to sbt 1.9.8 (Ubuntu Java 17.0.17)
+[info] loading settings for project verifiedlexer-build-build-build from metals.sbt ...
+[info] loading project definition from /localhome/chassot/bolts/lexers/regex/verifiedlexer/project/project/project
+[info] loading settings for project verifiedlexer-build-build from metals.sbt ...
+[info] loading project definition from /localhome/chassot/bolts/lexers/regex/verifiedlexer/project/project
+[success] Generated .bloop/verifiedlexer-build-build.json
+[success] Total time: 3 s, completed Jan 12, 2026, 11:33:13 AM
+[info] loading settings for project verifiedlexer-build from metals.sbt,plugins.sbt ...
+[info] loading project definition from /localhome/chassot/bolts/lexers/regex/verifiedlexer/project
+[success] Generated .bloop/verifiedlexer-build.json
+[success] Total time: 1 s, completed Jan 12, 2026, 11:33:14 AM
+[info] loading settings for project verifiedlexer from build.sbt ...
+[info] set current project to ZipLex (in build file:/localhome/chassot/bolts/lexers/regex/verifiedlexer/)
+[info] compiling 74 Scala sources to /localhome/chassot/bolts/lexers/regex/verifiedlexer/target/scala-3.7.2/classes ...
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/main/scala/com/ziplex/lexer/BalanceConcArr.scala:267:6 
+[warn] 267 |      t match
+[warn]     |      ^
+[warn]     |      match may not be exhaustive.
+[warn]     |
+[warn]     |      It would fail on pattern case: Empty()
+[warn]     |
+[warn]     | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/main/scala/com/ziplex/lexer/BalanceConcArr.scala:349:16 
+[warn] 349 |                r match
+[warn]     |                ^
+[warn]     |                match may not be exhaustive.
+[warn]     |
+[warn]     |                It would fail on pattern case: Empty(), Leaf(_, _)
+[warn]     |
+[warn]     | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/main/scala/com/ziplex/lexer/BalanceConcArr.scala:344:10 
+[warn] 344 |          xs match
+[warn]     |          ^^
+[warn]     |          match may not be exhaustive.
+[warn]     |
+[warn]     |          It would fail on pattern case: Empty(), Leaf(_, _)
+[warn]     |
+[warn]     | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/main/scala/com/ziplex/lexer/BalanceConcArr.scala:362:16 
+[warn] 362 |                l match
+[warn]     |                ^
+[warn]     |                match may not be exhaustive.
+[warn]     |
+[warn]     |                It would fail on pattern case: Empty(), Leaf(_, _)
+[warn]     |
+[warn]     | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/main/scala/com/ziplex/lexer/BalanceConcArr.scala:357:10 
+[warn] 357 |          ys match
+[warn]     |          ^^
+[warn]     |          match may not be exhaustive.
+[warn]     |
+[warn]     |          It would fail on pattern case: Empty(), Leaf(_, _)
+[warn]     |
+[warn]     | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/main/scala/com/ziplex/lexer/BalanceConcArr.scala:408:8 
+[warn] 408 |        t match
+[warn]     |        ^
+[warn]     |        match may not be exhaustive.
+[warn]     |
+[warn]     |        It would fail on pattern case: Empty()
+[warn]     |
+[warn]     | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/main/scala/com/ziplex/lexer/BalanceConcArr.scala:490:12 
+[warn] 490 |            newR match
+[warn]     |            ^^^^
+[warn]     |            match may not be exhaustive.
+[warn]     |
+[warn]     |            It would fail on pattern case: Empty(), Leaf(_, _)
+[warn]     |
+[warn]     | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/main/scala/com/ziplex/lexer/BalanceConcArr.scala:519:6 
+[warn] 519 |      t match
+[warn]     |      ^
+[warn]     |      match may not be exhaustive.
+[warn]     |
+[warn]     |      It would fail on pattern case: Empty()
+[warn]     |
+[warn]     | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/main/scala/com/ziplex/lexer/BalanceConcArr.scala:536:6 
+[warn] 536 |      t match
+[warn]     |      ^
+[warn]     |      match may not be exhaustive.
+[warn]     |
+[warn]     |      It would fail on pattern case: Empty()
+[warn]     |
+[warn]     | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/main/scala/com/ziplex/lexer/BalanceConcArr.scala:544:6 
+[warn] 544 |      t match
+[warn]     |      ^
+[warn]     |      match may not be exhaustive.
+[warn]     |
+[warn]     |      It would fail on pattern case: Empty()
+[warn]     |
+[warn]     | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/main/scala/com/ziplex/lexer/Utils.scala:1332:4 
+[warn] 1332 |    newList match {
+[warn]      |    ^^^^^^^
+[warn]      |    match may not be exhaustive.
+[warn]      |
+[warn]      |    It would fail on pattern case: stainless.collection.Cons(_, _)
+[warn]      |
+[warn]      | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/main/scala/com/ziplex/lexer/VerifiedLexer.scala:1233:8 
+[warn] 1233 |        maxPrefWithoutSep match {
+[warn]      |        ^^^^^^^^^^^^^^^^^
+[warn]      |        match may not be exhaustive.
+[warn]      |
+[warn]      |        It would fail on pattern case: stainless.lang.Some(_)
+[warn]      |
+[warn]      | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/main/scala/com/ziplex/lexer/VerifiedLexer.scala:1330:6 
+[warn] 1330 |      rulesArg match {
+[warn]      |      ^^^^^^^^
+[warn]      |      match may not be exhaustive.
+[warn]      |
+[warn]      |      It would fail on pattern case: stainless.collection.Nil()
+[warn]      |
+[warn]      | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/main/scala/com/ziplex/lexer/VerifiedLexer.scala:1363:10 
+[warn] 1363 |          rulesArg match {
+[warn]      |          ^^^^^^^^
+[warn]      |          match may not be exhaustive.
+[warn]      |
+[warn]      |          It would fail on pattern case: stainless.collection.Nil()
+[warn]      |
+[warn]      | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/main/scala/com/ziplex/lexer/VerifiedLexer.scala:1390:6 
+[warn] 1390 |      rulesArg match {
+[warn]      |      ^^^^^^^^
+[warn]      |      match may not be exhaustive.
+[warn]      |
+[warn]      |      It would fail on pattern case: stainless.collection.Nil()
+[warn]      |
+[warn]      | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/main/scala/com/ziplex/lexer/VerifiedLexer.scala:1426:10 
+[warn] 1426 |          rulesArg match {
+[warn]      |          ^^^^^^^^
+[warn]      |          match may not be exhaustive.
+[warn]      |
+[warn]      |          It would fail on pattern case: stainless.collection.Nil()
+[warn]      |
+[warn]      | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/main/scala/com/ziplex/lexer/VerifiedLexer.scala:1456:10 
+[warn] 1456 |          rulesArg match {
+[warn]      |          ^^^^^^^^
+[warn]      |          match may not be exhaustive.
+[warn]      |
+[warn]      |          It would fail on pattern case: stainless.collection.Nil()
+[warn]      |
+[warn]      | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/main/scala/com/ziplex/lexer/VerifiedLexer.scala:1486:10 
+[warn] 1486 |          rulesArg match {
+[warn]      |          ^^^^^^^^
+[warn]      |          match may not be exhaustive.
+[warn]      |
+[warn]      |          It would fail on pattern case: stainless.collection.Nil()
+[warn]      |
+[warn]      | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/main/scala/com/ziplex/lexer/VerifiedLexer.scala:2414:6 
+[warn] 2414 |      rules match {
+[warn]      |      ^^^^^
+[warn]      |      match may not be exhaustive.
+[warn]      |
+[warn]      |      It would fail on pattern case: stainless.collection.Cons(_, _)
+[warn]      |
+[warn]      | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/main/scala/com/ziplex/lexer/VerifiedRegex.scala:654:4 
+[warn] 654 |    r match {
+[warn]     |    ^
+[warn]     |    match may not be exhaustive.
+[warn]     |
+[warn]     |    It would fail on pattern case: Concat(_, _)
+[warn]     |
+[warn]     | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/main/scala/com/ziplex/map/ListLongMap.scala:157:4 
+[warn] 157 |    l match {
+[warn]     |    ^
+[warn]     |    match may not be exhaustive.
+[warn]     |
+[warn]     |    It would fail on pattern case: stainless.collection.Cons(_, _)
+[warn]     |
+[warn]     | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/main/scala/com/ziplex/map/ListLongMap.scala:191:4 
+[warn] 191 |    l match {
+[warn]     |    ^
+[warn]     |    match may not be exhaustive.
+[warn]     |
+[warn]     |    It would fail on pattern case: stainless.collection.Cons(_, _)
+[warn]     |
+[warn]     | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/main/scala/com/ziplex/map/ListLongMap.scala:206:4 
+[warn] 206 |    l match {
+[warn]     |    ^
+[warn]     |    match may not be exhaustive.
+[warn]     |
+[warn]     |    It would fail on pattern case: stainless.collection.Cons(_, _)
+[warn]     |
+[warn]     | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/main/scala/com/ziplex/map/ListLongMap.scala:222:4 
+[warn] 222 |    l match {
+[warn]     |    ^
+[warn]     |    match may not be exhaustive.
+[warn]     |
+[warn]     |    It would fail on pattern case: stainless.collection.Cons(_, _)
+[warn]     |
+[warn]     | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/main/scala/com/ziplex/map/ListLongMap.scala:243:4 
+[warn] 243 |    l match {
+[warn]     |    ^
+[warn]     |    match may not be exhaustive.
+[warn]     |
+[warn]     |    It would fail on pattern case: stainless.collection.Cons(_, _)
+[warn]     |
+[warn]     | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/main/scala/com/ziplex/map/ListLongMap.scala:274:4 
+[warn] 274 |    l match {
+[warn]     |    ^
+[warn]     |    match may not be exhaustive.
+[warn]     |
+[warn]     |    It would fail on pattern case: stainless.collection.Cons(_, _)
+[warn]     |
+[warn]     | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/main/scala/com/ziplex/map/ListMap.scala:195:4 
+[warn] 195 |    l match {
+[warn]     |    ^
+[warn]     |    match may not be exhaustive.
+[warn]     |
+[warn]     |    It would fail on pattern case: stainless.collection.Cons(_, _)
+[warn]     |
+[warn]     | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/main/scala/com/ziplex/map/ListMap.scala:229:4 
+[warn] 229 |    l match {
+[warn]     |    ^
+[warn]     |    match may not be exhaustive.
+[warn]     |
+[warn]     |    It would fail on pattern case: stainless.collection.Cons(_, _)
+[warn]     |
+[warn]     | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/main/scala/com/ziplex/map/ListMap.scala:256:4 
+[warn] 256 |    l match {
+[warn]     |    ^
+[warn]     |    match may not be exhaustive.
+[warn]     |
+[warn]     |    It would fail on pattern case: stainless.collection.Cons(_, _)
+[warn]     |
+[warn]     | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/main/scala/com/ziplex/map/ListMap.scala:308:4 
+[warn] 308 |    l match {
+[warn]     |    ^
+[warn]     |    match may not be exhaustive.
+[warn]     |
+[warn]     |    It would fail on pattern case: stainless.collection.Cons(_, _)
+[warn]     |
+[warn]     | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/main/scala/com/ziplex/map/ListMap.scala:380:4 
+[warn] 380 |    l match {
+[warn]     |    ^
+[warn]     |    match may not be exhaustive.
+[warn]     |
+[warn]     |    It would fail on pattern case: stainless.collection.Cons(_, _)
+[warn]     |
+[warn]     | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/main/scala/com/ziplex/map/MutableLongMap.scala:360:4 
+[warn] 360 |    c match {
+[warn]     |    ^
+[warn]     |    match may not be exhaustive.
+[warn]     |
+[warn]     |    It would fail on pattern case: EmptyCell()
+[warn]     |
+[warn]     | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/main/scala/com/ziplex/map/MutableLongMap.scala:609:8 
+[warn] 609 |        seekEntryRes match {
+[warn]     |        ^^^^^^^^^^^^
+[warn]     |match may not be exhaustive.
+[warn]     |
+[warn]     |It would fail on pattern case: com.mutablemaps.map.MutableLongMap.Intermediate(_, _, _)
+[warn]     |
+[warn]     | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/main/scala/com/ziplex/map/MutableLongMap.scala:1119:6 
+[warn] 1119 |      intermediate match {
+[warn]      |      ^^^^^^^^^^^^
+[warn]      |match may not be exhaustive.
+[warn]      |
+[warn]      |It would fail on pattern case: _: com.mutablemaps.map.MutableLongMap.SeekEntryResult
+[warn]      |
+[warn]      | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/main/scala/com/ziplex/map/MutableLongMap.scala:1169:6 
+[warn] 1169 |      intermediate match {
+[warn]      |      ^^^^^^^^^^^^
+[warn]      |match may not be exhaustive.
+[warn]      |
+[warn]      |It would fail on pattern case: _: com.mutablemaps.map.MutableLongMap.SeekEntryResult
+[warn]      |
+[warn]      | longer explanation available when compiling with `-explain`
+[warn] there was 1 deprecation warning; re-run with -deprecation for details
+[warn] 36 warnings found
+[info] done compiling
+[info] compiling 93 Java sources to /localhome/chassot/bolts/lexers/regex/verifiedlexer/target/scala-3.7.2/classes ...
+[info] done compiling
+[info] running (fork) org.openjdk.jmh.Main -i 5 -wi 5 -f1 -t1 com.ziplex.lexer.benchmark.lexer.AAStarBLexerBenchmark
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.17, OpenJDK 64-Bit Server VM, 17.0.17+10-Ubuntu-124.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: -Xss1G -Xmx32g
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 5 iterations, 10 s each
+[info] # Measurement: 5 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: com.ziplex.lexer.benchmark.lexer.AAStarBLexerBenchmark.lex_ZipperV1Mem
+[info] # Parameters: (file = 100.txt)
+[info] # Run progress: 0.00% complete, ETA 01:15:00
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 1098.142 us/op
+[info] # Warmup Iteration   2: 962.581 us/op
+[info] # Warmup Iteration   3: 949.201 us/op
+[info] # Warmup Iteration   4: 921.433 us/op
+[info] # Warmup Iteration   5: 949.688 us/op
+[info] Iteration   1: 951.521 us/op
+[info] Iteration   2: 922.922 us/op
+[info] Iteration   3: 924.101 us/op
+[info] Iteration   4: 927.803 us/op
+[info] Iteration   5: 958.360 us/op
+[info] Result "com.ziplex.lexer.benchmark.lexer.AAStarBLexerBenchmark.lex_ZipperV1Mem":
+[info]   936.942 ±(99.9%) 64.326 us/op [Average]
+[info]   (min, avg, max) = (922.922, 936.942, 958.360), stdev = 16.705
+[info]   CI (99.9%): [872.615, 1001.268] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.17, OpenJDK 64-Bit Server VM, 17.0.17+10-Ubuntu-124.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: -Xss1G -Xmx32g
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 5 iterations, 10 s each
+[info] # Measurement: 5 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: com.ziplex.lexer.benchmark.lexer.AAStarBLexerBenchmark.lex_ZipperV1Mem
+[info] # Parameters: (file = 1000.txt)
+[info] # Run progress: 2.22% complete, ETA 01:13:39
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 106864.407 us/op
+[info] # Warmup Iteration   2: 92746.371 us/op
+[info] # Warmup Iteration   3: 91095.439 us/op
+[info] # Warmup Iteration   4: 88079.357 us/op
+[info] # Warmup Iteration   5: 90603.650 us/op
+[info] Iteration   1: 90927.776 us/op
+[info] Iteration   2: 88984.469 us/op
+[info] Iteration   3: 87960.155 us/op
+[info] Iteration   4: 89743.892 us/op
+[info] Iteration   5: 89345.213 us/op
+[info] Result "com.ziplex.lexer.benchmark.lexer.AAStarBLexerBenchmark.lex_ZipperV1Mem":
+[info]   89392.301 ±(99.9%) 4174.392 us/op [Average]
+[info]   (min, avg, max) = (87960.155, 89392.301, 90927.776), stdev = 1084.076
+[info]   CI (99.9%): [85217.909, 93566.693] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.17, OpenJDK 64-Bit Server VM, 17.0.17+10-Ubuntu-124.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: -Xss1G -Xmx32g
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 5 iterations, 10 s each
+[info] # Measurement: 5 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: com.ziplex.lexer.benchmark.lexer.AAStarBLexerBenchmark.lex_ZipperV1Mem
+[info] # Parameters: (file = 10000.txt)
+[info] # Run progress: 4.44% complete, ETA 01:12:07
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 11251069.703 us/op
+[info] # Warmup Iteration   2: 9813037.405 us/op
+[info] # Warmup Iteration   3: 9601815.544 us/op
+[info] # Warmup Iteration   4: 9687044.163 us/op
+[info] # Warmup Iteration   5: 9606621.597 us/op
+[info] Iteration   1: 9675904.000 us/op
+[info] Iteration   2: 9531691.486 us/op
+[info] Iteration   3: 9655919.074 us/op
+[info] Iteration   4: 9588457.870 us/op
+[info] Iteration   5: 9470581.140 us/op
+[info] Result "com.ziplex.lexer.benchmark.lexer.AAStarBLexerBenchmark.lex_ZipperV1Mem":
+[info]   9584510.714 ±(99.9%) 329209.143 us/op [Average]
+[info]   (min, avg, max) = (9470581.140, 9584510.714, 9675904.000), stdev = 85494.569
+[info]   CI (99.9%): [9255301.570, 9913719.857] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.17, OpenJDK 64-Bit Server VM, 17.0.17+10-Ubuntu-124.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: -Xss1G -Xmx32g
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 5 iterations, 10 s each
+[info] # Measurement: 5 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: com.ziplex.lexer.benchmark.lexer.AAStarBLexerBenchmark.lex_ZipperV1Mem
+[info] # Parameters: (file = 1200.txt)
+[info] # Run progress: 6.67% complete, ETA 01:30:06
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 173300.793 us/op
+[info] # Warmup Iteration   2: 144378.050 us/op
+[info] # Warmup Iteration   3: 136040.227 us/op
+[info] # Warmup Iteration   4: 132404.729 us/op
+[info] # Warmup Iteration   5: 131024.735 us/op
+[info] Iteration   1: 127038.623 us/op
+[info] Iteration   2: 127227.132 us/op
+[info] Iteration   3: 126610.472 us/op
+[info] Iteration   4: 131971.912 us/op
+[info] Iteration   5: 131019.152 us/op
+[info] Result "com.ziplex.lexer.benchmark.lexer.AAStarBLexerBenchmark.lex_ZipperV1Mem":
+[info]   128773.458 ±(99.9%) 9694.247 us/op [Average]
+[info]   (min, avg, max) = (126610.472, 128773.458, 131971.912), stdev = 2517.565
+[info]   CI (99.9%): [119079.211, 138467.705] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.17, OpenJDK 64-Bit Server VM, 17.0.17+10-Ubuntu-124.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: -Xss1G -Xmx32g
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 5 iterations, 10 s each
+[info] # Measurement: 5 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: com.ziplex.lexer.benchmark.lexer.AAStarBLexerBenchmark.lex_ZipperV1Mem
+[info] # Parameters: (file = 200.txt)
+[info] # Run progress: 8.89% complete, ETA 01:23:14
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 4429.525 us/op
+[info] # Warmup Iteration   2: 3798.132 us/op
+[info] # Warmup Iteration   3: 3742.488 us/op
+[info] # Warmup Iteration   4: 3622.641 us/op
+[info] # Warmup Iteration   5: 3734.656 us/op
+[info] Iteration   1: 3738.236 us/op
+[info] Iteration   2: 3671.405 us/op
+[info] Iteration   3: 3624.192 us/op
+[info] Iteration   4: 3691.559 us/op
+[info] Iteration   5: 3678.446 us/op
+[info] Result "com.ziplex.lexer.benchmark.lexer.AAStarBLexerBenchmark.lex_ZipperV1Mem":
+[info]   3680.768 ±(99.9%) 157.746 us/op [Average]
+[info]   (min, avg, max) = (3624.192, 3680.768, 3738.236), stdev = 40.966
+[info]   CI (99.9%): [3523.022, 3838.513] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.17, OpenJDK 64-Bit Server VM, 17.0.17+10-Ubuntu-124.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: -Xss1G -Xmx32g
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 5 iterations, 10 s each
+[info] # Measurement: 5 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: com.ziplex.lexer.benchmark.lexer.AAStarBLexerBenchmark.lex_ZipperV1Mem
+[info] # Parameters: (file = 2000.txt)
+[info] # Run progress: 11.11% complete, ETA 01:18:21
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 428198.309 us/op
+[info] # Warmup Iteration   2: 376996.968 us/op
+[info] # Warmup Iteration   3: 362819.951 us/op
+[info] # Warmup Iteration   4: 366950.381 us/op
+[info] # Warmup Iteration   5: 370866.266 us/op
+[info] Iteration   1: 361493.233 us/op
+[info] Iteration   2: 367168.028 us/op
+[info] Iteration   3: 365262.526 us/op
+[info] Iteration   4: 357546.705 us/op
+[info] Iteration   5: 363903.077 us/op
+[info] Result "com.ziplex.lexer.benchmark.lexer.AAStarBLexerBenchmark.lex_ZipperV1Mem":
+[info]   363074.714 ±(99.9%) 14315.891 us/op [Average]
+[info]   (min, avg, max) = (357546.705, 363074.714, 367168.028), stdev = 3717.791
+[info]   CI (99.9%): [348758.823, 377390.605] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.17, OpenJDK 64-Bit Server VM, 17.0.17+10-Ubuntu-124.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: -Xss1G -Xmx32g
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 5 iterations, 10 s each
+[info] # Measurement: 5 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: com.ziplex.lexer.benchmark.lexer.AAStarBLexerBenchmark.lex_ZipperV1Mem
+[info] # Parameters: (file = 20000.txt)
+[info] # Run progress: 13.33% complete, ETA 01:14:43
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 30751812.832 us/op
+[info] # Warmup Iteration   2: 29112951.369 us/op
+[info] # Warmup Iteration   3: 29008374.923 us/op
+[info] # Warmup Iteration   4: 28469649.526 us/op
+[info] # Warmup Iteration   5: 28813283.078 us/op
+[info] Iteration   1: 28353869.451 us/op
+[info] Iteration   2: 28310991.291 us/op
+[info] Iteration   3: 28308285.311 us/op
+[info] Iteration   4: 28679266.394 us/op
+[info] Iteration   5: 28649540.226 us/op
+[info] Result "com.ziplex.lexer.benchmark.lexer.AAStarBLexerBenchmark.lex_ZipperV1Mem":
+[info]   28460390.535 ±(99.9%) 721641.703 us/op [Average]
+[info]   (min, avg, max) = (28308285.311, 28460390.535, 28679266.394), stdev = 187408.059
+[info]   CI (99.9%): [27738748.831, 29182032.238] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.17, OpenJDK 64-Bit Server VM, 17.0.17+10-Ubuntu-124.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: -Xss1G -Xmx32g
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 5 iterations, 10 s each
+[info] # Measurement: 5 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: com.ziplex.lexer.benchmark.lexer.AAStarBLexerBenchmark.lex_ZipperV1Mem
+[info] # Parameters: (file = 300.txt)
+[info] # Run progress: 15.56% complete, ETA 01:28:33
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 9418.431 us/op
+[info] # Warmup Iteration   2: 8202.076 us/op
+[info] # Warmup Iteration   3: 8087.181 us/op
+[info] # Warmup Iteration   4: 7844.038 us/op
+[info] # Warmup Iteration   5: 7976.765 us/op
+[info] Iteration   1: 8129.039 us/op
+[info] Iteration   2: 8050.588 us/op
+[info] Iteration   3: 7860.248 us/op
+[info] Iteration   4: 7960.650 us/op
+[info] Iteration   5: 8039.894 us/op
+[info] Result "com.ziplex.lexer.benchmark.lexer.AAStarBLexerBenchmark.lex_ZipperV1Mem":
+[info]   8008.084 ±(99.9%) 392.473 us/op [Average]
+[info]   (min, avg, max) = (7860.248, 8008.084, 8129.039), stdev = 101.924
+[info]   CI (99.9%): [7615.611, 8400.557] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.17, OpenJDK 64-Bit Server VM, 17.0.17+10-Ubuntu-124.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: -Xss1G -Xmx32g
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 5 iterations, 10 s each
+[info] # Measurement: 5 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: com.ziplex.lexer.benchmark.lexer.AAStarBLexerBenchmark.lex_ZipperV1Mem
+[info] # Parameters: (file = 30000.txt)
+[info] # Run progress: 17.78% complete, ETA 01:23:11
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 70889866.864 us/op
+[info] # Warmup Iteration   2: 68417294.590 us/op
+[info] # Warmup Iteration   3: 67679237.949 us/op
+[info] # Warmup Iteration   4: 68313472.673 us/op
+[info] # Warmup Iteration   5: 68372930.838 us/op
+[info] Iteration   1: 67821540.040 us/op
+[info] Iteration   2: 68232476.795 us/op
+[info] Iteration   3: 67845491.102 us/op
+[info] Iteration   4: 68004801.154 us/op
+[info] Iteration   5: 68241325.728 us/op
+[info] Result "com.ziplex.lexer.benchmark.lexer.AAStarBLexerBenchmark.lex_ZipperV1Mem":
+[info]   68029126.964 ±(99.9%) 779186.327 us/op [Average]
+[info]   (min, avg, max) = (67821540.040, 68029126.964, 68241325.728), stdev = 202352.215
+[info]   CI (99.9%): [67249940.637, 68808313.291] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.17, OpenJDK 64-Bit Server VM, 17.0.17+10-Ubuntu-124.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: -Xss1G -Xmx32g
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 5 iterations, 10 s each
+[info] # Measurement: 5 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: com.ziplex.lexer.benchmark.lexer.AAStarBLexerBenchmark.lex_ZipperV1Mem
+[info] # Parameters: (file = 40000.txt)
+[info] # Run progress: 20.00% complete, ETA 01:57:33
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 119451455.395 us/op
+[info] # Warmup Iteration   2: 116875422.733 us/op
+[info] # Warmup Iteration   3: 116013956.766 us/op
+[info] # Warmup Iteration   4: 116096585.219 us/op
+[info] # Warmup Iteration   5: 116595530.114 us/op
+[info] Iteration   1: 115989455.694 us/op
+[info] Iteration   2: 116398008.227 us/op
+[info] Iteration   3: 115328303.150 us/op
+[info] Iteration   4: 116476780.030 us/op
+[info] Iteration   5: 115964597.604 us/op
+[info] Result "com.ziplex.lexer.benchmark.lexer.AAStarBLexerBenchmark.lex_ZipperV1Mem":
+[info]   116031428.941 ±(99.9%) 1757569.070 us/op [Average]
+[info]   (min, avg, max) = (115328303.150, 116031428.941, 116476780.030), stdev = 456435.106
+[info]   CI (99.9%): [114273859.871, 117788998.011] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.17, OpenJDK 64-Bit Server VM, 17.0.17+10-Ubuntu-124.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: -Xss1G -Xmx32g
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 5 iterations, 10 s each
+[info] # Measurement: 5 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: com.ziplex.lexer.benchmark.lexer.AAStarBLexerBenchmark.lex_ZipperV1Mem
+[info] # Parameters: (file = 500.0.txt)
+[info] # Run progress: 22.22% complete, ETA 02:50:51
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 0.103 us/op
+[info] # Warmup Iteration   2: 0.079 us/op
+[info] # Warmup Iteration   3: 0.083 us/op
+[info] # Warmup Iteration   4: 0.079 us/op
+[info] # Warmup Iteration   5: 0.077 us/op
+[info] Iteration   1: 0.079 us/op
+[info] Iteration   2: 0.080 us/op
+[info] Iteration   3: 0.081 us/op
+[info] Iteration   4: 0.078 us/op
+[info] Iteration   5: 0.079 us/op
+[info] Result "com.ziplex.lexer.benchmark.lexer.AAStarBLexerBenchmark.lex_ZipperV1Mem":
+[info]   0.079 ±(99.9%) 0.004 us/op [Average]
+[info]   (min, avg, max) = (0.078, 0.079, 0.081), stdev = 0.001
+[info]   CI (99.9%): [0.076, 0.083] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.17, OpenJDK 64-Bit Server VM, 17.0.17+10-Ubuntu-124.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: -Xss1G -Xmx32g
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 5 iterations, 10 s each
+[info] # Measurement: 5 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: com.ziplex.lexer.benchmark.lexer.AAStarBLexerBenchmark.lex_ZipperV1Mem
+[info] # Parameters: (file = 500.txt)
+[info] # Run progress: 24.44% complete, ETA 02:36:04
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 26971.003 us/op
+[info] # Warmup Iteration   2: 23827.098 us/op
+[info] # Warmup Iteration   3: 24007.446 us/op
+[info] # Warmup Iteration   4: 22569.328 us/op
+[info] # Warmup Iteration   5: 23225.098 us/op
+[info] Iteration   1: 23659.062 us/op
+[info] Iteration   2: 23076.275 us/op
+[info] Iteration   3: 23071.194 us/op
+[info] Iteration   4: 23622.884 us/op
+[info] Iteration   5: 22980.733 us/op
+[info] Result "com.ziplex.lexer.benchmark.lexer.AAStarBLexerBenchmark.lex_ZipperV1Mem":
+[info]   23282.029 ±(99.9%) 1271.151 us/op [Average]
+[info]   (min, avg, max) = (22980.733, 23282.029, 23659.062), stdev = 330.114
+[info]   CI (99.9%): [22010.878, 24553.181] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.17, OpenJDK 64-Bit Server VM, 17.0.17+10-Ubuntu-124.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: -Xss1G -Xmx32g
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 5 iterations, 10 s each
+[info] # Measurement: 5 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: com.ziplex.lexer.benchmark.lexer.AAStarBLexerBenchmark.lex_ZipperV1Mem
+[info] # Parameters: (file = 5000.txt)
+[info] # Run progress: 26.67% complete, ETA 02:23:28
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 2654572.858 us/op
+[info] # Warmup Iteration   2: 2347608.353 us/op
+[info] # Warmup Iteration   3: 2254387.885 us/op
+[info] # Warmup Iteration   4: 2226702.877 us/op
+[info] # Warmup Iteration   5: 2346174.701 us/op
+[info] Iteration   1: 2456462.640 us/op
+[info] Iteration   2: 2374414.317 us/op
+[info] Iteration   3: 2397462.752 us/op
+[info] Iteration   4: 2419885.974 us/op
+[info] Iteration   5: 2418746.987 us/op
+[info] Result "com.ziplex.lexer.benchmark.lexer.AAStarBLexerBenchmark.lex_ZipperV1Mem":
+[info]   2413394.534 ±(99.9%) 117095.801 us/op [Average]
+[info]   (min, avg, max) = (2374414.317, 2413394.534, 2456462.640), stdev = 30409.408
+[info]   CI (99.9%): [2296298.733, 2530490.335] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.17, OpenJDK 64-Bit Server VM, 17.0.17+10-Ubuntu-124.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: -Xss1G -Xmx32g
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 5 iterations, 10 s each
+[info] # Measurement: 5 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: com.ziplex.lexer.benchmark.lexer.AAStarBLexerBenchmark.lex_ZipperV1Mem
+[info] # Parameters: (file = 50000.txt)
+[info] # Run progress: 28.89% complete, ETA 02:13:13
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 182574327.857 us/op
+[info] # Warmup Iteration   2: 179096657.178 us/op
+[info] # Warmup Iteration   3: 179288117.677 us/op
+[info] # Warmup Iteration   4: 178771456.561 us/op
+[info] # Warmup Iteration   5: 178796104.632 us/op
+[info] Iteration   1: 178916871.627 us/op
+[info] Iteration   2: 179168522.329 us/op
+[info] Iteration   3: 178715806.551 us/op
+[info] Iteration   4: 177990574.330 us/op
+[info] Iteration   5: 178636264.878 us/op
+[info] Result "com.ziplex.lexer.benchmark.lexer.AAStarBLexerBenchmark.lex_ZipperV1Mem":
+[info]   178685607.943 ±(99.9%) 1692868.953 us/op [Average]
+[info]   (min, avg, max) = (177990574.330, 178685607.943, 179168522.329), stdev = 439632.691
+[info]   CI (99.9%): [176992738.990, 180378476.896] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.17, OpenJDK 64-Bit Server VM, 17.0.17+10-Ubuntu-124.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: -Xss1G -Xmx32g
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 5 iterations, 10 s each
+[info] # Measurement: 5 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: com.ziplex.lexer.benchmark.lexer.AAStarBLexerBenchmark.lex_ZipperV1Mem
+[info] # Parameters: (file = 800.txt)
+[info] # Run progress: 31.11% complete, ETA 03:05:59
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 75781.903 us/op
+[info] # Warmup Iteration   2: 66548.646 us/op
+[info] # Warmup Iteration   3: 56971.367 us/op
+[info] # Warmup Iteration   4: 59528.710 us/op
+[info] # Warmup Iteration   5: 56504.046 us/op
+[info] Iteration   1: 58099.778 us/op
+[info] Iteration   2: 57806.930 us/op
+[info] Iteration   3: 56120.535 us/op
+[info] Iteration   4: 57324.050 us/op
+[info] Iteration   5: 57359.711 us/op
+[info] Result "com.ziplex.lexer.benchmark.lexer.AAStarBLexerBenchmark.lex_ZipperV1Mem":
+[info]   57342.201 ±(99.9%) 2909.084 us/op [Average]
+[info]   (min, avg, max) = (56120.535, 57342.201, 58099.778), stdev = 755.480
+[info]   CI (99.9%): [54433.117, 60251.284] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.17, OpenJDK 64-Bit Server VM, 17.0.17+10-Ubuntu-124.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: -Xss1G -Xmx32g
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 5 iterations, 10 s each
+[info] # Measurement: 5 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: com.ziplex.lexer.benchmark.lexer.AAStarBLexerBenchmark.lex_ZipperV2Mem
+[info] # Parameters: (file = 100.txt)
+[info] # Run progress: 33.33% complete, ETA 02:51:21
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 58.139 us/op
+[info] # Warmup Iteration   2: 50.975 us/op
+[info] # Warmup Iteration   3: 49.920 us/op
+[info] # Warmup Iteration   4: 48.274 us/op
+[info] # Warmup Iteration   5: 50.020 us/op
+[info] Iteration   1: 50.169 us/op
+[info] Iteration   2: 49.139 us/op
+[info] Iteration   3: 48.877 us/op
+[info] Iteration   4: 49.237 us/op
+[info] Iteration   5: 49.832 us/op
+[info] Result "com.ziplex.lexer.benchmark.lexer.AAStarBLexerBenchmark.lex_ZipperV2Mem":
+[info]   49.451 ±(99.9%) 2.049 us/op [Average]
+[info]   (min, avg, max) = (48.877, 49.451, 50.169), stdev = 0.532
+[info]   CI (99.9%): [47.401, 51.500] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.17, OpenJDK 64-Bit Server VM, 17.0.17+10-Ubuntu-124.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: -Xss1G -Xmx32g
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 5 iterations, 10 s each
+[info] # Measurement: 5 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: com.ziplex.lexer.benchmark.lexer.AAStarBLexerBenchmark.lex_ZipperV2Mem
+[info] # Parameters: (file = 1000.txt)
+[info] # Run progress: 35.56% complete, ETA 02:38:19
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 865.869 us/op
+[info] # Warmup Iteration   2: 759.241 us/op
+[info] # Warmup Iteration   3: 753.995 us/op
+[info] # Warmup Iteration   4: 718.825 us/op
+[info] # Warmup Iteration   5: 748.656 us/op
+[info] Iteration   1: 751.653 us/op
+[info] Iteration   2: 735.990 us/op
+[info] Iteration   3: 723.347 us/op
+[info] Iteration   4: 725.017 us/op
+[info] Iteration   5: 718.306 us/op
+[info] Result "com.ziplex.lexer.benchmark.lexer.AAStarBLexerBenchmark.lex_ZipperV2Mem":
+[info]   730.863 ±(99.9%) 51.189 us/op [Average]
+[info]   (min, avg, max) = (718.306, 730.863, 751.653), stdev = 13.294
+[info]   CI (99.9%): [679.674, 782.051] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.17, OpenJDK 64-Bit Server VM, 17.0.17+10-Ubuntu-124.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: -Xss1G -Xmx32g
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 5 iterations, 10 s each
+[info] # Measurement: 5 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: com.ziplex.lexer.benchmark.lexer.AAStarBLexerBenchmark.lex_ZipperV2Mem
+[info] # Parameters: (file = 10000.txt)
+[info] # Run progress: 37.78% complete, ETA 02:26:37
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 11672.640 us/op
+[info] # Warmup Iteration   2: 10244.825 us/op
+[info] # Warmup Iteration   3: 10200.918 us/op
+[info] # Warmup Iteration   4: 9826.203 us/op
+[info] # Warmup Iteration   5: 9805.937 us/op
+[info] Iteration   1: 10050.848 us/op
+[info] Iteration   2: 9617.382 us/op
+[info] Iteration   3: 9614.169 us/op
+[info] Iteration   4: 9616.285 us/op
+[info] Iteration   5: 9452.267 us/op
+[info] Result "com.ziplex.lexer.benchmark.lexer.AAStarBLexerBenchmark.lex_ZipperV2Mem":
+[info]   9670.190 ±(99.9%) 863.661 us/op [Average]
+[info]   (min, avg, max) = (9452.267, 9670.190, 10050.848), stdev = 224.290
+[info]   CI (99.9%): [8806.529, 10533.851] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.17, OpenJDK 64-Bit Server VM, 17.0.17+10-Ubuntu-124.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: -Xss1G -Xmx32g
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 5 iterations, 10 s each
+[info] # Measurement: 5 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: com.ziplex.lexer.benchmark.lexer.AAStarBLexerBenchmark.lex_ZipperV2Mem
+[info] # Parameters: (file = 1200.txt)
+[info] # Run progress: 40.00% complete, ETA 02:16:03
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 1083.960 us/op
+[info] # Warmup Iteration   2: 950.311 us/op
+[info] # Warmup Iteration   3: 935.464 us/op
+[info] # Warmup Iteration   4: 927.338 us/op
+[info] # Warmup Iteration   5: 959.163 us/op
+[info] Iteration   1: 936.308 us/op
+[info] Iteration   2: 952.757 us/op
+[info] Iteration   3: 911.611 us/op
+[info] Iteration   4: 939.829 us/op
+[info] Iteration   5: 939.744 us/op
+[info] Result "com.ziplex.lexer.benchmark.lexer.AAStarBLexerBenchmark.lex_ZipperV2Mem":
+[info]   936.050 ±(99.9%) 57.900 us/op [Average]
+[info]   (min, avg, max) = (911.611, 936.050, 952.757), stdev = 15.036
+[info]   CI (99.9%): [878.150, 993.950] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.17, OpenJDK 64-Bit Server VM, 17.0.17+10-Ubuntu-124.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: -Xss1G -Xmx32g
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 5 iterations, 10 s each
+[info] # Measurement: 5 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: com.ziplex.lexer.benchmark.lexer.AAStarBLexerBenchmark.lex_ZipperV2Mem
+[info] # Parameters: (file = 200.txt)
+[info] # Run progress: 42.22% complete, ETA 02:06:24
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 131.613 us/op
+[info] # Warmup Iteration   2: 116.753 us/op
+[info] # Warmup Iteration   3: 113.272 us/op
+[info] # Warmup Iteration   4: 108.841 us/op
+[info] # Warmup Iteration   5: 113.423 us/op
+[info] Iteration   1: 115.355 us/op
+[info] Iteration   2: 111.263 us/op
+[info] Iteration   3: 111.490 us/op
+[info] Iteration   4: 113.522 us/op
+[info] Iteration   5: 111.866 us/op
+[info] Result "com.ziplex.lexer.benchmark.lexer.AAStarBLexerBenchmark.lex_ZipperV2Mem":
+[info]   112.699 ±(99.9%) 6.656 us/op [Average]
+[info]   (min, avg, max) = (111.263, 112.699, 115.355), stdev = 1.729
+[info]   CI (99.9%): [106.043, 119.355] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.17, OpenJDK 64-Bit Server VM, 17.0.17+10-Ubuntu-124.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: -Xss1G -Xmx32g
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 5 iterations, 10 s each
+[info] # Measurement: 5 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: com.ziplex.lexer.benchmark.lexer.AAStarBLexerBenchmark.lex_ZipperV2Mem
+[info] # Parameters: (file = 2000.txt)
+[info] # Run progress: 44.44% complete, ETA 01:57:33
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 1846.020 us/op
+[info] # Warmup Iteration   2: 1611.046 us/op
+[info] # Warmup Iteration   3: 1577.073 us/op
+[info] # Warmup Iteration   4: 1517.337 us/op
+[info] # Warmup Iteration   5: 1559.509 us/op
+[info] Iteration   1: 1573.946 us/op
+[info] Iteration   2: 1550.995 us/op
+[info] Iteration   3: 1522.487 us/op
+[info] Iteration   4: 1524.054 us/op
+[info] Iteration   5: 1525.626 us/op
+[info] Result "com.ziplex.lexer.benchmark.lexer.AAStarBLexerBenchmark.lex_ZipperV2Mem":
+[info]   1539.422 ±(99.9%) 86.941 us/op [Average]
+[info]   (min, avg, max) = (1522.487, 1539.422, 1573.946), stdev = 22.578
+[info]   CI (99.9%): [1452.480, 1626.363] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.17, OpenJDK 64-Bit Server VM, 17.0.17+10-Ubuntu-124.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: -Xss1G -Xmx32g
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 5 iterations, 10 s each
+[info] # Measurement: 5 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: com.ziplex.lexer.benchmark.lexer.AAStarBLexerBenchmark.lex_ZipperV2Mem
+[info] # Parameters: (file = 20000.txt)
+[info] # Run progress: 46.67% complete, ETA 01:49:23
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 25734.510 us/op
+[info] # Warmup Iteration   2: 22880.952 us/op
+[info] # Warmup Iteration   3: 22548.218 us/op
+[info] # Warmup Iteration   4: 21652.157 us/op
+[info] # Warmup Iteration   5: 21308.339 us/op
+[info] Iteration   1: 21716.143 us/op
+[info] Iteration   2: 21160.078 us/op
+[info] Iteration   3: 20762.272 us/op
+[info] Iteration   4: 21070.178 us/op
+[info] Iteration   5: 21245.837 us/op
+[info] Result "com.ziplex.lexer.benchmark.lexer.AAStarBLexerBenchmark.lex_ZipperV2Mem":
+[info]   21190.902 ±(99.9%) 1331.322 us/op [Average]
+[info]   (min, avg, max) = (20762.272, 21190.902, 21716.143), stdev = 345.740
+[info]   CI (99.9%): [19859.579, 22522.224] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.17, OpenJDK 64-Bit Server VM, 17.0.17+10-Ubuntu-124.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: -Xss1G -Xmx32g
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 5 iterations, 10 s each
+[info] # Measurement: 5 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: com.ziplex.lexer.benchmark.lexer.AAStarBLexerBenchmark.lex_ZipperV2Mem
+[info] # Parameters: (file = 300.txt)
+[info] # Run progress: 48.89% complete, ETA 01:41:49
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 210.123 us/op
+[info] # Warmup Iteration   2: 186.870 us/op
+[info] # Warmup Iteration   3: 177.830 us/op
+[info] # Warmup Iteration   4: 180.596 us/op
+[info] # Warmup Iteration   5: 185.403 us/op
+[info] Iteration   1: 178.520 us/op
+[info] Iteration   2: 181.179 us/op
+[info] Iteration   3: 181.437 us/op
+[info] Iteration   4: 176.130 us/op
+[info] Iteration   5: 178.589 us/op
+[info] Result "com.ziplex.lexer.benchmark.lexer.AAStarBLexerBenchmark.lex_ZipperV2Mem":
+[info]   179.171 ±(99.9%) 8.431 us/op [Average]
+[info]   (min, avg, max) = (176.130, 179.171, 181.437), stdev = 2.190
+[info]   CI (99.9%): [170.740, 187.602] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.17, OpenJDK 64-Bit Server VM, 17.0.17+10-Ubuntu-124.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: -Xss1G -Xmx32g
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 5 iterations, 10 s each
+[info] # Measurement: 5 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: com.ziplex.lexer.benchmark.lexer.AAStarBLexerBenchmark.lex_ZipperV2Mem
+[info] # Parameters: (file = 30000.txt)
+[info] # Run progress: 51.11% complete, ETA 01:34:45
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 49375.745 us/op
+[info] # Warmup Iteration   2: 42575.083 us/op
+[info] # Warmup Iteration   3: 41934.488 us/op
+[info] # Warmup Iteration   4: 40770.546 us/op
+[info] # Warmup Iteration   5: 41716.706 us/op
+[info] Iteration   1: 40143.935 us/op
+[info] Iteration   2: 40063.282 us/op
+[info] Iteration   3: 40348.406 us/op
+[info] Iteration   4: 38891.485 us/op
+[info] Iteration   5: 39379.519 us/op
+[info] Result "com.ziplex.lexer.benchmark.lexer.AAStarBLexerBenchmark.lex_ZipperV2Mem":
+[info]   39765.326 ±(99.9%) 2345.854 us/op [Average]
+[info]   (min, avg, max) = (38891.485, 39765.326, 40348.406), stdev = 609.211
+[info]   CI (99.9%): [37419.472, 42111.179] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.17, OpenJDK 64-Bit Server VM, 17.0.17+10-Ubuntu-124.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: -Xss1G -Xmx32g
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 5 iterations, 10 s each
+[info] # Measurement: 5 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: com.ziplex.lexer.benchmark.lexer.AAStarBLexerBenchmark.lex_ZipperV2Mem
+[info] # Parameters: (file = 40000.txt)
+[info] # Run progress: 53.33% complete, ETA 01:28:09
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 68609.683 us/op
+[info] # Warmup Iteration   2: 60549.282 us/op
+[info] # Warmup Iteration   3: 61068.164 us/op
+[info] # Warmup Iteration   4: 58555.328 us/op
+[info] # Warmup Iteration   5: 57994.178 us/op
+[info] Iteration   1: 55106.636 us/op
+[info] Iteration   2: 56614.648 us/op
+[info] Iteration   3: 56673.939 us/op
+[info] Iteration   4: 55908.344 us/op
+[info] Iteration   5: 56481.094 us/op
+[info] Result "com.ziplex.lexer.benchmark.lexer.AAStarBLexerBenchmark.lex_ZipperV2Mem":
+[info]   56156.932 ±(99.9%) 2544.631 us/op [Average]
+[info]   (min, avg, max) = (55106.636, 56156.932, 56673.939), stdev = 660.833
+[info]   CI (99.9%): [53612.301, 58701.563] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.17, OpenJDK 64-Bit Server VM, 17.0.17+10-Ubuntu-124.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: -Xss1G -Xmx32g
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 5 iterations, 10 s each
+[info] # Measurement: 5 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: com.ziplex.lexer.benchmark.lexer.AAStarBLexerBenchmark.lex_ZipperV2Mem
+[info] # Parameters: (file = 500.0.txt)
+[info] # Run progress: 55.56% complete, ETA 01:21:56
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 0.405 us/op
+[info] # Warmup Iteration   2: 0.357 us/op
+[info] # Warmup Iteration   3: 0.345 us/op
+[info] # Warmup Iteration   4: 0.345 us/op
+[info] # Warmup Iteration   5: 0.355 us/op
+[info] Iteration   1: 0.342 us/op
+[info] Iteration   2: 0.345 us/op
+[info] Iteration   3: 0.348 us/op
+[info] Iteration   4: 0.340 us/op
+[info] Iteration   5: 0.338 us/op
+[info] Result "com.ziplex.lexer.benchmark.lexer.AAStarBLexerBenchmark.lex_ZipperV2Mem":
+[info]   0.343 ±(99.9%) 0.016 us/op [Average]
+[info]   (min, avg, max) = (0.338, 0.343, 0.348), stdev = 0.004
+[info]   CI (99.9%): [0.327, 0.358] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.17, OpenJDK 64-Bit Server VM, 17.0.17+10-Ubuntu-124.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: -Xss1G -Xmx32g
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 5 iterations, 10 s each
+[info] # Measurement: 5 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: com.ziplex.lexer.benchmark.lexer.AAStarBLexerBenchmark.lex_ZipperV2Mem
+[info] # Parameters: (file = 500.txt)
+[info] # Run progress: 57.78% complete, ETA 01:16:04
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 371.932 us/op
+[info] # Warmup Iteration   2: 326.573 us/op
+[info] # Warmup Iteration   3: 315.883 us/op
+[info] # Warmup Iteration   4: 305.100 us/op
+[info] # Warmup Iteration   5: 318.012 us/op
+[info] Iteration   1: 323.222 us/op
+[info] Iteration   2: 309.045 us/op
+[info] Iteration   3: 309.710 us/op
+[info] Iteration   4: 309.688 us/op
+[info] Iteration   5: 313.722 us/op
+[info] Result "com.ziplex.lexer.benchmark.lexer.AAStarBLexerBenchmark.lex_ZipperV2Mem":
+[info]   313.077 ±(99.9%) 22.977 us/op [Average]
+[info]   (min, avg, max) = (309.045, 313.077, 323.222), stdev = 5.967
+[info]   CI (99.9%): [290.100, 336.054] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.17, OpenJDK 64-Bit Server VM, 17.0.17+10-Ubuntu-124.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: -Xss1G -Xmx32g
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 5 iterations, 10 s each
+[info] # Measurement: 5 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: com.ziplex.lexer.benchmark.lexer.AAStarBLexerBenchmark.lex_ZipperV2Mem
+[info] # Parameters: (file = 5000.txt)
+[info] # Run progress: 60.00% complete, ETA 01:10:31
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 5369.789 us/op
+[info] # Warmup Iteration   2: 4685.592 us/op
+[info] # Warmup Iteration   3: 4545.256 us/op
+[info] # Warmup Iteration   4: 4539.127 us/op
+[info] # Warmup Iteration   5: 4602.819 us/op
+[info] Iteration   1: 4397.022 us/op
+[info] Iteration   2: 4495.614 us/op
+[info] Iteration   3: 4605.260 us/op
+[info] Iteration   4: 4594.599 us/op
+[info] Iteration   5: 4401.986 us/op
+[info] Result "com.ziplex.lexer.benchmark.lexer.AAStarBLexerBenchmark.lex_ZipperV2Mem":
+[info]   4498.896 ±(99.9%) 386.281 us/op [Average]
+[info]   (min, avg, max) = (4397.022, 4498.896, 4605.260), stdev = 100.316
+[info]   CI (99.9%): [4112.615, 4885.177] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.17, OpenJDK 64-Bit Server VM, 17.0.17+10-Ubuntu-124.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: -Xss1G -Xmx32g
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 5 iterations, 10 s each
+[info] # Measurement: 5 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: com.ziplex.lexer.benchmark.lexer.AAStarBLexerBenchmark.lex_ZipperV2Mem
+[info] # Parameters: (file = 50000.txt)
+[info] # Run progress: 62.22% complete, ETA 01:05:14
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 90177.385 us/op
+[info] # Warmup Iteration   2: 82453.499 us/op
+[info] # Warmup Iteration   3: 78692.342 us/op
+[info] # Warmup Iteration   4: 74704.297 us/op
+[info] # Warmup Iteration   5: 76409.020 us/op
+[info] Iteration   1: 75713.883 us/op
+[info] Iteration   2: 73504.957 us/op
+[info] Iteration   3: 74523.244 us/op
+[info] Iteration   4: 74921.841 us/op
+[info] Iteration   5: 85499.978 us/op
+[info] Result "com.ziplex.lexer.benchmark.lexer.AAStarBLexerBenchmark.lex_ZipperV2Mem":
+[info]   76832.781 ±(99.9%) 18906.652 us/op [Average]
+[info]   (min, avg, max) = (73504.957, 76832.781, 85499.978), stdev = 4909.998
+[info]   CI (99.9%): [57926.129, 95739.433] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.17, OpenJDK 64-Bit Server VM, 17.0.17+10-Ubuntu-124.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: -Xss1G -Xmx32g
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 5 iterations, 10 s each
+[info] # Measurement: 5 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: com.ziplex.lexer.benchmark.lexer.AAStarBLexerBenchmark.lex_ZipperV2Mem
+[info] # Parameters: (file = 800.txt)
+[info] # Run progress: 64.44% complete, ETA 01:00:12
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 695.936 us/op
+[info] # Warmup Iteration   2: 622.148 us/op
+[info] # Warmup Iteration   3: 588.590 us/op
+[info] # Warmup Iteration   4: 574.571 us/op
+[info] # Warmup Iteration   5: 607.086 us/op
+[info] Iteration   1: 583.063 us/op
+[info] Iteration   2: 600.969 us/op
+[info] Iteration   3: 583.736 us/op
+[info] Iteration   4: 575.249 us/op
+[info] Iteration   5: 590.695 us/op
+[info] Result "com.ziplex.lexer.benchmark.lexer.AAStarBLexerBenchmark.lex_ZipperV2Mem":
+[info]   586.742 ±(99.9%) 37.169 us/op [Average]
+[info]   (min, avg, max) = (575.249, 586.742, 600.969), stdev = 9.653
+[info]   CI (99.9%): [549.573, 623.911] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.17, OpenJDK 64-Bit Server VM, 17.0.17+10-Ubuntu-124.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: -Xss1G -Xmx32g
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 5 iterations, 10 s each
+[info] # Measurement: 5 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: com.ziplex.lexer.benchmark.lexer.AAStarBLexerBenchmark.lex_ZipperV3Mem
+[info] # Parameters: (file = 100.txt)
+[info] # Run progress: 66.67% complete, ETA 00:55:24
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 107.717 us/op
+[info] # Warmup Iteration   2: 93.515 us/op
+[info] # Warmup Iteration   3: 91.603 us/op
+[info] # Warmup Iteration   4: 106.719 us/op
+[info] # Warmup Iteration   5: 98.600 us/op
+[info] Iteration   1: 91.911 us/op
+[info] Iteration   2: 90.789 us/op
+[info] Iteration   3: 97.839 us/op
+[info] Iteration   4: 91.945 us/op
+[info] Iteration   5: 93.298 us/op
+[info] Result "com.ziplex.lexer.benchmark.lexer.AAStarBLexerBenchmark.lex_ZipperV3Mem":
+[info]   93.156 ±(99.9%) 10.645 us/op [Average]
+[info]   (min, avg, max) = (90.789, 93.156, 97.839), stdev = 2.765
+[info]   CI (99.9%): [82.511, 103.802] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.17, OpenJDK 64-Bit Server VM, 17.0.17+10-Ubuntu-124.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: -Xss1G -Xmx32g
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 5 iterations, 10 s each
+[info] # Measurement: 5 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: com.ziplex.lexer.benchmark.lexer.AAStarBLexerBenchmark.lex_ZipperV3Mem
+[info] # Parameters: (file = 1000.txt)
+[info] # Run progress: 68.89% complete, ETA 00:50:47
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 1416.301 us/op
+[info] # Warmup Iteration   2: 1432.785 us/op
+[info] # Warmup Iteration   3: 1358.165 us/op
+[info] # Warmup Iteration   4: 1288.059 us/op
+[info] # Warmup Iteration   5: 1212.909 us/op
+[info] Iteration   1: 1230.938 us/op
+[info] Iteration   2: 1221.438 us/op
+[info] Iteration   3: 1119.492 us/op
+[info] Iteration   4: 1148.593 us/op
+[info] Iteration   5: 1211.090 us/op
+[info] Result "com.ziplex.lexer.benchmark.lexer.AAStarBLexerBenchmark.lex_ZipperV3Mem":
+[info]   1186.310 ±(99.9%) 189.885 us/op [Average]
+[info]   (min, avg, max) = (1119.492, 1186.310, 1230.938), stdev = 49.313
+[info]   CI (99.9%): [996.425, 1376.196] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.17, OpenJDK 64-Bit Server VM, 17.0.17+10-Ubuntu-124.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: -Xss1G -Xmx32g
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 5 iterations, 10 s each
+[info] # Measurement: 5 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: com.ziplex.lexer.benchmark.lexer.AAStarBLexerBenchmark.lex_ZipperV3Mem
+[info] # Parameters: (file = 10000.txt)
+[info] # Run progress: 71.11% complete, ETA 00:46:22
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 27420.937 us/op
+[info] # Warmup Iteration   2: 17251.393 us/op
+[info] # Warmup Iteration   3: 15740.414 us/op
+[info] # Warmup Iteration   4: 15085.946 us/op
+[info] # Warmup Iteration   5: 15864.620 us/op
+[info] Iteration   1: 15481.824 us/op
+[info] Iteration   2: 17014.860 us/op
+[info] Iteration   3: 15224.610 us/op
+[info] Iteration   4: 14596.445 us/op
+[info] Iteration   5: 14685.484 us/op
+[info] Result "com.ziplex.lexer.benchmark.lexer.AAStarBLexerBenchmark.lex_ZipperV3Mem":
+[info]   15400.645 ±(99.9%) 3753.866 us/op [Average]
+[info]   (min, avg, max) = (14596.445, 15400.645, 17014.860), stdev = 974.867
+[info]   CI (99.9%): [11646.779, 19154.510] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.17, OpenJDK 64-Bit Server VM, 17.0.17+10-Ubuntu-124.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: -Xss1G -Xmx32g
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 5 iterations, 10 s each
+[info] # Measurement: 5 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: com.ziplex.lexer.benchmark.lexer.AAStarBLexerBenchmark.lex_ZipperV3Mem
+[info] # Parameters: (file = 1200.txt)
+[info] # Run progress: 73.33% complete, ETA 00:42:07
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 1893.475 us/op
+[info] # Warmup Iteration   2: 1634.748 us/op
+[info] # Warmup Iteration   3: 1589.978 us/op
+[info] # Warmup Iteration   4: 1605.437 us/op
+[info] # Warmup Iteration   5: 1612.538 us/op
+[info] Iteration   1: 1596.780 us/op
+[info] Iteration   2: 1626.771 us/op
+[info] Iteration   3: 1563.036 us/op
+[info] Iteration   4: 1601.170 us/op
+[info] Iteration   5: 1672.840 us/op
+[info] Result "com.ziplex.lexer.benchmark.lexer.AAStarBLexerBenchmark.lex_ZipperV3Mem":
+[info]   1612.119 ±(99.9%) 157.193 us/op [Average]
+[info]   (min, avg, max) = (1563.036, 1612.119, 1672.840), stdev = 40.823
+[info]   CI (99.9%): [1454.926, 1769.313] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.17, OpenJDK 64-Bit Server VM, 17.0.17+10-Ubuntu-124.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: -Xss1G -Xmx32g
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 5 iterations, 10 s each
+[info] # Measurement: 5 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: com.ziplex.lexer.benchmark.lexer.AAStarBLexerBenchmark.lex_ZipperV3Mem
+[info] # Parameters: (file = 200.txt)
+[info] # Run progress: 75.56% complete, ETA 00:38:00
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 249.918 us/op
+[info] # Warmup Iteration   2: 216.748 us/op
+[info] # Warmup Iteration   3: 212.509 us/op
+[info] # Warmup Iteration   4: 206.648 us/op
+[info] # Warmup Iteration   5: 215.311 us/op
+[info] Iteration   1: 207.969 us/op
+[info] Iteration   2: 215.135 us/op
+[info] Iteration   3: 208.233 us/op
+[info] Iteration   4: 212.868 us/op
+[info] Iteration   5: 213.883 us/op
+[info] Result "com.ziplex.lexer.benchmark.lexer.AAStarBLexerBenchmark.lex_ZipperV3Mem":
+[info]   211.618 ±(99.9%) 12.748 us/op [Average]
+[info]   (min, avg, max) = (207.969, 211.618, 215.135), stdev = 3.311
+[info]   CI (99.9%): [198.870, 224.365] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.17, OpenJDK 64-Bit Server VM, 17.0.17+10-Ubuntu-124.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: -Xss1G -Xmx32g
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 5 iterations, 10 s each
+[info] # Measurement: 5 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: com.ziplex.lexer.benchmark.lexer.AAStarBLexerBenchmark.lex_ZipperV3Mem
+[info] # Parameters: (file = 2000.txt)
+[info] # Run progress: 77.78% complete, ETA 00:34:03
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 3128.118 us/op
+[info] # Warmup Iteration   2: 3298.583 us/op
+[info] # Warmup Iteration   3: 2533.250 us/op
+[info] # Warmup Iteration   4: 2945.828 us/op
+[info] # Warmup Iteration   5: 2601.723 us/op
+[info] Iteration   1: 2857.602 us/op
+[info] Iteration   2: 2892.754 us/op
+[info] Iteration   3: 2571.621 us/op
+[info] Iteration   4: 2603.299 us/op
+[info] Iteration   5: 2480.224 us/op
+[info] Result "com.ziplex.lexer.benchmark.lexer.AAStarBLexerBenchmark.lex_ZipperV3Mem":
+[info]   2681.100 ±(99.9%) 705.677 us/op [Average]
+[info]   (min, avg, max) = (2480.224, 2681.100, 2892.754), stdev = 183.262
+[info]   CI (99.9%): [1975.423, 3386.777] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.17, OpenJDK 64-Bit Server VM, 17.0.17+10-Ubuntu-124.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: -Xss1G -Xmx32g
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 5 iterations, 10 s each
+[info] # Measurement: 5 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: com.ziplex.lexer.benchmark.lexer.AAStarBLexerBenchmark.lex_ZipperV3Mem
+[info] # Parameters: (file = 20000.txt)
+[info] # Run progress: 80.00% complete, ETA 00:30:12
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 44554.690 us/op
+[info] # Warmup Iteration   2: 48342.238 us/op
+[info] # Warmup Iteration   3: 39894.154 us/op
+[info] # Warmup Iteration   4: 38943.067 us/op
+[info] # Warmup Iteration   5: 42838.086 us/op
+[info] Iteration   1: 39771.402 us/op
+[info] Iteration   2: 37698.339 us/op
+[info] Iteration   3: 33618.637 us/op
+[info] Iteration   4: 34732.214 us/op
+[info] Iteration   5: 36747.197 us/op
+[info] Result "com.ziplex.lexer.benchmark.lexer.AAStarBLexerBenchmark.lex_ZipperV3Mem":
+[info]   36513.558 ±(99.9%) 9358.252 us/op [Average]
+[info]   (min, avg, max) = (33618.637, 36513.558, 39771.402), stdev = 2430.308
+[info]   CI (99.9%): [27155.306, 45871.810] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.17, OpenJDK 64-Bit Server VM, 17.0.17+10-Ubuntu-124.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: -Xss1G -Xmx32g
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 5 iterations, 10 s each
+[info] # Measurement: 5 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: com.ziplex.lexer.benchmark.lexer.AAStarBLexerBenchmark.lex_ZipperV3Mem
+[info] # Parameters: (file = 300.txt)
+[info] # Run progress: 82.22% complete, ETA 00:26:29
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 420.985 us/op
+[info] # Warmup Iteration   2: 370.693 us/op
+[info] # Warmup Iteration   3: 351.288 us/op
+[info] # Warmup Iteration   4: 323.595 us/op
+[info] # Warmup Iteration   5: 304.824 us/op
+[info] Iteration   1: 318.944 us/op
+[info] Iteration   2: 321.396 us/op
+[info] Iteration   3: 308.899 us/op
+[info] Iteration   4: 314.800 us/op
+[info] Iteration   5: 314.753 us/op
+[info] Result "com.ziplex.lexer.benchmark.lexer.AAStarBLexerBenchmark.lex_ZipperV3Mem":
+[info]   315.758 ±(99.9%) 18.357 us/op [Average]
+[info]   (min, avg, max) = (308.899, 315.758, 321.396), stdev = 4.767
+[info]   CI (99.9%): [297.402, 334.115] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.17, OpenJDK 64-Bit Server VM, 17.0.17+10-Ubuntu-124.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: -Xss1G -Xmx32g
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 5 iterations, 10 s each
+[info] # Measurement: 5 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: com.ziplex.lexer.benchmark.lexer.AAStarBLexerBenchmark.lex_ZipperV3Mem
+[info] # Parameters: (file = 30000.txt)
+[info] # Run progress: 84.44% complete, ETA 00:22:52
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 84362.787 us/op
+[info] # Warmup Iteration   2: 80418.109 us/op
+[info] # Warmup Iteration   3: 71144.127 us/op
+[info] # Warmup Iteration   4: 67390.337 us/op
+[info] # Warmup Iteration   5: 62425.748 us/op
+[info] Iteration   1: 59972.657 us/op
+[info] Iteration   2: 55739.319 us/op
+[info] Iteration   3: 55208.343 us/op
+[info] Iteration   4: 54596.688 us/op
+[info] Iteration   5: 53303.435 us/op
+[info] Result "com.ziplex.lexer.benchmark.lexer.AAStarBLexerBenchmark.lex_ZipperV3Mem":
+[info]   55764.088 ±(99.9%) 9710.793 us/op [Average]
+[info]   (min, avg, max) = (53303.435, 55764.088, 59972.657), stdev = 2521.862
+[info]   CI (99.9%): [46053.295, 65474.881] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.17, OpenJDK 64-Bit Server VM, 17.0.17+10-Ubuntu-124.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: -Xss1G -Xmx32g
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 5 iterations, 10 s each
+[info] # Measurement: 5 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: com.ziplex.lexer.benchmark.lexer.AAStarBLexerBenchmark.lex_ZipperV3Mem
+[info] # Parameters: (file = 40000.txt)
+[info] # Run progress: 86.67% complete, ETA 00:19:22
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 141445.425 us/op
+[info] # Warmup Iteration   2: 94096.033 us/op
+[info] # Warmup Iteration   3: 91196.047 us/op
+[info] # Warmup Iteration   4: 87830.490 us/op
+[info] # Warmup Iteration   5: 82029.257 us/op
+[info] Iteration   1: 78289.001 us/op
+[info] Iteration   2: 78894.495 us/op
+[info] Iteration   3: 81014.687 us/op
+[info] Iteration   4: 81086.047 us/op
+[info] Iteration   5: 79314.576 us/op
+[info] Result "com.ziplex.lexer.benchmark.lexer.AAStarBLexerBenchmark.lex_ZipperV3Mem":
+[info]   79719.761 ±(99.9%) 4884.358 us/op [Average]
+[info]   (min, avg, max) = (78289.001, 79719.761, 81086.047), stdev = 1268.452
+[info]   CI (99.9%): [74835.404, 84604.119] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.17, OpenJDK 64-Bit Server VM, 17.0.17+10-Ubuntu-124.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: -Xss1G -Xmx32g
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 5 iterations, 10 s each
+[info] # Measurement: 5 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: com.ziplex.lexer.benchmark.lexer.AAStarBLexerBenchmark.lex_ZipperV3Mem
+[info] # Parameters: (file = 500.0.txt)
+[info] # Run progress: 88.89% complete, ETA 00:15:56
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 0.232 us/op
+[info] # Warmup Iteration   2: 0.184 us/op
+[info] # Warmup Iteration   3: 0.177 us/op
+[info] # Warmup Iteration   4: 0.166 us/op
+[info] # Warmup Iteration   5: 0.165 us/op
+[info] Iteration   1: 0.174 us/op
+[info] Iteration   2: 0.169 us/op
+[info] Iteration   3: 0.174 us/op
+[info] Iteration   4: 0.175 us/op
+[info] Iteration   5: 0.171 us/op
+[info] Result "com.ziplex.lexer.benchmark.lexer.AAStarBLexerBenchmark.lex_ZipperV3Mem":
+[info]   0.173 ±(99.9%) 0.009 us/op [Average]
+[info]   (min, avg, max) = (0.169, 0.173, 0.175), stdev = 0.002
+[info]   CI (99.9%): [0.163, 0.182] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.17, OpenJDK 64-Bit Server VM, 17.0.17+10-Ubuntu-124.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: -Xss1G -Xmx32g
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 5 iterations, 10 s each
+[info] # Measurement: 5 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: com.ziplex.lexer.benchmark.lexer.AAStarBLexerBenchmark.lex_ZipperV3Mem
+[info] # Parameters: (file = 500.txt)
+[info] # Run progress: 91.11% complete, ETA 00:12:36
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 732.508 us/op
+[info] # Warmup Iteration   2: 636.211 us/op
+[info] # Warmup Iteration   3: 535.245 us/op
+[info] # Warmup Iteration   4: 572.809 us/op
+[info] # Warmup Iteration   5: 569.583 us/op
+[info] Iteration   1: 545.341 us/op
+[info] Iteration   2: 533.180 us/op
+[info] Iteration   3: 532.132 us/op
+[info] Iteration   4: 523.828 us/op
+[info] Iteration   5: 523.635 us/op
+[info] Result "com.ziplex.lexer.benchmark.lexer.AAStarBLexerBenchmark.lex_ZipperV3Mem":
+[info]   531.623 ±(99.9%) 34.195 us/op [Average]
+[info]   (min, avg, max) = (523.635, 531.623, 545.341), stdev = 8.880
+[info]   CI (99.9%): [497.428, 565.818] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.17, OpenJDK 64-Bit Server VM, 17.0.17+10-Ubuntu-124.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: -Xss1G -Xmx32g
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 5 iterations, 10 s each
+[info] # Measurement: 5 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: com.ziplex.lexer.benchmark.lexer.AAStarBLexerBenchmark.lex_ZipperV3Mem
+[info] # Parameters: (file = 5000.txt)
+[info] # Run progress: 93.33% complete, ETA 00:09:21
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 8451.601 us/op
+[info] # Warmup Iteration   2: 7263.825 us/op
+[info] # Warmup Iteration   3: 7084.270 us/op
+[info] # Warmup Iteration   4: 7066.695 us/op
+[info] # Warmup Iteration   5: 7244.674 us/op
+[info] Iteration   1: 6939.350 us/op
+[info] Iteration   2: 7218.001 us/op
+[info] Iteration   3: 7221.226 us/op
+[info] Iteration   4: 6977.180 us/op
+[info] Iteration   5: 7067.349 us/op
+[info] Result "com.ziplex.lexer.benchmark.lexer.AAStarBLexerBenchmark.lex_ZipperV3Mem":
+[info]   7084.621 ±(99.9%) 507.192 us/op [Average]
+[info]   (min, avg, max) = (6939.350, 7084.621, 7221.226), stdev = 131.716
+[info]   CI (99.9%): [6577.429, 7591.813] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.17, OpenJDK 64-Bit Server VM, 17.0.17+10-Ubuntu-124.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: -Xss1G -Xmx32g
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 5 iterations, 10 s each
+[info] # Measurement: 5 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: com.ziplex.lexer.benchmark.lexer.AAStarBLexerBenchmark.lex_ZipperV3Mem
+[info] # Parameters: (file = 50000.txt)
+[info] # Run progress: 95.56% complete, ETA 00:06:10
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 134090.620 us/op
+[info] # Warmup Iteration   2: 110020.026 us/op
+[info] # Warmup Iteration   3: 106561.456 us/op
+[info] # Warmup Iteration   4: 108480.144 us/op
+[info] # Warmup Iteration   5: 106145.596 us/op
+[info] Iteration   1: 108528.386 us/op
+[info] Iteration   2: 108373.885 us/op
+[info] Iteration   3: 106167.316 us/op
+[info] Iteration   4: 105929.878 us/op
+[info] Iteration   5: 103394.001 us/op
+[info] Result "com.ziplex.lexer.benchmark.lexer.AAStarBLexerBenchmark.lex_ZipperV3Mem":
+[info]   106478.693 ±(99.9%) 8101.574 us/op [Average]
+[info]   (min, avg, max) = (103394.001, 106478.693, 108528.386), stdev = 2103.953
+[info]   CI (99.9%): [98377.119, 114580.266] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.17, OpenJDK 64-Bit Server VM, 17.0.17+10-Ubuntu-124.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: -Xss1G -Xmx32g
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 5 iterations, 10 s each
+[info] # Measurement: 5 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: com.ziplex.lexer.benchmark.lexer.AAStarBLexerBenchmark.lex_ZipperV3Mem
+[info] # Parameters: (file = 800.txt)
+[info] # Run progress: 97.78% complete, ETA 00:03:03
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 1058.491 us/op
+[info] # Warmup Iteration   2: 922.301 us/op
+[info] # Warmup Iteration   3: 895.494 us/op
+[info] # Warmup Iteration   4: 885.123 us/op
+[info] # Warmup Iteration   5: 930.272 us/op
+[info] Iteration   1: 888.484 us/op
+[info] Iteration   2: 915.515 us/op
+[info] Iteration   3: 892.763 us/op
+[info] Iteration   4: 892.831 us/op
+[info] Iteration   5: 911.390 us/op
+[info] Result "com.ziplex.lexer.benchmark.lexer.AAStarBLexerBenchmark.lex_ZipperV3Mem":
+[info]   900.197 ±(99.9%) 47.422 us/op [Average]
+[info]   (min, avg, max) = (888.484, 900.197, 915.515), stdev = 12.315
+[info]   CI (99.9%): [852.775, 947.618] (assumes normal distribution)
+[info] # Run complete. Total time: 02:15:57
+[info] REMEMBER: The numbers below are just data. To gain reusable insights, you need to follow up on
+[info] why the numbers are the way they are. Use profilers (see -prof, -lprof), design factorial
+[info] experiments, perform baseline and negative tests that provide experimental control, make sure
+[info] the benchmarking environment is safe on JVM/OS/HW level, ask for reviews from the domain experts.
+[info] Do not assume the numbers tell you what you want them to tell.
+[info] Benchmark                                 (file)  Mode  Cnt          Score         Error  Units
+[info] AAStarBLexerBenchmark.lex_ZipperV1Mem    100.txt  avgt    5        936.942 ±      64.326  us/op
+[info] AAStarBLexerBenchmark.lex_ZipperV1Mem   1000.txt  avgt    5      89392.301 ±    4174.392  us/op
+[info] AAStarBLexerBenchmark.lex_ZipperV1Mem  10000.txt  avgt    5    9584510.714 ±  329209.143  us/op
+[info] AAStarBLexerBenchmark.lex_ZipperV1Mem   1200.txt  avgt    5     128773.458 ±    9694.247  us/op
+[info] AAStarBLexerBenchmark.lex_ZipperV1Mem    200.txt  avgt    5       3680.768 ±     157.746  us/op
+[info] AAStarBLexerBenchmark.lex_ZipperV1Mem   2000.txt  avgt    5     363074.714 ±   14315.891  us/op
+[info] AAStarBLexerBenchmark.lex_ZipperV1Mem  20000.txt  avgt    5   28460390.535 ±  721641.703  us/op
+[info] AAStarBLexerBenchmark.lex_ZipperV1Mem    300.txt  avgt    5       8008.084 ±     392.473  us/op
+[info] AAStarBLexerBenchmark.lex_ZipperV1Mem  30000.txt  avgt    5   68029126.964 ±  779186.327  us/op
+[info] AAStarBLexerBenchmark.lex_ZipperV1Mem  40000.txt  avgt    5  116031428.941 ± 1757569.070  us/op
+[info] AAStarBLexerBenchmark.lex_ZipperV1Mem  500.0.txt  avgt    5          0.079 ±       0.004  us/op
+[info] AAStarBLexerBenchmark.lex_ZipperV1Mem    500.txt  avgt    5      23282.029 ±    1271.151  us/op
+[info] AAStarBLexerBenchmark.lex_ZipperV1Mem   5000.txt  avgt    5    2413394.534 ±  117095.801  us/op
+[info] AAStarBLexerBenchmark.lex_ZipperV1Mem  50000.txt  avgt    5  178685607.943 ± 1692868.953  us/op
+[info] AAStarBLexerBenchmark.lex_ZipperV1Mem    800.txt  avgt    5      57342.201 ±    2909.084  us/op
+[info] AAStarBLexerBenchmark.lex_ZipperV2Mem    100.txt  avgt    5         49.451 ±       2.049  us/op
+[info] AAStarBLexerBenchmark.lex_ZipperV2Mem   1000.txt  avgt    5        730.863 ±      51.189  us/op
+[info] AAStarBLexerBenchmark.lex_ZipperV2Mem  10000.txt  avgt    5       9670.190 ±     863.661  us/op
+[info] AAStarBLexerBenchmark.lex_ZipperV2Mem   1200.txt  avgt    5        936.050 ±      57.900  us/op
+[info] AAStarBLexerBenchmark.lex_ZipperV2Mem    200.txt  avgt    5        112.699 ±       6.656  us/op
+[info] AAStarBLexerBenchmark.lex_ZipperV2Mem   2000.txt  avgt    5       1539.422 ±      86.941  us/op
+[info] AAStarBLexerBenchmark.lex_ZipperV2Mem  20000.txt  avgt    5      21190.902 ±    1331.322  us/op
+[info] AAStarBLexerBenchmark.lex_ZipperV2Mem    300.txt  avgt    5        179.171 ±       8.431  us/op
+[info] AAStarBLexerBenchmark.lex_ZipperV2Mem  30000.txt  avgt    5      39765.326 ±    2345.854  us/op
+[info] AAStarBLexerBenchmark.lex_ZipperV2Mem  40000.txt  avgt    5      56156.932 ±    2544.631  us/op
+[info] AAStarBLexerBenchmark.lex_ZipperV2Mem  500.0.txt  avgt    5          0.343 ±       0.016  us/op
+[info] AAStarBLexerBenchmark.lex_ZipperV2Mem    500.txt  avgt    5        313.077 ±      22.977  us/op
+[info] AAStarBLexerBenchmark.lex_ZipperV2Mem   5000.txt  avgt    5       4498.896 ±     386.281  us/op
+[info] AAStarBLexerBenchmark.lex_ZipperV2Mem  50000.txt  avgt    5      76832.781 ±   18906.652  us/op
+[info] AAStarBLexerBenchmark.lex_ZipperV2Mem    800.txt  avgt    5        586.742 ±      37.169  us/op
+[info] AAStarBLexerBenchmark.lex_ZipperV3Mem    100.txt  avgt    5         93.156 ±      10.645  us/op
+[info] AAStarBLexerBenchmark.lex_ZipperV3Mem   1000.txt  avgt    5       1186.310 ±     189.885  us/op
+[info] AAStarBLexerBenchmark.lex_ZipperV3Mem  10000.txt  avgt    5      15400.645 ±    3753.866  us/op
+[info] AAStarBLexerBenchmark.lex_ZipperV3Mem   1200.txt  avgt    5       1612.119 ±     157.193  us/op
+[info] AAStarBLexerBenchmark.lex_ZipperV3Mem    200.txt  avgt    5        211.618 ±      12.748  us/op
+[info] AAStarBLexerBenchmark.lex_ZipperV3Mem   2000.txt  avgt    5       2681.100 ±     705.677  us/op
+[info] AAStarBLexerBenchmark.lex_ZipperV3Mem  20000.txt  avgt    5      36513.558 ±    9358.252  us/op
+[info] AAStarBLexerBenchmark.lex_ZipperV3Mem    300.txt  avgt    5        315.758 ±      18.357  us/op
+[info] AAStarBLexerBenchmark.lex_ZipperV3Mem  30000.txt  avgt    5      55764.088 ±    9710.793  us/op
+[info] AAStarBLexerBenchmark.lex_ZipperV3Mem  40000.txt  avgt    5      79719.761 ±    4884.358  us/op
+[info] AAStarBLexerBenchmark.lex_ZipperV3Mem  500.0.txt  avgt    5          0.173 ±       0.009  us/op
+[info] AAStarBLexerBenchmark.lex_ZipperV3Mem    500.txt  avgt    5        531.623 ±      34.195  us/op
+[info] AAStarBLexerBenchmark.lex_ZipperV3Mem   5000.txt  avgt    5       7084.621 ±     507.192  us/op
+[info] AAStarBLexerBenchmark.lex_ZipperV3Mem  50000.txt  avgt    5     106478.693 ±    8101.574  us/op
+[info] AAStarBLexerBenchmark.lex_ZipperV3Mem    800.txt  avgt    5        900.197 ±      47.422  us/op
+[success] Total time: 8175 s (02:16:15), completed Jan 12, 2026, 1:49:29 PM

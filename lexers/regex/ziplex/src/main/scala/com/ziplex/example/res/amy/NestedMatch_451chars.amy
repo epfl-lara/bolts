@@ -1,0 +1,20 @@
+object NestedMatch
+  abstract class Option
+  case class Some(v: Int(32)) extends Option
+  case class None() extends Option
+
+  def unwrap(opt: Option): Int(32) = {
+    opt match {
+      case Some(v) =>
+        v match {
+          case 0 => error("Zero value")
+          case _ => v
+        }
+      case None() => error("Empty option")
+    }
+  }
+
+  val opt1: Option = Some(42);
+  val value: Int(32) = unwrap(opt1);
+  Std.printInt(value)
+end NestedMatch

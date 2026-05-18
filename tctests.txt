@@ -20,7 +20,7 @@ fp-principles/functional-sets
 fp-principles/object-oriented-sets
 fp-principles/huffman-coding
 fp-principles/recursion
-lexers/regex/verifiedlexer
+lexers/regex/ziplex
 software-foundations
 system-f
 tutorials/add-digits

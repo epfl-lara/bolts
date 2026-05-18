@@ -1,0 +1,3 @@
+object Rec
+  def foo(i: Int(32)): Int(32) = { foo(i - 1) }
+end Rec

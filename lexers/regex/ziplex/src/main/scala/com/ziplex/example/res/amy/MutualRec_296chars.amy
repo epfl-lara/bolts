@@ -1,0 +1,14 @@
+object MutualRecursion
+  def isEven(n: Int(32)): Boolean = {
+    if (n == 0) { true }
+    else { isOdd(n - 1) }
+  }
+  
+  def isOdd(n: Int(32)): Boolean = {
+    if (n == 0) { false }
+    else { isEven(n - 1) }
+  }
+
+  Std.printBoolean(isEven(10));
+  Std.printBoolean(isOdd(10))
+end MutualRecursion
