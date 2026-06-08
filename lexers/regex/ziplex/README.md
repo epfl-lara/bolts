@@ -17,6 +17,7 @@
     - [SMT Queries](#smt-queries)
   - [Run the main class](#run-the-main-class)
   - [Run benchmarks](#run-benchmarks)
+    - [Quick start: one-command pipeline (recommended)](#quick-start-one-command-pipeline-recommended)
     - [Run all Scala benchmarks](#run-all-scala-benchmarks)
       - [Prepare scala files](#prepare-scala-files)
       - [Benchmark smoke test](#benchmark-smoke-test)
@@ -103,10 +104,13 @@ If it does not work, please refer to [this manual](https://epfl-lara.github.io/s
 To run a container with the Docker image, you can use the following command:
 
 ```bash
-  docker run --rm -it \
-  -p 8888:8888 \
-  --name ziplex \
-  ziplex
+  docker run \
+  -d \
+  --name ziplex-artifact \
+  --memory=35g \
+  --memory-swap=48g \
+  -p 2222:22 \
+  ziplex tail -f /dev/null
 ```
 
 This will start a container with the name `ziplex` that exposes a Jupyter notebook on port 8888. You can access the notebook by going to `http://localhost:8888` in your web browser and using the token `ziplex` to log in.
@@ -127,7 +131,7 @@ Alternatively, we suggest to attach a Vscode instance to the running container t
     docker run \
       -d \
       --name ziplex-artifact \
-      --memory=32g \
+      --memory=35g \
       --memory-swap=48g \
       -p 2222:22 \
       ziplex tail -f /dev/null
@@ -140,13 +144,13 @@ To instantiate a container with this command, you need to set the allowed memory
 
 If you want to allocate less memory to the container, you can go as low as 28GB of memory, but you'll need to use the alternative verification script `verify_smaller_memory_footprint.sh` that is configured to verify the project with a smaller memory footprint, by splitting the verification into different stainless invocations. This might increase the total verification time and note that you cannot generate the smt queries for analysis with this smaller memory footprint configuration, but it can be useful if you want to verify the project on a machine with less available memory. 
 
-For this configuaration, you need to allow at least 28GB of memory in the Docker Desktop settings. This works on a machine with 32GB of RAM. You can then run the container with the following command:
+For this configuaration, you need to allow at least 30GB of memory in the Docker Desktop settings. This works on a machine with 32GB of RAM. You can then run the container with the following command:
 
 ```bash
   docker run \
     -d \
     --name ziplex-artifact \
-    --memory=28g \
+    --memory=30g \
     --memory-swap=48g \
     -p 2222:22 \
     ziplex tail -f /dev/null
@@ -214,7 +218,37 @@ If you are using the docker image, make sure you are on the `benchmarks` branch 
 
 ## Run benchmarks
 
-If you are using the docker image, make sure you are on the `benchmarks` branch in the local git repository in `/ziplex`.
+The benchmark scripts (`run_benchmarks.sh` and `run_benchmarks_smoke.sh`) automatically switch the local ziplex git repository to the `benchmarks` branch before running, and restore the original branch on success. If a run fails at any point, the scripts roll back to the `main` branch. You do not need to switch branches manually.
+
+Make sure the working tree is clean before running the benchmarks so that the automatic `git checkout` can succeed.
+
+### Quick start: one-command pipeline (recommended)
+
+For most users, the only command needed is the top-level pipeline script at the root of the project:
+
+```bash
+  ./run_benchmarks_pipeline.sh
+```
+
+This will:
+
+1. Run the full Scala (and flex) benchmark suite via `./run_benchmarks.sh` (which also handles the git branch switch and rollback described above).
+2. Extract the produced raw logs into the format consumed by the analysis notebook, by calling `./benchmark_results/extract_data.sh` on the directory that was just created.
+
+After it completes, you can open `benchmark_results/Benchmark Data Analysis.ipynb` and run all cells to produce the plots.
+
+You can pass the number of measurement iterations and warmup iterations as the first and second positional arguments; they are forwarded to `./run_benchmarks.sh`:
+
+```bash
+  ./run_benchmarks_pipeline.sh 1 1   # 1 iteration, 1 warmup iteration (fastest)
+  ./run_benchmarks_pipeline.sh 10 3  # 10 iterations, 3 warmup iterations
+```
+
+Run `./run_benchmarks_pipeline.sh -h` to see the full usage.
+
+Note: the Coqlex benchmarks (see [Coqlex benchmarks](#coqlex-benchmarks)) are not driven by this pipeline; the Coqlex results we shipped in `from_coqlex/` are reused by the extraction step. If you want to re-run them from scratch, follow the Coqlex section below.
+
+The remaining subsections below describe each step individually and are kept as a reference for debugging or for running steps in isolation (for example to re-run only the extraction without re-running the benchmarks, or to launch the smoke test).
 
 ### Run all Scala benchmarks
 
@@ -223,7 +257,7 @@ If you are using the docker image, make sure you are on the `benchmarks` branch 
 Before running the benchmarks, some imports must be modified to import special versions of ghost functions that are properly erased to enable
 optimizations like "tailrec" to be applied by the Scala compiler.
 
-If you are using the docker image, switch to the `benchmarks` branch in the local git repository in `/ziplex`. In this branch, the necessary imports are already uncommented and the files are ready to be benchmarked.
+The benchmark scripts handle this automatically by checking out the `benchmarks` branch, in which the necessary imports are already uncommented and the files are ready to be benchmarked.
 
 To do it manually, look for such blocks in import sections:
 
@@ -375,8 +409,12 @@ The project is organized around three main parts: verified lexer/regex core logi
 
 - `src/main/scala/com/ziplex/benchmark/`
   - JMH benchmarks for lexer variants and related microbenchmarks.
+- `run_benchmarks_pipeline.sh`
+  - Top-level one-command pipeline: runs the benchmarks and extracts the data for the analysis notebook. Forwards `[iterations] [warm_iterations]` to `run_benchmarks.sh`.
 - `run_benchmarks.sh`
-  - Top-level script to execute benchmark suites.
+  - Script that executes the benchmark suites (auto-switches to the `benchmarks` branch and rolls back to `main` on failure).
+- `run_benchmarks_smoke.sh`
+  - Smoke variant of the benchmark script, used to validate the setup.
 - `benchmark_results/`
   - Raw results, extraction scripts, and analysis notebook (`Benchmark Data Analysis.ipynb`).
 
