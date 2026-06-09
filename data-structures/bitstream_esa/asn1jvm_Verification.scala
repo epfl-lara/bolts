@@ -338,6 +338,26 @@ def arrayBitRangesEqAppend(a1: Array[Byte], a2: Array[Byte], from: Long, to: Lon
   rec(to)
 }.ensuring(_ => arrayBitRangesEq(a1, a2, from, to + 1))
 
+
+// Manually lifted because of mutable objects that would appear in refinement types if we let Stainless do it automatically, which would violate restrictions.
+@opaque @inlineOnce @ghost
+def arrayBitRangesUpdatedAtLemmaInnerRec(i: Long, a: Array[Byte], at: Long, b: Boolean, byteIx: Int, bitIx: Int, newB: Byte): Unit = {
+  require(0 <= at && at < a.length.toLong * 8L)
+  require(0 <= i && i <= at)
+  require(arrayBitRangesEq(a, snapshot(a).updated(byteIx, newB), i, at))
+  require(byteIx == (at / 8).toInt)
+  require(byteIx >= 0 && byteIx < a.length)
+  require(bitIx == (at % 8).toInt)
+  require(newB == stainless.math.wrapping { ((a(byteIx) & ~BitAccessMasks(bitIx)) | (if (b) BitAccessMasks(bitIx) else 0)).toByte })
+  decreases(i)
+  if (i == 0) ()
+  else arrayBitRangesUpdatedAtLemmaInnerRec(i - 1, a, at, b, byteIx, bitIx, newB)
+}.ensuring { _ =>
+  assert(byteIx == (at / 8).toInt)
+  assert(0 <= byteIx && byteIx < a.length)
+  arrayBitRangesEq(a, snapshot(a).updated(byteIx, newB), 0, at)
+}
+
 @pure @opaque @inlineOnce @ghost
 def arrayBitRangesUpdatedAtLemma(a: Array[Byte], at: Long, b: Boolean): Unit = {
   require(0 <= at && at < a.length.toLong * 8L)
@@ -347,21 +367,19 @@ def arrayBitRangesUpdatedAtLemma(a: Array[Byte], at: Long, b: Boolean): Unit = {
   val newB = stainless.math.wrapping { ((a(byteIx) & ~BitAccessMasks(bitIx)) | (if (b) BitAccessMasks(bitIx) else 0)).toByte }
 
   {
-    @opaque @inlineOnce @ghost
-    def rec(i: Long): Unit = {
-      require(0 <= i && i <= at)
-      require(arrayBitRangesEq(a, snapshot(a).updated(byteIx, newB), i, at))
-      decreases(i)
-      if (i == 0) ()
-      else rec(i - 1)
-    }.ensuring { _ =>
-      arrayBitRangesEq(a, snapshot(a).updated(byteIx, newB), 0, at)
-    }
+    // @opaque @inlineOnce @ghost
+    // def rec(i: Long): Unit = {
+    //   require(0 <= i && i <= at)
+    //   require(arrayBitRangesEq(a, snapshot(a).updated(byteIx, newB), i, at))
+    //   decreases(i)
+    //   if (i == 0) ()
+    //   else rec(i - 1)
+    // }.ensuring { _ =>
+    //   arrayBitRangesEq(a, snapshot(a).updated(byteIx, newB), 0, at)
+    // }
 
-    rec(at)
-  }.ensuring { _ =>
-    arrayBitRangesEq(a, snapshot(a).updated(byteIx, newB), 0, at)
-  }
+    arrayBitRangesUpdatedAtLemmaInnerRec(at, a, at, b, byteIx, bitIx, newB)
+  }.ensuring(_ => arrayBitRangesEq(a, snapshot(a).updated(byteIx, newB), 0, at))
 }
 
 @pure @opaque @inlineOnce @ghost
