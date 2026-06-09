@@ -13,7 +13,7 @@ stainless-dotty\
  src/main/scala/com/ziplex/example/AmyLexer.scala\
  src/main/scala/com/ziplex/example/PythonLexer.scala\
  --config-file=stainless.conf\
- --solvers=smt-z3:/tools/solvers/z3/z3,smt-cvc5\
+ --solvers=smt-z3,smt-cvc5\
  -D-parallel=12 --functions=VerifiedLexer.Lexer.lex\
  $1
 
