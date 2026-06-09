@@ -205,7 +205,7 @@ val DoubleNoOfMantissaBits = 52L
 val DoubleBias = (1L << 10) - 1 // 1023
 
 
-val ber_aux: Array[Long] = Array(
+@inline def ber_aux: Array[Long] = Array(
     0xFFL,
     0xFF00L,
     0xFF0000L,
