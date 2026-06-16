@@ -1,0 +1,2571 @@
+copying runtime jar...
+[info] welcome to sbt 1.9.8 (Ubuntu Java 17.0.17)
+[info] loading settings for project verifiedlexer-build-build-build from metals.sbt ...
+[info] loading project definition from /localhome/chassot/bolts/lexers/regex/verifiedlexer/project/project/project
+[info] loading settings for project verifiedlexer-build-build from metals.sbt ...
+[info] loading project definition from /localhome/chassot/bolts/lexers/regex/verifiedlexer/project/project
+[success] Generated .bloop/verifiedlexer-build-build.json
+[success] Total time: 4 s, completed Jan 8, 2026, 9:38:54 PM
+[info] loading settings for project verifiedlexer-build from metals.sbt,plugins.sbt ...
+[info] loading project definition from /localhome/chassot/bolts/lexers/regex/verifiedlexer/project
+[success] Generated .bloop/verifiedlexer-build.json
+[success] Total time: 2 s, completed Jan 8, 2026, 9:38:56 PM
+[info] loading settings for project verifiedlexer from build.sbt ...
+[info] set current project to ZipLex (in build file:/localhome/chassot/bolts/lexers/regex/verifiedlexer/)
+[info] compiling 74 Scala sources to /localhome/chassot/bolts/lexers/regex/verifiedlexer/target/scala-3.7.2/classes ...
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/main/scala/com/ziplex/lexer/BalanceConcArr.scala:267:6 
+[warn] 267 |      t match
+[warn]     |      ^
+[warn]     |      match may not be exhaustive.
+[warn]     |
+[warn]     |      It would fail on pattern case: Empty()
+[warn]     |
+[warn]     | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/main/scala/com/ziplex/lexer/BalanceConcArr.scala:349:16 
+[warn] 349 |                r match
+[warn]     |                ^
+[warn]     |                match may not be exhaustive.
+[warn]     |
+[warn]     |                It would fail on pattern case: Empty(), Leaf(_, _)
+[warn]     |
+[warn]     | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/main/scala/com/ziplex/lexer/BalanceConcArr.scala:344:10 
+[warn] 344 |          xs match
+[warn]     |          ^^
+[warn]     |          match may not be exhaustive.
+[warn]     |
+[warn]     |          It would fail on pattern case: Empty(), Leaf(_, _)
+[warn]     |
+[warn]     | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/main/scala/com/ziplex/lexer/BalanceConcArr.scala:362:16 
+[warn] 362 |                l match
+[warn]     |                ^
+[warn]     |                match may not be exhaustive.
+[warn]     |
+[warn]     |                It would fail on pattern case: Empty(), Leaf(_, _)
+[warn]     |
+[warn]     | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/main/scala/com/ziplex/lexer/BalanceConcArr.scala:357:10 
+[warn] 357 |          ys match
+[warn]     |          ^^
+[warn]     |          match may not be exhaustive.
+[warn]     |
+[warn]     |          It would fail on pattern case: Empty(), Leaf(_, _)
+[warn]     |
+[warn]     | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/main/scala/com/ziplex/lexer/BalanceConcArr.scala:408:8 
+[warn] 408 |        t match
+[warn]     |        ^
+[warn]     |        match may not be exhaustive.
+[warn]     |
+[warn]     |        It would fail on pattern case: Empty()
+[warn]     |
+[warn]     | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/main/scala/com/ziplex/lexer/BalanceConcArr.scala:490:12 
+[warn] 490 |            newR match
+[warn]     |            ^^^^
+[warn]     |            match may not be exhaustive.
+[warn]     |
+[warn]     |            It would fail on pattern case: Empty(), Leaf(_, _)
+[warn]     |
+[warn]     | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/main/scala/com/ziplex/lexer/BalanceConcArr.scala:519:6 
+[warn] 519 |      t match
+[warn]     |      ^
+[warn]     |      match may not be exhaustive.
+[warn]     |
+[warn]     |      It would fail on pattern case: Empty()
+[warn]     |
+[warn]     | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/main/scala/com/ziplex/lexer/BalanceConcArr.scala:536:6 
+[warn] 536 |      t match
+[warn]     |      ^
+[warn]     |      match may not be exhaustive.
+[warn]     |
+[warn]     |      It would fail on pattern case: Empty()
+[warn]     |
+[warn]     | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/main/scala/com/ziplex/lexer/BalanceConcArr.scala:544:6 
+[warn] 544 |      t match
+[warn]     |      ^
+[warn]     |      match may not be exhaustive.
+[warn]     |
+[warn]     |      It would fail on pattern case: Empty()
+[warn]     |
+[warn]     | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/main/scala/com/ziplex/lexer/Utils.scala:1332:4 
+[warn] 1332 |    newList match {
+[warn]      |    ^^^^^^^
+[warn]      |    match may not be exhaustive.
+[warn]      |
+[warn]      |    It would fail on pattern case: stainless.collection.Cons(_, _)
+[warn]      |
+[warn]      | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/main/scala/com/ziplex/lexer/VerifiedLexer.scala:1233:8 
+[warn] 1233 |        maxPrefWithoutSep match {
+[warn]      |        ^^^^^^^^^^^^^^^^^
+[warn]      |        match may not be exhaustive.
+[warn]      |
+[warn]      |        It would fail on pattern case: stainless.lang.Some(_)
+[warn]      |
+[warn]      | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/main/scala/com/ziplex/lexer/VerifiedLexer.scala:1330:6 
+[warn] 1330 |      rulesArg match {
+[warn]      |      ^^^^^^^^
+[warn]      |      match may not be exhaustive.
+[warn]      |
+[warn]      |      It would fail on pattern case: stainless.collection.Nil()
+[warn]      |
+[warn]      | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/main/scala/com/ziplex/lexer/VerifiedLexer.scala:1363:10 
+[warn] 1363 |          rulesArg match {
+[warn]      |          ^^^^^^^^
+[warn]      |          match may not be exhaustive.
+[warn]      |
+[warn]      |          It would fail on pattern case: stainless.collection.Nil()
+[warn]      |
+[warn]      | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/main/scala/com/ziplex/lexer/VerifiedLexer.scala:1390:6 
+[warn] 1390 |      rulesArg match {
+[warn]      |      ^^^^^^^^
+[warn]      |      match may not be exhaustive.
+[warn]      |
+[warn]      |      It would fail on pattern case: stainless.collection.Nil()
+[warn]      |
+[warn]      | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/main/scala/com/ziplex/lexer/VerifiedLexer.scala:1426:10 
+[warn] 1426 |          rulesArg match {
+[warn]      |          ^^^^^^^^
+[warn]      |          match may not be exhaustive.
+[warn]      |
+[warn]      |          It would fail on pattern case: stainless.collection.Nil()
+[warn]      |
+[warn]      | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/main/scala/com/ziplex/lexer/VerifiedLexer.scala:1456:10 
+[warn] 1456 |          rulesArg match {
+[warn]      |          ^^^^^^^^
+[warn]      |          match may not be exhaustive.
+[warn]      |
+[warn]      |          It would fail on pattern case: stainless.collection.Nil()
+[warn]      |
+[warn]      | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/main/scala/com/ziplex/lexer/VerifiedLexer.scala:1486:10 
+[warn] 1486 |          rulesArg match {
+[warn]      |          ^^^^^^^^
+[warn]      |          match may not be exhaustive.
+[warn]      |
+[warn]      |          It would fail on pattern case: stainless.collection.Nil()
+[warn]      |
+[warn]      | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/main/scala/com/ziplex/lexer/VerifiedLexer.scala:2414:6 
+[warn] 2414 |      rules match {
+[warn]      |      ^^^^^
+[warn]      |      match may not be exhaustive.
+[warn]      |
+[warn]      |      It would fail on pattern case: stainless.collection.Cons(_, _)
+[warn]      |
+[warn]      | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/main/scala/com/ziplex/lexer/VerifiedRegex.scala:644:4 
+[warn] 644 |    r match {
+[warn]     |    ^
+[warn]     |    match may not be exhaustive.
+[warn]     |
+[warn]     |    It would fail on pattern case: Concat(_, _)
+[warn]     |
+[warn]     | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/main/scala/com/ziplex/map/ListLongMap.scala:157:4 
+[warn] 157 |    l match {
+[warn]     |    ^
+[warn]     |    match may not be exhaustive.
+[warn]     |
+[warn]     |    It would fail on pattern case: stainless.collection.Cons(_, _)
+[warn]     |
+[warn]     | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/main/scala/com/ziplex/map/ListLongMap.scala:191:4 
+[warn] 191 |    l match {
+[warn]     |    ^
+[warn]     |    match may not be exhaustive.
+[warn]     |
+[warn]     |    It would fail on pattern case: stainless.collection.Cons(_, _)
+[warn]     |
+[warn]     | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/main/scala/com/ziplex/map/ListLongMap.scala:206:4 
+[warn] 206 |    l match {
+[warn]     |    ^
+[warn]     |    match may not be exhaustive.
+[warn]     |
+[warn]     |    It would fail on pattern case: stainless.collection.Cons(_, _)
+[warn]     |
+[warn]     | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/main/scala/com/ziplex/map/ListLongMap.scala:222:4 
+[warn] 222 |    l match {
+[warn]     |    ^
+[warn]     |    match may not be exhaustive.
+[warn]     |
+[warn]     |    It would fail on pattern case: stainless.collection.Cons(_, _)
+[warn]     |
+[warn]     | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/main/scala/com/ziplex/map/ListLongMap.scala:243:4 
+[warn] 243 |    l match {
+[warn]     |    ^
+[warn]     |    match may not be exhaustive.
+[warn]     |
+[warn]     |    It would fail on pattern case: stainless.collection.Cons(_, _)
+[warn]     |
+[warn]     | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/main/scala/com/ziplex/map/ListLongMap.scala:274:4 
+[warn] 274 |    l match {
+[warn]     |    ^
+[warn]     |    match may not be exhaustive.
+[warn]     |
+[warn]     |    It would fail on pattern case: stainless.collection.Cons(_, _)
+[warn]     |
+[warn]     | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/main/scala/com/ziplex/map/ListMap.scala:195:4 
+[warn] 195 |    l match {
+[warn]     |    ^
+[warn]     |    match may not be exhaustive.
+[warn]     |
+[warn]     |    It would fail on pattern case: stainless.collection.Cons(_, _)
+[warn]     |
+[warn]     | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/main/scala/com/ziplex/map/ListMap.scala:229:4 
+[warn] 229 |    l match {
+[warn]     |    ^
+[warn]     |    match may not be exhaustive.
+[warn]     |
+[warn]     |    It would fail on pattern case: stainless.collection.Cons(_, _)
+[warn]     |
+[warn]     | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/main/scala/com/ziplex/map/ListMap.scala:256:4 
+[warn] 256 |    l match {
+[warn]     |    ^
+[warn]     |    match may not be exhaustive.
+[warn]     |
+[warn]     |    It would fail on pattern case: stainless.collection.Cons(_, _)
+[warn]     |
+[warn]     | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/main/scala/com/ziplex/map/ListMap.scala:308:4 
+[warn] 308 |    l match {
+[warn]     |    ^
+[warn]     |    match may not be exhaustive.
+[warn]     |
+[warn]     |    It would fail on pattern case: stainless.collection.Cons(_, _)
+[warn]     |
+[warn]     | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/main/scala/com/ziplex/map/ListMap.scala:380:4 
+[warn] 380 |    l match {
+[warn]     |    ^
+[warn]     |    match may not be exhaustive.
+[warn]     |
+[warn]     |    It would fail on pattern case: stainless.collection.Cons(_, _)
+[warn]     |
+[warn]     | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/main/scala/com/ziplex/map/MutableLongMap.scala:360:4 
+[warn] 360 |    c match {
+[warn]     |    ^
+[warn]     |    match may not be exhaustive.
+[warn]     |
+[warn]     |    It would fail on pattern case: EmptyCell()
+[warn]     |
+[warn]     | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/main/scala/com/ziplex/map/MutableLongMap.scala:609:8 
+[warn] 609 |        seekEntryRes match {
+[warn]     |        ^^^^^^^^^^^^
+[warn]     |match may not be exhaustive.
+[warn]     |
+[warn]     |It would fail on pattern case: com.mutablemaps.map.MutableLongMap.Intermediate(_, _, _)
+[warn]     |
+[warn]     | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/main/scala/com/ziplex/map/MutableLongMap.scala:1119:6 
+[warn] 1119 |      intermediate match {
+[warn]      |      ^^^^^^^^^^^^
+[warn]      |match may not be exhaustive.
+[warn]      |
+[warn]      |It would fail on pattern case: _: com.mutablemaps.map.MutableLongMap.SeekEntryResult
+[warn]      |
+[warn]      | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/verifiedlexer/src/main/scala/com/ziplex/map/MutableLongMap.scala:1169:6 
+[warn] 1169 |      intermediate match {
+[warn]      |      ^^^^^^^^^^^^
+[warn]      |match may not be exhaustive.
+[warn]      |
+[warn]      |It would fail on pattern case: _: com.mutablemaps.map.MutableLongMap.SeekEntryResult
+[warn]      |
+[warn]      | longer explanation available when compiling with `-explain`
+[warn] there was 1 deprecation warning; re-run with -deprecation for details
+[warn] 36 warnings found
+[info] done compiling
+[info] compiling 93 Java sources to /localhome/chassot/bolts/lexers/regex/verifiedlexer/target/scala-3.7.2/classes ...
+[info] done compiling
+[info] running (fork) org.openjdk.jmh.Main -i 5 -wi 5 -f1 -t1 com.ziplex.lexer.benchmark.lexer.JsonLexerBenchmark
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.17, OpenJDK 64-Bit Server VM, 17.0.17+10-Ubuntu-124.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 5 iterations, 10 s each
+[info] # Measurement: 5 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: com.ziplex.lexer.benchmark.lexer.JsonLexerBenchmark.lex_ZipperMem
+[info] # Parameters: (file = 102_23677chars.json)
+[info] # Run progress: 0.00% complete, ETA 02:10:00
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 84505.866 us/op
+[info] # Warmup Iteration   2: 59672.417 us/op
+[info] # Warmup Iteration   3: 57715.514 us/op
+[info] # Warmup Iteration   4: 56018.692 us/op
+[info] # Warmup Iteration   5: 57005.363 us/op
+[info] Iteration   1: 57914.181 us/op
+[info] Iteration   2: 54868.483 us/op
+[info] Iteration   3: 56544.659 us/op
+[info] Iteration   4: 55854.833 us/op
+[info] Iteration   5: 56541.433 us/op
+[info] Result "com.ziplex.lexer.benchmark.lexer.JsonLexerBenchmark.lex_ZipperMem":
+[info]   56344.718 ±(99.9%) 4288.390 us/op [Average]
+[info]   (min, avg, max) = (54868.483, 56344.718, 57914.181), stdev = 1113.681
+[info]   CI (99.9%): [52056.328, 60633.108] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.17, OpenJDK 64-Bit Server VM, 17.0.17+10-Ubuntu-124.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 5 iterations, 10 s each
+[info] # Measurement: 5 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: com.ziplex.lexer.benchmark.lexer.JsonLexerBenchmark.lex_ZipperMem
+[info] # Parameters: (file = 122_28308chars.json)
+[info] # Run progress: 1.28% complete, ETA 02:09:31
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 103480.708 us/op
+[info] # Warmup Iteration   2: 72682.339 us/op
+[info] # Warmup Iteration   3: 70265.596 us/op
+[info] # Warmup Iteration   4: 69056.316 us/op
+[info] # Warmup Iteration   5: 70644.923 us/op
+[info] Iteration   1: 70727.666 us/op
+[info] Iteration   2: 67771.247 us/op
+[info] Iteration   3: 68699.664 us/op
+[info] Iteration   4: 69460.743 us/op
+[info] Iteration   5: 68602.141 us/op
+[info] Result "com.ziplex.lexer.benchmark.lexer.JsonLexerBenchmark.lex_ZipperMem":
+[info]   69052.292 ±(99.9%) 4280.009 us/op [Average]
+[info]   (min, avg, max) = (67771.247, 69052.292, 70727.666), stdev = 1111.505
+[info]   CI (99.9%): [64772.283, 73332.301] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.17, OpenJDK 64-Bit Server VM, 17.0.17+10-Ubuntu-124.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 5 iterations, 10 s each
+[info] # Measurement: 5 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: com.ziplex.lexer.benchmark.lexer.JsonLexerBenchmark.lex_ZipperMem
+[info] # Parameters: (file = 142_32958chars.json)
+[info] # Run progress: 2.56% complete, ETA 02:07:50
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 126663.844 us/op
+[info] # Warmup Iteration   2: 89491.059 us/op
+[info] # Warmup Iteration   3: 85749.583 us/op
+[info] # Warmup Iteration   4: 83671.798 us/op
+[info] # Warmup Iteration   5: 85417.545 us/op
+[info] Iteration   1: 86703.779 us/op
+[info] Iteration   2: 86027.435 us/op
+[info] Iteration   3: 81636.058 us/op
+[info] Iteration   4: 84199.286 us/op
+[info] Iteration   5: 83364.849 us/op
+[info] Result "com.ziplex.lexer.benchmark.lexer.JsonLexerBenchmark.lex_ZipperMem":
+[info]   84386.281 ±(99.9%) 7869.411 us/op [Average]
+[info]   (min, avg, max) = (81636.058, 84386.281, 86703.779), stdev = 2043.661
+[info]   CI (99.9%): [76516.870, 92255.692] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.17, OpenJDK 64-Bit Server VM, 17.0.17+10-Ubuntu-124.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 5 iterations, 10 s each
+[info] # Measurement: 5 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: com.ziplex.lexer.benchmark.lexer.JsonLexerBenchmark.lex_ZipperMem
+[info] # Parameters: (file = 162_37599chars.json)
+[info] # Run progress: 3.85% complete, ETA 02:06:09
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 141615.601 us/op
+[info] # Warmup Iteration   2: 101081.492 us/op
+[info] # Warmup Iteration   3: 97139.029 us/op
+[info] # Warmup Iteration   4: 99345.597 us/op
+[info] # Warmup Iteration   5: 101921.469 us/op
+[info] Iteration   1: 96471.934 us/op
+[info] Iteration   2: 94398.561 us/op
+[info] Iteration   3: 95990.838 us/op
+[info] Iteration   4: 95367.779 us/op
+[info] Iteration   5: 96121.652 us/op
+[info] Result "com.ziplex.lexer.benchmark.lexer.JsonLexerBenchmark.lex_ZipperMem":
+[info]   95670.153 ±(99.9%) 3138.876 us/op [Average]
+[info]   (min, avg, max) = (94398.561, 95670.153, 96471.934), stdev = 815.156
+[info]   CI (99.9%): [92531.277, 98809.028] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.17, OpenJDK 64-Bit Server VM, 17.0.17+10-Ubuntu-124.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 5 iterations, 10 s each
+[info] # Measurement: 5 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: com.ziplex.lexer.benchmark.lexer.JsonLexerBenchmark.lex_ZipperMem
+[info] # Parameters: (file = 182_42231chars.json)
+[info] # Run progress: 5.13% complete, ETA 02:04:30
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 168419.186 us/op
+[info] # Warmup Iteration   2: 118786.307 us/op
+[info] # Warmup Iteration   3: 114685.411 us/op
+[info] # Warmup Iteration   4: 112006.819 us/op
+[info] # Warmup Iteration   5: 114098.386 us/op
+[info] Iteration   1: 114989.642 us/op
+[info] Iteration   2: 114243.254 us/op
+[info] Iteration   3: 111543.371 us/op
+[info] Iteration   4: 111088.403 us/op
+[info] Iteration   5: 112521.987 us/op
+[info] Result "com.ziplex.lexer.benchmark.lexer.JsonLexerBenchmark.lex_ZipperMem":
+[info]   112877.332 ±(99.9%) 6510.204 us/op [Average]
+[info]   (min, avg, max) = (111088.403, 112877.332, 114989.642), stdev = 1690.679
+[info]   CI (99.9%): [106367.127, 119387.536] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.17, OpenJDK 64-Bit Server VM, 17.0.17+10-Ubuntu-124.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 5 iterations, 10 s each
+[info] # Measurement: 5 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: com.ziplex.lexer.benchmark.lexer.JsonLexerBenchmark.lex_ZipperMem
+[info] # Parameters: (file = 202_46879chars.json)
+[info] # Run progress: 6.41% complete, ETA 02:02:53
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 185541.204 us/op
+[info] # Warmup Iteration   2: 131785.007 us/op
+[info] # Warmup Iteration   3: 127031.050 us/op
+[info] # Warmup Iteration   4: 130138.545 us/op
+[info] # Warmup Iteration   5: 136379.868 us/op
+[info] Iteration   1: 134731.514 us/op
+[info] Iteration   2: 122814.339 us/op
+[info] Iteration   3: 124795.202 us/op
+[info] Iteration   4: 124596.797 us/op
+[info] Iteration   5: 123374.571 us/op
+[info] Result "com.ziplex.lexer.benchmark.lexer.JsonLexerBenchmark.lex_ZipperMem":
+[info]   126062.485 ±(99.9%) 18931.079 us/op [Average]
+[info]   (min, avg, max) = (122814.339, 126062.485, 134731.514), stdev = 4916.341
+[info]   CI (99.9%): [107131.406, 144993.563] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.17, OpenJDK 64-Bit Server VM, 17.0.17+10-Ubuntu-124.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 5 iterations, 10 s each
+[info] # Measurement: 5 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: com.ziplex.lexer.benchmark.lexer.JsonLexerBenchmark.lex_ZipperMem
+[info] # Parameters: (file = 222_51521chars.json)
+[info] # Run progress: 7.69% complete, ETA 02:01:15
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 205095.806 us/op
+[info] # Warmup Iteration   2: 146214.528 us/op
+[info] # Warmup Iteration   3: 139324.641 us/op
+[info] # Warmup Iteration   4: 149062.094 us/op
+[info] # Warmup Iteration   5: 149468.306 us/op
+[info] Iteration   1: 138278.516 us/op
+[info] Iteration   2: 140898.720 us/op
+[info] Iteration   3: 141283.472 us/op
+[info] Iteration   4: 140727.886 us/op
+[info] Iteration   5: 136337.665 us/op
+[info] Result "com.ziplex.lexer.benchmark.lexer.JsonLexerBenchmark.lex_ZipperMem":
+[info]   139505.252 ±(99.9%) 8199.509 us/op [Average]
+[info]   (min, avg, max) = (136337.665, 139505.252, 141283.472), stdev = 2129.386
+[info]   CI (99.9%): [131305.743, 147704.760] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.17, OpenJDK 64-Bit Server VM, 17.0.17+10-Ubuntu-124.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 5 iterations, 10 s each
+[info] # Measurement: 5 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: com.ziplex.lexer.benchmark.lexer.JsonLexerBenchmark.lex_ZipperMem
+[info] # Parameters: (file = 22_5115chars.json)
+[info] # Run progress: 8.97% complete, ETA 01:59:36
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 14074.485 us/op
+[info] # Warmup Iteration   2: 9873.769 us/op
+[info] # Warmup Iteration   3: 9515.745 us/op
+[info] # Warmup Iteration   4: 9452.209 us/op
+[info] # Warmup Iteration   5: 9906.670 us/op
+[info] Iteration   1: 9641.440 us/op
+[info] Iteration   2: 9243.821 us/op
+[info] Iteration   3: 9324.613 us/op
+[info] Iteration   4: 9581.345 us/op
+[info] Iteration   5: 9450.206 us/op
+[info] Result "com.ziplex.lexer.benchmark.lexer.JsonLexerBenchmark.lex_ZipperMem":
+[info]   9448.285 ±(99.9%) 644.675 us/op [Average]
+[info]   (min, avg, max) = (9243.821, 9448.285, 9641.440), stdev = 167.420
+[info]   CI (99.9%): [8803.610, 10092.960] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.17, OpenJDK 64-Bit Server VM, 17.0.17+10-Ubuntu-124.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 5 iterations, 10 s each
+[info] # Measurement: 5 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: com.ziplex.lexer.benchmark.lexer.JsonLexerBenchmark.lex_ZipperMem
+[info] # Parameters: (file = 242_56154chars.json)
+[info] # Run progress: 10.26% complete, ETA 01:57:50
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 222775.581 us/op
+[info] # Warmup Iteration   2: 160877.982 us/op
+[info] # Warmup Iteration   3: 154144.909 us/op
+[info] # Warmup Iteration   4: 151047.217 us/op
+[info] # Warmup Iteration   5: 157996.147 us/op
+[info] Iteration   1: 158554.048 us/op
+[info] Iteration   2: 155448.465 us/op
+[info] Iteration   3: 152698.804 us/op
+[info] Iteration   4: 146664.097 us/op
+[info] Iteration   5: 149087.166 us/op
+[info] Result "com.ziplex.lexer.benchmark.lexer.JsonLexerBenchmark.lex_ZipperMem":
+[info]   152490.516 ±(99.9%) 18375.403 us/op [Average]
+[info]   (min, avg, max) = (146664.097, 152490.516, 158554.048), stdev = 4772.034
+[info]   CI (99.9%): [134115.113, 170865.919] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.17, OpenJDK 64-Bit Server VM, 17.0.17+10-Ubuntu-124.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 5 iterations, 10 s each
+[info] # Measurement: 5 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: com.ziplex.lexer.benchmark.lexer.JsonLexerBenchmark.lex_ZipperMem
+[info] # Parameters: (file = 2_456chars.json)
+[info] # Run progress: 11.54% complete, ETA 01:56:14
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 1072.336 us/op
+[info] # Warmup Iteration   2: 802.856 us/op
+[info] # Warmup Iteration   3: 768.735 us/op
+[info] # Warmup Iteration   4: 780.734 us/op
+[info] # Warmup Iteration   5: 781.908 us/op
+[info] Iteration   1: 750.028 us/op
+[info] Iteration   2: 736.410 us/op
+[info] Iteration   3: 769.758 us/op
+[info] Iteration   4: 778.340 us/op
+[info] Iteration   5: 756.859 us/op
+[info] Result "com.ziplex.lexer.benchmark.lexer.JsonLexerBenchmark.lex_ZipperMem":
+[info]   758.279 ±(99.9%) 63.347 us/op [Average]
+[info]   (min, avg, max) = (736.410, 758.279, 778.340), stdev = 16.451
+[info]   CI (99.9%): [694.932, 821.626] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.17, OpenJDK 64-Bit Server VM, 17.0.17+10-Ubuntu-124.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 5 iterations, 10 s each
+[info] # Measurement: 5 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: com.ziplex.lexer.benchmark.lexer.JsonLexerBenchmark.lex_ZipperMem
+[info] # Parameters: (file = 42_9755chars.json)
+[info] # Run progress: 12.82% complete, ETA 01:54:29
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 30703.964 us/op
+[info] # Warmup Iteration   2: 21441.008 us/op
+[info] # Warmup Iteration   3: 20717.601 us/op
+[info] # Warmup Iteration   4: 20027.192 us/op
+[info] # Warmup Iteration   5: 20999.448 us/op
+[info] Iteration   1: 21101.920 us/op
+[info] Iteration   2: 19877.855 us/op
+[info] Iteration   3: 20505.315 us/op
+[info] Iteration   4: 20267.942 us/op
+[info] Iteration   5: 20525.563 us/op
+[info] Result "com.ziplex.lexer.benchmark.lexer.JsonLexerBenchmark.lex_ZipperMem":
+[info]   20455.719 ±(99.9%) 1715.699 us/op [Average]
+[info]   (min, avg, max) = (19877.855, 20455.719, 21101.920), stdev = 445.562
+[info]   CI (99.9%): [18740.020, 22171.418] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.17, OpenJDK 64-Bit Server VM, 17.0.17+10-Ubuntu-124.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 5 iterations, 10 s each
+[info] # Measurement: 5 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: com.ziplex.lexer.benchmark.lexer.JsonLexerBenchmark.lex_ZipperMem
+[info] # Parameters: (file = 62_14377chars.json)
+[info] # Run progress: 14.10% complete, ETA 01:52:46
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 48208.730 us/op
+[info] # Warmup Iteration   2: 33976.335 us/op
+[info] # Warmup Iteration   3: 32612.701 us/op
+[info] # Warmup Iteration   4: 31966.921 us/op
+[info] # Warmup Iteration   5: 32926.118 us/op
+[info] Iteration   1: 32661.989 us/op
+[info] Iteration   2: 30987.851 us/op
+[info] Iteration   3: 32323.022 us/op
+[info] Iteration   4: 31891.461 us/op
+[info] Iteration   5: 32106.354 us/op
+[info] Result "com.ziplex.lexer.benchmark.lexer.JsonLexerBenchmark.lex_ZipperMem":
+[info]   31994.135 ±(99.9%) 2427.692 us/op [Average]
+[info]   (min, avg, max) = (30987.851, 31994.135, 32661.989), stdev = 630.464
+[info]   CI (99.9%): [29566.444, 34421.827] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.17, OpenJDK 64-Bit Server VM, 17.0.17+10-Ubuntu-124.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 5 iterations, 10 s each
+[info] # Measurement: 5 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: com.ziplex.lexer.benchmark.lexer.JsonLexerBenchmark.lex_ZipperMem
+[info] # Parameters: (file = 82_19037chars.json)
+[info] # Run progress: 15.38% complete, ETA 01:51:03
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 65375.323 us/op
+[info] # Warmup Iteration   2: 46120.858 us/op
+[info] # Warmup Iteration   3: 44114.018 us/op
+[info] # Warmup Iteration   4: 44406.032 us/op
+[info] # Warmup Iteration   5: 45911.907 us/op
+[info] Iteration   1: 45086.919 us/op
+[info] Iteration   2: 43971.016 us/op
+[info] Iteration   3: 45020.784 us/op
+[info] Iteration   4: 45151.226 us/op
+[info] Iteration   5: 42669.716 us/op
+[info] Result "com.ziplex.lexer.benchmark.lexer.JsonLexerBenchmark.lex_ZipperMem":
+[info]   44379.932 ±(99.9%) 4128.219 us/op [Average]
+[info]   (min, avg, max) = (42669.716, 44379.932, 45151.226), stdev = 1072.085
+[info]   CI (99.9%): [40251.714, 48508.151] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.17, OpenJDK 64-Bit Server VM, 17.0.17+10-Ubuntu-124.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 5 iterations, 10 s each
+[info] # Measurement: 5 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: com.ziplex.lexer.benchmark.lexer.JsonLexerBenchmark.lex_ZipperV1Mem
+[info] # Parameters: (file = 102_23677chars.json)
+[info] # Run progress: 16.67% complete, ETA 01:49:21
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 65601.956 us/op
+[info] # Warmup Iteration   2: 46222.849 us/op
+[info] # Warmup Iteration   3: 45000.480 us/op
+[info] # Warmup Iteration   4: 43548.560 us/op
+[info] # Warmup Iteration   5: 44630.189 us/op
+[info] Iteration   1: 45204.075 us/op
+[info] Iteration   2: 44929.885 us/op
+[info] Iteration   3: 42833.659 us/op
+[info] Iteration   4: 43521.947 us/op
+[info] Iteration   5: 44453.269 us/op
+[info] Result "com.ziplex.lexer.benchmark.lexer.JsonLexerBenchmark.lex_ZipperV1Mem":
+[info]   44188.567 ±(99.9%) 3817.304 us/op [Average]
+[info]   (min, avg, max) = (42833.659, 44188.567, 45204.075), stdev = 991.342
+[info]   CI (99.9%): [40371.263, 48005.871] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.17, OpenJDK 64-Bit Server VM, 17.0.17+10-Ubuntu-124.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 5 iterations, 10 s each
+[info] # Measurement: 5 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: com.ziplex.lexer.benchmark.lexer.JsonLexerBenchmark.lex_ZipperV1Mem
+[info] # Parameters: (file = 122_28308chars.json)
+[info] # Run progress: 17.95% complete, ETA 01:47:40
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 77822.323 us/op
+[info] # Warmup Iteration   2: 57525.010 us/op
+[info] # Warmup Iteration   3: 54992.781 us/op
+[info] # Warmup Iteration   4: 52465.771 us/op
+[info] # Warmup Iteration   5: 55264.183 us/op
+[info] Iteration   1: 55974.680 us/op
+[info] Iteration   2: 51714.718 us/op
+[info] Iteration   3: 53396.410 us/op
+[info] Iteration   4: 54094.759 us/op
+[info] Iteration   5: 53954.746 us/op
+[info] Result "com.ziplex.lexer.benchmark.lexer.JsonLexerBenchmark.lex_ZipperV1Mem":
+[info]   53827.063 ±(99.9%) 5886.477 us/op [Average]
+[info]   (min, avg, max) = (51714.718, 53827.063, 55974.680), stdev = 1528.699
+[info]   CI (99.9%): [47940.586, 59713.539] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.17, OpenJDK 64-Bit Server VM, 17.0.17+10-Ubuntu-124.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 5 iterations, 10 s each
+[info] # Measurement: 5 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: com.ziplex.lexer.benchmark.lexer.JsonLexerBenchmark.lex_ZipperV1Mem
+[info] # Parameters: (file = 142_32958chars.json)
+[info] # Run progress: 19.23% complete, ETA 01:45:58
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 90305.457 us/op
+[info] # Warmup Iteration   2: 66081.065 us/op
+[info] # Warmup Iteration   3: 63148.746 us/op
+[info] # Warmup Iteration   4: 62570.760 us/op
+[info] # Warmup Iteration   5: 65136.455 us/op
+[info] Iteration   1: 63148.618 us/op
+[info] Iteration   2: 62632.791 us/op
+[info] Iteration   3: 62557.021 us/op
+[info] Iteration   4: 62869.940 us/op
+[info] Iteration   5: 63504.294 us/op
+[info] Result "com.ziplex.lexer.benchmark.lexer.JsonLexerBenchmark.lex_ZipperV1Mem":
+[info]   62942.533 ±(99.9%) 1501.104 us/op [Average]
+[info]   (min, avg, max) = (62557.021, 62942.533, 63504.294), stdev = 389.832
+[info]   CI (99.9%): [61441.428, 64443.637] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.17, OpenJDK 64-Bit Server VM, 17.0.17+10-Ubuntu-124.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 5 iterations, 10 s each
+[info] # Measurement: 5 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: com.ziplex.lexer.benchmark.lexer.JsonLexerBenchmark.lex_ZipperV1Mem
+[info] # Parameters: (file = 162_37599chars.json)
+[info] # Run progress: 20.51% complete, ETA 01:44:17
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 98143.693 us/op
+[info] # Warmup Iteration   2: 70198.219 us/op
+[info] # Warmup Iteration   3: 67924.902 us/op
+[info] # Warmup Iteration   4: 67697.081 us/op
+[info] # Warmup Iteration   5: 68717.387 us/op
+[info] Iteration   1: 66762.718 us/op
+[info] Iteration   2: 65769.143 us/op
+[info] Iteration   3: 67636.300 us/op
+[info] Iteration   4: 67276.574 us/op
+[info] Iteration   5: 67719.767 us/op
+[info] Result "com.ziplex.lexer.benchmark.lexer.JsonLexerBenchmark.lex_ZipperV1Mem":
+[info]   67032.900 ±(99.9%) 3083.723 us/op [Average]
+[info]   (min, avg, max) = (65769.143, 67032.900, 67719.767), stdev = 800.833
+[info]   CI (99.9%): [63949.177, 70116.624] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.17, OpenJDK 64-Bit Server VM, 17.0.17+10-Ubuntu-124.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 5 iterations, 10 s each
+[info] # Measurement: 5 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: com.ziplex.lexer.benchmark.lexer.JsonLexerBenchmark.lex_ZipperV1Mem
+[info] # Parameters: (file = 182_42231chars.json)
+[info] # Run progress: 21.79% complete, ETA 01:42:36
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 119466.464 us/op
+[info] # Warmup Iteration   2: 87004.286 us/op
+[info] # Warmup Iteration   3: 83526.819 us/op
+[info] # Warmup Iteration   4: 81088.111 us/op
+[info] # Warmup Iteration   5: 84429.223 us/op
+[info] Iteration   1: 83198.147 us/op
+[info] Iteration   2: 82183.476 us/op
+[info] Iteration   3: 79136.610 us/op
+[info] Iteration   4: 81053.097 us/op
+[info] Iteration   5: 81708.431 us/op
+[info] Result "com.ziplex.lexer.benchmark.lexer.JsonLexerBenchmark.lex_ZipperV1Mem":
+[info]   81455.952 ±(99.9%) 5830.236 us/op [Average]
+[info]   (min, avg, max) = (79136.610, 81455.952, 83198.147), stdev = 1514.094
+[info]   CI (99.9%): [75625.717, 87286.188] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.17, OpenJDK 64-Bit Server VM, 17.0.17+10-Ubuntu-124.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 5 iterations, 10 s each
+[info] # Measurement: 5 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: com.ziplex.lexer.benchmark.lexer.JsonLexerBenchmark.lex_ZipperV1Mem
+[info] # Parameters: (file = 202_46879chars.json)
+[info] # Run progress: 23.08% complete, ETA 01:40:55
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 131663.971 us/op
+[info] # Warmup Iteration   2: 96769.515 us/op
+[info] # Warmup Iteration   3: 92801.880 us/op
+[info] # Warmup Iteration   4: 90937.739 us/op
+[info] # Warmup Iteration   5: 94630.744 us/op
+[info] Iteration   1: 92545.287 us/op
+[info] Iteration   2: 89685.573 us/op
+[info] Iteration   3: 92886.748 us/op
+[info] Iteration   4: 93857.938 us/op
+[info] Iteration   5: 91164.518 us/op
+[info] Result "com.ziplex.lexer.benchmark.lexer.JsonLexerBenchmark.lex_ZipperV1Mem":
+[info]   92028.013 ±(99.9%) 6264.334 us/op [Average]
+[info]   (min, avg, max) = (89685.573, 92028.013, 93857.938), stdev = 1626.828
+[info]   CI (99.9%): [85763.679, 98292.346] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.17, OpenJDK 64-Bit Server VM, 17.0.17+10-Ubuntu-124.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 5 iterations, 10 s each
+[info] # Measurement: 5 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: com.ziplex.lexer.benchmark.lexer.JsonLexerBenchmark.lex_ZipperV1Mem
+[info] # Parameters: (file = 222_51521chars.json)
+[info] # Run progress: 24.36% complete, ETA 01:39:14
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 152152.255 us/op
+[info] # Warmup Iteration   2: 110452.467 us/op
+[info] # Warmup Iteration   3: 103118.785 us/op
+[info] # Warmup Iteration   4: 100114.771 us/op
+[info] # Warmup Iteration   5: 103496.224 us/op
+[info] Iteration   1: 104618.671 us/op
+[info] Iteration   2: 104581.271 us/op
+[info] Iteration   3: 100191.443 us/op
+[info] Iteration   4: 101922.126 us/op
+[info] Iteration   5: 104184.002 us/op
+[info] Result "com.ziplex.lexer.benchmark.lexer.JsonLexerBenchmark.lex_ZipperV1Mem":
+[info]   103099.503 ±(99.9%) 7585.543 us/op [Average]
+[info]   (min, avg, max) = (100191.443, 103099.503, 104618.671), stdev = 1969.941
+[info]   CI (99.9%): [95513.960, 110685.045] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.17, OpenJDK 64-Bit Server VM, 17.0.17+10-Ubuntu-124.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 5 iterations, 10 s each
+[info] # Measurement: 5 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: com.ziplex.lexer.benchmark.lexer.JsonLexerBenchmark.lex_ZipperV1Mem
+[info] # Parameters: (file = 22_5115chars.json)
+[info] # Run progress: 25.64% complete, ETA 01:37:33
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 12326.144 us/op
+[info] # Warmup Iteration   2: 9025.588 us/op
+[info] # Warmup Iteration   3: 8518.857 us/op
+[info] # Warmup Iteration   4: 8845.376 us/op
+[info] # Warmup Iteration   5: 8909.942 us/op
+[info] Iteration   1: 8231.271 us/op
+[info] Iteration   2: 8411.186 us/op
+[info] Iteration   3: 8396.715 us/op
+[info] Iteration   4: 8520.322 us/op
+[info] Iteration   5: 8434.551 us/op
+[info] Result "com.ziplex.lexer.benchmark.lexer.JsonLexerBenchmark.lex_ZipperV1Mem":
+[info]   8398.809 ±(99.9%) 405.093 us/op [Average]
+[info]   (min, avg, max) = (8231.271, 8398.809, 8520.322), stdev = 105.201
+[info]   CI (99.9%): [7993.716, 8803.902] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.17, OpenJDK 64-Bit Server VM, 17.0.17+10-Ubuntu-124.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 5 iterations, 10 s each
+[info] # Measurement: 5 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: com.ziplex.lexer.benchmark.lexer.JsonLexerBenchmark.lex_ZipperV1Mem
+[info] # Parameters: (file = 242_56154chars.json)
+[info] # Run progress: 26.92% complete, ETA 01:35:52
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 152534.896 us/op
+[info] # Warmup Iteration   2: 110067.620 us/op
+[info] # Warmup Iteration   3: 106115.598 us/op
+[info] # Warmup Iteration   4: 105204.703 us/op
+[info] # Warmup Iteration   5: 109306.194 us/op
+[info] Iteration   1: 105886.974 us/op
+[info] Iteration   2: 100623.113 us/op
+[info] Iteration   3: 104056.079 us/op
+[info] Iteration   4: 105447.555 us/op
+[info] Iteration   5: 104641.377 us/op
+[info] Result "com.ziplex.lexer.benchmark.lexer.JsonLexerBenchmark.lex_ZipperV1Mem":
+[info]   104131.020 ±(99.9%) 8028.414 us/op [Average]
+[info]   (min, avg, max) = (100623.113, 104131.020, 105886.974), stdev = 2084.954
+[info]   CI (99.9%): [96102.605, 112159.434] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.17, OpenJDK 64-Bit Server VM, 17.0.17+10-Ubuntu-124.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 5 iterations, 10 s each
+[info] # Measurement: 5 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: com.ziplex.lexer.benchmark.lexer.JsonLexerBenchmark.lex_ZipperV1Mem
+[info] # Parameters: (file = 2_456chars.json)
+[info] # Run progress: 28.21% complete, ETA 01:34:11
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 931.926 us/op
+[info] # Warmup Iteration   2: 680.728 us/op
+[info] # Warmup Iteration   3: 666.209 us/op
+[info] # Warmup Iteration   4: 647.700 us/op
+[info] # Warmup Iteration   5: 676.218 us/op
+[info] Iteration   1: 683.100 us/op
+[info] Iteration   2: 635.932 us/op
+[info] Iteration   3: 651.090 us/op
+[info] Iteration   4: 660.450 us/op
+[info] Iteration   5: 649.802 us/op
+[info] Result "com.ziplex.lexer.benchmark.lexer.JsonLexerBenchmark.lex_ZipperV1Mem":
+[info]   656.075 ±(99.9%) 67.233 us/op [Average]
+[info]   (min, avg, max) = (635.932, 656.075, 683.100), stdev = 17.460
+[info]   CI (99.9%): [588.842, 723.308] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.17, OpenJDK 64-Bit Server VM, 17.0.17+10-Ubuntu-124.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 5 iterations, 10 s each
+[info] # Measurement: 5 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: com.ziplex.lexer.benchmark.lexer.JsonLexerBenchmark.lex_ZipperV1Mem
+[info] # Parameters: (file = 42_9755chars.json)
+[info] # Run progress: 29.49% complete, ETA 01:32:29
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 25096.619 us/op
+[info] # Warmup Iteration   2: 19449.628 us/op
+[info] # Warmup Iteration   3: 20926.534 us/op
+[info] # Warmup Iteration   4: 18219.108 us/op
+[info] # Warmup Iteration   5: 19234.704 us/op
+[info] Iteration   1: 16903.169 us/op
+[info] Iteration   2: 17470.851 us/op
+[info] Iteration   3: 17358.264 us/op
+[info] Iteration   4: 18379.742 us/op
+[info] Iteration   5: 17007.971 us/op
+[info] Result "com.ziplex.lexer.benchmark.lexer.JsonLexerBenchmark.lex_ZipperV1Mem":
+[info]   17423.999 ±(99.9%) 2248.841 us/op [Average]
+[info]   (min, avg, max) = (16903.169, 17423.999, 18379.742), stdev = 584.017
+[info]   CI (99.9%): [15175.158, 19672.841] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.17, OpenJDK 64-Bit Server VM, 17.0.17+10-Ubuntu-124.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 5 iterations, 10 s each
+[info] # Measurement: 5 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: com.ziplex.lexer.benchmark.lexer.JsonLexerBenchmark.lex_ZipperV1Mem
+[info] # Parameters: (file = 62_14377chars.json)
+[info] # Run progress: 30.77% complete, ETA 01:30:48
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 37374.921 us/op
+[info] # Warmup Iteration   2: 26703.580 us/op
+[info] # Warmup Iteration   3: 25745.387 us/op
+[info] # Warmup Iteration   4: 24644.297 us/op
+[info] # Warmup Iteration   5: 26260.172 us/op
+[info] Iteration   1: 26260.193 us/op
+[info] Iteration   2: 24919.647 us/op
+[info] Iteration   3: 24888.476 us/op
+[info] Iteration   4: 25681.709 us/op
+[info] Iteration   5: 25533.384 us/op
+[info] Result "com.ziplex.lexer.benchmark.lexer.JsonLexerBenchmark.lex_ZipperV1Mem":
+[info]   25456.682 ±(99.9%) 2206.502 us/op [Average]
+[info]   (min, avg, max) = (24888.476, 25456.682, 26260.193), stdev = 573.022
+[info]   CI (99.9%): [23250.180, 27663.184] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.17, OpenJDK 64-Bit Server VM, 17.0.17+10-Ubuntu-124.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 5 iterations, 10 s each
+[info] # Measurement: 5 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: com.ziplex.lexer.benchmark.lexer.JsonLexerBenchmark.lex_ZipperV1Mem
+[info] # Parameters: (file = 82_19037chars.json)
+[info] # Run progress: 32.05% complete, ETA 01:29:07
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 47511.565 us/op
+[info] # Warmup Iteration   2: 34457.456 us/op
+[info] # Warmup Iteration   3: 33324.916 us/op
+[info] # Warmup Iteration   4: 32656.573 us/op
+[info] # Warmup Iteration   5: 34728.576 us/op
+[info] Iteration   1: 33636.790 us/op
+[info] Iteration   2: 32883.975 us/op
+[info] Iteration   3: 33615.412 us/op
+[info] Iteration   4: 33712.996 us/op
+[info] Iteration   5: 33091.251 us/op
+[info] Result "com.ziplex.lexer.benchmark.lexer.JsonLexerBenchmark.lex_ZipperV1Mem":
+[info]   33388.085 ±(99.9%) 1442.498 us/op [Average]
+[info]   (min, avg, max) = (32883.975, 33388.085, 33712.996), stdev = 374.612
+[info]   CI (99.9%): [31945.587, 34830.582] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.17, OpenJDK 64-Bit Server VM, 17.0.17+10-Ubuntu-124.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 5 iterations, 10 s each
+[info] # Measurement: 5 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: com.ziplex.lexer.benchmark.lexer.JsonLexerBenchmark.lex_ZipperV1NonMem
+[info] # Parameters: (file = 102_23677chars.json)
+[info] # Run progress: 33.33% complete, ETA 01:27:26
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 218710.770 us/op
+[info] # Warmup Iteration   2: 159529.273 us/op
+[info] # Warmup Iteration   3: 156805.581 us/op
+[info] # Warmup Iteration   4: 156261.139 us/op
+[info] # Warmup Iteration   5: 158577.827 us/op
+[info] Iteration   1: 153362.096 us/op
+[info] Iteration   2: 156258.638 us/op
+[info] Iteration   3: 157595.455 us/op
+[info] Iteration   4: 154367.966 us/op
+[info] Iteration   5: 150985.699 us/op
+[info] Result "com.ziplex.lexer.benchmark.lexer.JsonLexerBenchmark.lex_ZipperV1NonMem":
+[info]   154513.971 ±(99.9%) 9880.530 us/op [Average]
+[info]   (min, avg, max) = (150985.699, 154513.971, 157595.455), stdev = 2565.942
+[info]   CI (99.9%): [144633.441, 164394.501] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.17, OpenJDK 64-Bit Server VM, 17.0.17+10-Ubuntu-124.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 5 iterations, 10 s each
+[info] # Measurement: 5 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: com.ziplex.lexer.benchmark.lexer.JsonLexerBenchmark.lex_ZipperV1NonMem
+[info] # Parameters: (file = 122_28308chars.json)
+[info] # Run progress: 34.62% complete, ETA 01:25:45
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 255584.876 us/op
+[info] # Warmup Iteration   2: 192665.800 us/op
+[info] # Warmup Iteration   3: 184477.181 us/op
+[info] # Warmup Iteration   4: 187176.467 us/op
+[info] # Warmup Iteration   5: 190903.942 us/op
+[info] Iteration   1: 180227.868 us/op
+[info] Iteration   2: 182429.901 us/op
+[info] Iteration   3: 183324.666 us/op
+[info] Iteration   4: 185517.562 us/op
+[info] Iteration   5: 183548.777 us/op
+[info] Result "com.ziplex.lexer.benchmark.lexer.JsonLexerBenchmark.lex_ZipperV1NonMem":
+[info]   183009.755 ±(99.9%) 7395.326 us/op [Average]
+[info]   (min, avg, max) = (180227.868, 183009.755, 185517.562), stdev = 1920.543
+[info]   CI (99.9%): [175614.430, 190405.081] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.17, OpenJDK 64-Bit Server VM, 17.0.17+10-Ubuntu-124.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 5 iterations, 10 s each
+[info] # Measurement: 5 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: com.ziplex.lexer.benchmark.lexer.JsonLexerBenchmark.lex_ZipperV1NonMem
+[info] # Parameters: (file = 142_32958chars.json)
+[info] # Run progress: 35.90% complete, ETA 01:24:06
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 308039.185 us/op
+[info] # Warmup Iteration   2: 224127.910 us/op
+[info] # Warmup Iteration   3: 218812.431 us/op
+[info] # Warmup Iteration   4: 209088.991 us/op
+[info] # Warmup Iteration   5: 216908.718 us/op
+[info] Iteration   1: 216195.712 us/op
+[info] Iteration   2: 216074.290 us/op
+[info] Iteration   3: 212794.408 us/op
+[info] Iteration   4: 211751.224 us/op
+[info] Iteration   5: 216296.036 us/op
+[info] Result "com.ziplex.lexer.benchmark.lexer.JsonLexerBenchmark.lex_ZipperV1NonMem":
+[info]   214622.334 ±(99.9%) 8385.558 us/op [Average]
+[info]   (min, avg, max) = (211751.224, 214622.334, 216296.036), stdev = 2177.703
+[info]   CI (99.9%): [206236.776, 223007.892] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.17, OpenJDK 64-Bit Server VM, 17.0.17+10-Ubuntu-124.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 5 iterations, 10 s each
+[info] # Measurement: 5 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: com.ziplex.lexer.benchmark.lexer.JsonLexerBenchmark.lex_ZipperV1NonMem
+[info] # Parameters: (file = 162_37599chars.json)
+[info] # Run progress: 37.18% complete, ETA 01:22:26
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 349006.762 us/op
+[info] # Warmup Iteration   2: 256481.571 us/op
+[info] # Warmup Iteration   3: 251269.028 us/op
+[info] # Warmup Iteration   4: 245586.901 us/op
+[info] # Warmup Iteration   5: 254511.095 us/op
+[info] Iteration   1: 249109.254 us/op
+[info] Iteration   2: 245851.157 us/op
+[info] Iteration   3: 251282.962 us/op
+[info] Iteration   4: 252039.645 us/op
+[info] Iteration   5: 241105.614 us/op
+[info] Result "com.ziplex.lexer.benchmark.lexer.JsonLexerBenchmark.lex_ZipperV1NonMem":
+[info]   247877.726 ±(99.9%) 17263.854 us/op [Average]
+[info]   (min, avg, max) = (241105.614, 247877.726, 252039.645), stdev = 4483.368
+[info]   CI (99.9%): [230613.873, 265141.580] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.17, OpenJDK 64-Bit Server VM, 17.0.17+10-Ubuntu-124.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 5 iterations, 10 s each
+[info] # Measurement: 5 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: com.ziplex.lexer.benchmark.lexer.JsonLexerBenchmark.lex_ZipperV1NonMem
+[info] # Parameters: (file = 182_42231chars.json)
+[info] # Run progress: 38.46% complete, ETA 01:20:46
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 389333.391 us/op
+[info] # Warmup Iteration   2: 292716.232 us/op
+[info] # Warmup Iteration   3: 278739.028 us/op
+[info] # Warmup Iteration   4: 276821.138 us/op
+[info] # Warmup Iteration   5: 286770.210 us/op
+[info] Iteration   1: 279952.630 us/op
+[info] Iteration   2: 274070.066 us/op
+[info] Iteration   3: 276669.997 us/op
+[info] Iteration   4: 278966.967 us/op
+[info] Iteration   5: 277093.090 us/op
+[info] Result "com.ziplex.lexer.benchmark.lexer.JsonLexerBenchmark.lex_ZipperV1NonMem":
+[info]   277350.550 ±(99.9%) 8754.317 us/op [Average]
+[info]   (min, avg, max) = (274070.066, 277350.550, 279952.630), stdev = 2273.468
+[info]   CI (99.9%): [268596.233, 286104.867] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.17, OpenJDK 64-Bit Server VM, 17.0.17+10-Ubuntu-124.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 5 iterations, 10 s each
+[info] # Measurement: 5 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: com.ziplex.lexer.benchmark.lexer.JsonLexerBenchmark.lex_ZipperV1NonMem
+[info] # Parameters: (file = 202_46879chars.json)
+[info] # Run progress: 39.74% complete, ETA 01:19:07
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 441403.658 us/op
+[info] # Warmup Iteration   2: 317949.169 us/op
+[info] # Warmup Iteration   3: 315400.737 us/op
+[info] # Warmup Iteration   4: 311688.776 us/op
+[info] # Warmup Iteration   5: 315096.546 us/op
+[info] Iteration   1: 308401.936 us/op
+[info] Iteration   2: 302880.263 us/op
+[info] Iteration   3: 306883.979 us/op
+[info] Iteration   4: 311674.398 us/op
+[info] Iteration   5: 307057.681 us/op
+[info] Result "com.ziplex.lexer.benchmark.lexer.JsonLexerBenchmark.lex_ZipperV1NonMem":
+[info]   307379.651 ±(99.9%) 12189.548 us/op [Average]
+[info]   (min, avg, max) = (302880.263, 307379.651, 311674.398), stdev = 3165.587
+[info]   CI (99.9%): [295190.103, 319569.199] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.17, OpenJDK 64-Bit Server VM, 17.0.17+10-Ubuntu-124.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 5 iterations, 10 s each
+[info] # Measurement: 5 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: com.ziplex.lexer.benchmark.lexer.JsonLexerBenchmark.lex_ZipperV1NonMem
+[info] # Parameters: (file = 222_51521chars.json)
+[info] # Run progress: 41.03% complete, ETA 01:17:28
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 484873.352 us/op
+[info] # Warmup Iteration   2: 362681.498 us/op
+[info] # Warmup Iteration   3: 349613.770 us/op
+[info] # Warmup Iteration   4: 350553.035 us/op
+[info] # Warmup Iteration   5: 358233.131 us/op
+[info] Iteration   1: 342228.129 us/op
+[info] Iteration   2: 335796.638 us/op
+[info] Iteration   3: 347899.939 us/op
+[info] Iteration   4: 348767.031 us/op
+[info] Iteration   5: 345322.767 us/op
+[info] Result "com.ziplex.lexer.benchmark.lexer.JsonLexerBenchmark.lex_ZipperV1NonMem":
+[info]   344002.901 ±(99.9%) 20203.816 us/op [Average]
+[info]   (min, avg, max) = (335796.638, 344002.901, 348767.031), stdev = 5246.867
+[info]   CI (99.9%): [323799.085, 364206.717] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.17, OpenJDK 64-Bit Server VM, 17.0.17+10-Ubuntu-124.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 5 iterations, 10 s each
+[info] # Measurement: 5 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: com.ziplex.lexer.benchmark.lexer.JsonLexerBenchmark.lex_ZipperV1NonMem
+[info] # Parameters: (file = 22_5115chars.json)
+[info] # Run progress: 42.31% complete, ETA 01:15:48
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 45069.686 us/op
+[info] # Warmup Iteration   2: 33735.879 us/op
+[info] # Warmup Iteration   3: 32749.478 us/op
+[info] # Warmup Iteration   4: 32170.651 us/op
+[info] # Warmup Iteration   5: 33534.771 us/op
+[info] Iteration   1: 32454.080 us/op
+[info] Iteration   2: 31716.445 us/op
+[info] Iteration   3: 32813.240 us/op
+[info] Iteration   4: 33041.336 us/op
+[info] Iteration   5: 31939.573 us/op
+[info] Result "com.ziplex.lexer.benchmark.lexer.JsonLexerBenchmark.lex_ZipperV1NonMem":
+[info]   32392.935 ±(99.9%) 2164.592 us/op [Average]
+[info]   (min, avg, max) = (31716.445, 32392.935, 33041.336), stdev = 562.138
+[info]   CI (99.9%): [30228.342, 34557.527] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.17, OpenJDK 64-Bit Server VM, 17.0.17+10-Ubuntu-124.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 5 iterations, 10 s each
+[info] # Measurement: 5 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: com.ziplex.lexer.benchmark.lexer.JsonLexerBenchmark.lex_ZipperV1NonMem
+[info] # Parameters: (file = 242_56154chars.json)
+[info] # Run progress: 43.59% complete, ETA 01:14:06
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 513517.547 us/op
+[info] # Warmup Iteration   2: 391093.373 us/op
+[info] # Warmup Iteration   3: 368499.542 us/op
+[info] # Warmup Iteration   4: 374902.473 us/op
+[info] # Warmup Iteration   5: 383757.266 us/op
+[info] Iteration   1: 365176.375 us/op
+[info] Iteration   2: 376555.448 us/op
+[info] Iteration   3: 376962.237 us/op
+[info] Iteration   4: 365347.225 us/op
+[info] Iteration   5: 362843.709 us/op
+[info] Result "com.ziplex.lexer.benchmark.lexer.JsonLexerBenchmark.lex_ZipperV1NonMem":
+[info]   369376.999 ±(99.9%) 26232.055 us/op [Average]
+[info]   (min, avg, max) = (362843.709, 369376.999, 376962.237), stdev = 6812.381
+[info]   CI (99.9%): [343144.944, 395609.054] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.17, OpenJDK 64-Bit Server VM, 17.0.17+10-Ubuntu-124.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 5 iterations, 10 s each
+[info] # Measurement: 5 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: com.ziplex.lexer.benchmark.lexer.JsonLexerBenchmark.lex_ZipperV1NonMem
+[info] # Parameters: (file = 2_456chars.json)
+[info] # Run progress: 44.87% complete, ETA 01:12:27
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 3914.305 us/op
+[info] # Warmup Iteration   2: 2955.537 us/op
+[info] # Warmup Iteration   3: 2869.312 us/op
+[info] # Warmup Iteration   4: 2858.113 us/op
+[info] # Warmup Iteration   5: 2906.264 us/op
+[info] Iteration   1: 2797.367 us/op
+[info] Iteration   2: 2783.042 us/op
+[info] Iteration   3: 2835.132 us/op
+[info] Iteration   4: 2812.522 us/op
+[info] Iteration   5: 2832.714 us/op
+[info] Result "com.ziplex.lexer.benchmark.lexer.JsonLexerBenchmark.lex_ZipperV1NonMem":
+[info]   2812.155 ±(99.9%) 86.467 us/op [Average]
+[info]   (min, avg, max) = (2783.042, 2812.155, 2835.132), stdev = 22.455
+[info]   CI (99.9%): [2725.688, 2898.623] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.17, OpenJDK 64-Bit Server VM, 17.0.17+10-Ubuntu-124.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 5 iterations, 10 s each
+[info] # Measurement: 5 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: com.ziplex.lexer.benchmark.lexer.JsonLexerBenchmark.lex_ZipperV1NonMem
+[info] # Parameters: (file = 42_9755chars.json)
+[info] # Run progress: 46.15% complete, ETA 01:10:46
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 88876.678 us/op
+[info] # Warmup Iteration   2: 65059.786 us/op
+[info] # Warmup Iteration   3: 63330.844 us/op
+[info] # Warmup Iteration   4: 62129.402 us/op
+[info] # Warmup Iteration   5: 64930.002 us/op
+[info] Iteration   1: 62873.740 us/op
+[info] Iteration   2: 62117.836 us/op
+[info] Iteration   3: 63240.078 us/op
+[info] Iteration   4: 63200.936 us/op
+[info] Iteration   5: 61307.030 us/op
+[info] Result "com.ziplex.lexer.benchmark.lexer.JsonLexerBenchmark.lex_ZipperV1NonMem":
+[info]   62547.924 ±(99.9%) 3184.911 us/op [Average]
+[info]   (min, avg, max) = (61307.030, 62547.924, 63240.078), stdev = 827.111
+[info]   CI (99.9%): [59363.013, 65732.835] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.17, OpenJDK 64-Bit Server VM, 17.0.17+10-Ubuntu-124.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 5 iterations, 10 s each
+[info] # Measurement: 5 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: com.ziplex.lexer.benchmark.lexer.JsonLexerBenchmark.lex_ZipperV1NonMem
+[info] # Parameters: (file = 62_14377chars.json)
+[info] # Run progress: 47.44% complete, ETA 01:09:04
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 134132.004 us/op
+[info] # Warmup Iteration   2: 96617.742 us/op
+[info] # Warmup Iteration   3: 94305.871 us/op
+[info] # Warmup Iteration   4: 92904.850 us/op
+[info] # Warmup Iteration   5: 95161.702 us/op
+[info] Iteration   1: 93919.626 us/op
+[info] Iteration   2: 91968.623 us/op
+[info] Iteration   3: 95279.933 us/op
+[info] Iteration   4: 94440.553 us/op
+[info] Iteration   5: 90191.113 us/op
+[info] Result "com.ziplex.lexer.benchmark.lexer.JsonLexerBenchmark.lex_ZipperV1NonMem":
+[info]   93159.970 ±(99.9%) 7925.367 us/op [Average]
+[info]   (min, avg, max) = (90191.113, 93159.970, 95279.933), stdev = 2058.193
+[info]   CI (99.9%): [85234.602, 101085.337] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.17, OpenJDK 64-Bit Server VM, 17.0.17+10-Ubuntu-124.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 5 iterations, 10 s each
+[info] # Measurement: 5 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: com.ziplex.lexer.benchmark.lexer.JsonLexerBenchmark.lex_ZipperV1NonMem
+[info] # Parameters: (file = 82_19037chars.json)
+[info] # Run progress: 48.72% complete, ETA 01:07:23
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 174428.337 us/op
+[info] # Warmup Iteration   2: 127649.325 us/op
+[info] # Warmup Iteration   3: 125149.842 us/op
+[info] # Warmup Iteration   4: 123668.605 us/op
+[info] # Warmup Iteration   5: 125959.706 us/op
+[info] Iteration   1: 123983.999 us/op
+[info] Iteration   2: 122536.123 us/op
+[info] Iteration   3: 121890.331 us/op
+[info] Iteration   4: 123796.750 us/op
+[info] Iteration   5: 122813.953 us/op
+[info] Result "com.ziplex.lexer.benchmark.lexer.JsonLexerBenchmark.lex_ZipperV1NonMem":
+[info]   123004.231 ±(99.9%) 3381.194 us/op [Average]
+[info]   (min, avg, max) = (121890.331, 123004.231, 123983.999), stdev = 878.085
+[info]   CI (99.9%): [119623.037, 126385.425] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.17, OpenJDK 64-Bit Server VM, 17.0.17+10-Ubuntu-124.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 5 iterations, 10 s each
+[info] # Measurement: 5 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: com.ziplex.lexer.benchmark.lexer.JsonLexerBenchmark.lex_ZipperV2MemOnlyDeriv
+[info] # Parameters: (file = 102_23677chars.json)
+[info] # Run progress: 50.00% complete, ETA 01:05:42
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 69947.396 us/op
+[info] # Warmup Iteration   2: 51072.713 us/op
+[info] # Warmup Iteration   3: 48296.414 us/op
+[info] # Warmup Iteration   4: 46804.341 us/op
+[info] # Warmup Iteration   5: 50473.343 us/op
+[info] Iteration   1: 49291.925 us/op
+[info] Iteration   2: 46786.495 us/op
+[info] Iteration   3: 48061.368 us/op
+[info] Iteration   4: 48253.738 us/op
+[info] Iteration   5: 48711.404 us/op
+[info] Result "com.ziplex.lexer.benchmark.lexer.JsonLexerBenchmark.lex_ZipperV2MemOnlyDeriv":
+[info]   48220.986 ±(99.9%) 3587.374 us/op [Average]
+[info]   (min, avg, max) = (46786.495, 48220.986, 49291.925), stdev = 931.630
+[info]   CI (99.9%): [44633.612, 51808.360] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.17, OpenJDK 64-Bit Server VM, 17.0.17+10-Ubuntu-124.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 5 iterations, 10 s each
+[info] # Measurement: 5 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: com.ziplex.lexer.benchmark.lexer.JsonLexerBenchmark.lex_ZipperV2MemOnlyDeriv
+[info] # Parameters: (file = 122_28308chars.json)
+[info] # Run progress: 51.28% complete, ETA 01:04:01
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 81457.880 us/op
+[info] # Warmup Iteration   2: 60046.461 us/op
+[info] # Warmup Iteration   3: 57453.069 us/op
+[info] # Warmup Iteration   4: 56727.790 us/op
+[info] # Warmup Iteration   5: 59200.433 us/op
+[info] Iteration   1: 57555.984 us/op
+[info] Iteration   2: 55640.276 us/op
+[info] Iteration   3: 57344.635 us/op
+[info] Iteration   4: 57405.166 us/op
+[info] Iteration   5: 56979.051 us/op
+[info] Result "com.ziplex.lexer.benchmark.lexer.JsonLexerBenchmark.lex_ZipperV2MemOnlyDeriv":
+[info]   56985.022 ±(99.9%) 3007.584 us/op [Average]
+[info]   (min, avg, max) = (55640.276, 56985.022, 57555.984), stdev = 781.060
+[info]   CI (99.9%): [53977.438, 59992.606] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.17, OpenJDK 64-Bit Server VM, 17.0.17+10-Ubuntu-124.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 5 iterations, 10 s each
+[info] # Measurement: 5 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: com.ziplex.lexer.benchmark.lexer.JsonLexerBenchmark.lex_ZipperV2MemOnlyDeriv
+[info] # Parameters: (file = 142_32958chars.json)
+[info] # Run progress: 52.56% complete, ETA 01:02:20
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 94664.202 us/op
+[info] # Warmup Iteration   2: 68823.680 us/op
+[info] # Warmup Iteration   3: 66200.400 us/op
+[info] # Warmup Iteration   4: 66923.606 us/op
+[info] # Warmup Iteration   5: 68285.418 us/op
+[info] Iteration   1: 65085.897 us/op
+[info] Iteration   2: 64450.060 us/op
+[info] Iteration   3: 66324.611 us/op
+[info] Iteration   4: 66396.193 us/op
+[info] Iteration   5: 65734.589 us/op
+[info] Result "com.ziplex.lexer.benchmark.lexer.JsonLexerBenchmark.lex_ZipperV2MemOnlyDeriv":
+[info]   65598.270 ±(99.9%) 3200.756 us/op [Average]
+[info]   (min, avg, max) = (64450.060, 65598.270, 66396.193), stdev = 831.226
+[info]   CI (99.9%): [62397.514, 68799.026] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.17, OpenJDK 64-Bit Server VM, 17.0.17+10-Ubuntu-124.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 5 iterations, 10 s each
+[info] # Measurement: 5 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: com.ziplex.lexer.benchmark.lexer.JsonLexerBenchmark.lex_ZipperV2MemOnlyDeriv
+[info] # Parameters: (file = 162_37599chars.json)
+[info] # Run progress: 53.85% complete, ETA 01:00:38
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 109424.678 us/op
+[info] # Warmup Iteration   2: 79675.530 us/op
+[info] # Warmup Iteration   3: 76611.405 us/op
+[info] # Warmup Iteration   4: 74257.179 us/op
+[info] # Warmup Iteration   5: 77674.316 us/op
+[info] Iteration   1: 76739.747 us/op
+[info] Iteration   2: 73477.090 us/op
+[info] Iteration   3: 75498.010 us/op
+[info] Iteration   4: 75317.607 us/op
+[info] Iteration   5: 75260.592 us/op
+[info] Result "com.ziplex.lexer.benchmark.lexer.JsonLexerBenchmark.lex_ZipperV2MemOnlyDeriv":
+[info]   75258.609 ±(99.9%) 4485.784 us/op [Average]
+[info]   (min, avg, max) = (73477.090, 75258.609, 76739.747), stdev = 1164.944
+[info]   CI (99.9%): [70772.826, 79744.393] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.17, OpenJDK 64-Bit Server VM, 17.0.17+10-Ubuntu-124.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 5 iterations, 10 s each
+[info] # Measurement: 5 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: com.ziplex.lexer.benchmark.lexer.JsonLexerBenchmark.lex_ZipperV2MemOnlyDeriv
+[info] # Parameters: (file = 182_42231chars.json)
+[info] # Run progress: 55.13% complete, ETA 00:58:57
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 132294.896 us/op
+[info] # Warmup Iteration   2: 97949.758 us/op
+[info] # Warmup Iteration   3: 93690.021 us/op
+[info] # Warmup Iteration   4: 92324.845 us/op
+[info] # Warmup Iteration   5: 95683.370 us/op
+[info] Iteration   1: 92910.291 us/op
+[info] Iteration   2: 90325.796 us/op
+[info] Iteration   3: 93176.069 us/op
+[info] Iteration   4: 93181.732 us/op
+[info] Iteration   5: 92453.177 us/op
+[info] Result "com.ziplex.lexer.benchmark.lexer.JsonLexerBenchmark.lex_ZipperV2MemOnlyDeriv":
+[info]   92409.413 ±(99.9%) 4628.184 us/op [Average]
+[info]   (min, avg, max) = (90325.796, 92409.413, 93181.732), stdev = 1201.925
+[info]   CI (99.9%): [87781.229, 97037.597] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.17, OpenJDK 64-Bit Server VM, 17.0.17+10-Ubuntu-124.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 5 iterations, 10 s each
+[info] # Measurement: 5 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: com.ziplex.lexer.benchmark.lexer.JsonLexerBenchmark.lex_ZipperV2MemOnlyDeriv
+[info] # Parameters: (file = 202_46879chars.json)
+[info] # Run progress: 56.41% complete, ETA 00:57:16
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 141569.204 us/op
+[info] # Warmup Iteration   2: 102946.953 us/op
+[info] # Warmup Iteration   3: 98797.853 us/op
+[info] # Warmup Iteration   4: 98234.773 us/op
+[info] # Warmup Iteration   5: 101360.721 us/op
+[info] Iteration   1: 100043.833 us/op
+[info] Iteration   2: 97757.912 us/op
+[info] Iteration   3: 99661.894 us/op
+[info] Iteration   4: 98589.246 us/op
+[info] Iteration   5: 99561.100 us/op
+[info] Result "com.ziplex.lexer.benchmark.lexer.JsonLexerBenchmark.lex_ZipperV2MemOnlyDeriv":
+[info]   99122.797 ±(99.9%) 3590.935 us/op [Average]
+[info]   (min, avg, max) = (97757.912, 99122.797, 100043.833), stdev = 932.554
+[info]   CI (99.9%): [95531.862, 102713.732] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.17, OpenJDK 64-Bit Server VM, 17.0.17+10-Ubuntu-124.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 5 iterations, 10 s each
+[info] # Measurement: 5 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: com.ziplex.lexer.benchmark.lexer.JsonLexerBenchmark.lex_ZipperV2MemOnlyDeriv
+[info] # Parameters: (file = 222_51521chars.json)
+[info] # Run progress: 57.69% complete, ETA 00:55:35
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 159148.173 us/op
+[info] # Warmup Iteration   2: 115798.194 us/op
+[info] # Warmup Iteration   3: 109985.777 us/op
+[info] # Warmup Iteration   4: 110368.801 us/op
+[info] # Warmup Iteration   5: 113836.513 us/op
+[info] Iteration   1: 109929.328 us/op
+[info] Iteration   2: 106774.084 us/op
+[info] Iteration   3: 109470.857 us/op
+[info] Iteration   4: 109821.243 us/op
+[info] Iteration   5: 109426.687 us/op
+[info] Result "com.ziplex.lexer.benchmark.lexer.JsonLexerBenchmark.lex_ZipperV2MemOnlyDeriv":
+[info]   109084.440 ±(99.9%) 5043.062 us/op [Average]
+[info]   (min, avg, max) = (106774.084, 109084.440, 109929.328), stdev = 1309.667
+[info]   CI (99.9%): [104041.378, 114127.501] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.17, OpenJDK 64-Bit Server VM, 17.0.17+10-Ubuntu-124.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 5 iterations, 10 s each
+[info] # Measurement: 5 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: com.ziplex.lexer.benchmark.lexer.JsonLexerBenchmark.lex_ZipperV2MemOnlyDeriv
+[info] # Parameters: (file = 22_5115chars.json)
+[info] # Run progress: 58.97% complete, ETA 00:53:54
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 11469.487 us/op
+[info] # Warmup Iteration   2: 8536.615 us/op
+[info] # Warmup Iteration   3: 8046.853 us/op
+[info] # Warmup Iteration   4: 8329.128 us/op
+[info] # Warmup Iteration   5: 8386.662 us/op
+[info] Iteration   1: 7871.086 us/op
+[info] Iteration   2: 7998.124 us/op
+[info] Iteration   3: 8125.646 us/op
+[info] Iteration   4: 8093.972 us/op
+[info] Iteration   5: 8052.153 us/op
+[info] Result "com.ziplex.lexer.benchmark.lexer.JsonLexerBenchmark.lex_ZipperV2MemOnlyDeriv":
+[info]   8028.196 ±(99.9%) 384.991 us/op [Average]
+[info]   (min, avg, max) = (7871.086, 8028.196, 8125.646), stdev = 99.981
+[info]   CI (99.9%): [7643.205, 8413.188] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.17, OpenJDK 64-Bit Server VM, 17.0.17+10-Ubuntu-124.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 5 iterations, 10 s each
+[info] # Measurement: 5 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: com.ziplex.lexer.benchmark.lexer.JsonLexerBenchmark.lex_ZipperV2MemOnlyDeriv
+[info] # Parameters: (file = 242_56154chars.json)
+[info] # Run progress: 60.26% complete, ETA 00:52:13
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 167369.590 us/op
+[info] # Warmup Iteration   2: 122258.439 us/op
+[info] # Warmup Iteration   3: 117090.248 us/op
+[info] # Warmup Iteration   4: 116525.986 us/op
+[info] # Warmup Iteration   5: 121270.886 us/op
+[info] Iteration   1: 116990.653 us/op
+[info] Iteration   2: 114573.997 us/op
+[info] Iteration   3: 117657.299 us/op
+[info] Iteration   4: 117185.041 us/op
+[info] Iteration   5: 117046.014 us/op
+[info] Result "com.ziplex.lexer.benchmark.lexer.JsonLexerBenchmark.lex_ZipperV2MemOnlyDeriv":
+[info]   116690.601 ±(99.9%) 4666.807 us/op [Average]
+[info]   (min, avg, max) = (114573.997, 116690.601, 117657.299), stdev = 1211.955
+[info]   CI (99.9%): [112023.794, 121357.408] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.17, OpenJDK 64-Bit Server VM, 17.0.17+10-Ubuntu-124.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 5 iterations, 10 s each
+[info] # Measurement: 5 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: com.ziplex.lexer.benchmark.lexer.JsonLexerBenchmark.lex_ZipperV2MemOnlyDeriv
+[info] # Parameters: (file = 2_456chars.json)
+[info] # Run progress: 61.54% complete, ETA 00:50:31
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 879.093 us/op
+[info] # Warmup Iteration   2: 648.936 us/op
+[info] # Warmup Iteration   3: 627.994 us/op
+[info] # Warmup Iteration   4: 599.621 us/op
+[info] # Warmup Iteration   5: 615.687 us/op
+[info] Iteration   1: 615.831 us/op
+[info] Iteration   2: 615.801 us/op
+[info] Iteration   3: 606.066 us/op
+[info] Iteration   4: 596.759 us/op
+[info] Iteration   5: 619.586 us/op
+[info] Result "com.ziplex.lexer.benchmark.lexer.JsonLexerBenchmark.lex_ZipperV2MemOnlyDeriv":
+[info]   610.809 ±(99.9%) 35.869 us/op [Average]
+[info]   (min, avg, max) = (596.759, 610.809, 619.586), stdev = 9.315
+[info]   CI (99.9%): [574.940, 646.677] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.17, OpenJDK 64-Bit Server VM, 17.0.17+10-Ubuntu-124.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 5 iterations, 10 s each
+[info] # Measurement: 5 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: com.ziplex.lexer.benchmark.lexer.JsonLexerBenchmark.lex_ZipperV2MemOnlyDeriv
+[info] # Parameters: (file = 42_9755chars.json)
+[info] # Run progress: 62.82% complete, ETA 00:48:50
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 25464.201 us/op
+[info] # Warmup Iteration   2: 18539.525 us/op
+[info] # Warmup Iteration   3: 17742.266 us/op
+[info] # Warmup Iteration   4: 17606.268 us/op
+[info] # Warmup Iteration   5: 18456.427 us/op
+[info] Iteration   1: 17926.835 us/op
+[info] Iteration   2: 17278.272 us/op
+[info] Iteration   3: 17604.642 us/op
+[info] Iteration   4: 17950.875 us/op
+[info] Iteration   5: 17914.001 us/op
+[info] Result "com.ziplex.lexer.benchmark.lexer.JsonLexerBenchmark.lex_ZipperV2MemOnlyDeriv":
+[info]   17734.925 ±(99.9%) 1124.358 us/op [Average]
+[info]   (min, avg, max) = (17278.272, 17734.925, 17950.875), stdev = 291.992
+[info]   CI (99.9%): [16610.567, 18859.283] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.17, OpenJDK 64-Bit Server VM, 17.0.17+10-Ubuntu-124.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 5 iterations, 10 s each
+[info] # Measurement: 5 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: com.ziplex.lexer.benchmark.lexer.JsonLexerBenchmark.lex_ZipperV2MemOnlyDeriv
+[info] # Parameters: (file = 62_14377chars.json)
+[info] # Run progress: 64.10% complete, ETA 00:47:09
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 40458.859 us/op
+[info] # Warmup Iteration   2: 29313.375 us/op
+[info] # Warmup Iteration   3: 28085.146 us/op
+[info] # Warmup Iteration   4: 28018.702 us/op
+[info] # Warmup Iteration   5: 28691.826 us/op
+[info] Iteration   1: 27801.894 us/op
+[info] Iteration   2: 27175.622 us/op
+[info] Iteration   3: 27674.074 us/op
+[info] Iteration   4: 27705.516 us/op
+[info] Iteration   5: 28079.874 us/op
+[info] Result "com.ziplex.lexer.benchmark.lexer.JsonLexerBenchmark.lex_ZipperV2MemOnlyDeriv":
+[info]   27687.396 ±(99.9%) 1261.883 us/op [Average]
+[info]   (min, avg, max) = (27175.622, 27687.396, 28079.874), stdev = 327.707
+[info]   CI (99.9%): [26425.513, 28949.279] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.17, OpenJDK 64-Bit Server VM, 17.0.17+10-Ubuntu-124.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 5 iterations, 10 s each
+[info] # Measurement: 5 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: com.ziplex.lexer.benchmark.lexer.JsonLexerBenchmark.lex_ZipperV2MemOnlyDeriv
+[info] # Parameters: (file = 82_19037chars.json)
+[info] # Run progress: 65.38% complete, ETA 00:45:28
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 56241.674 us/op
+[info] # Warmup Iteration   2: 40298.345 us/op
+[info] # Warmup Iteration   3: 38870.250 us/op
+[info] # Warmup Iteration   4: 37380.339 us/op
+[info] # Warmup Iteration   5: 38625.428 us/op
+[info] Iteration   1: 39172.767 us/op
+[info] Iteration   2: 39141.775 us/op
+[info] Iteration   3: 37189.733 us/op
+[info] Iteration   4: 37839.205 us/op
+[info] Iteration   5: 38449.905 us/op
+[info] Result "com.ziplex.lexer.benchmark.lexer.JsonLexerBenchmark.lex_ZipperV2MemOnlyDeriv":
+[info]   38358.677 ±(99.9%) 3290.324 us/op [Average]
+[info]   (min, avg, max) = (37189.733, 38358.677, 39172.767), stdev = 854.487
+[info]   CI (99.9%): [35068.353, 41649.001] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.17, OpenJDK 64-Bit Server VM, 17.0.17+10-Ubuntu-124.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 5 iterations, 10 s each
+[info] # Measurement: 5 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: com.ziplex.lexer.benchmark.lexer.JsonLexerBenchmark.lex_ZipperV2NonMem
+[info] # Parameters: (file = 102_23677chars.json)
+[info] # Run progress: 66.67% complete, ETA 00:43:46
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 259944.038 us/op
+[info] # Warmup Iteration   2: 175686.797 us/op
+[info] # Warmup Iteration   3: 170755.697 us/op
+[info] # Warmup Iteration   4: 162186.423 us/op
+[info] # Warmup Iteration   5: 156545.121 us/op
+[info] Iteration   1: 151870.291 us/op
+[info] Iteration   2: 156479.717 us/op
+[info] Iteration   3: 162811.826 us/op
+[info] Iteration   4: 151487.764 us/op
+[info] Iteration   5: 150867.389 us/op
+[info] Result "com.ziplex.lexer.benchmark.lexer.JsonLexerBenchmark.lex_ZipperV2NonMem":
+[info]   154703.397 ±(99.9%) 19443.242 us/op [Average]
+[info]   (min, avg, max) = (150867.389, 154703.397, 162811.826), stdev = 5049.348
+[info]   CI (99.9%): [135260.155, 174146.639] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.17, OpenJDK 64-Bit Server VM, 17.0.17+10-Ubuntu-124.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 5 iterations, 10 s each
+[info] # Measurement: 5 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: com.ziplex.lexer.benchmark.lexer.JsonLexerBenchmark.lex_ZipperV2NonMem
+[info] # Parameters: (file = 122_28308chars.json)
+[info] # Run progress: 67.95% complete, ETA 00:42:06
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 265434.289 us/op
+[info] # Warmup Iteration   2: 193047.842 us/op
+[info] # Warmup Iteration   3: 190293.801 us/op
+[info] # Warmup Iteration   4: 187429.950 us/op
+[info] # Warmup Iteration   5: 192327.221 us/op
+[info] Iteration   1: 186877.261 us/op
+[info] Iteration   2: 182871.186 us/op
+[info] Iteration   3: 184836.283 us/op
+[info] Iteration   4: 185963.838 us/op
+[info] Iteration   5: 189022.814 us/op
+[info] Result "com.ziplex.lexer.benchmark.lexer.JsonLexerBenchmark.lex_ZipperV2NonMem":
+[info]   185914.277 ±(99.9%) 8826.141 us/op [Average]
+[info]   (min, avg, max) = (182871.186, 185914.277, 189022.814), stdev = 2292.121
+[info]   CI (99.9%): [177088.136, 194740.417] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.17, OpenJDK 64-Bit Server VM, 17.0.17+10-Ubuntu-124.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 5 iterations, 10 s each
+[info] # Measurement: 5 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: com.ziplex.lexer.benchmark.lexer.JsonLexerBenchmark.lex_ZipperV2NonMem
+[info] # Parameters: (file = 142_32958chars.json)
+[info] # Run progress: 69.23% complete, ETA 00:40:25
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 306988.762 us/op
+[info] # Warmup Iteration   2: 228820.977 us/op
+[info] # Warmup Iteration   3: 220321.985 us/op
+[info] # Warmup Iteration   4: 213120.634 us/op
+[info] # Warmup Iteration   5: 220924.353 us/op
+[info] Iteration   1: 219029.462 us/op
+[info] Iteration   2: 219704.657 us/op
+[info] Iteration   3: 211915.107 us/op
+[info] Iteration   4: 214731.018 us/op
+[info] Iteration   5: 217583.096 us/op
+[info] Result "com.ziplex.lexer.benchmark.lexer.JsonLexerBenchmark.lex_ZipperV2NonMem":
+[info]   216592.668 ±(99.9%) 12469.891 us/op [Average]
+[info]   (min, avg, max) = (211915.107, 216592.668, 219704.657), stdev = 3238.391
+[info]   CI (99.9%): [204122.777, 229062.559] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.17, OpenJDK 64-Bit Server VM, 17.0.17+10-Ubuntu-124.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 5 iterations, 10 s each
+[info] # Measurement: 5 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: com.ziplex.lexer.benchmark.lexer.JsonLexerBenchmark.lex_ZipperV2NonMem
+[info] # Parameters: (file = 162_37599chars.json)
+[info] # Run progress: 70.51% complete, ETA 00:38:44
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 350369.319 us/op
+[info] # Warmup Iteration   2: 261807.492 us/op
+[info] # Warmup Iteration   3: 250460.012 us/op
+[info] # Warmup Iteration   4: 241506.281 us/op
+[info] # Warmup Iteration   5: 251322.706 us/op
+[info] Iteration   1: 249820.492 us/op
+[info] Iteration   2: 251932.529 us/op
+[info] Iteration   3: 242597.753 us/op
+[info] Iteration   4: 243240.628 us/op
+[info] Iteration   5: 249665.471 us/op
+[info] Result "com.ziplex.lexer.benchmark.lexer.JsonLexerBenchmark.lex_ZipperV2NonMem":
+[info]   247451.375 ±(99.9%) 16323.701 us/op [Average]
+[info]   (min, avg, max) = (242597.753, 247451.375, 251932.529), stdev = 4239.213
+[info]   CI (99.9%): [231127.674, 263775.075] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.17, OpenJDK 64-Bit Server VM, 17.0.17+10-Ubuntu-124.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 5 iterations, 10 s each
+[info] # Measurement: 5 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: com.ziplex.lexer.benchmark.lexer.JsonLexerBenchmark.lex_ZipperV2NonMem
+[info] # Parameters: (file = 182_42231chars.json)
+[info] # Run progress: 71.79% complete, ETA 00:37:03
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 405357.623 us/op
+[info] # Warmup Iteration   2: 290793.019 us/op
+[info] # Warmup Iteration   3: 288081.728 us/op
+[info] # Warmup Iteration   4: 274050.424 us/op
+[info] # Warmup Iteration   5: 281613.186 us/op
+[info] Iteration   1: 284919.963 us/op
+[info] Iteration   2: 282471.760 us/op
+[info] Iteration   3: 279179.593 us/op
+[info] Iteration   4: 273761.695 us/op
+[info] Iteration   5: 279172.453 us/op
+[info] Result "com.ziplex.lexer.benchmark.lexer.JsonLexerBenchmark.lex_ZipperV2NonMem":
+[info]   279901.093 ±(99.9%) 16170.535 us/op [Average]
+[info]   (min, avg, max) = (273761.695, 279901.093, 284919.963), stdev = 4199.437
+[info]   CI (99.9%): [263730.558, 296071.628] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.17, OpenJDK 64-Bit Server VM, 17.0.17+10-Ubuntu-124.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 5 iterations, 10 s each
+[info] # Measurement: 5 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: com.ziplex.lexer.benchmark.lexer.JsonLexerBenchmark.lex_ZipperV2NonMem
+[info] # Parameters: (file = 202_46879chars.json)
+[info] # Run progress: 73.08% complete, ETA 00:35:22
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 440126.106 us/op
+[info] # Warmup Iteration   2: 329276.489 us/op
+[info] # Warmup Iteration   3: 313226.313 us/op
+[info] # Warmup Iteration   4: 305593.304 us/op
+[info] # Warmup Iteration   5: 314146.666 us/op
+[info] Iteration   1: 313119.261 us/op
+[info] Iteration   2: 312927.641 us/op
+[info] Iteration   3: 304162.354 us/op
+[info] Iteration   4: 307261.525 us/op
+[info] Iteration   5: 312822.354 us/op
+[info] Result "com.ziplex.lexer.benchmark.lexer.JsonLexerBenchmark.lex_ZipperV2NonMem":
+[info]   310058.627 ±(99.9%) 15856.371 us/op [Average]
+[info]   (min, avg, max) = (304162.354, 310058.627, 313119.261), stdev = 4117.849
+[info]   CI (99.9%): [294202.256, 325914.997] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.17, OpenJDK 64-Bit Server VM, 17.0.17+10-Ubuntu-124.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 5 iterations, 10 s each
+[info] # Measurement: 5 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: com.ziplex.lexer.benchmark.lexer.JsonLexerBenchmark.lex_ZipperV2NonMem
+[info] # Parameters: (file = 222_51521chars.json)
+[info] # Run progress: 74.36% complete, ETA 00:33:41
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 478877.480 us/op
+[info] # Warmup Iteration   2: 361848.271 us/op
+[info] # Warmup Iteration   3: 343944.920 us/op
+[info] # Warmup Iteration   4: 346371.190 us/op
+[info] # Warmup Iteration   5: 354985.905 us/op
+[info] Iteration   1: 341525.290 us/op
+[info] Iteration   2: 349120.094 us/op
+[info] Iteration   3: 349933.025 us/op
+[info] Iteration   4: 343665.682 us/op
+[info] Iteration   5: 335303.575 us/op
+[info] Result "com.ziplex.lexer.benchmark.lexer.JsonLexerBenchmark.lex_ZipperV2NonMem":
+[info]   343909.533 ±(99.9%) 23042.733 us/op [Average]
+[info]   (min, avg, max) = (335303.575, 343909.533, 349933.025), stdev = 5984.124
+[info]   CI (99.9%): [320866.801, 366952.266] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.17, OpenJDK 64-Bit Server VM, 17.0.17+10-Ubuntu-124.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 5 iterations, 10 s each
+[info] # Measurement: 5 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: com.ziplex.lexer.benchmark.lexer.JsonLexerBenchmark.lex_ZipperV2NonMem
+[info] # Parameters: (file = 22_5115chars.json)
+[info] # Run progress: 75.64% complete, ETA 00:32:01
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 63322.163 us/op
+[info] # Warmup Iteration   2: 34141.047 us/op
+[info] # Warmup Iteration   3: 34099.511 us/op
+[info] # Warmup Iteration   4: 34232.665 us/op
+[info] # Warmup Iteration   5: 32453.352 us/op
+[info] Iteration   1: 33657.799 us/op
+[info] Iteration   2: 31947.248 us/op
+[info] Iteration   3: 31451.071 us/op
+[info] Iteration   4: 31483.781 us/op
+[info] Iteration   5: 31719.109 us/op
+[info] Result "com.ziplex.lexer.benchmark.lexer.JsonLexerBenchmark.lex_ZipperV2NonMem":
+[info]   32051.802 ±(99.9%) 3541.949 us/op [Average]
+[info]   (min, avg, max) = (31451.071, 32051.802, 33657.799), stdev = 919.833
+[info]   CI (99.9%): [28509.853, 35593.750] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.17, OpenJDK 64-Bit Server VM, 17.0.17+10-Ubuntu-124.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 5 iterations, 10 s each
+[info] # Measurement: 5 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: com.ziplex.lexer.benchmark.lexer.JsonLexerBenchmark.lex_ZipperV2NonMem
+[info] # Parameters: (file = 242_56154chars.json)
+[info] # Run progress: 76.92% complete, ETA 00:30:19
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 539013.155 us/op
+[info] # Warmup Iteration   2: 404034.756 us/op
+[info] # Warmup Iteration   3: 387464.271 us/op
+[info] # Warmup Iteration   4: 390895.708 us/op
+[info] # Warmup Iteration   5: 391923.888 us/op
+[info] Iteration   1: 379846.955 us/op
+[info] Iteration   2: 374003.719 us/op
+[info] Iteration   3: 381771.400 us/op
+[info] Iteration   4: 384934.296 us/op
+[info] Iteration   5: 384853.294 us/op
+[info] Result "com.ziplex.lexer.benchmark.lexer.JsonLexerBenchmark.lex_ZipperV2NonMem":
+[info]   381081.933 ±(99.9%) 17345.593 us/op [Average]
+[info]   (min, avg, max) = (374003.719, 381081.933, 384934.296), stdev = 4504.595
+[info]   CI (99.9%): [363736.340, 398427.526] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.17, OpenJDK 64-Bit Server VM, 17.0.17+10-Ubuntu-124.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 5 iterations, 10 s each
+[info] # Measurement: 5 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: com.ziplex.lexer.benchmark.lexer.JsonLexerBenchmark.lex_ZipperV2NonMem
+[info] # Parameters: (file = 2_456chars.json)
+[info] # Run progress: 78.21% complete, ETA 00:28:39
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 3931.292 us/op
+[info] # Warmup Iteration   2: 2948.623 us/op
+[info] # Warmup Iteration   3: 2863.969 us/op
+[info] # Warmup Iteration   4: 2843.912 us/op
+[info] # Warmup Iteration   5: 2912.885 us/op
+[info] Iteration   1: 2796.058 us/op
+[info] Iteration   2: 2779.645 us/op
+[info] Iteration   3: 2834.842 us/op
+[info] Iteration   4: 2817.428 us/op
+[info] Iteration   5: 2823.564 us/op
+[info] Result "com.ziplex.lexer.benchmark.lexer.JsonLexerBenchmark.lex_ZipperV2NonMem":
+[info]   2810.307 ±(99.9%) 85.490 us/op [Average]
+[info]   (min, avg, max) = (2779.645, 2810.307, 2834.842), stdev = 22.202
+[info]   CI (99.9%): [2724.817, 2895.798] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.17, OpenJDK 64-Bit Server VM, 17.0.17+10-Ubuntu-124.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 5 iterations, 10 s each
+[info] # Measurement: 5 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: com.ziplex.lexer.benchmark.lexer.JsonLexerBenchmark.lex_ZipperV2NonMem
+[info] # Parameters: (file = 42_9755chars.json)
+[info] # Run progress: 79.49% complete, ETA 00:26:57
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 80864.570 us/op
+[info] # Warmup Iteration   2: 64129.076 us/op
+[info] # Warmup Iteration   3: 62912.169 us/op
+[info] # Warmup Iteration   4: 64036.547 us/op
+[info] # Warmup Iteration   5: 62840.913 us/op
+[info] Iteration   1: 63642.873 us/op
+[info] Iteration   2: 61365.341 us/op
+[info] Iteration   3: 61818.538 us/op
+[info] Iteration   4: 62638.395 us/op
+[info] Iteration   5: 62098.632 us/op
+[info] Result "com.ziplex.lexer.benchmark.lexer.JsonLexerBenchmark.lex_ZipperV2NonMem":
+[info]   62312.756 ±(99.9%) 3369.559 us/op [Average]
+[info]   (min, avg, max) = (61365.341, 62312.756, 63642.873), stdev = 875.064
+[info]   CI (99.9%): [58943.197, 65682.315] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.17, OpenJDK 64-Bit Server VM, 17.0.17+10-Ubuntu-124.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 5 iterations, 10 s each
+[info] # Measurement: 5 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: com.ziplex.lexer.benchmark.lexer.JsonLexerBenchmark.lex_ZipperV2NonMem
+[info] # Parameters: (file = 62_14377chars.json)
+[info] # Run progress: 80.77% complete, ETA 00:25:16
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 135180.020 us/op
+[info] # Warmup Iteration   2: 97773.523 us/op
+[info] # Warmup Iteration   3: 94949.588 us/op
+[info] # Warmup Iteration   4: 92164.610 us/op
+[info] # Warmup Iteration   5: 97248.126 us/op
+[info] Iteration   1: 94949.462 us/op
+[info] Iteration   2: 91130.513 us/op
+[info] Iteration   3: 93601.175 us/op
+[info] Iteration   4: 93346.147 us/op
+[info] Iteration   5: 94054.371 us/op
+[info] Result "com.ziplex.lexer.benchmark.lexer.JsonLexerBenchmark.lex_ZipperV2NonMem":
+[info]   93416.334 ±(99.9%) 5452.995 us/op [Average]
+[info]   (min, avg, max) = (91130.513, 93416.334, 94949.462), stdev = 1416.125
+[info]   CI (99.9%): [87963.339, 98869.328] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.17, OpenJDK 64-Bit Server VM, 17.0.17+10-Ubuntu-124.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 5 iterations, 10 s each
+[info] # Measurement: 5 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: com.ziplex.lexer.benchmark.lexer.JsonLexerBenchmark.lex_ZipperV2NonMem
+[info] # Parameters: (file = 82_19037chars.json)
+[info] # Run progress: 82.05% complete, ETA 00:23:35
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 179085.359 us/op
+[info] # Warmup Iteration   2: 129504.760 us/op
+[info] # Warmup Iteration   3: 126998.487 us/op
+[info] # Warmup Iteration   4: 126122.096 us/op
+[info] # Warmup Iteration   5: 127829.160 us/op
+[info] Iteration   1: 125396.224 us/op
+[info] Iteration   2: 122894.053 us/op
+[info] Iteration   3: 128814.008 us/op
+[info] Iteration   4: 126757.517 us/op
+[info] Iteration   5: 122187.634 us/op
+[info] Result "com.ziplex.lexer.benchmark.lexer.JsonLexerBenchmark.lex_ZipperV2NonMem":
+[info]   125209.887 ±(99.9%) 10530.766 us/op [Average]
+[info]   (min, avg, max) = (122187.634, 125209.887, 128814.008), stdev = 2734.807
+[info]   CI (99.9%): [114679.121, 135740.653] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.17, OpenJDK 64-Bit Server VM, 17.0.17+10-Ubuntu-124.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 5 iterations, 10 s each
+[info] # Measurement: 5 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: com.ziplex.lexer.benchmark.lexer.JsonLexerBenchmark.separability_pred
+[info] # Parameters: (file = 102_23677chars.json)
+[info] # Run progress: 83.33% complete, ETA 00:21:54
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 25671.244 us/op
+[info] # Warmup Iteration   2: 11250.383 us/op
+[info] # Warmup Iteration   3: 10654.824 us/op
+[info] # Warmup Iteration   4: 9595.289 us/op
+[info] # Warmup Iteration   5: 10216.234 us/op
+[info] Iteration   1: 9143.231 us/op
+[info] Iteration   2: 9095.644 us/op
+[info] Iteration   3: 9607.018 us/op
+[info] Iteration   4: 9887.949 us/op
+[info] Iteration   5: 9136.657 us/op
+[info] Result "com.ziplex.lexer.benchmark.lexer.JsonLexerBenchmark.separability_pred":
+[info]   9374.100 ±(99.9%) 1368.888 us/op [Average]
+[info]   (min, avg, max) = (9095.644, 9374.100, 9887.949), stdev = 355.496
+[info]   CI (99.9%): [8005.212, 10742.988] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.17, OpenJDK 64-Bit Server VM, 17.0.17+10-Ubuntu-124.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 5 iterations, 10 s each
+[info] # Measurement: 5 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: com.ziplex.lexer.benchmark.lexer.JsonLexerBenchmark.separability_pred
+[info] # Parameters: (file = 122_28308chars.json)
+[info] # Run progress: 84.62% complete, ETA 00:20:13
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 25664.087 us/op
+[info] # Warmup Iteration   2: 12236.972 us/op
+[info] # Warmup Iteration   3: 12324.393 us/op
+[info] # Warmup Iteration   4: 11220.731 us/op
+[info] # Warmup Iteration   5: 11480.485 us/op
+[info] Iteration   1: 11855.184 us/op
+[info] Iteration   2: 11644.530 us/op
+[info] Iteration   3: 11678.331 us/op
+[info] Iteration   4: 11385.923 us/op
+[info] Iteration   5: 11276.569 us/op
+[info] Result "com.ziplex.lexer.benchmark.lexer.JsonLexerBenchmark.separability_pred":
+[info]   11568.107 ±(99.9%) 900.153 us/op [Average]
+[info]   (min, avg, max) = (11276.569, 11568.107, 11855.184), stdev = 233.767
+[info]   CI (99.9%): [10667.954, 12468.261] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.17, OpenJDK 64-Bit Server VM, 17.0.17+10-Ubuntu-124.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 5 iterations, 10 s each
+[info] # Measurement: 5 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: com.ziplex.lexer.benchmark.lexer.JsonLexerBenchmark.separability_pred
+[info] # Parameters: (file = 142_32958chars.json)
+[info] # Run progress: 85.90% complete, ETA 00:18:32
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 26619.195 us/op
+[info] # Warmup Iteration   2: 15202.541 us/op
+[info] # Warmup Iteration   3: 13793.794 us/op
+[info] # Warmup Iteration   4: 13158.007 us/op
+[info] # Warmup Iteration   5: 13640.019 us/op
+[info] Iteration   1: 13939.578 us/op
+[info] Iteration   2: 13640.444 us/op
+[info] Iteration   3: 13079.408 us/op
+[info] Iteration   4: 13594.063 us/op
+[info] Iteration   5: 13545.470 us/op
+[info] Result "com.ziplex.lexer.benchmark.lexer.JsonLexerBenchmark.separability_pred":
+[info]   13559.793 ±(99.9%) 1191.354 us/op [Average]
+[info]   (min, avg, max) = (13079.408, 13559.793, 13939.578), stdev = 309.391
+[info]   CI (99.9%): [12368.439, 14751.147] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.17, OpenJDK 64-Bit Server VM, 17.0.17+10-Ubuntu-124.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 5 iterations, 10 s each
+[info] # Measurement: 5 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: com.ziplex.lexer.benchmark.lexer.JsonLexerBenchmark.separability_pred
+[info] # Parameters: (file = 162_37599chars.json)
+[info] # Run progress: 87.18% complete, ETA 00:16:50
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 33504.194 us/op
+[info] # Warmup Iteration   2: 17212.491 us/op
+[info] # Warmup Iteration   3: 16290.692 us/op
+[info] # Warmup Iteration   4: 15439.356 us/op
+[info] # Warmup Iteration   5: 16136.698 us/op
+[info] Iteration   1: 16250.748 us/op
+[info] Iteration   2: 15883.346 us/op
+[info] Iteration   3: 15332.609 us/op
+[info] Iteration   4: 15789.718 us/op
+[info] Iteration   5: 15855.186 us/op
+[info] Result "com.ziplex.lexer.benchmark.lexer.JsonLexerBenchmark.separability_pred":
+[info]   15822.321 ±(99.9%) 1261.393 us/op [Average]
+[info]   (min, avg, max) = (15332.609, 15822.321, 16250.748), stdev = 327.580
+[info]   CI (99.9%): [14560.928, 17083.715] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.17, OpenJDK 64-Bit Server VM, 17.0.17+10-Ubuntu-124.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 5 iterations, 10 s each
+[info] # Measurement: 5 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: com.ziplex.lexer.benchmark.lexer.JsonLexerBenchmark.separability_pred
+[info] # Parameters: (file = 182_42231chars.json)
+[info] # Run progress: 88.46% complete, ETA 00:15:09
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 37093.458 us/op
+[info] # Warmup Iteration   2: 19150.545 us/op
+[info] # Warmup Iteration   3: 18607.526 us/op
+[info] # Warmup Iteration   4: 17024.072 us/op
+[info] # Warmup Iteration   5: 17351.352 us/op
+[info] Iteration   1: 18047.181 us/op
+[info] Iteration   2: 17709.107 us/op
+[info] Iteration   3: 17830.803 us/op
+[info] Iteration   4: 16923.342 us/op
+[info] Iteration   5: 17615.304 us/op
+[info] Result "com.ziplex.lexer.benchmark.lexer.JsonLexerBenchmark.separability_pred":
+[info]   17625.147 ±(99.9%) 1633.785 us/op [Average]
+[info]   (min, avg, max) = (16923.342, 17625.147, 18047.181), stdev = 424.289
+[info]   CI (99.9%): [15991.362, 19258.932] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.17, OpenJDK 64-Bit Server VM, 17.0.17+10-Ubuntu-124.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 5 iterations, 10 s each
+[info] # Measurement: 5 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: com.ziplex.lexer.benchmark.lexer.JsonLexerBenchmark.separability_pred
+[info] # Parameters: (file = 202_46879chars.json)
+[info] # Run progress: 89.74% complete, ETA 00:13:28
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 38646.107 us/op
+[info] # Warmup Iteration   2: 21057.709 us/op
+[info] # Warmup Iteration   3: 19872.961 us/op
+[info] # Warmup Iteration   4: 19321.596 us/op
+[info] # Warmup Iteration   5: 20267.933 us/op
+[info] Iteration   1: 20001.633 us/op
+[info] Iteration   2: 19163.154 us/op
+[info] Iteration   3: 20121.842 us/op
+[info] Iteration   4: 20218.045 us/op
+[info] Iteration   5: 18958.109 us/op
+[info] Result "com.ziplex.lexer.benchmark.lexer.JsonLexerBenchmark.separability_pred":
+[info]   19692.557 ±(99.9%) 2258.160 us/op [Average]
+[info]   (min, avg, max) = (18958.109, 19692.557, 20218.045), stdev = 586.437
+[info]   CI (99.9%): [17434.397, 21950.717] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.17, OpenJDK 64-Bit Server VM, 17.0.17+10-Ubuntu-124.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 5 iterations, 10 s each
+[info] # Measurement: 5 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: com.ziplex.lexer.benchmark.lexer.JsonLexerBenchmark.separability_pred
+[info] # Parameters: (file = 222_51521chars.json)
+[info] # Run progress: 91.03% complete, ETA 00:11:47
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 42287.118 us/op
+[info] # Warmup Iteration   2: 22922.404 us/op
+[info] # Warmup Iteration   3: 21027.646 us/op
+[info] # Warmup Iteration   4: 21250.924 us/op
+[info] # Warmup Iteration   5: 22134.866 us/op
+[info] Iteration   1: 21951.637 us/op
+[info] Iteration   2: 21142.587 us/op
+[info] Iteration   3: 21787.327 us/op
+[info] Iteration   4: 21579.242 us/op
+[info] Iteration   5: 21829.526 us/op
+[info] Result "com.ziplex.lexer.benchmark.lexer.JsonLexerBenchmark.separability_pred":
+[info]   21658.064 ±(99.9%) 1224.091 us/op [Average]
+[info]   (min, avg, max) = (21142.587, 21658.064, 21951.637), stdev = 317.892
+[info]   CI (99.9%): [20433.973, 22882.154] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.17, OpenJDK 64-Bit Server VM, 17.0.17+10-Ubuntu-124.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 5 iterations, 10 s each
+[info] # Measurement: 5 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: com.ziplex.lexer.benchmark.lexer.JsonLexerBenchmark.separability_pred
+[info] # Parameters: (file = 22_5115chars.json)
+[info] # Run progress: 92.31% complete, ETA 00:10:06
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 4362.243 us/op
+[info] # Warmup Iteration   2: 2250.280 us/op
+[info] # Warmup Iteration   3: 2095.635 us/op
+[info] # Warmup Iteration   4: 1946.797 us/op
+[info] # Warmup Iteration   5: 1979.023 us/op
+[info] Iteration   1: 2021.580 us/op
+[info] Iteration   2: 2043.885 us/op
+[info] Iteration   3: 2015.161 us/op
+[info] Iteration   4: 1986.458 us/op
+[info] Iteration   5: 1959.174 us/op
+[info] Result "com.ziplex.lexer.benchmark.lexer.JsonLexerBenchmark.separability_pred":
+[info]   2005.252 ±(99.9%) 126.745 us/op [Average]
+[info]   (min, avg, max) = (1959.174, 2005.252, 2043.885), stdev = 32.915
+[info]   CI (99.9%): [1878.507, 2131.997] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.17, OpenJDK 64-Bit Server VM, 17.0.17+10-Ubuntu-124.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 5 iterations, 10 s each
+[info] # Measurement: 5 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: com.ziplex.lexer.benchmark.lexer.JsonLexerBenchmark.separability_pred
+[info] # Parameters: (file = 242_56154chars.json)
+[info] # Run progress: 93.59% complete, ETA 00:08:25
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 47320.397 us/op
+[info] # Warmup Iteration   2: 25871.018 us/op
+[info] # Warmup Iteration   3: 24461.800 us/op
+[info] # Warmup Iteration   4: 22820.746 us/op
+[info] # Warmup Iteration   5: 24062.690 us/op
+[info] Iteration   1: 24302.802 us/op
+[info] Iteration   2: 23314.344 us/op
+[info] Iteration   3: 22948.155 us/op
+[info] Iteration   4: 23796.435 us/op
+[info] Iteration   5: 23655.692 us/op
+[info] Result "com.ziplex.lexer.benchmark.lexer.JsonLexerBenchmark.separability_pred":
+[info]   23603.486 ±(99.9%) 1965.394 us/op [Average]
+[info]   (min, avg, max) = (22948.155, 23603.486, 24302.802), stdev = 510.407
+[info]   CI (99.9%): [21638.091, 25568.880] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.17, OpenJDK 64-Bit Server VM, 17.0.17+10-Ubuntu-124.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 5 iterations, 10 s each
+[info] # Measurement: 5 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: com.ziplex.lexer.benchmark.lexer.JsonLexerBenchmark.separability_pred
+[info] # Parameters: (file = 2_456chars.json)
+[info] # Run progress: 94.87% complete, ETA 00:06:44
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 350.136 us/op
+[info] # Warmup Iteration   2: 181.021 us/op
+[info] # Warmup Iteration   3: 173.778 us/op
+[info] # Warmup Iteration   4: 175.434 us/op
+[info] # Warmup Iteration   5: 180.826 us/op
+[info] Iteration   1: 174.498 us/op
+[info] Iteration   2: 171.661 us/op
+[info] Iteration   3: 176.504 us/op
+[info] Iteration   4: 177.428 us/op
+[info] Iteration   5: 174.514 us/op
+[info] Result "com.ziplex.lexer.benchmark.lexer.JsonLexerBenchmark.separability_pred":
+[info]   174.921 ±(99.9%) 8.558 us/op [Average]
+[info]   (min, avg, max) = (171.661, 174.921, 177.428), stdev = 2.222
+[info]   CI (99.9%): [166.363, 183.479] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.17, OpenJDK 64-Bit Server VM, 17.0.17+10-Ubuntu-124.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 5 iterations, 10 s each
+[info] # Measurement: 5 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: com.ziplex.lexer.benchmark.lexer.JsonLexerBenchmark.separability_pred
+[info] # Parameters: (file = 42_9755chars.json)
+[info] # Run progress: 96.15% complete, ETA 00:05:03
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 8730.406 us/op
+[info] # Warmup Iteration   2: 4421.291 us/op
+[info] # Warmup Iteration   3: 4181.064 us/op
+[info] # Warmup Iteration   4: 3940.999 us/op
+[info] # Warmup Iteration   5: 3959.924 us/op
+[info] Iteration   1: 4070.776 us/op
+[info] Iteration   2: 4063.878 us/op
+[info] Iteration   3: 4089.912 us/op
+[info] Iteration   4: 4018.713 us/op
+[info] Iteration   5: 3905.214 us/op
+[info] Result "com.ziplex.lexer.benchmark.lexer.JsonLexerBenchmark.separability_pred":
+[info]   4029.699 ±(99.9%) 286.208 us/op [Average]
+[info]   (min, avg, max) = (3905.214, 4029.699, 4089.912), stdev = 74.327
+[info]   CI (99.9%): [3743.491, 4315.907] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.17, OpenJDK 64-Bit Server VM, 17.0.17+10-Ubuntu-124.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 5 iterations, 10 s each
+[info] # Measurement: 5 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: com.ziplex.lexer.benchmark.lexer.JsonLexerBenchmark.separability_pred
+[info] # Parameters: (file = 62_14377chars.json)
+[info] # Run progress: 97.44% complete, ETA 00:03:22
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 11780.840 us/op
+[info] # Warmup Iteration   2: 6479.459 us/op
+[info] # Warmup Iteration   3: 6266.176 us/op
+[info] # Warmup Iteration   4: 5917.295 us/op
+[info] # Warmup Iteration   5: 6228.862 us/op
+[info] Iteration   1: 6292.896 us/op
+[info] Iteration   2: 5929.943 us/op
+[info] Iteration   3: 6044.861 us/op
+[info] Iteration   4: 6095.439 us/op
+[info] Iteration   5: 6097.371 us/op
+[info] Result "com.ziplex.lexer.benchmark.lexer.JsonLexerBenchmark.separability_pred":
+[info]   6092.102 ±(99.9%) 505.317 us/op [Average]
+[info]   (min, avg, max) = (5929.943, 6092.102, 6292.896), stdev = 131.229
+[info]   CI (99.9%): [5586.785, 6597.419] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 17.0.17, OpenJDK 64-Bit Server VM, 17.0.17+10-Ubuntu-124.04
+[info] # VM invoker: /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+[info] # VM options: <none>
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 5 iterations, 10 s each
+[info] # Measurement: 5 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: com.ziplex.lexer.benchmark.lexer.JsonLexerBenchmark.separability_pred
+[info] # Parameters: (file = 82_19037chars.json)
+[info] # Run progress: 98.72% complete, ETA 00:01:41
+[info] # Fork: 1 of 1
+[info] # Warmup Iteration   1: 17276.896 us/op
+[info] # Warmup Iteration   2: 9037.777 us/op
+[info] # Warmup Iteration   3: 8515.887 us/op
+[info] # Warmup Iteration   4: 8044.763 us/op
+[info] # Warmup Iteration   5: 8128.845 us/op
+[info] Iteration   1: 8547.841 us/op
+[info] Iteration   2: 8462.053 us/op
+[info] Iteration   3: 8452.353 us/op
+[info] Iteration   4: 8247.053 us/op
+[info] Iteration   5: 8229.430 us/op
+[info] Result "com.ziplex.lexer.benchmark.lexer.JsonLexerBenchmark.separability_pred":
+[info]   8387.746 ±(99.9%) 545.191 us/op [Average]
+[info]   (min, avg, max) = (8229.430, 8387.746, 8547.841), stdev = 141.584
+[info]   CI (99.9%): [7842.555, 8932.937] (assumes normal distribution)
+[info] # Run complete. Total time: 02:11:21
+[info] REMEMBER: The numbers below are just data. To gain reusable insights, you need to follow up on
+[info] why the numbers are the way they are. Use profilers (see -prof, -lprof), design factorial
+[info] experiments, perform baseline and negative tests that provide experimental control, make sure
+[info] the benchmarking environment is safe on JVM/OS/HW level, ask for reviews from the domain experts.
+[info] Do not assume the numbers tell you what you want them to tell.
+[info] Benchmark                                                 (file)  Mode  Cnt       Score       Error  Units
+[info] JsonLexerBenchmark.lex_ZipperMem             102_23677chars.json  avgt    5   56344.718 ±  4288.390  us/op
+[info] JsonLexerBenchmark.lex_ZipperMem             122_28308chars.json  avgt    5   69052.292 ±  4280.009  us/op
+[info] JsonLexerBenchmark.lex_ZipperMem             142_32958chars.json  avgt    5   84386.281 ±  7869.411  us/op
+[info] JsonLexerBenchmark.lex_ZipperMem             162_37599chars.json  avgt    5   95670.153 ±  3138.876  us/op
+[info] JsonLexerBenchmark.lex_ZipperMem             182_42231chars.json  avgt    5  112877.332 ±  6510.204  us/op
+[info] JsonLexerBenchmark.lex_ZipperMem             202_46879chars.json  avgt    5  126062.485 ± 18931.079  us/op
+[info] JsonLexerBenchmark.lex_ZipperMem             222_51521chars.json  avgt    5  139505.252 ±  8199.509  us/op
+[info] JsonLexerBenchmark.lex_ZipperMem               22_5115chars.json  avgt    5    9448.285 ±   644.675  us/op
+[info] JsonLexerBenchmark.lex_ZipperMem             242_56154chars.json  avgt    5  152490.516 ± 18375.403  us/op
+[info] JsonLexerBenchmark.lex_ZipperMem                 2_456chars.json  avgt    5     758.279 ±    63.347  us/op
+[info] JsonLexerBenchmark.lex_ZipperMem               42_9755chars.json  avgt    5   20455.719 ±  1715.699  us/op
+[info] JsonLexerBenchmark.lex_ZipperMem              62_14377chars.json  avgt    5   31994.135 ±  2427.692  us/op
+[info] JsonLexerBenchmark.lex_ZipperMem              82_19037chars.json  avgt    5   44379.932 ±  4128.219  us/op
+[info] JsonLexerBenchmark.lex_ZipperV1Mem           102_23677chars.json  avgt    5   44188.567 ±  3817.304  us/op
+[info] JsonLexerBenchmark.lex_ZipperV1Mem           122_28308chars.json  avgt    5   53827.063 ±  5886.477  us/op
+[info] JsonLexerBenchmark.lex_ZipperV1Mem           142_32958chars.json  avgt    5   62942.533 ±  1501.104  us/op
+[info] JsonLexerBenchmark.lex_ZipperV1Mem           162_37599chars.json  avgt    5   67032.900 ±  3083.723  us/op
+[info] JsonLexerBenchmark.lex_ZipperV1Mem           182_42231chars.json  avgt    5   81455.952 ±  5830.236  us/op
+[info] JsonLexerBenchmark.lex_ZipperV1Mem           202_46879chars.json  avgt    5   92028.013 ±  6264.334  us/op
+[info] JsonLexerBenchmark.lex_ZipperV1Mem           222_51521chars.json  avgt    5  103099.503 ±  7585.543  us/op
+[info] JsonLexerBenchmark.lex_ZipperV1Mem             22_5115chars.json  avgt    5    8398.809 ±   405.093  us/op
+[info] JsonLexerBenchmark.lex_ZipperV1Mem           242_56154chars.json  avgt    5  104131.020 ±  8028.414  us/op
+[info] JsonLexerBenchmark.lex_ZipperV1Mem               2_456chars.json  avgt    5     656.075 ±    67.233  us/op
+[info] JsonLexerBenchmark.lex_ZipperV1Mem             42_9755chars.json  avgt    5   17423.999 ±  2248.841  us/op
+[info] JsonLexerBenchmark.lex_ZipperV1Mem            62_14377chars.json  avgt    5   25456.682 ±  2206.502  us/op
+[info] JsonLexerBenchmark.lex_ZipperV1Mem            82_19037chars.json  avgt    5   33388.085 ±  1442.498  us/op
+[info] JsonLexerBenchmark.lex_ZipperV1NonMem        102_23677chars.json  avgt    5  154513.971 ±  9880.530  us/op
+[info] JsonLexerBenchmark.lex_ZipperV1NonMem        122_28308chars.json  avgt    5  183009.755 ±  7395.326  us/op
+[info] JsonLexerBenchmark.lex_ZipperV1NonMem        142_32958chars.json  avgt    5  214622.334 ±  8385.558  us/op
+[info] JsonLexerBenchmark.lex_ZipperV1NonMem        162_37599chars.json  avgt    5  247877.726 ± 17263.854  us/op
+[info] JsonLexerBenchmark.lex_ZipperV1NonMem        182_42231chars.json  avgt    5  277350.550 ±  8754.317  us/op
+[info] JsonLexerBenchmark.lex_ZipperV1NonMem        202_46879chars.json  avgt    5  307379.651 ± 12189.548  us/op
+[info] JsonLexerBenchmark.lex_ZipperV1NonMem        222_51521chars.json  avgt    5  344002.901 ± 20203.816  us/op
+[info] JsonLexerBenchmark.lex_ZipperV1NonMem          22_5115chars.json  avgt    5   32392.935 ±  2164.592  us/op
+[info] JsonLexerBenchmark.lex_ZipperV1NonMem        242_56154chars.json  avgt    5  369376.999 ± 26232.055  us/op
+[info] JsonLexerBenchmark.lex_ZipperV1NonMem            2_456chars.json  avgt    5    2812.155 ±    86.467  us/op
+[info] JsonLexerBenchmark.lex_ZipperV1NonMem          42_9755chars.json  avgt    5   62547.924 ±  3184.911  us/op
+[info] JsonLexerBenchmark.lex_ZipperV1NonMem         62_14377chars.json  avgt    5   93159.970 ±  7925.367  us/op
+[info] JsonLexerBenchmark.lex_ZipperV1NonMem         82_19037chars.json  avgt    5  123004.231 ±  3381.194  us/op
+[info] JsonLexerBenchmark.lex_ZipperV2MemOnlyDeriv  102_23677chars.json  avgt    5   48220.986 ±  3587.374  us/op
+[info] JsonLexerBenchmark.lex_ZipperV2MemOnlyDeriv  122_28308chars.json  avgt    5   56985.022 ±  3007.584  us/op
+[info] JsonLexerBenchmark.lex_ZipperV2MemOnlyDeriv  142_32958chars.json  avgt    5   65598.270 ±  3200.756  us/op
+[info] JsonLexerBenchmark.lex_ZipperV2MemOnlyDeriv  162_37599chars.json  avgt    5   75258.609 ±  4485.784  us/op
+[info] JsonLexerBenchmark.lex_ZipperV2MemOnlyDeriv  182_42231chars.json  avgt    5   92409.413 ±  4628.184  us/op
+[info] JsonLexerBenchmark.lex_ZipperV2MemOnlyDeriv  202_46879chars.json  avgt    5   99122.797 ±  3590.935  us/op
+[info] JsonLexerBenchmark.lex_ZipperV2MemOnlyDeriv  222_51521chars.json  avgt    5  109084.440 ±  5043.062  us/op
+[info] JsonLexerBenchmark.lex_ZipperV2MemOnlyDeriv    22_5115chars.json  avgt    5    8028.196 ±   384.991  us/op
+[info] JsonLexerBenchmark.lex_ZipperV2MemOnlyDeriv  242_56154chars.json  avgt    5  116690.601 ±  4666.807  us/op
+[info] JsonLexerBenchmark.lex_ZipperV2MemOnlyDeriv      2_456chars.json  avgt    5     610.809 ±    35.869  us/op
+[info] JsonLexerBenchmark.lex_ZipperV2MemOnlyDeriv    42_9755chars.json  avgt    5   17734.925 ±  1124.358  us/op
+[info] JsonLexerBenchmark.lex_ZipperV2MemOnlyDeriv   62_14377chars.json  avgt    5   27687.396 ±  1261.883  us/op
+[info] JsonLexerBenchmark.lex_ZipperV2MemOnlyDeriv   82_19037chars.json  avgt    5   38358.677 ±  3290.324  us/op
+[info] JsonLexerBenchmark.lex_ZipperV2NonMem        102_23677chars.json  avgt    5  154703.397 ± 19443.242  us/op
+[info] JsonLexerBenchmark.lex_ZipperV2NonMem        122_28308chars.json  avgt    5  185914.277 ±  8826.141  us/op
+[info] JsonLexerBenchmark.lex_ZipperV2NonMem        142_32958chars.json  avgt    5  216592.668 ± 12469.891  us/op
+[info] JsonLexerBenchmark.lex_ZipperV2NonMem        162_37599chars.json  avgt    5  247451.375 ± 16323.701  us/op
+[info] JsonLexerBenchmark.lex_ZipperV2NonMem        182_42231chars.json  avgt    5  279901.093 ± 16170.535  us/op
+[info] JsonLexerBenchmark.lex_ZipperV2NonMem        202_46879chars.json  avgt    5  310058.627 ± 15856.371  us/op
+[info] JsonLexerBenchmark.lex_ZipperV2NonMem        222_51521chars.json  avgt    5  343909.533 ± 23042.733  us/op
+[info] JsonLexerBenchmark.lex_ZipperV2NonMem          22_5115chars.json  avgt    5   32051.802 ±  3541.949  us/op
+[info] JsonLexerBenchmark.lex_ZipperV2NonMem        242_56154chars.json  avgt    5  381081.933 ± 17345.593  us/op
+[info] JsonLexerBenchmark.lex_ZipperV2NonMem            2_456chars.json  avgt    5    2810.307 ±    85.490  us/op
+[info] JsonLexerBenchmark.lex_ZipperV2NonMem          42_9755chars.json  avgt    5   62312.756 ±  3369.559  us/op
+[info] JsonLexerBenchmark.lex_ZipperV2NonMem         62_14377chars.json  avgt    5   93416.334 ±  5452.995  us/op
+[info] JsonLexerBenchmark.lex_ZipperV2NonMem         82_19037chars.json  avgt    5  125209.887 ± 10530.766  us/op
+[info] JsonLexerBenchmark.separability_pred         102_23677chars.json  avgt    5    9374.100 ±  1368.888  us/op
+[info] JsonLexerBenchmark.separability_pred         122_28308chars.json  avgt    5   11568.107 ±   900.153  us/op
+[info] JsonLexerBenchmark.separability_pred         142_32958chars.json  avgt    5   13559.793 ±  1191.354  us/op
+[info] JsonLexerBenchmark.separability_pred         162_37599chars.json  avgt    5   15822.321 ±  1261.393  us/op
+[info] JsonLexerBenchmark.separability_pred         182_42231chars.json  avgt    5   17625.147 ±  1633.785  us/op
+[info] JsonLexerBenchmark.separability_pred         202_46879chars.json  avgt    5   19692.557 ±  2258.160  us/op
+[info] JsonLexerBenchmark.separability_pred         222_51521chars.json  avgt    5   21658.064 ±  1224.091  us/op
+[info] JsonLexerBenchmark.separability_pred           22_5115chars.json  avgt    5    2005.252 ±   126.745  us/op
+[info] JsonLexerBenchmark.separability_pred         242_56154chars.json  avgt    5   23603.486 ±  1965.394  us/op
+[info] JsonLexerBenchmark.separability_pred             2_456chars.json  avgt    5     174.921 ±     8.558  us/op
+[info] JsonLexerBenchmark.separability_pred           42_9755chars.json  avgt    5    4029.699 ±   286.208  us/op
+[info] JsonLexerBenchmark.separability_pred          62_14377chars.json  avgt    5    6092.102 ±   505.317  us/op
+[info] JsonLexerBenchmark.separability_pred          82_19037chars.json  avgt    5    8387.746 ±   545.191  us/op
+[success] Total time: 7907 s (02:11:47), completed Jan 8, 2026, 11:50:43 PM

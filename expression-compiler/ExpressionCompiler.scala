@@ -24,10 +24,23 @@ object ExprCompiler {
     def apply(x: Int, y:Int) = x * y
   }
 
+  abstract class Unary {
+    def apply(x: Int): Int
+  }
+
+  case class Negate() extends Unary {
+    def apply(x: Int) = -x
+  }
+
+  case class BitwiseNot() extends Unary {
+    def apply(x: Int) = ~x
+  }
+
   sealed abstract class Expr
   case class Var(str: String) extends Expr
   case class ConstExpr(c: Int) extends Expr
   case class BinExpr(left: Expr, b: Binary, right: Expr) extends Expr
+  case class UnaryExpr(u: Unary, expr: Expr) extends Expr
 
   type Value = Int
   type Env = String => Value
@@ -37,12 +50,14 @@ object ExprCompiler {
       case ConstExpr(c) => c
       case Var(s) => en(s)
       case BinExpr(left, b, right) => b(eval(en)(left), eval(en)(right))
+      case UnaryExpr(u, e) => u(eval(en)(e))
     }
 
   sealed abstract class Instr
   case class Push(c: Int) extends Instr
   case class Load(s: String) extends Instr
   case class BinOp(b: Binary) extends Instr
+  case class UnaryOp(u: Unary) extends Instr
 
   type Bytecodes = List[Instr]
   type Stack = List[Value]
@@ -59,6 +74,12 @@ object ExprCompiler {
             run(bs1)(en, push(b(v2, v1), stack1)) // check this
           case _ => None[Stack]()
         }
+      case Cons(UnaryOp(u), bs1) =>
+        stack match {
+          case Cons(v1, stack1) =>
+            run(bs1)(en, push(u(v1), stack1))
+          case _ => None[Stack]()
+        }
     }
 
   def compile(expr: Expr): Bytecodes =
@@ -67,6 +88,8 @@ object ExprCompiler {
       case Var(s) => List[Instr](Load(s))
       case BinExpr(left, b, right) =>
         compile(left) ++ (compile(right) ++ List[Instr](BinOp(b)))
+      case UnaryExpr(u, e) =>
+        compile(e) ++ List[Instr](UnaryOp(u))
     }
 
   def assoc4[A](as: List[A], bs: List[A], cs: List[A], ds: List[A]): Unit = {
@@ -98,6 +121,19 @@ object ExprCompiler {
     expr match {
       case ConstExpr(c) => ()
       case Var(s) => ()
+      case UnaryExpr(u, e) =>
+        val uOp = List[Instr](UnaryOp(u))
+        val vE = eval(en)(e)
+        assert(eval(en)(expr) == u(vE), "eval unary")
+        assert(compile(expr) == compile(e) ++ uOp, "compile unary")
+        ( 
+          run(compile(expr) ++ bs)(en, inStack)              ==:| trivial |:
+          run((compile(e) ++ uOp) ++ bs)(en, inStack)        ==:| ListSpecs.appendAssoc(compile(e), uOp, bs) |:
+          run(compile(e) ++ (uOp ++ bs))(en, inStack)        ==:| correct(en, e, uOp ++ bs, inStack) |:
+          run(uOp ++ bs)(en, push(vE, inStack))              ==:| trivial |:
+          run(bs)(en, push(u(vE), inStack))                  ==:| trivial |:
+          run(bs)(en, push(eval(en)(expr), inStack))
+        ).qed
       case BinExpr(left, b, right) =>
         val op = List[Instr](BinOp(b))
         val vLeft = eval(en)(left)

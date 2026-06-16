@@ -9,7 +9,7 @@ import stainless.math.{wrapping => wrappingExpr, *}
 import StaticChecks.*
 import scala.annotation.targetName
 
-val MASK_B: Array[Byte] = Array(
+@inline def MASK_B: Array[Byte] = Array(
    0x00, //   0 / 0000 0000 / x00
    0x01, //   1 / 0000 0001 / x01
    0x03, //   3 / 0000 0011 / x03
@@ -21,7 +21,7 @@ val MASK_B: Array[Byte] = Array(
    -0x1, //  -1 / 1111 1111 / xFF
 )
 
-val MASK_C: Array[Byte] = Array(
+@inline def MASK_C: Array[Byte] = Array(
    0x00,  //  / 0000 0000 /
    -0x80,  //  / 1000 0000 /
    -0x40,  //  / 1100 0000 /
@@ -33,7 +33,7 @@ val MASK_C: Array[Byte] = Array(
    -0x01,  //  / 1111 1111 /
 )
 
-val BitAccessMasks: Array[Byte] = Array(
+@inline def BitAccessMasks: Array[Byte] = Array(
    -0x80, // -128 / 1000 0000 / x80
    0x40, //   64 / 0100 0000 / x40
    0x20, //   32 / 0010 0000 / x20
