@@ -1,4 +1,4 @@
-export _JAVA_OPTIONS="-Xmx32g"
+export _JAVA_OPTIONS="-Xmx27g"
 stainless-dotty\
  src/main/scala/com/ziplex/lexer/VerifiedRegex.scala\
  src/main/scala/com/ziplex/lexer/VerifiedLexer.scala\
@@ -13,6 +13,7 @@ stainless-dotty\
  src/main/scala/com/ziplex/example/AmyLexer.scala\
  src/main/scala/com/ziplex/example/PythonLexer.scala\
  --config-file=stainless.conf\
+ --solvers=smt-z3,smt-cvc5\
  -D-parallel=12 --functions=VerifiedLexer.Lexer.lex\
  $1
 
