@@ -471,6 +471,7 @@ object encoder {
     val outPos1 = runUpd.outPos
 
     @ghost val indexPre = freshCopy(index)
+    @ghost val outPos0MinusHeader = outPos0 - HeaderSize
 
     val outPos2 = if (px != pxPrev) {
       assert(run1 == 0)
@@ -482,15 +483,16 @@ object encoder {
           check(positionsIneqInv(run1, outPos1 + chan + 1, pxPos + chan))
         } else {
           assert(runUpd.reset && outPos1 <= outPos0 + 2 && run0 > 0)
-          val lhs0 = chan * (outPos0 - HeaderSize + chan)
+          val lhs0 = chan * (outPos0MinusHeader + chan)
           val rhs0 = (chan + 1) * pxPos
-          assert(lhs0 <= rhs0)
+          check(lhs0 <= rhs0)
           val lhs1 = lhs0 + (chan + 1) * chan
           val rhs1 = rhs0 + (chan + 1) * chan
-          assert(lhs1 <= rhs1) // Slow (~45s)
-          val lhs2 = chan * (outPos0 - HeaderSize + chan + chan + 1)
+          check(lhs1 <= rhs1) // Slow (~45s)
+          val lhs2 = chan * (outPos0MinusHeader + chan + chan + 1)
           val rhs2 = (chan + 1) * (pxPos + chan)
           assert(lhs2 == lhs1)
+          internalLemmaArithLongRhs1Rhs2_1(rhs1, rhs2, chan, pxPos)
           assert(rhs2 == rhs1)
           assert(lhs2 <= rhs2)
           val lhs3 = chan * (outPos1 - HeaderSize + chan + 1)
@@ -536,18 +538,18 @@ object encoder {
         if (runUpd.reset) {
           assert(outPos1 <= outPos0 + 2)
           assert(run1 == 0)
-          val lhs0 = chan * (outPos0 - HeaderSize + run0 * chan)
+          val lhs0 = chan * (outPos0MinusHeader + run0 * chan)
           val rhs0 = (chan + 1) * pxPos
           assert(lhs0 <= rhs0)
           val lhs1 = lhs0 + (chan + 1) * chan
           val rhs1 = rhs0 + (chan + 1) * chan
           assert(lhs1 <= rhs1) // Slow (~75s)
-          val lhs2 = chan * (outPos0 - HeaderSize + run0 * chan + chan + 1)
+          val lhs2 = chan * (outPos0MinusHeader + run0 * chan + chan + 1)
           val rhs2 = (chan + 1) * (pxPos + chan)
           assert(lhs1 == lhs2)
           assert(rhs1 == rhs2)
           assert(lhs2 <= rhs2)
-          val lhs3 = chan * (outPos0 - HeaderSize + run0 * chan + chan + 1)
+          val lhs3 = chan * (outPos0MinusHeader + run0 * chan + chan + 1)
           assert(lhs3 <= rhs2)
           val lhs4 = chan * (outPos1 - HeaderSize)
           assert((lhs4 <= lhs3).because(chan >= 3 && outPos1 <= outPos0 + 2 && run0 >= 0))
@@ -556,21 +558,27 @@ object encoder {
         } else {
           assert(outPos1 == outPos0 && run1 == run0 + 1 && run0 < 0x2020)
           assert(positionsIneqInv(run0, outPos0, pxPos))
-          val lhs0 = chan * ((outPos0 - HeaderSize) + chan * run0)
+          val lhs0 = chan * ((outPos0MinusHeader) + chan * run0)
           val rhs0 = (chan + 1) * pxPos
           assert(lhs0 <= rhs0)
-          val lhs1 = lhs0 + (chan + 1) * chan
-          val rhs1 = rhs0 + (chan + 1) * chan
+          val temp = (chan + 1) * chan
+          val lhs1 = lhs0 + temp
+          val rhs1 = rhs0 + temp
           assert(lhs1 <= rhs1) // Slow (~60s)
-          val lhs2 = chan * ((outPos0 - HeaderSize) + chan * run0 + chan + 1)
+          val lhs2 = chan * ((outPos0MinusHeader) + chan * run0 + chan + 1)
           val rhs2 = (chan + 1) * (pxPos + chan)
           assert(lhs2 == lhs1)
           assert(rhs2 == rhs1)
           assert(lhs2 <= rhs2)
-          val lhs3 = chan * ((outPos0 - HeaderSize) + chan * (run0 + 1))
+          def lhs34(run: Long, outPos: Long, pxPos: Long): Long = {
+            chan * ((outPos - HeaderSize) + chan * (run + 1))
+          }
+          // val lhs3 = chan * ((outPos0MinusHeader) + chan * (run0 + 1))
+          val lhs3 = lhs34(run0, outPos0, pxPos)
           assert(lhs3 <= lhs2) // We actually have lhs3 == lhs2 but lhs3 <= lhs2 is sufficient and takes way less time to verify
           assert(lhs3 <= rhs2)
-          val lhs4 = chan * ((outPos1 - HeaderSize) + chan * (run0 + 1))
+          // val lhs4 = chan * ((outPos1 - HeaderSize) + chan * (run0 + 1))
+          val lhs4 = lhs34(run0, outPos1, pxPos)
           assert(lhs4 == lhs3)
           assert(lhs4 <= rhs2)
           check(positionsIneqInv(run1, outPos1, pxPos + chan).because(run1 == run0 + 1))
@@ -652,7 +660,8 @@ object encoder {
         assert(decoded.pixels.length == pixels.length)
         assert(decoded.pxPos + chan <= decoded.pixels.length) // 5
         assert(pixels.length == w * h * chan) // 2 (and part of 4)
-        assert(decoder.pxPosInv(decoded.pxPos)) // 4  Slow (~60s)
+        internalLemmaEncoderPxPosInvImpliesDecoderPxPosInv(pxPos)
+        assert(decoder.pxPosInv(decoded.pxPos)) // 4 
         val (ix1, pix1, decIter1) = decoder.decodeLoopPure(decoded.index, decoded.pixels, pxPrev, outPos0, outPos1, decoded.pxPos)
         assert(decIter1.pxPos == decoded1.pxPos)
         assert(decIter1.pxPos == pxPos)
@@ -678,7 +687,9 @@ object encoder {
         assert(decoded1.pxPos + chan <= decoded1.pixels.length)
         assert(outPos1 < outPos2 && outPos2 <= bytes.length - Padding)
         assert(pixels.length == w * h * chan)
+        internalLemmaPxPosInvImpliesMod0(pxPos)
         assert(pxPos % chan == 0)
+        internalLemmaPxPosInvSame(pxPos, decoded1.pxPos)
         assert(decoder.pxPosInv(decoded1.pxPos))
         val (ix2, pix2, decIter2) = decoder.decodeLoopPure(decoded1.index, decoded1.pixels, decIter1.px, outPos1, outPos2, decoded1.pxPos)
         assert(decIter2.pxPos == decoded2.pxPos)
@@ -769,6 +780,7 @@ object encoder {
       assert(decoded.pxPos + chan * run0 == pxPos)
       assert(decoded.pxPos + chan * run0 + chan == pxPos + chan)
       assert(decoded.pxPos + chan * (run0 + 1) == pxPos + chan)
+      internalLemmaArith2(decoded.pxPos, chan, run0, pxPos, run1)
       check(decoded.pxPos + chan * run1 == pxPos + chan)
 
       assert(outPos0 == outPos2)
@@ -787,6 +799,7 @@ object encoder {
       modMultLemma(w, h, chan)
       assert((w * h * chan) % chan == 0)
       assert(pixels.length == w * h * chan)
+      internalLemmaArith3(pixels.length, w, h, chan)
       check(pixels.length % chan == 0)
 
       check(samePixels(pixels, px, pxPos, chan))
@@ -806,7 +819,7 @@ object encoder {
     }
 
     EncodingIteration(px, outPos2, run1)
-  }.ensuring { case EncodingIteration(px, outPos2, run1) => // Wins the "slowest to verify" award (~210s)
+  }.ensuring { case EncodingIteration(px, outPos2, run1) => // Slow (~60s)
     // Bytes and index length are unchanged
     bytes.length == maxSize &&&
     index.length == 64 &&&
@@ -831,6 +844,44 @@ object encoder {
     samePixels(pixels, px, pxPos, chan) &&& // Precond 2 slow (~70s)
     arraysEq(old(bytes), bytes, 0, outPos0)
   }
+
+  @ghost @opaque @inlineOnce def internalLemmaArithLongRhs1Rhs2_1(rhs1: Long, rhs2: Long, cchan: Long, pxPos: Long) = {
+    require(rhs1 == ((cchan + 1) * pxPos) + (cchan + 1) * cchan)
+    require(rhs2 == (cchan + 1) * (pxPos + cchan))
+    assert(rhs1 == rhs2)
+  }.ensuring(_ => rhs1 == rhs2)
+
+  @ghost @opaque @inlineOnce def internalLemmaPxPosInvImpliesMod0(pxPos: Long)(using EncCtx) = {
+    require(pxPosInv(pxPos))
+    assert(pxPos % chan == 0)
+  }.ensuring(_ => pxPos % chan == 0)
+
+  @ghost @opaque @inlineOnce def internalLemmaPxPosInvSame(pxPos1: Long, pxPos2: Long)(using decoder.DecCtx) = {
+    require(decoder.pxPosInv(pxPos1))
+    require(pxPos1 == pxPos2)
+  }.ensuring(_ => decoder.pxPosInv(pxPos2))
+
+  @ghost @opaque @inlineOnce def internalLemmaEncoderPxPosInvImpliesDecoderPxPosInv(pxPos: Long)(using decoder.DecCtx, EncCtx) = {
+    require(encoder.w == decoder.w)
+    require(encoder.h == decoder.h)
+    require(encoder.chan == decoder.chan)
+    require(decoder.pixelsLen == encoder.w * encoder.h * encoder.chan)
+    require(encoder.pxPosInv(pxPos))
+  }.ensuring(_ => decoder.pxPosInv(pxPos))
+
+  @ghost @opaque @inlineOnce def internalLemmaArith2(decodedPxPos: Long, cchan: Long, run0: Long, pxPos: Long, run1: Long) = {
+    require(run1 == run0 + 1)
+    require(decodedPxPos + cchan * (run0 + 1) == pxPos + cchan)
+
+  }.ensuring(_ => decodedPxPos + cchan * run1 == pxPos + cchan)
+
+  @ghost @opaque @inlineOnce def internalLemmaArith3(pixelsLength: Long, w: Long, h: Long, cchan: Long) = {
+    require(3 <= cchan && cchan <= 4)
+    require(pixelsLength == w * h * cchan)
+    require((w * h * cchan) % cchan == 0)
+  }.ensuring(_ => pixelsLength % cchan == 0)
+
+
 
   @inline
   def updateRun(bytes: Array[Byte], run0: Long, outPos0: Long)(using EncCtx, LoopIter): RunUpdate = {
@@ -1062,6 +1113,7 @@ object encoder {
     require(rangesInv(run, outPos, pxPos))
     require(positionsIneqInv(run, outPos, pxPos))
     require(pxPos + chan <= pixels.length)
+    unfold(positionsIneqInv(run, outPos, pxPos))
     assert(chan * (outPos - HeaderSize + chan * run + chan + 1) <= (chan + 1) * (pxPos + chan))
     assert(chan * (outPos - HeaderSize + chan * run + chan + 1) <= (chan + 1) * pixels.length)
     assert(pixels.length * (chan + 1) == w * h * chan * (chan + 1))
@@ -1077,6 +1129,8 @@ object encoder {
   def withinBoundsLemma2(run: Long, outPos: Long, pxPos: Long)(using EncCtx): Unit = {
     require(rangesInv(run, outPos, pxPos))
     require(positionsIneqInv(run, outPos, pxPos))
+    unfold(positionsIneqInv(run, outPos, pxPos))
+    unfold(rangesInv(run, outPos, pxPos))
     val lhs = outPos - HeaderSize + chan * run + chan + 1
     assert(chan * lhs <= (chan + 1) * (pxPos + chan))
     assert(chan * lhs <= (chan + 1) * (pixels.length + chan))
@@ -1088,6 +1142,7 @@ object encoder {
     val lhs2 = lhs - chan - 1
     assert(chan * lhs2 <= (chan + 1) * pixels.length)
     assert(chan * lhs2 <= chan * maxPxPos)
+    
     assert(outPos - HeaderSize + chan * run <= maxPxPos)
     assert(outPos + chan * run <= maxSize - Padding)
     assert(outPos + chan * run + Padding <= maxSize)
@@ -1108,6 +1163,8 @@ object encoder {
     require(rangesInv(run, oldOutPos, pxPos))
     require(HeaderSize <= newOutPos && newOutPos <= oldOutPos + chan + 1)
     require(positionsIneqInv(run, oldOutPos + chan + 1, pxPos))
+    unfold(positionsIneqInv(run, oldOutPos + chan + 1, pxPos))
+    unfold(positionsIneqInv(run, newOutPos, pxPos))
     assert(chan * ((oldOutPos - HeaderSize) + chan * run) <= (chan + 1) * pxPos)
     assert(chan * (newOutPos - HeaderSize) <= chan * (oldOutPos + chan + 1 - HeaderSize))
     assert(chan * ((newOutPos - HeaderSize) + chan * run) <= chan * ((oldOutPos + chan + 1 - HeaderSize) + chan * run))
