@@ -348,26 +348,37 @@ object decoder {
         check(pxPos0 < pxPos2)
 
         // 7.
-        check(((pxPos0 + chan + run0 * chan <= pixels.length) ==> (run2 == 0 && pxPos2 == pxPos0 + chan * (run0 + 1))) because {
+        check(((pxPos0PlusChan + run0 * chan <= pixels.length) ==> (run2 == 0 && pxPos2 == pxPos0 + chan * (run0 + 1))) because {
           val lhs0 = pxPos0PlusChan + chan + run0Minus1 * chan
           val rhs0 = pxPos0PlusChan + chan * (run0Minus1 + 1)
           assert((lhs0 <= pixels.length) ==> (run2 == 0 && pxPos2 == rhs0))
 
-          val lhs1 = pxPos0 + chan + chan + (run0 - 1) * chan
-          val rhs1 = pxPos0 + chan + chan * run0
+          val lhs1 = pxPos0PlusChan + chan + (run0 - 1) * chan
+          val rhs1 = pxPos0PlusChan + chan * run0
           assert(lhs1 == lhs0)
           assert(rhs1 == rhs0)
 
-          val lhs2 = pxPos0 + chan + chan + run0 * chan - chan
+          val lhs2 = pxPos0PlusChan + chan + run0 * chan - chan
           val rhs2 = pxPos0 + chan * (run0 + 1)
           assert(lhs2 == lhs1)
           assert(rhs2 == rhs1)
 
-          val lhs3 = pxPos0 + chan + run0 * chan
+          val lhs3 = pxPos0PlusChan + run0 * chan
           assert(lhs3 == lhs2)
 
-          assert(lhs3 == lhs0)
+          check(lhs3 == lhs0)
           assert(rhs2 == rhs0)
+          if (lhs3 <= pixels.length) {
+            check(lhs3 == lhs0)
+            lemmaLeqEq(lhs3, lhs0, pixels.length)
+            assert(lhs0 <= pixels.length)
+            assert(pxPos0PlusChan + run0 * chan <= pixels.length)
+            check(run2 == 0)
+            check(run2 == 0 && pxPos2 == rhs2)
+            check((lhs3 <= pixels.length) ==> (run2 == 0 && pxPos2 == rhs2))
+          }else{
+            check((lhs3 <= pixels.length) ==> (run2 == 0 && pxPos2 == rhs2))
+          }
           assert((lhs3 <= pixels.length) ==> (run2 == 0 && pxPos2 == rhs2))
 
           check((pxPos0 + chan + run0 * chan <= pixels.length) ==> (run2 == 0 && pxPos2 == pxPos0 + chan * (run0 + 1)))
@@ -387,6 +398,13 @@ object decoder {
     pxPos2 % chan == 0 &&&
     writeRunPixelsInv(pxPos0, run0, pxPos2, run2)
   }
+
+  @ghost @opaque @inlineOnce
+  def lemmaLeqEq(a: Long, b: Long, c: Long): Unit = {
+    require(a <= c)
+    require(a == b)
+    check(b <= c)
+  }.ensuring(_ => b <= c)
 
   // Note: not opaque, as writePixelPureBytesEqLemma needs to see its definition.
   def writePixel(pixels: Array[Byte], px: Int, pxPos: Long)(using DecCtx): Unit = {

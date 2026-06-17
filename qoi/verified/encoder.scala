@@ -1131,6 +1131,46 @@ object encoder {
     require(positionsIneqInv(run, outPos, pxPos))
     unfold(positionsIneqInv(run, outPos, pxPos))
     unfold(rangesInv(run, outPos, pxPos))
+    @ghost
+    @opaque
+    @inlineOnce
+    def chanRunBoundLemma(run: Long)(using EncCtx): Unit = {
+      require(0 <= run && run < 62)
+      if (chan == 3) {
+        assert(0 <= 3 * run && 3 * run <= 244)
+      } else {
+        assert(chan == 4)
+        assert(0 <= 4 * run && 4 * run <= 244)
+      }
+    }.ensuring(_ => 0 <= chan * run && chan * run <= 244)
+
+    @ghost
+    @opaque
+    @inlineOnce
+    def lhs2BoundLemma(outPos: Long, t: Long)(using EncCtx): Unit = {
+      require(HeaderSize <= outPos && outPos <= maxSize - Padding)
+      require(0 <= t && t <= 244)
+    }.ensuring(_ => 0 <= outPos - HeaderSize + t && outPos - HeaderSize + t <= maxSize + 244)
+
+    @ghost
+    @opaque
+    @inlineOnce
+    def cancelChanMultLeqLemma(a: Long, b: Long)(using EncCtx): Unit = {
+      require(0 <= a && a <= maxSize + 244)
+      require(0 <= b && b <= maxSize)
+      require(chan * a <= chan * b)
+      assert(3 <= chan && chan <= 4)
+      assert(0 < w && w <= MaxWidth)
+      assert(0 < h && h <= MaxHeight)
+      assert(w * h * chan == pixels.length)
+      assert(maxSize == w * h * (chan + 1) + HeaderSize + Padding)
+      if (chan == 3) {
+        assert(3 * a <= 3 * b)
+      } else {
+        assert(chan == 4)
+        assert(4 * a <= 4 * b)
+      }
+    }.ensuring(_ => a <= b)
     val lhs = outPos - HeaderSize + chan * run + chan + 1
     assert(chan * lhs <= (chan + 1) * (pxPos + chan))
     assert(chan * lhs <= (chan + 1) * (pixels.length + chan))
@@ -1142,7 +1182,16 @@ object encoder {
     val lhs2 = lhs - chan - 1
     assert(chan * lhs2 <= (chan + 1) * pixels.length)
     assert(chan * lhs2 <= chan * maxPxPos)
-    
+    unfold(outPosInv(outPos))
+    unfold(runInv(run))
+    chanRunBoundLemma(run)
+    assert(0 <= chan * run && chan * run <= 244)
+    lhs2BoundLemma(outPos, chan * run)
+    assert(0 <= maxPxPos && maxPxPos <= maxSize)
+    assert(0 <= lhs2 && lhs2 <= maxSize + 244)
+    cancelChanMultLeqLemma(lhs2, maxPxPos)
+    assert(lhs2 <= maxPxPos)
+
     assert(outPos - HeaderSize + chan * run <= maxPxPos)
     assert(outPos + chan * run <= maxSize - Padding)
     assert(outPos + chan * run + Padding <= maxSize)
