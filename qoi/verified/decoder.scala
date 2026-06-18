@@ -667,13 +667,16 @@ object decoder {
 
     val SomeMut(DecodedResult(decodedPixels, ww, hh, cchan)) = decode(bytes, until): @unchecked
     val initIndex = Array.fill(64)(0)
-    val initPixels = Array.fill(w.toInt * h.toInt * chan.toInt)(0: Byte)
+    val initPixelsLen: Int = w.toInt * h.toInt * chan.toInt
+    val initPixels = Array.fill(initPixelsLen)(0: Byte)
     val initPx = Pixel.fromRgba(0, 0, 0, 255.toByte)
     val (_, decodedPixLoop, decIter) = decodeLoopPure(initIndex, initPixels, initPx, HeaderSize, until - Padding, 0)
 
     {
-      check(initPixels.length == decodedPixLoop.length)
-      check(decodedPixels.length == initPixels.length)
+      assert(initPixels.length == initPixelsLen)
+      check(initPixels.length == initPixelsLen)
+      check(initPixelsLen == decodedPixLoop.length)
+      check(decodedPixels.length == initPixelsLen)
       modMultLemma(w, h, chan)
       check(decodedPixels.length % chan == 0)
       check(0 <= decIter.pxPos && decIter.pxPos <= decodedPixels.length)
