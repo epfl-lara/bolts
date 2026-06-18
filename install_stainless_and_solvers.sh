@@ -10,7 +10,7 @@ mkdir -p "$SBT_DIR"
 
 echo "************** cvc5 **************"
 # cvc5
-wget https://github.com/cvc5/cvc5/releases/download/cvc5-1.3.4/cvc5-Linux-static.zip -O "$TEMP_DIR/downloaded.zip" --no-verbose
+wget https://github.com/cvc5/cvc5/releases/download/cvc5-1.3.4/cvc5-Linux-x86_64-static.zip -O "$TEMP_DIR/downloaded.zip" --no-verbose
 unzip -q "$TEMP_DIR/downloaded.zip" -d "$TEMP_DIR" 
 CVC5_DIR=$(ls "$TEMP_DIR" | grep cvc5)
 mv "$TEMP_DIR/$CVC5_DIR/bin/cvc5" "$SOLVERS_DIR/cvc5"
