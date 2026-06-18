@@ -74,6 +74,10 @@ object decoder {
         case None() => NoneMut()
       }
     }
+  }.ensuring {
+    case SomeMut(DecodedResult(pixels, ww, hh, cchan)) =>
+      pixels.length == ww.toInt * hh.toInt * cchan.toInt
+    case NoneMut() => true
   }
 
   @opaque
@@ -651,6 +655,13 @@ object decoder {
   }
 
   @ghost
+  @opaque
+  @inlineOnce
+  def toIntMulEqLemma(ww: Long, hh: Long, cchan: Long, w: Long, h: Long, chan: Long): Unit = {
+    require(ww == w && hh == h && cchan == chan)
+  }.ensuring(_ => ww.toInt * hh.toInt * cchan.toInt == w.toInt * h.toInt * chan.toInt)
+
+  @ghost
   @pure
   @opaque
   @inlineOnce
@@ -676,6 +687,9 @@ object decoder {
       assert(initPixels.length == initPixelsLen)
       check(initPixels.length == initPixelsLen)
       check(initPixelsLen == decodedPixLoop.length)
+      check(ww == w && hh == h && cchan == chan)
+      check(decodedPixels.length == ww.toInt * hh.toInt * cchan.toInt)
+      toIntMulEqLemma(ww, hh, cchan, w, h, chan)
       check(decodedPixels.length == initPixelsLen)
       modMultLemma(w, h, chan)
       check(decodedPixels.length % chan == 0)
