@@ -215,6 +215,7 @@ object decoder {
           check(writeRunPixelsInv(pxPos0, run, resPxPos, resRun))
           unfold(writeRunPixelsInv(pxPos0, run, resPxPos, resRun))
           check((pxPos0 + chan + chan * run <= pixelsLen) ==> (resRun == 0 && resPxPos == pxPos0 + chan * (run + 1))) // Slow (~60s)
+          check(pxPosInv(resPxPos))
         }
         (decRes, DecodingIteration(pxPrev, inPos, resPxPos, resRun))
 
@@ -226,10 +227,12 @@ object decoder {
           check(arraysEq(pixelsPre, pixels, 0, pxPos0))
           check(indexPre.updated(colorPos(px), px) == index)
           check(samePixels(pixels, px, pxPos0, chan))
+          check(pxPosInv(pxPos0))
+          check(pxPosInv(pxPos0 + chan))
         }
         (decRes, DecodingIteration(px, inPos, pxPos0 + chan, 0))
     }
-  }
+  }.ensuring(res => pxPosInv(res._2.pxPos))
 
   @pure
   def doDecodeNext(index: Array[Int], pxPrev: Int, inPos0: Long)(using DecCtx): (DecodedNext, Long) = {
@@ -633,7 +636,8 @@ object decoder {
       pixelsPre.length == pixels.length &&&
       0 <= decIter.inPos &&&
       inPos0 < decIter.inPos &&&
-      decIter.pxPos % chan == 0
+      decIter.pxPos % chan == 0 &&&
+      pxPosInv(decIter.pxPos)
   }
 
   @ghost
@@ -826,6 +830,7 @@ object decoder {
 
         arraysEqDropLeftLemma(bytes, bytes2, inPos0, decIter1Next.inPos, untilInPos)
         assert(arraysEq(bytes, bytes2, decIter1Next.inPos, untilInPos))
+        assert(pxPosInv(decIter1Next.pxPos)(using ctx1))
         decodeLoopPureBytesEqLemma(ix1Next, pix1Next, decIter1Next.px, decIter1Next.inPos, untilInPos, decIter1Next.pxPos, bytes2)
         val (ix1Rec, pix1Rec, decIter1Rec) = decodeLoopPure(ix1Next, pix1Next, decIter1Next.px, decIter1Next.inPos, untilInPos, decIter1Next.pxPos)(using ctx1)
         val (ix2Rec, pix2Rec, decIter2Rec) = decodeLoopPure(ix1Next, pix1Next, decIter1Next.px, decIter1Next.inPos, untilInPos, decIter1Next.pxPos)(using ctx2)

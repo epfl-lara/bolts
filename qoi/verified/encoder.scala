@@ -160,6 +160,7 @@ object encoder {
     @ghost val oldBytes = freshCopy(bytes)
     val EncodingIteration(px, outPos2, run1) = encodeSingleStep(index, bytes, pxPrev, run0, outPos0, pxPos, decoded)
     ghostExpr {
+      check(decoded.pxPos + chan * run0 == pxPos)
       assert(decoded.pixels.length == pixels.length)
       check(bytes.length == maxSize)
       check(oldBytes.length == bytes.length)
@@ -170,6 +171,8 @@ object encoder {
       assert(positionsIneqInv(run1, outPos2, pxPos + chan))
       assert((chan == 3) ==> (Pixel.a(px) == 255.toByte))
       assert(decoded.inPos == outPos2)
+      assert(decoded.pxPos % chan == 0)
+      assert(pxPos % chan == 0)
       assert(samePixels(pixels, px, pxPos, chan)) // Precond 2 very slow (~100s), precond 4 slow (~40s)
       assert(decoded.index == index)
       assert(decoded.pxPos + chan * run1 == pxPos + chan)
@@ -182,6 +185,8 @@ object encoder {
       modMultLemma(w, h, chan)
       assert((w * h * chan) % chan == 0)
       assert(pixels.length == w * h * chan)
+      val wh = w * h
+      lemmaMultModulo(wh, chan, pixels.length)
       assert(pixels.length % chan == 0)
       assert(pxPosInv(pxPos))
       unfold(pxPosInv(pxPos))
@@ -279,6 +284,13 @@ object encoder {
 
           given decoder.DecCtx = decoder.DecCtx(freshCopy(bytes), w, h, chan)
 
+          val cchan = decoder.chan
+          assert(cchan == chan)
+          val hh = decoder.h
+          assert(hh == h)
+          val ww = decoder.w
+          assert(ww == w)
+          internalLemmaPxPosInvSame(pxPos, oldDecoded.pxPos)
           val (ix1, pix1, decIter1) = decoder.decodeLoopPure(oldDecoded.index, oldDecoded.pixels, pxPrev, outPos0, outPos2, oldDecoded.pxPos)
           assert(decIter1.pxPos == decodedPreRec.pxPos)
           assert(decIter1.inPos == decodedPreRec.inPos)
@@ -300,9 +312,9 @@ object encoder {
           assert(decodedPreRec.index.length == 64)
           assert(decodedPreRec.pixels.length == pixels.length)
           assert(decodedPreRec.pixels.length == w * h * chan)
-          assert((w * h * chan) % chan == 0)
           assert(0 <= decodedPreRec.pxPos)
           assert(decodedPreRec.pxPos <= w * h * chan)
+          lemmaMultModulo(w * h, chan, decodedPreRec.pixels.length)
           assert(decodedPreRec.pixels.length % chan == 0)
           assert(decoder.pxPosInv(decodedPreRec.pxPos)) // Very slow (~110s)
           val (ix2, pix2, decIter2) = decoder.decodeLoopPure(decodedPreRec.index, decodedPreRec.pixels, px, outPos2, outPosRes, decodedPreRec.pxPos)
@@ -311,12 +323,14 @@ object encoder {
           assert(ix2 == decoded.index)
           assert(pix2 == decoded.pixels)
 
-          assert(oldDecoded.pxPos % chan == 0)
+          internalLemmaPxPosInvSame(pxPos, oldDecoded.pxPos)
+          check(oldDecoded.pxPos % chan == 0)
           assert(HeaderSize <= outPos0 && outPos0 <= bytes.length)
           assert(oldDecoded.index.length == 64)
           assert(oldDecoded.pixels.length == pixels.length)
           assert(oldDecoded.pixels.length == w * h * chan)
           assert((w * h * chan) % chan == 0)
+          lemmaMultModulo(w * h, chan, oldDecoded.pixels.length)
           assert(oldDecoded.pixels.length % chan == 0)
           assert(0 <= oldDecoded.pxPos && oldDecoded.pxPos <= oldDecoded.pixels.length) // Very slow (~120s)
           val (ix3, pix3, decIter3) = decoder.decodeLoopPure(oldDecoded.index, oldDecoded.pixels, pxPrev, outPos0, outPosRes, oldDecoded.pxPos) // Precond 4 slow (~85s)
@@ -1268,7 +1282,7 @@ object encoder {
                                        outPos2: Long,
                                        decoded: GhostDecoded,
                                        px: Int,
-                                       newDecoded: GhostDecoded)(using EncCtx): Unit = {
+                                       newDecoded: GhostDecoded)(using ctxEnc: EncCtx): Unit = {
     require(bytes1.length == maxSize)
     require(outPosInv(outPos0))
     require(outPosInv(outPos2))
@@ -1291,8 +1305,14 @@ object encoder {
     assert(decIter1.pxPos <= pixels.length)
     assert(decIter1.inPos == outPos2)
 
+    val cchan = decoder.chan(using ctx1)
+    assert(cchan == chan)
+    assert(decoded.pxPos + chan <= decoded.pixels.length)
+
     val ctx2 = decoder.DecCtx(freshCopy(bytes2), w, h, chan)
     decoder.decodeLoopPureBytesEqLemma(decoded.index, decoded.pixels, pxPrev, outPos0, outPos2, decoded.pxPos, bytes2)(using ctx1)
+    internalLemmaEncoderPxPosInvImpliesDecoderPxPosInv(decoded.pxPos)(using ctx2, ctxEnc)
+    assert(decoder.pxPosInv(decoded.pxPos)(using ctx2))
     val (ix2, pix2, decIter2) = decoder.decodeLoopPure(decoded.index, decoded.pixels, pxPrev, outPos0, outPos2, decoded.pxPos)(using ctx2)
     assert(ix1 == ix2)
     assert(pix1 == pix2)
@@ -1327,6 +1347,9 @@ object encoder {
     assert(3 <= chan && chan <= 4)
     assert(decoded.pxPos + chan * run0 + chan <= pixels.length)
     assert(pxPos % chan == 0)
+    val wh = w * h
+    assert(wh * chan == pixels.length)
+    lemmaMultModulo(wh, chan, pixels.length)
     assert(pixels.length % chan == 0)
 
     given dctx: decoder.DecCtx = decoder.DecCtx(freshCopy(bytes), w, h, chan)
@@ -1344,7 +1367,6 @@ object encoder {
       check(decIndex == decoded.index)
       check(decIter.px == pxPrev)
       check(decIter.inPos == ru.outPos)
-      check(decIter.remainingRun == 0)
       check(decPixels.length == pixels.length)
 
       assert(decoder.writeRunPixelsInv(decoded.pxPos, run - 1, decIter.pxPos, decIter.remainingRun)) // Slow (~40-70s) and may spuriously fail to verify!!
@@ -1354,6 +1376,8 @@ object encoder {
       assert(decoded.pxPos + chan * run <= decoded.pxPos + chan * run0 + chan)
       assert(decoded.pxPos + chan * run == decoded.pxPos + chan + chan * (run - 1))
       check(decoded.pxPos + chan + chan * (run - 1) <= pixels.length)
+      // remainingRun == 0 now follows cheaply from the implication (1361) discharged by the fit just above.
+      check(decIter.remainingRun == 0)
       check(decIter.pxPos == decoded.pxPos + chan * run)
 
       check(decoded.pxPos < decIter.pxPos)
@@ -1510,18 +1534,35 @@ object encoder {
     require(encodeNoRunProp(oldIndex, index, bytes, outPos1, outPos2))
     require(decoded.pixels.length == pixels.length)
     require(decoded.pxPos == pxPos)
+    require(pixels.length % chan == 0) // required for samePixels below
     require(samePixels(pixels, px, pxPos, chan))
     require(arraysEq(decoded.pixels, pixels, 0, pxPos))
     require(px != pxPrev)
 
     assert(pxPos % chan == 0 && pixels.length % chan == 0)
     given decoder.DecCtx = decoder.DecCtx(freshCopy(bytes), w, h, chan)
+    internalLemmaEncoderPxPosInvImpliesDecoderPxPosInv(decoded.pxPos)
+    assert(decoder.pxPosInv(decoded.pxPos))
+    val cchan = decoder.chan
+    assert(cchan == chan)
+    assert(decoded.pxPos + chan <= decoded.pixels.length)
     val (decIndex, decPixels, decIter) = decoder.decodeLoopPure(decoded.index, decoded.pixels, pxPrev, outPos1, outPos2, decoded.pxPos)
     check(decPixels.length == decoded.pixels.length)
     check(decoded.pxPos < decIter.pxPos)
     check(decIter.pxPos <= decoded.pixels.length)
     check(decIter.pxPos % chan == 0)
     check(decIter.inPos == outPos2)
+    assert(cchan == chan)
+    assert(decoded.pixels.length == pixels.length)
+    assert(pixels.length == w * h * chan)
+    val ww = decoder.w
+    val hh = decoder.h
+    assert(ww == w && hh == h)
+    assert(w * h * chan == decPixels.length)
+    val wh = w * h
+    lemmaMultModulo(wh, chan, decPixels.length)
+    check((w * h * chan) == wh * chan)
+    check((wh * chan) % chan == 0)
     assert(decPixels.length % chan == 0)
     check(decIter.remainingRun == 0)
     check(decIter.pxPos == decoded.pxPos + chan)
@@ -1551,6 +1592,15 @@ object encoder {
     newDecoded.pixels.length == pixels.length &&&
     decodeLoopEncodeProp(bytes, pxPrev, outPos1, outPos2, decoded, px, newDecoded)
   }
+
+  @ghost
+  @opaque
+  @inlineOnce
+  def lemmaMultModulo(wh: Long, cchan: Long, pixelsLen: Long): Unit = {
+    require(wh > 0 && wh <= MaxWidth * MaxHeight)
+    require(cchan >= 3 && cchan <= 4)
+    require(pixelsLen == wh * cchan)
+  }.ensuring(_ => (wh * cchan) % cchan == 0 && pixelsLen % cchan == 0)
 
   @ghost
   @pure
