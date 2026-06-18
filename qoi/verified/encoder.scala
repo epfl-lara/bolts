@@ -160,7 +160,7 @@ object encoder {
     @ghost val oldBytes = freshCopy(bytes)
     val EncodingIteration(px, outPos2, run1) = encodeSingleStep(index, bytes, pxPrev, run0, outPos0, pxPos, decoded)
     ghostExpr {
-      check(decoded.pxPos + chan * run0 == pxPos)
+      check(oldDecoded.pxPos + chan * run0 == pxPos)
       assert(decoded.pixels.length == pixels.length)
       check(bytes.length == maxSize)
       check(oldBytes.length == bytes.length)
@@ -284,12 +284,6 @@ object encoder {
 
           given decoder.DecCtx = decoder.DecCtx(freshCopy(bytes), w, h, chan)
 
-          val cchan = decoder.chan
-          assert(cchan == chan)
-          val hh = decoder.h
-          assert(hh == h)
-          val ww = decoder.w
-          assert(ww == w)
           internalLemmaPxPosInvSame(pxPos, oldDecoded.pxPos)
           val (ix1, pix1, decIter1) = decoder.decodeLoopPure(oldDecoded.index, oldDecoded.pixels, pxPrev, outPos0, outPos2, oldDecoded.pxPos)
           assert(decIter1.pxPos == decodedPreRec.pxPos)
@@ -324,6 +318,14 @@ object encoder {
           assert(pix2 == decoded.pixels)
 
           internalLemmaPxPosInvSame(pxPos, oldDecoded.pxPos)
+          val cchan = decoder.chan
+          assert(cchan == chan)
+          val hh = decoder.h
+          assert(hh == h)
+          val ww = decoder.w
+          assert(ww == w)
+          check(oldDecoded.pxPos % cchan == 0)
+          lemmaModuloEq(oldDecoded.pxPos, cchan, chan)
           check(oldDecoded.pxPos % chan == 0)
           assert(HeaderSize <= outPos0 && outPos0 <= bytes.length)
           assert(oldDecoded.index.length == 64)
@@ -1601,6 +1603,15 @@ object encoder {
     require(cchan >= 3 && cchan <= 4)
     require(pixelsLen == wh * cchan)
   }.ensuring(_ => (wh * cchan) % cchan == 0 && pixelsLen % cchan == 0)
+
+  @ghost
+  @opaque
+  @inlineOnce
+  def lemmaModuloEq(a: Long, b: Long, c: Long): Unit = {
+    require(b == c)
+    require(b > 0)
+    require(a % b == 0)
+  }.ensuring(_ => a % c == 0)
 
   @ghost
   @pure
