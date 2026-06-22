@@ -45,9 +45,9 @@ object encoder {
 
     decoder.decode(bytes, outPos) match {
       case SomeMut(decoder.DecodedResult(decodedPixels, ww, hh, cchan)) =>
-        ww == w &&
-        hh == h &&
-        cchan == chan &&
+        ww == w &&&
+        hh == h &&&
+        cchan == chan &&&
         arraysEq(pixels, decodedPixels, 0, pixels.length)
       case NoneMut() => false
     }
