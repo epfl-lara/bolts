@@ -722,9 +722,10 @@ object decoder {
     (indexCpy, pixelsCpy, res)
   }.ensuring { case (indexCpy, pixelsCpy, res) =>
     0 <= res.pxPos &&& res.pxPos <= pixels.length &&&
-    res.pxPos % chan == 0
+    res.pxPos % chan == 0 &&&
     indexCpy.length == 64 &&&
-    pixelsCpy.length == pixels.length
+    pixelsCpy.length == pixels.length &&&
+    pxPosInv(res.pxPos)
   }
 
   @ghost
