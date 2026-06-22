@@ -42,7 +42,6 @@ object encoder {
   @pure
   def decodeEncodeIsIdentityThm(using EncCtx): Boolean = {
     val EncodedResult(bytes, outPos) = encode()
-
     decoder.decode(bytes, outPos) match {
       case SomeMut(decoder.DecodedResult(decodedPixels, ww, hh, cchan)) =>
         ww == w &&&
@@ -77,6 +76,9 @@ object encoder {
     @ghost val decoded = GhostDecoded(freshCopy(index), Array.fill(pixels.length)(0: Byte), HeaderSize, 0)
     @ghost val initDecoded = freshCopy(decoded)
     @ghost val oldBytes = freshCopy(bytes)
+    ghostExpr({
+      check(rangesInv(index.length, bytes.length, 0, HeaderSize, 0))
+    })
     val EncodingIteration(pxRes, outPos, _) = encodeLoop(index, bytes, pxPrev, 0, HeaderSize, 0, decoded)
 
     ghostExpr {

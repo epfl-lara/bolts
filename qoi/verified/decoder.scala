@@ -76,7 +76,8 @@ object decoder {
     }
   }.ensuring {
     case SomeMut(DecodedResult(pixels, ww, hh, cchan)) =>
-      pixels.length == ww.toInt * hh.toInt * cchan.toInt
+      pixels.length == ww.toInt * hh.toInt * cchan.toInt &&&
+      decodeHeader(old(bytes)) == Some((ww, hh, cchan)) 
     case NoneMut() => true
   }
 
