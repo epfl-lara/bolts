@@ -1628,7 +1628,10 @@ object encoder {
 
     given dctx: decoder.DecCtx = decoder.DecCtx(freshCopy(bytes), w, h, chan)
     withinBoundsLemma(0, outPos1, pxPos)
-    assert(0 <= pxPos && pxPos <= pixels.length && w * h * chan == pixels.length && pixels.length % chan == 0)
+    assert(0 <= pxPos)
+    assert(pxPos <= pixels.length)
+    assert(w * h * chan == pixels.length)
+    assert(pixels.length % chan == 0)
 
     decoder.doDecodeNext(oldIndex, pxPrev, outPos1) match {
       case (decoder.DiffOrIndexOrColor(decodedPx), inPosRes) =>
