@@ -182,7 +182,17 @@ object Utils {
 
 object Test {
   def test(): Unit = {
-    val arr = IntArray(Array(1, 2, 3), List(1, 2, 3))
+    val arr: IntArray with arr.valid = IntArray(Array(1, 2, 3), List(1, 2, 3))
     arr(0) = 10
+    assert(arr(0) == 10)
+  }
+  def test2(arr: IntArray with arr.valid): Unit = {
+    require(arr.size > 0)
+    require(arr(0) == 1)
+    assert(arr(0) == 1)
+    assert(arr.getList.head == 1)
+    arr.update(0, 10)
+    assert(arr(0) == 10)
+
   }
 }
