@@ -138,7 +138,7 @@ object Utils {
         assert(i > from)
         lemmaSameArrayListContentPreservedByUpdated(arr, from + 1, tail, i, v)
         assert(sameArrayListContent(arr.updated(i, v), from + 1, tail.updated(BigInt(j- 1), v)))
-        substractionIntPreservedByToBigInt(j, 1)
+        subtractionIntPreservedByToBigInt(j, 1)
         assert(BigInt(j - 1) == BigInt(j) - 1)
         assert(Cons(h, tail.updated(BigInt(j - 1), v)) == list.updated(BigInt(j), v))
     }
@@ -154,7 +154,7 @@ object Utils {
   }.ensuring(_ => BigInt(a + b) == BigInt(a) + BigInt(b))
 
   @opaque @inlineOnce @ghost
-  def substractionIntPreservedByToBigInt(a: Int, b: Int): Unit = {
+  def subtractionIntPreservedByToBigInt(a: Int, b: Int): Unit = {
     require(BigInt(a) - BigInt(b) <= BigInt(Int.MaxValue) && BigInt(a) - BigInt(b) >= BigInt(Int.MinValue))
   }.ensuring(_ => BigInt(a - b) == BigInt(a) - BigInt(b))
 
