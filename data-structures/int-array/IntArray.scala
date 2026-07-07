@@ -28,8 +28,15 @@ case class IntArray(private val data: Array[Int], @ghost private var toList: Lis
     ghostExpr(Utils.compareBigIntPreservedByToInt(i, size))
     assert(size <= BigInt(Int.MaxValue))
     assert(i.toInt >= 0 && i.toInt < data.length)
+    ghostExpr({
+      Utils.lemmaSameArrayListContentImpliesSameApply(data, 0, toList, i.toInt)
+      Utils.compareBigIntPreservedByToInt(i, size)
+      Utils.lemmaConversionBackForth(i)
+      assert(size == toList.size)
+      assert(0 <= i && i < toList.size)
+    })
     data(i.toInt)
-  }.ensuring(res => valid)// && res == toList(i))
+  }.ensuring(res => valid && res == toList(i))
 
   def update(i: BigInt, v: Int): Unit = {
     require(valid)
@@ -99,6 +106,24 @@ object Utils {
       }
     }
   }.ensuring(_ => (0 <= from && from <= arr.length) && (arr.length == from + list.size.toInt) && (BigInt(arr.length) == BigInt(from) + list.size))
+
+  @ghost @opaque @inlineOnce
+  def lemmaSameArrayListContentImpliesSameApply[T](arr: Array[T], from: Int, list: List[T], i: Int): Unit = {
+    decreases(list)
+    require(sameArrayListContent(arr, from, list))
+    require(i >= from && i < arr.length)
+
+    val j = i - from
+    list match {
+      case Nil() => ()
+      case Cons(h, tail) if (i == from) =>
+        assert(arr(from) == h)
+      case Cons(h, tail) =>
+        assert(i > from)
+        lemmaSameArrayListContentImpliesSameApply(arr, from + 1, tail, i)
+        subtractionIntPreservedByToBigInt(j, 1)
+    }
+  }.ensuring(_ => arr(i) == list(BigInt(i - from)))
 
 
   @opaque @inlineOnce @ghost
