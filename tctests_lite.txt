@@ -11,7 +11,8 @@ data-structures/sorted-array
 data-structures/trees/concrope
 data-structures/trees/redblack
 data-structures/trees/simple-conc
-data-structures/uarray
+data-structures/arrays/uarray
+data-structures/arrays/int-array
 expression-compiler
 fp-principles/example
 fp-principles/functional-sets
