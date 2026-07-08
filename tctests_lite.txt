@@ -7,7 +7,7 @@ algorithms/reachabilityChecker
 data-structures/amortized-queue1
 data-structures/amortized-queue2
 data-structures/lisp
-data-structures/sorted-array
+data-structures/arrays/sorted-array
 data-structures/trees/concrope
 data-structures/trees/redblack
 data-structures/trees/simple-conc
