@@ -96,6 +96,8 @@ object Utils {
           Utils.lemmaConversionBackForth(tail.size)
           Utils.lemmaConversionBackForth(list.size)
           Utils.lemmaConversionBackForth(arr.length)
+          assert(1 + tail.size == list.size)
+          Utils.additionIntPreservedByToInt(1, tail.size, list.size)
           assert(1 + tail.size.toInt == list.size.toInt)
           Utils.compareIntPreservedByToBigInt(arr.length, Int.MaxValue)
           Utils.additionIntPreservedByToBigInt(from + 1, tail.size.toInt)
@@ -177,6 +179,14 @@ object Utils {
   def additionIntPreservedByToBigInt(a: Int, b: Int): Unit = {
     require(BigInt(a) + BigInt(b) <= BigInt(Int.MaxValue) && BigInt(a) + BigInt(b) >= BigInt(Int.MinValue))
   }.ensuring(_ => BigInt(a + b) == BigInt(a) + BigInt(b))
+
+  @opaque @inlineOnce @ghost
+  def additionIntPreservedByToInt(a: BigInt, b: BigInt, c: BigInt): Unit = {
+    require(a + b == c)
+    require(Int.MinValue <= c && c <= Int.MaxValue)
+    require(Int.MinValue <= a && a <= Int.MaxValue)
+    require(Int.MinValue <= b && b <= Int.MaxValue)
+  }.ensuring(_ => a.toInt + b.toInt == c.toInt)
 
   @opaque @inlineOnce @ghost
   def subtractionIntPreservedByToBigInt(a: Int, b: Int): Unit = {
