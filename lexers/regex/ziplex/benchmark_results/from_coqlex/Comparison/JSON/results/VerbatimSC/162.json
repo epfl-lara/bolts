@@ -1,7 +1,11 @@
 {
 "fname":"162.json",
  "input_len":37599,
+<<<<<<<< HEAD:lexers/regex/ziplex/benchmark_results/from_coqlex/Comparison/JSON/results/VerbatimSC/162.json
  "times":[5.60244],
+========
+ "times":[4.86082],
+>>>>>>>> main:lexers/regex/ziplex/benchmark_results/from_coqlex/Comparison/JSON/results/VerbatimSt/162.json
  "rest_len":0,
  "sem_tokens_len":"Some 11664"
 }

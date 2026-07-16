@@ -338,6 +338,24 @@ def arrayBitRangesEqAppend(a1: Array[Byte], a2: Array[Byte], from: Long, to: Lon
   rec(to)
 }.ensuring(_ => arrayBitRangesEq(a1, a2, from, to + 1))
 
+
+// Manually lifted because of mutable objects that would appear in refinement types if we let Stainless do it automatically, which would violate restrictions.
+@opaque @inlineOnce @ghost
+def arrayBitRangesUpdatedAtLemmaInnerRec(i: Long, a: Array[Byte], at: Long, b: Boolean): Unit = {
+  require(0 <= at && at < a.length.toLong * 8L)
+  require(0 <= i && i <= at)
+  require(arrayBitRangesEq(a, snapshot(a).updated((at / 8).toInt, (stainless.math.wrapping { ((a((at / 8).toInt) & ~BitAccessMasks((at % 8).toInt)) | (if (b) BitAccessMasks((at % 8).toInt) else 0)).toByte })), i, at))
+  decreases(i)
+  val byteIx = (at / 8).toInt // for documentation
+  val bitIx = (at % 8).toInt // for documentation
+  val newB = (stainless.math.wrapping { ((a(byteIx) & ~BitAccessMasks(bitIx)) | (if (b) BitAccessMasks(bitIx) else 0)).toByte }) // for documentation
+  if (i == 0) ()
+  else arrayBitRangesUpdatedAtLemmaInnerRec(i - 1, a, at, b)
+}.ensuring { _ =>
+  a == old(a) &&
+  arrayBitRangesEq(a, snapshot(a).updated((at / 8).toInt, (stainless.math.wrapping { ((a((at / 8).toInt) & ~BitAccessMasks((at % 8).toInt)) | (if (b) BitAccessMasks((at % 8).toInt) else 0)).toByte })), 0, at)
+}
+
 @pure @opaque @inlineOnce @ghost
 def arrayBitRangesUpdatedAtLemma(a: Array[Byte], at: Long, b: Boolean): Unit = {
   require(0 <= at && at < a.length.toLong * 8L)
@@ -347,21 +365,19 @@ def arrayBitRangesUpdatedAtLemma(a: Array[Byte], at: Long, b: Boolean): Unit = {
   val newB = stainless.math.wrapping { ((a(byteIx) & ~BitAccessMasks(bitIx)) | (if (b) BitAccessMasks(bitIx) else 0)).toByte }
 
   {
-    @opaque @inlineOnce @ghost
-    def rec(i: Long): Unit = {
-      require(0 <= i && i <= at)
-      require(arrayBitRangesEq(a, snapshot(a).updated(byteIx, newB), i, at))
-      decreases(i)
-      if (i == 0) ()
-      else rec(i - 1)
-    }.ensuring { _ =>
-      arrayBitRangesEq(a, snapshot(a).updated(byteIx, newB), 0, at)
-    }
+    // @opaque @inlineOnce @ghost
+    // def rec(i: Long): Unit = {
+    //   require(0 <= i && i <= at)
+    //   require(arrayBitRangesEq(a, snapshot(a).updated(byteIx, newB), i, at))
+    //   decreases(i)
+    //   if (i == 0) ()
+    //   else rec(i - 1)
+    // }.ensuring { _ =>
+    //   arrayBitRangesEq(a, snapshot(a).updated(byteIx, newB), 0, at)
+    // }
 
-    rec(at)
-  }.ensuring { _ =>
-    arrayBitRangesEq(a, snapshot(a).updated(byteIx, newB), 0, at)
-  }
+    arrayBitRangesUpdatedAtLemmaInnerRec(at, a, at, b)
+  }.ensuring(_ => arrayBitRangesEq(a, snapshot(a).updated(byteIx, newB), 0, at))
 }
 
 @pure @opaque @inlineOnce @ghost

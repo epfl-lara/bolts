@@ -1,3 +1,14 @@
+#!/usr/bin/env bash
+
+# This script automatically switches the local ziplex git repository to the
+# 'benchmarks' branch before running the smoke benchmarks, and restores the
+# original branch on success. If the run fails at any point, the script
+# rolls back to the 'main' branch.
+
+set -e
+
+# Determine the directory of this script (root of the ziplex repo)
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 # Load SDKMAN if available (non-interactive shells do not source it by default)
 if [ -z "$SDKMAN_DIR" ] && [ -d "$HOME/.sdkman" ]; then
@@ -8,15 +19,31 @@ if [ -n "$SDKMAN_DIR" ] && [ -s "$SDKMAN_DIR/bin/sdkman-init.sh" ]; then
 	. "$SDKMAN_DIR/bin/sdkman-init.sh"
 fi
 
-# Save current SDKMAN java default so we can restore it on exit
+# Save current SDKMAN java default and current git branch so we can restore
+# them on exit (or roll back to 'main' on failure).
 CURRENT_JAVA=$(sdk current java | awk '{print $NF}' | xargs)
 echo "Current SDKMAN Java version: $CURRENT_JAVA"
-restore_java() {
+CURRENT_BRANCH=$(git -C "$SCRIPT_DIR" rev-parse --abbrev-ref HEAD 2>/dev/null || echo "")
+
+cleanup() {
+	EXIT_CODE=$?
 	if [ -n "$CURRENT_JAVA" ] && [ "$CURRENT_JAVA" != "(none)" ]; then
-		sdk default java "$CURRENT_JAVA"
+		sdk default java "$CURRENT_JAVA" >/dev/null 2>&1 || true
+	fi
+	if [ "$EXIT_CODE" -ne 0 ]; then
+		echo "Smoke benchmark run failed (exit code $EXIT_CODE); rolling back to 'main' branch." >&2
+		git -C "$SCRIPT_DIR" checkout main || true
+	elif [ -n "$CURRENT_BRANCH" ] && [ "$CURRENT_BRANCH" != "HEAD" ] && [ "$CURRENT_BRANCH" != "benchmarks" ]; then
+		echo "Restoring original git branch: $CURRENT_BRANCH"
+		git -C "$SCRIPT_DIR" checkout "$CURRENT_BRANCH" || true
 	fi
 }
-trap restore_java EXIT
+trap cleanup EXIT
+
+# Automatically switch to the 'benchmarks' branch (the benchmarks require the
+# benchmark-specific scala sources that live on that branch).
+echo "Switching to 'benchmarks' branch for benchmark execution..."
+git -C "$SCRIPT_DIR" checkout benchmarks
 
 # Create a directory named results_{current date with time} if it doesn't exist
 DIRECTORY_NAME="results_$(date +'%d.%m.%Y')"

@@ -3,12 +3,14 @@
 Parse JMH-style benchmark output and emit per-file JSONs based on a model directory.
 
 Usage:
-    python make_jsons.py <openjdk_txt> <graal_txt> <model_dir> <output_dir>
+    python extract_to_coqlex.py <openjdk_txt> <graal_txt> <model_dir> <output_dir> [--suffix SUFFIX]
 
 - <openjdk_txt>: path to the .txt file containing the [info] lines for OpenJDK
-- <graal_txt>: path to the .txt file containing the [info] lines for GraalVM
-- <model_dir>: directory that already contains JSON "model" files like 162.json
-- <output_dir>: directory where new JSON files will be written (created if missing)
+- <graal_txt>:   path to the .txt file containing the [info] lines for GraalVM
+- <model_dir>:   directory that already contains JSON "model" files like 162.json
+- <output_dir>:  directory where new JSON files will be written (created if missing)
+- --suffix:      string appended to the GraalVM benchmark folder names
+                 (e.g. "Graal" turns "Ziplex" into "ZiplexGraal"). Default: "Graal".
 
 For each configured benchmark function line, this script extracts:
   - fname: first number before '_' with '.json' suffix (e.g., 162.json)
@@ -27,16 +29,21 @@ from pathlib import Path
 from typing import Dict, Tuple
 
 # Matches lines like:
-# [info] JsonLexerBenchmark.lex_ZipperMem      162_37599chars.json  avgt    5  61450.770 ± 4116.365  us/op
+#   [info] JsonLexerBenchmark.lex_ZipperMem  162_37599chars.json  avgt  5  61450.770 ± 4116.365  us/op
+# and also (when JMH is run with -i 1, so Cnt and Error are empty):
+#   [info] JsonLexerBenchmark.lex_ZipperMem  162_37599chars.json  avgt     100838.791            us/op
+# i.e. the Cnt column and the "± <error>" part are both optional.
 def make_line_re(benchmark_function_name: str):
     return re.compile(
         r"""
         ^\s*\[info\]\s+JsonLexerBenchmark\.""" + benchmark_function_name + r"""   # the benchmark name we care about
         \s+
         (?P<num>\d+)_(?P<chars>\d+)chars\.json             # e.g., 162_37599chars.json
-        \s+\S+\s+\d+\s+
+        \s+\S+                                             # Mode column (e.g. avgt)
+        \s+(?:\d+\s+)?                                     # optional Cnt column (absent when -i 1)
         (?P<score>\d+(?:\.\d+)?)                           # Score column (microseconds per op)
-        \s+±\s+\d+(?:\.\d+)?\s+us/op\s*$
+        (?:\s+±\s+\d+(?:\.\d+)?)?                          # optional "± <error>" (absent when -i 1)
+        \s+us/op\s*$
         """,
         re.VERBOSE,
     )
@@ -92,12 +99,15 @@ def main():
     ap.add_argument("graal_txt", type=Path, help="Path to GraalVM .txt file")
     ap.add_argument("model_dir", type=Path, help="Directory with model JSON files (read-only)")
     ap.add_argument("output_dir", type=Path, help="Directory to write new JSON files")
+    ap.add_argument("--suffix", default="Graal",
+                    help="Suffix appended to GraalVM benchmark folder names (e.g. 'Graal'). Default: 'Graal'.")
     args = ap.parse_args()
 
     openjdk_txt: Path = args.openjdk_txt
     graal_txt: Path = args.graal_txt
     model_dir: Path = args.model_dir
     output_dir: Path = args.output_dir
+    graal_suffix: str = args.suffix
 
     if not openjdk_txt.is_file():
         raise SystemExit(f"OpenJDK input file not found: {openjdk_txt}")
@@ -110,13 +120,16 @@ def main():
 
     output_dir.mkdir(parents=True, exist_ok=True)
 
+    # Base benchmark folder names per JMH method. The Graal entries append the
+    # configurable --suffix (default "Graal") so the analysis notebook can pick
+    # them up as "ZiplexGraal", "ZiplexMemDerivGraal", etc.
     benchmark_targets = {
         (openjdk_txt, "lex_ZipperMem"): "Ziplex",
         (openjdk_txt, "lex_ZipperV3NonMem"): "ZiplexNoMem",
         (openjdk_txt, "lex_ZipperV3MemDeriv"): "ZiplexMemDeriv",
-        (graal_txt, "lex_ZipperMem"): "ZiplexGraal",
-        (graal_txt, "lex_ZipperV3NonMem"): "ZiplexNoMemGraal",
-        (graal_txt, "lex_ZipperV3MemDeriv"): "ZiplexMemDerivGraal",
+        (graal_txt, "lex_ZipperMem"): f"Ziplex{graal_suffix}",
+        (graal_txt, "lex_ZipperV3NonMem"): f"ZiplexNoMem{graal_suffix}",
+        (graal_txt, "lex_ZipperV3MemDeriv"): f"ZiplexMemDeriv{graal_suffix}",
     }
 
     written = 0

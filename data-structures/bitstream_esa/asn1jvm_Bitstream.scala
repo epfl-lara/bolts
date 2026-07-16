@@ -731,14 +731,14 @@ case class BitStream private [asn1scala](
 
       // val bitPosInByte = 1 << ((NO_OF_BITS_IN_BYTE - 1) - bitNr) // change to the following to match spec
       val mask = BitAccessMasks(bitNr)
-      val bit = (b.toUByte & mask) != 0
+      val bit = (b & mask) != 0
       appendBit(bit)
 
    }.ensuring(_ => 
       val w1 = old(this)
       val w2 = this
       val mask = BitAccessMasks(bitNr)
-      val bit = (b.toUByte & mask) != 0
+      val bit = (b & mask) != 0
       w2.buf.length == w1.buf.length && 
       BitStream.bitIndex(buf.length, currentByte, currentBit) == BitStream.bitIndex(old(this).buf.length, old(this).currentByte, old(this).currentBit) + 1
       && w1.isPrefixOf(w2) 

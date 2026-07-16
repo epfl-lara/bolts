@@ -6,7 +6,7 @@ object Diffs {
   def diffs(l: List[Int]): List[Int] = {    
     l match {
       case Nil() => l
-      case Cons(_,Nil()) => l
+      case Cons(_, Nil()) => l
       case Cons(h, t) =>  
         diffs(t) match {
           case Cons(h1, t1) => h :: (h1 - h) :: t1
