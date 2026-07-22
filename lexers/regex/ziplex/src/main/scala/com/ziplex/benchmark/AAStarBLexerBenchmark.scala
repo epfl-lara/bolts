@@ -79,6 +79,12 @@ class AAStarBLexerBenchmark {
   //   bh.consume(suffix.isEmpty)
   // }
 
+  // @Benchmark
+  // def lex_ZipperV3NoMem(bh: Blackhole): Unit = {
+  //   val (tokens, suffix) = Lexer.lexMem(AAStarBLexer.rules, state.content)
+  //   bh.consume(suffix.isEmpty)
+  // }
+
   @Benchmark
   def lex_ZipperV2Mem(state: FreshAAStarBLexV2MemState, bh: Blackhole): Unit = {
     val (tokens, suffix) = Lexer.lexV2Mem(AAStarBLexer.rules, state.content)(
