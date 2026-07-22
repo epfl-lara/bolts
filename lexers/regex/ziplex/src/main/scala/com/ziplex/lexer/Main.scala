@@ -47,7 +47,7 @@ object Main {
     println("-\n\n====================\n\n-")
     println("Benchmarking lexing of JSON files with memoization:")
     benchLexMemJsonFiles()
-    println("-\n\n====================\n\n-")]
+    println("-\n\n====================\n\n-")
     println("Benchmarking lexing of JSON files with lex with no memoization:")
     benchLexV3JsonFiles()
   }
