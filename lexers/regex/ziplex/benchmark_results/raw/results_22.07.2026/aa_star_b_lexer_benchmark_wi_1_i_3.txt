@@ -1,0 +1,1484 @@
+[info] welcome to sbt 1.9.8 (Oracle Corporation Java 21.0.11)
+[info] loading settings for project ziplex-build from plugins.sbt ...
+[info] loading project definition from /localhome/chassot/bolts/lexers/regex/ziplex/project
+[info] loading settings for project ziplex from build.sbt ...
+[info] set current project to ZipLex (in build file:/localhome/chassot/bolts/lexers/regex/ziplex/)
+[info] Defining Jmh / javaOptions
+[info] The new value will be used by Jmh / bspBuildTargetJvmEnvironmentItem, Jmh / bspBuildTargetRun and 6 others.
+[info] 	Run `last` for details.
+[info] Reapplying settings...
+[info] set current project to ZipLex (in build file:/localhome/chassot/bolts/lexers/regex/ziplex/)
+[info] compiling 78 Scala sources to /localhome/chassot/bolts/lexers/regex/ziplex/target/scala-3.7.2/classes ...
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/ziplex/src/main/scala/com/ziplex/lexer/BalanceConcArr.scala:267:6 
+[warn] 267 |      t match
+[warn]     |      ^
+[warn]     |      match may not be exhaustive.
+[warn]     |
+[warn]     |      It would fail on pattern case: Empty()
+[warn]     |
+[warn]     | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/ziplex/src/main/scala/com/ziplex/lexer/BalanceConcArr.scala:349:16 
+[warn] 349 |                r match
+[warn]     |                ^
+[warn]     |                match may not be exhaustive.
+[warn]     |
+[warn]     |                It would fail on pattern case: Empty(), Leaf(_, _)
+[warn]     |
+[warn]     | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/ziplex/src/main/scala/com/ziplex/lexer/BalanceConcArr.scala:344:10 
+[warn] 344 |          xs match
+[warn]     |          ^^
+[warn]     |          match may not be exhaustive.
+[warn]     |
+[warn]     |          It would fail on pattern case: Empty(), Leaf(_, _)
+[warn]     |
+[warn]     | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/ziplex/src/main/scala/com/ziplex/lexer/BalanceConcArr.scala:362:16 
+[warn] 362 |                l match
+[warn]     |                ^
+[warn]     |                match may not be exhaustive.
+[warn]     |
+[warn]     |                It would fail on pattern case: Empty(), Leaf(_, _)
+[warn]     |
+[warn]     | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/ziplex/src/main/scala/com/ziplex/lexer/BalanceConcArr.scala:357:10 
+[warn] 357 |          ys match
+[warn]     |          ^^
+[warn]     |          match may not be exhaustive.
+[warn]     |
+[warn]     |          It would fail on pattern case: Empty(), Leaf(_, _)
+[warn]     |
+[warn]     | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/ziplex/src/main/scala/com/ziplex/lexer/BalanceConcArr.scala:408:8 
+[warn] 408 |        t match
+[warn]     |        ^
+[warn]     |        match may not be exhaustive.
+[warn]     |
+[warn]     |        It would fail on pattern case: Empty()
+[warn]     |
+[warn]     | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/ziplex/src/main/scala/com/ziplex/lexer/BalanceConcArr.scala:490:12 
+[warn] 490 |            newR match
+[warn]     |            ^^^^
+[warn]     |            match may not be exhaustive.
+[warn]     |
+[warn]     |            It would fail on pattern case: Empty(), Leaf(_, _)
+[warn]     |
+[warn]     | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/ziplex/src/main/scala/com/ziplex/lexer/BalanceConcArr.scala:519:6 
+[warn] 519 |      t match
+[warn]     |      ^
+[warn]     |      match may not be exhaustive.
+[warn]     |
+[warn]     |      It would fail on pattern case: Empty()
+[warn]     |
+[warn]     | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/ziplex/src/main/scala/com/ziplex/lexer/BalanceConcArr.scala:536:6 
+[warn] 536 |      t match
+[warn]     |      ^
+[warn]     |      match may not be exhaustive.
+[warn]     |
+[warn]     |      It would fail on pattern case: Empty()
+[warn]     |
+[warn]     | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/ziplex/src/main/scala/com/ziplex/lexer/BalanceConcArr.scala:544:6 
+[warn] 544 |      t match
+[warn]     |      ^
+[warn]     |      match may not be exhaustive.
+[warn]     |
+[warn]     |      It would fail on pattern case: Empty()
+[warn]     |
+[warn]     | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/ziplex/src/main/scala/com/ziplex/lexer/Utils.scala:1332:4 
+[warn] 1332 |    newList match {
+[warn]      |    ^^^^^^^
+[warn]      |    match may not be exhaustive.
+[warn]      |
+[warn]      |    It would fail on pattern case: stainless.collection.Cons(_, _)
+[warn]      |
+[warn]      | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/ziplex/src/main/scala/com/ziplex/lexer/VerifiedLexer.scala:1367:8 
+[warn] 1367 |        maxPrefWithoutSep match {
+[warn]      |        ^^^^^^^^^^^^^^^^^
+[warn]      |        match may not be exhaustive.
+[warn]      |
+[warn]      |        It would fail on pattern case: stainless.lang.Some(_)
+[warn]      |
+[warn]      | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/ziplex/src/main/scala/com/ziplex/lexer/VerifiedLexer.scala:1464:6 
+[warn] 1464 |      rulesArg match {
+[warn]      |      ^^^^^^^^
+[warn]      |      match may not be exhaustive.
+[warn]      |
+[warn]      |      It would fail on pattern case: stainless.collection.Nil()
+[warn]      |
+[warn]      | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/ziplex/src/main/scala/com/ziplex/lexer/VerifiedLexer.scala:1497:10 
+[warn] 1497 |          rulesArg match {
+[warn]      |          ^^^^^^^^
+[warn]      |          match may not be exhaustive.
+[warn]      |
+[warn]      |          It would fail on pattern case: stainless.collection.Nil()
+[warn]      |
+[warn]      | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/ziplex/src/main/scala/com/ziplex/lexer/VerifiedLexer.scala:1524:6 
+[warn] 1524 |      rulesArg match {
+[warn]      |      ^^^^^^^^
+[warn]      |      match may not be exhaustive.
+[warn]      |
+[warn]      |      It would fail on pattern case: stainless.collection.Nil()
+[warn]      |
+[warn]      | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/ziplex/src/main/scala/com/ziplex/lexer/VerifiedLexer.scala:1560:10 
+[warn] 1560 |          rulesArg match {
+[warn]      |          ^^^^^^^^
+[warn]      |          match may not be exhaustive.
+[warn]      |
+[warn]      |          It would fail on pattern case: stainless.collection.Nil()
+[warn]      |
+[warn]      | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/ziplex/src/main/scala/com/ziplex/lexer/VerifiedLexer.scala:1590:10 
+[warn] 1590 |          rulesArg match {
+[warn]      |          ^^^^^^^^
+[warn]      |          match may not be exhaustive.
+[warn]      |
+[warn]      |          It would fail on pattern case: stainless.collection.Nil()
+[warn]      |
+[warn]      | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/ziplex/src/main/scala/com/ziplex/lexer/VerifiedLexer.scala:1618:10 
+[warn] 1618 |          rulesArg match {
+[warn]      |          ^^^^^^^^
+[warn]      |          match may not be exhaustive.
+[warn]      |
+[warn]      |          It would fail on pattern case: stainless.collection.Nil()
+[warn]      |
+[warn]      | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/ziplex/src/main/scala/com/ziplex/lexer/VerifiedLexer.scala:1653:10 
+[warn] 1653 |          rulesArg match {
+[warn]      |          ^^^^^^^^
+[warn]      |          match may not be exhaustive.
+[warn]      |
+[warn]      |          It would fail on pattern case: stainless.collection.Nil()
+[warn]      |
+[warn]      | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/ziplex/src/main/scala/com/ziplex/lexer/VerifiedLexer.scala:1689:10 
+[warn] 1689 |          rulesArg match {
+[warn]      |          ^^^^^^^^
+[warn]      |          match may not be exhaustive.
+[warn]      |
+[warn]      |          It would fail on pattern case: stainless.collection.Nil()
+[warn]      |
+[warn]      | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/ziplex/src/main/scala/com/ziplex/lexer/VerifiedLexer.scala:2706:6 
+[warn] 2706 |      rules match {
+[warn]      |      ^^^^^
+[warn]      |      match may not be exhaustive.
+[warn]      |
+[warn]      |      It would fail on pattern case: stainless.collection.Cons(_, _)
+[warn]      |
+[warn]      | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/ziplex/src/main/scala/com/ziplex/map/ListLongMap.scala:157:4 
+[warn] 157 |    l match {
+[warn]     |    ^
+[warn]     |    match may not be exhaustive.
+[warn]     |
+[warn]     |    It would fail on pattern case: stainless.collection.Cons(_, _)
+[warn]     |
+[warn]     | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/ziplex/src/main/scala/com/ziplex/map/ListLongMap.scala:191:4 
+[warn] 191 |    l match {
+[warn]     |    ^
+[warn]     |    match may not be exhaustive.
+[warn]     |
+[warn]     |    It would fail on pattern case: stainless.collection.Cons(_, _)
+[warn]     |
+[warn]     | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/ziplex/src/main/scala/com/ziplex/map/ListLongMap.scala:206:4 
+[warn] 206 |    l match {
+[warn]     |    ^
+[warn]     |    match may not be exhaustive.
+[warn]     |
+[warn]     |    It would fail on pattern case: stainless.collection.Cons(_, _)
+[warn]     |
+[warn]     | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/ziplex/src/main/scala/com/ziplex/map/ListLongMap.scala:222:4 
+[warn] 222 |    l match {
+[warn]     |    ^
+[warn]     |    match may not be exhaustive.
+[warn]     |
+[warn]     |    It would fail on pattern case: stainless.collection.Cons(_, _)
+[warn]     |
+[warn]     | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/ziplex/src/main/scala/com/ziplex/map/ListLongMap.scala:243:4 
+[warn] 243 |    l match {
+[warn]     |    ^
+[warn]     |    match may not be exhaustive.
+[warn]     |
+[warn]     |    It would fail on pattern case: stainless.collection.Cons(_, _)
+[warn]     |
+[warn]     | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/ziplex/src/main/scala/com/ziplex/map/ListLongMap.scala:274:4 
+[warn] 274 |    l match {
+[warn]     |    ^
+[warn]     |    match may not be exhaustive.
+[warn]     |
+[warn]     |    It would fail on pattern case: stainless.collection.Cons(_, _)
+[warn]     |
+[warn]     | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/ziplex/src/main/scala/com/ziplex/map/ListMap.scala:280:4 
+[warn] 280 |    l match {
+[warn]     |    ^
+[warn]     |    match may not be exhaustive.
+[warn]     |
+[warn]     |    It would fail on pattern case: stainless.collection.Cons(_, _)
+[warn]     |
+[warn]     | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/ziplex/src/main/scala/com/ziplex/map/ListMap.scala:314:4 
+[warn] 314 |    l match {
+[warn]     |    ^
+[warn]     |    match may not be exhaustive.
+[warn]     |
+[warn]     |    It would fail on pattern case: stainless.collection.Cons(_, _)
+[warn]     |
+[warn]     | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/ziplex/src/main/scala/com/ziplex/map/ListMap.scala:341:4 
+[warn] 341 |    l match {
+[warn]     |    ^
+[warn]     |    match may not be exhaustive.
+[warn]     |
+[warn]     |    It would fail on pattern case: stainless.collection.Cons(_, _)
+[warn]     |
+[warn]     | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/ziplex/src/main/scala/com/ziplex/map/ListMap.scala:393:4 
+[warn] 393 |    l match {
+[warn]     |    ^
+[warn]     |    match may not be exhaustive.
+[warn]     |
+[warn]     |    It would fail on pattern case: stainless.collection.Cons(_, _)
+[warn]     |
+[warn]     | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/ziplex/src/main/scala/com/ziplex/map/ListMap.scala:460:4 
+[warn] 460 |    l match {
+[warn]     |    ^
+[warn]     |    match may not be exhaustive.
+[warn]     |
+[warn]     |    It would fail on pattern case: stainless.collection.Cons(_, _)
+[warn]     |
+[warn]     | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/ziplex/src/main/scala/com/ziplex/map/MutableLongMap.scala:360:4 
+[warn] 360 |    c match {
+[warn]     |    ^
+[warn]     |    match may not be exhaustive.
+[warn]     |
+[warn]     |    It would fail on pattern case: EmptyCell()
+[warn]     |
+[warn]     | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/ziplex/src/main/scala/com/ziplex/map/MutableLongMap.scala:609:8 
+[warn] 609 |        seekEntryRes match {
+[warn]     |        ^^^^^^^^^^^^
+[warn]     |match may not be exhaustive.
+[warn]     |
+[warn]     |It would fail on pattern case: com.mutablemaps.map.MutableLongMap.Intermediate(_, _, _)
+[warn]     |
+[warn]     | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/ziplex/src/main/scala/com/ziplex/map/MutableLongMap.scala:1119:6 
+[warn] 1119 |      intermediate match {
+[warn]      |      ^^^^^^^^^^^^
+[warn]      |match may not be exhaustive.
+[warn]      |
+[warn]      |It would fail on pattern case: _: com.mutablemaps.map.MutableLongMap.SeekEntryResult
+[warn]      |
+[warn]      | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/ziplex/src/main/scala/com/ziplex/map/MutableLongMap.scala:1169:6 
+[warn] 1169 |      intermediate match {
+[warn]      |      ^^^^^^^^^^^^
+[warn]      |match may not be exhaustive.
+[warn]      |
+[warn]      |It would fail on pattern case: _: com.mutablemaps.map.MutableLongMap.SeekEntryResult
+[warn]      |
+[warn]      | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/ziplex/target/stainless_3/stainless-library_3-sources/collection/ListMap.scala:196:4 
+[warn] 196 |    l match {
+[warn]     |    ^
+[warn]     |    match may not be exhaustive.
+[warn]     |
+[warn]     |    It would fail on pattern case: stainless.collection.Cons(_, _)
+[warn]     |
+[warn]     | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/ziplex/target/stainless_3/stainless-library_3-sources/collection/ListMap.scala:230:4 
+[warn] 230 |    l match {
+[warn]     |    ^
+[warn]     |    match may not be exhaustive.
+[warn]     |
+[warn]     |    It would fail on pattern case: stainless.collection.Cons(_, _)
+[warn]     |
+[warn]     | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/ziplex/target/stainless_3/stainless-library_3-sources/collection/ListMap.scala:252:4 
+[warn] 252 |    l match {
+[warn]     |    ^
+[warn]     |    match may not be exhaustive.
+[warn]     |
+[warn]     |    It would fail on pattern case: stainless.collection.Cons(_, _)
+[warn]     |
+[warn]     | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/ziplex/target/stainless_3/stainless-library_3-sources/collection/ListMap.scala:294:4 
+[warn] 294 |    l match {
+[warn]     |    ^
+[warn]     |    match may not be exhaustive.
+[warn]     |
+[warn]     |    It would fail on pattern case: stainless.collection.Cons(_, _)
+[warn]     |
+[warn]     | longer explanation available when compiling with `-explain`
+[warn] -- [E029] Pattern Match Exhaustivity Warning: /localhome/chassot/bolts/lexers/regex/ziplex/target/stainless_3/stainless-library_3-sources/collection/ListMap.scala:354:4 
+[warn] 354 |    l match {
+[warn]     |    ^
+[warn]     |    match may not be exhaustive.
+[warn]     |
+[warn]     |    It would fail on pattern case: stainless.collection.Cons(_, _)
+[warn]     |
+[warn]     | longer explanation available when compiling with `-explain`
+[warn] there was 1 deprecation warning; re-run with -deprecation for details
+[warn] 42 warnings found
+[info] done compiling
+[info] running org.openjdk.jmh.generators.bytecode.JmhBytecodeGenerator /localhome/chassot/bolts/lexers/regex/ziplex/target/scala-3.7.2/classes /localhome/chassot/bolts/lexers/regex/ziplex/target/scala-3.7.2/src_managed/jmh /localhome/chassot/bolts/lexers/regex/ziplex/target/scala-3.7.2/resource_managed/jmh default
+Processing 1522 classes from /localhome/chassot/bolts/lexers/regex/ziplex/target/scala-3.7.2/classes with "reflection" generator
+Writing out Java source to /localhome/chassot/bolts/lexers/regex/ziplex/target/scala-3.7.2/src_managed/jmh and resources to /localhome/chassot/bolts/lexers/regex/ziplex/target/scala-3.7.2/resource_managed/jmh
+[info] compiling 265 Java sources to /localhome/chassot/bolts/lexers/regex/ziplex/target/scala-3.7.2/classes ...
+[info] done compiling
+[info] running (fork) org.openjdk.jmh.Main -i 3 -wi 1 -f1 -t1 com.ziplex.lexer.benchmark.lexer.AAStarBLexerBenchmark
+[info] # JMH version: 1.32
+[info] # VM version: JDK 21.0.11, Java HotSpot(TM) 64-Bit Server VM, 21.0.11+9-LTS-jvmci-23.1-b92
+[info] # VM invoker: /home/schassot/.sdkman/candidates/java/21.0.11-graal/bin/java
+[info] # VM options: -XX:ThreadPriorityPolicy=1 -XX:+UnlockExperimentalVMOptions -XX:+EnableJVMCIProduct -XX:-UnlockExperimentalVMOptions -Djava.io.tmpdir=/localhome/chassot/tmp -Xss1G -Xmx32g
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 1 iterations, 10 s each
+[info] # Measurement: 3 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: com.ziplex.lexer.benchmark.lexer.AAStarBLexerBenchmark.lex_ZipperV3MemDeriv
+[info] # Parameters: (file = 100000.txt)
+[info] # Run progress: 0.00% complete, ETA 00:31:20
+[info] # Fork: 1 of 1
+[info] Java HotSpot(TM) 64-Bit Server VM warning: -XX:ThreadPriorityPolicy=1 may require system level permission, e.g., being the root user. If the necessary permission is not possessed, changes to priority will be silently ignored.
+[info] # Warmup Iteration   1: 382492794.179 us/op
+[info] Iteration   1: 435502932.305 us/op
+[info] Iteration   2: 369935610.567 us/op
+[info] Iteration   3: 371320025.847 us/op
+[info] Result "com.ziplex.lexer.benchmark.lexer.AAStarBLexerBenchmark.lex_ZipperV3MemDeriv":
+[info]   392252856.240 ±(99.9%) 683447438.419 us/op [Average]
+[info]   (min, avg, max) = (369935610.567, 392252856.240, 435502932.305), stdev = 37462060.290
+[info]   CI (99.9%): [≈ 0, 1075700294.659] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 21.0.11, Java HotSpot(TM) 64-Bit Server VM, 21.0.11+9-LTS-jvmci-23.1-b92
+[info] # VM invoker: /home/schassot/.sdkman/candidates/java/21.0.11-graal/bin/java
+[info] # VM options: -XX:ThreadPriorityPolicy=1 -XX:+UnlockExperimentalVMOptions -XX:+EnableJVMCIProduct -XX:-UnlockExperimentalVMOptions -Djava.io.tmpdir=/localhome/chassot/tmp -Xss1G -Xmx32g
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 1 iterations, 10 s each
+[info] # Measurement: 3 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: com.ziplex.lexer.benchmark.lexer.AAStarBLexerBenchmark.lex_ZipperV3MemDeriv
+[info] # Parameters: (file = 10000.txt)
+[info] # Run progress: 2.13% complete, ETA 20:03:44
+[info] # Fork: 1 of 1
+[info] Java HotSpot(TM) 64-Bit Server VM warning: -XX:ThreadPriorityPolicy=1 may require system level permission, e.g., being the root user. If the necessary permission is not possessed, changes to priority will be silently ignored.
+[info] # Warmup Iteration   1: 3506854.121 us/op
+[info] Iteration   1: 3562578.519 us/op
+[info] Iteration   2: 3455805.217 us/op
+[info] Iteration   3: 3622563.846 us/op
+[info] Result "com.ziplex.lexer.benchmark.lexer.AAStarBLexerBenchmark.lex_ZipperV3MemDeriv":
+[info]   3546982.527 ±(99.9%) 1540977.644 us/op [Average]
+[info]   (min, avg, max) = (3455805.217, 3546982.527, 3622563.846), stdev = 84466.184
+[info]   CI (99.9%): [2006004.884, 5087960.171] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 21.0.11, Java HotSpot(TM) 64-Bit Server VM, 21.0.11+9-LTS-jvmci-23.1-b92
+[info] # VM invoker: /home/schassot/.sdkman/candidates/java/21.0.11-graal/bin/java
+[info] # VM options: -XX:ThreadPriorityPolicy=1 -XX:+UnlockExperimentalVMOptions -XX:+EnableJVMCIProduct -XX:-UnlockExperimentalVMOptions -Djava.io.tmpdir=/localhome/chassot/tmp -Xss1G -Xmx32g
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 1 iterations, 10 s each
+[info] # Measurement: 3 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: com.ziplex.lexer.benchmark.lexer.AAStarBLexerBenchmark.lex_ZipperV3MemDeriv
+[info] # Parameters: (file = 1000.txt)
+[info] # Run progress: 4.26% complete, ETA 10:08:44
+[info] # Fork: 1 of 1
+[info] Java HotSpot(TM) 64-Bit Server VM warning: -XX:ThreadPriorityPolicy=1 may require system level permission, e.g., being the root user. If the necessary permission is not possessed, changes to priority will be silently ignored.
+[info] # Warmup Iteration   1: 29766.698 us/op
+[info] Iteration   1: 33129.674 us/op
+[info] Iteration   2: 33275.717 us/op
+[info] Iteration   3: 30910.489 us/op
+[info] Result "com.ziplex.lexer.benchmark.lexer.AAStarBLexerBenchmark.lex_ZipperV3MemDeriv":
+[info]   32438.626 ±(99.9%) 24180.576 us/op [Average]
+[info]   (min, avg, max) = (30910.489, 32438.626, 33275.717), stdev = 1325.419
+[info]   CI (99.9%): [8258.050, 56619.202] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 21.0.11, Java HotSpot(TM) 64-Bit Server VM, 21.0.11+9-LTS-jvmci-23.1-b92
+[info] # VM invoker: /home/schassot/.sdkman/candidates/java/21.0.11-graal/bin/java
+[info] # VM options: -XX:ThreadPriorityPolicy=1 -XX:+UnlockExperimentalVMOptions -XX:+EnableJVMCIProduct -XX:-UnlockExperimentalVMOptions -Djava.io.tmpdir=/localhome/chassot/tmp -Xss1G -Xmx32g
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 1 iterations, 10 s each
+[info] # Measurement: 3 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: com.ziplex.lexer.benchmark.lexer.AAStarBLexerBenchmark.lex_ZipperV3MemDeriv
+[info] # Parameters: (file = 100.txt)
+[info] # Run progress: 6.38% complete, ETA 06:49:27
+[info] # Fork: 1 of 1
+[info] Java HotSpot(TM) 64-Bit Server VM warning: -XX:ThreadPriorityPolicy=1 may require system level permission, e.g., being the root user. If the necessary permission is not possessed, changes to priority will be silently ignored.
+[info] # Warmup Iteration   1: 350.772 us/op
+[info] Iteration   1: 358.613 us/op
+[info] Iteration   2: 362.818 us/op
+[info] Iteration   3: 335.366 us/op
+[info] Result "com.ziplex.lexer.benchmark.lexer.AAStarBLexerBenchmark.lex_ZipperV3MemDeriv":
+[info]   352.266 ±(99.9%) 269.751 us/op [Average]
+[info]   (min, avg, max) = (335.366, 352.266, 362.818), stdev = 14.786
+[info]   CI (99.9%): [82.515, 622.017] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 21.0.11, Java HotSpot(TM) 64-Bit Server VM, 21.0.11+9-LTS-jvmci-23.1-b92
+[info] # VM invoker: /home/schassot/.sdkman/candidates/java/21.0.11-graal/bin/java
+[info] # VM options: -XX:ThreadPriorityPolicy=1 -XX:+UnlockExperimentalVMOptions -XX:+EnableJVMCIProduct -XX:-UnlockExperimentalVMOptions -Djava.io.tmpdir=/localhome/chassot/tmp -Xss1G -Xmx32g
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 1 iterations, 10 s each
+[info] # Measurement: 3 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: com.ziplex.lexer.benchmark.lexer.AAStarBLexerBenchmark.lex_ZipperV3MemDeriv
+[info] # Parameters: (file = 1200.txt)
+[info] # Run progress: 8.51% complete, ETA 05:09:21
+[info] # Fork: 1 of 1
+[info] Java HotSpot(TM) 64-Bit Server VM warning: -XX:ThreadPriorityPolicy=1 may require system level permission, e.g., being the root user. If the necessary permission is not possessed, changes to priority will be silently ignored.
+[info] # Warmup Iteration   1: 45639.070 us/op
+[info] Iteration   1: 50257.567 us/op
+[info] Iteration   2: 49035.747 us/op
+[info] Iteration   3: 48199.135 us/op
+[info] Result "com.ziplex.lexer.benchmark.lexer.AAStarBLexerBenchmark.lex_ZipperV3MemDeriv":
+[info]   49164.150 ±(99.9%) 18886.006 us/op [Average]
+[info]   (min, avg, max) = (48199.135, 49164.150, 50257.567), stdev = 1035.206
+[info]   CI (99.9%): [30278.144, 68050.156] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 21.0.11, Java HotSpot(TM) 64-Bit Server VM, 21.0.11+9-LTS-jvmci-23.1-b92
+[info] # VM invoker: /home/schassot/.sdkman/candidates/java/21.0.11-graal/bin/java
+[info] # VM options: -XX:ThreadPriorityPolicy=1 -XX:+UnlockExperimentalVMOptions -XX:+EnableJVMCIProduct -XX:-UnlockExperimentalVMOptions -Djava.io.tmpdir=/localhome/chassot/tmp -Xss1G -Xmx32g
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 1 iterations, 10 s each
+[info] # Measurement: 3 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: com.ziplex.lexer.benchmark.lexer.AAStarBLexerBenchmark.lex_ZipperV3MemDeriv
+[info] # Parameters: (file = 12500.txt)
+[info] # Run progress: 10.64% complete, ETA 04:08:58
+[info] # Fork: 1 of 1
+[info] Java HotSpot(TM) 64-Bit Server VM warning: -XX:ThreadPriorityPolicy=1 may require system level permission, e.g., being the root user. If the necessary permission is not possessed, changes to priority will be silently ignored.
+[info] # Warmup Iteration   1: 5209681.602 us/op
+[info] Iteration   1: 5924362.032 us/op
+[info] Iteration   2: 5500050.071 us/op
+[info] Iteration   3: 5299039.126 us/op
+[info] Result "com.ziplex.lexer.benchmark.lexer.AAStarBLexerBenchmark.lex_ZipperV3MemDeriv":
+[info]   5574483.743 ±(99.9%) 5824077.026 us/op [Average]
+[info]   (min, avg, max) = (5299039.126, 5574483.743, 5924362.032), stdev = 319237.314
+[info]   CI (99.9%): [≈ 0, 11398560.768] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 21.0.11, Java HotSpot(TM) 64-Bit Server VM, 21.0.11+9-LTS-jvmci-23.1-b92
+[info] # VM invoker: /home/schassot/.sdkman/candidates/java/21.0.11-graal/bin/java
+[info] # VM options: -XX:ThreadPriorityPolicy=1 -XX:+UnlockExperimentalVMOptions -XX:+EnableJVMCIProduct -XX:-UnlockExperimentalVMOptions -Djava.io.tmpdir=/localhome/chassot/tmp -Xss1G -Xmx32g
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 1 iterations, 10 s each
+[info] # Measurement: 3 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: com.ziplex.lexer.benchmark.lexer.AAStarBLexerBenchmark.lex_ZipperV3MemDeriv
+[info] # Parameters: (file = 15000.txt)
+[info] # Run progress: 12.77% complete, ETA 03:28:52
+[info] # Fork: 1 of 1
+[info] Java HotSpot(TM) 64-Bit Server VM warning: -XX:ThreadPriorityPolicy=1 may require system level permission, e.g., being the root user. If the necessary permission is not possessed, changes to priority will be silently ignored.
+[info] # Warmup Iteration   1: 8093731.980 us/op
+[info] Iteration   1: 8051028.954 us/op
+[info] Iteration   2: 7786283.965 us/op
+[info] Iteration   3: 8228051.352 us/op
+[info] Result "com.ziplex.lexer.benchmark.lexer.AAStarBLexerBenchmark.lex_ZipperV3MemDeriv":
+[info]   8021788.090 ±(99.9%) 4056137.044 us/op [Average]
+[info]   (min, avg, max) = (7786283.965, 8021788.090, 8228051.352), stdev = 222330.558
+[info]   CI (99.9%): [3965651.046, 12077925.135] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 21.0.11, Java HotSpot(TM) 64-Bit Server VM, 21.0.11+9-LTS-jvmci-23.1-b92
+[info] # VM invoker: /home/schassot/.sdkman/candidates/java/21.0.11-graal/bin/java
+[info] # VM options: -XX:ThreadPriorityPolicy=1 -XX:+UnlockExperimentalVMOptions -XX:+EnableJVMCIProduct -XX:-UnlockExperimentalVMOptions -Djava.io.tmpdir=/localhome/chassot/tmp -Xss1G -Xmx32g
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 1 iterations, 10 s each
+[info] # Measurement: 3 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: com.ziplex.lexer.benchmark.lexer.AAStarBLexerBenchmark.lex_ZipperV3MemDeriv
+[info] # Parameters: (file = 17500.txt)
+[info] # Run progress: 14.89% complete, ETA 03:01:53
+[info] # Fork: 1 of 1
+[info] Java HotSpot(TM) 64-Bit Server VM warning: -XX:ThreadPriorityPolicy=1 may require system level permission, e.g., being the root user. If the necessary permission is not possessed, changes to priority will be silently ignored.
+[info] # Warmup Iteration   1: 10291342.618 us/op
+[info] Iteration   1: 11264517.741 us/op
+[info] Iteration   2: 10796376.779 us/op
+[info] Iteration   3: 10596056.932 us/op
+[info] Result "com.ziplex.lexer.benchmark.lexer.AAStarBLexerBenchmark.lex_ZipperV3MemDeriv":
+[info]   10885650.484 ±(99.9%) 6258615.597 us/op [Average]
+[info]   (min, avg, max) = (10596056.932, 10885650.484, 11264517.741), stdev = 343055.840
+[info]   CI (99.9%): [4627034.887, 17144266.081] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 21.0.11, Java HotSpot(TM) 64-Bit Server VM, 21.0.11+9-LTS-jvmci-23.1-b92
+[info] # VM invoker: /home/schassot/.sdkman/candidates/java/21.0.11-graal/bin/java
+[info] # VM options: -XX:ThreadPriorityPolicy=1 -XX:+UnlockExperimentalVMOptions -XX:+EnableJVMCIProduct -XX:-UnlockExperimentalVMOptions -Djava.io.tmpdir=/localhome/chassot/tmp -Xss1G -Xmx32g
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 1 iterations, 10 s each
+[info] # Measurement: 3 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: com.ziplex.lexer.benchmark.lexer.AAStarBLexerBenchmark.lex_ZipperV3MemDeriv
+[info] # Parameters: (file = 20000.txt)
+[info] # Run progress: 17.02% complete, ETA 02:39:35
+[info] # Fork: 1 of 1
+[info] Java HotSpot(TM) 64-Bit Server VM warning: -XX:ThreadPriorityPolicy=1 may require system level permission, e.g., being the root user. If the necessary permission is not possessed, changes to priority will be silently ignored.
+[info] # Warmup Iteration   1: 14462159.605 us/op
+[info] Iteration   1: 14711240.685 us/op
+[info] Iteration   2: 14551728.134 us/op
+[info] Iteration   3: 14364805.627 us/op
+[info] Result "com.ziplex.lexer.benchmark.lexer.AAStarBLexerBenchmark.lex_ZipperV3MemDeriv":
+[info]   14542591.482 ±(99.9%) 3163427.903 us/op [Average]
+[info]   (min, avg, max) = (14364805.627, 14542591.482, 14711240.685), stdev = 173398.158
+[info]   CI (99.9%): [11379163.579, 17706019.385] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 21.0.11, Java HotSpot(TM) 64-Bit Server VM, 21.0.11+9-LTS-jvmci-23.1-b92
+[info] # VM invoker: /home/schassot/.sdkman/candidates/java/21.0.11-graal/bin/java
+[info] # VM options: -XX:ThreadPriorityPolicy=1 -XX:+UnlockExperimentalVMOptions -XX:+EnableJVMCIProduct -XX:-UnlockExperimentalVMOptions -Djava.io.tmpdir=/localhome/chassot/tmp -Xss1G -Xmx32g
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 1 iterations, 10 s each
+[info] # Measurement: 3 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: com.ziplex.lexer.benchmark.lexer.AAStarBLexerBenchmark.lex_ZipperV3MemDeriv
+[info] # Parameters: (file = 2000.txt)
+[info] # Run progress: 19.15% complete, ETA 02:23:08
+[info] # Fork: 1 of 1
+[info] Java HotSpot(TM) 64-Bit Server VM warning: -XX:ThreadPriorityPolicy=1 may require system level permission, e.g., being the root user. If the necessary permission is not possessed, changes to priority will be silently ignored.
+[info] # Warmup Iteration   1: 137577.691 us/op
+[info] Iteration   1: 139223.319 us/op
+[info] Iteration   2: 153324.960 us/op
+[info] Iteration   3: 148250.437 us/op
+[info] Result "com.ziplex.lexer.benchmark.lexer.AAStarBLexerBenchmark.lex_ZipperV3MemDeriv":
+[info]   146932.905 ±(99.9%) 130306.658 us/op [Average]
+[info]   (min, avg, max) = (139223.319, 146932.905, 153324.960), stdev = 7142.548
+[info]   CI (99.9%): [16626.248, 277239.563] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 21.0.11, Java HotSpot(TM) 64-Bit Server VM, 21.0.11+9-LTS-jvmci-23.1-b92
+[info] # VM invoker: /home/schassot/.sdkman/candidates/java/21.0.11-graal/bin/java
+[info] # VM options: -XX:ThreadPriorityPolicy=1 -XX:+UnlockExperimentalVMOptions -XX:+EnableJVMCIProduct -XX:-UnlockExperimentalVMOptions -Djava.io.tmpdir=/localhome/chassot/tmp -Xss1G -Xmx32g
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 1 iterations, 10 s each
+[info] # Measurement: 3 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: com.ziplex.lexer.benchmark.lexer.AAStarBLexerBenchmark.lex_ZipperV3MemDeriv
+[info] # Parameters: (file = 200.txt)
+[info] # Run progress: 21.28% complete, ETA 02:08:38
+[info] # Fork: 1 of 1
+[info] Java HotSpot(TM) 64-Bit Server VM warning: -XX:ThreadPriorityPolicy=1 may require system level permission, e.g., being the root user. If the necessary permission is not possessed, changes to priority will be silently ignored.
+[info] # Warmup Iteration   1: 1244.847 us/op
+[info] Iteration   1: 1285.291 us/op
+[info] Iteration   2: 1228.535 us/op
+[info] Iteration   3: 1208.178 us/op
+[info] Result "com.ziplex.lexer.benchmark.lexer.AAStarBLexerBenchmark.lex_ZipperV3MemDeriv":
+[info]   1240.668 ±(99.9%) 729.066 us/op [Average]
+[info]   (min, avg, max) = (1208.178, 1240.668, 1285.291), stdev = 39.963
+[info]   CI (99.9%): [511.602, 1969.734] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 21.0.11, Java HotSpot(TM) 64-Bit Server VM, 21.0.11+9-LTS-jvmci-23.1-b92
+[info] # VM invoker: /home/schassot/.sdkman/candidates/java/21.0.11-graal/bin/java
+[info] # VM options: -XX:ThreadPriorityPolicy=1 -XX:+UnlockExperimentalVMOptions -XX:+EnableJVMCIProduct -XX:-UnlockExperimentalVMOptions -Djava.io.tmpdir=/localhome/chassot/tmp -Xss1G -Xmx32g
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 1 iterations, 10 s each
+[info] # Measurement: 3 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: com.ziplex.lexer.benchmark.lexer.AAStarBLexerBenchmark.lex_ZipperV3MemDeriv
+[info] # Parameters: (file = 22500.txt)
+[info] # Run progress: 23.40% complete, ETA 01:56:36
+[info] # Fork: 1 of 1
+[info] Java HotSpot(TM) 64-Bit Server VM warning: -XX:ThreadPriorityPolicy=1 may require system level permission, e.g., being the root user. If the necessary permission is not possessed, changes to priority will be silently ignored.
+[info] # Warmup Iteration   1: 18715781.159 us/op
+[info] Iteration   1: 19028280.455 us/op
+[info] Iteration   2: 18080300.455 us/op
+[info] Iteration   3: 18068631.795 us/op
+[info] Result "com.ziplex.lexer.benchmark.lexer.AAStarBLexerBenchmark.lex_ZipperV3MemDeriv":
+[info]   18392404.235 ±(99.9%) 10047107.522 us/op [Average]
+[info]   (min, avg, max) = (18068631.795, 18392404.235, 19028280.455), stdev = 550715.866
+[info]   CI (99.9%): [8345296.713, 28439511.757] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 21.0.11, Java HotSpot(TM) 64-Bit Server VM, 21.0.11+9-LTS-jvmci-23.1-b92
+[info] # VM invoker: /home/schassot/.sdkman/candidates/java/21.0.11-graal/bin/java
+[info] # VM options: -XX:ThreadPriorityPolicy=1 -XX:+UnlockExperimentalVMOptions -XX:+EnableJVMCIProduct -XX:-UnlockExperimentalVMOptions -Djava.io.tmpdir=/localhome/chassot/tmp -Xss1G -Xmx32g
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 1 iterations, 10 s each
+[info] # Measurement: 3 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: com.ziplex.lexer.benchmark.lexer.AAStarBLexerBenchmark.lex_ZipperV3MemDeriv
+[info] # Parameters: (file = 25000.txt)
+[info] # Run progress: 25.53% complete, ETA 01:48:09
+[info] # Fork: 1 of 1
+[info] Java HotSpot(TM) 64-Bit Server VM warning: -XX:ThreadPriorityPolicy=1 may require system level permission, e.g., being the root user. If the necessary permission is not possessed, changes to priority will be silently ignored.
+[info] # Warmup Iteration   1: 21442549.235 us/op
+[info] Iteration   1: 22523202.161 us/op
+[info] Iteration   2: 23439020.769 us/op
+[info] Iteration   3: 23372332.697 us/op
+[info] Result "com.ziplex.lexer.benchmark.lexer.AAStarBLexerBenchmark.lex_ZipperV3MemDeriv":
+[info]   23111518.542 ±(99.9%) 9315005.188 us/op [Average]
+[info]   (min, avg, max) = (22523202.161, 23111518.542, 23439020.769), stdev = 510586.866
+[info]   CI (99.9%): [13796513.355, 32426523.730] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 21.0.11, Java HotSpot(TM) 64-Bit Server VM, 21.0.11+9-LTS-jvmci-23.1-b92
+[info] # VM invoker: /home/schassot/.sdkman/candidates/java/21.0.11-graal/bin/java
+[info] # VM options: -XX:ThreadPriorityPolicy=1 -XX:+UnlockExperimentalVMOptions -XX:+EnableJVMCIProduct -XX:-UnlockExperimentalVMOptions -Djava.io.tmpdir=/localhome/chassot/tmp -Xss1G -Xmx32g
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 1 iterations, 10 s each
+[info] # Measurement: 3 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: com.ziplex.lexer.benchmark.lexer.AAStarBLexerBenchmark.lex_ZipperV3MemDeriv
+[info] # Parameters: (file = 2500.txt)
+[info] # Run progress: 27.66% complete, ETA 01:41:27
+[info] # Fork: 1 of 1
+[info] Java HotSpot(TM) 64-Bit Server VM warning: -XX:ThreadPriorityPolicy=1 may require system level permission, e.g., being the root user. If the necessary permission is not possessed, changes to priority will be silently ignored.
+[info] # Warmup Iteration   1: 217433.100 us/op
+[info] Iteration   1: 231066.104 us/op
+[info] Iteration   2: 208994.940 us/op
+[info] Iteration   3: 202800.428 us/op
+[info] Result "com.ziplex.lexer.benchmark.lexer.AAStarBLexerBenchmark.lex_ZipperV3MemDeriv":
+[info]   214287.158 ±(99.9%) 271054.556 us/op [Average]
+[info]   (min, avg, max) = (202800.428, 214287.158, 231066.104), stdev = 14857.415
+[info]   CI (99.9%): [≈ 0, 485341.714] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 21.0.11, Java HotSpot(TM) 64-Bit Server VM, 21.0.11+9-LTS-jvmci-23.1-b92
+[info] # VM invoker: /home/schassot/.sdkman/candidates/java/21.0.11-graal/bin/java
+[info] # VM options: -XX:ThreadPriorityPolicy=1 -XX:+UnlockExperimentalVMOptions -XX:+EnableJVMCIProduct -XX:-UnlockExperimentalVMOptions -Djava.io.tmpdir=/localhome/chassot/tmp -Xss1G -Xmx32g
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 1 iterations, 10 s each
+[info] # Measurement: 3 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: com.ziplex.lexer.benchmark.lexer.AAStarBLexerBenchmark.lex_ZipperV3MemDeriv
+[info] # Parameters: (file = 27500.txt)
+[info] # Run progress: 29.79% complete, ETA 01:33:28
+[info] # Fork: 1 of 1
+[info] Java HotSpot(TM) 64-Bit Server VM warning: -XX:ThreadPriorityPolicy=1 may require system level permission, e.g., being the root user. If the necessary permission is not possessed, changes to priority will be silently ignored.
+[info] # Warmup Iteration   1: 26211299.451 us/op
+[info] Iteration   1: 28064175.184 us/op
+[info] Iteration   2: 27538447.576 us/op
+[info] Iteration   3: 27446653.964 us/op
+[info] Result "com.ziplex.lexer.benchmark.lexer.AAStarBLexerBenchmark.lex_ZipperV3MemDeriv":
+[info]   27683092.241 ±(99.9%) 6078875.018 us/op [Average]
+[info]   (min, avg, max) = (27446653.964, 27683092.241, 28064175.184), stdev = 333203.652
+[info]   CI (99.9%): [21604217.223, 33761967.259] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 21.0.11, Java HotSpot(TM) 64-Bit Server VM, 21.0.11+9-LTS-jvmci-23.1-b92
+[info] # VM invoker: /home/schassot/.sdkman/candidates/java/21.0.11-graal/bin/java
+[info] # VM options: -XX:ThreadPriorityPolicy=1 -XX:+UnlockExperimentalVMOptions -XX:+EnableJVMCIProduct -XX:-UnlockExperimentalVMOptions -Djava.io.tmpdir=/localhome/chassot/tmp -Xss1G -Xmx32g
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 1 iterations, 10 s each
+[info] # Measurement: 3 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: com.ziplex.lexer.benchmark.lexer.AAStarBLexerBenchmark.lex_ZipperV3MemDeriv
+[info] # Parameters: (file = 30000.txt)
+[info] # Run progress: 31.91% complete, ETA 01:28:53
+[info] # Fork: 1 of 1
+[info] Java HotSpot(TM) 64-Bit Server VM warning: -XX:ThreadPriorityPolicy=1 may require system level permission, e.g., being the root user. If the necessary permission is not possessed, changes to priority will be silently ignored.
+[info] # Warmup Iteration   1: 32132189.566 us/op
+[info] Iteration   1: 33430443.941 us/op
+[info] Iteration   2: 34489830.145 us/op
+[info] Iteration   3: 33462579.544 us/op
+[info] Result "com.ziplex.lexer.benchmark.lexer.AAStarBLexerBenchmark.lex_ZipperV3MemDeriv":
+[info]   33794284.543 ±(99.9%) 10993200.689 us/op [Average]
+[info]   (min, avg, max) = (33430443.941, 33794284.543, 34489830.145), stdev = 602574.425
+[info]   CI (99.9%): [22801083.854, 44787485.232] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 21.0.11, Java HotSpot(TM) 64-Bit Server VM, 21.0.11+9-LTS-jvmci-23.1-b92
+[info] # VM invoker: /home/schassot/.sdkman/candidates/java/21.0.11-graal/bin/java
+[info] # VM options: -XX:ThreadPriorityPolicy=1 -XX:+UnlockExperimentalVMOptions -XX:+EnableJVMCIProduct -XX:-UnlockExperimentalVMOptions -Djava.io.tmpdir=/localhome/chassot/tmp -Xss1G -Xmx32g
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 1 iterations, 10 s each
+[info] # Measurement: 3 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: com.ziplex.lexer.benchmark.lexer.AAStarBLexerBenchmark.lex_ZipperV3MemDeriv
+[info] # Parameters: (file = 300.txt)
+[info] # Run progress: 34.04% complete, ETA 01:25:23
+[info] # Fork: 1 of 1
+[info] Java HotSpot(TM) 64-Bit Server VM warning: -XX:ThreadPriorityPolicy=1 may require system level permission, e.g., being the root user. If the necessary permission is not possessed, changes to priority will be silently ignored.
+[info] # Warmup Iteration   1: 2787.517 us/op
+[info] Iteration   1: 3220.199 us/op
+[info] Iteration   2: 2895.762 us/op
+[info] Iteration   3: 2854.999 us/op
+[info] Result "com.ziplex.lexer.benchmark.lexer.AAStarBLexerBenchmark.lex_ZipperV3MemDeriv":
+[info]   2990.320 ±(99.9%) 3650.962 us/op [Average]
+[info]   (min, avg, max) = (2854.999, 2990.320, 3220.199), stdev = 200.122
+[info]   CI (99.9%): [≈ 0, 6641.283] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 21.0.11, Java HotSpot(TM) 64-Bit Server VM, 21.0.11+9-LTS-jvmci-23.1-b92
+[info] # VM invoker: /home/schassot/.sdkman/candidates/java/21.0.11-graal/bin/java
+[info] # VM options: -XX:ThreadPriorityPolicy=1 -XX:+UnlockExperimentalVMOptions -XX:+EnableJVMCIProduct -XX:-UnlockExperimentalVMOptions -Djava.io.tmpdir=/localhome/chassot/tmp -Xss1G -Xmx32g
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 1 iterations, 10 s each
+[info] # Measurement: 3 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: com.ziplex.lexer.benchmark.lexer.AAStarBLexerBenchmark.lex_ZipperV3MemDeriv
+[info] # Parameters: (file = 32500.txt)
+[info] # Run progress: 36.17% complete, ETA 01:19:20
+[info] # Fork: 1 of 1
+[info] Java HotSpot(TM) 64-Bit Server VM warning: -XX:ThreadPriorityPolicy=1 may require system level permission, e.g., being the root user. If the necessary permission is not possessed, changes to priority will be silently ignored.
+[info] # Warmup Iteration   1: 38556209.327 us/op
+[info] Iteration   1: 40396788.933 us/op
+[info] Iteration   2: 40618347.977 us/op
+[info] Iteration   3: 41787909.352 us/op
+[info] Result "com.ziplex.lexer.benchmark.lexer.AAStarBLexerBenchmark.lex_ZipperV3MemDeriv":
+[info]   40934348.754 ±(99.9%) 13636451.989 us/op [Average]
+[info]   (min, avg, max) = (40396788.933, 40934348.754, 41787909.352), stdev = 747459.948
+[info]   CI (99.9%): [27297896.765, 54570800.743] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 21.0.11, Java HotSpot(TM) 64-Bit Server VM, 21.0.11+9-LTS-jvmci-23.1-b92
+[info] # VM invoker: /home/schassot/.sdkman/candidates/java/21.0.11-graal/bin/java
+[info] # VM options: -XX:ThreadPriorityPolicy=1 -XX:+UnlockExperimentalVMOptions -XX:+EnableJVMCIProduct -XX:-UnlockExperimentalVMOptions -Djava.io.tmpdir=/localhome/chassot/tmp -Xss1G -Xmx32g
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 1 iterations, 10 s each
+[info] # Measurement: 3 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: com.ziplex.lexer.benchmark.lexer.AAStarBLexerBenchmark.lex_ZipperV3MemDeriv
+[info] # Parameters: (file = 35000.txt)
+[info] # Run progress: 38.30% complete, ETA 01:17:03
+[info] # Fork: 1 of 1
+[info] Java HotSpot(TM) 64-Bit Server VM warning: -XX:ThreadPriorityPolicy=1 may require system level permission, e.g., being the root user. If the necessary permission is not possessed, changes to priority will be silently ignored.
+[info] # Warmup Iteration   1: 43154994.722 us/op
+[info] Iteration   1: 45745155.600 us/op
+[info] Iteration   2: 44679455.734 us/op
+[info] Iteration   3: 48536262.338 us/op
+[info] Result "com.ziplex.lexer.benchmark.lexer.AAStarBLexerBenchmark.lex_ZipperV3MemDeriv":
+[info]   46320291.224 ±(99.9%) 36335821.578 us/op [Average]
+[info]   (min, avg, max) = (44679455.734, 46320291.224, 48536262.338), stdev = 1991688.990
+[info]   CI (99.9%): [9984469.646, 82656112.802] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 21.0.11, Java HotSpot(TM) 64-Bit Server VM, 21.0.11+9-LTS-jvmci-23.1-b92
+[info] # VM invoker: /home/schassot/.sdkman/candidates/java/21.0.11-graal/bin/java
+[info] # VM options: -XX:ThreadPriorityPolicy=1 -XX:+UnlockExperimentalVMOptions -XX:+EnableJVMCIProduct -XX:-UnlockExperimentalVMOptions -Djava.io.tmpdir=/localhome/chassot/tmp -Xss1G -Xmx32g
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 1 iterations, 10 s each
+[info] # Measurement: 3 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: com.ziplex.lexer.benchmark.lexer.AAStarBLexerBenchmark.lex_ZipperV3MemDeriv
+[info] # Parameters: (file = 37500.txt)
+[info] # Run progress: 40.43% complete, ETA 01:15:14
+[info] # Fork: 1 of 1
+[info] Java HotSpot(TM) 64-Bit Server VM warning: -XX:ThreadPriorityPolicy=1 may require system level permission, e.g., being the root user. If the necessary permission is not possessed, changes to priority will be silently ignored.
+[info] # Warmup Iteration   1: 50078106.751 us/op
+[info] Iteration   1: 50911601.569 us/op
+[info] Iteration   2: 50837192.424 us/op
+[info] Iteration   3: 49430409.391 us/op
+[info] Result "com.ziplex.lexer.benchmark.lexer.AAStarBLexerBenchmark.lex_ZipperV3MemDeriv":
+[info]   50393067.795 ±(99.9%) 15224685.324 us/op [Average]
+[info]   (min, avg, max) = (49430409.391, 50393067.795, 50911601.569), stdev = 834516.376
+[info]   CI (99.9%): [35168382.471, 65617753.119] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 21.0.11, Java HotSpot(TM) 64-Bit Server VM, 21.0.11+9-LTS-jvmci-23.1-b92
+[info] # VM invoker: /home/schassot/.sdkman/candidates/java/21.0.11-graal/bin/java
+[info] # VM options: -XX:ThreadPriorityPolicy=1 -XX:+UnlockExperimentalVMOptions -XX:+EnableJVMCIProduct -XX:-UnlockExperimentalVMOptions -Djava.io.tmpdir=/localhome/chassot/tmp -Xss1G -Xmx32g
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 1 iterations, 10 s each
+[info] # Measurement: 3 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: com.ziplex.lexer.benchmark.lexer.AAStarBLexerBenchmark.lex_ZipperV3MemDeriv
+[info] # Parameters: (file = 40000.txt)
+[info] # Run progress: 42.55% complete, ETA 01:13:41
+[info] # Fork: 1 of 1
+[info] Java HotSpot(TM) 64-Bit Server VM warning: -XX:ThreadPriorityPolicy=1 may require system level permission, e.g., being the root user. If the necessary permission is not possessed, changes to priority will be silently ignored.
+[info] # Warmup Iteration   1: 57184307.258 us/op
+[info] Iteration   1: 58254120.990 us/op
+[info] Iteration   2: 57761235.803 us/op
+[info] Iteration   3: 57762324.189 us/op
+[info] Result "com.ziplex.lexer.benchmark.lexer.AAStarBLexerBenchmark.lex_ZipperV3MemDeriv":
+[info]   57925893.661 ±(99.9%) 5185846.150 us/op [Average]
+[info]   (min, avg, max) = (57761235.803, 57925893.661, 58254120.990), stdev = 284253.726
+[info]   CI (99.9%): [52740047.511, 63111739.811] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 21.0.11, Java HotSpot(TM) 64-Bit Server VM, 21.0.11+9-LTS-jvmci-23.1-b92
+[info] # VM invoker: /home/schassot/.sdkman/candidates/java/21.0.11-graal/bin/java
+[info] # VM options: -XX:ThreadPriorityPolicy=1 -XX:+UnlockExperimentalVMOptions -XX:+EnableJVMCIProduct -XX:-UnlockExperimentalVMOptions -Djava.io.tmpdir=/localhome/chassot/tmp -Xss1G -Xmx32g
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 1 iterations, 10 s each
+[info] # Measurement: 3 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: com.ziplex.lexer.benchmark.lexer.AAStarBLexerBenchmark.lex_ZipperV3MemDeriv
+[info] # Parameters: (file = 42500.txt)
+[info] # Run progress: 44.68% complete, ETA 01:12:35
+[info] # Fork: 1 of 1
+[info] Java HotSpot(TM) 64-Bit Server VM warning: -XX:ThreadPriorityPolicy=1 may require system level permission, e.g., being the root user. If the necessary permission is not possessed, changes to priority will be silently ignored.
+[info] # Warmup Iteration   1: 64201782.385 us/op
+[info] Iteration   1: 67285648.130 us/op
+[info] Iteration   2: 68983554.861 us/op
+[info] Iteration   3: 65129070.778 us/op
+[info] Result "com.ziplex.lexer.benchmark.lexer.AAStarBLexerBenchmark.lex_ZipperV3MemDeriv":
+[info]   67132757.923 ±(99.9%) 35242950.554 us/op [Average]
+[info]   (min, avg, max) = (65129070.778, 67132757.923, 68983554.861), stdev = 1931785.042
+[info]   CI (99.9%): [31889807.369, 102375708.477] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 21.0.11, Java HotSpot(TM) 64-Bit Server VM, 21.0.11+9-LTS-jvmci-23.1-b92
+[info] # VM invoker: /home/schassot/.sdkman/candidates/java/21.0.11-graal/bin/java
+[info] # VM options: -XX:ThreadPriorityPolicy=1 -XX:+UnlockExperimentalVMOptions -XX:+EnableJVMCIProduct -XX:-UnlockExperimentalVMOptions -Djava.io.tmpdir=/localhome/chassot/tmp -Xss1G -Xmx32g
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 1 iterations, 10 s each
+[info] # Measurement: 3 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: com.ziplex.lexer.benchmark.lexer.AAStarBLexerBenchmark.lex_ZipperV3MemDeriv
+[info] # Parameters: (file = 45000.txt)
+[info] # Run progress: 46.81% complete, ETA 01:11:52
+[info] # Fork: 1 of 1
+[info] Java HotSpot(TM) 64-Bit Server VM warning: -XX:ThreadPriorityPolicy=1 may require system level permission, e.g., being the root user. If the necessary permission is not possessed, changes to priority will be silently ignored.
+[info] # Warmup Iteration   1: 71079119.782 us/op
+[info] Iteration   1: 72607646.138 us/op
+[info] Iteration   2: 75959116.704 us/op
+[info] Iteration   3: 72748197.109 us/op
+[info] Result "com.ziplex.lexer.benchmark.lexer.AAStarBLexerBenchmark.lex_ZipperV3MemDeriv":
+[info]   73771653.317 ±(99.9%) 34584659.732 us/op [Average]
+[info]   (min, avg, max) = (72607646.138, 73771653.317, 75959116.704), stdev = 1895701.901
+[info]   CI (99.9%): [39186993.585, 108356313.049] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 21.0.11, Java HotSpot(TM) 64-Bit Server VM, 21.0.11+9-LTS-jvmci-23.1-b92
+[info] # VM invoker: /home/schassot/.sdkman/candidates/java/21.0.11-graal/bin/java
+[info] # VM options: -XX:ThreadPriorityPolicy=1 -XX:+UnlockExperimentalVMOptions -XX:+EnableJVMCIProduct -XX:-UnlockExperimentalVMOptions -Djava.io.tmpdir=/localhome/chassot/tmp -Xss1G -Xmx32g
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 1 iterations, 10 s each
+[info] # Measurement: 3 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: com.ziplex.lexer.benchmark.lexer.AAStarBLexerBenchmark.lex_ZipperV3MemDeriv
+[info] # Parameters: (file = 47500.txt)
+[info] # Run progress: 48.94% complete, ETA 01:11:16
+[info] # Fork: 1 of 1
+[info] Java HotSpot(TM) 64-Bit Server VM warning: -XX:ThreadPriorityPolicy=1 may require system level permission, e.g., being the root user. If the necessary permission is not possessed, changes to priority will be silently ignored.
+[info] # Warmup Iteration   1: 82803969.224 us/op
+[info] Iteration   1: 87548123.242 us/op
+[info] Iteration   2: 92979655.829 us/op
+[info] Iteration   3: 81439958.913 us/op
+[info] Result "com.ziplex.lexer.benchmark.lexer.AAStarBLexerBenchmark.lex_ZipperV3MemDeriv":
+[info]   87322579.328 ±(99.9%) 105323815.211 us/op [Average]
+[info]   (min, avg, max) = (81439958.913, 87322579.328, 92979655.829), stdev = 5773153.711
+[info]   CI (99.9%): [≈ 0, 192646394.539] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 21.0.11, Java HotSpot(TM) 64-Bit Server VM, 21.0.11+9-LTS-jvmci-23.1-b92
+[info] # VM invoker: /home/schassot/.sdkman/candidates/java/21.0.11-graal/bin/java
+[info] # VM options: -XX:ThreadPriorityPolicy=1 -XX:+UnlockExperimentalVMOptions -XX:+EnableJVMCIProduct -XX:-UnlockExperimentalVMOptions -Djava.io.tmpdir=/localhome/chassot/tmp -Xss1G -Xmx32g
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 1 iterations, 10 s each
+[info] # Measurement: 3 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: com.ziplex.lexer.benchmark.lexer.AAStarBLexerBenchmark.lex_ZipperV3MemDeriv
+[info] # Parameters: (file = 50000.txt)
+[info] # Run progress: 51.06% complete, ETA 01:11:08
+[info] # Fork: 1 of 1
+[info] Java HotSpot(TM) 64-Bit Server VM warning: -XX:ThreadPriorityPolicy=1 may require system level permission, e.g., being the root user. If the necessary permission is not possessed, changes to priority will be silently ignored.
+[info] # Warmup Iteration   1: 94092154.111 us/op
+[info] Iteration   1: 89129142.049 us/op
+[info] Iteration   2: 87849881.489 us/op
+[info] Iteration   3: 93050713.194 us/op
+[info] Result "com.ziplex.lexer.benchmark.lexer.AAStarBLexerBenchmark.lex_ZipperV3MemDeriv":
+[info]   90009912.244 ±(99.9%) 49440083.521 us/op [Average]
+[info]   (min, avg, max) = (87849881.489, 90009912.244, 93050713.194), stdev = 2709977.806
+[info]   CI (99.9%): [40569828.723, 139449995.765] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 21.0.11, Java HotSpot(TM) 64-Bit Server VM, 21.0.11+9-LTS-jvmci-23.1-b92
+[info] # VM invoker: /home/schassot/.sdkman/candidates/java/21.0.11-graal/bin/java
+[info] # VM options: -XX:ThreadPriorityPolicy=1 -XX:+UnlockExperimentalVMOptions -XX:+EnableJVMCIProduct -XX:-UnlockExperimentalVMOptions -Djava.io.tmpdir=/localhome/chassot/tmp -Xss1G -Xmx32g
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 1 iterations, 10 s each
+[info] # Measurement: 3 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: com.ziplex.lexer.benchmark.lexer.AAStarBLexerBenchmark.lex_ZipperV3MemDeriv
+[info] # Parameters: (file = 5000.txt)
+[info] # Run progress: 53.19% complete, ETA 01:10:49
+[info] # Fork: 1 of 1
+[info] Java HotSpot(TM) 64-Bit Server VM warning: -XX:ThreadPriorityPolicy=1 may require system level permission, e.g., being the root user. If the necessary permission is not possessed, changes to priority will be silently ignored.
+[info] # Warmup Iteration   1: 804379.224 us/op
+[info] Iteration   1: 905992.572 us/op
+[info] Iteration   2: 995471.332 us/op
+[info] Iteration   3: 1007179.955 us/op
+[info] Result "com.ziplex.lexer.benchmark.lexer.AAStarBLexerBenchmark.lex_ZipperV3MemDeriv":
+[info]   969547.953 ±(99.9%) 1009809.055 us/op [Average]
+[info]   (min, avg, max) = (905992.572, 969547.953, 1007179.955), stdev = 55351.042
+[info]   CI (99.9%): [≈ 0, 1979357.008] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 21.0.11, Java HotSpot(TM) 64-Bit Server VM, 21.0.11+9-LTS-jvmci-23.1-b92
+[info] # VM invoker: /home/schassot/.sdkman/candidates/java/21.0.11-graal/bin/java
+[info] # VM options: -XX:ThreadPriorityPolicy=1 -XX:+UnlockExperimentalVMOptions -XX:+EnableJVMCIProduct -XX:-UnlockExperimentalVMOptions -Djava.io.tmpdir=/localhome/chassot/tmp -Xss1G -Xmx32g
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 1 iterations, 10 s each
+[info] # Measurement: 3 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: com.ziplex.lexer.benchmark.lexer.AAStarBLexerBenchmark.lex_ZipperV3MemDeriv
+[info] # Parameters: (file = 500.txt)
+[info] # Run progress: 55.32% complete, ETA 01:05:43
+[info] # Fork: 1 of 1
+[info] Java HotSpot(TM) 64-Bit Server VM warning: -XX:ThreadPriorityPolicy=1 may require system level permission, e.g., being the root user. If the necessary permission is not possessed, changes to priority will be silently ignored.
+[info] # Warmup Iteration   1: 7038.298 us/op
+[info] Iteration   1: 8253.520 us/op
+[info] Iteration   2: 8208.346 us/op
+[info] Iteration   3: 7635.574 us/op
+[info] Result "com.ziplex.lexer.benchmark.lexer.AAStarBLexerBenchmark.lex_ZipperV3MemDeriv":
+[info]   8032.480 ±(99.9%) 6284.444 us/op [Average]
+[info]   (min, avg, max) = (7635.574, 8032.480, 8253.520), stdev = 344.472
+[info]   CI (99.9%): [1748.036, 14316.924] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 21.0.11, Java HotSpot(TM) 64-Bit Server VM, 21.0.11+9-LTS-jvmci-23.1-b92
+[info] # VM invoker: /home/schassot/.sdkman/candidates/java/21.0.11-graal/bin/java
+[info] # VM options: -XX:ThreadPriorityPolicy=1 -XX:+UnlockExperimentalVMOptions -XX:+EnableJVMCIProduct -XX:-UnlockExperimentalVMOptions -Djava.io.tmpdir=/localhome/chassot/tmp -Xss1G -Xmx32g
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 1 iterations, 10 s each
+[info] # Measurement: 3 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: com.ziplex.lexer.benchmark.lexer.AAStarBLexerBenchmark.lex_ZipperV3MemDeriv
+[info] # Parameters: (file = 52500.txt)
+[info] # Run progress: 57.45% complete, ETA 01:00:54
+[info] # Fork: 1 of 1
+[info] Java HotSpot(TM) 64-Bit Server VM warning: -XX:ThreadPriorityPolicy=1 may require system level permission, e.g., being the root user. If the necessary permission is not possessed, changes to priority will be silently ignored.
+[info] # Warmup Iteration   1: 97406734.523 us/op
+[info] Iteration   1: 102189143.903 us/op
+[info] Iteration   2: 112933165.518 us/op
+[info] Iteration   3: 100285760.439 us/op
+[info] Result "com.ziplex.lexer.benchmark.lexer.AAStarBLexerBenchmark.lex_ZipperV3MemDeriv":
+[info]   105136023.287 ±(99.9%) 124408662.057 us/op [Average]
+[info]   (min, avg, max) = (100285760.439, 105136023.287, 112933165.518), stdev = 6819258.566
+[info]   CI (99.9%): [≈ 0, 229544685.344] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 21.0.11, Java HotSpot(TM) 64-Bit Server VM, 21.0.11+9-LTS-jvmci-23.1-b92
+[info] # VM invoker: /home/schassot/.sdkman/candidates/java/21.0.11-graal/bin/java
+[info] # VM options: -XX:ThreadPriorityPolicy=1 -XX:+UnlockExperimentalVMOptions -XX:+EnableJVMCIProduct -XX:-UnlockExperimentalVMOptions -Djava.io.tmpdir=/localhome/chassot/tmp -Xss1G -Xmx32g
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 1 iterations, 10 s each
+[info] # Measurement: 3 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: com.ziplex.lexer.benchmark.lexer.AAStarBLexerBenchmark.lex_ZipperV3MemDeriv
+[info] # Parameters: (file = 55000.txt)
+[info] # Run progress: 59.57% complete, ETA 01:00:35
+[info] # Fork: 1 of 1
+[info] Java HotSpot(TM) 64-Bit Server VM warning: -XX:ThreadPriorityPolicy=1 may require system level permission, e.g., being the root user. If the necessary permission is not possessed, changes to priority will be silently ignored.
+[info] # Warmup Iteration   1: 107095019.392 us/op
+[info] Iteration   1: 115765205.354 us/op
+[info] Iteration   2: 123595548.873 us/op
+[info] Iteration   3: 113437136.129 us/op
+[info] Result "com.ziplex.lexer.benchmark.lexer.AAStarBLexerBenchmark.lex_ZipperV3MemDeriv":
+[info]   117599296.785 ±(99.9%) 97088930.202 us/op [Average]
+[info]   (min, avg, max) = (113437136.129, 117599296.785, 123595548.873), stdev = 5321771.876
+[info]   CI (99.9%): [20510366.583, 214688226.987] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 21.0.11, Java HotSpot(TM) 64-Bit Server VM, 21.0.11+9-LTS-jvmci-23.1-b92
+[info] # VM invoker: /home/schassot/.sdkman/candidates/java/21.0.11-graal/bin/java
+[info] # VM options: -XX:ThreadPriorityPolicy=1 -XX:+UnlockExperimentalVMOptions -XX:+EnableJVMCIProduct -XX:-UnlockExperimentalVMOptions -Djava.io.tmpdir=/localhome/chassot/tmp -Xss1G -Xmx32g
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 1 iterations, 10 s each
+[info] # Measurement: 3 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: com.ziplex.lexer.benchmark.lexer.AAStarBLexerBenchmark.lex_ZipperV3MemDeriv
+[info] # Parameters: (file = 57500.txt)
+[info] # Run progress: 61.70% complete, ETA 01:00:18
+[info] # Fork: 1 of 1
+[info] Java HotSpot(TM) 64-Bit Server VM warning: -XX:ThreadPriorityPolicy=1 may require system level permission, e.g., being the root user. If the necessary permission is not possessed, changes to priority will be silently ignored.
+[info] # Warmup Iteration   1: 122650415.755 us/op
+[info] Iteration   1: 120744455.683 us/op
+[info] Iteration   2: 119046759.505 us/op
+[info] Iteration   3: 116230585.296 us/op
+[info] Result "com.ziplex.lexer.benchmark.lexer.AAStarBLexerBenchmark.lex_ZipperV3MemDeriv":
+[info]   118673933.495 ±(99.9%) 41594110.899 us/op [Average]
+[info]   (min, avg, max) = (116230585.296, 118673933.495, 120744455.683), stdev = 2279913.571
+[info]   CI (99.9%): [77079822.596, 160268044.394] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 21.0.11, Java HotSpot(TM) 64-Bit Server VM, 21.0.11+9-LTS-jvmci-23.1-b92
+[info] # VM invoker: /home/schassot/.sdkman/candidates/java/21.0.11-graal/bin/java
+[info] # VM options: -XX:ThreadPriorityPolicy=1 -XX:+UnlockExperimentalVMOptions -XX:+EnableJVMCIProduct -XX:-UnlockExperimentalVMOptions -Djava.io.tmpdir=/localhome/chassot/tmp -Xss1G -Xmx32g
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 1 iterations, 10 s each
+[info] # Measurement: 3 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: com.ziplex.lexer.benchmark.lexer.AAStarBLexerBenchmark.lex_ZipperV3MemDeriv
+[info] # Parameters: (file = 60000.txt)
+[info] # Run progress: 63.83% complete, ETA 00:59:40
+[info] # Fork: 1 of 1
+[info] Java HotSpot(TM) 64-Bit Server VM warning: -XX:ThreadPriorityPolicy=1 may require system level permission, e.g., being the root user. If the necessary permission is not possessed, changes to priority will be silently ignored.
+[info] # Warmup Iteration   1: 126654413.250 us/op
+[info] Iteration   1: 132440821.810 us/op
+[info] Iteration   2: 130430694.713 us/op
+[info] Iteration   3: 161475189.596 us/op
+[info] Result "com.ziplex.lexer.benchmark.lexer.AAStarBLexerBenchmark.lex_ZipperV3MemDeriv":
+[info]   141448902.040 ±(99.9%) 316936730.933 us/op [Average]
+[info]   (min, avg, max) = (130430694.713, 141448902.040, 161475189.596), stdev = 17372371.678
+[info]   CI (99.9%): [≈ 0, 458385632.973] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 21.0.11, Java HotSpot(TM) 64-Bit Server VM, 21.0.11+9-LTS-jvmci-23.1-b92
+[info] # VM invoker: /home/schassot/.sdkman/candidates/java/21.0.11-graal/bin/java
+[info] # VM options: -XX:ThreadPriorityPolicy=1 -XX:+UnlockExperimentalVMOptions -XX:+EnableJVMCIProduct -XX:-UnlockExperimentalVMOptions -Djava.io.tmpdir=/localhome/chassot/tmp -Xss1G -Xmx32g
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 1 iterations, 10 s each
+[info] # Measurement: 3 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: com.ziplex.lexer.benchmark.lexer.AAStarBLexerBenchmark.lex_ZipperV3MemDeriv
+[info] # Parameters: (file = 62500.txt)
+[info] # Run progress: 65.96% complete, ETA 00:59:11
+[info] # Fork: 1 of 1
+[info] Java HotSpot(TM) 64-Bit Server VM warning: -XX:ThreadPriorityPolicy=1 may require system level permission, e.g., being the root user. If the necessary permission is not possessed, changes to priority will be silently ignored.
+[info] # Warmup Iteration   1: 143272009.883 us/op
+[info] Iteration   1: 149457031.753 us/op
+[info] Iteration   2: 159323182.747 us/op
+[info] Iteration   3: 157035251.430 us/op
+[info] Result "com.ziplex.lexer.benchmark.lexer.AAStarBLexerBenchmark.lex_ZipperV3MemDeriv":
+[info]   155271821.977 ±(99.9%) 94211644.472 us/op [Average]
+[info]   (min, avg, max) = (149457031.753, 155271821.977, 159323182.747), stdev = 5164058.136
+[info]   CI (99.9%): [61060177.505, 249483466.449] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 21.0.11, Java HotSpot(TM) 64-Bit Server VM, 21.0.11+9-LTS-jvmci-23.1-b92
+[info] # VM invoker: /home/schassot/.sdkman/candidates/java/21.0.11-graal/bin/java
+[info] # VM options: -XX:ThreadPriorityPolicy=1 -XX:+UnlockExperimentalVMOptions -XX:+EnableJVMCIProduct -XX:-UnlockExperimentalVMOptions -Djava.io.tmpdir=/localhome/chassot/tmp -Xss1G -Xmx32g
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 1 iterations, 10 s each
+[info] # Measurement: 3 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: com.ziplex.lexer.benchmark.lexer.AAStarBLexerBenchmark.lex_ZipperV3MemDeriv
+[info] # Parameters: (file = 65000.txt)
+[info] # Run progress: 68.09% complete, ETA 00:58:36
+[info] # Fork: 1 of 1
+[info] Java HotSpot(TM) 64-Bit Server VM warning: -XX:ThreadPriorityPolicy=1 may require system level permission, e.g., being the root user. If the necessary permission is not possessed, changes to priority will be silently ignored.
+[info] # Warmup Iteration   1: 157167041.309 us/op
+[info] Iteration   1: 155402257.816 us/op
+[info] Iteration   2: 156201440.123 us/op
+[info] Iteration   3: 156225857.669 us/op
+[info] Result "com.ziplex.lexer.benchmark.lexer.AAStarBLexerBenchmark.lex_ZipperV3MemDeriv":
+[info]   155943185.203 ±(99.9%) 8549298.918 us/op [Average]
+[info]   (min, avg, max) = (155402257.816, 155943185.203, 156225857.669), stdev = 468615.922
+[info]   CI (99.9%): [147393886.284, 164492484.121] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 21.0.11, Java HotSpot(TM) 64-Bit Server VM, 21.0.11+9-LTS-jvmci-23.1-b92
+[info] # VM invoker: /home/schassot/.sdkman/candidates/java/21.0.11-graal/bin/java
+[info] # VM options: -XX:ThreadPriorityPolicy=1 -XX:+UnlockExperimentalVMOptions -XX:+EnableJVMCIProduct -XX:-UnlockExperimentalVMOptions -Djava.io.tmpdir=/localhome/chassot/tmp -Xss1G -Xmx32g
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 1 iterations, 10 s each
+[info] # Measurement: 3 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: com.ziplex.lexer.benchmark.lexer.AAStarBLexerBenchmark.lex_ZipperV3MemDeriv
+[info] # Parameters: (file = 67500.txt)
+[info] # Run progress: 70.21% complete, ETA 00:57:32
+[info] # Fork: 1 of 1
+[info] Java HotSpot(TM) 64-Bit Server VM warning: -XX:ThreadPriorityPolicy=1 may require system level permission, e.g., being the root user. If the necessary permission is not possessed, changes to priority will be silently ignored.
+[info] # Warmup Iteration   1: 162048445.528 us/op
+[info] Iteration   1: 169471366.511 us/op
+[info] Iteration   2: 167302499.827 us/op
+[info] Iteration   3: 171765213.524 us/op
+[info] Result "com.ziplex.lexer.benchmark.lexer.AAStarBLexerBenchmark.lex_ZipperV3MemDeriv":
+[info]   169513026.621 ±(99.9%) 40713576.450 us/op [Average]
+[info]   (min, avg, max) = (167302499.827, 169513026.621, 171765213.524), stdev = 2231648.507
+[info]   CI (99.9%): [128799450.171, 210226603.070] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 21.0.11, Java HotSpot(TM) 64-Bit Server VM, 21.0.11+9-LTS-jvmci-23.1-b92
+[info] # VM invoker: /home/schassot/.sdkman/candidates/java/21.0.11-graal/bin/java
+[info] # VM options: -XX:ThreadPriorityPolicy=1 -XX:+UnlockExperimentalVMOptions -XX:+EnableJVMCIProduct -XX:-UnlockExperimentalVMOptions -Djava.io.tmpdir=/localhome/chassot/tmp -Xss1G -Xmx32g
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 1 iterations, 10 s each
+[info] # Measurement: 3 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: com.ziplex.lexer.benchmark.lexer.AAStarBLexerBenchmark.lex_ZipperV3MemDeriv
+[info] # Parameters: (file = 70000.txt)
+[info] # Run progress: 72.34% complete, ETA 00:56:12
+[info] # Fork: 1 of 1
+[info] Java HotSpot(TM) 64-Bit Server VM warning: -XX:ThreadPriorityPolicy=1 may require system level permission, e.g., being the root user. If the necessary permission is not possessed, changes to priority will be silently ignored.
+[info] # Warmup Iteration   1: 177490519.805 us/op
+[info] Iteration   1: 180400054.409 us/op
+[info] Iteration   2: 188697449.863 us/op
+[info] Iteration   3: 193265906.286 us/op
+[info] Result "com.ziplex.lexer.benchmark.lexer.AAStarBLexerBenchmark.lex_ZipperV3MemDeriv":
+[info]   187454470.186 ±(99.9%) 118992273.841 us/op [Average]
+[info]   (min, avg, max) = (180400054.409, 187454470.186, 193265906.286), stdev = 6522368.051
+[info]   CI (99.9%): [68462196.345, 306446744.027] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 21.0.11, Java HotSpot(TM) 64-Bit Server VM, 21.0.11+9-LTS-jvmci-23.1-b92
+[info] # VM invoker: /home/schassot/.sdkman/candidates/java/21.0.11-graal/bin/java
+[info] # VM options: -XX:ThreadPriorityPolicy=1 -XX:+UnlockExperimentalVMOptions -XX:+EnableJVMCIProduct -XX:-UnlockExperimentalVMOptions -Djava.io.tmpdir=/localhome/chassot/tmp -Xss1G -Xmx32g
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 1 iterations, 10 s each
+[info] # Measurement: 3 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: com.ziplex.lexer.benchmark.lexer.AAStarBLexerBenchmark.lex_ZipperV3MemDeriv
+[info] # Parameters: (file = 72500.txt)
+[info] # Run progress: 74.47% complete, ETA 00:54:41
+[info] # Fork: 1 of 1
+[info] Java HotSpot(TM) 64-Bit Server VM warning: -XX:ThreadPriorityPolicy=1 may require system level permission, e.g., being the root user. If the necessary permission is not possessed, changes to priority will be silently ignored.
+[info] # Warmup Iteration   1: 191715322.354 us/op
+[info] Iteration   1: 195077891.746 us/op
+[info] Iteration   2: 181427148.856 us/op
+[info] Iteration   3: 181786223.532 us/op
+[info] Result "com.ziplex.lexer.benchmark.lexer.AAStarBLexerBenchmark.lex_ZipperV3MemDeriv":
+[info]   186097088.045 ±(99.9%) 141930252.936 us/op [Average]
+[info]   (min, avg, max) = (181427148.856, 186097088.045, 195077891.746), stdev = 7779676.086
+[info]   CI (99.9%): [44166835.109, 328027340.981] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 21.0.11, Java HotSpot(TM) 64-Bit Server VM, 21.0.11+9-LTS-jvmci-23.1-b92
+[info] # VM invoker: /home/schassot/.sdkman/candidates/java/21.0.11-graal/bin/java
+[info] # VM options: -XX:ThreadPriorityPolicy=1 -XX:+UnlockExperimentalVMOptions -XX:+EnableJVMCIProduct -XX:-UnlockExperimentalVMOptions -Djava.io.tmpdir=/localhome/chassot/tmp -Xss1G -Xmx32g
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 1 iterations, 10 s each
+[info] # Measurement: 3 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: com.ziplex.lexer.benchmark.lexer.AAStarBLexerBenchmark.lex_ZipperV3MemDeriv
+[info] # Parameters: (file = 75000.txt)
+[info] # Run progress: 76.60% complete, ETA 00:52:36
+[info] # Fork: 1 of 1
+[info] Java HotSpot(TM) 64-Bit Server VM warning: -XX:ThreadPriorityPolicy=1 may require system level permission, e.g., being the root user. If the necessary permission is not possessed, changes to priority will be silently ignored.
+[info] # Warmup Iteration   1: 202800304.067 us/op
+[info] Iteration   1: 208083688.909 us/op
+[info] Iteration   2: 196396101.506 us/op
+[info] Iteration   3: 197515430.376 us/op
+[info] Result "com.ziplex.lexer.benchmark.lexer.AAStarBLexerBenchmark.lex_ZipperV3MemDeriv":
+[info]   200665073.597 ±(99.9%) 117654493.287 us/op [Average]
+[info]   (min, avg, max) = (196396101.506, 200665073.597, 208083688.909), stdev = 6449039.784
+[info]   CI (99.9%): [83010580.310, 318319566.884] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 21.0.11, Java HotSpot(TM) 64-Bit Server VM, 21.0.11+9-LTS-jvmci-23.1-b92
+[info] # VM invoker: /home/schassot/.sdkman/candidates/java/21.0.11-graal/bin/java
+[info] # VM options: -XX:ThreadPriorityPolicy=1 -XX:+UnlockExperimentalVMOptions -XX:+EnableJVMCIProduct -XX:-UnlockExperimentalVMOptions -Djava.io.tmpdir=/localhome/chassot/tmp -Xss1G -Xmx32g
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 1 iterations, 10 s each
+[info] # Measurement: 3 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: com.ziplex.lexer.benchmark.lexer.AAStarBLexerBenchmark.lex_ZipperV3MemDeriv
+[info] # Parameters: (file = 77500.txt)
+[info] # Run progress: 78.72% complete, ETA 00:50:13
+[info] # Fork: 1 of 1
+[info] Java HotSpot(TM) 64-Bit Server VM warning: -XX:ThreadPriorityPolicy=1 may require system level permission, e.g., being the root user. If the necessary permission is not possessed, changes to priority will be silently ignored.
+[info] # Warmup Iteration   1: 212786090.508 us/op
+[info] Iteration   1: 234372524.964 us/op
+[info] Iteration   2: 221641357.465 us/op
+[info] Iteration   3: 219485142.505 us/op
+[info] Result "com.ziplex.lexer.benchmark.lexer.AAStarBLexerBenchmark.lex_ZipperV3MemDeriv":
+[info]   225166341.645 ±(99.9%) 146777154.102 us/op [Average]
+[info]   (min, avg, max) = (219485142.505, 225166341.645, 234372524.964), stdev = 8045351.094
+[info]   CI (99.9%): [78389187.542, 371943495.747] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 21.0.11, Java HotSpot(TM) 64-Bit Server VM, 21.0.11+9-LTS-jvmci-23.1-b92
+[info] # VM invoker: /home/schassot/.sdkman/candidates/java/21.0.11-graal/bin/java
+[info] # VM options: -XX:ThreadPriorityPolicy=1 -XX:+UnlockExperimentalVMOptions -XX:+EnableJVMCIProduct -XX:-UnlockExperimentalVMOptions -Djava.io.tmpdir=/localhome/chassot/tmp -Xss1G -Xmx32g
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 1 iterations, 10 s each
+[info] # Measurement: 3 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: com.ziplex.lexer.benchmark.lexer.AAStarBLexerBenchmark.lex_ZipperV3MemDeriv
+[info] # Parameters: (file = 80000.txt)
+[info] # Run progress: 80.85% complete, ETA 00:47:33
+[info] # Fork: 1 of 1
+[info] Java HotSpot(TM) 64-Bit Server VM warning: -XX:ThreadPriorityPolicy=1 may require system level permission, e.g., being the root user. If the necessary permission is not possessed, changes to priority will be silently ignored.
+[info] # Warmup Iteration   1: 227356729.492 us/op
+[info] Iteration   1: 224331029.517 us/op
+[info] Iteration   2: 246969914.447 us/op
+[info] Iteration   3: 246690815.363 us/op
+[info] Result "com.ziplex.lexer.benchmark.lexer.AAStarBLexerBenchmark.lex_ZipperV3MemDeriv":
+[info]   239330586.442 ±(99.9%) 236999583.681 us/op [Average]
+[info]   (min, avg, max) = (224331029.517, 239330586.442, 246969914.447), stdev = 12990746.901
+[info]   CI (99.9%): [2331002.761, 476330170.124] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 21.0.11, Java HotSpot(TM) 64-Bit Server VM, 21.0.11+9-LTS-jvmci-23.1-b92
+[info] # VM invoker: /home/schassot/.sdkman/candidates/java/21.0.11-graal/bin/java
+[info] # VM options: -XX:ThreadPriorityPolicy=1 -XX:+UnlockExperimentalVMOptions -XX:+EnableJVMCIProduct -XX:-UnlockExperimentalVMOptions -Djava.io.tmpdir=/localhome/chassot/tmp -Xss1G -Xmx32g
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 1 iterations, 10 s each
+[info] # Measurement: 3 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: com.ziplex.lexer.benchmark.lexer.AAStarBLexerBenchmark.lex_ZipperV3MemDeriv
+[info] # Parameters: (file = 800.txt)
+[info] # Run progress: 82.98% complete, ETA 00:44:27
+[info] # Fork: 1 of 1
+[info] Java HotSpot(TM) 64-Bit Server VM warning: -XX:ThreadPriorityPolicy=1 may require system level permission, e.g., being the root user. If the necessary permission is not possessed, changes to priority will be silently ignored.
+[info] # Warmup Iteration   1: 22197.915 us/op
+[info] Iteration   1: 19284.791 us/op
+[info] Iteration   2: 22191.678 us/op
+[info] Iteration   3: 20355.729 us/op
+[info] Result "com.ziplex.lexer.benchmark.lexer.AAStarBLexerBenchmark.lex_ZipperV3MemDeriv":
+[info]   20610.733 ±(99.9%) 26820.559 us/op [Average]
+[info]   (min, avg, max) = (19284.791, 20610.733, 22191.678), stdev = 1470.125
+[info]   CI (99.9%): [≈ 0, 47431.291] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 21.0.11, Java HotSpot(TM) 64-Bit Server VM, 21.0.11+9-LTS-jvmci-23.1-b92
+[info] # VM invoker: /home/schassot/.sdkman/candidates/java/21.0.11-graal/bin/java
+[info] # VM options: -XX:ThreadPriorityPolicy=1 -XX:+UnlockExperimentalVMOptions -XX:+EnableJVMCIProduct -XX:-UnlockExperimentalVMOptions -Djava.io.tmpdir=/localhome/chassot/tmp -Xss1G -Xmx32g
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 1 iterations, 10 s each
+[info] # Measurement: 3 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: com.ziplex.lexer.benchmark.lexer.AAStarBLexerBenchmark.lex_ZipperV3MemDeriv
+[info] # Parameters: (file = 82500.txt)
+[info] # Run progress: 85.11% complete, ETA 00:38:04
+[info] # Fork: 1 of 1
+[info] Java HotSpot(TM) 64-Bit Server VM warning: -XX:ThreadPriorityPolicy=1 may require system level permission, e.g., being the root user. If the necessary permission is not possessed, changes to priority will be silently ignored.
+[info] # Warmup Iteration   1: 246918993.469 us/op
+[info] Iteration   1: 255643785.456 us/op
+[info] Iteration   2: 249065815.100 us/op
+[info] Iteration   3: 248907891.446 us/op
+[info] Result "com.ziplex.lexer.benchmark.lexer.AAStarBLexerBenchmark.lex_ZipperV3MemDeriv":
+[info]   251205830.667 ±(99.9%) 70132384.271 us/op [Average]
+[info]   (min, avg, max) = (248907891.446, 251205830.667, 255643785.456), stdev = 3844192.633
+[info]   CI (99.9%): [181073446.396, 321338214.938] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 21.0.11, Java HotSpot(TM) 64-Bit Server VM, 21.0.11+9-LTS-jvmci-23.1-b92
+[info] # VM invoker: /home/schassot/.sdkman/candidates/java/21.0.11-graal/bin/java
+[info] # VM options: -XX:ThreadPriorityPolicy=1 -XX:+UnlockExperimentalVMOptions -XX:+EnableJVMCIProduct -XX:-UnlockExperimentalVMOptions -Djava.io.tmpdir=/localhome/chassot/tmp -Xss1G -Xmx32g
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 1 iterations, 10 s each
+[info] # Measurement: 3 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: com.ziplex.lexer.benchmark.lexer.AAStarBLexerBenchmark.lex_ZipperV3MemDeriv
+[info] # Parameters: (file = 85000.txt)
+[info] # Run progress: 87.23% complete, ETA 00:34:18
+[info] # Fork: 1 of 1
+[info] Java HotSpot(TM) 64-Bit Server VM warning: -XX:ThreadPriorityPolicy=1 may require system level permission, e.g., being the root user. If the necessary permission is not possessed, changes to priority will be silently ignored.
+[info] # Warmup Iteration   1: 258254020.970 us/op
+[info] Iteration   1: 270345690.862 us/op
+[info] Iteration   2: 267151304.825 us/op
+[info] Iteration   3: 266247717.746 us/op
+[info] Result "com.ziplex.lexer.benchmark.lexer.AAStarBLexerBenchmark.lex_ZipperV3MemDeriv":
+[info]   267914904.478 ±(99.9%) 39279795.093 us/op [Average]
+[info]   (min, avg, max) = (266247717.746, 267914904.478, 270345690.862), stdev = 2153058.113
+[info]   CI (99.9%): [228635109.385, 307194699.571] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 21.0.11, Java HotSpot(TM) 64-Bit Server VM, 21.0.11+9-LTS-jvmci-23.1-b92
+[info] # VM invoker: /home/schassot/.sdkman/candidates/java/21.0.11-graal/bin/java
+[info] # VM options: -XX:ThreadPriorityPolicy=1 -XX:+UnlockExperimentalVMOptions -XX:+EnableJVMCIProduct -XX:-UnlockExperimentalVMOptions -Djava.io.tmpdir=/localhome/chassot/tmp -Xss1G -Xmx32g
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 1 iterations, 10 s each
+[info] # Measurement: 3 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: com.ziplex.lexer.benchmark.lexer.AAStarBLexerBenchmark.lex_ZipperV3MemDeriv
+[info] # Parameters: (file = 87500.txt)
+[info] # Run progress: 89.36% complete, ETA 00:30:02
+[info] # Fork: 1 of 1
+[info] Java HotSpot(TM) 64-Bit Server VM warning: -XX:ThreadPriorityPolicy=1 may require system level permission, e.g., being the root user. If the necessary permission is not possessed, changes to priority will be silently ignored.
+[info] # Warmup Iteration   1: 280560750.447 us/op
+[info] Iteration   1: 284581030.570 us/op
+[info] Iteration   2: 285474111.658 us/op
+[info] Iteration   3: 283121903.068 us/op
+[info] Result "com.ziplex.lexer.benchmark.lexer.AAStarBLexerBenchmark.lex_ZipperV3MemDeriv":
+[info]   284392348.432 ±(99.9%) 21662621.373 us/op [Average]
+[info]   (min, avg, max) = (283121903.068, 284392348.432, 285474111.658), stdev = 1187401.375
+[info]   CI (99.9%): [262729727.059, 306054969.805] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 21.0.11, Java HotSpot(TM) 64-Bit Server VM, 21.0.11+9-LTS-jvmci-23.1-b92
+[info] # VM invoker: /home/schassot/.sdkman/candidates/java/21.0.11-graal/bin/java
+[info] # VM options: -XX:ThreadPriorityPolicy=1 -XX:+UnlockExperimentalVMOptions -XX:+EnableJVMCIProduct -XX:-UnlockExperimentalVMOptions -Djava.io.tmpdir=/localhome/chassot/tmp -Xss1G -Xmx32g
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 1 iterations, 10 s each
+[info] # Measurement: 3 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: com.ziplex.lexer.benchmark.lexer.AAStarBLexerBenchmark.lex_ZipperV3MemDeriv
+[info] # Parameters: (file = 90000.txt)
+[info] # Run progress: 91.49% complete, ETA 00:25:14
+[info] # Fork: 1 of 1
+[info] Java HotSpot(TM) 64-Bit Server VM warning: -XX:ThreadPriorityPolicy=1 may require system level permission, e.g., being the root user. If the necessary permission is not possessed, changes to priority will be silently ignored.
+[info] # Warmup Iteration   1: 299864035.180 us/op
+[info] Iteration   1: 293095095.939 us/op
+[info] Iteration   2: 282917390.123 us/op
+[info] Iteration   3: 283237084.928 us/op
+[info] Result "com.ziplex.lexer.benchmark.lexer.AAStarBLexerBenchmark.lex_ZipperV3MemDeriv":
+[info]   286416523.663 ±(99.9%) 105558574.934 us/op [Average]
+[info]   (min, avg, max) = (282917390.123, 286416523.663, 293095095.939), stdev = 5786021.684
+[info]   CI (99.9%): [180857948.729, 391975098.597] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 21.0.11, Java HotSpot(TM) 64-Bit Server VM, 21.0.11+9-LTS-jvmci-23.1-b92
+[info] # VM invoker: /home/schassot/.sdkman/candidates/java/21.0.11-graal/bin/java
+[info] # VM options: -XX:ThreadPriorityPolicy=1 -XX:+UnlockExperimentalVMOptions -XX:+EnableJVMCIProduct -XX:-UnlockExperimentalVMOptions -Djava.io.tmpdir=/localhome/chassot/tmp -Xss1G -Xmx32g
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 1 iterations, 10 s each
+[info] # Measurement: 3 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: com.ziplex.lexer.benchmark.lexer.AAStarBLexerBenchmark.lex_ZipperV3MemDeriv
+[info] # Parameters: (file = 92500.txt)
+[info] # Run progress: 93.62% complete, ETA 00:19:50
+[info] # Fork: 1 of 1
+[info] Java HotSpot(TM) 64-Bit Server VM warning: -XX:ThreadPriorityPolicy=1 may require system level permission, e.g., being the root user. If the necessary permission is not possessed, changes to priority will be silently ignored.
+[info] # Warmup Iteration   1: 323859780.832 us/op
+[info] Iteration   1: 300241361.928 us/op
+[info] Iteration   2: 323711008.844 us/op
+[info] Iteration   3: 323595281.475 us/op
+[info] Result "com.ziplex.lexer.benchmark.lexer.AAStarBLexerBenchmark.lex_ZipperV3MemDeriv":
+[info]   315849217.416 ±(99.9%) 246598998.227 us/op [Average]
+[info]   (min, avg, max) = (300241361.928, 315849217.416, 323711008.844), stdev = 13516923.204
+[info]   CI (99.9%): [69250219.189, 562448215.642] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 21.0.11, Java HotSpot(TM) 64-Bit Server VM, 21.0.11+9-LTS-jvmci-23.1-b92
+[info] # VM invoker: /home/schassot/.sdkman/candidates/java/21.0.11-graal/bin/java
+[info] # VM options: -XX:ThreadPriorityPolicy=1 -XX:+UnlockExperimentalVMOptions -XX:+EnableJVMCIProduct -XX:-UnlockExperimentalVMOptions -Djava.io.tmpdir=/localhome/chassot/tmp -Xss1G -Xmx32g
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 1 iterations, 10 s each
+[info] # Measurement: 3 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: com.ziplex.lexer.benchmark.lexer.AAStarBLexerBenchmark.lex_ZipperV3MemDeriv
+[info] # Parameters: (file = 95000.txt)
+[info] # Run progress: 95.74% complete, ETA 00:13:52
+[info] # Fork: 1 of 1
+[info] Java HotSpot(TM) 64-Bit Server VM warning: -XX:ThreadPriorityPolicy=1 may require system level permission, e.g., being the root user. If the necessary permission is not possessed, changes to priority will be silently ignored.
+[info] # Warmup Iteration   1: 318931747.390 us/op
+[info] Iteration   1: 312778911.303 us/op
+[info] Iteration   2: 333912861.083 us/op
+[info] Iteration   3: 314584645.468 us/op
+[info] Result "com.ziplex.lexer.benchmark.lexer.AAStarBLexerBenchmark.lex_ZipperV3MemDeriv":
+[info]   320425472.618 ±(99.9%) 213730022.766 us/op [Average]
+[info]   (min, avg, max) = (312778911.303, 320425472.618, 333912861.083), stdev = 11715263.747
+[info]   CI (99.9%): [106695449.852, 534155495.384] (assumes normal distribution)
+[info] # JMH version: 1.32
+[info] # VM version: JDK 21.0.11, Java HotSpot(TM) 64-Bit Server VM, 21.0.11+9-LTS-jvmci-23.1-b92
+[info] # VM invoker: /home/schassot/.sdkman/candidates/java/21.0.11-graal/bin/java
+[info] # VM options: -XX:ThreadPriorityPolicy=1 -XX:+UnlockExperimentalVMOptions -XX:+EnableJVMCIProduct -XX:-UnlockExperimentalVMOptions -Djava.io.tmpdir=/localhome/chassot/tmp -Xss1G -Xmx32g
+[info] # Blackhole mode: full + dont-inline hint
+[info] # Warmup: 1 iterations, 10 s each
+[info] # Measurement: 3 iterations, 10 s each
+[info] # Timeout: 10 min per iteration
+[info] # Threads: 1 thread, will synchronize iterations
+[info] # Benchmark mode: Average time, time/op
+[info] # Benchmark: com.ziplex.lexer.benchmark.lexer.AAStarBLexerBenchmark.lex_ZipperV3MemDeriv
+[info] # Parameters: (file = 97500.txt)
+[info] # Run progress: 97.87% complete, ETA 00:07:15
+[info] # Fork: 1 of 1
+[info] Java HotSpot(TM) 64-Bit Server VM warning: -XX:ThreadPriorityPolicy=1 may require system level permission, e.g., being the root user. If the necessary permission is not possessed, changes to priority will be silently ignored.
+[info] # Warmup Iteration   1: 342417829.653 us/op
+[info] Iteration   1: 332639931.528 us/op
+[info] Iteration   2: 332451349.961 us/op
+[info] Iteration   3: 332693762.766 us/op
+[info] Result "com.ziplex.lexer.benchmark.lexer.AAStarBLexerBenchmark.lex_ZipperV3MemDeriv":
+[info]   332595014.752 ±(99.9%) 2322342.744 us/op [Average]
+[info]   (min, avg, max) = (332451349.961, 332595014.752, 332693762.766), stdev = 127295.442
+[info]   CI (99.9%): [330272672.008, 334917357.496] (assumes normal distribution)
+[info] # Run complete. Total time: 05:56:22
+[info] REMEMBER: The numbers below are just data. To gain reusable insights, you need to follow up on
+[info] why the numbers are the way they are. Use profilers (see -prof, -lprof), design factorial
+[info] experiments, perform baseline and negative tests that provide experimental control, make sure
+[info] the benchmarking environment is safe on JVM/OS/HW level, ask for reviews from the domain experts.
+[info] Do not assume the numbers tell you what you want them to tell.
+[info] Benchmark                                       (file)  Mode  Cnt          Score           Error  Units
+[info] AAStarBLexerBenchmark.lex_ZipperV3MemDeriv  100000.txt  avgt    3  392252856.240 ± 683447438.419  us/op
+[info] AAStarBLexerBenchmark.lex_ZipperV3MemDeriv   10000.txt  avgt    3    3546982.527 ±   1540977.644  us/op
+[info] AAStarBLexerBenchmark.lex_ZipperV3MemDeriv    1000.txt  avgt    3      32438.626 ±     24180.576  us/op
+[info] AAStarBLexerBenchmark.lex_ZipperV3MemDeriv     100.txt  avgt    3        352.266 ±       269.751  us/op
+[info] AAStarBLexerBenchmark.lex_ZipperV3MemDeriv    1200.txt  avgt    3      49164.150 ±     18886.006  us/op
+[info] AAStarBLexerBenchmark.lex_ZipperV3MemDeriv   12500.txt  avgt    3    5574483.743 ±   5824077.026  us/op
+[info] AAStarBLexerBenchmark.lex_ZipperV3MemDeriv   15000.txt  avgt    3    8021788.090 ±   4056137.044  us/op
+[info] AAStarBLexerBenchmark.lex_ZipperV3MemDeriv   17500.txt  avgt    3   10885650.484 ±   6258615.597  us/op
+[info] AAStarBLexerBenchmark.lex_ZipperV3MemDeriv   20000.txt  avgt    3   14542591.482 ±   3163427.903  us/op
+[info] AAStarBLexerBenchmark.lex_ZipperV3MemDeriv    2000.txt  avgt    3     146932.905 ±    130306.658  us/op
+[info] AAStarBLexerBenchmark.lex_ZipperV3MemDeriv     200.txt  avgt    3       1240.668 ±       729.066  us/op
+[info] AAStarBLexerBenchmark.lex_ZipperV3MemDeriv   22500.txt  avgt    3   18392404.235 ±  10047107.522  us/op
+[info] AAStarBLexerBenchmark.lex_ZipperV3MemDeriv   25000.txt  avgt    3   23111518.542 ±   9315005.188  us/op
+[info] AAStarBLexerBenchmark.lex_ZipperV3MemDeriv    2500.txt  avgt    3     214287.158 ±    271054.556  us/op
+[info] AAStarBLexerBenchmark.lex_ZipperV3MemDeriv   27500.txt  avgt    3   27683092.241 ±   6078875.018  us/op
+[info] AAStarBLexerBenchmark.lex_ZipperV3MemDeriv   30000.txt  avgt    3   33794284.543 ±  10993200.689  us/op
+[info] AAStarBLexerBenchmark.lex_ZipperV3MemDeriv     300.txt  avgt    3       2990.320 ±      3650.962  us/op
+[info] AAStarBLexerBenchmark.lex_ZipperV3MemDeriv   32500.txt  avgt    3   40934348.754 ±  13636451.989  us/op
+[info] AAStarBLexerBenchmark.lex_ZipperV3MemDeriv   35000.txt  avgt    3   46320291.224 ±  36335821.578  us/op
+[info] AAStarBLexerBenchmark.lex_ZipperV3MemDeriv   37500.txt  avgt    3   50393067.795 ±  15224685.324  us/op
+[info] AAStarBLexerBenchmark.lex_ZipperV3MemDeriv   40000.txt  avgt    3   57925893.661 ±   5185846.150  us/op
+[info] AAStarBLexerBenchmark.lex_ZipperV3MemDeriv   42500.txt  avgt    3   67132757.923 ±  35242950.554  us/op
+[info] AAStarBLexerBenchmark.lex_ZipperV3MemDeriv   45000.txt  avgt    3   73771653.317 ±  34584659.732  us/op
+[info] AAStarBLexerBenchmark.lex_ZipperV3MemDeriv   47500.txt  avgt    3   87322579.328 ± 105323815.211  us/op
+[info] AAStarBLexerBenchmark.lex_ZipperV3MemDeriv   50000.txt  avgt    3   90009912.244 ±  49440083.521  us/op
+[info] AAStarBLexerBenchmark.lex_ZipperV3MemDeriv    5000.txt  avgt    3     969547.953 ±   1009809.055  us/op
+[info] AAStarBLexerBenchmark.lex_ZipperV3MemDeriv     500.txt  avgt    3       8032.480 ±      6284.444  us/op
+[info] AAStarBLexerBenchmark.lex_ZipperV3MemDeriv   52500.txt  avgt    3  105136023.287 ± 124408662.057  us/op
+[info] AAStarBLexerBenchmark.lex_ZipperV3MemDeriv   55000.txt  avgt    3  117599296.785 ±  97088930.202  us/op
+[info] AAStarBLexerBenchmark.lex_ZipperV3MemDeriv   57500.txt  avgt    3  118673933.495 ±  41594110.899  us/op
+[info] AAStarBLexerBenchmark.lex_ZipperV3MemDeriv   60000.txt  avgt    3  141448902.040 ± 316936730.933  us/op
+[info] AAStarBLexerBenchmark.lex_ZipperV3MemDeriv   62500.txt  avgt    3  155271821.977 ±  94211644.472  us/op
+[info] AAStarBLexerBenchmark.lex_ZipperV3MemDeriv   65000.txt  avgt    3  155943185.203 ±   8549298.918  us/op
+[info] AAStarBLexerBenchmark.lex_ZipperV3MemDeriv   67500.txt  avgt    3  169513026.621 ±  40713576.450  us/op
+[info] AAStarBLexerBenchmark.lex_ZipperV3MemDeriv   70000.txt  avgt    3  187454470.186 ± 118992273.841  us/op
+[info] AAStarBLexerBenchmark.lex_ZipperV3MemDeriv   72500.txt  avgt    3  186097088.045 ± 141930252.936  us/op
+[info] AAStarBLexerBenchmark.lex_ZipperV3MemDeriv   75000.txt  avgt    3  200665073.597 ± 117654493.287  us/op
+[info] AAStarBLexerBenchmark.lex_ZipperV3MemDeriv   77500.txt  avgt    3  225166341.645 ± 146777154.102  us/op
+[info] AAStarBLexerBenchmark.lex_ZipperV3MemDeriv   80000.txt  avgt    3  239330586.442 ± 236999583.681  us/op
+[info] AAStarBLexerBenchmark.lex_ZipperV3MemDeriv     800.txt  avgt    3      20610.733 ±     26820.559  us/op
+[info] AAStarBLexerBenchmark.lex_ZipperV3MemDeriv   82500.txt  avgt    3  251205830.667 ±  70132384.271  us/op
+[info] AAStarBLexerBenchmark.lex_ZipperV3MemDeriv   85000.txt  avgt    3  267914904.478 ±  39279795.093  us/op
+[info] AAStarBLexerBenchmark.lex_ZipperV3MemDeriv   87500.txt  avgt    3  284392348.432 ±  21662621.373  us/op
+[info] AAStarBLexerBenchmark.lex_ZipperV3MemDeriv   90000.txt  avgt    3  286416523.663 ± 105558574.934  us/op
+[info] AAStarBLexerBenchmark.lex_ZipperV3MemDeriv   92500.txt  avgt    3  315849217.416 ± 246598998.227  us/op
+[info] AAStarBLexerBenchmark.lex_ZipperV3MemDeriv   95000.txt  avgt    3  320425472.618 ± 213730022.766  us/op
+[info] AAStarBLexerBenchmark.lex_ZipperV3MemDeriv   97500.txt  avgt    3  332595014.752 ±   2322342.744  us/op
+[success] Total time: 21400 s (05:56:40), completed Jul 22, 2026, 7:29:33 PM
