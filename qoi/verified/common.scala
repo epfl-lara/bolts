@@ -62,6 +62,7 @@ object common {
     cIncludes = ""
   )
   def allocArray(size: Int): Array[Byte] = {
+    require(size >= 0)
     Array.fill(size)(0: Byte)
   }.ensuring(_.length == size)
 
