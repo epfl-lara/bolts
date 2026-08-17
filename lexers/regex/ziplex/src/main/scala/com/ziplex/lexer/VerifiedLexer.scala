@@ -478,8 +478,8 @@ object VerifiedLexer {
       )
     }.ensuring (res =>
       (if (res._1.size > 0) res._2.size < input.size && !res._1.isEmpty
-      else res._2 == input) &&
-      (res._1.list == lexList(rules, input.list)._1 && 
+      else res._2 == input) &&&
+      (res._1.list == lexList(rules, input.list)._1 &&& 
        res._2.list == lexList(rules, input.list)._2)
     )
 
@@ -499,8 +499,8 @@ object VerifiedLexer {
       )
     }.ensuring (res =>
       (if (res._1.size > 0) res._2.size < input.size && !res._1.isEmpty
-      else res._2 == input) &&
-      (res._1.list == lexList(rules, input.list)._1 && 
+      else res._2 == input) &&&
+      (res._1.list == lexList(rules, input.list)._1 &&& 
        res._2.list == lexList(rules, input.list)._2)
     )
 
@@ -521,8 +521,8 @@ object VerifiedLexer {
       }
     }.ensuring (res =>
       (if (res._1.size > 0) res._2.size < input.size && !res._1.isEmpty
-      else res._2.list == input.list) &&
-      (res._1.list == lexList(rules, input.list)._1 && 
+      else res._2.list == input.list) &&&
+      (res._1.list == lexList(rules, input.list)._1 &&& 
        res._2.list == lexList(rules, input.list)._2)
     )
 
@@ -564,7 +564,7 @@ object VerifiedLexer {
           (acc, input)
         }
       }
-    }.ensuring (res => res._1.list == lexRec(rules, totalInput)._1.list && 
+    }.ensuring (res => res._1.list == lexRec(rules, totalInput)._1.list &&& 
                        res._2.list == lexRec(rules, totalInput)._2.list)
 
     def lexRecV2[C: ClassTag](
@@ -587,8 +587,8 @@ object VerifiedLexer {
       }
     }.ensuring (res =>
       (if (res._1.size > 0) res._2.size < input.size && !res._1.isEmpty
-      else res._2.list == input.list) &&
-      (res._1.list == lexList(rules, input.list)._1 && 
+      else res._2.list == input.list) &&&
+      (res._1.list == lexList(rules, input.list)._1 &&& 
        res._2.list == lexList(rules, input.list)._2)
     )
 
@@ -635,7 +635,7 @@ object VerifiedLexer {
           (acc, input)
         }
       }
-    }.ensuring (res => res._1.list == lexRec(rules, totalInput)._1.list && 
+    }.ensuring (res => res._1.list == lexRec(rules, totalInput)._1.list &&& 
                        res._2.list == lexRec(rules, totalInput)._2.list)
 
     def lexV1Mem[C: ClassTag](
@@ -655,7 +655,7 @@ object VerifiedLexer {
         input,
         emptySeq[Token[C]]()
       )
-    }.ensuring (res => res._1.list == lex(rules, input)._1.list && 
+    }.ensuring (res => res._1.list == lex(rules, input)._1.list &&& 
                        res._2.list == lex(rules, input)._2.list)
 
     def lexMem[C: ClassTag](
@@ -677,9 +677,9 @@ object VerifiedLexer {
         input,
         emptySeq[Token[C]]()
       )
-    }.ensuring (res => res._1.list == lex(rules, input)._1.list && 
-                       res._2.list == lex(rules, input)._2.list &&
-                       cacheFurthestNullable.valid && cacheUp.valid && cacheDown.valid &&
+    }.ensuring (res => res._1.list == lex(rules, input)._1.list &&& 
+                       res._2.list == lex(rules, input)._2.list &&&
+                       cacheFurthestNullable.valid && cacheUp.valid && cacheDown.valid &&&
                        cacheFurthestNullable.totalInput == input)
 
     def lexV2Mem[C: ClassTag](
@@ -701,9 +701,9 @@ object VerifiedLexer {
         input,
         emptySeq[Token[C]]()
       )
-    }.ensuring (res => res._1.list == lex(rules, input)._1.list && 
-                       res._2.list == lex(rules, input)._2.list &&
-                       cacheFindLongestMatch.valid && cacheUp.valid && cacheDown.valid &&
+    }.ensuring (res => res._1.list == lex(rules, input)._1.list &&& 
+                       res._2.list == lex(rules, input)._2.list &&&
+                       cacheFindLongestMatch.valid && cacheUp.valid && cacheDown.valid &&&
                        cacheFindLongestMatch.totalInput == input)
 
     def lexV2MemOnlyDeriv[C: ClassTag](
@@ -723,8 +723,8 @@ object VerifiedLexer {
         input,
         emptySeq[Token[C]]()
       )
-    }.ensuring (res => res._1.list == lex(rules, input)._1.list && 
-                       res._2.list == lex(rules, input)._2.list &&
+    }.ensuring (res => res._1.list == lex(rules, input)._1.list &&& 
+                       res._2.list == lex(rules, input)._2.list &&&
                        cacheUp.valid && cacheDown.valid)
 
     def lexV3[C: ClassTag](
@@ -741,7 +741,7 @@ object VerifiedLexer {
         input,
         emptySeq[Token[C]]()
       )
-    }.ensuring (res => res._1.list == lex(rules, input)._1.list && 
+    }.ensuring (res => res._1.list == lex(rules, input)._1.list &&& 
                        res._2.list == lex(rules, input)._2.list)
 
     def lexV3MemDeriv[C: ClassTag](
@@ -761,8 +761,8 @@ object VerifiedLexer {
         input,
         emptySeq[Token[C]]()
       )
-    }.ensuring (res => res._1.list == lex(rules, input)._1.list && 
-                       res._2.list == lex(rules, input)._2.list &&
+    }.ensuring (res => res._1.list == lex(rules, input)._1.list &&& 
+                       res._2.list == lex(rules, input)._2.list &&&
                        cacheUp.valid && cacheDown.valid)
 
     // @tailrec
@@ -800,7 +800,7 @@ object VerifiedLexer {
           (acc, input)
         }
       }
-    }.ensuring (res => res._1.list == lexTailRec(rules, totalInput, treated, input, acc)._1.list && 
+    }.ensuring (res => res._1.list == lexTailRec(rules, totalInput, treated, input, acc)._1.list &&& 
                        res._2.list == lexTailRec(rules, totalInput, treated, input, acc)._2.list)
 
     // @tailrec
@@ -865,8 +865,8 @@ object VerifiedLexer {
           (acc, input)
         }
       }
-    }.ensuring (res => res == lexTailRecV2(rules, totalInput, treated, input, acc) &&
-                       cacheFindLongestMatch.valid && cacheUp.valid && cacheDown.valid &&
+    }.ensuring (res => res == lexTailRecV2(rules, totalInput, treated, input, acc) &&&
+                       cacheFindLongestMatch.valid && cacheUp.valid && cacheDown.valid &&&
                        cacheFindLongestMatch.totalInput == totalInput)
 
     // @tailrec
@@ -929,7 +929,7 @@ object VerifiedLexer {
           (acc, input)
         }
       }
-    }.ensuring (res => res == lexTailRecV2(rules, totalInput, treated, input, acc) &&
+    }.ensuring (res => res == lexTailRecV2(rules, totalInput, treated, input, acc) &&&
                        cacheUp.valid && cacheDown.valid)
 
     // @tailrec
@@ -975,7 +975,7 @@ object VerifiedLexer {
           (acc, input)
         }
       }
-    }.ensuring (res => res._1.list == lexRec(rules, totalInput)._1.list && 
+    }.ensuring (res => res._1.list == lexRec(rules, totalInput)._1.list &&& 
                        res._2.list == lexRec(rules, totalInput)._2.list)
 
     // @tailrec
@@ -1024,8 +1024,8 @@ object VerifiedLexer {
           (acc, input)
         }
       }
-    }.ensuring (res => res._1.list == lexRec(rules, totalInput)._1.list && 
-                       res._2.list == lexRec(rules, totalInput)._2.list &&
+    }.ensuring (res => res._1.list == lexRec(rules, totalInput)._1.list &&& 
+                       res._2.list == lexRec(rules, totalInput)._2.list &&&
                        cacheUp.valid && cacheDown.valid)
 
 
@@ -1077,8 +1077,8 @@ object VerifiedLexer {
           (acc, input)
         }
       }
-    }.ensuring (res => res._1.list == lexRec(rules, totalInput)._1.list && 
-                       res._2.list == lexRec(rules, totalInput)._2.list &&
+    }.ensuring (res => res._1.list == lexRec(rules, totalInput)._1.list &&& 
+                       res._2.list == lexRec(rules, totalInput)._2.list &&&
                        cacheFurthestNullable.valid && cacheUp.valid && cacheDown.valid &&
                        cacheFurthestNullable.totalInput == totalInput)
 

@@ -90,7 +90,7 @@ case class Vector[T](@pure @extern underlying: scala.collection.immutable.Vector
     } else if (size < MAX_INT) {
       // We know by the invariant that this.overflowing is empty
       val space = MAX_INT - size
-      val (toAddToUnderlying, toAddToOverflowing): (scala.collection.immutable.Vector[T], scala.collection.immutable.Vector[T]) = that.underlying.splitAt(space.toInt)
+      val (toAddToUnderlying, toAddToOverflowing) = that.underlying.splitAt(space.toInt)
       Vector(underlying ++ scala.collection.immutable.Vector.from(toAddToUnderlying), List.fromScala(toAddToOverflowing.toList) ++ that.overflowing)
     } else {
       // We know by the invariant that this.underlying is full and this.overflowing is non-empty
