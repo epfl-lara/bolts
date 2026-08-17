@@ -135,12 +135,15 @@ object encoder {
       check(hh == h)
       check(cchan == chan)
 
-      // decodeLemma (called above) already relates decode(bytes, outPos + Padding)'s result to
-      // the very same decodeLoopPure(initDecoded.index, initDecoded.pixels, pxPrev, HeaderSize,
-      // outPos, 0) call tracked as (decIndex, decPixels, decIter) above, via arraysEq over
-      // [0, decIter.pxPos). Reuse that fact directly instead of forcing full array equality (`==`),
-      // which would require the solver to unify two independently-unrolled recursions of
-      // decodeLoop over a symbolic-length loop, and times out.
+      decoder.toIntMulEqLemma(ww, hh, cchan, w, h, chan)
+      assert(actuallyDecoded.length == ww.toInt * hh.toInt * cchan.toInt)
+      assert(actuallyDecoded.length == w.toInt * h.toInt * chan.toInt)
+      assert(pixels.length == w * h * chan)
+      internalLemmaPixelsLengthToIntProduct(pixels.length, w, h, chan)
+      assert(pixels.length == w.toInt * h.toInt * chan.toInt)
+      assert(actuallyDecoded.length == pixels.length)
+      assert(decPixels.length == pixels.length)
+
       assert(arraysEq(decPixels, actuallyDecoded, 0, decIter.pxPos))
       assert(decIter.pxPos == pixels.length)
       arraysEqTransLemma(pixels, decPixels, actuallyDecoded, 0, pixels.length)
@@ -937,6 +940,17 @@ object encoder {
     require(pixelsLength == w * h * cchan)
     require((w * h * cchan) % cchan == 0)
   }.ensuring(_ => pixelsLength % cchan == 0)
+
+  // Bridges the Long-typed pixel count (w * h * chan, as tracked by EncCtx) with the Int-typed
+  // product (w.toInt * h.toInt * chan.toInt) that decode()/decodeLemma use to size their pixel
+  // buffer. Kept as its own opaque lemma so callers get this fact "for free" without forcing the
+  // solver to unfold decode()'s/decodeLoop's recursive body just to learn a buffer length.
+  @ghost @opaque @inlineOnce def internalLemmaPixelsLengthToIntProduct(pixelsLength: Int, w: Long, h: Long, chan: Long): Unit = {
+    require(0 < w && w <= MaxWidth)
+    require(0 < h && h <= MaxHeight)
+    require(3 <= chan && chan <= 4)
+    require(w * h * chan == pixelsLength)
+  }.ensuring(_ => pixelsLength == w.toInt * h.toInt * chan.toInt)
 
 
 
