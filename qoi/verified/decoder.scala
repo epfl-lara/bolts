@@ -81,6 +81,18 @@ object decoder {
     case NoneMut() => true
   }
 
+  @ghost
+  @opaque
+  @inlineOnce 
+  def lemmaDecodeLengthEquals(bytes: Array[Byte], until: Long): Unit = {
+
+  }.ensuring(res => 
+    decode(bytes, until) match 
+      case NoneMut() => true
+      case SomeMut(DecodedResult(pixels, ww, hh, cchan)) =>
+        pixels.length == ww.toInt * hh.toInt * cchan.toInt
+    )
+
   @opaque
   @inlineOnce
   def writeRemainingPixels(pixels: Array[Byte], pxPrev: Int, pxPos: Long, @ghost pxPosOrig: Long)(using DecCtx): Unit = {

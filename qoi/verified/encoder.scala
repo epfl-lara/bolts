@@ -135,8 +135,10 @@ object encoder {
       check(hh == h)
       check(cchan == chan)
 
-      decoder.toIntMulEqLemma(ww, hh, cchan, w, h, chan)
+      decoder.lemmaDecodeLengthEquals(bytes, outPos + Padding)
+
       assert(actuallyDecoded.length == ww.toInt * hh.toInt * cchan.toInt)
+      decoder.toIntMulEqLemma(ww, hh, cchan, w, h, chan)
       assert(actuallyDecoded.length == w.toInt * h.toInt * chan.toInt)
       assert(pixels.length == w * h * chan)
       internalLemmaPixelsLengthToIntProduct(pixels.length, w, h, chan)
@@ -1197,6 +1199,44 @@ object encoder {
   @ghost
   @opaque
   @inlineOnce
+  def lhs2BoundLemma(outPos: Long, t: Long)(using EncCtx): Unit = {
+    require(HeaderSize <= outPos && outPos <= maxSize - Padding)
+    require(0 <= t && t <= 244)
+  }.ensuring(_ => 0 <= outPos - HeaderSize + t && outPos - HeaderSize + t <= maxSize + 244)
+  
+  @ghost
+  @opaque
+  @inlineOnce
+  def cancelChanMultLeqLemma(a: Long, b: Long)(using EncCtx): Unit = {
+    require(0 <= a && a <= maxSize + 244)
+    require(0 <= b && b <= maxSize)
+    require(chan * a <= chan * b)
+    assert(3 <= chan && chan <= 4)
+    assert(0 < w && w <= MaxWidth)
+    assert(0 < h && h <= MaxHeight)
+    assert(w * h * chan == pixels.length)
+    assert(maxSize == w * h * (chan + 1) + HeaderSize + Padding)
+    if (chan == 3) {
+      assert(3 * a <= 3 * b)
+    } else {
+      assert(chan == 4)
+      assert(4 * a <= 4 * b)
+    }
+  }.ensuring(_ => a <= b)
+
+  @ghost 
+  @opaque
+  @inlineOnce
+  def lemmaIneqSubstr(a: Long, b: Long, c: Long, a2: Long): Unit = {
+    require(a >= 0 && b >= 0 && c >= 0 && a2 >= 0) 
+    require(a <= b + c)
+    require(a2 == a - c)
+
+  }.ensuring(_ => a2 <= a)
+
+  @ghost
+  @opaque
+  @inlineOnce
   def withinBoundsLemma2(run: Long, outPos: Long, pxPos: Long)(using EncCtx): Unit = {
     require(rangesInv(run, outPos, pxPos))
     require(positionsIneqInv(run, outPos, pxPos))
@@ -1215,42 +1255,31 @@ object encoder {
       }
     }.ensuring(_ => 0 <= chan * run && chan * run <= 244)
 
-    @ghost
-    @opaque
-    @inlineOnce
-    def lhs2BoundLemma(outPos: Long, t: Long)(using EncCtx): Unit = {
-      require(HeaderSize <= outPos && outPos <= maxSize - Padding)
-      require(0 <= t && t <= 244)
-    }.ensuring(_ => 0 <= outPos - HeaderSize + t && outPos - HeaderSize + t <= maxSize + 244)
-
-    @ghost
-    @opaque
-    @inlineOnce
-    def cancelChanMultLeqLemma(a: Long, b: Long)(using EncCtx): Unit = {
-      require(0 <= a && a <= maxSize + 244)
-      require(0 <= b && b <= maxSize)
-      require(chan * a <= chan * b)
-      assert(3 <= chan && chan <= 4)
-      assert(0 < w && w <= MaxWidth)
-      assert(0 < h && h <= MaxHeight)
-      assert(w * h * chan == pixels.length)
-      assert(maxSize == w * h * (chan + 1) + HeaderSize + Padding)
-      if (chan == 3) {
-        assert(3 * a <= 3 * b)
-      } else {
-        assert(chan == 4)
-        assert(4 * a <= 4 * b)
-      }
-    }.ensuring(_ => a <= b)
-    val lhs = outPos - HeaderSize + chan * run + chan + 1
+    
+    val lhs: Long = outPos - HeaderSize + chan * run + chan + 1
     assert(chan * lhs <= (chan + 1) * (pxPos + chan))
     assert(chan * lhs <= (chan + 1) * (pixels.length + chan))
+    assert(chan * lhs <= (chan + 1) * pixels.length + (chan + 1) * chan)
     assert(pixels.length * (chan + 1) == w * h * chan * (chan + 1))
     val maxPxPos = maxSize - HeaderSize - Padding
     assert(chan * maxPxPos == w * h * chan * (chan + 1))
     assert((chan + 1) * pixels.length == chan * maxPxPos)
     assert(chan * lhs - (chan + 1) * chan <= (chan + 1) * (pixels.length + chan) - (chan + 1) * chan)
-    val lhs2 = lhs - chan - 1
+    val lhs2: Long  = lhs - chan - 1
+    assert(lhs2 <= lhs)
+    assert(chan * lhs - (chan + 1) * chan == chan * lhs2)
+    assert(lhs2 == outPos - HeaderSize + chan * run)
+    val intermediate1: Long  =  (chan + 1) * pixels.length
+    val intermediate2: Long  = (chan + 1) * chan
+    assert(chan * lhs <= intermediate1 + intermediate2)
+    assert(chan * lhs2 == chan * lhs - intermediate2)
+    val clhs: Long  = chan * lhs
+    val clhs2: Long  = chan * lhs2
+    lemmaIneqSubstr(clhs, intermediate1, intermediate2, clhs2)
+    assert(clhs <= intermediate1 + intermediate2)
+    assert(clhs2 == clhs - intermediate2)
+    assert(clhs2 <= intermediate1)
+    assert(chan * lhs2 <= intermediate1)
     assert(chan * lhs2 <= (chan + 1) * pixels.length)
     assert(chan * lhs2 <= chan * maxPxPos)
     unfold(outPosInv(outPos))
@@ -1686,6 +1715,7 @@ object encoder {
     assert(0 <= pxPos)
     assert(pxPos <= pixels.length)
     assert(w * h * chan == pixels.length)
+    lemmaMultModulo(w * h, chan, pixels.length)
     assert(pixels.length % chan == 0)
 
     decoder.doDecodeNext(oldIndex, pxPrev, outPos1) match {
