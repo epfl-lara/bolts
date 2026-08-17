@@ -134,8 +134,16 @@ object encoder {
       check(ww == w)
       check(hh == h)
       check(cchan == chan)
-      ghostExpr(unfold(decoder.decode(bytes, outPos + Padding)))
-      assert(actuallyDecoded == decoder.decodeLoopPure(initDecoded.index, initDecoded.pixels, pxPrev, HeaderSize, outPos, 0)._2)
+
+      // decodeLemma (called above) already relates decode(bytes, outPos + Padding)'s result to
+      // the very same decodeLoopPure(initDecoded.index, initDecoded.pixels, pxPrev, HeaderSize,
+      // outPos, 0) call tracked as (decIndex, decPixels, decIter) above, via arraysEq over
+      // [0, decIter.pxPos). Reuse that fact directly instead of forcing full array equality (`==`),
+      // which would require the solver to unify two independently-unrolled recursions of
+      // decodeLoop over a symbolic-length loop, and times out.
+      assert(arraysEq(decPixels, actuallyDecoded, 0, decIter.pxPos))
+      assert(decIter.pxPos == pixels.length)
+      arraysEqTransLemma(pixels, decPixels, actuallyDecoded, 0, pixels.length)
       assert(arraysEq(pixels, actuallyDecoded, 0, pixels.length))
     }
 
