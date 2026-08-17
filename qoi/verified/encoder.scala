@@ -134,6 +134,7 @@ object encoder {
       check(ww == w)
       check(hh == h)
       check(cchan == chan)
+      ghostExpr(unfold(decoder.decode(bytes, outPos + Padding)))
       assert(actuallyDecoded == decoder.decodeLoopPure(initDecoded.index, initDecoded.pixels, pxPrev, HeaderSize, outPos, 0)._2)
       assert(arraysEq(pixels, actuallyDecoded, 0, pixels.length))
     }
