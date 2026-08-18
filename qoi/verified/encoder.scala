@@ -1427,7 +1427,10 @@ object encoder {
     require(decoded.pxPos + chan <= decoded.pixels.length)
     require(decoded.pxPos + chan * run0 == pxPos)
     require(arraysEq(decoded.pixels, pixels, 0, decoded.pxPos))
-    require(samePixels(pixels, px, pxPos, chan))
+    require({
+      lemmaMultModulo(w*h, chan, pixels.length)
+      samePixels(pixels, px, pxPos, chan)
+    })
     require((run0 > 0) ==> samePixelsForall(pixels, pxPrev, decoded.pxPos, pxPos, chan))
 
     assert(3 <= chan && chan <= 4)
