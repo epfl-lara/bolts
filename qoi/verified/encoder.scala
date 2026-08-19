@@ -197,7 +197,7 @@ object encoder {
       assert({
         internalLemmaPxPosInvImpliesModChanEq0(decoded.pxPos)
         decoded.pxPos % chan == 0
-      }) // Slow (~50s)
+      })
       assert(0 <= decoded.pxPos)
       assert(arraysEq(oldBytes, bytes, 0, outPos0)) // Precond 2 slow (~45s)
       assert(decoded.pixels.length == pixels.length)
