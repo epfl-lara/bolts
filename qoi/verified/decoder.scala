@@ -698,6 +698,7 @@ object decoder {
     val initPixelsLen: Int = w.toInt * h.toInt * chan.toInt
     val initPixels = Array.fill(initPixelsLen)(0: Byte)
     val initPx = Pixel.fromRgba(0, 0, 0, 255.toByte)
+    require(initPixels.length == pixelsLen)
     val (_, decodedPixLoop, decIter) = decodeLoopPure(initIndex, initPixels, initPx, HeaderSize, until - Padding, 0)
 
     {
@@ -709,9 +710,13 @@ object decoder {
       toIntMulEqLemma(ww, hh, cchan, w, h, chan)
       check(decodedPixels.length == initPixelsLen)
       modMultLemma(w, h, chan)
+      modMultLemma(ww, hh, cchan)
+      internalLemmaPxPosInvImpliesModChanEq0(decodedPixels.length)
       check(decodedPixels.length % chan == 0)
       check(0 <= decIter.pxPos && decIter.pxPos <= decodedPixels.length)
       check(decIter.pxPos % chan == 0)
+      check(arraysEq(decodedPixLoop, decodedPixels, 0, decIter.pxPos))
+      check(((decIter.pxPos != decodedPixels.length) ==> samePixelsForall(decodedPixels, decIter.px, decIter.pxPos, decodedPixels.length, chan)))
     }.ensuring { _ =>
       arraysEq(decodedPixLoop, decodedPixels, 0, decIter.pxPos) &&&
       ((decIter.pxPos != decodedPixels.length) ==> samePixelsForall(decodedPixels, decIter.px, decIter.pxPos, decodedPixels.length, chan))
@@ -1069,6 +1074,9 @@ object decoder {
       inPos1 == inPos2
     }
   }
+  @ghost @opaque @inlineOnce def internalLemmaPxPosInvImpliesModChanEq0(pxPos: Long)(using DecCtx) = {
+    require(pxPosInv(pxPos))
+  }.ensuring(_ => pxPos % chan == 0)
 
   /////////////////////////////////////////////////////////////////////////////////////////////////////
   /////////////////////////////////////////////////////////////////////////////////////////////////////
