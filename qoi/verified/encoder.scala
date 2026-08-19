@@ -1392,7 +1392,7 @@ object encoder {
     require(pxPosInv(newDecoded.pxPos))
 
     val ctx1 = decoder.DecCtx(freshCopy(bytes1), w, h, chan)
-    lemmaMultModulo(w*h, chan, pixels.length)
+    lemmaMultModulo(w*h, chan, decoded.pixels.length)
     assert(decoded.pixels.length % chan == 0)
     assert(decoded.pixels.length == w * h * chan)
     assert(outPos0 <= bytes1.length)
