@@ -1,8 +1,10 @@
 package intarray
 
+import scala.reflect.ClassTag
 import stainless.lang.{ghost => ghostExpr, *}
 import stainless.annotation.*
 import stainless.collection.*
+import stainless.proof.check
 import stainless.lang.StaticChecks.*
 
 @mutable
@@ -97,6 +99,60 @@ case class GenericArray[T](private val data: Array[T], @ghost private var toList
     toList = toList.updated(BigInt(i), v)
     data(i) = v
   }.ensuring(_ => valid && old(this).toList.updated(BigInt(i), v) == toList)
+}
+
+object GenericArray {
+  def apply[T: ClassTag](size: BigInt, default: T): GenericArray[T] = {
+    require(size >= 0 && size <= BigInt(Int.MaxValue))
+    val arr = Array.fill[T](size.toInt)(default)
+    val list = List.fill(size)(default)
+    ghostExpr(listFillSameContentAsArrayFill(size, default, 0, list, arr))
+    assert(Utils.sameArrayListContent(arr, 0, list))
+    GenericArray(arr, list)
+  }.ensuring(res => res.valid && res.size == size && res.getList == List.fill(size)(default))
+
+  @opaque
+  @ghost
+  @inlineOnce
+  def listFillSameContentAsArrayFill[T: ClassTag](size: BigInt, elmt: T, from: BigInt, l: List[T], arr: Array[T]): Unit = {
+    require(size >= 0 && size <= BigInt(Int.MaxValue))
+    require(from >= 0 && from <= size)
+    require(l == List.fill(size - from)(elmt))
+    require(arr == Array.fill[T](size.toInt)(elmt))
+    decreases(l)
+
+    assert(BigInt(from.toInt) == from)
+    assert(BigInt(size.toInt) == size)
+    l match {
+      case Nil() => 
+        check(Utils.sameArrayListContent(arr, from.toInt, l))
+      case Cons(h, tail) if from == size => 
+        assert(l.isEmpty)
+        check(false)
+        check(Utils.sameArrayListContent(arr, from.toInt, l))
+      case Cons(h, tail) if from < size => 
+        assert(h == elmt)
+        assert(from + 1 <= size)
+        assert(l.size == 1 + tail.size)
+        assert(tail == List.fill(size - from - 1)(elmt))
+        assert(BigInt(from.toInt) == from)
+        assert(0 <= from && from < size)
+        assert(arr.size == size.toInt)
+        Utils.compareIntPreservedByToBigInt(from.toInt, size.toInt)
+        assert(0 <= from.toInt && from.toInt < size.toInt)
+        assert(arr(from.toInt) == elmt)
+        listFillSameContentAsArrayFill(size, elmt, from + 1, tail, arr)
+        Utils.additionIntPreservedByToBigInt(from.toInt, 1)
+        assert((from + 1).toInt == from.toInt + 1)
+        assert(Utils.sameArrayListContent(arr, from.toInt + 1, tail))
+        check(Utils.sameArrayListContent(arr, from.toInt, l))
+    }
+    
+
+  }.ensuring(_ => {
+    assert(BigInt(from.toInt) == from)
+    Utils.sameArrayListContent(arr, from.toInt, l)
+  })
 }
 
 object Utils {
