@@ -111,6 +111,18 @@ object GenericArray {
     GenericArray(arr, list)
   }.ensuring(res => res.valid && res.size == size && res.getList == List.fill(size)(default))
 
+  def apply[T: ClassTag](size: Int, default: T): GenericArray[T] = {
+    require(size >= 0)
+    val arr = Array.fill[T](size)(default)
+    val list = List.fill(BigInt(size))(default)
+    ghostExpr({
+      assert(BigInt(size).toInt == size)
+      listFillSameContentAsArrayFill(BigInt(size), default, 0, list, arr)
+      assert(Utils.sameArrayListContent(arr, 0, list))
+    })
+    GenericArray(arr, list)
+  }.ensuring(res => res.valid && res.size.toInt == size && res.getList == List.fill(BigInt(size))(default))
+
   @opaque
   @ghost
   @inlineOnce
