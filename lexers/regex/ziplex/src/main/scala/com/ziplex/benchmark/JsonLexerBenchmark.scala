@@ -14,6 +14,7 @@ import com.ziplex.lexer.VerifiedLexer.Lexer
 import com.ziplex.lexer.example.ExampleJsonLexer.JsonLexer
 import com.ziplex.lexer.example.RegexUtils.*
 import com.ziplex.lexer.MemoisationZipper
+import com.ziplex.lexer.ZipperRegex.ZipperDerivationStepsMemoized
 import com.ziplex.lexer.VerifiedRegex.Regex
 import com.mutablemaps.map.Hashable
 import com.ziplex.lexer.ZipperRegex.Context
@@ -37,8 +38,7 @@ class JsonLexerBenchmark {
   def lex_ZipperV1Mem(state: FreshLexV1MemState, bh: Blackhole): Unit = {
     val (tokens, suffix) = Lexer.lexV1Mem(JsonLexer.rules, state.content)(
       using ClassTag.Char,
-      state.zipperCacheUp,
-      state.zipperCacheDown
+      state.zipperMemSteps
     )
     bh.consume(suffix.isEmpty)
   }
@@ -47,8 +47,7 @@ class JsonLexerBenchmark {
   // def lex_ZipperV1Mem_Warm(state: WarmLexV1MemState, bh: Blackhole): Unit = {
   //   val (tokens, suffix) = Lexer.lexV1Mem(JsonLexer.rules, state.content)(
   //     using ClassTag.Char,
-  //     state.zipperCacheUp,
-  //     state.zipperCacheDown
+  //     state.zipperMemSteps
   //   )
   //   bh.consume(suffix.isEmpty)
   // }
@@ -57,8 +56,7 @@ class JsonLexerBenchmark {
   def lex_ZipperMem(state: FreshLexMemState, bh: Blackhole): Unit = {
     val (tokens, suffix) = Lexer.lexMem(JsonLexer.rules, state.content)(
       using ClassTag.Char,
-      state.zipperCacheUp,
-      state.zipperCacheDown,
+      state.zipperMemSteps,
       state.furthestNullableCache
     )
     bh.consume(suffix.isEmpty)
@@ -68,8 +66,7 @@ class JsonLexerBenchmark {
   def lex_ZipperMem_Warm(state: WarmLexMemState, bh: Blackhole): Unit = {
     val (tokens, suffix) = Lexer.lexMem(JsonLexer.rules, state.content)(
       using ClassTag.Char,
-      state.zipperCacheUp,
-      state.zipperCacheDown,
+      state.zipperMemSteps,
       state.furthestNullableCache
     )
     bh.consume(suffix.isEmpty)
@@ -91,8 +88,7 @@ class JsonLexerBenchmark {
   def lex_ZipperV2MemOnlyDeriv(state: FreshLexV2MemOnlyDerivState, bh: Blackhole): Unit = {
     val (tokens, suffix) = Lexer.lexV2MemOnlyDeriv(JsonLexer.rules, state.content)(
       using ClassTag.Char,
-      state.zipperCacheUp,
-      state.zipperCacheDown
+      state.zipperMemSteps
     )
     bh.consume(suffix.isEmpty)
   }
@@ -101,8 +97,7 @@ class JsonLexerBenchmark {
   // def lex_ZipperV2MemOnlyDeriv_Warm(state: WarmLexV2MemOnlyDerivState, bh: Blackhole): Unit = {
   //   val (tokens, suffix) = Lexer.lexV2MemOnlyDeriv(JsonLexer.rules, state.content)(
   //     using ClassTag.Char,
-  //     state.zipperCacheUp,
-  //     state.zipperCacheDown
+  //     state.zipperMemSteps
   //   )
   //   bh.consume(suffix.isEmpty)
   // }
@@ -117,8 +112,7 @@ class JsonLexerBenchmark {
   def lex_ZipperV3MemDeriv(state: FreshLexV3MemDerivState, bh: Blackhole): Unit = {
     val (tokens, suffix) = Lexer.lexV3MemDeriv(JsonLexer.rules, state.content)(
       using ClassTag.Char,
-      state.zipperCacheUp,
-      state.zipperCacheDown
+      state.zipperMemSteps
     )
     bh.consume(suffix.isEmpty)
   }
@@ -127,8 +121,7 @@ class JsonLexerBenchmark {
   def lex_ZipperV3MemDeriv_Warm(state: WarmLexV3MemDerivState, bh: Blackhole): Unit = {
     val (tokens, suffix) = Lexer.lexV3MemDeriv(JsonLexer.rules, state.content)(
       using ClassTag.Char,
-      state.zipperCacheUp,
-      state.zipperCacheDown
+      state.zipperMemSteps
     )
     bh.consume(suffix.isEmpty)
   }
@@ -137,8 +130,7 @@ class JsonLexerBenchmark {
   def separability_pred(state: FreshTokenState, bh: Blackhole): Unit = {
     val separable = Lexer.separableTokensMem(state.tokens, JsonLexer.rules)(
       using ClassTag.Char,
-      state.zipperCacheUp,
-      state.zipperCacheDown
+      state.zipperMemSteps
     )
     bh.consume(separable)
   }
@@ -147,8 +139,7 @@ class JsonLexerBenchmark {
   def separability_pred_Warm(state: WarmTokenState, bh: Blackhole): Unit = {
     val separable = Lexer.separableTokensMem(state.tokens, JsonLexer.rules)(
       using ClassTag.Char,
-      state.zipperCacheUp,
-      state.zipperCacheDown
+      state.zipperMemSteps
     )
     bh.consume(separable)
   }
@@ -185,11 +176,13 @@ class FileState {
 class FreshLexV1MemState extends FileState {
   var zipperCacheUp: MemoisationZipper.CacheUp[Char] = uninitialized
   var zipperCacheDown: MemoisationZipper.CacheDown[Char] = uninitialized
+  var zipperMemSteps: ZipperDerivationStepsMemoized[Char] = uninitialized
 
   @Setup(Level.Iteration)
   def setupCaches(): Unit = {
     zipperCacheUp = MemoisationZipper.emptyUp(ContextCharHashable)
     zipperCacheDown = MemoisationZipper.emptyDown(RegexContextCharHashable)
+    zipperMemSteps = ZipperDerivationStepsMemoized(zipperCacheUp, zipperCacheDown)
   }
 }
 
@@ -199,8 +192,7 @@ class WarmLexV1MemState extends FreshLexV1MemState {
   def warm(): Unit = {
     val (_, suffix) = Lexer.lexV1Mem(JsonLexer.rules, content)(
       using ClassTag.Char,
-      zipperCacheUp,
-      zipperCacheDown
+      zipperMemSteps
     )
     assert(suffix.isEmpty)
   }
@@ -210,12 +202,14 @@ class WarmLexV1MemState extends FreshLexV1MemState {
 class FreshLexMemState extends FileState {
   var zipperCacheUp: MemoisationZipper.CacheUp[Char] = uninitialized
   var zipperCacheDown: MemoisationZipper.CacheDown[Char] = uninitialized
+  var zipperMemSteps: ZipperDerivationStepsMemoized[Char] = uninitialized
   var furthestNullableCache: MemoisationZipper.CacheFurthestNullable[Char] = uninitialized
 
   @Setup(Level.Iteration)
   def setupCaches(): Unit = {
     zipperCacheUp = MemoisationZipper.emptyUp(ContextCharHashable)
     zipperCacheDown = MemoisationZipper.emptyDown(RegexContextCharHashable)
+    zipperMemSteps = ZipperDerivationStepsMemoized(zipperCacheUp, zipperCacheDown)
     furthestNullableCache =
       MemoisationZipper.emptyFurthestNullableCache[Char](
         ExampleUtils.ZipperBigIntBigIntHashable,
@@ -231,8 +225,7 @@ class WarmLexMemState extends FreshLexMemState {
   def warm(): Unit = {
     val (_, suffix) = Lexer.lexMem(JsonLexer.rules, content)(
       using ClassTag.Char,
-      zipperCacheUp,
-      zipperCacheDown,
+      zipperMemSteps,
       furthestNullableCache
     )
     assert(suffix.isEmpty)
@@ -243,11 +236,13 @@ class WarmLexMemState extends FreshLexMemState {
 class FreshLexV2MemOnlyDerivState extends FileState {
   var zipperCacheUp: MemoisationZipper.CacheUp[Char] = uninitialized
   var zipperCacheDown: MemoisationZipper.CacheDown[Char] = uninitialized
+  var zipperMemSteps: ZipperDerivationStepsMemoized[Char] = uninitialized
 
   @Setup(Level.Iteration)
   def setupCaches(): Unit = {
     zipperCacheUp = MemoisationZipper.emptyUp(ContextCharHashable)
     zipperCacheDown = MemoisationZipper.emptyDown(RegexContextCharHashable)
+    zipperMemSteps = ZipperDerivationStepsMemoized(zipperCacheUp, zipperCacheDown)
   }
 }
 
@@ -257,8 +252,7 @@ class WarmLexV2MemOnlyDerivState extends FreshLexV2MemOnlyDerivState {
   def warm(): Unit = {
     val (_, suffix) = Lexer.lexV2MemOnlyDeriv(JsonLexer.rules, content)(
       using ClassTag.Char,
-      zipperCacheUp,
-      zipperCacheDown
+      zipperMemSteps
     )
     assert(suffix.isEmpty)
   }
@@ -268,11 +262,13 @@ class WarmLexV2MemOnlyDerivState extends FreshLexV2MemOnlyDerivState {
 class FreshLexV3MemDerivState extends FileState {
   var zipperCacheUp: MemoisationZipper.CacheUp[Char] = uninitialized
   var zipperCacheDown: MemoisationZipper.CacheDown[Char] = uninitialized
+  var zipperMemSteps: ZipperDerivationStepsMemoized[Char] = uninitialized
 
   @Setup(Level.Iteration)
   def setupCaches(): Unit = {
     zipperCacheUp = MemoisationZipper.emptyUp(ContextCharHashable)
     zipperCacheDown = MemoisationZipper.emptyDown(RegexContextCharHashable)
+    zipperMemSteps = ZipperDerivationStepsMemoized(zipperCacheUp, zipperCacheDown)
   }
 }
 
@@ -282,8 +278,7 @@ class WarmLexV3MemDerivState extends FreshLexV3MemDerivState {
   def warm(): Unit = {
     val (_, suffix) = Lexer.lexV3MemDeriv(JsonLexer.rules, content)(
       using ClassTag.Char,
-      zipperCacheUp,
-      zipperCacheDown
+      zipperMemSteps
     )
     assert(suffix.isEmpty)
   }
@@ -294,6 +289,7 @@ class FreshTokenState extends FileState {
   var tokens: Sequence[Token[Char]] = uninitialized
   var zipperCacheUp: MemoisationZipper.CacheUp[Char] = uninitialized
   var zipperCacheDown: MemoisationZipper.CacheDown[Char] = uninitialized
+  var zipperMemSteps: ZipperDerivationStepsMemoized[Char] = uninitialized
 
   @Setup(Level.Iteration)
   def setupTokensAndCaches(): Unit = {
@@ -308,8 +304,7 @@ class FreshTokenState extends FileState {
 
     val (ts, suffix) = Lexer.lexMem(JsonLexer.rules, content)(
       using ClassTag.Char,
-      lexUp,
-      lexDown,
+      ZipperDerivationStepsMemoized(lexUp, lexDown),
       furthestNullableCache
     )
     assert(suffix.isEmpty)
@@ -317,6 +312,7 @@ class FreshTokenState extends FileState {
 
     zipperCacheUp = MemoisationZipper.emptyUp(ContextCharHashable)
     zipperCacheDown = MemoisationZipper.emptyDown(RegexContextCharHashable)
+    zipperMemSteps = ZipperDerivationStepsMemoized(zipperCacheUp, zipperCacheDown)
   }
 }
 
@@ -326,8 +322,7 @@ class WarmTokenState extends FreshTokenState {
   def warm(): Unit = {
     val separable = Lexer.separableTokensMem(tokens, JsonLexer.rules)(
       using ClassTag.Char,
-      zipperCacheUp,
-      zipperCacheDown
+      zipperMemSteps
     )
     assert(separable)
   }

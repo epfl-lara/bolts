@@ -31,6 +31,7 @@ import scala.reflect.ClassTag
 import com.ziplex.lexer.ZipperRegex.Zipper
 import com.ziplex.lexer.ZipperRegex.Context
 import com.ziplex.lexer.ZipperRegex.focus
+import com.ziplex.lexer.ZipperRegex.ZipperDerivationStepsMemoized
 
 object Main {
   def main(args: Array[String]): Unit = {
@@ -66,7 +67,7 @@ object Main {
           content,
           JsonLexer.rules
         )
-        val (_, suffix) = Lexer.lexMem(JsonLexer.rules, content)(using ClassTag.Char, up, down, furthest)
+        val (_, suffix) = Lexer.lexMem(JsonLexer.rules, content)(using ClassTag.Char, ZipperDerivationStepsMemoized(up, down), furthest)
         assert(suffix.isEmpty)
       }
       val times = Array.ofDim[Double](n)
@@ -79,7 +80,7 @@ object Main {
           JsonLexer.rules
         )
         val t0 = System.nanoTime()
-        val (_, suffix) = Lexer.lexMem(JsonLexer.rules, content)(using ClassTag.Char, up, down, furthest)
+        val (_, suffix) = Lexer.lexMem(JsonLexer.rules, content)(using ClassTag.Char, ZipperDerivationStepsMemoized(up, down), furthest)
         val t1 = System.nanoTime()
         assert(suffix.isEmpty)
         times(i) = (t1 - t0).toDouble / 1e6
@@ -118,7 +119,7 @@ object Main {
 
   def exampleJsonSorting(): Unit = {
     val jsonFilePath = "src/main/scala/com/ziplex/example/res/json/example-for-sorting.json"
-    val sortedOpt = JsonManipulationExample.main(jsonFilePath, ExampleUtils.ZipperBigIntBigIntHashable)(using ExampleUtils.zipperCacheUp, ExampleUtils.zipperCacheDown)
+    val sortedOpt = JsonManipulationExample.main(jsonFilePath, ExampleUtils.ZipperBigIntBigIntHashable)(using ExampleUtils.zipperMemSteps)
     sortedOpt match {
       case Some(sorted) => println(s"Sorted JSON:\n$sorted")
       case None()       => println("Failed to parse and sort the JSON file.")
@@ -131,7 +132,7 @@ object Main {
     println("Lexing with memoization")
     println(s"File content for file '$filepath':\n$fileContent")
     val input = fileContent.toStainless
-    val (tokens, suffix) = Lexer.lexMem(JsonLexer.rules, input)(using ClassTag.Char, ExampleUtils.zipperCacheUp, ExampleUtils.zipperCacheDown, ExampleUtils.furthestNullableCache(input, JsonLexer.rules))
+    val (tokens, suffix) = Lexer.lexMem(JsonLexer.rules, input)(using ClassTag.Char, ExampleUtils.zipperMemSteps, ExampleUtils.furthestNullableCache(input, JsonLexer.rules))
     println(f"Suffix tokens for file '$filepath':\n${suffix}")
     assert(suffix.isEmpty)
     val tokenStrings = tokens.map(t => t.asString())
@@ -149,9 +150,9 @@ object Main {
     val input: Sequence[Char] = inputStr.toStainless
     println(s"Testing regex: ${r.show()} on input: ${inputStr}")
     println(s"Match result: ${matchZipperSequence(r, input)}")
-    println(s"Match result memoized: ${matchZipperSequenceMem(r, input)(using ExampleUtils.zipperCacheUp, ExampleUtils.zipperCacheDown)}")
+    println(s"Match result memoized: ${matchZipperSequenceMem(r, input)(using ExampleUtils.zipperMemSteps)}")
     assert(matchZipperSequence(r, input))
-    assert(matchZipperSequenceMem(r, input)(using ExampleUtils.zipperCacheUp, ExampleUtils.zipperCacheDown))
+    assert(matchZipperSequenceMem(r, input)(using ExampleUtils.zipperMemSteps))
   }
   def testElementSetRegex2() = {
     val r: Regex[Char] = anyOf("abc").* ~ "e".r
@@ -159,9 +160,9 @@ object Main {
     val input: Sequence[Char] = inputStr.toStainless
     println(s"Testing regex: ${r.show()} on input: ${inputStr}")
     println(s"Match result: ${matchZipperSequence(r, input)}")
-    println(s"Match result memoized: ${matchZipperSequenceMem(r, input)(using ExampleUtils.zipperCacheUp, ExampleUtils.zipperCacheDown)}")
+    println(s"Match result memoized: ${matchZipperSequenceMem(r, input)(using ExampleUtils.zipperMemSteps)}")
     assert(matchZipperSequence(r, input))
-    assert(matchZipperSequenceMem(r, input)(using ExampleUtils.zipperCacheUp, ExampleUtils.zipperCacheDown))
+    assert(matchZipperSequenceMem(r, input)(using ExampleUtils.zipperMemSteps))
   }
 
 
@@ -169,7 +170,7 @@ object Main {
     val r: Regex[Char] = ("a".r | "b".r).* ~ "c".r
     val input: Sequence[Char] = "ababc".toStainless
     assert(matchZipperSequence(r, input))
-    assert(matchZipperSequenceMem(r, input)(using ExampleUtils.zipperCacheUp, ExampleUtils.zipperCacheDown))
+    assert(matchZipperSequenceMem(r, input)(using ExampleUtils.zipperMemSteps))
 
   }
 
