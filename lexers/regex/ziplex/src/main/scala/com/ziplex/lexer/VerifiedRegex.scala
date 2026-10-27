@@ -1116,6 +1116,7 @@ object ZipperRegex {
   def derivationStepZipperMem[C](z: Zipper[C], a: C)(using memSteps: ZipperDerivationStepsMemoized[C]): Zipper[C] = {
     ghostExpr({
       val snapshotMemSteps = snapshot(memSteps)
+      assert(z.forall(c => snapshotMemSteps.derivationStepZipperUpMem(c, a) == derivationStepZipperUp(c, a)))
       SetUtils.lemmaFlatMapWithExtEqualFunctionsOnSetThenSame(z, (c: Context[C]) => snapshotMemSteps.derivationStepZipperUpMem(c, a), (c: Context[C]) => derivationStepZipperUp(c, a))
     })
     
@@ -1126,12 +1127,11 @@ object ZipperRegex {
   def derivationStepZipperSimpMem[C](z: Zipper[C], a: C)(using memSteps: ZipperDerivationStepsMemoized[C]): Zipper[C] = {
     ghostExpr({
       val snapshotMemSteps = snapshot(memSteps)
+      assert(z.forall(c => snapshotMemSteps.derivationStepZipperUpMem(c, a) == derivationStepZipperUp(c, a)))
       SetUtils.lemmaFlatMapWithExtEqualFunctionsOnSetThenSame(z, (c: Context[C]) => snapshotMemSteps.derivationStepZipperUpMem(c, a), (c: Context[C]) => derivationStepZipperUp(c, a))
     })
-    
-    def derivUpMem(c: Context[C]): Zipper[C] = memSteps.derivationStepZipperUpMem(c, a)
 
-    z.flatMap(derivUpMem).filter(c => !c.lostCause) // <== ACCEPTED NOW THANKS TO THE INTERNAL MUTATION FEATURE
+    z.flatMap(c => memSteps.derivationStepZipperUpMem(c, a)).filter(c => !c.lostCause) // <== ACCEPTED NOW THANKS TO THE INTERNAL MUTATION FEATURE
   }.ensuring(res => res == derivationStepZipperSimp(z, a))
 
   def matchZipperMem[C](z: Zipper[C], input: List[C])(using memSteps: ZipperDerivationStepsMemoized[C]): Boolean = {
