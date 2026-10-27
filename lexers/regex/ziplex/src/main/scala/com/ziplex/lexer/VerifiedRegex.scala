@@ -193,6 +193,7 @@ object MemoisationZipper {
       cache.contains((ctx, a))
     }
 
+    @pure 
     def get(ctx: Context[C], a: C): Option[Zipper[C]] = {
       require(validCacheMapUp(cache))
 
@@ -1068,7 +1069,8 @@ object ZipperRegex {
 
   // MEMOISED -----------------------------------------------------------------------------------------------------
   case class ZipperDerivationStepsMemoized[C](@internallyMutable private val cacheUp: CacheUp[C], @internallyMutable private val cacheDown: CacheDown[C]) {
-    require(cacheUp.valid && cacheDown.valid)
+    require(cacheUp.valid)
+    require(cacheDown.valid)
     def derivationStepZipperUpMem(context: Context[C], a: C): Zipper[C] = {
       decreases(context.exprs.size)
       assert(cacheUp.valid)
@@ -1084,7 +1086,7 @@ object ZipperRegex {
           res
         }
       }
-    }.ensuring(sameAs(derivationStepZipperUp(context, a)))
+    }.ensuring(res => sameAs(derivationStepZipperUp(context, a))(res) && cacheDown.valid && cacheUp.valid)
 
     def derivationStepZipperDownMem(expr: Regex[C], context: Context[C], a: C): Zipper[C] = {
       require(validRegex(expr))
@@ -1106,7 +1108,7 @@ object ZipperRegex {
           res
         }
       }
-    }.ensuring(sameAs(derivationStepZipperDown(expr, context, a)))
+    }.ensuring(res => sameAs(derivationStepZipperDown(expr, context, a))(res) && cacheDown.valid && cacheUp.valid)
   }
 
 

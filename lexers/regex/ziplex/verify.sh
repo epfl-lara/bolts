@@ -10,7 +10,7 @@ Arguments:
 	stainless options  Additional options passed through to stainless-dotty
 
 Options:
-	-p, --parallel N   Number of parallel workers for Stainless (-D-parallel)
+	-p, --parallel N   Number of parallel workers for Stainless (-Dparallel in _JAVA_OPTIONS)
 										 Default: 12
 
 	-h, --help         Show this help message and exit
@@ -72,7 +72,7 @@ if ! [[ "$PARALLEL" =~ ^[0-9]+$ ]] || [ "$PARALLEL" -lt 1 ]; then
 	exit 1
 fi
 
-export _JAVA_OPTIONS="-Xmx32g"
+export _JAVA_OPTIONS="-Xmx32g -Dparallel=$PARALLEL"
 stainless-dotty\
  src/main/scala/com/ziplex/lexer/VerifiedRegex.scala\
  src/main/scala/com/ziplex/lexer/VerifiedLexer.scala\
@@ -88,6 +88,6 @@ stainless-dotty\
  src/main/scala/com/ziplex/example/PythonLexer.scala\
  --config-file=stainless.conf\
  --solvers=smt-z3,smt-cvc5\
- -D-parallel="$PARALLEL" --functions=MutableHashMap._,ListMap._,TupleListOpsGenK._,ListMapLemmas._,MutableMapInterface._,MemoisationRegex._,MemoisationZipper._,VerifiedRegex_,ZipperRegex._,VerifiedRegexMatcher._,Utils._,ListUtils._,SetUtils._,Types._,Vector._,IArray._,BalanceConcObj._,VerifiedLexer._,seqFromListBHdTlConstructive,emptySeq,singletonSeq,seqFromList,seqFromArray,Token._,Rule._,semiInverseBodyModEq,equivClassesBody,semiInverseModEq,equivClasses,TokenValueInjection._,ExampleAmyLexer._,ExamplePythonLexer._,ExampleJsonLexer._,JsonManipulationExample._\
+ --functions=MutableHashMap._,ListMap._,TupleListOpsGenK._,ListMapLemmas._,MutableMapInterface._,MemoisationRegex._,MemoisationZipper._,VerifiedRegex_,ZipperRegex._,VerifiedRegexMatcher._,Utils._,ListUtils._,SetUtils._,Types._,Vector._,IArray._,BalanceConcObj._,VerifiedLexer._,seqFromListBHdTlConstructive,emptySeq,singletonSeq,seqFromList,seqFromArray,Token._,Rule._,semiInverseBodyModEq,equivClassesBody,semiInverseModEq,equivClasses,TokenValueInjection._,ExampleAmyLexer._,ExamplePythonLexer._,ExampleJsonLexer._,JsonManipulationExample._\
  "${EXTRA_ARGS[@]}"
 
