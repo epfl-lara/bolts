@@ -1,4 +1,4 @@
-JAVA_OPTS="-Dparallel=6"
+export JAVA_OPTS="-Dparallel=3"
 stainless-dotty\
  src/main/scala/com/ziplex/lexer/VerifiedRegex.scala\
  src/main/scala/com/ziplex/lexer/VerifiedLexer.scala\
