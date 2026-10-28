@@ -11,7 +11,7 @@ Arguments:
 
 Options:
 	-p, --parallel N   Number of parallel workers for Stainless (-Dparallel in _JAVA_OPTIONS)
-										 Default: 12
+										 Default: 6
 
 	-h, --help         Show this help message and exit
 
@@ -34,7 +34,7 @@ if [ -n "$1" ] && [[ "$1" =~ ^[0-9]+$ ]]; then
 	exit 1
 fi
 
-PARALLEL="12"
+PARALLEL="6"
 EXTRA_ARGS=()
 
 while [ "$#" -gt 0 ]; do
@@ -72,7 +72,7 @@ if ! [[ "$PARALLEL" =~ ^[0-9]+$ ]] || [ "$PARALLEL" -lt 1 ]; then
 	exit 1
 fi
 
-export _JAVA_OPTIONS="-Xmx32g -Dparallel=$PARALLEL"
+export _JAVA_OPTIONS="-Xmx64g -Dparallel=$PARALLEL"
 stainless-dotty\
  src/main/scala/com/ziplex/lexer/VerifiedRegex.scala\
  src/main/scala/com/ziplex/lexer/VerifiedLexer.scala\
