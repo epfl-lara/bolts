@@ -10,15 +10,15 @@ Arguments:
 	stainless options  Additional options passed through to stainless-dotty
 
 Options:
-	-p, --parallel N   Number of parallel workers for Stainless (-Dparallel in _JAVA_OPTIONS)
-										 Default: 6
+	-p, --parallel N   Number of parallel workers for Stainless (-D-parallel)
+										 Default: 2
 
 	-h, --help         Show this help message and exit
 
 Examples:
 	./verify.sh
-	./verify.sh --parallel 16
-	./verify.sh -p 16 --json --debug=smt
+	./verify.sh --parallel 3
+	./verify.sh -p 3 --json --debug=smt
 	./verify.sh "--json --debug=smt"
 EOF
 }
@@ -34,7 +34,7 @@ if [ -n "$1" ] && [[ "$1" =~ ^[0-9]+$ ]]; then
 	exit 1
 fi
 
-PARALLEL="6"
+PARALLEL="2"
 EXTRA_ARGS=()
 
 while [ "$#" -gt 0 ]; do
@@ -72,7 +72,14 @@ if ! [[ "$PARALLEL" =~ ^[0-9]+$ ]] || [ "$PARALLEL" -lt 1 ]; then
 	exit 1
 fi
 
-export _JAVA_OPTIONS="-Xmx64g -Dparallel=$PARALLEL"
+# Full functions list:
+#  --functions=MutableHashMap._,ListMap._,TupleListOpsGenK._,ListMapLemmas._,MutableMapInterface._,MemoisationRegex._,MemoisationZipper._,VerifiedRegex_,ZipperRegex._,VerifiedRegexMatcher._,Utils._,ListUtils._,SetUtils._,Types._,Vector._,IArray._,BalanceConcObj._,LexerInterface._,VerifiedLexer._,seqFromListBHdTlConstructive,emptySeq,singletonSeq,seqFromList,seqFromArray,Token._,Rule._,semiInverseBodyModEq,equivClassesBody,semiInverseModEq,equivClasses,TokenValueInjection._,ExampleAmyLexer._,ExamplePythonLexer._,ExampleJsonLexer._,JsonManipulationExample._
+
+export _JAVA_OPTIONS="-Xmx27g"
+
+echo "Running verification with parallelism: $PARALLEL"
+echo "Additional Stainless options: ${EXTRA_ARGS[*]}"
+echo "Verifying mutable hash tables... (task 1/3)"
 stainless-dotty\
  src/main/scala/com/ziplex/lexer/VerifiedRegex.scala\
  src/main/scala/com/ziplex/lexer/VerifiedLexer.scala\
@@ -88,6 +95,48 @@ stainless-dotty\
  src/main/scala/com/ziplex/example/PythonLexer.scala\
  --config-file=stainless.conf\
  --solvers=smt-z3,smt-cvc5\
- --functions=MutableHashMap._,ListMap._,TupleListOpsGenK._,ListMapLemmas._,MutableMapInterface._,MemoisationRegex._,MemoisationZipper._,VerifiedRegex_,ZipperRegex._,VerifiedRegexMatcher._,Utils._,ListUtils._,SetUtils._,Types._,Vector._,IArray._,BalanceConcObj._,VerifiedLexer._,seqFromListBHdTlConstructive,emptySeq,singletonSeq,seqFromList,seqFromArray,Token._,Rule._,semiInverseBodyModEq,equivClassesBody,semiInverseModEq,equivClasses,TokenValueInjection._,ExampleAmyLexer._,ExamplePythonLexer._,ExampleJsonLexer._,JsonManipulationExample._\
- "${EXTRA_ARGS[@]}"
+ -D-parallel="$PARALLEL" --functions=MutableHashMap._,ListMap._,TupleListOpsGenK._,ListMapLemmas._,MutableMapInterface._\
+ "${EXTRA_ARGS[@]}" || exit 1
+
+echo "Verifying regex matching engine, utils, datastructures, lexer, and example lexers... (task 2/3)"
+
+stainless-dotty\
+ src/main/scala/com/ziplex/lexer/VerifiedRegex.scala\
+ src/main/scala/com/ziplex/lexer/VerifiedLexer.scala\
+ src/main/scala/com/ziplex/lexer/Utils.scala\
+ src/main/scala/com/ziplex/lexer/LexerInterface.scala\
+ src/main/scala/com/ziplex/map/*\
+ src/main/scala/com/ziplex/example/Utils.scala\
+ src/main/scala/com/ziplex/lexer/Vector.scala\
+ src/main/scala/com/ziplex/lexer/BalanceConcArr.scala\
+ src/main/scala/com/ziplex/example/JSONLexer.scala\
+ src/main/scala/com/ziplex/example/JsonManipulation.scala\
+ src/main/scala/com/ziplex/example/AmyLexer.scala\
+ src/main/scala/com/ziplex/example/PythonLexer.scala\
+ --config-file=stainless.conf\
+ --solvers=smt-z3,smt-cvc5\
+ -D-parallel="$PARALLEL" --functions=MemoisationRegex._,VerifiedRegex_,VerifiedRegexMatcher._,Utils._,ListUtils._,SetUtils._,Types._,Vector._,IArray._,BalanceConcObj._,VerifiedLexer._,seqFromListBHdTlConstructive,emptySeq,singletonSeq,seqFromList,seqFromArray,Token._,Rule._,semiInverseBodyModEq,equivClassesBody,semiInverseModEq,equivClasses,TokenValueInjection._,ExampleAmyLexer._,ExamplePythonLexer._,ExampleJsonLexer._,JsonManipulationExample._\
+ "${EXTRA_ARGS[@]}" || exit 1
+
+echo "Verifying zipper based optimization... (task 3/3)"
+
+stainless-dotty\
+ src/main/scala/com/ziplex/lexer/VerifiedRegex.scala\
+ src/main/scala/com/ziplex/lexer/VerifiedLexer.scala\
+ src/main/scala/com/ziplex/lexer/Utils.scala\
+ src/main/scala/com/ziplex/lexer/LexerInterface.scala\
+ src/main/scala/com/ziplex/map/*\
+ src/main/scala/com/ziplex/example/Utils.scala\
+ src/main/scala/com/ziplex/lexer/Vector.scala\
+ src/main/scala/com/ziplex/lexer/BalanceConcArr.scala\
+ src/main/scala/com/ziplex/example/JSONLexer.scala\
+ src/main/scala/com/ziplex/example/JsonManipulation.scala\
+ src/main/scala/com/ziplex/example/AmyLexer.scala\
+ src/main/scala/com/ziplex/example/PythonLexer.scala\
+ --config-file=stainless.conf\
+ --solvers=smt-z3,smt-cvc5\
+ -D-parallel="$PARALLEL" --functions=MemoisationZipper._,ZipperRegex._\
+ "${EXTRA_ARGS[@]}" || exit 1
+
+
 
