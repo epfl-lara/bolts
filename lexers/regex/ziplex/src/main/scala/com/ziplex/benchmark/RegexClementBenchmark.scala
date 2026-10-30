@@ -109,17 +109,11 @@ class RegexClementBenchmark {
 
 @State(Scope.Thread)
 class RegexClementState {
-  // 10 sizes equally distributed between 8 and 512
+  // 4 sizes equally distributed between 8 and 512
   @Param(Array(
     "8",
-    "64",
-    "120",
     "176",
-    "232",
-    "288",
     "344",
-    "400",
-    "456",
     "512",
   ))
   var size: String = uninitialized
@@ -152,7 +146,7 @@ object RegexClementBenchmarkUtils {
   val seed = 0x0ddba11
   val r = new Random(seed)
 
-  val string_sizes = List(8, 64, 120, 176, 232, 288, 344, 400, 456, 512)
+  val string_sizes = List(8, 176, 344, 512)
 
   val az = "abcdefghijklmnopqrstuvwxyz"
   val digitsString = "0123456789"
