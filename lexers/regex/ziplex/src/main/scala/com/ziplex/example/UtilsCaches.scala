@@ -116,6 +116,7 @@ object ExampleUtils:
 
   val zipperCacheUp: MemoisationZipper.CacheUp[Char] = MemoisationZipper.emptyUp(ContextCharHashable)
   val zipperCacheDown: MemoisationZipper.CacheDown[Char] = MemoisationZipper.emptyDown(RegexContextCharHashable)
+  val zipperMemSteps: ZipperDerivationStepsMemoized[Char] = ZipperDerivationStepsMemoized(zipperCacheUp, zipperCacheDown)
   def findLongestMatchCache(totalInput: Sequence[Char]) = MemoisationZipper.emptyFindLongestMatch[Char](ZipperBigIntHashable, totalInput)
   def furthestNullableCache(totalInput: Sequence[Char], rules: List[Rule[Char]]) = MemoisationZipper.emptyFurthestNullableCache[Char](ZipperBigIntBigIntHashable, totalInput, rules)
 end ExampleUtils

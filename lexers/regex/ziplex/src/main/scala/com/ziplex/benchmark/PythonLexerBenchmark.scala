@@ -14,6 +14,7 @@ import com.ziplex.lexer.VerifiedLexer.Lexer
 import com.ziplex.lexer.example.ExamplePythonLexer.PythonLexer
 import com.ziplex.lexer.example.RegexUtils.*
 import com.ziplex.lexer.MemoisationZipper
+import com.ziplex.lexer.ZipperRegex.ZipperDerivationStepsMemoized
 import com.ziplex.lexer.VerifiedRegex.Regex
 import com.mutablemaps.map.Hashable
 import com.ziplex.lexer.ZipperRegex.Context
@@ -39,8 +40,7 @@ class PythonLexerBenchmark {
   def lex_ZipperV1Mem(state: FreshPythonV1MemState, bh: Blackhole): Unit = {
     val (tokens, suffix) = Lexer.lexV1Mem(PythonLexer.rules, state.content)(
       using ClassTag.Char,
-      state.zipperCacheUp,
-      state.zipperCacheDown
+      state.zipperMemSteps
     )
     bh.consume(suffix.isEmpty)
   }
@@ -49,8 +49,7 @@ class PythonLexerBenchmark {
   // def lex_ZipperV1Mem_Warm(state: WarmPythonV1MemState, bh: Blackhole): Unit = {
   //   val (tokens, suffix) = Lexer.lexV1Mem(PythonLexer.rules, state.content)(
   //     using ClassTag.Char,
-  //     state.zipperCacheUp,
-  //     state.zipperCacheDown
+  //     state.zipperMemSteps
   //   )
   //   bh.consume(suffix.isEmpty)
   // }
@@ -59,8 +58,7 @@ class PythonLexerBenchmark {
   def lex_ZipperMem(state: FreshPythonV3MemState, bh: Blackhole): Unit = {
     val (tokens, suffix) = Lexer.lexMem(PythonLexer.rules, state.content)(
       using ClassTag.Char,
-      state.zipperCacheUp,
-      state.zipperCacheDown,
+      state.zipperMemSteps,
       state.furthestNullableCache
     )
     bh.consume(suffix.isEmpty)
@@ -70,8 +68,7 @@ class PythonLexerBenchmark {
   // def lex_ZipperMem_Warm(state: WarmPythonV3MemState, bh: Blackhole): Unit = {
   //   val (tokens, suffix) = Lexer.lexMem(PythonLexer.rules, state.content)(
   //     using ClassTag.Char,
-  //     state.zipperCacheUp,
-  //     state.zipperCacheDown,
+  //     state.zipperMemSteps,
   //     state.furthestNullableCache
   //   )
   //   bh.consume(suffix.isEmpty)
@@ -138,11 +135,13 @@ class PythonFileState {
 class FreshPythonV1MemState extends PythonFileState {
   var zipperCacheUp: MemoisationZipper.CacheUp[Char] = uninitialized
   var zipperCacheDown: MemoisationZipper.CacheDown[Char] = uninitialized
+  var zipperMemSteps: ZipperDerivationStepsMemoized[Char] = uninitialized
 
   @Setup(Level.Iteration)
   def setupCaches(): Unit = {
     zipperCacheUp = MemoisationZipper.emptyUp(ContextCharHashable)
     zipperCacheDown = MemoisationZipper.emptyDown(RegexContextCharHashable)
+    zipperMemSteps = ZipperDerivationStepsMemoized(zipperCacheUp, zipperCacheDown)
   }
 }
 
@@ -152,8 +151,7 @@ class WarmPythonV1MemState extends FreshPythonV1MemState {
   def warm(): Unit = {
     val (_, suffix) = Lexer.lexV1Mem(PythonLexer.rules, content)(
       using ClassTag.Char,
-      zipperCacheUp,
-      zipperCacheDown
+      zipperMemSteps
     )
     assert(suffix.isEmpty)
   }
@@ -163,12 +161,14 @@ class WarmPythonV1MemState extends FreshPythonV1MemState {
 class FreshPythonV3MemState extends PythonFileState {
   var zipperCacheUp: MemoisationZipper.CacheUp[Char] = uninitialized
   var zipperCacheDown: MemoisationZipper.CacheDown[Char] = uninitialized
+  var zipperMemSteps: ZipperDerivationStepsMemoized[Char] = uninitialized
   var furthestNullableCache: MemoisationZipper.CacheFurthestNullable[Char] = uninitialized
 
   @Setup(Level.Iteration)
   def setupCaches(): Unit = {
     zipperCacheUp = MemoisationZipper.emptyUp(ContextCharHashable)
     zipperCacheDown = MemoisationZipper.emptyDown(RegexContextCharHashable)
+    zipperMemSteps = ZipperDerivationStepsMemoized(zipperCacheUp, zipperCacheDown)
     furthestNullableCache =
       MemoisationZipper.emptyFurthestNullableCache[Char](
         ExampleUtils.ZipperBigIntBigIntHashable,
@@ -184,8 +184,7 @@ class WarmPythonV3MemState extends FreshPythonV3MemState {
   def warm(): Unit = {
     val (_, suffix) = Lexer.lexMem(PythonLexer.rules, content)(
       using ClassTag.Char,
-      zipperCacheUp,
-      zipperCacheDown,
+      zipperMemSteps,
       furthestNullableCache
     )
     assert(suffix.isEmpty)

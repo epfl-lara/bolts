@@ -1,3 +1,4 @@
+export JAVA_OPTS="-Dparallel=3"
 stainless-dotty\
  src/main/scala/com/ziplex/lexer/VerifiedRegex.scala\
  src/main/scala/com/ziplex/lexer/VerifiedLexer.scala\
@@ -12,5 +13,4 @@ stainless-dotty\
  src/main/scala/com/ziplex/example/AmyLexer.scala\
  src/main/scala/com/ziplex/example/PythonLexer.scala\
  --config-file=stainless.conf\
- -D-parallel=6\
  $1

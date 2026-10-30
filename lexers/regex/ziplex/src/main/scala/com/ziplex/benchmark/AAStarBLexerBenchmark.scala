@@ -14,6 +14,7 @@ import com.ziplex.lexer.VerifiedLexer.Lexer
 import com.ziplex.lexer.example.ExampleAAStarBLexer.AAStarBLexer
 import com.ziplex.lexer.example.RegexUtils.*
 import com.ziplex.lexer.MemoisationZipper
+import com.ziplex.lexer.ZipperRegex.ZipperDerivationStepsMemoized
 import com.ziplex.lexer.VerifiedRegex.Regex
 import com.mutablemaps.map.Hashable
 import com.ziplex.lexer.ZipperRegex.Context
@@ -41,8 +42,7 @@ class AAStarBLexerBenchmark {
   // def lex_ZipperV1Mem(state: FreshAAStarBLexV1MemState, bh: Blackhole): Unit = {
   //   val (tokens, suffix) = Lexer.lexV1Mem(AAStarBLexer.rules, state.content)(
   //     using ClassTag.Char,
-  //     state.zipperCacheUp,
-  //     state.zipperCacheDown
+  //     state.zipperMemSteps
   //   )
   //   bh.consume(suffix.isEmpty)
   // }
@@ -51,8 +51,7 @@ class AAStarBLexerBenchmark {
   // def lex_ZipperV1Mem_Warm(state: WarmAAStarBLexV1MemState, bh: Blackhole): Unit = {
   //   val (tokens, suffix) = Lexer.lexV1Mem(AAStarBLexer.rules, state.content)(
   //     using ClassTag.Char,
-  //     state.zipperCacheUp,
-  //     state.zipperCacheDown
+  //     state.zipperMemSteps
   //   )
   //   bh.consume(suffix.isEmpty)
   // }
@@ -61,8 +60,7 @@ class AAStarBLexerBenchmark {
   def lex_ZipperV3Mem(state: FreshAAStarBLexV3MemState, bh: Blackhole): Unit = {
     val (tokens, suffix) = Lexer.lexMem(AAStarBLexer.rules, state.content)(
       using ClassTag.Char,
-      state.zipperCacheUp,
-      state.zipperCacheDown,
+      state.zipperMemSteps,
       state.furthestNullableCache
     )
     bh.consume(suffix.isEmpty)
@@ -72,8 +70,7 @@ class AAStarBLexerBenchmark {
   // def lex_ZipperV3Mem_Warm(state: WarmAAStarBLexV3MemState, bh: Blackhole): Unit = {
   //   val (tokens, suffix) = Lexer.lexMem(AAStarBLexer.rules, state.content)(
   //     using ClassTag.Char,
-  //     state.zipperCacheUp,
-  //     state.zipperCacheDown,
+  //     state.zipperMemSteps,
   //     state.furthestNullableCache
   //   )
   //   bh.consume(suffix.isEmpty)
@@ -83,8 +80,7 @@ class AAStarBLexerBenchmark {
   // def lex_ZipperV3MemDeriv(state: FreshAAStarBLexV3MemState, bh: Blackhole): Unit = {
   //   val (tokens, suffix) = Lexer.lexV3MemDeriv(AAStarBLexer.rules, state.content)(
   //     using ClassTag.Char,
-  //     state.zipperCacheUp, 
-  //     state.zipperCacheDown)
+  //     state.zipperMemSteps)
   //   bh.consume(suffix.isEmpty)
   // }
 
@@ -92,8 +88,7 @@ class AAStarBLexerBenchmark {
   def lex_ZipperV2Mem(state: FreshAAStarBLexV2MemState, bh: Blackhole): Unit = {
     val (tokens, suffix) = Lexer.lexV2Mem(AAStarBLexer.rules, state.content)(
       using ClassTag.Char,
-      state.zipperCacheUp,
-      state.zipperCacheDown,
+      state.zipperMemSteps,
       state.findLongestMatchCache
     )
     bh.consume(suffix.isEmpty)
@@ -103,8 +98,7 @@ class AAStarBLexerBenchmark {
   // def lex_ZipperV2Mem_Warm(state: WarmAAStarBLexV2MemState, bh: Blackhole): Unit = {
   //   val (tokens, suffix) = Lexer.lexV2Mem(AAStarBLexer.rules, state.content)(
   //     using ClassTag.Char,
-  //     state.zipperCacheUp,
-  //     state.zipperCacheDown,
+  //     state.zipperMemSteps,
   //     state.findLongestMatchCache
   //   )
   //   bh.consume(suffix.isEmpty)
@@ -125,8 +119,7 @@ class BigAAStarBLexerBenchmark {
   def lex_ZipperV3Mem(state: FreshBigAAStarBLexV3MemState, bh: Blackhole): Unit = {
     val (tokens, suffix) = Lexer.lexMem(AAStarBLexer.rules, state.content)(
       using ClassTag.Char,
-      state.zipperCacheUp,
-      state.zipperCacheDown,
+      state.zipperMemSteps,
       state.furthestNullableCache
     )
     bh.consume(suffix.isEmpty)
@@ -136,8 +129,7 @@ class BigAAStarBLexerBenchmark {
   // def lex_ZipperV3Mem_Warm(state: WarmBigAAStarBLexV3MemState, bh: Blackhole): Unit = {
   //   val (tokens, suffix) = Lexer.lexMem(AAStarBLexer.rules, state.content)(
   //     using ClassTag.Char,
-  //     state.zipperCacheUp,
-  //     state.zipperCacheDown,
+  //     state.zipperMemSteps,
   //     state.furthestNullableCache
   //   )
   //   bh.consume(suffix.isEmpty)
@@ -211,11 +203,13 @@ class AAStarBLexFileState {
 class FreshAAStarBLexV1MemState extends AAStarBLexFileState {
   var zipperCacheUp: MemoisationZipper.CacheUp[Char] = uninitialized
   var zipperCacheDown: MemoisationZipper.CacheDown[Char] = uninitialized
+  var zipperMemSteps: ZipperDerivationStepsMemoized[Char] = uninitialized
 
   @Setup(Level.Iteration)
   def setupCaches(): Unit = {
     zipperCacheUp = MemoisationZipper.emptyUp(ContextCharHashable)
     zipperCacheDown = MemoisationZipper.emptyDown(RegexContextCharHashable)
+    zipperMemSteps = ZipperDerivationStepsMemoized(zipperCacheUp, zipperCacheDown)
   }
 }
 
@@ -225,8 +219,7 @@ class WarmAAStarBLexV1MemState extends FreshAAStarBLexV1MemState {
   def warm(): Unit = {
     val (_, suffix) = Lexer.lexV1Mem(AAStarBLexer.rules, content)(
       using ClassTag.Char,
-      zipperCacheUp,
-      zipperCacheDown
+      zipperMemSteps
     )
     assert(suffix.isEmpty)
   }
@@ -236,12 +229,14 @@ class WarmAAStarBLexV1MemState extends FreshAAStarBLexV1MemState {
 class FreshAAStarBLexV3MemState extends AAStarBLexFileState {
   var zipperCacheUp: MemoisationZipper.CacheUp[Char] = uninitialized
   var zipperCacheDown: MemoisationZipper.CacheDown[Char] = uninitialized
+  var zipperMemSteps: ZipperDerivationStepsMemoized[Char] = uninitialized
   var furthestNullableCache: MemoisationZipper.CacheFurthestNullable[Char] = uninitialized
 
   @Setup(Level.Iteration)
   def setupCaches(): Unit = {
     zipperCacheUp = MemoisationZipper.emptyUp(ContextCharHashable)
     zipperCacheDown = MemoisationZipper.emptyDown(RegexContextCharHashable)
+    zipperMemSteps = ZipperDerivationStepsMemoized(zipperCacheUp, zipperCacheDown)
     furthestNullableCache =
       MemoisationZipper.emptyFurthestNullableCache[Char](
         ExampleUtils.ZipperBigIntBigIntHashable,
@@ -257,8 +252,7 @@ class WarmAAStarBLexV3MemState extends FreshAAStarBLexV3MemState {
   def warm(): Unit = {
     val (_, suffix) = Lexer.lexMem(AAStarBLexer.rules, content)(
       using ClassTag.Char,
-      zipperCacheUp,
-      zipperCacheDown,
+      zipperMemSteps,
       furthestNullableCache
     )
     assert(suffix.isEmpty)
@@ -269,12 +263,14 @@ class WarmAAStarBLexV3MemState extends FreshAAStarBLexV3MemState {
 class FreshAAStarBLexV2MemState extends AAStarBLexFileState {
   var zipperCacheUp: MemoisationZipper.CacheUp[Char] = uninitialized
   var zipperCacheDown: MemoisationZipper.CacheDown[Char] = uninitialized
+  var zipperMemSteps: ZipperDerivationStepsMemoized[Char] = uninitialized
   var findLongestMatchCache: MemoisationZipper.CacheFindLongestMatch[Char] = uninitialized
 
   @Setup(Level.Iteration)
   def setupCaches(): Unit = {
     zipperCacheUp = MemoisationZipper.emptyUp(ContextCharHashable)
     zipperCacheDown = MemoisationZipper.emptyDown(RegexContextCharHashable)
+    zipperMemSteps = ZipperDerivationStepsMemoized(zipperCacheUp, zipperCacheDown)
     findLongestMatchCache =
       MemoisationZipper.emptyFindLongestMatch[Char](
         ExampleUtils.ZipperBigIntHashable,
@@ -289,8 +285,7 @@ class WarmAAStarBLexV2MemState extends FreshAAStarBLexV2MemState {
   def warm(): Unit = {
     val (_, suffix) = Lexer.lexV2Mem(AAStarBLexer.rules, content)(
       using ClassTag.Char,
-      zipperCacheUp,
-      zipperCacheDown,
+      zipperMemSteps,
       findLongestMatchCache
     )
     assert(suffix.isEmpty)
@@ -331,12 +326,14 @@ class BigAAStarBLexSizeState {
 class FreshBigAAStarBLexV3MemState extends BigAAStarBLexSizeState {
   var zipperCacheUp: MemoisationZipper.CacheUp[Char] = uninitialized
   var zipperCacheDown: MemoisationZipper.CacheDown[Char] = uninitialized
+  var zipperMemSteps: ZipperDerivationStepsMemoized[Char] = uninitialized
   var furthestNullableCache: MemoisationZipper.CacheFurthestNullable[Char] = uninitialized
 
   @Setup(Level.Iteration)
   def setupCaches(): Unit = {
     zipperCacheUp = MemoisationZipper.emptyUp(ContextCharHashable)
     zipperCacheDown = MemoisationZipper.emptyDown(RegexContextCharHashable)
+    zipperMemSteps = ZipperDerivationStepsMemoized(zipperCacheUp, zipperCacheDown)
     furthestNullableCache =
       MemoisationZipper.emptyFurthestNullableCache[Char](
         ExampleUtils.ZipperBigIntBigIntHashable,
@@ -352,8 +349,7 @@ class WarmBigAAStarBLexV3MemState extends FreshBigAAStarBLexV3MemState {
   def warm(): Unit = {
     val (_, suffix) = Lexer.lexMem(AAStarBLexer.rules, content)(
       using ClassTag.Char,
-      zipperCacheUp,
-      zipperCacheDown,
+      zipperMemSteps,
       furthestNullableCache
     )
     assert(suffix.isEmpty)

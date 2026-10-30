@@ -27,6 +27,8 @@ import com.ziplex.lexer.seqFromList
 
 import stainless.lang.Set
 
+import stainless.lang.sameAs
+
 import scala.annotation.tailrec
 
 // BEGIN uncomment for verification ------------------------------------------
@@ -191,6 +193,7 @@ object MemoisationZipper {
       cache.contains((ctx, a))
     }
 
+    @pure 
     def get(ctx: Context[C], a: C): Option[Zipper[C]] = {
       require(validCacheMapUp(cache))
 
@@ -901,6 +904,7 @@ object ZipperRegex {
   }.ensuring(res => res >= 0)
 
 
+  @pure
   def derivationStepZipperUp[C](context: Context[C], a: C): Zipper[C] = {
     decreases(context.exprs.size)
     context.exprs match {
@@ -911,6 +915,7 @@ object ZipperRegex {
   }
 
 
+  @pure
   def derivationStepZipperDown[C](expr: Regex[C], context: Context[C], a: C): Zipper[C] = {
     require(validRegex(expr))
     decreases(regexDepth(expr))
@@ -1003,7 +1008,7 @@ object ZipperRegex {
   }
 
   // @tailrec
-  def matchZipperSequenceMem[C](z: Zipper[C], input: Sequence[C], i: BigInt = 0)(using cacheUp: MemoisationZipper.CacheUp[C], cacheDown: MemoisationZipper.CacheDown[C]): Boolean = {
+  def matchZipperSequenceMem[C](z: Zipper[C], input: Sequence[C], i: BigInt = 0)(using memSteps: ZipperDerivationStepsMemoized[C]): Boolean = {
     require(i >= 0 && i <= input.size)
     decreases(input.size  - i)
     if i == input.size then nullableZipper(z) else matchZipperSequenceMem(derivationStepZipperMem(z, input(i)), input, i + 1)
@@ -1036,7 +1041,7 @@ object ZipperRegex {
     if (i == input.size) !lostCauseZipper(z) else prefixMatchZipperSequence(derivationStepZipper(z, input(i)), input, i + 1)
   }
 
-  def prefixMatchZipperSequenceMem[C](z: Zipper[C], input: Sequence[C], i: BigInt = 0)(using cacheUp: CacheUp[C], cacheDown: CacheDown[C]): Boolean = {
+  def prefixMatchZipperSequenceMem[C](z: Zipper[C], input: Sequence[C], i: BigInt = 0)(using memSteps: ZipperDerivationStepsMemoized[C]): Boolean = {
     require(i >= 0 && i <= input.size)
     decreases(input.size - i)
     if (i == input.size) !lostCauseZipper(z) else prefixMatchZipperSequenceMem(derivationStepZipperMem(z, input(i)), input, i + 1)
@@ -1063,62 +1068,61 @@ object ZipperRegex {
   }
 
   // MEMOISED -----------------------------------------------------------------------------------------------------
-  def derivationStepZipperUpMem[C](context: Context[C], a: C)(using cacheUp: CacheUp[C], cacheDown: CacheDown[C]): Zipper[C] = {
-    decreases(context.exprs.size)
-    cacheUp.get(context, a) match {
-      case Some(res) => res
-      case None() => {
-        val res: Zipper[C] = context.exprs match {
-          case Cons(right, parent) if right.nullable => derivationStepZipperDownMem(right, Context(parent), a) ++ derivationStepZipperUpMem(Context(parent), a)
-          case Cons(right, parent) => derivationStepZipperDownMem(right, Context(parent), a)
-          case Nil() => Set()
+  case class ZipperDerivationStepsMemoized[C](@internallyMutable private val cacheUp: CacheUp[C], @internallyMutable private val cacheDown: CacheDown[C]) {
+    require(cacheUp.valid)
+    require(cacheDown.valid)
+    def derivationStepZipperUpMem(context: Context[C], a: C): Zipper[C] = {
+      decreases(context.exprs.size)
+      assert(cacheUp.valid)
+      cacheUp.get(context, a) match {
+        case Some(res) => res
+        case None() => {
+          val res: Zipper[C] = context.exprs match {
+            case Cons(right, parent) if right.nullable => derivationStepZipperDownMem(right, Context(parent), a) ++ derivationStepZipperUpMem(Context(parent), a)
+            case Cons(right, parent) => derivationStepZipperDownMem(right, Context(parent), a)
+            case Nil() => Set()
+          }
+          cacheUp.update(context, a, res)
+          res
         }
-        cacheUp.update(context, a, res)
-        res
       }
-    }
-  }.ensuring(res => res == derivationStepZipperUp(context, a))
+    }.ensuring(res => sameAs(derivationStepZipperUp(context, a))(res) && cacheDown.valid && cacheUp.valid)
 
-  def derivationStepZipperDownMem[C](expr: Regex[C], context: Context[C], a: C)(using cacheDown: CacheDown[C]): Zipper[C] = {
-    require(validRegex(expr))
-    decreases(regexDepth(expr))
-    cacheDown.get(expr, context, a) match {
-      case Some(res) => res
-      case None() => {
-        val res: Zipper[C] = expr match {
-          case ElementMatch(c) if c == a => Set(context)
-          case ElementSet(cs) if cs.contains(a) => Set(context)
-          case Union(rOne, rTwo) => derivationStepZipperDownMem(rOne, context, a) ++ derivationStepZipperDownMem(rTwo, context, a)
-          case Concat(rOne, rTwo) if rOne.nullable => derivationStepZipperDownMem(rOne, context.prepend(rTwo), a) ++ derivationStepZipperDownMem(rTwo, context, a)
-          case Concat(rOne, rTwo) => derivationStepZipperDownMem(rOne, context.prepend(rTwo), a)
-          case Star(rInner) => derivationStepZipperDownMem(rInner, context.prepend(Star(rInner)), a)
-          case _ => Set()
+    def derivationStepZipperDownMem(expr: Regex[C], context: Context[C], a: C): Zipper[C] = {
+      require(validRegex(expr))
+      decreases(regexDepth(expr))
+      assert(cacheDown.valid)
+      cacheDown.get(expr, context, a) match {
+        case Some(res) => res
+        case None() => {
+          val res: Zipper[C] = expr match {
+            case ElementMatch(c) if c == a => Set(context)
+            case ElementSet(cs) if cs.contains(a) => Set(context)
+            case Union(rOne, rTwo) => derivationStepZipperDownMem(rOne, context, a) ++ derivationStepZipperDownMem(rTwo, context, a)
+            case Concat(rOne, rTwo) if rOne.nullable => derivationStepZipperDownMem(rOne, context.prepend(rTwo), a) ++ derivationStepZipperDownMem(rTwo, context, a)
+            case Concat(rOne, rTwo) => derivationStepZipperDownMem(rOne, context.prepend(rTwo), a)
+            case Star(rInner) => derivationStepZipperDownMem(rInner, context.prepend(Star(rInner)), a)
+            case _ => Set()
+          }
+          cacheDown.update(expr, context, a, res)
+          res
         }
-        cacheDown.update(expr, context, a, res)
-        res
       }
-    }
-  }.ensuring(res => res == derivationStepZipperDown(expr, context, a))
+    }.ensuring(res => sameAs(derivationStepZipperDown(expr, context, a))(res) && cacheDown.valid && cacheUp.valid)
+  }
 
-  @extern
-  def derivationStepZipperMem[C](z: Zipper[C], a: C)(using cacheUp: CacheUp[C], cacheDown: CacheDown[C]): Zipper[C] = {
-    ghostExpr(SetUtils.lemmaFlatMapWithExtEqualFunctionsOnSetThenSame(z, (c: Context[C]) => derivationStepZipperUpMem(c, a)(using snapshot(cacheUp), snapshot(cacheDown)), (c: Context[C]) => derivationStepZipperUp(c, a)))
-    
-    def derivUpMem(c: Context[C]): Zipper[C] = derivationStepZipperUpMem(c, a)
-    
-    z.flatMap(derivUpMem) // rejected by stainless because of effects in the lambda's body
-  }.ensuring(res => res == derivationStepZipper(z, a) && cacheUp.valid && cacheDown.valid)
 
-  @extern
-  def derivationStepZipperSimpMem[C](z: Zipper[C], a: C)(using cacheUp: CacheUp[C], cacheDown: CacheDown[C]): Zipper[C] = {
-    ghostExpr(SetUtils.lemmaFlatMapWithExtEqualFunctionsOnSetThenSame(z, (c: Context[C]) => derivationStepZipperUpMem(c, a)(using snapshot(cacheUp), snapshot(cacheDown)), (c: Context[C]) => derivationStepZipperUp(c, a)))
-    
-    def derivUpMem(c: Context[C]): Zipper[C] = derivationStepZipperUpMem(c, a)
+  // @extern
+  def derivationStepZipperMem[C](z: Zipper[C], a: C)(using memSteps: ZipperDerivationStepsMemoized[C]): Zipper[C] = {
+    z.flatMap(c => memSteps.derivationStepZipperUpMem(c, a)) // <== ACCEPTED NOW THANKS TO THE INTERNAL MUTATION FEATURE
+  }.ensuring(res => res == derivationStepZipper(z, a))
 
-    z.flatMap(derivUpMem).filter(c => !c.lostCause) // rejected by stainless because of effects in the lambda's body
+  // @extern
+  def derivationStepZipperSimpMem[C](z: Zipper[C], a: C)(using memSteps: ZipperDerivationStepsMemoized[C]): Zipper[C] = {
+    z.flatMap(c => memSteps.derivationStepZipperUpMem(c, a)).filter(c => !c.lostCause) // <== ACCEPTED NOW THANKS TO THE INTERNAL MUTATION FEATURE
   }.ensuring(res => res == derivationStepZipperSimp(z, a))
 
-  def matchZipperMem[C](z: Zipper[C], input: List[C])(using cacheUp: CacheUp[C], cacheDown: CacheDown[C]): Boolean = {
+  def matchZipperMem[C](z: Zipper[C], input: List[C])(using memSteps: ZipperDerivationStepsMemoized[C]): Boolean = {
     decreases(input.size)
     if (input.isEmpty) nullableZipper(z) else matchZipperMem(derivationStepZipperMem(z, input.head), input.tail)
   }.ensuring(res => res == matchZipper(z, input))
@@ -3280,11 +3284,9 @@ object ZipperRegex {
   // ------------------------------------------- MEMOIZATION ----------------------------------------------
   @opaque
   @inlineOnce
-  def findLongestMatchZipperFastMem[C](z: Zipper[C], input: Sequence[C])(using cacheUp: CacheUp[C], cacheDown: CacheDown[C]): (Sequence[C], Sequence[C]) = {
-    require(cacheUp.valid)
-    require(cacheDown.valid)
-    val prefixLength = findLongestMatchInnerZipperFastMem(cacheUp, cacheDown, z, Nil(), 0, input.list, input, input.size)
-    ghostExpr(unfold(findLongestMatchInnerZipperFastMem(cacheUp, cacheDown, z, Nil(), 0, input.list, input, input.size)))
+  def findLongestMatchZipperFastMem[C](z: Zipper[C], input: Sequence[C])(using memSteps: ZipperDerivationStepsMemoized[C]): (Sequence[C], Sequence[C]) = {
+    val prefixLength = findLongestMatchInnerZipperFastMem(memSteps, z, Nil(), 0, input.list, input, input.size)
+    ghostExpr(unfold(findLongestMatchInnerZipperFastMem(memSteps, z, Nil(), 0, input.list, input, input.size)))
     ghostExpr(unfold(findLongestMatchInnerZipperFast(z, Nil(), 0, input.list, input, input.size)))
     ghostExpr(unfold(findLongestMatchInnerZipper(z, Nil(), 0, input.list, input.list, input.size)))
     ghostExpr(ListUtils.lemmaConcatSameAndSameSizesThenSameLists( 
@@ -3294,16 +3296,14 @@ object ZipperRegex {
       findLongestMatchInnerZipper(z, Nil(), 0, input.list, input.list, input.size)._2
     ))
     input.splitAt(prefixLength)
-  }.ensuring (res => cacheUp.valid && cacheDown.valid && res == findLongestMatchZipperFast(z, input))
+  }.ensuring (res => res == findLongestMatchZipperFast(z, input))
   
   @opaque
   @inlineOnce
-  def findLongestMatchInnerZipperFastMem[C](cacheUp: CacheUp[C], cacheDown: CacheDown[C], z: Zipper[C], @ghost testedP: List[C], testedPSize: BigInt, @ghost testedSuffix: List[C], totalInput: Sequence[C], totalInputSize: BigInt): BigInt = {
+  def findLongestMatchInnerZipperFastMem[C](memSteps: ZipperDerivationStepsMemoized[C], z: Zipper[C], @ghost testedP: List[C], testedPSize: BigInt, @ghost testedSuffix: List[C], totalInput: Sequence[C], totalInputSize: BigInt): BigInt = {
     require(testedP ++ testedSuffix == totalInput.list)
     require(testedPSize == testedP.size)
     require(totalInputSize == totalInput.size)
-    require(cacheUp.valid)
-    require(cacheDown.valid)
     decreases(totalInput.size - testedP.size)
     
     ghostExpr(ListUtils.lemmaConcatTwoListThenFirstIsPrefix(testedP, testedSuffix))
@@ -3349,7 +3349,7 @@ object ZipperRegex {
       ghostExpr(ListUtils.lemmaAddHeadSuffixToPrefixStillPrefix(testedP, totalInput.list))
       ghostExpr(ListUtils.lemmaMoveElementToOtherListKeepsConcatEq(testedP, totalInput(testedPSize), testedSuffix.tail, totalInput.list))
       if (nullableZipper(z)) {
-        val recursive = findLongestMatchInnerZipperFastMem(cacheUp, cacheDown, derivationStepZipperMem(z, totalInput(testedPSize))(using cacheUp, cacheDown), testedP ++ List(totalInput(testedPSize)), testedPSize + 1, testedSuffix.tail, totalInput, totalInputSize)
+        val recursive = findLongestMatchInnerZipperFastMem(memSteps, derivationStepZipperMem(z, totalInput(testedPSize))(using memSteps), testedP ++ List(totalInput(testedPSize)), testedPSize + 1, testedSuffix.tail, totalInput, totalInputSize)
         if (recursive == 0) {
           // (testedP, testedSuffix)
           testedPSize
@@ -3357,10 +3357,10 @@ object ZipperRegex {
           recursive
         }
       } else {
-        findLongestMatchInnerZipperFastMem(cacheUp, cacheDown, derivationStepZipperMem(z, totalInput(testedPSize))(using cacheUp, cacheDown), testedP ++ List(totalInput(testedPSize)), testedPSize + 1, testedSuffix.tail, totalInput, totalInputSize)
+        findLongestMatchInnerZipperFastMem(memSteps, derivationStepZipperMem(z, totalInput(testedPSize))(using memSteps), testedP ++ List(totalInput(testedPSize)), testedPSize + 1, testedSuffix.tail, totalInput, totalInputSize)
       }
     }
-  }.ensuring (res => cacheUp.valid && cacheDown.valid && res == findLongestMatchInnerZipperFast(z, testedP, testedPSize, testedSuffix, totalInput, totalInputSize))
+  }.ensuring (res => res == findLongestMatchInnerZipperFast(z, testedP, testedPSize, testedSuffix, totalInput, totalInputSize))
 
   // ------------------------------------------- END MEMOIZATION -------------------------------------------
   
@@ -3465,7 +3465,7 @@ object ZipperRegex {
   // Memoized ----------------------------------------------------------------------------------------------------------------------------------------------------------
   @opaque
   @inlineOnce
-  def findLongestMatchZipperFastV2Mem[C](z: Zipper[C], input: Sequence[C], totalInput: Sequence[C])(using cacheUp: CacheUp[C], cacheDown: CacheDown[C], cacheFindLongestMatch: CacheFindLongestMatch[C]): (Sequence[C], Sequence[C]) = {
+  def findLongestMatchZipperFastV2Mem[C](z: Zipper[C], input: Sequence[C], totalInput: Sequence[C])(using memSteps: ZipperDerivationStepsMemoized[C], cacheFindLongestMatch: CacheFindLongestMatch[C]): (Sequence[C], Sequence[C]) = {
     require(ListUtils.isSuffix(input.list, totalInput.list))
     require(cacheFindLongestMatch.totalInput == totalInput)
     val totalInputSize = totalInput.size
@@ -3473,23 +3473,23 @@ object ZipperRegex {
     val prefixLength = findLongestMatchInnerZipperFastV2Mem(z, from, totalInput, totalInputSize)
 
     input.splitAt(prefixLength)
-  }.ensuring (res => res == findLongestMatchZipperFastV2(z, input, totalInput) && cacheUp.valid && cacheDown.valid &&cacheFindLongestMatch.valid && cacheFindLongestMatch.totalInput == totalInput )
+  }.ensuring (res => res == findLongestMatchZipperFastV2(z, input, totalInput) &&cacheFindLongestMatch.valid && cacheFindLongestMatch.totalInput == totalInput )
   
   @opaque
   @inlineOnce
-  def findLongestMatchZipperFastV2MemOnlyDeriv[C](z: Zipper[C], input: Sequence[C], totalInput: Sequence[C])(using cacheUp: CacheUp[C], cacheDown: CacheDown[C]): (Sequence[C], Sequence[C]) = {
+  def findLongestMatchZipperFastV2MemOnlyDeriv[C](z: Zipper[C], input: Sequence[C], totalInput: Sequence[C])(using memSteps: ZipperDerivationStepsMemoized[C]): (Sequence[C], Sequence[C]) = {
     require(ListUtils.isSuffix(input.list, totalInput.list))
     val totalInputSize = totalInput.size
     val from = totalInputSize - input.size
     val prefixLength = findLongestMatchInnerZipperFastV2MemOnlyDeriv(z, from, totalInput, totalInputSize)
 
     input.splitAt(prefixLength)
-  }.ensuring (res => res == findLongestMatchZipperFastV2(z, input, totalInput) && cacheUp.valid && cacheDown.valid)
+  }.ensuring (res => res == findLongestMatchZipperFastV2(z, input, totalInput))
   
 
   @opaque
   @inlineOnce
-  def findLongestMatchInnerZipperFastV2Mem[C](z: Zipper[C], from: BigInt, totalInput: Sequence[C], totalInputSize: BigInt)(using cacheUp: CacheUp[C], cacheDown: CacheDown[C], cacheFindLongestMatch: CacheFindLongestMatch[C]): BigInt = {
+  def findLongestMatchInnerZipperFastV2Mem[C](z: Zipper[C], from: BigInt, totalInput: Sequence[C], totalInputSize: BigInt)(using memSteps: ZipperDerivationStepsMemoized[C], cacheFindLongestMatch: CacheFindLongestMatch[C]): BigInt = {
     require(from >= 0 && from <= totalInput.size)
     require(totalInputSize == totalInput.size)
     require(cacheFindLongestMatch.totalInput == totalInput)
@@ -3523,11 +3523,11 @@ object ZipperRegex {
         result
       }
     }
-  }.ensuring (res => res == findLongestMatchInnerZipperFastV2(z, from, totalInput, totalInputSize) && cacheUp.valid && cacheDown.valid &&cacheFindLongestMatch.valid && cacheFindLongestMatch.totalInput == totalInput)
+  }.ensuring (res => res == findLongestMatchInnerZipperFastV2(z, from, totalInput, totalInputSize) &&cacheFindLongestMatch.valid && cacheFindLongestMatch.totalInput == totalInput)
 
   @opaque
   @inlineOnce
-  def findLongestMatchInnerZipperFastV2MemOnlyDeriv[C](z: Zipper[C], from: BigInt, totalInput: Sequence[C], totalInputSize: BigInt)(using cacheUp: CacheUp[C], cacheDown: CacheDown[C]): BigInt = {
+  def findLongestMatchInnerZipperFastV2MemOnlyDeriv[C](z: Zipper[C], from: BigInt, totalInput: Sequence[C], totalInputSize: BigInt)(using memSteps: ZipperDerivationStepsMemoized[C]): BigInt = {
     require(from >= 0 && from <= totalInput.size)
     require(totalInputSize == totalInput.size)
     decreases(totalInput.size - from)
@@ -3549,7 +3549,7 @@ object ZipperRegex {
         if nullableZipper(derivedZ) then BigInt(1) else BigInt(0)
       }
     }
-  }.ensuring (res => res == findLongestMatchInnerZipperFastV2(z, from, totalInput, totalInputSize) && cacheUp.valid && cacheDown.valid)
+  }.ensuring (res => res == findLongestMatchInnerZipperFastV2(z, from, totalInput, totalInputSize))
 
   // ------------------------------------------- END MEMOIZATION -------------------------------------------
   // ------------------------------------------- Tail recursive -------------------------------------------
@@ -3601,7 +3601,7 @@ object ZipperRegex {
 
 
   
-  def furthestNullablePositionMemDeriv[C](z: Zipper[C], from: BigInt, totalInput: Sequence[C], totalInputSize: BigInt, lastNullablePos: BigInt)(using cacheUp: CacheUp[C], cacheDown: CacheDown[C]): BigInt = {
+  def furthestNullablePositionMemDeriv[C](z: Zipper[C], from: BigInt, totalInput: Sequence[C], totalInputSize: BigInt, lastNullablePos: BigInt)(using memSteps: ZipperDerivationStepsMemoized[C]): BigInt = {
     require(from >= 0 && from <= totalInputSize)
     require(totalInputSize == totalInput.size)
     require(lastNullablePos >= -1 && lastNullablePos < from)
@@ -3615,11 +3615,10 @@ object ZipperRegex {
       val newLastNullable = if (nullableZipper(derivedZ)) from else lastNullablePos
       furthestNullablePositionMemDeriv(derivedZ, from + 1, totalInput, totalInputSize, newLastNullable)
     }
-  }.ensuring(res => res >= -1 && res < totalInputSize && res >= lastNullablePos && (res == lastNullablePos || res >= from) && cacheUp.valid && cacheDown.valid && res == furthestNullablePosition(z, from, totalInput, totalInputSize, lastNullablePos))
+  }.ensuring(res => res >= -1 && res < totalInputSize && res >= lastNullablePos && (res == lastNullablePos || res >= from) && res == furthestNullablePosition(z, from, totalInput, totalInputSize, lastNullablePos))
 
-  def findLongestMatchZipperSequenceV3MemDeriv[C](z: Zipper[C], input: Sequence[C], totalInput: Sequence[C])(using cacheUp: CacheUp[C], cacheDown: CacheDown[C]): (Sequence[C], Sequence[C]) = {
+  def findLongestMatchZipperSequenceV3MemDeriv[C](z: Zipper[C], input: Sequence[C], totalInput: Sequence[C])(using memSteps: ZipperDerivationStepsMemoized[C]): (Sequence[C], Sequence[C]) = {
     require(ListUtils.isSuffix(input.list, totalInput.list))
-    require(cacheUp.valid && cacheDown.valid)
     val totalInputSize = totalInput.size
     val from = totalInputSize - input.size
     val lastNullablePos = furthestNullablePositionMemDeriv(z, from, totalInput, totalInputSize, if nullableZipper(z) then from - 1 else -1)
@@ -3629,7 +3628,7 @@ object ZipperRegex {
     } else {  
       input.splitAt(prefixLength)
     }
-  }.ensuring (res => res._1.list ++ res._2.list == input.list && cacheUp.valid && cacheDown.valid)
+  }.ensuring (res => res._1.list ++ res._2.list == input.list)
 
   // ------------------------------------------- Tailrec MEMOIZATION -------------------------------------------
 
@@ -3669,12 +3668,12 @@ object ZipperRegex {
       }
     }.ensuring(_ => frames.forall(frame => frame.res == res2))
 
-  def furthestNullablePositionStackMem[C](z: Zipper[C], from: BigInt, totalInput: Sequence[C], totalInputSize: BigInt, lastNullablePos: BigInt)(using cacheUp: CacheUp[C], cacheDown: CacheDown[C], cacheFurthestNullable: CacheFurthestNullable[C], stack: MutStack[C]): BigInt = {
+  def furthestNullablePositionStackMem[C](z: Zipper[C], from: BigInt, totalInput: Sequence[C], totalInputSize: BigInt, lastNullablePos: BigInt)(using memSteps: ZipperDerivationStepsMemoized[C], cacheFurthestNullable: CacheFurthestNullable[C], stack: MutStack[C]): BigInt = {
     require(from >= 0 && from <= totalInputSize)
     require(totalInputSize == totalInput.size)
     require(lastNullablePos >= -1 && lastNullablePos < from)
     require(!nullableZipper(z) || lastNullablePos == from - 1)
-    require(cacheUp.valid && cacheDown.valid && cacheFurthestNullable.valid)
+    require(cacheFurthestNullable.valid)
     require(cacheFurthestNullable.totalInput == totalInput)
     @ghost val currentRes = furthestNullablePosition(z, from, totalInput, totalInput.size, lastNullablePos)
     require(stack.frames.forall(frame => frame.res == currentRes))
@@ -3727,7 +3726,7 @@ object ZipperRegex {
     }
   }.ensuring(res => res == furthestNullablePosition(z, from, totalInput, totalInputSize, lastNullablePos)
                   && stack.frames.forall(frame => frame.res == res) && 
-                  cacheUp.valid && cacheDown.valid && cacheFurthestNullable.valid && cacheFurthestNullable.totalInput == totalInput &&
+                  cacheFurthestNullable.valid && cacheFurthestNullable.totalInput == totalInput &&
                   stack.frames.forall(frame => frame.totalInput == totalInput))
 
 
@@ -3755,14 +3754,14 @@ object ZipperRegex {
   }.ensuring(_ => cacheFurthestNullable.valid && cacheFurthestNullable.totalInput == totalInput)
 
 
-  def findLongestMatchZipperSequenceV3Mem[C](z: Zipper[C], input: Sequence[C], totalInput: Sequence[C])(using cacheUp: CacheUp[C], cacheDown: CacheDown[C], cacheFurthestNullable: CacheFurthestNullable[C]): (Sequence[C], Sequence[C]) = {
+  def findLongestMatchZipperSequenceV3Mem[C](z: Zipper[C], input: Sequence[C], totalInput: Sequence[C])(using memSteps: ZipperDerivationStepsMemoized[C], cacheFurthestNullable: CacheFurthestNullable[C]): (Sequence[C], Sequence[C]) = {
     require(ListUtils.isSuffix(input.list, totalInput.list))
-    require(cacheUp.valid && cacheDown.valid && cacheFurthestNullable.valid)
+    require(cacheFurthestNullable.valid)
     require(cacheFurthestNullable.totalInput == totalInput)
     val totalInputSize = totalInput.size
     val from = totalInputSize - input.size
     val mutStack = MutStack(List[StackFrame[C]]())
-    val res = furthestNullablePositionStackMem(z, from, totalInput, totalInputSize, if nullableZipper(z) then from - 1 else -1)(using cacheUp, cacheDown, cacheFurthestNullable, mutStack)
+    val res = furthestNullablePositionStackMem(z, from, totalInput, totalInputSize, if nullableZipper(z) then from - 1 else -1)(using memSteps, cacheFurthestNullable, mutStack)
     val prefixLength: BigInt = res - from + 1
     ghostExpr({
       check(mutStack.frames.forall(frame => frame.res == res))
@@ -4322,6 +4321,7 @@ object VerifiedRegexMatcher {
   import ListUtils._
   import MemoisationRegex._
   import MemoisationZipper._
+  import ZipperRegex.ZipperDerivationStepsMemoized
 
   def derivativeStep[C](r: Regex[C], a: C): Regex[C] = {
     require(validRegex(r))
@@ -4443,7 +4443,7 @@ object VerifiedRegexMatcher {
     ZipperRegex.prefixMatchZipperSequence(ZipperRegex.focus(r), prefix)
   }.ensuring (res => res == prefixMatch(r, prefix.list))
 
-  def prefixMatchZipperSequenceMem[C](r: Regex[C], prefix: Sequence[C])(using cacheUp: MemoisationZipper.CacheUp[C], cacheDown: MemoisationZipper.CacheDown[C]): Boolean = {
+  def prefixMatchZipperSequenceMem[C](r: Regex[C], prefix: Sequence[C])(using memSteps: ZipperDerivationStepsMemoized[C]): Boolean = {
     require(validRegex(r))
     ghostExpr(ZipperRegex.lemmaprefixMatchZipperSequenceEquivalent(ZipperRegex.focus(r), prefix))
     // ghostExpr(ZipperRegex.theoremZipperRegexEquiv(ZipperRegex.focus(r), ZipperRegex.focus(r).toList, r, prefix.list))
@@ -4472,14 +4472,14 @@ object VerifiedRegexMatcher {
     ZipperRegex.matchZipperSequence(ZipperRegex.focus(r), input)
   }.ensuring (res => res == matchR(r, input.list))
 
-  def matchZipperMem[C](r: Regex[C], input: List[C])(using cacheUp: MemoisationZipper.CacheUp[C], cacheDown: MemoisationZipper.CacheDown[C]): Boolean = {
+  def matchZipperMem[C](r: Regex[C], input: List[C])(using memSteps: ZipperDerivationStepsMemoized[C]): Boolean = {
     require(validRegex(r))
     decreases(input.size)
     ghostExpr(ZipperRegex.theoremZipperRegexEquiv(ZipperRegex.focus(r), ZipperRegex.focus(r).toList, r, input))
     ZipperRegex.matchZipperMem(ZipperRegex.focus(r), input)
   }.ensuring (res => res == matchR(r, input))
 
-  def matchZipperSequenceMem[C](r: Regex[C], input: Sequence[C])(using cacheUp: MemoisationZipper.CacheUp[C], cacheDown: MemoisationZipper.CacheDown[C]): Boolean = {
+  def matchZipperSequenceMem[C](r: Regex[C], input: Sequence[C])(using memSteps: ZipperDerivationStepsMemoized[C]): Boolean = {
     require(validRegex(r))
     ghostExpr(ZipperRegex.lemmaMatchZipperSequenceEquivalent(ZipperRegex.focus(r), input))
     ghostExpr(ZipperRegex.theoremZipperRegexEquiv(ZipperRegex.focus(r), ZipperRegex.focus(r).toList, r, input.list))
@@ -4913,16 +4913,14 @@ object VerifiedRegexMatcher {
   }.ensuring (res => (res._1.list, res._2.list) == findLongestMatch(r, input.list))
 
   @opaque
-  def findLongestMatchWithZipperSequenceMem[C](r: Regex[C], input: Sequence[C])(using cacheUp: CacheUp[C], cacheDown: CacheDown[C]): (Sequence[C], Sequence[C]) = {
+  def findLongestMatchWithZipperSequenceMem[C](r: Regex[C], input: Sequence[C])(using memSteps: ZipperDerivationStepsMemoized[C]): (Sequence[C], Sequence[C]) = {
     require(validRegex(r))
-    require(cacheUp.valid)
-    require(cacheDown.valid)
     val zipper = ZipperRegex.focus(r)
     ghostExpr(ZipperRegex.longestMatchSameAsRegex(r, zipper, input.list))
     ghostExpr(ListUtils.lemmaSizeTrEqualsSize(input.list, 0))
     ghostExpr(unfold(findLongestMatchWithZipperSequence(r, input)))
     ZipperRegex.findLongestMatchZipperFastMem(zipper, input)
-  }.ensuring (res => res == findLongestMatchWithZipperSequence(r, input) && cacheDown.valid && cacheUp.valid)
+  }.ensuring (res => res == findLongestMatchWithZipperSequence(r, input))
   
   @opaque
   def findLongestMatchWithZipperSequenceV2[C](r: Regex[C], input: Sequence[C], totalInput: Sequence[C]): (Sequence[C], Sequence[C]) = {
@@ -4935,10 +4933,8 @@ object VerifiedRegexMatcher {
   }.ensuring (res => (res._1.list, res._2.list) == findLongestMatch(r, input.list))
   
   @opaque
-  def findLongestMatchWithZipperSequenceV2Mem[C](r: Regex[C], input: Sequence[C], totalInput: Sequence[C])(using cacheUp: CacheUp[C], cacheDown: CacheDown[C], cacheFindLongestMatch: CacheFindLongestMatch[C]): (Sequence[C], Sequence[C]) = {
+  def findLongestMatchWithZipperSequenceV2Mem[C](r: Regex[C], input: Sequence[C], totalInput: Sequence[C])(using memSteps: ZipperDerivationStepsMemoized[C], cacheFindLongestMatch: CacheFindLongestMatch[C]): (Sequence[C], Sequence[C]) = {
     require(validRegex(r))
-    require(cacheUp.valid)
-    require(cacheDown.valid)
     require(cacheFindLongestMatch.valid)
     require(cacheFindLongestMatch.totalInput == totalInput)
     require(ListUtils.isSuffix(input.list, totalInput.list))
@@ -4946,25 +4942,23 @@ object VerifiedRegexMatcher {
     ghostExpr(ZipperRegex.longestMatchV2SameAsRegex(r, zipper, input, totalInput))
     ghostExpr(ListUtils.lemmaSizeTrEqualsSize(input.list, 0))
     ghostExpr(unfold(findLongestMatchWithZipperSequenceV2(r, input, totalInput)))
-    ghostExpr(unfold(ZipperRegex.findLongestMatchZipperFastV2Mem(zipper, input, totalInput)(using cacheUp, cacheDown, cacheFindLongestMatch)))
+    ghostExpr(unfold(ZipperRegex.findLongestMatchZipperFastV2Mem(zipper, input, totalInput)(using memSteps, cacheFindLongestMatch)))
     ghostExpr(assert(findLongestMatchWithZipperSequenceV2(r, input, totalInput) == ZipperRegex.findLongestMatchZipperFastV2(zipper, input, totalInput)))
     ZipperRegex.findLongestMatchZipperFastV2Mem(zipper, input, totalInput)
-  }.ensuring (res => res == findLongestMatchWithZipperSequenceV2(r, input, totalInput) && cacheDown.valid && cacheUp.valid && cacheFindLongestMatch.valid && cacheFindLongestMatch.totalInput == totalInput)
+  }.ensuring (res => res == findLongestMatchWithZipperSequenceV2(r, input, totalInput) && cacheFindLongestMatch.valid && cacheFindLongestMatch.totalInput == totalInput)
 
   @opaque
-  def findLongestMatchWithZipperSequenceV2MemOnlyDeriv[C](r: Regex[C], input: Sequence[C], totalInput: Sequence[C])(using cacheUp: CacheUp[C], cacheDown: CacheDown[C]): (Sequence[C], Sequence[C]) = {
+  def findLongestMatchWithZipperSequenceV2MemOnlyDeriv[C](r: Regex[C], input: Sequence[C], totalInput: Sequence[C])(using memSteps: ZipperDerivationStepsMemoized[C]): (Sequence[C], Sequence[C]) = {
     require(validRegex(r))
-    require(cacheUp.valid)
-    require(cacheDown.valid)
     require(ListUtils.isSuffix(input.list, totalInput.list))
     val zipper = ZipperRegex.focus(r)
     ghostExpr(ZipperRegex.longestMatchV2SameAsRegex(r, zipper, input, totalInput))
     ghostExpr(ListUtils.lemmaSizeTrEqualsSize(input.list, 0))
     ghostExpr(unfold(findLongestMatchWithZipperSequenceV2(r, input, totalInput)))
-    ghostExpr(unfold(ZipperRegex.findLongestMatchZipperFastV2MemOnlyDeriv(zipper, input, totalInput)(using cacheUp, cacheDown)))
+    ghostExpr(unfold(ZipperRegex.findLongestMatchZipperFastV2MemOnlyDeriv(zipper, input, totalInput)(using memSteps)))
     ghostExpr(assert(findLongestMatchWithZipperSequenceV2(r, input, totalInput) == ZipperRegex.findLongestMatchZipperFastV2(zipper, input, totalInput)))
     ZipperRegex.findLongestMatchZipperFastV2MemOnlyDeriv(zipper, input, totalInput)
-  }.ensuring (res => res == findLongestMatchWithZipperSequenceV2(r, input, totalInput) && cacheDown.valid && cacheUp.valid)
+  }.ensuring (res => res == findLongestMatchWithZipperSequenceV2(r, input, totalInput))
 
 
   @opaque
@@ -4982,10 +4976,8 @@ object VerifiedRegexMatcher {
 
 
   @opaque
-  def findLongestMatchWithZipperSequenceV3Mem[C](r: Regex[C], input: Sequence[C], totalInput: Sequence[C])(using cacheUp: CacheUp[C], cacheDown: CacheDown[C], cacheFurthestNullable: CacheFurthestNullable[C]): (Sequence[C], Sequence[C]) = {
+  def findLongestMatchWithZipperSequenceV3Mem[C](r: Regex[C], input: Sequence[C], totalInput: Sequence[C])(using memSteps: ZipperDerivationStepsMemoized[C], cacheFurthestNullable: CacheFurthestNullable[C]): (Sequence[C], Sequence[C]) = {
     require(validRegex(r))
-    require(cacheUp.valid)
-    require(cacheDown.valid)
     require(cacheFurthestNullable.valid)
     require(cacheFurthestNullable.totalInput == totalInput)
     require(ListUtils.isSuffix(input.list, totalInput.list))
@@ -4993,25 +4985,23 @@ object VerifiedRegexMatcher {
     ghostExpr(ZipperRegex.longestMatchV3SameAsRegex(r, zipper, input, totalInput))
     ghostExpr(ListUtils.lemmaSizeTrEqualsSize(input.list, 0))
     ghostExpr(unfold(findLongestMatchWithZipperSequenceV2(r, input, totalInput)))
-    ghostExpr(unfold(ZipperRegex.findLongestMatchZipperSequenceV3Mem(zipper, input, totalInput)(using cacheUp, cacheDown, cacheFurthestNullable)))
+    ghostExpr(unfold(ZipperRegex.findLongestMatchZipperSequenceV3Mem(zipper, input, totalInput)(using memSteps, cacheFurthestNullable)))
     ghostExpr(assert(findLongestMatchWithZipperSequenceV2(r, input, totalInput) == ZipperRegex.findLongestMatchZipperFastV2(zipper, input, totalInput)))
     ZipperRegex.findLongestMatchZipperSequenceV3Mem(zipper, input, totalInput)
-  }.ensuring (res => (res._1.list, res._2.list) == findLongestMatch(r, input.list) && cacheDown.valid && cacheUp.valid && cacheFurthestNullable.valid && cacheFurthestNullable.totalInput == totalInput)
+  }.ensuring (res => (res._1.list, res._2.list) == findLongestMatch(r, input.list) && cacheFurthestNullable.valid && cacheFurthestNullable.totalInput == totalInput)
 
   @opaque
-  def findLongestMatchWithZipperSequenceV3MemDeriv[C](r: Regex[C], input: Sequence[C], totalInput: Sequence[C])(using cacheUp: CacheUp[C], cacheDown: CacheDown[C]): (Sequence[C], Sequence[C]) = {
+  def findLongestMatchWithZipperSequenceV3MemDeriv[C](r: Regex[C], input: Sequence[C], totalInput: Sequence[C])(using memSteps: ZipperDerivationStepsMemoized[C]): (Sequence[C], Sequence[C]) = {
     require(validRegex(r))
-    require(cacheUp.valid)
-    require(cacheDown.valid)
     require(ListUtils.isSuffix(input.list, totalInput.list))
     val zipper = ZipperRegex.focus(r)
     ghostExpr(ZipperRegex.longestMatchV3SameAsRegex(r, zipper, input, totalInput))
     ghostExpr(ListUtils.lemmaSizeTrEqualsSize(input.list, 0))
     ghostExpr(unfold(findLongestMatchWithZipperSequenceV2(r, input, totalInput)))
-    ghostExpr(unfold(ZipperRegex.findLongestMatchZipperSequenceV3MemDeriv(zipper, input, totalInput)(using cacheUp, cacheDown)))
+    ghostExpr(unfold(ZipperRegex.findLongestMatchZipperSequenceV3MemDeriv(zipper, input, totalInput)(using memSteps)))
     ghostExpr(assert(findLongestMatchWithZipperSequenceV2(r, input, totalInput) == ZipperRegex.findLongestMatchZipperFastV2(zipper, input, totalInput)))
     ZipperRegex.findLongestMatchZipperSequenceV3MemDeriv(zipper, input, totalInput)
-  }.ensuring (res => (res._1.list, res._2.list) == findLongestMatch(r, input.list) && cacheDown.valid && cacheUp.valid)
+  }.ensuring (res => (res._1.list, res._2.list) == findLongestMatch(r, input.list))
   //  ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
   def findLongestMatch[C](r: Regex[C], input: List[C]): (List[C], List[C]) = {
