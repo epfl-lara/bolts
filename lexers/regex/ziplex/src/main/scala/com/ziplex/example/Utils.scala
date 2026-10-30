@@ -39,6 +39,7 @@ object RegexUtils:
     case EmptyExpr() => "ε"
     case ElementMatch(c) => c.toString
     case ElementSet(cs) => s"[${cs.toList.mkString("")}]"
+    case ElementRange(from, to, _) => s"[$from-$to]"
     case Union(r1, r2) => s"(${r1.asString()} | ${r2.asString()})"
     case Concat(r1, r2) => s"${r1.asString()}${r2.asString()}"
     case Star(r1) => s"${r1.asString()}*"

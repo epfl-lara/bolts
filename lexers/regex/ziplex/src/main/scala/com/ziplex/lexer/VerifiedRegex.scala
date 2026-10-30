@@ -48,6 +48,26 @@ import stainless.proof.check
 // }.ensuring( res => res == BigInt(0))
 // END imports for benchmarking ---------------------------------------------
 
+/** Total order on the characters, carried by ElementRange to interpret its bounds
+  */
+trait Ord[C] {
+  @pure
+  def lteq(x: C, y: C): Boolean
+
+  @law def reflexivity(x: C): Boolean = lteq(x, x)
+  @law def antisymmetry(x: C, y: C): Boolean = (lteq(x, y) && lteq(y, x)) ==> (x == y)
+  @law def transitivity(x: C, y: C, z: C): Boolean = (lteq(x, y) && lteq(y, z)) ==> lteq(x, z)
+  @law def totality(x: C, y: C): Boolean = lteq(x, y) || lteq(y, x)
+}
+
+// For example, for Char
+// object Ord {
+//   case object CharOrd extends Ord[Char] {
+//     @pure
+//     override def lteq(x: Char, y: Char): Boolean = x <= y
+//   }
+// }
+
 object MemoisationRegex {
   import VerifiedRegex._
   import VerifiedRegexMatcher._
@@ -510,6 +530,9 @@ object VerifiedRegex {
   end Regex
   case class ElementMatch[C](c: C) extends Regex[C]
   case class ElementSet[C](cs: Set[C]) extends Regex[C]
+  /** Regex that accepts any single character c such that from <= c <= to, according to ord
+    */
+  case class ElementRange[C](from: C, to: C, ord: Ord[C]) extends Regex[C]
   case class Star[C](reg: Regex[C]) extends Regex[C]
   case class Union[C](regOne: Regex[C], regTwo: Regex[C]) extends Regex[C]
   case class Concat[C](regOne: Regex[C], regTwo: Regex[C]) extends Regex[C]
@@ -544,13 +567,14 @@ object VerifiedRegex {
   def validRegex[C](r: Regex[C]): Boolean = {
     decreases(r)
     r match {
-      case ElementMatch(c)    => true
-      case ElementSet(cs)     => true
-      case Star(r)            => !r.nullable && validRegex(r) 
-      case Union(rOne, rTwo)  => validRegex(rOne) && validRegex(rTwo)
-      case Concat(rOne, rTwo) => validRegex(rOne) && validRegex(rTwo)
-      case EmptyExpr()        => true
-      case EmptyLang()        => true
+      case ElementMatch(c)        => true
+      case ElementSet(cs)         => true
+      case ElementRange(from, to, ord) => ord.lteq(from, to)
+      case Star(r)                => !r.nullable && validRegex(r) 
+      case Union(rOne, rTwo)      => validRegex(rOne) && validRegex(rTwo)
+      case Concat(rOne, rTwo)     => validRegex(rOne) && validRegex(rTwo)
+      case EmptyExpr()            => true
+      case EmptyLang()            => true
     }
   }
 
@@ -560,6 +584,7 @@ object VerifiedRegex {
     r match {
       case ElementMatch(c)    => BigInt(1)
       case ElementSet(cs)     => BigInt(1)
+      case ElementRange(_, _, _) => BigInt(1)
       case Star(r)            => BigInt(1) + regexDepth(r)
       case Union(rOne, rTwo)  => BigInt(1) + Utils.maxBigInt(regexDepth(rOne), regexDepth(rTwo))
       case Concat(rOne, rTwo) => BigInt(1) + Utils.maxBigInt(regexDepth(rOne), regexDepth(rTwo))
@@ -581,6 +606,7 @@ object VerifiedRegex {
     r match {
       case ElementMatch(c)    => BigInt(1)
       case ElementSet(cs)     => BigInt(1)
+      case ElementRange(_, _, _) => BigInt(1)
       case Star(r)            => BigInt(1) + regexDepthTotal(r)
       case Union(rOne, rTwo)  => BigInt(1) + regexDepthTotal(rOne) + regexDepthTotal(rTwo)
       case Concat(rOne, rTwo) => BigInt(1) + regexDepthTotal(rOne) + regexDepthTotal(rTwo)
@@ -594,6 +620,7 @@ object VerifiedRegex {
       case EmptyExpr()        => true
       case EmptyLang()        => false
       case ElementMatch(c)    => false
+      case ElementRange(_, _, _) => false
       case ElementSet(cs)     => false
       case Star(r)            => true
       case Union(rOne, rTwo)  => rOne.nullable || rTwo.nullable
@@ -606,6 +633,7 @@ object VerifiedRegex {
       case EmptyExpr()        => false
       case EmptyLang()        => true
       case ElementMatch(c)    => false
+      case ElementRange(_, _, _) => false
       case ElementSet(cs)     => cs.isEmpty
       case Star(r)            => false
       case Union(rOne, rTwo)  => rOne.lostCause && rTwo.lostCause
@@ -639,6 +667,10 @@ object VerifiedRegex {
       case ElementSet(cs) =>
         7L
 
+      case ElementRange(from, to, ord) =>
+        // critical: incorporate the range values
+        11L
+
       case Star(r1) =>
         mix1(4L, r1.hash)
 
@@ -663,16 +695,17 @@ object VerifiedRegex {
   @ghost 
   def getLanguageWitness[C](r: Regex[C]): Option[List[C]] = {
     r match {
-      case EmptyExpr()        => Some(List())
-      case EmptyLang()        => None()
-      case ElementMatch(c)    => Some(List(c))
-      case ElementSet(cs)     => if (cs.isEmpty) None() else Some(List(cs.toList.head))
-      case Star(r)            => Some(List())
-      case Union(rOne, rTwo)  => 
+      case EmptyExpr()            => Some(List())
+      case EmptyLang()            => None()
+      case ElementMatch(c)        => Some(List(c))
+      case ElementSet(cs)         => if (cs.isEmpty) None() else Some(List(cs.toList.head))
+      case ElementRange(from, to, ord) => Some(List(from))
+      case Star(r)                => Some(List())
+      case Union(rOne, rTwo)      => 
         getLanguageWitness(rOne) match
           case Some(v) => Some(v)
           case None() => getLanguageWitness(rTwo)
-      case Concat(rOne, rTwo) => 
+      case Concat(rOne, rTwo)     => 
         getLanguageWitness(rOne) match
           case Some(v) => 
             getLanguageWitness(rTwo) match
@@ -723,6 +756,22 @@ object VerifiedRegex {
     require(isElementSet(r))
     r match {
       case ElementSet(cs) => cs.contains(c)
+    }
+  }
+
+  @ghost
+  def isElementRange[C](r: Regex[C]): Boolean = {
+    r match {
+      case ElementRange(_, _, _) => true
+      case _                  => false
+    }
+  }
+
+  @ghost
+  def elementRangeContainsChar[C](r: Regex[C], c: C): Boolean = {
+    require(isElementRange(r))
+    r match {
+      case ElementRange(from, to, ord) => ord.lteq(from, c) && ord.lteq(c, to)
     }
   }
 
@@ -897,6 +946,7 @@ object ZipperRegex {
     expr match {
       case ElementMatch(c) if c == a => Set(context)
       case ElementSet(cs) if cs.contains(a) => Set(context)
+      case ElementRange(from, to, ord) if ord.lteq(from, a) && ord.lteq(a, to) => Set(context)
       case Union(rOne, rTwo) => derivationStepZipperDown(rOne, context, a) ++ derivationStepZipperDown(rTwo, context, a)
       case Concat(rOne, rTwo) if rOne.nullable => derivationStepZipperDown(rOne, context.prepend(rTwo), a) ++ derivationStepZipperDown(rTwo, context, a)
       case Concat(rOne, rTwo) => derivationStepZipperDown(rOne, context.prepend(rTwo), a)
@@ -1073,6 +1123,7 @@ object ZipperRegex {
           val res: Zipper[C] = expr match {
             case ElementMatch(c) if c == a => Set(context)
             case ElementSet(cs) if cs.contains(a) => Set(context)
+            case ElementRange(from, to, ord) if ord.lteq(from, a) && ord.lteq(a, to) => Set(context)
             case Union(rOne, rTwo) => derivationStepZipperDownMem(rOne, context, a) ++ derivationStepZipperDownMem(rTwo, context, a)
             case Concat(rOne, rTwo) if rOne.nullable => derivationStepZipperDownMem(rOne, context.prepend(rTwo), a) ++ derivationStepZipperDownMem(rTwo, context, a)
             case Concat(rOne, rTwo) => derivationStepZipperDownMem(rOne, context.prepend(rTwo), a)
@@ -1465,6 +1516,7 @@ object ZipperRegex {
               case EmptyLang() => lemmaZipperStartingWithEmptyLangMatchesNothing(z, Context(List(r)), s)
               case ElementMatch(a) => lemmaElementMatchZipperAcceptsOnlyThisChar(z, Context(List(ElementMatch(a))), a, s)
               case ElementSet(as) => lemmaElementSetZipperAcceptsOnlyOneOfTheseChars(z, Context(List(ElementSet(as))), as, s)
+              case ElementRange(from, to, ord) => lemmaElementRangeZipperAcceptsOnlyCharsInRange(z, Context(List(ElementRange(from, to, ord))), from, to, ord, s)
               case Union(r1, r2) => {
                 mainMatchTheorem(r1, s)
                 mainMatchTheorem(r2, s)
@@ -1606,6 +1658,12 @@ object ZipperRegex {
                           check(matchR(r, s) == matchZipper(z, s))
                         }
                         case ElementSet(cs) if cs.contains(shd) => {
+                          assert(zDerivDown == Set(Context(tlExp)))
+                          val zVirt = Set(Context(tlExp))
+                          theoremZipperRegexEquiv(zVirt, List(Context(tlExp)), generalisedConcat(tlExp), stl)
+                          check(matchR(r, s) == matchZipper(z, s))
+                        }
+                        case ElementRange(from, to, ord) if ord.lteq(from, shd) && ord.lteq(shd, to) => {
                           assert(zDerivDown == Set(Context(tlExp)))
                           val zVirt = Set(Context(tlExp))
                           theoremZipperRegexEquiv(zVirt, List(Context(tlExp)), generalisedConcat(tlExp), stl)
@@ -2636,6 +2694,10 @@ object ZipperRegex {
         SetUtils.lemmaMapOnSingletonSet(Set(c), c, f)
         check(derivationStepZipperDown(r, c.concat(auxCtx), a) == appendTo(derivationStepZipperDown(r, c, a), auxCtx))
       }
+      case ElementRange(from, to, ord) if ord.lteq(from, a) && ord.lteq(a, to) => {
+        SetUtils.lemmaMapOnSingletonSet(Set(c), c, f)
+        check(derivationStepZipperDown(r, c.concat(auxCtx), a) == appendTo(derivationStepZipperDown(r, c, a), auxCtx))
+      }
       case Union(rOne, rTwo) => {
         assert(derivationStepZipperDown(r, c.concat(auxCtx), a) == derivationStepZipperDown(rOne, c.concat(auxCtx), a) ++ derivationStepZipperDown(rTwo, c.concat(auxCtx), a))
         lemmaDerivativeStepZipperDownConcatCtxSameAsAppendTo(c, rOne, a, auxCtx)
@@ -3051,6 +3113,63 @@ object ZipperRegex {
         check(!nullableContext(c))
     }
   }.ensuring(_ => matchZipper(z, s) == (s.size == 1 && cs.contains(s.head)))
+
+  @ghost
+  @opaque
+  @inlineOnce
+  def lemmaElementRangeZipperAcceptsOnlyCharsInRange[C](z: Zipper[C], c: Context[C], from: C, to: C, ord: Ord[C], s: List[C]): Unit = {
+    require(z == Set(c)) 
+    require(!c.isEmpty)
+    require(c.head == ElementRange[C](from, to, ord))
+    require(c.tail.isEmpty)
+    s match {
+      case Cons(hd, tl) if ord.lteq(from, hd) && ord.lteq(hd, to) => {
+        val deriv: Zipper[C] = derivationStepZipper(z, s.head)
+        val derivUp = derivationStepZipperUp(c, s.head)
+        assert(derivUp == Set(Context(List())))
+        unfold(z.flatMapPost(c => derivationStepZipperUp(c, hd))(Context[C](List())))
+        assert(deriv.contains(Context[C](List())))
+        if(deriv != Set(Context[C](List()))) {
+          assert(deriv.exists(c => c != Context[C](List())))
+          val witness = SetUtils.getWitness(deriv, (c: Context[C]) => c != Context[C](List()))
+          unfold(z.flatMapPost(c => derivationStepZipperUp(c, hd))(witness))
+          assert(deriv.contains(witness))
+          assert(z.exists(c => derivationStepZipperUp(c, s.head).contains(witness)))
+          val witnessContext = SetUtils.getWitness(z, (c: Context[C]) => derivationStepZipperUp(c, s.head).contains(witness))
+          assert(z.contains(witnessContext))
+          check(false)
+        }
+        check(deriv == Set(Context[C](List()))) 
+        if(tl.isEmpty) {
+          lemmaZipperOfEmptyContextMatchesEmptyString(Set(Context(List())), tl)
+          check(matchZipper(z, s))
+
+        } else {
+          lemmaZipperOfEmptyContextMatchesEmptyString(deriv, tl)
+          check(!matchZipper(z, s))
+        }
+      }
+      case Cons(shd, tl) if !(ord.lteq(from, shd) && ord.lteq(shd, to)) => {
+        val deriv: Zipper[C] = derivationStepZipper(z, shd)
+        val derivUp = derivationStepZipperUp(c, shd)
+        assert(derivUp == Set())
+        if(!deriv.isEmpty){
+          val hd = deriv.toList.head
+          val f: Context[C] => Zipper[C] = ct => derivationStepZipperUp(ct, shd)
+          assert(z.flatMap(f).contains(hd))
+          assert(deriv.contains(hd))
+          unfold(z.flatMapPost(f)(hd))
+          assert(z.exists(context => derivationStepZipperUp(context, s.head).contains(hd)))
+          assert(z == Set(c))
+          check(false)
+        }
+        assert(deriv.isEmpty)
+        lemmaEmptyZipperMatchesNothing(deriv, tl)
+        }
+      case Nil() => 
+        check(!nullableContext(c))
+    }
+  }.ensuring(_ => matchZipper(z, s) == (s.size == 1 && ord.lteq(from, s.head) && ord.lteq(s.head, to)))
 
   @ghost
   @opaque
@@ -4306,6 +4425,7 @@ object VerifiedRegexMatcher {
       case EmptyLang()       => EmptyLang()
       case ElementMatch(c)   => if (a == c) EmptyExpr() else EmptyLang()
       case ElementSet(cs)    => if (cs.contains(a)) EmptyExpr() else EmptyLang()
+      case ElementRange(from, to, ord) => if (ord.lteq(from, a) && ord.lteq(a, to)) EmptyExpr() else EmptyLang()
       case Union(rOne, rTwo) => Union(derivativeStep(rOne, a), derivativeStep(rTwo, a))
       case Star(rInner)      => Concat(derivativeStep(rInner, a), Star(rInner))
       case Concat(rOne, rTwo) => {
@@ -4329,6 +4449,7 @@ object VerifiedRegexMatcher {
           case EmptyLang()       => EmptyLang()
           case ElementMatch(c)   => if (a == c) EmptyExpr() else EmptyLang()
           case ElementSet(cs)    => if (cs.contains(a)) EmptyExpr() else EmptyLang()
+          case ElementRange(from, to, ord) => if (ord.lteq(from, a) && ord.lteq(a, to)) EmptyExpr() else EmptyLang()
           case Union(rOne, rTwo) => Union(derivativeStepMem(rOne, a)(using cache), derivativeStepMem(rTwo, a)(using cache))
           case Star(rInner)      => Concat(derivativeStepMem(rInner, a)(using cache), Star(rInner))
           case Concat(rOne, rTwo) => {
@@ -4636,6 +4757,7 @@ object VerifiedRegexMatcher {
       case EmptyLang()     => false
       case ElementMatch(c) => s == List(c)
       case ElementSet(cs)  => s.size == 1 && cs.contains(s.head)
+      case ElementRange(from, to, ord) => s.size == 1 && ord.lteq(from, s.head) && ord.lteq(s.head, to)
       case Union(r1, r2)   => matchRSpec(r1, s) || matchRSpec(r2, s)
       case Star(rInner)    => s.isEmpty || Exists((cut: (List[C], List[C])) => cut._1 ++ cut._2 == s && !cut._1.isEmpty && matchRSpec(rInner, cut._1) && matchRSpec(Star(rInner), cut._2)) // TODO change to use matchRSpec in the exists
       // case Star(rInner)    => s.isEmpty || findConcatSeparation(rInner, Star(rInner), Nil(), s, s).isDefined
@@ -4655,6 +4777,7 @@ object VerifiedRegexMatcher {
       case EmptyLang()     => ()
       case ElementMatch(c) => ()
       case ElementSet(cs) => ()
+      case ElementRange(from, to, ord) => ()
       case Union(r1, r2) => {
         if (matchR(r, s)) {
           lemmaRegexUnionAcceptsThenOneOfTheTwoAccepts(r1, r2, s)
@@ -5369,6 +5492,7 @@ object VerifiedRegexMatcher {
       case EmptyLang() => EmptyLang()
       case ElementMatch(c) => ElementMatch(c)
       case ElementSet(cs) => ElementSet(cs)
+      case ElementRange(from, to, ord) => ElementRange(from, to, ord)
       case EmptyExpr() => EmptyExpr()
       case Star(rInner) => 
         val simpInner = simplify(rInner)
@@ -5657,6 +5781,7 @@ object VerifiedRegexMatcher {
       case EmptyExpr() => ()
       case ElementMatch(c2) => ()
       case ElementSet(cs) => ()
+      case ElementRange(from, to, ord) => ()
       case Union(r1, r2) => 
           lemmaDerivativeStepFixPointLostCause(r1, c)
           lemmaDerivativeStepFixPointLostCause(r2, c)
@@ -5695,6 +5820,7 @@ object VerifiedRegexMatcher {
         case EmptyExpr() => ()
         case ElementMatch(c) => ()
         case ElementSet(cs) => ()
+        case ElementRange(from, to, ord) => ()
         case Union(r1, r2) => 
             lemmaLostCauseCannotMatch(r1, s)
             lemmaLostCauseCannotMatch(r2, s)
@@ -5734,6 +5860,7 @@ object VerifiedRegexMatcher {
       case EmptyLang()        => ()
       case ElementMatch(c)    => ()
       case ElementSet(cs)    => ()
+      case ElementRange(from, to, ord) => ()
       case Star(r)            => ()
       case Union(rOne, rTwo)  => 
         getLanguageWitness(rOne) match
