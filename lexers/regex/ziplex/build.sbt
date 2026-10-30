@@ -14,6 +14,14 @@ scalaCompilerBridgeBinaryJar := {
 
 run / fork := true
 
+// sbt-stainless adds the stainless library sources to Test as well, but only passes the
+// qualified-types flags they need (e.g. for UInt31) to Compile
+Test / scalacOptions ++= Seq(
+  "-language:experimental.qualifiedTypes",
+  "-language:experimental.qualifiedTypes.silent",
+  "-Yqualified-types-anf",
+)
+
 stainlessEnabled := false
 
 Compile / mainClass := Some("com.ziplex.lexer.Main")
