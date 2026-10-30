@@ -1,0 +1,81 @@
+pid,benchmark,pattern,size,score_us,error_us,ns_per_char
+0,p00_azPlus_ZipperMem_list,[a-z]+,8,0.581,0.197,72.625
+0,p00_azPlus_ZipperMem_list,[a-z]+,176,15.163,13.499,86.153
+0,p00_azPlus_ZipperMem_list,[a-z]+,344,27.721,3.613,80.584
+0,p00_azPlus_ZipperMem_list,[a-z]+,512,40.406,16.319,78.918
+1,p01_identifier_ZipperMem_list,[a-z][a-z0-9]*,8,0.584,0.187,73.0
+1,p01_identifier_ZipperMem_list,[a-z][a-z0-9]*,176,13.927,2.53,79.131
+1,p01_identifier_ZipperMem_list,[a-z][a-z0-9]*,344,27.567,9.04,80.137
+1,p01_identifier_ZipperMem_list,[a-z][a-z0-9]*,512,40.611,10.327,79.318
+2,p02_digitsPlus_ZipperMem_list,[0-9]+,8,0.576,0.169,72.0
+2,p02_digitsPlus_ZipperMem_list,[0-9]+,176,12.671,4.719,71.994
+2,p02_digitsPlus_ZipperMem_list,[0-9]+,344,27.357,3.051,79.526
+2,p02_digitsPlus_ZipperMem_list,[0-9]+,512,38.332,9.444,74.867
+3,p03_azDigitsPlus_ZipperMem_list,[a-z0-9]+,8,0.568,0.128,71.0
+3,p03_azDigitsPlus_ZipperMem_list,[a-z0-9]+,176,13.808,3.525,78.455
+3,p03_azDigitsPlus_ZipperMem_list,[a-z0-9]+,344,27.552,4.434,80.093
+3,p03_azDigitsPlus_ZipperMem_list,[a-z0-9]+,512,41.905,21.441,81.846
+4,p04_email_ZipperMem_list,[a-z]+@[a-z]+,8,0.678,0.267,84.75
+4,p04_email_ZipperMem_list,[a-z]+@[a-z]+,176,14.854,2.984,84.398
+4,p04_email_ZipperMem_list,[a-z]+@[a-z]+,344,30.306,14.579,88.099
+4,p04_email_ZipperMem_list,[a-z]+@[a-z]+,512,39.997,6.545,78.119
+5,p05_fooBarBazPlus_ZipperMem_list,(foo|bar|baz)+,8,0.454,0.096,56.75
+5,p05_fooBarBazPlus_ZipperMem_list,(foo|bar|baz)+,176,25.162,5.719,142.966
+5,p05_fooBarBazPlus_ZipperMem_list,(foo|bar|baz)+,344,49.174,26.071,142.948
+5,p05_fooBarBazPlus_ZipperMem_list,(foo|bar|baz)+,512,66.898,15.884,130.66
+6,p06_catDogBirdFishPlus_ZipperMem_list,(cat|dog|bird|fish)+,8,0.535,0.181,66.875
+6,p06_catDogBirdFishPlus_ZipperMem_list,(cat|dog|bird|fish)+,176,12.6,3.287,71.591
+6,p06_catDogBirdFishPlus_ZipperMem_list,(cat|dog|bird|fish)+,344,27.215,7.14,79.113
+6,p06_catDogBirdFishPlus_ZipperMem_list,(cat|dog|bird|fish)+,512,40.032,13.007,78.188
+7,p07_abcPlus_ZipperMem_list,(abc)+,8,0.458,0.117,57.25
+7,p07_abcPlus_ZipperMem_list,(abc)+,176,11.639,4.185,66.131
+7,p07_abcPlus_ZipperMem_list,(abc)+,344,23.421,8.708,68.084
+7,p07_abcPlus_ZipperMem_list,(abc)+,512,31.333,9.684,61.197
+8,p08_abCdEfPlus_ZipperMem_list,(ab|cd|ef)+,8,0.546,0.149,68.25
+8,p08_abCdEfPlus_ZipperMem_list,(ab|cd|ef)+,176,13.387,1.75,76.062
+8,p08_abCdEfPlus_ZipperMem_list,(ab|cd|ef)+,344,24.841,5.805,72.212
+8,p08_abCdEfPlus_ZipperMem_list,(ab|cd|ef)+,512,36.11,14.453,70.527
+9,p09_xyzPlus_ZipperMem_list,(x|y|z)+,8,0.548,0.175,68.5
+9,p09_xyzPlus_ZipperMem_list,(x|y|z)+,176,13.186,1.438,74.92
+9,p09_xyzPlus_ZipperMem_list,(x|y|z)+,344,25.681,5.917,74.654
+9,p09_xyzPlus_ZipperMem_list,(x|y|z)+,512,38.34,9.775,74.883
+10,p10_aStarBStarCStar_ZipperMem_list,a*b*c*,8,0.706,0.086,88.25
+10,p10_aStarBStarCStar_ZipperMem_list,a*b*c*,176,13.877,12.701,78.847
+10,p10_aStarBStarCStar_ZipperMem_list,a*b*c*,344,27.147,9.41,78.916
+10,p10_aStarBStarCStar_ZipperMem_list,a*b*c*,512,40.198,16.904,78.512
+11,p11_union16Plus_ZipperMem_list,(a|b|...|p)+,8,0.579,0.158,72.375
+11,p11_union16Plus_ZipperMem_list,(a|b|...|p)+,176,14.541,8.437,82.619
+11,p11_union16Plus_ZipperMem_list,(a|b|...|p)+,344,27.307,9.122,79.381
+11,p11_union16Plus_ZipperMem_list,(a|b|...|p)+,512,38.331,7.922,74.865
+12,p12_abcdefghijPlus_ZipperMem_list,(abcdefghij)+,8,0.691,0.095,86.375
+12,p12_abcdefghijPlus_ZipperMem_list,(abcdefghij)+,176,11.948,2.034,67.886
+12,p12_abcdefghijPlus_ZipperMem_list,(abcdefghij)+,344,21.13,7.611,61.424
+12,p12_abcdefghijPlus_ZipperMem_list,(abcdefghij)+,512,34.84,28.498,68.047
+13,p13_threeRanges_ZipperMem_list,[a-c]+[d-f]+[g-i]+,8,0.637,0.138,79.625
+13,p13_threeRanges_ZipperMem_list,[a-c]+[d-f]+[g-i]+,176,15.06,5.844,85.568
+13,p13_threeRanges_ZipperMem_list,[a-c]+[d-f]+[g-i]+,344,29.738,8.019,86.448
+13,p13_threeRanges_ZipperMem_list,[a-c]+[d-f]+[g-i]+,512,45.215,10.676,88.311
+14,p14_letterDigitPlus_ZipperMem_list,([a-z][0-9])+,8,0.626,0.14,78.25
+14,p14_letterDigitPlus_ZipperMem_list,([a-z][0-9])+,176,14.928,4.344,84.818
+14,p14_letterDigitPlus_ZipperMem_list,([a-z][0-9])+,344,30.366,10.621,88.273
+14,p14_letterDigitPlus_ZipperMem_list,([a-z][0-9])+,512,44.313,13.346,86.549
+15,p15_aStarStar_ZipperMem_list,(a*)* as (a+)*,8,0.628,0.131,78.5
+15,p15_aStarStar_ZipperMem_list,(a*)* as (a+)*,176,11.002,1.58,62.511
+15,p15_aStarStar_ZipperMem_list,(a*)* as (a+)*,344,25.832,7.706,75.093
+15,p15_aStarStar_ZipperMem_list,(a*)* as (a+)*,512,33.475,12.046,65.381
+16,p16_aPlusPlus_ZipperMem_list,(a+)+,8,0.629,0.175,78.625
+16,p16_aPlusPlus_ZipperMem_list,(a+)+,176,12.04,7.263,68.409
+16,p16_aPlusPlus_ZipperMem_list,(a+)+,344,24.179,5.676,70.288
+16,p16_aPlusPlus_ZipperMem_list,(a+)+,512,34.69,12.181,67.754
+17,p17_aOrAaPlus_ZipperMem_list,(a|aa)+,8,1.042,0.309,130.25
+17,p17_aOrAaPlus_ZipperMem_list,(a|aa)+,176,22.019,5.364,125.108
+17,p17_aOrAaPlus_ZipperMem_list,(a|aa)+,344,48.464,11.71,140.884
+17,p17_aOrAaPlus_ZipperMem_list,(a|aa)+,512,71.847,62.573,140.326
+18,p18_aStarBStarStar_ZipperMem_list,(a*b*)* as (a+|b+)*,8,0.793,0.184,99.125
+18,p18_aStarBStarStar_ZipperMem_list,(a*b*)* as (a+|b+)*,176,16.669,5.17,94.71
+18,p18_aStarBStarStar_ZipperMem_list,(a*b*)* as (a+|b+)*,344,35.147,11.856,102.172
+18,p18_aStarBStarStar_ZipperMem_list,(a*b*)* as (a+|b+)*,512,49.796,1.909,97.258
+19,p19_aPlusPlusPlus_ZipperMem_list,((a+)+)+,8,0.597,0.289,74.625
+19,p19_aPlusPlusPlus_ZipperMem_list,((a+)+)+,176,13.954,4.431,79.284
+19,p19_aPlusPlusPlus_ZipperMem_list,((a+)+)+,344,24.821,12.776,72.154
+19,p19_aPlusPlusPlus_ZipperMem_list,((a+)+)+,512,41.237,45.126,80.541
