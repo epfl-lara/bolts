@@ -379,7 +379,7 @@ The project is organized around three main parts: verified lexer/regex core logi
   - `object MemoisationRegex` and `object MemoisationZipper` contain the memoization caches and associated lemmas/theorems for the regular expression matching functions. These are memoizing derivatives.
 - `src/main/scala/com/ziplex/lexer/LexerInterface.scala`
   - Main interface and formal specifications (`trait LexerInterface`).
-  - Declares core laws such as `maximalMunchPrinciple`, `invertibleThroughLexing`, and separator-based invertibility laws. These are the main correctness theorems about the lexer.
+  - Declares core laws such as `maximalMunchPrinciple`, `invertibleThroughLexing` and `separableTokensThenInvertibleThroughPrinting`. These are the main correctness theorems about the lexer.
   - Declares associated types such as `Token`, `Rule`, `TokenValue`, as well as semi-inverse functions to represent invertible string to token value transformations.
   - The type alias `Sequence[T]` is defined here. To swap the `BalanceConc` structure with a different sequence structure, one would only need to modify this alias and implement the methods `singletonSeq`, `seqFromList`, and `seqFromArray` accordingly, as well as the associated lemma `seqFromListBHdTlConstructive`. The code need to use the trusted `Vector` wrapper is commented out as an example.
 - `src/main/scala/com/ziplex/lexer/VerifiedLexer.scala`
@@ -431,6 +431,5 @@ The project is organized around three main parts: verified lexer/regex core logi
 - Lexing invertibility:
   - `invertibleThroughLexing` in `LexerInterface.scala`: this theorem states that lexing a string and printing the produced tokens gives back the original string.
   - `separableTokensThenInvertibleThroughPrinting` in `LexerInterface.scala`: this theorem states that if a token list follows the R-Path condition for separability and each token is individually producible by the rules, then printing and lexing gives back the same token list.
-  - `interleavingSeparatorTokenMakesSeparableSequence`, `invertibleThroughPrintingWithSeparatorWhenNeeded`, `invertibleThroughPrintingWithSeparator` in `LexerInterface.scala`: these theorems state that if a special separator token is interleaved with other tokens, then printing the tokens and lexing back the printed string gives back the same token list. This allows to ensure invertibility even for non-separable token lists, by interleaving a special separator token between tokens that would otherwise violate the separability condition.
 - Lexing longest match semantics, or maximal munch principle:
   - `maximalMunchPrinciple` in `LexerInterface.scala`: this theorem states that if a string can be lexed into a token list, then the produced token list is maximal in the sense that no token can be replaced by a longer token that would still match the same substring. This captures the longest match semantics of lexing as well as rules priority.

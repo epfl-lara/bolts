@@ -240,6 +240,7 @@ object Main {
     r match
       case ElementMatch(c) => c.toString
       case ElementSet(cs) => s"[${cs.toScala.mkString(",")}]"
+      case ElementRange(from, to, _) => s"[$from-$to]"
       case Star(reg) => s"(${reg.show()})*"
       case Union(regOne, regTwo) => s"(${regOne.show()} | ${regTwo.show()})"
       case Concat(regOne, regTwo) => s"(${regOne.show()} ~ ${regTwo.show()})"

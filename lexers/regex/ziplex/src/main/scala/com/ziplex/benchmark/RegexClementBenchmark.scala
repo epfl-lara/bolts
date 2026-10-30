@@ -31,7 +31,7 @@ import com.ziplex.lexer.example.RegexUtils.*
   *   p08 (ab|cd|ef)+          p18 (a*b*)*   encoded as (a+|b+)*  (same language, the matcher requires Star bodies to be non-nullable)
   *   p09 (x|y|z)+             p19 ((a+)+)+
   *
-  * Character classes are ElementSets. The input strings are generated randomly (with a fixed seed) and have the requested
+  * Character classes are ElementRanges (unions of them for classes with several intervals). The input strings are generated randomly (with a fixed seed) and have the requested
   * length, except for patterns made of fixed words, for which they have the largest possible length <= the requested one
   * (or a single word if none fits, i.e., (abcdefghij)+ for size 8).
   */
@@ -155,11 +155,11 @@ object RegexClementBenchmarkUtils {
   def unionOfWords(words: Seq[String]): Regex[Char] = union(words.map(_.r))
 
   val patterns: Array[Regex[Char]] = Array(
-    /* p00 */ az.anyOf.+,
-    /* p01 */ az.anyOf ~ (az + digitsString).anyOf.*,
-    /* p02 */ digitsString.anyOf.+,
-    /* p03 */ (az + digitsString).anyOf.+,
-    /* p04 */ az.anyOf.+ ~ "@".r ~ az.anyOf.+,
+    /* p00 */ range('a', 'z').+,
+    /* p01 */ range('a', 'z') ~ (range('a', 'z') | range('0', '9')).*,
+    /* p02 */ range('0', '9').+,
+    /* p03 */ (range('a', 'z') | range('0', '9')).+,
+    /* p04 */ range('a', 'z').+ ~ "@".r ~ range('a', 'z').+,
     /* p05 */ unionOfWords(Seq("foo", "bar", "baz")).+,
     /* p06 */ unionOfWords(Seq("cat", "dog", "bird", "fish")).+,
     /* p07 */ "abc".r.+,
@@ -168,8 +168,8 @@ object RegexClementBenchmarkUtils {
     /* p10 */ "a".r.* ~ "b".r.* ~ "c".r.*,
     /* p11 */ union("abcdefghijklmnop".map(_.r)).+,
     /* p12 */ "abcdefghij".r.+,
-    /* p13 */ "abc".anyOf.+ ~ "def".anyOf.+ ~ "ghi".anyOf.+,
-    /* p14 */ (az.anyOf ~ digitsString.anyOf).+,
+    /* p13 */ range('a', 'c').+ ~ range('d', 'f').+ ~ range('g', 'i').+,
+    /* p14 */ (range('a', 'z') ~ range('0', '9')).+,
     /* p15 */ "a".r.+.*,
     /* p16 */ "a".r.+.+,
     /* p17 */ ("a" | "aa").+,
