@@ -294,20 +294,20 @@ object ExampleJsonLexer:
     @extern def rBraceRe: Regex[Char] = "}".r
     @extern def eofRe: Regex[Char] = '\u001a'.r
 
-    val whitespaceRule = Rule(regex = wsCharRe, tag = "whitespace", isSeparator = true, transformation = WhitespaceValueInjection.injection)
-    val integerLiteralRule = Rule(regex = intRe, tag = "integerLiteral", isSeparator = false, transformation = IntegerValueInjection.injection)
-    val floatLiteralRule = Rule(regex = floatRe, tag = "floatLiteral", isSeparator = false, transformation = FloatLiteralValueInjection.injection)
-    val trueRule = Rule(regex = trueRe, tag = "trueLiteral", isSeparator = false, transformation = KeywordValueInjection.injection)
-    val falseRule = Rule(regex = falseRe, tag = "falseLiteral", isSeparator = false, transformation = KeywordValueInjection.injection)
-    val nullRule = Rule(regex = nullRe, tag = "nullLiteral", isSeparator = false, transformation = KeywordValueInjection.injection)
-    val jsonstringRule = Rule(regex = jsonStringRe, tag = "stringLiteral", isSeparator = false, transformation = StringLiteralValueInjection.injection)
-    val lBraceRule = Rule(regex = lBraceRe, tag = "leftBrace", isSeparator = false, transformation = KeywordValueInjection.injection)
-    val rBraceRule = Rule(regex = rBraceRe, tag = "rightBrace", isSeparator = false, transformation = KeywordValueInjection.injection)
-    val lBracketRule = Rule(regex = lBracketRe, tag = "leftBracket", isSeparator = false, transformation = KeywordValueInjection.injection)
-    val rBracketRule = Rule(regex = rBracketRe, tag = "rightBracket", isSeparator = false, transformation = KeywordValueInjection.injection)
-    val colonRule = Rule(regex = colonRe, tag = "colon", isSeparator = false, transformation = KeywordValueInjection.injection)
-    val commaRule = Rule(regex = commaRe, tag = "comma", isSeparator = false, transformation = KeywordValueInjection.injection)
-    val eofRule = Rule(regex = eofRe, tag = "eof", isSeparator = false, transformation = WhitespaceValueInjection.injection)
+    val whitespaceRule = Rule(regex = wsCharRe, tag = "whitespace", transformation = WhitespaceValueInjection.injection)
+    val integerLiteralRule = Rule(regex = intRe, tag = "integerLiteral", transformation = IntegerValueInjection.injection)
+    val floatLiteralRule = Rule(regex = floatRe, tag = "floatLiteral", transformation = FloatLiteralValueInjection.injection)
+    val trueRule = Rule(regex = trueRe, tag = "trueLiteral", transformation = KeywordValueInjection.injection)
+    val falseRule = Rule(regex = falseRe, tag = "falseLiteral", transformation = KeywordValueInjection.injection)
+    val nullRule = Rule(regex = nullRe, tag = "nullLiteral", transformation = KeywordValueInjection.injection)
+    val jsonstringRule = Rule(regex = jsonStringRe, tag = "stringLiteral", transformation = StringLiteralValueInjection.injection)
+    val lBraceRule = Rule(regex = lBraceRe, tag = "leftBrace", transformation = KeywordValueInjection.injection)
+    val rBraceRule = Rule(regex = rBraceRe, tag = "rightBrace", transformation = KeywordValueInjection.injection)
+    val lBracketRule = Rule(regex = lBracketRe, tag = "leftBracket", transformation = KeywordValueInjection.injection)
+    val rBracketRule = Rule(regex = rBracketRe, tag = "rightBracket", transformation = KeywordValueInjection.injection)
+    val colonRule = Rule(regex = colonRe, tag = "colon", transformation = KeywordValueInjection.injection)
+    val commaRule = Rule(regex = commaRe, tag = "comma", transformation = KeywordValueInjection.injection)
+    val eofRule = Rule(regex = eofRe, tag = "eof", transformation = WhitespaceValueInjection.injection)
 
     val rules = List(
       whitespaceRule,

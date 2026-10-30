@@ -587,7 +587,6 @@ object ExamplePythonLexer:
             Rule(
             regex = keywordRegex(),
             tag = "keyword",
-            isSeparator = false,
             transformation = KeywordValueInjection.injection
             )
 
@@ -600,7 +599,6 @@ object ExamplePythonLexer:
             Rule(
             regex = operatorRegex(),
             tag = "operator",
-            isSeparator = false,
             transformation = OperatorValueInjection.injection
             )
 
@@ -619,7 +617,6 @@ object ExamplePythonLexer:
             Rule(
             regex = delimiterRegex() | openingDelimiterRegex() | closingDelimiterRegex(),
             tag = "delimiter",
-            isSeparator = false,
             transformation = DelimiterValueInjection.injection
             )
 
@@ -630,7 +627,6 @@ object ExamplePythonLexer:
             Rule(
             regex = identifierRegex(),
             tag = "identifier",
-            isSeparator = false,
             transformation = IdentifierValueInjection.injection
             )
 
@@ -642,7 +638,6 @@ object ExamplePythonLexer:
             Rule(
             regex = decimalIntRegex(),
             tag = "decimalInt",
-            isSeparator = false,
             transformation = IntegerValueInjection.injection
             )
 
@@ -653,7 +648,6 @@ object ExamplePythonLexer:
             Rule(
             regex = binaryIntLitRegex(),
             tag = "binaryInt",
-            isSeparator = false,
             transformation = IntegerValueInjection.injection
             )
 
@@ -664,7 +658,6 @@ object ExamplePythonLexer:
             Rule(
             regex = octIntLitRegex(),
             tag = "octalInt",
-            isSeparator = false,
             transformation = IntegerValueInjection.injection
             )
 
@@ -675,7 +668,6 @@ object ExamplePythonLexer:
             Rule(
             regex = hexIntLitRegex(),
             tag = "hexadecimalInt",
-            isSeparator = false,
             transformation = IntegerValueInjection.injection
             )
 
@@ -691,7 +683,6 @@ object ExamplePythonLexer:
             Rule(
             regex = floatLiteralRegex,
             tag = "floatLiteral",
-            isSeparator = false,
             transformation = FloatLiteralValueInjection.injection
             )
 
@@ -701,7 +692,6 @@ object ExamplePythonLexer:
             Rule(
             regex = imaginaryLiteralRegex,
             tag = "imaginaryLiteral",
-            isSeparator = false,
             transformation = FloatLiteralValueInjection.injection
             )
 
@@ -732,7 +722,6 @@ object ExamplePythonLexer:
             Rule(
                 regex = re,
                 tag = if (isBytes) f"longBytesString_delimiter_$delimiter" else f"longString_delimiter_$delimiter",
-                isSeparator = false,
                 transformation = if (isBytes) BytesLiteralValueInjection.injection else StringLiteralValueInjection.injection
             )
 
@@ -755,7 +744,6 @@ object ExamplePythonLexer:
             Rule(
                 regex = re,
                 tag = if (isBytes) f"shortBytesString_delimiter_$delimiter" else f"shortString_delimiter_$delimiter",
-                isSeparator = false,
                 transformation = if (isBytes) BytesLiteralValueInjection.injection else StringLiteralValueInjection.injection
             )
 
@@ -776,7 +764,6 @@ object ExamplePythonLexer:
             Rule(
             regex = commentRegex(),
             tag = "comment",
-            isSeparator = true,
             transformation = CommentValueInjection.injection
             )
 
@@ -784,7 +771,6 @@ object ExamplePythonLexer:
             Rule(
             regex = explicitLineJoinRegex(),
             tag = "explicitLineJoin",
-            isSeparator = true,
             transformation = NewLineValueInjection.injection
             )
         // @extern def indentationRegex(): Regex[Char] = 
@@ -798,7 +784,6 @@ object ExamplePythonLexer:
         val indentationRule = Rule(
             regex = indentationRegex(),
             tag = "indentation",
-            isSeparator = false,
             transformation = IndentationValueInjection.injection
         )
 
@@ -806,7 +791,6 @@ object ExamplePythonLexer:
             Rule(
             regex = (" ".r | "\t".r).+,
             tag = "space",
-            isSeparator = true,
             transformation = SpaceValueInjection.injection
             )
 
@@ -814,7 +798,6 @@ object ExamplePythonLexer:
             Rule(
             regex = physicalNewLineRegex(),
             tag = "newLine",
-            isSeparator = true,
             transformation = NewLineValueInjection.injection
             )
 

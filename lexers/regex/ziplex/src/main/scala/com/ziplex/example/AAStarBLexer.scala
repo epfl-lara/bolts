@@ -124,14 +124,12 @@ object ExampleAAStarBLexer:
         val aStarBRule: Rule[Char] = Rule(
             regex = aStarBRe,
             tag = "A_STAR_B",
-            isSeparator = false,
             transformation = AsValueInjection.injection
         )
 
         val aRule : Rule[Char] = Rule(
             regex = aRe,
             tag = "A",
-            isSeparator = false,
             transformation = AsBValueInjection.injection
         )
 

@@ -75,7 +75,7 @@ final case class Token[C](value: TokenValue, rule: Rule[C], size: BigInt, @ghost
   def lemmaCharactersSize(): Unit = {
   }.ensuring(_ => size == originalCharacters.size)
 }
-case class Rule[C](regex: Regex[C], tag: String, isSeparator: Boolean, transformation: TokenValueInjection[C])
+case class Rule[C](regex: Regex[C], tag: String, transformation: TokenValueInjection[C])
 
 @ghost inline def semiInverseBodyModEq[C](toChars: TokenValue => Sequence[C], toValue: Sequence[C] => TokenValue): Boolean = 
   Forall((chars: Sequence[C]) => toChars(toValue(chars)).list == chars.list)
@@ -231,44 +231,5 @@ trait LexerInterface {
     tokensListTwoByTwoPredicateSeparable(seqFromList(tokens), 0, rules))
     ==>  
     (lex(rules, print(seqFromList(tokens)))._1.list == tokens)
-
-
-  // -------------- Invertibility properties with separator tokens and rules ----------------
-
-  /** Prints back the tokens to a sequence of characters of the type C, by adding a separatorToken between each, and after the last
-    *
-    * @param l
-    * @param separatorToken
-    */
-  def printWithSeparatorToken[C: ClassTag](l: Sequence[Token[C]], separatorToken: Token[C]): Sequence[C]
-
-  /**
-    * Returns the Sequence of tokens v with the separator token interleaved between each pair, as
-    * t(0), sep, t(1), sep, ...., t(n), sep
-    * 
-    * printing this results in the same string as calling printWithSeparatorToken
-    *
-    * @param v
-    * @param separatorToken
-    * @param from
-    * @param acc
-    * @return
-    */
-  def withSeparatorToken[C: ClassTag](v: Sequence[Token[C]], separatorToken: Token[C]): Sequence[Token[C]] = {
-    require(separatorToken.rule.isSeparator)
-    ??? : Sequence[Token[C]]
-  }.ensuring(res => print(res).list == printWithSeparatorToken(v, separatorToken).list)
-
-
-  /** Prints back the tokens to a list of characters of the type C, by adding a separatorToken between tokens when the maxPrefix would return
-      * another token if printed back to back.
-      * 
-      * This works by basically trying to print the next token, and trying to retokenize the result.
-      * If the result is not the same as the original token, then we add a separator token.
-      *
-      * @param l
-      * @param separatorToken
-      */
-  def printWithSeparatorTokenWhenNeeded[C: ClassTag](rules: List[Rule[C]], l: Sequence[Token[C]], separatorToken: Token[C]): Sequence[C]
 
 }
