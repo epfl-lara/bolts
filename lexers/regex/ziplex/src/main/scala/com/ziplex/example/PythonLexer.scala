@@ -632,7 +632,7 @@ object ExamplePythonLexer:
 
         // either only zeroes or 1-9 followed by 0-9 (with some _ in between)
         @extern def decimalIntRegex(): Regex[Char] = 
-             ("0".r ~ (opt("_".r) ~ "0".r).*) | (anyOf(digitsString.replace("0", "")) ~ (opt("_".r) ~ digits).*)
+             ("0".r ~ (opt("_".r) ~ "0".r).*) | (range('1', '9') ~ (opt("_".r) ~ digits).*)
 
         val decimalIntRule =
             Rule(
@@ -652,7 +652,7 @@ object ExamplePythonLexer:
             )
 
         @extern def octIntLitRegex(): Regex[Char] = 
-            "0".r ~ ("O".r | "o".r) ~ (opt("_".r) ~ anyOf("01234567").*)
+            "0".r ~ ("O".r | "o".r) ~ (opt("_".r) ~ range('0', '7').*)
 
         val octIntLitRule =
             Rule(
@@ -662,7 +662,7 @@ object ExamplePythonLexer:
             )
 
         @extern def hexIntLitRegex(): Regex[Char] = 
-            "0".r ~ ("X".r | "x".r) ~ (opt("_".r) ~ (digits | anyOf("abcdefABCDEF")).*)
+            "0".r ~ ("X".r | "x".r) ~ (opt("_".r) ~ (digits | range('a', 'f') | range('A', 'F')).*)
 
         val hexIntLitRule =
             Rule(
@@ -705,8 +705,8 @@ object ExamplePythonLexer:
             val prefixRegex = if isBytes then bytesPrefix() else stringPrefix()
             val charsRegex = if isBytes then interval(0x00, 0x7F) else all
             val escapedChars = "\\".r ~ charsRegex
-            val nonDelimiterNonEscape = anyOf(allString.replace(f"$delimiter", "").replace("\\", ""))
-            val nonDelimiter = anyOf(allString.replace(f"$delimiter", ""))
+            val nonDelimiterNonEscape = allExcept(f"$delimiter\\")
+            val nonDelimiter = allExcept(f"$delimiter")
             
             val re: Regex[Char] = 
                 prefixRegex ~ 
@@ -730,7 +730,7 @@ object ExamplePythonLexer:
             val prefixRegex = if isBytes then bytesPrefix() else stringPrefix()
             val charsRegex = if isBytes then interval(0x00, 0x7F) else all
             val escapedChars = "\\".r ~ charsRegex
-            val nonDelimiterNonEscapeNonNewLine = anyOf(allString.replace(f"$delimiter", "").replace("\\", "").replace("\n", ""))
+            val nonDelimiterNonEscapeNonNewLine = allExcept(f"$delimiter\\\n")
             
             val re: Regex[Char] = 
                 prefixRegex ~ 
@@ -757,7 +757,7 @@ object ExamplePythonLexer:
         val shortBytesSqRule = shortStringRuleGen('\'', true)
 
         @extern def physicalNewLineRegex(): Regex[Char] = "\n".r | "\r\n".r | "\r".r
-        @extern def commentRegex(): Regex[Char] = "#".r ~ (anyOf(allString.replace("\n", "").replace("\r", "")).*)
+        @extern def commentRegex(): Regex[Char] = "#".r ~ (allExcept("\n\r").*)
         @extern def explicitLineJoinRegex(): Regex[Char] = "\\".r ~ "\n".r
 
         val commentRule =

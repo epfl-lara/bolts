@@ -534,7 +534,7 @@ object ExampleAmyLexer:
         @extern def integerLiteralRegex(): Regex[Char] = digits.+
         val integerLiteralRule = Rule(regex = integerLiteralRegex(), tag = "integer_literal", transformation = IntegerValueInjection.injection)
 
-        @extern def stringLiteralRegex(): Regex[Char] = "\"".r ~ (azAZ | digits | " ".r | "\t".r | specialCharsString.replace("\"", "").anyOf).* ~ "\"".r
+        @extern def stringLiteralRegex(): Regex[Char] = "\"".r ~ (azAZ | digits | " ".r | "\t".r | specialCharsExcept("\"")).* ~ "\"".r
         val stringLiteralRule = Rule(regex = stringLiteralRegex(), tag = "string_literal", transformation = StringLiteralValueInjection.injection)
 
         @extern def delimiterRegex(): Regex[Char] = anyOf(".,:;(){}[]=") | "=>".r
@@ -548,14 +548,14 @@ object ExampleAmyLexer:
         
         @extern def multiCommentRegex(): Regex[Char] = 
             "/*".r ~ 
-                ((azAZ | digits | whiteSpaces | specialCharsString.replace("*", "").anyOf) | (("*".r.+) ~ (azAZ | digits | whiteSpaces | specialCharsString.replace("/", "").replace("*", "").anyOf))).* ~
+                ((azAZ | digits | whiteSpaces | specialCharsExcept("*")) | (("*".r.+) ~ (azAZ | digits | whiteSpaces | specialCharsExcept("/*")))).* ~
                 "*".r.* ~
             "*/".r
         val multiCommentRule = Rule(regex = multiCommentRegex(), tag = "multiline_comment", transformation = CommentValueInjection.injection )
 
         @extern def unclosedMultiCommentRegex(): Regex[Char] = 
             "/*".r ~ 
-                ((azAZ | digits | whiteSpaces | specialCharsString.replace("*", "").anyOf) | (("*".r.+) ~ (azAZ | digits | whiteSpaces | specialCharsString.replace("/", "").replace("*", "").anyOf))).* ~
+                ((azAZ | digits | whiteSpaces | specialCharsExcept("*")) | (("*".r.+) ~ (azAZ | digits | whiteSpaces | specialCharsExcept("/*")))).* ~
                 "*".r.* 
         val unclosedMultiCommentRule = Rule(regex = unclosedMultiCommentRegex(), tag = "unclosed_multiline_comment", transformation = CommentValueInjection.injection )
 

@@ -274,11 +274,11 @@ object ExampleJsonLexer:
 
     @extern def wsCharRe: Regex[Char] = whiteSpaces.+
     @extern def expPartRe: Regex[Char] = anyOf("eE") ~ opt(anyOf("+-")) ~ digits.+
-    @extern def intRe: Regex[Char] = opt('-'.r) ~ ('0'.r.+ | anyOf("123456789") ~ digits.*)
+    @extern def intRe: Regex[Char] = opt('-'.r) ~ ('0'.r.+ | range('1', '9') ~ digits.*)
     @extern def decimalRe: Regex[Char] = intRe ~ '.'.r ~ digits.+
     @extern def floatRe: Regex[Char] = decimalRe ~ opt(expPartRe)
     @extern def puncRe: Regex[Char] = anyOf("!#$%&()*+,-./:;<=>?@[]^_`{|}~\\")
-    @extern def unicodeDigitsRe: Regex[Char] = anyOf("0123456789ABCDEFabcdef")
+    @extern def unicodeDigitsRe: Regex[Char] = digits | range('A', 'F') | range('a', 'f')
     @extern def fourUnicodeDigitsRe: Regex[Char] = unicodeDigitsRe ~ unicodeDigitsRe ~ unicodeDigitsRe ~ unicodeDigitsRe
     @extern def unicodeCodepointRe: Regex[Char] = '\\'.r ~ 'u'.r ~ fourUnicodeDigitsRe
     @extern def jsonCharRe: Regex[Char] = unicodeCodepointRe | azAZDigits | anyOf(" \t\n") | puncRe | "\\\"".r | "\\\\".r

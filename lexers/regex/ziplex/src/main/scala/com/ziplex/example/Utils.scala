@@ -5,6 +5,7 @@ package com.ziplex.lexer.example
 
 import com.mutablemaps.map.Hashable
 import com.ziplex.lexer.VerifiedRegex._
+import com.ziplex.lexer.Ord
 import com.ziplex.lexer.MemoisationZipper
 import com.ziplex.lexer.ZipperRegex._
 import com.ziplex.lexer.Token
@@ -31,6 +32,26 @@ object RegexUtils:
   extension (s: String) infix def | (s2: String): Regex[Char] = r(s) | r(s2)
   extension (s: String) infix def ~ (s2: String): Regex[Char] = r(s) ~ r(s2)
   extension (s: String) def * : Regex[Char] = r(s).*
+  case object CharOrd extends Ord[Char] {
+    override def lteq(x: Char, y: Char): Boolean = x <= y
+  }
+
+  /** Regex that matches any character in the interval [from, to] */
+  def range(from: Char, to: Char): Regex[Char] = ElementRange(from, to, CharOrd)
+
+  /** Union of the given intervals, after removing the characters of `except` from them (splitting the intervals around them).
+    * Singleton intervals become ElementMatch.
+    */
+  def ranges(intervals: scala.List[(Char, Char)], except: String = ""): Regex[Char] =
+    val pieces = intervals.flatMap((from, to) =>
+      val cuts = except.filter(c => from <= c && c <= to).distinct.sorted
+      val (before, start) = cuts.foldLeft((scala.List.empty[(Char, Char)], from)) { case ((acc, start), c) =>
+        (if start < c then acc :+ (start, (c - 1).toChar) else acc, (c + 1).toChar)
+      }
+      if start <= to then before :+ (start, to) else before
+    )
+    if pieces.isEmpty then EmptyLang()
+    else pieces.map((from, to) => if from == to then ElementMatch(from) else range(from, to)).reduceLeft(_ | _)
   extension (s: String) def anyOf: Regex[Char] = ElementSet(s.toCharArray().foldRight[Set[Char]](Set())((c, acc) => acc + c))
   def opt(r: Regex[Char]): Regex[Char] = r | epsilon
   extension (s: String) def toStainless: Sequence[Char] = seqFromArray(s.toCharArray().foldLeft[IArray[Char]](IArray.empty())((acc, c) => acc.append(c)))
@@ -48,19 +69,34 @@ object RegexUtils:
   val AZString: String = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
   val azString: String = "abcdefghijklmnopqrstuvwxyz"
   val digitsString: String = "0123456789"
-  val whiteSpacesString: String = " \n\t\r"
-  val specialCharsString: String = "+-_/*!?=()[]{}<>|\\&%$§§°`^@#~;:,.éàèçù\'\"`"
-  val allString: String = AZString + azString + digitsString + whiteSpacesString + specialCharsString
 
-  val AZ: Regex[Char] = anyOf(AZString)
-  val az: Regex[Char] = anyOf(azString)
-  val azAZ: Regex[Char] = anyOf(AZString + azString)
-  val digits: Regex[Char] = anyOf(digitsString)
-  val azAZDigits: Regex[Char] = anyOf(AZString + azString + digitsString)
-  val whiteSpaces: Regex[Char] = anyOf(whiteSpacesString)
+  /** '\t' (9), '\n' (10), '\r' (13) and ' ' (32) */
+  val whiteSpacesIntervals: scala.List[(Char, Char)] = scala.List(('\t', '\n'), ('\r', '\r'), (' ', ' '))
+  /** All the ASCII punctuation characters (the 4 intervals between control characters, digits and letters), and a few
+    * Latin-1 characters: '§', '°', 'à', 'ç', 'è', 'é', 'ù'
+    */
+  val specialCharsIntervals: scala.List[(Char, Char)] = scala.List(
+    ('!', '/'), (':', '@'), ('[', '`'), ('{', '~'),
+    ('§', '§'), ('°', '°'), ('à', 'à'), ('ç', 'é'), ('ù', 'ù')
+  )
+  val allIntervals: scala.List[(Char, Char)] = scala.List(('A', 'Z'), ('a', 'z'), ('0', '9')) ++ whiteSpacesIntervals ++ specialCharsIntervals
+
+  private def intervalsString(intervals: scala.List[(Char, Char)]): String = intervals.flatMap((from, to) => from to to).mkString
+  val whiteSpacesString: String = intervalsString(whiteSpacesIntervals)
+  val specialCharsString: String = intervalsString(specialCharsIntervals)
+  val allString: String = intervalsString(allIntervals)
+
+  val AZ: Regex[Char] = range('A', 'Z')
+  val az: Regex[Char] = range('a', 'z')
+  val azAZ: Regex[Char] = AZ | az
+  val digits: Regex[Char] = range('0', '9')
+  val azAZDigits: Regex[Char] = AZ | az | digits
+  val whiteSpaces: Regex[Char] = ranges(whiteSpacesIntervals)
   val epsilon: Regex[Char] = EmptyExpr()
-  val specialChars: Regex[Char] = anyOf(specialCharsString)
-  val all: Regex[Char] = anyOf(allString)
+  val specialChars: Regex[Char] = ranges(specialCharsIntervals)
+  def specialCharsExcept(except: String): Regex[Char] = ranges(specialCharsIntervals, except)
+  val all: Regex[Char] = ranges(allIntervals)
+  def allExcept(except: String): Regex[Char] = ranges(allIntervals, except)
 
   /**
     * Creates a regex that matches any character in the interval [start, end].
@@ -69,11 +105,9 @@ object RegexUtils:
     * @param end the end character (inclusive)
     * @return a regex that matches any character in the interval [start, end]
     */
-  @tailrec
-  def interval(start: Char, end: Char, acc: Regex[Char] = EmptyExpr()): Regex[Char] = {
+  def interval(start: Char, end: Char): Regex[Char] = {
     require(start <= end)
-    if start == end then Union(ElementMatch(start), acc)
-    else interval((start + 1).toChar, end, Union(ElementMatch(start), acc))
+    range(start, end)
   }
 
   extension (t: Token[Char]) def asString(): String = 
