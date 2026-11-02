@@ -18,8 +18,10 @@ Options:
 Examples:
 	./verify.sh
 	./verify.sh --parallel 3
-	./verify.sh -p 3 --json --debug=smt
-	./verify.sh "--json --debug=smt"
+	./verify.sh -p 3 --debug=smt
+	./verify.sh "--debug=smt"
+
+JSON verification reports are written to reports/<YYYY-MM-DD>/task<N>.json.
 EOF
 }
 
@@ -110,9 +112,15 @@ LOG_DIR="$(mktemp -d "${TMP_ROOT%/}/ziplex-verify.XXXXXX")"
 TASK_EXIT=()
 TASK_SECONDS=()
 
+# Each task's JSON verification report goes in a per-day directory under reports/ (same-day runs overwrite it)
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+REPORT_DIR="$SCRIPT_DIR/reports/$(date +%Y-%m-%d)"
+mkdir -p "$REPORT_DIR"
+
 echo "Running verification with parallelism: $PARALLEL"
 echo "Additional Stainless options: ${EXTRA_ARGS[*]}"
 echo "Logs: $LOG_DIR"
+echo "JSON reports: $REPORT_DIR"
 
 for ((i = 0; i < NUM_TASKS; i++)); do
 	echo "Verifying ${TASK_NAMES[$i]}... (task $((i + 1))/$NUM_TASKS)"
@@ -122,6 +130,7 @@ for ((i = 0; i < NUM_TASKS; i++)); do
 	 --config-file=stainless.conf\
 	 --solvers=smt-z3,smt-cvc5\
 	 -D-parallel="$PARALLEL" --functions="${TASK_FUNCTIONS[$i]}"\
+	 --json="$REPORT_DIR/task$((i + 1)).json"\
 	 "${EXTRA_ARGS[@]}" 2>&1 | tee "$LOG_DIR/task$((i + 1)).log"
 	TASK_EXIT+=("${PIPESTATUS[0]}")
 	TASK_SECONDS+=($((SECONDS - start)))
@@ -207,5 +216,6 @@ else
 fi
 echo "  $ALL_TOTAL VCs: $ALL_VALID valid, $ALL_INVALID invalid, $ALL_UNKNOWN unknown · cache hits: $ALL_CACHED ($(percent "$ALL_CACHED" "$ALL_TOTAL")%) · total time: $(fmt_duration "$ALL_SECONDS")"
 echo "  Logs: $LOG_DIR"
+echo "  JSON reports: $REPORT_DIR"
 
 [ "$TASKS_OK" -eq "$NUM_TASKS" ]
