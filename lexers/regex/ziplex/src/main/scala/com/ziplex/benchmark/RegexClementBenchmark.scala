@@ -10,6 +10,7 @@ import org.openjdk.jmh.infra.Blackhole
 import scala.util.Random
 import scala.compiletime.uninitialized
 import com.ziplex.lexer.VerifiedRegex.Regex
+import com.ziplex.lexer.VerifiedRegexMatcher.matchZipperSequence
 import com.ziplex.lexer.VerifiedRegexMatcher.matchZipperSequenceMem
 import com.ziplex.lexer.MemoisationZipper
 import com.ziplex.lexer.ZipperRegex.ZipperDerivationStepsMemoized
@@ -171,6 +172,140 @@ class RegexClementBenchmark {
 
   @Benchmark
   def p19_aPlusPlusPlus_ZipperMem_seq_ranges(state: FreshRegexClementState, bh: Blackhole): Unit = run(RegexClementBenchmarkUtils.patternsRanges, 19, state, bh)
+}
+
+/**
+  * Same patterns, variants and inputs as RegexClementBenchmark, but with the non-memoized zipper matcher
+  * (matchZipperSequence). Separate class so that it can be run on its own.
+  */
+@BenchmarkMode(Array(Mode.AverageTime))
+@OutputTimeUnit(TimeUnit.MICROSECONDS)
+class RegexClementNoMemBenchmark {
+
+  private def run(patterns: Array[Regex[Char]], pid: Int, state: RegexClementState, bh: Blackhole): Unit = {
+    val res = matchZipperSequence(patterns(pid), state.inputs(pid))
+    bh.consume(res)
+  }
+
+  @Benchmark
+  def p00_azPlus_Zipper_seq_noRanges(state: RegexClementState, bh: Blackhole): Unit = run(RegexClementBenchmarkUtils.patternsNoRanges, 0, state, bh)
+
+  @Benchmark
+  def p00_azPlus_Zipper_seq_ranges(state: RegexClementState, bh: Blackhole): Unit = run(RegexClementBenchmarkUtils.patternsRanges, 0, state, bh)
+
+  @Benchmark
+  def p01_identifier_Zipper_seq_noRanges(state: RegexClementState, bh: Blackhole): Unit = run(RegexClementBenchmarkUtils.patternsNoRanges, 1, state, bh)
+
+  @Benchmark
+  def p01_identifier_Zipper_seq_ranges(state: RegexClementState, bh: Blackhole): Unit = run(RegexClementBenchmarkUtils.patternsRanges, 1, state, bh)
+
+  @Benchmark
+  def p02_digitsPlus_Zipper_seq_noRanges(state: RegexClementState, bh: Blackhole): Unit = run(RegexClementBenchmarkUtils.patternsNoRanges, 2, state, bh)
+
+  @Benchmark
+  def p02_digitsPlus_Zipper_seq_ranges(state: RegexClementState, bh: Blackhole): Unit = run(RegexClementBenchmarkUtils.patternsRanges, 2, state, bh)
+
+  @Benchmark
+  def p03_azDigitsPlus_Zipper_seq_noRanges(state: RegexClementState, bh: Blackhole): Unit = run(RegexClementBenchmarkUtils.patternsNoRanges, 3, state, bh)
+
+  @Benchmark
+  def p03_azDigitsPlus_Zipper_seq_ranges(state: RegexClementState, bh: Blackhole): Unit = run(RegexClementBenchmarkUtils.patternsRanges, 3, state, bh)
+
+  @Benchmark
+  def p04_email_Zipper_seq_noRanges(state: RegexClementState, bh: Blackhole): Unit = run(RegexClementBenchmarkUtils.patternsNoRanges, 4, state, bh)
+
+  @Benchmark
+  def p04_email_Zipper_seq_ranges(state: RegexClementState, bh: Blackhole): Unit = run(RegexClementBenchmarkUtils.patternsRanges, 4, state, bh)
+
+  @Benchmark
+  def p05_fooBarBazPlus_Zipper_seq_noRanges(state: RegexClementState, bh: Blackhole): Unit = run(RegexClementBenchmarkUtils.patternsNoRanges, 5, state, bh)
+
+  @Benchmark
+  def p05_fooBarBazPlus_Zipper_seq_ranges(state: RegexClementState, bh: Blackhole): Unit = run(RegexClementBenchmarkUtils.patternsRanges, 5, state, bh)
+
+  @Benchmark
+  def p06_catDogBirdFishPlus_Zipper_seq_noRanges(state: RegexClementState, bh: Blackhole): Unit = run(RegexClementBenchmarkUtils.patternsNoRanges, 6, state, bh)
+
+  @Benchmark
+  def p06_catDogBirdFishPlus_Zipper_seq_ranges(state: RegexClementState, bh: Blackhole): Unit = run(RegexClementBenchmarkUtils.patternsRanges, 6, state, bh)
+
+  @Benchmark
+  def p07_abcPlus_Zipper_seq_noRanges(state: RegexClementState, bh: Blackhole): Unit = run(RegexClementBenchmarkUtils.patternsNoRanges, 7, state, bh)
+
+  @Benchmark
+  def p07_abcPlus_Zipper_seq_ranges(state: RegexClementState, bh: Blackhole): Unit = run(RegexClementBenchmarkUtils.patternsRanges, 7, state, bh)
+
+  @Benchmark
+  def p08_abCdEfPlus_Zipper_seq_noRanges(state: RegexClementState, bh: Blackhole): Unit = run(RegexClementBenchmarkUtils.patternsNoRanges, 8, state, bh)
+
+  @Benchmark
+  def p08_abCdEfPlus_Zipper_seq_ranges(state: RegexClementState, bh: Blackhole): Unit = run(RegexClementBenchmarkUtils.patternsRanges, 8, state, bh)
+
+  @Benchmark
+  def p09_xyzPlus_Zipper_seq_noRanges(state: RegexClementState, bh: Blackhole): Unit = run(RegexClementBenchmarkUtils.patternsNoRanges, 9, state, bh)
+
+  @Benchmark
+  def p09_xyzPlus_Zipper_seq_ranges(state: RegexClementState, bh: Blackhole): Unit = run(RegexClementBenchmarkUtils.patternsRanges, 9, state, bh)
+
+  @Benchmark
+  def p10_aStarBStarCStar_Zipper_seq_noRanges(state: RegexClementState, bh: Blackhole): Unit = run(RegexClementBenchmarkUtils.patternsNoRanges, 10, state, bh)
+
+  @Benchmark
+  def p10_aStarBStarCStar_Zipper_seq_ranges(state: RegexClementState, bh: Blackhole): Unit = run(RegexClementBenchmarkUtils.patternsRanges, 10, state, bh)
+
+  @Benchmark
+  def p11_union16Plus_Zipper_seq_noRanges(state: RegexClementState, bh: Blackhole): Unit = run(RegexClementBenchmarkUtils.patternsNoRanges, 11, state, bh)
+
+  @Benchmark
+  def p11_union16Plus_Zipper_seq_ranges(state: RegexClementState, bh: Blackhole): Unit = run(RegexClementBenchmarkUtils.patternsRanges, 11, state, bh)
+
+  @Benchmark
+  def p12_abcdefghijPlus_Zipper_seq_noRanges(state: RegexClementState, bh: Blackhole): Unit = run(RegexClementBenchmarkUtils.patternsNoRanges, 12, state, bh)
+
+  @Benchmark
+  def p12_abcdefghijPlus_Zipper_seq_ranges(state: RegexClementState, bh: Blackhole): Unit = run(RegexClementBenchmarkUtils.patternsRanges, 12, state, bh)
+
+  @Benchmark
+  def p13_threeRanges_Zipper_seq_noRanges(state: RegexClementState, bh: Blackhole): Unit = run(RegexClementBenchmarkUtils.patternsNoRanges, 13, state, bh)
+
+  @Benchmark
+  def p13_threeRanges_Zipper_seq_ranges(state: RegexClementState, bh: Blackhole): Unit = run(RegexClementBenchmarkUtils.patternsRanges, 13, state, bh)
+
+  @Benchmark
+  def p14_letterDigitPlus_Zipper_seq_noRanges(state: RegexClementState, bh: Blackhole): Unit = run(RegexClementBenchmarkUtils.patternsNoRanges, 14, state, bh)
+
+  @Benchmark
+  def p14_letterDigitPlus_Zipper_seq_ranges(state: RegexClementState, bh: Blackhole): Unit = run(RegexClementBenchmarkUtils.patternsRanges, 14, state, bh)
+
+  @Benchmark
+  def p15_aStarStar_Zipper_seq_noRanges(state: RegexClementState, bh: Blackhole): Unit = run(RegexClementBenchmarkUtils.patternsNoRanges, 15, state, bh)
+
+  @Benchmark
+  def p15_aStarStar_Zipper_seq_ranges(state: RegexClementState, bh: Blackhole): Unit = run(RegexClementBenchmarkUtils.patternsRanges, 15, state, bh)
+
+  @Benchmark
+  def p16_aPlusPlus_Zipper_seq_noRanges(state: RegexClementState, bh: Blackhole): Unit = run(RegexClementBenchmarkUtils.patternsNoRanges, 16, state, bh)
+
+  @Benchmark
+  def p16_aPlusPlus_Zipper_seq_ranges(state: RegexClementState, bh: Blackhole): Unit = run(RegexClementBenchmarkUtils.patternsRanges, 16, state, bh)
+
+  @Benchmark
+  def p17_aOrAaPlus_Zipper_seq_noRanges(state: RegexClementState, bh: Blackhole): Unit = run(RegexClementBenchmarkUtils.patternsNoRanges, 17, state, bh)
+
+  @Benchmark
+  def p17_aOrAaPlus_Zipper_seq_ranges(state: RegexClementState, bh: Blackhole): Unit = run(RegexClementBenchmarkUtils.patternsRanges, 17, state, bh)
+
+  @Benchmark
+  def p18_aStarBStarStar_Zipper_seq_noRanges(state: RegexClementState, bh: Blackhole): Unit = run(RegexClementBenchmarkUtils.patternsNoRanges, 18, state, bh)
+
+  @Benchmark
+  def p18_aStarBStarStar_Zipper_seq_ranges(state: RegexClementState, bh: Blackhole): Unit = run(RegexClementBenchmarkUtils.patternsRanges, 18, state, bh)
+
+  @Benchmark
+  def p19_aPlusPlusPlus_Zipper_seq_noRanges(state: RegexClementState, bh: Blackhole): Unit = run(RegexClementBenchmarkUtils.patternsNoRanges, 19, state, bh)
+
+  @Benchmark
+  def p19_aPlusPlusPlus_Zipper_seq_ranges(state: RegexClementState, bh: Blackhole): Unit = run(RegexClementBenchmarkUtils.patternsRanges, 19, state, bh)
 }
 
 @State(Scope.Thread)
