@@ -32,9 +32,7 @@ object RegexUtils:
   extension (s: String) infix def | (s2: String): Regex[Char] = r(s) | r(s2)
   extension (s: String) infix def ~ (s2: String): Regex[Char] = r(s) ~ r(s2)
   extension (s: String) def * : Regex[Char] = r(s).*
-  case object CharOrd extends Ord[Char] {
-    override def lteq(x: Char, y: Char): Boolean = x <= y
-  }
+  val CharOrd: Ord[Char] = Ord[Char]((x, y) => x <= y)
 
   /** Regex that matches any character in the interval [from, to] */
   def range(from: Char, to: Char): Regex[Char] = ElementRange(from, to, CharOrd)
