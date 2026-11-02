@@ -19,6 +19,9 @@ import com.mutablemaps.map.MutableHashMap
 import stainless.lang.Quantifiers.Exists
 import stainless.lang.Quantifiers.ExistsThe
 import stainless.lang.Quantifiers.pickWitness
+import stainless.lang.Quantifiers.Forall
+import stainless.lang.Quantifiers.Forall2
+import stainless.lang.Quantifiers.Forall3
 
 import com.ziplex.lexer.Sequence
 import com.ziplex.lexer.emptySeq
@@ -50,14 +53,28 @@ def dummyReg(x: BigInt): BigInt = {
 
 /** Total order on the characters, carried by ElementRange to interpret its bounds
   */
-trait Ord[C] {
-  @pure
-  def lteq(x: C, y: C): Boolean
+// trait Ord[C] {
+//   @pure
+//   def lteq(x: C, y: C): Boolean
 
-  @law def reflexivity(x: C): Boolean = lteq(x, x)
-  @law def antisymmetry(x: C, y: C): Boolean = (lteq(x, y) && lteq(y, x)) ==> (x == y)
-  @law def transitivity(x: C, y: C, z: C): Boolean = (lteq(x, y) && lteq(y, z)) ==> lteq(x, z)
-  @law def totality(x: C, y: C): Boolean = lteq(x, y) || lteq(y, x)
+//   @law def reflexivity(x: C): Boolean = lteq(x, x)
+//   @law def antisymmetry(x: C, y: C): Boolean = (lteq(x, y) && lteq(y, x)) ==> (x == y)
+//   @law def transitivity(x: C, y: C, z: C): Boolean = (lteq(x, y) && lteq(y, z)) ==> lteq(x, z)
+//   @law def totality(x: C, y: C): Boolean = lteq(x, y) || lteq(y, x)
+// }
+
+object Ord {
+  @ghost @opaque def reflexive[C](lteq: (C, C) => Boolean): Boolean = Forall((x: C) => lteq(x, x))
+  @ghost @opaque def antisymmetric[C](lteq: (C, C) => Boolean): Boolean = Forall2((x: C, y: C) => (lteq(x, y) && lteq(y, x)) ==> (x == y))
+  @ghost @opaque def transitive[C](lteq: (C, C) => Boolean): Boolean = Forall3((x: C, y: C, z: C) => (lteq(x, y) && lteq(y, z)) ==> lteq(x, z))
+  @ghost @opaque def total[C](lteq: (C, C) => Boolean): Boolean = Forall2((x: C, y: C) => lteq(x, y) || lteq(y, x))
+}
+
+case class Ord[C](lteq: (C, C) => Boolean) {
+  require(Ord.reflexive(lteq))
+  require(Ord.antisymmetric(lteq))
+  require(Ord.transitive(lteq))
+  require(Ord.total(lteq))
 }
 
 // For example, for Char
