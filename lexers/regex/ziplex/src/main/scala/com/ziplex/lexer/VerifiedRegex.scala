@@ -1592,6 +1592,14 @@ object ZipperRegex {
                     assert(matchZipper(zR2, s) == matchZipper(zR2Deriv, stl))
                     assert((matchZipper(zR1, s) || matchZipper(zR2, s)) == matchZipper(z, s))
                     theoremZipperRegexEquiv(zR1, List(Context(List(r1))), r1, s)
+
+                    assert(zipperDepthTotal(List(Context(List(r2)))) == contextDepthTotal(Context(List(r2))))
+                    unfold(contextDepthTotal(Context(List(r2))))
+                    assert(contextDepthTotal(Context(List(r2))) == regexDepthTotal(r2) + contextDepthTotal(Context(List[Regex[C]]())))
+                    assert(zipperDepthTotal(List(Context(List(r)))) == contextDepthTotal(Context(List(r))))
+                    assert(contextDepthTotal(Context(List(r))) == regexDepthTotal(r) + contextDepthTotal(Context(List[Regex[C]]())))
+                    assert(regexDepthTotal(r) == BigInt(1) + regexDepthTotal(r1) + regexDepthTotal(r2))
+                    assert(zipperDepthTotal(List(Context(List(r2)))) < zipperDepthTotal(List(Context(List(r)))))
                     theoremZipperRegexEquiv(zR2, List(Context(List(r2))), r2, s)
                   }
                 }
@@ -1659,6 +1667,10 @@ object ZipperRegex {
                         assert(unfocusZipper(zl) == r)
                         assert(r == generalisedConcat(hd.exprs))
                         assert(hd.exprs == List(r))
+                        assert(contextDepth(Context(List(r1, r2))) == Utils.maxBigInt(regexDepth(r1), contextDepth(Context(List(r2)))))
+                        assert(contextDepth(Context(List(r1, r2))) == Utils.maxBigInt(regexDepth(r1), Utils.maxBigInt(regexDepth(r2), BigInt(0))))
+                        assert(contextDepth(Context(List(r))) == Utils.maxBigInt(regexDepth(r), BigInt(0)))
+                        assert(contextDepth(Context(List(r1, r2))) < contextDepth(Context(List(r))))
                         assert(zipperDepth(List(Context(List(r1, r2)))) < zipperDepth(List(Context(List(r))))) // Measure
                         theoremZipperRegexEquiv(zR1, List(Context(List(r1, r2))), Concat(r1, r2), s)
                       }
@@ -1755,8 +1767,20 @@ object ZipperRegex {
                           assert(r == generalisedConcat(hd.exprs))
                           assert(hd.exprs == Cons(r1, tlExp))
 
+                          assert(zl == List(hd))
+                          assert(zipperDepthTotal(zl) == contextDepthTotal(hd))
+                          assert(contextDepthTotal(hd) == regexDepthTotal(r1) + contextDepthTotal(Context(tlExp)))
+                          assert(regexDepthTotal(r1) == BigInt(1) + regexDepthTotal(rOne) + regexDepthTotal(rTwo))
+
+                          assert(zipperDepthTotal(List(Context(Cons(rOne, tlExp)))) == contextDepthTotal(Context(Cons(rOne, tlExp))))
+                          assert(contextDepthTotal(Context(Cons(rOne, tlExp))) == regexDepthTotal(rOne) + contextDepthTotal(Context(tlExp)))
                           assert(zipperDepthTotal(List(Context(Cons(rOne, tlExp)))) < zipperDepthTotal(zl)) // Measure decreases
+
+
+                          assert(zipperDepthTotal(List(Context(Cons(rTwo, tlExp)))) == contextDepthTotal(Context(Cons(rTwo, tlExp))))
+                          assert(contextDepthTotal(Context(Cons(rTwo, tlExp))) == regexDepthTotal(rTwo) + contextDepthTotal(Context(tlExp)))
                           assert(zipperDepthTotal(List(Context(Cons(rTwo, tlExp)))) < zipperDepthTotal(zl)) // Measure decreases
+
                           theoremZipperRegexEquiv(zVirt1, List(Context(Cons(rOne, tlExp))), generalisedConcat(Cons(rOne, tlExp)), s)
                           theoremZipperRegexEquiv(zVirt2, List(Context(Cons(rTwo, tlExp))), generalisedConcat(Cons(rTwo, tlExp)), s)
                           mainMatchTheorem(generalisedConcat(Cons(rOne, tlExp)), s)
@@ -1805,6 +1829,13 @@ object ZipperRegex {
                           assert(hd.exprs == Cons(Concat(rOne, rTwo), tlExp))
                           assert(contextDepthTotal(Context(Cons(rOne, Cons(rTwo, tlExp)))) < contextDepthTotal(Context(hd.exprs)))
                           assert(zipperDepthTotal(List(Context(Cons(rOne, Cons(rTwo, tlExp))))) < zipperDepthTotal(zl)) // Measure decreases
+
+                          assert(zl == List(hd))
+                          assert(zipperDepth(zl) == Utils.maxBigInt(contextDepth(hd), BigInt(0)))
+                          assert(contextDepth(hd) == Utils.maxBigInt(regexDepth(Concat(rOne, rTwo)), contextDepth(Context(tlExp))))
+                          assert(contextDepth(Context(Cons(rTwo, tlExp))) == Utils.maxBigInt(regexDepth(rTwo), contextDepth(Context(tlExp))))
+                          assert(contextDepth(Context(Cons(rOne, Cons(rTwo, tlExp)))) == Utils.maxBigInt(regexDepth(rOne), contextDepth(Context(Cons(rTwo, tlExp)))))
+                          assert(zipperDepth(List(Context(Cons(rOne, Cons(rTwo, tlExp))))) == Utils.maxBigInt(contextDepth(Context(Cons(rOne, Cons(rTwo, tlExp)))), BigInt(0)))
                           assert(zipperDepth(List(Context(Cons(rOne, Cons(rTwo, tlExp))))) <= zipperDepth(zl)) // Measure decreases
                           theoremZipperRegexEquiv(zVirt1, List(Context(Cons(rOne, Cons(rTwo, tlExp)))), generalisedConcat(Cons(rOne, Cons(rTwo, tlExp))), s)
                           theoremZipperRegexEquiv(zVirt2, List(Context(Cons(rTwo, tlExp))), generalisedConcat(Cons(rTwo, tlExp)), s)
