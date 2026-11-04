@@ -15,6 +15,7 @@ import com.ziplex.lexer.example.ExampleAmyLexer.AmyLexer
 import com.ziplex.lexer.example.RegexUtils.*
 import com.ziplex.benchmark.original.OriginalAmyLexer
 import com.ziplex.lexer.MemoisationZipper
+import com.ziplex.lexer.ZipperRegex.ZipperDerivationStepsMemoized
 import com.ziplex.lexer.VerifiedRegex.Regex
 import com.mutablemaps.map.Hashable
 import com.ziplex.lexer.ZipperRegex.Context
@@ -40,8 +41,7 @@ class AmyLexerBenchmark {
   def lex_ZipperV1Mem(state: FreshAmyExampleV1MemState, bh: Blackhole): Unit = {
     val (tokens, suffix) = Lexer.lexV1Mem(AmyLexer.rules, state.content)(
       using ClassTag.Char,
-      state.zipperCacheUp,
-      state.zipperCacheDown
+      state.zipperMemSteps
     )
     bh.consume(suffix.isEmpty)
   }
@@ -50,8 +50,7 @@ class AmyLexerBenchmark {
   // def lex_ZipperV1Mem_Warm(state: WarmAmyExampleV1MemState, bh: Blackhole): Unit = {
   //   val (tokens, suffix) = Lexer.lexV1Mem(AmyLexer.rules, state.content)(
   //     using ClassTag.Char,
-  //     state.zipperCacheUp,
-  //     state.zipperCacheDown
+  //     state.zipperMemSteps
   //   )
   //   bh.consume(suffix.isEmpty)
   // }
@@ -60,8 +59,7 @@ class AmyLexerBenchmark {
   def lex_ZipperV3Mem(state: FreshAmyExampleV3MemState, bh: Blackhole): Unit = {
     val (tokens, suffix) = Lexer.lexMem(AmyLexer.rules, state.content)(
       using ClassTag.Char,
-      state.zipperCacheUp,
-      state.zipperCacheDown,
+      state.zipperMemSteps,
       state.furthestNullableCache
     )
     bh.consume(suffix.isEmpty)
@@ -71,8 +69,7 @@ class AmyLexerBenchmark {
   // def lex_ZipperV3Mem_Warm(state: WarmAmyExampleV3MemState, bh: Blackhole): Unit = {
   //   val (tokens, suffix) = Lexer.lexMem(AmyLexer.rules, state.content)(
   //     using ClassTag.Char,
-  //     state.zipperCacheUp,
-  //     state.zipperCacheDown,
+  //     state.zipperMemSteps,
   //     state.furthestNullableCache
   //   )
   //   bh.consume(suffix.isEmpty)
@@ -93,8 +90,7 @@ class AmyLexerBenchmarkGenerated {
   def lex_ZipperV1Mem(state: FreshAmyGeneratedV1MemState): Unit = {
     val (tokens, suffix) = Lexer.lexV1Mem(AmyLexer.rules, state.content)(
       using ClassTag.Char,
-      state.zipperCacheUp,
-      state.zipperCacheDown
+      state.zipperMemSteps
     )
     assert(suffix.isEmpty)
   }
@@ -103,8 +99,7 @@ class AmyLexerBenchmarkGenerated {
   // def lex_ZipperV1Mem_Warm(state: WarmAmyGeneratedV1MemState): Unit = {
   //   val (tokens, suffix) = Lexer.lexV1Mem(AmyLexer.rules, state.content)(
   //     using ClassTag.Char,
-  //     state.zipperCacheUp,
-  //     state.zipperCacheDown
+  //     state.zipperMemSteps
   //   )
   //   assert(suffix.isEmpty)
   // }
@@ -113,8 +108,7 @@ class AmyLexerBenchmarkGenerated {
   def lex_ZipperMem(state: FreshAmyGeneratedV3MemState): Unit = {
     val (tokens, suffix) = Lexer.lexMem(AmyLexer.rules, state.content)(
       using ClassTag.Char,
-      state.zipperCacheUp,
-      state.zipperCacheDown,
+      state.zipperMemSteps,
       state.furthestNullableCache
     )
     assert(suffix.isEmpty)
@@ -124,8 +118,7 @@ class AmyLexerBenchmarkGenerated {
   // def lex_ZipperMem_Warm(state: WarmAmyGeneratedV3MemState): Unit = {
   //   val (tokens, suffix) = Lexer.lexMem(AmyLexer.rules, state.content)(
   //     using ClassTag.Char,
-  //     state.zipperCacheUp,
-  //     state.zipperCacheDown,
+  //     state.zipperMemSteps,
   //     state.furthestNullableCache
   //   )
   //   assert(suffix.isEmpty)
@@ -210,11 +203,13 @@ class AmyGeneratedFileState {
 class FreshAmyExampleV1MemState extends AmyExampleFileState {
   var zipperCacheUp: MemoisationZipper.CacheUp[Char] = uninitialized
   var zipperCacheDown: MemoisationZipper.CacheDown[Char] = uninitialized
+  var zipperMemSteps: ZipperDerivationStepsMemoized[Char] = uninitialized
 
   @Setup(Level.Iteration)
   def setupCaches(): Unit = {
     zipperCacheUp = MemoisationZipper.emptyUp(ContextCharHashable)
     zipperCacheDown = MemoisationZipper.emptyDown(RegexContextCharHashable)
+    zipperMemSteps = ZipperDerivationStepsMemoized(zipperCacheUp, zipperCacheDown)
   }
 }
 
@@ -224,8 +219,7 @@ class WarmAmyExampleV1MemState extends FreshAmyExampleV1MemState {
   def warm(): Unit = {
     val (_, suffix) = Lexer.lexV1Mem(AmyLexer.rules, content)(
       using ClassTag.Char,
-      zipperCacheUp,
-      zipperCacheDown
+      zipperMemSteps
     )
     assert(suffix.isEmpty)
   }
@@ -235,12 +229,14 @@ class WarmAmyExampleV1MemState extends FreshAmyExampleV1MemState {
 class FreshAmyExampleV3MemState extends AmyExampleFileState {
   var zipperCacheUp: MemoisationZipper.CacheUp[Char] = uninitialized
   var zipperCacheDown: MemoisationZipper.CacheDown[Char] = uninitialized
+  var zipperMemSteps: ZipperDerivationStepsMemoized[Char] = uninitialized
   var furthestNullableCache: MemoisationZipper.CacheFurthestNullable[Char] = uninitialized
 
   @Setup(Level.Iteration)
   def setupCaches(): Unit = {
     zipperCacheUp = MemoisationZipper.emptyUp(ContextCharHashable)
     zipperCacheDown = MemoisationZipper.emptyDown(RegexContextCharHashable)
+    zipperMemSteps = ZipperDerivationStepsMemoized(zipperCacheUp, zipperCacheDown)
     furthestNullableCache =
       MemoisationZipper.emptyFurthestNullableCache[Char](
         ExampleUtils.ZipperBigIntBigIntHashable,
@@ -256,8 +252,7 @@ class WarmAmyExampleV3MemState extends FreshAmyExampleV3MemState {
   def warm(): Unit = {
     val (_, suffix) = Lexer.lexMem(AmyLexer.rules, content)(
       using ClassTag.Char,
-      zipperCacheUp,
-      zipperCacheDown,
+      zipperMemSteps,
       furthestNullableCache
     )
     assert(suffix.isEmpty)
@@ -268,11 +263,13 @@ class WarmAmyExampleV3MemState extends FreshAmyExampleV3MemState {
 class FreshAmyGeneratedV1MemState extends AmyGeneratedFileState {
   var zipperCacheUp: MemoisationZipper.CacheUp[Char] = uninitialized
   var zipperCacheDown: MemoisationZipper.CacheDown[Char] = uninitialized
+  var zipperMemSteps: ZipperDerivationStepsMemoized[Char] = uninitialized
 
   @Setup(Level.Iteration)
   def setupCaches(): Unit = {
     zipperCacheUp = MemoisationZipper.emptyUp(ContextCharHashable)
     zipperCacheDown = MemoisationZipper.emptyDown(RegexContextCharHashable)
+    zipperMemSteps = ZipperDerivationStepsMemoized(zipperCacheUp, zipperCacheDown)
   }
 }
 
@@ -282,8 +279,7 @@ class WarmAmyGeneratedV1MemState extends FreshAmyGeneratedV1MemState {
   def warm(): Unit = {
     val (_, suffix) = Lexer.lexV1Mem(AmyLexer.rules, content)(
       using ClassTag.Char,
-      zipperCacheUp,
-      zipperCacheDown
+      zipperMemSteps
     )
     assert(suffix.isEmpty)
   }
@@ -293,12 +289,14 @@ class WarmAmyGeneratedV1MemState extends FreshAmyGeneratedV1MemState {
 class FreshAmyGeneratedV3MemState extends AmyGeneratedFileState {
   var zipperCacheUp: MemoisationZipper.CacheUp[Char] = uninitialized
   var zipperCacheDown: MemoisationZipper.CacheDown[Char] = uninitialized
+  var zipperMemSteps: ZipperDerivationStepsMemoized[Char] = uninitialized
   var furthestNullableCache: MemoisationZipper.CacheFurthestNullable[Char] = uninitialized
 
   @Setup(Level.Iteration)
   def setupCaches(): Unit = {
     zipperCacheUp = MemoisationZipper.emptyUp(ContextCharHashable)
     zipperCacheDown = MemoisationZipper.emptyDown(RegexContextCharHashable)
+    zipperMemSteps = ZipperDerivationStepsMemoized(zipperCacheUp, zipperCacheDown)
     furthestNullableCache =
       MemoisationZipper.emptyFurthestNullableCache[Char](
         ExampleUtils.ZipperBigIntBigIntHashable,
@@ -314,8 +312,7 @@ class WarmAmyGeneratedV3MemState extends FreshAmyGeneratedV3MemState {
   def warm(): Unit = {
     val (_, suffix) = Lexer.lexMem(AmyLexer.rules, content)(
       using ClassTag.Char,
-      zipperCacheUp,
-      zipperCacheDown,
+      zipperMemSteps,
       furthestNullableCache
     )
     assert(suffix.isEmpty)
