@@ -39,6 +39,8 @@ object Main {
     // regexZipperExample()
     // exampleJsonSorting()
 
+    regexMainEntryPoint()
+    println("-\n\n====================\n\n-")
     regexZipperVisualizationAOrBStarConcatC()
     println("-\n\n====================\n\n-")
     regexZipperVisualizationAThenBThenC()
@@ -59,7 +61,7 @@ object Main {
     JsonLexerBenchmarkUtils.exampleFileNames.foreach { name =>
       val content = JsonLexerBenchmarkUtils.exampleFileContents(name)
       val warmups = 2
-      for (_ <- 0 until warmups) {
+      for (_ <- 0.until(warmups)) {
         val up = MemoisationZipper.emptyUp(ContextCharHashable)
         val down = MemoisationZipper.emptyDown(RegexContextCharHashable)
         val furthest = MemoisationZipper.emptyFurthestNullableCache[Char](
@@ -71,7 +73,7 @@ object Main {
         assert(suffix.isEmpty)
       }
       val times = Array.ofDim[Double](n)
-      for (i <- 0 until n) {
+      for (i <- 0.until(n)) {
         val up = MemoisationZipper.emptyUp(ContextCharHashable)
         val down = MemoisationZipper.emptyDown(RegexContextCharHashable)
         val furthest = MemoisationZipper.emptyFurthestNullableCache[Char](
@@ -166,12 +168,23 @@ object Main {
   }
 
 
-  def regexZipperExample() = {
+  def regexMainEntryPoint() = {
     val r: Regex[Char] = ("a".r | "b".r).* ~ "c".r
     val input: Sequence[Char] = "ababc".toStainless
-    assert(matchZipperSequence(r, input))
-    assert(matchZipperSequenceMem(r, input)(using ExampleUtils.zipperMemSteps))
 
+    // Without memoization
+    assert(matchZipperSequence(r, input))
+
+    // With memoization
+    val cacheUp = MemoisationZipper.emptyUp(ContextCharHashable)
+    val cacheDown = MemoisationZipper.emptyDown(RegexContextCharHashable)
+    assert(matchZipperSequenceMem(r, input)(using cacheUp, cacheDown))
+
+    // or using the predefined caches in ExampleUtils
+    assert(matchZipperSequenceMem(r, input)(using ExampleUtils.zipperCacheUp, ExampleUtils.zipperCacheDown))
+
+    // For better performance, the caches can be reused across multiple calls to matchZipperSequenceMem, 
+    // especially if the same regex is used multiple times.
   }
 
   def regexZipperVisualizationAOrBStarConcatC() = {
