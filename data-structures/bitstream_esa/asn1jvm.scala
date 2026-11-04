@@ -228,9 +228,10 @@ def int2uint(v: Long): ULong = {
     ULong.fromRaw(ret)
 }
 
+@inline
 def onesLSBLong(nBits: Int): Long = {
     require(0 <= nBits && nBits <= 64)
-    -1L >>> (64 - nBits)
+    if (nBits == 64 || nBits == 0) then -1L else -1L >>> (64 - nBits)
 }
 
 def bitLSBLong(bit: Boolean, nBits: Int): Long = {
@@ -250,7 +251,7 @@ def bitMSBLong(bit: Boolean, nBits: Int): Long = {
 }
 
 def uint2int(v: ULong, uintSizeInBytes: Int): Long = {
-    require(uintSizeInBytes >= 1 && uintSizeInBytes <= 9)
+    require(uintSizeInBytes >= 1 && uintSizeInBytes <= 8)
 
     var vv = v.toRaw
     val tmp: ULong = 0x80
