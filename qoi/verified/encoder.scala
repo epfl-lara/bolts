@@ -129,6 +129,8 @@ object encoder {
         check(decoder.decodeHeader(bytes) == Some((w, h, chan)))
       }
 
+      decoder.toIntMulToLongLemma(w, h, chan)
+      check((w.toInt * h.toInt * chan.toInt).toLong == w * h * chan)
       decoder.decodeLemma(outPos + Padding)
       val SomeMut(decoder.DecodedResult(actuallyDecoded, ww, hh, cchan)) = decoder.decode(bytes, outPos + Padding): @unchecked
       check(ww == w)
@@ -876,12 +878,26 @@ object encoder {
       check(newDecoded.pxPos + chan * run1 == pxPos + chan)
       check((outPos0 == outPos2) ==> (decoded == newDecoded && run1 == run0 + 1 && px == pxPrev))
 
+      // Postcondition conjuncts, checked separately to split the (slow) postcondition VC
+      check(bytes.length == maxSize)
+      check(index.length == 64)
+      check(outPos0 <= outPos2)
+      check(outPosInv(outPos2))
+      check(runInv(run1))
+      check((run1 > 0) ==> (bytes == bytesPre && outPos2 == outPos0))
+      check((pxPos == pxEnd) ==> (run1 == 0))
+      check((chan == 3) ==> (Pixel.a(px) == 255.toByte))
+      check(newDecoded.pixels.length == pixels.length)
+      check(pxPosInv(newDecoded.pxPos))
+
       decoded.index = freshCopy(newDecoded.index)
       decoded.pixels = freshCopy(newDecoded.pixels)
       decoded.inPos = newDecoded.inPos
       decoded.pxPos = newDecoded.pxPos
 
       check(index == decoded.index)
+      check(decoded.pixels.length == pixels.length)
+      check(pxPosInv(decoded.pxPos))
     }
 
     EncodingIteration(px, outPos2, run1)

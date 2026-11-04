@@ -51,9 +51,20 @@ object decoder {
           val index = Array.fill(64)(0)
           val pixels = allocArray(w.toInt * h.toInt * chan.toInt)
           val px = Pixel.fromRgba(0, 0, 0, 255.toByte)
+          ghostExpr {
+            check(index == Array.fill(64)(0))
+            check(pixels == Array.fill(w.toInt * h.toInt * chan.toInt)(0: Byte))
+            check(pixels.length == w.toInt * h.toInt * chan.toInt)
+            toIntMulToLongLemma(w, h, chan)
+            check(pixels.length.toLong == w * h * chan)
+          }
+          @ghost val loopSpec = decodeLoopPure(index, pixels, px, HeaderSize, until - Padding, 0)(using DecCtx(bytes, w, h, chan))
           val decIter = decodeLoop(index, pixels, px, HeaderSize, until - Padding, 0)(using DecCtx(bytes, w, h, chan))
           @ghost val pixelsPreWrite = freshCopy(pixels)
           ghostExpr {
+            check(decIter == loopSpec._3)
+            check(pixelsPreWrite == loopSpec._2)
+            check(pixelsPreWrite.length == w.toInt * h.toInt * chan.toInt)
             check(0 <= decIter.pxPos && decIter.pxPos <= pixels.length)
             check(decIter.pxPos % chan == 0)
           }
@@ -68,6 +79,14 @@ object decoder {
               check(arraysEq(pixelsPreWrite, pixels, 0, decIter.pxPos))
             }
             check((decIter.pxPos != pixels.length) ==> samePixelsForall(pixels, decIter.px, decIter.pxPos, pixels.length, chan))
+            check(pixels.length == pixelsPreWrite.length)
+            check(pixels.length == w.toInt * h.toInt * chan.toInt)
+            toIntMulToLongLemma(w, h, chan)
+            check(pixels.length.toLong == w * h * chan)
+            check(decodeHeader(bytes) == Some((w, h, chan)))
+            modMultLemma(w, h, chan)
+            unfold(decodeSpec(pixels, until)(using DecCtx(bytes, w, h, chan)))
+            check(decodeSpec(pixels, until)(using DecCtx(bytes, w, h, chan)))
           }
           SomeMut(DecodedResult(pixels, w, h, chan))
 
@@ -77,8 +96,26 @@ object decoder {
   }.ensuring {
     case SomeMut(DecodedResult(pixels, ww, hh, cchan)) =>
       pixels.length == ww.toInt * hh.toInt * cchan.toInt &&&
-      decodeHeader(old(bytes)) == Some((ww, hh, cchan)) 
+      decodeHeader(old(bytes)) == Some((ww, hh, cchan)) &&&
+      decodeSpec(pixels, until)(using DecCtx(old(bytes), ww, hh, cchan))
     case NoneMut() => true
+  }
+
+  // Relates the pixels returned by `decode` to the pure decoding loop started from the initial state:
+  // the decoded prefix agrees with `decodeLoopPure` and the remaining pixels are filled with the last decoded pixel.
+  @ghost
+  @pure
+  @opaque
+  def decodeSpec(pixels: Array[Byte], until: Long)(using DecCtx): Boolean = {
+    require(HeaderSize + Padding < until && until <= bytes.length)
+    require(pixels.length == pixelsLen)
+    val initPixels = Array.fill(w.toInt * h.toInt * chan.toInt)(0: Byte)
+    val loopRes = decodeLoopPure(Array.fill(64)(0), initPixels, Pixel.fromRgba(0, 0, 0, 255.toByte), HeaderSize, until - Padding, 0)
+    val decodedPixLoop = loopRes._2
+    val decIter = loopRes._3
+    modMultLemma(w, h, chan)
+    arraysEq(decodedPixLoop, pixels, 0, decIter.pxPos) &&&
+    ((decIter.pxPos != pixels.length) ==> samePixelsForall(pixels, decIter.px, decIter.pxPos, pixels.length, chan))
   }
 
   @ghost
@@ -674,6 +711,17 @@ object decoder {
   @ghost
   @opaque
   @inlineOnce
+  def toIntMulToLongLemma(w: Long, h: Long, chan: Long): Unit = {
+    require(0 < w && w <= MaxWidth)
+    require(0 < h && h <= MaxHeight)
+    require(3 <= chan && chan <= 4)
+    check((w.toInt * h.toInt).toLong == w * h)
+    check((w.toInt * h.toInt * chan.toInt).toLong == w * h * chan)
+  }.ensuring(_ => (w.toInt * h.toInt * chan.toInt).toLong == w * h * chan)
+
+  @ghost
+  @opaque
+  @inlineOnce
   def toIntMulEqLemma(ww: Long, hh: Long, cchan: Long, w: Long, h: Long, chan: Long): Unit = {
     require(ww == w && hh == h && cchan == chan)
   }.ensuring(_ => ww.toInt * hh.toInt * cchan.toInt == w.toInt * h.toInt * chan.toInt)
@@ -682,7 +730,7 @@ object decoder {
   @pure
   @opaque
   @inlineOnce
-  def decodeLemma(until: Long)(using DecCtx): Unit = {
+  def decodeLemma(until: Long)(using ctx: DecCtx): Unit = {
     require(HeaderSize + Padding < until && until <= bytes.length)
     val readMagic = read32(bytes, 0)
     val readW = read32(bytes, 4)
@@ -709,12 +757,20 @@ object decoder {
       check(decodedPixels.length == ww.toInt * hh.toInt * cchan.toInt)
       toIntMulEqLemma(ww, hh, cchan, w, h, chan)
       check(decodedPixels.length == initPixelsLen)
+      check(initPixelsLen.toLong == w * h * chan)
+      check(decodedPixels.length.toLong == w * h * chan)
+      check(w * h * chan == ww * hh * cchan)
+      check(decodedPixels.length.toLong == ww * hh * cchan)
       modMultLemma(w, h, chan)
       modMultLemma(ww, hh, cchan)
       internalLemmaPxPosInvImpliesModChanEq0(decodedPixels.length)
       check(decodedPixels.length % chan == 0)
       check(0 <= decIter.pxPos && decIter.pxPos <= decodedPixels.length)
       check(decIter.pxPos % chan == 0)
+      check(decodeSpec(decodedPixels, until)(using DecCtx(bytes, ww, hh, cchan)))
+      check(DecCtx(bytes, ww, hh, cchan) == ctx)
+      check(decodeSpec(decodedPixels, until))
+      unfold(decodeSpec(decodedPixels, until))
       check(arraysEq(decodedPixLoop, decodedPixels, 0, decIter.pxPos))
       check(((decIter.pxPos != decodedPixels.length) ==> samePixelsForall(decodedPixels, decIter.px, decIter.pxPos, decodedPixels.length, chan)))
     }.ensuring { _ =>
