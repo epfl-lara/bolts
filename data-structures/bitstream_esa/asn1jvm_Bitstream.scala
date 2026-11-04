@@ -1009,6 +1009,11 @@ case class BitStream private [asn1scala](
             assert(r2_23 == r1_13.withMovedBitIndex(1)) // really slow ~250sec
             check(resGot_13 == resGot_23)
             check(r3Got_13 == r3_13)
+
+            // Link to the recursive postcondition, whose accumulator is v & ~onesLSBLong(nBits - i - 1)
+            check(upd == (v & ~onesLSBLong(nBits - i - 1)))
+            check(resGot_23 == v)
+            check(resGot_13 == v)
          }
       } else {
          ghostExpr {
@@ -1019,8 +1024,8 @@ case class BitStream private [asn1scala](
       val w1 = old(this)
       val w2 = this
       w1.buf.length == w2.buf.length && BitStream.bitIndex(w2.buf.length, w2.currentByte, w2.currentBit ) == BitStream.bitIndex(w1.buf.length, w1.currentByte, w1.currentBit ) + (nBits - i) 
-      && w1.isPrefixOf(w2) 
-      && {
+      &&& w1.isPrefixOf(w2) 
+      &&& {
          val (r1, r2) = reader(w1, w2)
          val zeroed = v & ~onesLSBLong(nBits - i)
          validateOffsetBitsContentIrrelevancyLemma(w1, w2.buf, nBits - i)
@@ -1855,23 +1860,38 @@ case class BitStream private [asn1scala](
       (cpy, res)
    }
 
+
    def readNLeastSignificantBitsLoop(nBits: Int, i: Int, acc: Long): Long = {
       require(0 <= i && i <= nBits && nBits <= 64)
       require(BitStream.validate_offset_bits(buf.length.toLong, currentByte.toLong, currentBit.toLong, nBits - i))
       require((acc & onesLSBLong(nBits - i)) == 0L) //  The nBits - i LSBs must be 0
       require((acc & onesLSBLong(nBits)) == acc)
       decreases(nBits - i)
+      @ghost val oldThis = snapshot(this)
       if (nBits == i) {
          acc
       } else {
+         @ghost val bitPure = readBitPure()._2
          val bit = readBit()
+         ghostExpr(check(bit == bitPure))
          val newAcc = acc | (if bit then 1L << (nBits - 1 - i) else 0)
-         readNLeastSignificantBitsLoop(nBits, i + 1, newAcc)
+         // Setting bit (nBits - 1 - i) leaves everything above it untouched
+         ghostExpr(check((nBits - i == 64) || (newAcc >>> (nBits - i)) == (acc >>> (nBits - i))))
+         ghostExpr(check((((newAcc >>> (nBits - 1 - i)) & 1) == 1) == bit))
+         val res = readNLeastSignificantBitsLoop(nBits, i + 1, newAcc)
+         ghostExpr({
+            // From the recursive call (nBits - (i + 1) < 64)
+            check((res >>> (nBits - 1 - i)) == (newAcc >>> (nBits - 1 - i)))
+            check((((res >>> (nBits - 1 - i)) & 1) == 1) == bit)
+            check((nBits - i == 64) || (res >>> (nBits - i)) == (acc >>> (nBits - i)))
+         })
+         res
       }
    }.ensuring { res =>
-      buf == old(this).buf &&
+      buf == old(this).buf &&&
       BitStream.bitIndex(buf.length, currentByte, currentBit) == BitStream.bitIndex(old(this).buf.length, old(this).currentByte, old(this).currentBit ) + (nBits - i) &&
-      (res >>> (nBits - i) == acc >>> (nBits - i)) &&
+      // The bits above position nBits - i are unchanged (vacuous when nBits - i == 64)
+      ((nBits - i == 64) || (res >>> (nBits - i)) == (acc >>> (nBits - i))) &&
       (res & onesLSBLong(nBits)) == res &&
       (i < nBits) ==> ((((res >>> (nBits - 1 - i)) & 1) == 1) == old(this).readBitPure()._2)
    }

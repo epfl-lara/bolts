@@ -504,9 +504,19 @@ object MemoisationZipper {
 
 object VerifiedRegex {
   sealed trait Regex[C]:
-    lazy val nullable: Boolean = this.nullableFct
-    lazy val lostCause: Boolean = this.lostCauseFct
-    lazy val hash: Long = this.hashFct
+    // Explicit measures (the lazy val and its *Fct are mutually recursive): avoids slow measure inference
+    lazy val nullable: Boolean = {
+      decreases(this, BigInt(1))
+      this.nullableFct
+    }
+    lazy val lostCause: Boolean = {
+      decreases(this, BigInt(1))
+      this.lostCauseFct
+    }
+    lazy val hash: Long = {
+      decreases(this, BigInt(1))
+      this.hashFct
+    }
   end Regex
   case class ElementMatch[C](c: C) extends Regex[C]
   case class ElementSet[C](cs: Set[C]) extends Regex[C]
@@ -615,6 +625,7 @@ object VerifiedRegex {
   }
 
   extension[C] (r: Regex[C]) @pure def nullableFct: Boolean = {
+    decreases(r, BigInt(0))
     r match {
       case EmptyExpr()        => true
       case EmptyLang()        => false
@@ -627,6 +638,7 @@ object VerifiedRegex {
   }
 
   extension[C] (r: Regex[C]) @pure def lostCauseFct: Boolean = {
+    decreases(r, BigInt(0))
     r match {
       case EmptyExpr()        => false
       case EmptyLang()        => true
@@ -650,6 +662,7 @@ object VerifiedRegex {
   @pure inline def mix1(tag: Long, a: Long): Long = fmix64(tag * 0x9e3779b97f4a7c15L + a)
   @pure inline def mix2(tag: Long, a: Long, b: Long): Long = fmix64(tag * 0x9e3779b97f4a7c15L + a * 0xbf58476d1ce4e5b9L + b)
   extension[C] (r: Regex[C]) @pure def hashFct: Long = {
+    decreases(r, BigInt(0))
     r match {
       case EmptyExpr() =>
         mix1(1L, 0L)
@@ -687,6 +700,7 @@ object VerifiedRegex {
    */
   @ghost 
   def getLanguageWitness[C](r: Regex[C]): Option[List[C]] = {
+    decreases(r)
     r match {
       case EmptyExpr()        => Some(List())
       case EmptyLang()        => None()
