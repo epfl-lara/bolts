@@ -1765,6 +1765,18 @@ object ZipperRegex {
                           assert(matchR(r, s) == matchR(r2, stl))
                           check(matchR(r, s) == matchZipper(z, s))
                         }
+                        case ElementSet(cs) if cs.contains(shd) => {
+                          assert(zDerivDown == Set(Context(tlExp)))
+                          val zVirt = Set(Context(tlExp))
+                          theoremZipperRegexEquiv(zVirt, List(Context(tlExp)), generalisedConcat(tlExp), stl)
+                          assert(matchR(generalisedConcat(tlExp), stl) == matchZipper(zVirt, stl))
+                          assert(matchR(generalisedConcat(tlExp), stl) == matchZipper(zDerivDown, stl))
+                          assert(matchZipper(z, s) == matchR(r2, stl))
+                          assert(derivativeStep(r1, shd) == EmptyExpr[C]())
+                          lemmaSingleCharRegexConcatMatchesSameAsTail(r1, r2, shd, stl)
+                          assert(matchR(r, s) == matchR(r2, stl))
+                          check(matchR(r, s) == matchZipper(z, s))
+                        }
                         case ElementRange(from, to, ord) if ord.lteq(from, shd) && ord.lteq(shd, to) => {
                           assert(zDerivDown == Set(Context(tlExp)))
                           val zVirt = Set(Context(tlExp))
@@ -2074,6 +2086,28 @@ object ZipperRegex {
                     assert(unfocusZipper(List(Context(List(Star(rInner))))) == Star(rInner))
                     mainMatchTheorem(rR1, s)
 
+                    // Measure: zl == List(Context(List(Star(rInner))))
+                    assert(tlExp.isEmpty)
+                    assert(hd.exprs == List(Star(rInner)))
+                    assert(zl == List(hd))
+                    assert(List(Context(List(Star(rInner)))) == zl)
+                    val zlDepth = zipperDepthTotal(zl)
+                    assert(zlDepth == contextDepthTotal(hd))
+                    assert(contextDepthTotal(hd) == regexDepthTotal(Star(rInner)) + contextDepthTotal(Context(List[Regex[C]]())))
+                    assert(regexDepthTotal(Star(rInner)) == BigInt(1) + regexDepthTotal(rInner))
+                    assert(zlDepth == regexDepthTotal(rInner) + BigInt(2))
+
+                    val subZR1Depth = zipperDepthTotal(List(Context(List(rInner))))
+                    assert(subZR1Depth == contextDepthTotal(Context(List(rInner))))
+                    assert(contextDepthTotal(Context(List(rInner))) == regexDepthTotal(rInner) + contextDepthTotal(Context(List[Regex[C]]())))
+                    assert(subZR1Depth == regexDepthTotal(rInner) + BigInt(1))
+                    check(subZR1Depth < zlDepth) // Measure for subZR1
+
+                    val subZR2Depth = zipperDepthTotal(List(Context(List(Star(rInner)))))
+                    check(subZR2Depth == zlDepth) // Measure for subZR2 relies on the string size
+                    assert(validRegex(r))
+                    assert(!rInner.nullable)
+
                     if(matchR(rR1, s)){
                       lemmaExistCutMatchRandMatchRSpecEquivalentStar(rInner, s)
                       lemmaFindConcatSeparationEquivalentToExists(rInner, Star(rInner), s)
@@ -2082,7 +2116,12 @@ object ZipperRegex {
                       assert(matchR(rInner, s1))
                       assert(matchR(Star(rInner), s2))
 
+                      assert(subZR1Depth < zlDepth) // Measure
                       theoremZipperRegexEquiv(subZR1, List(Context(List(rInner))), rInner, s1)
+                      assert(matchR(rInner, s1))
+                      assert(!s1.isEmpty) // rInner is not nullable
+                      assert(s.size == s1.size + s2.size)
+                      check(s2.size < s.size) // Measure
                       theoremZipperRegexEquiv(subZR2, List(Context(List(Star(rInner)))), Star(rInner), s2)
                       assert(matchZipper(subZR1, s1))
                       assert(matchZipper(subZR2, s2))
@@ -2099,7 +2138,12 @@ object ZipperRegex {
                         assert(matchZipper(subZR1, s1))
                         assert(matchZipper(subZR2, s2))
                         lemmaConcatenateContextMatchesConcatOfStrings(Context(List(rInner)), Context(List(Star(rInner))), s1, s2)
+                        assert(subZR1Depth < zlDepth) // Measure
                         theoremZipperRegexEquiv(subZR1, List(Context(List(rInner))), rInner, s1)
+                        assert(matchR(rInner, s1))
+                        assert(!s1.isEmpty) // rInner is not nullable
+                        assert(s.size == s1.size + s2.size)
+                        check(s2.size < s.size) // Measure
                         theoremZipperRegexEquiv(subZR2, List(Context(List(Star(rInner)))), Star(rInner), s2)
                         assert(matchR(rInner, s1))
                         assert(matchR(Star(rInner), s2))
