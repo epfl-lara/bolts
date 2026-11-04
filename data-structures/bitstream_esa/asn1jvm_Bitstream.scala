@@ -1009,6 +1009,11 @@ case class BitStream private [asn1scala](
             assert(r2_23 == r1_13.withMovedBitIndex(1)) // really slow ~250sec
             check(resGot_13 == resGot_23)
             check(r3Got_13 == r3_13)
+
+            // Link to the recursive postcondition, whose accumulator is v & ~onesLSBLong(nBits - i - 1)
+            check(upd == (v & ~onesLSBLong(nBits - i - 1)))
+            check(resGot_23 == v)
+            check(resGot_13 == v)
          }
       } else {
          ghostExpr {
@@ -1019,8 +1024,8 @@ case class BitStream private [asn1scala](
       val w1 = old(this)
       val w2 = this
       w1.buf.length == w2.buf.length && BitStream.bitIndex(w2.buf.length, w2.currentByte, w2.currentBit ) == BitStream.bitIndex(w1.buf.length, w1.currentByte, w1.currentBit ) + (nBits - i) 
-      && w1.isPrefixOf(w2) 
-      && {
+      &&& w1.isPrefixOf(w2) 
+      &&& {
          val (r1, r2) = reader(w1, w2)
          val zeroed = v & ~onesLSBLong(nBits - i)
          validateOffsetBitsContentIrrelevancyLemma(w1, w2.buf, nBits - i)

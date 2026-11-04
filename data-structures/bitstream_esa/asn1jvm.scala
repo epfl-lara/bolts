@@ -231,7 +231,7 @@ def int2uint(v: Long): ULong = {
 @inline
 def onesLSBLong(nBits: Int): Long = {
     require(0 <= nBits && nBits <= 64)
-    if (nBits == 64 || nBits == 0) then -1L else -1L >>> (64 - nBits)
+    if nBits == 0 then 0L else if nBits == 64 then -1L else -1L >>> (64 - nBits)
 }
 
 def bitLSBLong(bit: Boolean, nBits: Int): Long = {
