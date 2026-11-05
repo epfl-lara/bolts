@@ -3095,8 +3095,23 @@ object ZipperRegex {
         
       }
       case Nil() =>
+        val z2 = Set(ct2)
+        assert(matchZipper(z2, s))
+        assert(nullableZipper(z2))
+        assert(z2.exists(c => nullableContext(c)))
+        val witness = SetUtils.getWitness(z2, (c: Context[C]) => nullableContext(c))
+        assert(z2.contains(witness))
+        assert(z2.toList.contains(witness))
+        assert(z2.toList == List(ct2))
+        assert(witness == ct2)
+        assert(nullableContext(witness))
         assert(nullableContext(ct2))
         ListUtils.lemmaConcatPreservesForall(ct1.exprs, ct2.exprs, (r: Regex[C]) => r.nullable)
+        val ctConcat = ct1.concat(ct2)
+        assert(ctConcat.exprs == ct1.exprs ++ ct2.exprs)
+        assert(nullableContext(ctConcat))
+        SetUtils.lemmaContainsThenExists(Set(ctConcat), ctConcat, (c: Context[C]) => nullableContext(c))
+        assert(nullableZipper(Set(ctConcat)))
         check(matchZipper(Set(ct1.concat(ct2)), s))
     }
 
@@ -3300,6 +3315,13 @@ object ZipperRegex {
         }
       case Nil() => 
         check(!nullableContext(c))
+        if (nullableZipper(z)) {
+          val witness = SetUtils.getWitness(z, (ct: Context[C]) => nullableContext(ct))
+          assert(z.contains(witness))
+          assert(witness == c)
+          check(false)
+        }
+        check(!matchZipper(z, s))
     }
   }.ensuring(_ => matchZipper(z, s) == (s == List(a)))
 
@@ -3357,6 +3379,13 @@ object ZipperRegex {
         }
       case Nil() => 
         check(!nullableContext(c))
+        if (nullableZipper(z)) {
+          val witness = SetUtils.getWitness(z, (ct: Context[C]) => nullableContext(ct))
+          assert(z.contains(witness))
+          assert(witness == c)
+          check(false)
+        }
+        check(!matchZipper(z, s))
     }
   }.ensuring(_ => matchZipper(z, s) == (s.size == 1 && cs.contains(s.head)))
 
@@ -3414,6 +3443,14 @@ object ZipperRegex {
     require(c.head == EmptyLang[C]())
     if(s.isEmpty){
       check(!nullableContext(c))
+      if(nullableZipper(z)){
+        val witness = SetUtils.getWitness(z, (ct: Context[C]) => nullableContext(ct))
+        assert(z.contains(witness))
+        assert(witness == c)
+        check(false)
+      }
+      check(!nullableZipper(z))
+      check(!matchZipper(z, s))
     }else{
       val deriv: Zipper[C]= derivationStepZipper(z, s.head)
       val derivUp = derivationStepZipperUp(c, s.head)
@@ -3430,6 +3467,7 @@ object ZipperRegex {
       }
       assert(deriv.isEmpty)
       lemmaEmptyZipperMatchesNothing(deriv, s.tail)
+      check(!matchZipper(z, s))
     }
   }.ensuring(_ => !matchZipper(z, s))
 
