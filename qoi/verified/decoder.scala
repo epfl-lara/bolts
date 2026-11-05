@@ -727,6 +727,13 @@ object decoder {
   }.ensuring(_ => ww.toInt * hh.toInt * cchan.toInt == w.toInt * h.toInt * chan.toInt)
 
   @ghost
+  @opaque
+  @inlineOnce
+  def multEq(ww: Long, hh: Long, cchan: Long, w: Long, h: Long, chan: Long): Unit = {
+    require(ww == w && hh == h && cchan == chan)
+  }.ensuring(_ => ww * hh * cchan == w * h * chan)
+
+  @ghost
   @pure
   @opaque
   @inlineOnce
@@ -759,6 +766,7 @@ object decoder {
       check(decodedPixels.length == initPixelsLen)
       check(initPixelsLen.toLong == w * h * chan)
       check(decodedPixels.length.toLong == w * h * chan)
+      multEq(ww, hh, cchan, w, h, chan)
       check(w * h * chan == ww * hh * cchan)
       check(decodedPixels.length.toLong == ww * hh * cchan)
       modMultLemma(w, h, chan)
