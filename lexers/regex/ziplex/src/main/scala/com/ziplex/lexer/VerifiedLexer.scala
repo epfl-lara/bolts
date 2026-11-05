@@ -1673,11 +1673,11 @@ object VerifiedLexer {
               }
             }
           }
-        }.ensuring (res => res.isDefined == maxPrefixZipper(rulesArg, input.list).isDefined &&& 
-                       (if res.isDefined then res.get._1 == maxPrefixZipper(rulesArg, input.list).get._1 &&& 
+        }.ensuring (res => res.isDefined == maxPrefixZipper(rulesArg, input.list).isDefined && 
+                       (if res.isDefined then res.get._1 == maxPrefixZipper(rulesArg, input.list).get._1 && 
                           res.get._2.list == maxPrefixZipper(rulesArg, input.list).get._2
-                       else true) &&& 
-                       (if res.isDefined then res.get._1 == maxPrefix(rulesArg, input.list).get._1 &&& 
+                       else true) && 
+                       (if res.isDefined then res.get._1 == maxPrefix(rulesArg, input.list).get._1 && 
                           res.get._2.list == maxPrefix(rulesArg, input.list).get._2
                        else true)
                        )
@@ -1708,11 +1708,11 @@ object VerifiedLexer {
               }
             }
           }
-        }.ensuring (res => res.isDefined == maxPrefixZipper(rulesArg, input.list).isDefined &&& 
-                       (if res.isDefined then res.get._1 == maxPrefixZipper(rulesArg, input.list).get._1 &&& 
+        }.ensuring (res => res.isDefined == maxPrefixZipper(rulesArg, input.list).isDefined && 
+                       (if res.isDefined then res.get._1 == maxPrefixZipper(rulesArg, input.list).get._1 && 
                           res.get._2.list == maxPrefixZipper(rulesArg, input.list).get._2
-                       else true) &&& 
-                       (if res.isDefined then res.get._1 == maxPrefix(rulesArg, input.list).get._1 &&& 
+                       else true) && 
+                       (if res.isDefined then res.get._1 == maxPrefix(rulesArg, input.list).get._1 && 
                           res.get._2.list == maxPrefix(rulesArg, input.list).get._2
                        else true) &&& 
                       cacheUp.valid &&& cacheDown.valid)
@@ -1744,11 +1744,11 @@ object VerifiedLexer {
               }
             }
           }
-        }.ensuring (res => res.isDefined == maxPrefixZipper(rulesArg, input.list).isDefined &&& 
-                       (if res.isDefined then res.get._1 == maxPrefixZipper(rulesArg, input.list).get._1 &&& 
+        }.ensuring (res => res.isDefined == maxPrefixZipper(rulesArg, input.list).isDefined && 
+                       (if res.isDefined then res.get._1 == maxPrefixZipper(rulesArg, input.list).get._1 && 
                           res.get._2.list == maxPrefixZipper(rulesArg, input.list).get._2
-                       else true) &&& 
-                       (if res.isDefined then res.get._1 == maxPrefix(rulesArg, input.list).get._1 &&& 
+                       else true) && 
+                       (if res.isDefined then res.get._1 == maxPrefix(rulesArg, input.list).get._1 && 
                           res.get._2.list == maxPrefix(rulesArg, input.list).get._2
                        else true) &&& 
                       cacheUp.valid &&& cacheDown.valid &&& cacheFurthestNullable.valid &&& 
