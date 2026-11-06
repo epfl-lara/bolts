@@ -26,9 +26,14 @@ runs:
       distribution: temurin
       java-version: ${{ inputs.java-version }}
   - name: Setup java options environment variables
+    # The runners share one machine, with each other and with its users. Without
+    # -XX:ActiveProcessorCount, each JVM sizes its GC threads, its JIT threads and its default
+    # thread pools for all the processors of the machine. The option replaces the number of
+    # processors that the JVM detects, even with a larger one, hence the minimum with nproc.
     run: |
+        PROCESSORS=$(( $(nproc) < 16 ? $(nproc) : 16 )) && \
         echo "JAVA_OPTS=${{ inputs.java-opts }}" >> "$GITHUB_ENV" && \
-        echo "JAVA_OPTS=$JAVA_OPTS -Djava.io.tmpdir=$JAVA_OPTS_TMP_DIR" >> "$GITHUB_ENV" && \
+        echo "JAVA_OPTS=$JAVA_OPTS -XX:ActiveProcessorCount=$PROCESSORS -Djava.io.tmpdir=$JAVA_OPTS_TMP_DIR" >> "$GITHUB_ENV" && \
         echo "SBT_OPTS=-Djava.io.tmpdir=${{ inputs.temp-dir }} --sbt-dir ${{ inputs.temp-dir }}" >> "$GITHUB_ENV"
     shell: bash
   - name: Creating temp folder
