@@ -10,7 +10,7 @@ Arguments:
 	stainless options  Additional options passed through to stainless-dotty
 
 Options:
-	-p, --parallel N   Number of parallel workers for Stainless (-D-parallel)
+	-p, --parallel N   Number of parallel workers for Stainless (-Dparallel)
 										 Default: 2
 
 	-h, --help         Show this help message and exit
@@ -95,7 +95,7 @@ stainless-dotty\
  src/main/scala/com/ziplex/example/PythonLexer.scala\
  --config-file=stainless.conf\
  --solvers=smt-z3,smt-cvc5\
- -D-parallel="$PARALLEL" --functions=MutableHashMap._,ListMap._,TupleListOpsGenK._,ListMapLemmas._,MutableMapInterface._\
+ -Dparallel="$PARALLEL" --functions=MutableHashMap._,ListMap._,TupleListOpsGenK._,ListMapLemmas._,MutableMapInterface._\
  "${EXTRA_ARGS[@]}" || exit 1
 
 echo "Verifying regex matching engine, utils, datastructures, lexer, and example lexers... (task 2/3)"
@@ -115,7 +115,7 @@ stainless-dotty\
  src/main/scala/com/ziplex/example/PythonLexer.scala\
  --config-file=stainless.conf\
  --solvers=smt-z3,smt-cvc5\
- -D-parallel="$PARALLEL" --functions=MemoisationRegex._,VerifiedRegex_,VerifiedRegexMatcher._,Utils._,ListUtils._,SetUtils._,Types._,Vector._,IArray._,BalanceConcObj._,VerifiedLexer._,seqFromListBHdTlConstructive,emptySeq,singletonSeq,seqFromList,seqFromArray,Token._,Rule._,semiInverseBodyModEq,equivClassesBody,semiInverseModEq,equivClasses,TokenValueInjection._,ExampleAmyLexer._,ExamplePythonLexer._,ExampleJsonLexer._,JsonManipulationExample._\
+ -Dparallel="$PARALLEL" --functions=MemoisationRegex._,VerifiedRegex_,VerifiedRegexMatcher._,Utils._,ListUtils._,SetUtils._,Types._,Vector._,IArray._,BalanceConcObj._,VerifiedLexer._,seqFromListBHdTlConstructive,emptySeq,singletonSeq,seqFromList,seqFromArray,Token._,Rule._,semiInverseBodyModEq,equivClassesBody,semiInverseModEq,equivClasses,TokenValueInjection._,ExampleAmyLexer._,ExamplePythonLexer._,ExampleJsonLexer._,JsonManipulationExample._\
  "${EXTRA_ARGS[@]}" || exit 1
 
 echo "Verifying zipper based optimization... (task 3/3)"
@@ -135,7 +135,7 @@ stainless-dotty\
  src/main/scala/com/ziplex/example/PythonLexer.scala\
  --config-file=stainless.conf\
  --solvers=smt-z3,smt-cvc5\
- -D-parallel="$PARALLEL" --functions=MemoisationZipper._,ZipperRegex._\
+ -Dparallel="$PARALLEL" --functions=MemoisationZipper._,ZipperRegex._\
  "${EXTRA_ARGS[@]}" || exit 1
 
 
