@@ -3095,8 +3095,23 @@ object ZipperRegex {
         
       }
       case Nil() =>
+        val z2 = Set(ct2)
+        assert(matchZipper(z2, s))
+        assert(nullableZipper(z2))
+        assert(z2.exists(c => nullableContext(c)))
+        val witness = SetUtils.getWitness(z2, (c: Context[C]) => nullableContext(c))
+        assert(z2.contains(witness))
+        assert(z2.toList.contains(witness))
+        assert(z2.toList == List(ct2))
+        assert(witness == ct2)
+        assert(nullableContext(witness))
         assert(nullableContext(ct2))
         ListUtils.lemmaConcatPreservesForall(ct1.exprs, ct2.exprs, (r: Regex[C]) => r.nullable)
+        val ctConcat = ct1.concat(ct2)
+        assert(ctConcat.exprs == ct1.exprs ++ ct2.exprs)
+        assert(nullableContext(ctConcat))
+        SetUtils.lemmaContainsThenExists(Set(ctConcat), ctConcat, (c: Context[C]) => nullableContext(c))
+        assert(nullableZipper(Set(ctConcat)))
         check(matchZipper(Set(ct1.concat(ct2)), s))
     }
 
@@ -3300,6 +3315,13 @@ object ZipperRegex {
         }
       case Nil() => 
         check(!nullableContext(c))
+        if (nullableZipper(z)) {
+          val witness = SetUtils.getWitness(z, (ct: Context[C]) => nullableContext(ct))
+          assert(z.contains(witness))
+          assert(witness == c)
+          check(false)
+        }
+        check(!matchZipper(z, s))
     }
   }.ensuring(_ => matchZipper(z, s) == (s == List(a)))
 
@@ -3357,6 +3379,13 @@ object ZipperRegex {
         }
       case Nil() => 
         check(!nullableContext(c))
+        if (nullableZipper(z)) {
+          val witness = SetUtils.getWitness(z, (ct: Context[C]) => nullableContext(ct))
+          assert(z.contains(witness))
+          assert(witness == c)
+          check(false)
+        }
+        check(!matchZipper(z, s))
     }
   }.ensuring(_ => matchZipper(z, s) == (s.size == 1 && cs.contains(s.head)))
 
@@ -3414,6 +3443,14 @@ object ZipperRegex {
     require(c.head == EmptyLang[C]())
     if(s.isEmpty){
       check(!nullableContext(c))
+      if(nullableZipper(z)){
+        val witness = SetUtils.getWitness(z, (ct: Context[C]) => nullableContext(ct))
+        assert(z.contains(witness))
+        assert(witness == c)
+        check(false)
+      }
+      check(!nullableZipper(z))
+      check(!matchZipper(z, s))
     }else{
       val deriv: Zipper[C]= derivationStepZipper(z, s.head)
       val derivUp = derivationStepZipperUp(c, s.head)
@@ -3430,6 +3467,7 @@ object ZipperRegex {
       }
       assert(deriv.isEmpty)
       lemmaEmptyZipperMatchesNothing(deriv, s.tail)
+      check(!matchZipper(z, s))
     }
   }.ensuring(_ => !matchZipper(z, s))
 
@@ -4994,6 +5032,13 @@ object VerifiedRegexMatcher {
           lemmaFindConcatSeparationEquivalentToExists(rInner, Star(rInner), s)
           val cut = findConcatSeparation(rInner, Star(rInner), Nil(), s, s)
           if (cut.isDefined) {
+            assert(!rInner.nullable)
+            assert(matchR(rInner, cut.get._1))
+            assert(!cut.get._1.isEmpty) // rInner is not nullable
+            assert(cut.get._1 ++ cut.get._2 == s)
+            assert(cut.get._1.size + cut.get._2.size == s.size)
+            check(cut.get._2.size < s.size)
+            check(regexDepth(rInner) < regexDepth(r))
             mainMatchTheorem(rInner, cut.get._1)
             mainMatchTheorem(Star(rInner), cut.get._2)
             if (!matchR(r, s)) {
@@ -5005,10 +5050,14 @@ object VerifiedRegexMatcher {
             }
             assert(Exists((cut: (List[C], List[C])) => cut._1 ++ cut._2 == s && matchR(rInner, cut._1) && matchR(Star(rInner), cut._2)))
             val cutVal = pickWitness[(List[C], List[C])]((cut: (List[C], List[C])) => cut._1 ++ cut._2 == s && matchR(rInner, cut._1) && matchR(Star(rInner), cut._2))
-            mainMatchTheorem(rInner, cutVal._1)
-            mainMatchTheorem(Star(rInner), cutVal._2)
             assert(!rInner.nullable)
             assert(!cutVal._1.isEmpty)
+            assert(cutVal._1 ++ cutVal._2 == s)
+            assert(cutVal._1.size + cutVal._2.size == s.size)
+            check(cutVal._2.size < s.size)
+            check(regexDepth(rInner) < regexDepth(r))
+            mainMatchTheorem(rInner, cutVal._1)
+            mainMatchTheorem(Star(rInner), cutVal._2)
             ExistsThe(cutVal)((cut: (List[C], List[C])) => cut._1 ++ cut._2 == s && !cut._1.isEmpty && matchRSpec(rInner, cut._1) && matchRSpec(Star(rInner), cut._2))
             assert(Exists((cut: (List[C], List[C])) => cut._1 ++ cut._2 == s && !cut._1.isEmpty && matchRSpec(rInner, cut._1) && matchRSpec(Star(rInner), cut._2)))
           } else {
@@ -5020,6 +5069,13 @@ object VerifiedRegexMatcher {
             assert(!Exists((cut: (List[C], List[C])) => cut._1 ++ cut._2 == s && matchR(rInner, cut._1) && matchR(Star(rInner), cut._2)))
             if((Exists((cut: (List[C], List[C])) => cut._1 ++ cut._2 == s && !cut._1.isEmpty && matchRSpec(rInner, cut._1) && matchRSpec(Star(rInner), cut._2)))) {
               val cutVal = pickWitness[(List[C], List[C])]((cut: (List[C], List[C])) => cut._1 ++ cut._2 == s && !cut._1.isEmpty && matchRSpec(rInner, cut._1) && matchRSpec(Star(rInner), cut._2))
+              assert(!cutVal._1.isEmpty)
+              check(regexDepth(rInner) < regexDepth(r))
+              assert(!cutVal._1.isEmpty)
+              assert(cutVal._1.size > 0)
+              assert(cutVal._1 ++ cutVal._2 == s)
+              assert(cutVal._1.size + cutVal._2.size == s.size)
+              check(cutVal._2.size < s.size)
               mainMatchTheorem(rInner, cutVal._1)
               mainMatchTheorem(Star(rInner), cutVal._2)
               lemmaR1MatchesS1AndR2MatchesS2ThenFindSeparationFindsAtLeastThem(rInner, Star(rInner), cutVal._1, cutVal._2, s, Nil(), s)
@@ -5988,13 +6044,31 @@ object VerifiedRegexMatcher {
         if(r1.nullable) {
           lemmaNullableThenNotLostCause(r1)
           assert(!r1.lostCause)
+          assert(r2.lostCause)
           lemmaDerivativeStepFixPointLostCause(r2, c)
+          assert(derivativeStep(r2, c).lostCause)
+          val left = Concat(derivativeStep(r1, c), r2)
+          assert(left.lostCause == (derivativeStep(r1, c).lostCause || r2.lostCause))
+          assert(left.lostCause)
+          val res = Union(left, derivativeStep(r2, c))
+          assert(derivativeStep(r, c) == res)
+          assert(res.lostCause == (left.lostCause && derivativeStep(r2, c).lostCause))
+          assert(res.lostCause)
         } else {
+          val left = Concat(derivativeStep(r1, c), r2)
           if(r1.lostCause) {
             lemmaDerivativeStepFixPointLostCause(r1, c)
+            assert(derivativeStep(r1, c).lostCause)
           } else {
-            lemmaDerivativeStepFixPointLostCause(r2, c)
+            assert(r2.lostCause)
           }
+          assert(left.lostCause == (derivativeStep(r1, c).lostCause || r2.lostCause))
+          assert(left.lostCause)
+          val res = Union(left, EmptyLang[C]())
+          assert(derivativeStep(r, c) == res)
+          assert(EmptyLang[C]().lostCause)
+          assert(res.lostCause == (left.lostCause && EmptyLang[C]().lostCause))
+          assert(res.lostCause)
         }
     }
   }.ensuring(_ => derivativeStep(r, c).lostCause)
