@@ -11,7 +11,7 @@ Arguments:
 
 Options:
 	-p, --parallel N   Number of parallel workers for Stainless (-Dparallel)
-										 Default: 12
+										 Default: 8
 
 	-h, --help         Show this help message and exit
 
@@ -34,7 +34,9 @@ if [ -n "$1" ] && [[ "$1" =~ ^[0-9]+$ ]]; then
 	exit 1
 fi
 
-PARALLEL="12"
+# With the 32 GB heap set below, 12 workers exhaust the heap: the JVM then spends its time in
+# garbage collection and the verification stalls. With 8, about a quarter of the heap stays free.
+PARALLEL="8"
 EXTRA_ARGS=()
 
 while [ "$#" -gt 0 ]; do
