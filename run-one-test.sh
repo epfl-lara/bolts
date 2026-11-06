@@ -7,15 +7,6 @@ if [[ "$1" = "--admit-vcs" ]]; then
 fi
 STAINLESS="$1"
 
-# Options that the CI passes to the verify.sh of a project, before the common ones, when a default
-# of the script does not suit the CI. The scripts keep the defaults that suit a developer's machine.
-function ci_options {
-  case "${1%/}" in
-    # 12 VCs at a time exhaust the 32 GB heap of the verification workflow.
-    lexers/regex/ziplex) echo "--parallel 8" ;;
-  esac
-}
-
 function run_tests {
   project=$1
   # One shift for stainless executable, the other for the project folder
@@ -36,15 +27,14 @@ function run_tests {
   # find /tmp/
   if [ -f "$project/verify.sh" ]; then
     echo "Running verify.sh script in bolts project: $project..."
-    options=$(ci_options "$project")
     cd "$project"
     echo "$ cat ./verify.sh"
     cat "./verify.sh"
     echo ""
     if [ "$ADMIT_VCS" = true ]; then
-      bash "./verify.sh" $options "--compact" "--admit-vcs=true" "--debug=stack"
+      bash "./verify.sh" "--compact" "--admit-vcs=true" "--debug=stack"
     else
-      bash "./verify.sh" $options "--compact" "--debug=stack"
+      bash "./verify.sh" "--compact" "--debug=stack"
     fi
     status=$?
     cd -
