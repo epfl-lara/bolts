@@ -77,6 +77,12 @@ object encoder {
     @ghost val initDecoded = freshCopy(decoded)
     @ghost val oldBytes = freshCopy(bytes)
     ghostExpr({
+      internalLemmaMaxSizeFitsInt
+      check(bytes.length == maxSize)
+      check(index.length == 64)
+      check(pxPosInv(0))
+      check(runInv(0))
+      check(outPosInv(HeaderSize))
       check(rangesInv(index.length, bytes.length, 0, HeaderSize, 0))
     })
     val EncodingIteration(pxRes, outPos, _) = encodeLoop(index, bytes, pxPrev, 0, HeaderSize, 0, decoded)
@@ -978,6 +984,22 @@ object encoder {
     require(w * h * chan == pixelsLength)
   }.ensuring(_ => pixelsLength == w.toInt * h.toInt * chan.toInt)
 
+  // maxSize is a nonlinear expression in w, h, chan: bound it step by step so that the
+  // solver knows allocArray(maxSize.toInt) has length exactly maxSize.
+  @ghost @opaque @inlineOnce def internalLemmaMaxSizeFitsInt(using EncCtx): Unit = {
+    assert(0 < w * h)
+    assert(w * h <= MaxWidth * h)
+    assert(MaxWidth * h <= MaxWidth * MaxHeight)
+    assert(w * h <= MaxWidth * MaxHeight)
+    assert(w * h * (chan + 1) <= w * h * 5)
+    assert(w * h * 5 <= MaxWidth * MaxHeight * 5)
+    assert(0 <= w * h * (chan + 1))
+  }.ensuring(_ =>
+    0 <= w * h * (chan + 1) &&
+    HeaderSize + Padding <= maxSize &&
+    maxSize <= Int.MaxValue &&
+    maxSize.toInt.toLong == maxSize
+  )
 
 
   @inline
