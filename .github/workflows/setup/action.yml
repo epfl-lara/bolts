@@ -2,7 +2,7 @@ name: Bolts Setup
 description: Setup for Bolts CI
 inputs: 
   java-opts:
-    description: 'Java options for both official sbt and sbt-extras'
+    description: 'Java options, read by the sbt launcher and the Stainless launcher scripts'
     required: true
     default: '-Dsbt.io.implicit.relative.glob.conversion=allow -Xss512M -Xms1024M -Xmx12G -XX:MaxMetaspaceSize=2G -XX:+UseCodeCacheFlushing -XX:ReservedCodeCacheSize=768M'
   temp-dir:
@@ -28,9 +28,7 @@ runs:
   - name: Setup java options environment variables
     run: |
         echo "JAVA_OPTS=${{ inputs.java-opts }}" >> "$GITHUB_ENV" && \
-        echo "JVM_OPTS=${{ inputs.java-opts }}" >> "$GITHUB_ENV" && \
         echo "JAVA_OPTS=$JAVA_OPTS -Djava.io.tmpdir=$JAVA_OPTS_TMP_DIR" >> "$GITHUB_ENV" && \
-        echo "JVM_OPTS=$JVM_OPTS -Djava.io.tmpdir=${{ inputs.temp-dir }}" >> "$GITHUB_ENV" && \
         echo "SBT_OPTS=-Djava.io.tmpdir=${{ inputs.temp-dir }} --sbt-dir ${{ inputs.temp-dir }}" >> "$GITHUB_ENV"
     shell: bash
   - name: Creating temp folder
