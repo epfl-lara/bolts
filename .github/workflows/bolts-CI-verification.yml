@@ -22,3 +22,7 @@ jobs:
         temp-dir: "/tmp/tmp_${{ github.run_id }}_${{ github.run_attempt }}"
     - name: Bolts Tests with verification
       run: ./run-tests.sh
+    - name: Clean up
+      # Even after a failure, a timeout or a cancellation, so that jobs don't fill the runners' disk
+      if: always()
+      run: rm -rf $JAVA_OPTS_TMP_DIR
