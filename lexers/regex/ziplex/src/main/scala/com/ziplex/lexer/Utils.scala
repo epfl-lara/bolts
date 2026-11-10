@@ -634,6 +634,14 @@ object ListUtils {
   @ghost
   @inlineOnce
   @opaque
+  def lemmaIsSuffixForEqualLists[B](s: List[B], l1: List[B], l2: List[B]): Unit = {
+    require(l1 == l2)
+    require(isSuffix(s, l1))
+  }.ensuring(_ => isSuffix(s, l2))
+
+  @ghost
+  @inlineOnce
+  @opaque
   def lemmaMapContains[B, A](l: List[B], f: B => A, a: A): Unit = {
     require(l.map(f).contains(a))
     decreases(l)

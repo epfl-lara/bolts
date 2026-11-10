@@ -10,8 +10,8 @@ Arguments:
 	stainless options  Additional options passed through to stainless-dotty
 
 Options:
-	-p, --parallel N   Number of parallel workers for Stainless (-D-parallel)
-										 Default: 2
+	-p, --parallel N   Number of parallel workers for Stainless (-Dparallel)
+										 Default: 8
 
 	-h, --help         Show this help message and exit
 
@@ -34,7 +34,9 @@ if [ -n "$1" ] && [[ "$1" =~ ^[0-9]+$ ]]; then
 	exit 1
 fi
 
-PARALLEL="2"
+# With the 32 GB heap set below, 12 workers exhaust the heap: the JVM then spends its time in
+# garbage collection and the verification stalls. With 8, about a quarter of the heap stays free.
+PARALLEL="8"
 EXTRA_ARGS=()
 
 while [ "$#" -gt 0 ]; do
@@ -75,7 +77,7 @@ fi
 # Full functions list:
 #  --functions=MutableHashMap._,ListMap._,TupleListOpsGenK._,ListMapLemmas._,MutableMapInterface._,MemoisationRegex._,MemoisationZipper._,VerifiedRegex_,ZipperRegex._,VerifiedRegexMatcher._,Utils._,ListUtils._,SetUtils._,Types._,Vector._,IArray._,BalanceConcObj._,LexerInterface._,VerifiedLexer._,seqFromListBHdTlConstructive,emptySeq,singletonSeq,seqFromList,seqFromArray,Token._,Rule._,semiInverseBodyModEq,equivClassesBody,semiInverseModEq,equivClasses,TokenValueInjection._,ExampleAmyLexer._,ExamplePythonLexer._,ExampleJsonLexer._,JsonManipulationExample._
 
-export _JAVA_OPTIONS="-Xmx27g"
+export _JAVA_OPTIONS="-Xmx32g"
 
 SOURCES=(
 	src/main/scala/com/ziplex/lexer/VerifiedRegex.scala
@@ -121,7 +123,7 @@ for ((i = 0; i < NUM_TASKS; i++)); do
 	 "${SOURCES[@]}"\
 	 --config-file=stainless.conf\
 	 --solvers=smt-z3,smt-cvc5\
-	 -D-parallel="$PARALLEL" --functions="${TASK_FUNCTIONS[$i]}"\
+	 -Dparallel="$PARALLEL" --functions="${TASK_FUNCTIONS[$i]}"\
 	 "${EXTRA_ARGS[@]}" 2>&1 | tee "$LOG_DIR/task$((i + 1)).log"
 	TASK_EXIT+=("${PIPESTATUS[0]}")
 	TASK_SECONDS+=($((SECONDS - start)))
