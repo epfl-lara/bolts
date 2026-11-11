@@ -1096,7 +1096,11 @@ object ZipperRegex {
             case Cons(right, parent) => derivationStepZipperDownMem(right, Context(parent), a)
             case Nil() => Set()
           }
+          assert(cacheUp.valid)
+          assert(cacheDown.valid)
           cacheUp.update(context, a, res)
+          assert(cacheUp.valid)
+          assert(cacheDown.valid)
           res
         }
       }
@@ -1118,7 +1122,11 @@ object ZipperRegex {
             case Star(rInner) => derivationStepZipperDownMem(rInner, context.prepend(Star(rInner)), a)
             case _ => Set()
           }
+          assert(cacheDown.valid)
+          assert(cacheUp.valid)
           cacheDown.update(expr, context, a, res)
+          assert(cacheDown.valid)
+          assert(cacheUp.valid)
           res
         }
       }
@@ -3614,6 +3622,14 @@ object ZipperRegex {
     ghostExpr(unfold(findLongestMatchInnerZipperFastMem(memSteps, z, Nil(), 0, input.list, input, input.size)))
     ghostExpr(unfold(findLongestMatchInnerZipperFast(z, Nil(), 0, input.list, input, input.size)))
     ghostExpr(unfold(findLongestMatchInnerZipper(z, Nil(), 0, input.list, input.list, input.size)))
+    ghostExpr({
+      val (longestP, longestS) = findLongestMatchInnerZipper(z, Nil(), 0, input.list, input.list, input.size)
+      assert(prefixLength == findLongestMatchInnerZipperFast(z, Nil(), 0, input.list, input, input.size))
+      assert(prefixLength == longestP.size)
+      assert(longestP ++ longestS == input.list)
+      assert((longestP ++ longestS).size == longestP.size + longestS.size)
+      check(0 <= prefixLength && prefixLength <= input.size)
+    })
     ghostExpr(ListUtils.lemmaConcatSameAndSameSizesThenSameLists( 
       input.splitAt(prefixLength)._1.list,
       input.splitAt(prefixLength)._2.list,
@@ -3821,7 +3837,10 @@ object ZipperRegex {
     decreases(totalInput.size - from)
 
     cacheFindLongestMatch.get(z, from) match {
-      case Some(cachedResult) => cachedResult
+      case Some(cachedResult) => {
+        cacheFindLongestMatch.lemmaInvariant()
+        cachedResult
+      }
       case None() => {
         val result = 
           if ((from == totalInputSize) || lostCauseZipper(z)) { 
@@ -3832,6 +3851,7 @@ object ZipperRegex {
           } else {
             // We call recursively starting on the next character and see how many characters we can match from there
             val derivedZ = derivationStepZipperMem(z, totalInput(from))
+            ghostExpr(assert(derivedZ == derivationStepZipper(z, totalInput(from))))
             val recursive = findLongestMatchInnerZipperFastV2Mem(derivedZ, from + 1, totalInput, totalInputSize) 
             if (recursive > 0) {
               // Whatever is the current derived state, we can match more characters from there so we can match 1 more character from here
@@ -3845,6 +3865,7 @@ object ZipperRegex {
         ghostExpr(assert(result == findLongestMatchInnerZipperFastV2(z, from, totalInput, totalInputSize)))
         cacheFindLongestMatch.lemmaInvariant()
         cacheFindLongestMatch.update(z, from, result, totalInput)
+        ghostExpr(assert(cacheFindLongestMatch.valid))
         result
       }
     }
@@ -4023,6 +4044,7 @@ object ZipperRegex {
           lastNullablePos
         } else {
           val derivedZ = derivationStepZipperMem(z, totalInput(from))
+          ghostExpr(assert(derivedZ == derivationStepZipper(z, totalInput(from))))
           val newLastNullable = if (nullableZipper(derivedZ)) from else lastNullablePos
           val stackFrame = StackFrame(z, from, lastNullablePos, currentRes, totalInput)
           val newFrames = Cons(stackFrame, stack.frames)
@@ -4045,7 +4067,13 @@ object ZipperRegex {
             assert(newFrames.forall(frame => frame.totalInput == totalInput))
           })
           stack.frames = newFrames
-          furthestNullablePositionStackMem(derivedZ, from + 1, totalInput, totalInputSize, newLastNullable)
+          val recRes = furthestNullablePositionStackMem(derivedZ, from + 1, totalInput, totalInputSize, newLastNullable)
+          ghostExpr({
+            assert(recRes == furthestNullablePosition(derivedZ, from + 1, totalInput, totalInputSize, newLastNullable))
+            assert(recRes == currentRes)
+            check(cacheFurthestNullable.valid && cacheFurthestNullable.totalInput == totalInput)
+          })
+          recRes
         }
       }
     }
@@ -4091,6 +4119,9 @@ object ZipperRegex {
     ghostExpr({
       check(mutStack.frames.forall(frame => frame.res == res))
       check(mutStack.frames.forall(frame => frame.totalInput == totalInput))
+      assert(res == furthestNullablePosition(z, from, totalInput, totalInputSize, if nullableZipper(z) then from - 1 else -1))
+      assert(res < totalInputSize)
+      check(prefixLength <= input.size)
     })
     
     fillUpCache(mutStack.frames, totalInput, totalInputSize, res)
