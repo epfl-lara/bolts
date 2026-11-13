@@ -37,6 +37,7 @@ import com.ziplex.lexer.MemoisationZipper.CacheFurthestNullable
 import com.mutablemaps.map.MutableHashMap
 import com.mutablemaps.map.Hashable
 import com.ziplex.lexer.ZipperRegex.Zipper
+import com.ziplex.lexer.ZipperRegex.ZipperDerivationStepsMemoized
 import com.ziplex.lexer.seqFromArray
 import stainless.annotation.opaque
 import stainless.annotation.inlineOnce
@@ -109,22 +110,19 @@ object JsonManipulationExample:
     * Then build a PrintableToken instance. If the tokens are not separable, return None
     *
     * @param input
-    * @param cacheUp
-    * @param cacheDown
+    * @param memSteps
     * @return
     */
   @opaque
   @inlineOnce
-  def lexAndCheckPrintable(input: Sequence[Char])(using cacheUp: MemoisationZipper.CacheUp[Char], cacheDown: MemoisationZipper.CacheDown[Char], cacheFurthestNullable: CacheFurthestNullable[Char]): Option[PrintableTokens[Char]] = {
+  def lexAndCheckPrintable(input: Sequence[Char])(using memSteps: ZipperDerivationStepsMemoized[Char], cacheFurthestNullable: CacheFurthestNullable[Char]): Option[PrintableTokens[Char]] = {
     require(!JsonLexer.rules.isEmpty)
     require(Lexer.rulesInvariant(JsonLexer.rules))
-    require(cacheUp.valid && cacheDown.valid && cacheFurthestNullable.valid)
+    require(cacheFurthestNullable.valid)
     require(cacheFurthestNullable.totalInput == input)
     
     val (tokens, suffix) = Lexer.lexMem(JsonLexer.rules, input)
     ghostExpr({
-      cacheUp.lemmaInvariant()
-      cacheDown.lemmaInvariant()
       assert(tokens.list == Lexer.lex(JsonLexer.rules, input)._1.list)
       assert(suffix.list == Lexer.lex(JsonLexer.rules, input)._2.list)
       unfold(seqFromList(input.list))
@@ -138,8 +136,6 @@ object JsonManipulationExample:
       assert(Lexer.rulesProduceEachTokenIndividuallyList(JsonLexer.rules, tokens.list)) 
       assert(!JsonLexer.rules.isEmpty)
       assert(Lexer.rulesInvariant(JsonLexer.rules))
-      assert(cacheUp.valid)
-      assert(cacheDown.valid)
       assert(cacheFurthestNullable.valid)
       assert(cacheFurthestNullable.totalInput == input)
     })
@@ -272,7 +268,7 @@ object JsonManipulationExample:
 
   @opaque
   @inlineOnce
-  def createCommaNewLineSeparator(using cacheUp: MemoisationZipper.CacheUp[Char], cacheDown: MemoisationZipper.CacheDown[Char]): Option[PrintableTokens[Char]] = {
+  def createCommaNewLineSeparator(using memSteps: ZipperDerivationStepsMemoized[Char]): Option[PrintableTokens[Char]] = {
     require(!JsonLexer.rules.isEmpty)
     require(Lexer.rulesInvariant(JsonLexer.rules))
     val commaToken = Token(KeywordValueInjection.injection(singletonSeq(',')), JsonLexer.commaRule, BigInt(1), List(','))
@@ -287,7 +283,7 @@ object JsonManipulationExample:
 
   @opaque
   @inlineOnce
-  def createLeftBracketSeparator(using cacheUp: MemoisationZipper.CacheUp[Char], cacheDown: MemoisationZipper.CacheDown[Char]): Option[PrintableTokens[Char]] = {
+  def createLeftBracketSeparator(using memSteps: ZipperDerivationStepsMemoized[Char]): Option[PrintableTokens[Char]] = {
     require(!JsonLexer.rules.isEmpty)
     require(Lexer.rulesInvariant(JsonLexer.rules))
     val leftBracketToken = Token(KeywordValueInjection.injection(singletonSeq('[')), JsonLexer.lBracketRule, BigInt(1), List('['))
@@ -301,7 +297,7 @@ object JsonManipulationExample:
 
   @opaque
   @inlineOnce
-  def createRightBracketSeparator(using cacheUp: MemoisationZipper.CacheUp[Char], cacheDown: MemoisationZipper.CacheDown[Char]): Option[PrintableTokens[Char]] = {
+  def createRightBracketSeparator(using memSteps: ZipperDerivationStepsMemoized[Char]): Option[PrintableTokens[Char]] = {
     require(!JsonLexer.rules.isEmpty)
     require(Lexer.rulesInvariant(JsonLexer.rules))
     val rightBracketToken = Token(KeywordValueInjection.injection(singletonSeq(']')), JsonLexer.rBracketRule, BigInt(1), List(']'))
@@ -325,7 +321,7 @@ object JsonManipulationExample:
       case None() => None()
   }.ensuring(res => res.isEmpty || usesJsonRules(res.get))
 
-  def processJson(printableTokens: PrintableTokens[Char])(using cacheUp: MemoisationZipper.CacheUp[Char], cacheDown: MemoisationZipper.CacheDown[Char]): Option[PrintableTokens[Char]] = {
+  def processJson(printableTokens: PrintableTokens[Char])(using memSteps: ZipperDerivationStepsMemoized[Char]): Option[PrintableTokens[Char]] = {
     require(printableTokens.size > 0)
     require(!JsonLexer.rules.isEmpty && Lexer.rulesInvariant(JsonLexer.rules))
     require(usesJsonRules(printableTokens))
@@ -388,8 +384,7 @@ object JsonManipulationExample:
   }.ensuring(res => res.isEmpty || 
                     (Lexer.lex(JsonLexer.rules, res.get.print())._1.list == res.get.tokens.list && Lexer.lex(JsonLexer.rules, res.get.print())._2.isEmpty))
 
-  def main(path: String, hashF: Hashable[(Zipper[Char], BigInt, BigInt)])(using cacheUp: MemoisationZipper.CacheUp[Char], cacheDown: MemoisationZipper.CacheDown[Char]): Option[Sequence[Char]] = {
-    require(cacheUp.valid && cacheDown.valid)
+  def main(path: String, hashF: Hashable[(Zipper[Char], BigInt, BigInt)])(using memSteps: ZipperDerivationStepsMemoized[Char]): Option[Sequence[Char]] = {
     val input: Sequence[Char] = openFile(path)
     given emptyFindLongestMatch: CacheFurthestNullable[Char] = MemoisationZipper.emptyFurthestNullableCache(hashF, input, JsonLexer.rules)
     assert(emptyFindLongestMatch.valid)

@@ -20,6 +20,7 @@ import com.ziplex.lexer.VerifiedRegexMatcher.matchRMem
 import com.ziplex.lexer.VerifiedRegexMatcher.matchZipperMem
 import com.ziplex.lexer.MemoisationRegex
 import com.ziplex.lexer.MemoisationZipper
+import com.ziplex.lexer.ZipperRegex.ZipperDerivationStepsMemoized
 import com.ziplex.lexer.ZipperRegex.Context
 import com.mutablemaps.map.Hashable
 
@@ -63,8 +64,7 @@ class RegexBenchmark {
     val r = RegexBenchmarkUtils.abStar
     val v = state.abStarAcceptingVector
     val res = matchZipperSequenceMem(r, v)(
-      using state.zipperCacheUp,
-      state.zipperCacheDown
+      using state.zipperMemSteps
     )
     bh.consume(res)
   }
@@ -74,8 +74,7 @@ class RegexBenchmark {
     val r = RegexBenchmarkUtils.abStar
     val v = state.abStarAcceptingVector
     val res = matchZipperSequenceMem(r, v)(
-      using state.zipperCacheUp,
-      state.zipperCacheDown
+      using state.zipperMemSteps
     )
     bh.consume(res)
   }
@@ -85,8 +84,7 @@ class RegexBenchmark {
     val r = RegexBenchmarkUtils.abStar
     val s = state.abStarAcceptingList
     val res = matchZipperMem(r, s)(
-      using state.zipperCacheUp,
-      state.zipperCacheDown
+      using state.zipperMemSteps
     )
     bh.consume(res)
   }
@@ -96,8 +94,7 @@ class RegexBenchmark {
     val r = RegexBenchmarkUtils.abStar
     val s = state.abStarAcceptingList
     val res = matchZipperMem(r, s)(
-      using state.zipperCacheUp,
-      state.zipperCacheDown
+      using state.zipperMemSteps
     )
     bh.consume(res)
   }
@@ -131,8 +128,7 @@ class RegexBenchmark {
     val r = RegexBenchmarkUtils.emailRegex
     val v = state.emailAcceptingVector
     val res = matchZipperSequenceMem(r, v)(
-      using state.zipperCacheUp,
-      state.zipperCacheDown
+      using state.zipperMemSteps
     )
     bh.consume(res)
   }
@@ -142,8 +138,7 @@ class RegexBenchmark {
     val r = RegexBenchmarkUtils.emailRegex
     val v = state.emailAcceptingVector
     val res = matchZipperSequenceMem(r, v)(
-      using state.zipperCacheUp,
-      state.zipperCacheDown
+      using state.zipperMemSteps
     )
     bh.consume(res)
   }
@@ -199,8 +194,7 @@ class LexerRegexBenchmark {
     val r = RegexBenchmarkUtils.singleLineCommentRegex
     val v = state.commentAcceptingVector
     val res = matchZipperSequenceMem(r, v)(
-      using state.zipperCacheUp,
-      state.zipperCacheDown
+      using state.zipperMemSteps
     )
     bh.consume(res)
   }
@@ -210,8 +204,7 @@ class LexerRegexBenchmark {
     val r = RegexBenchmarkUtils.singleLineCommentRegex
     val v = state.commentAcceptingVector
     val res = matchZipperSequenceMem(r, v)(
-      using state.zipperCacheUp,
-      state.zipperCacheDown
+      using state.zipperMemSteps
     )
     bh.consume(res)
   }
@@ -253,8 +246,7 @@ class LexerRegexBenchmark {
     val r = RegexBenchmarkUtils.multiCommentRegex
     val v = state.commentAcceptingMultilineVector
     val res = matchZipperSequenceMem(r, v)(
-      using state.zipperCacheUp,
-      state.zipperCacheDown
+      using state.zipperMemSteps
     )
     bh.consume(res)
   }
@@ -264,8 +256,7 @@ class LexerRegexBenchmark {
     val r = RegexBenchmarkUtils.multiCommentRegex
     val v = state.commentAcceptingMultilineVector
     val res = matchZipperSequenceMem(r, v)(
-      using state.zipperCacheUp,
-      state.zipperCacheDown
+      using state.zipperMemSteps
     )
     bh.consume(res)
   }
@@ -325,12 +316,14 @@ class FreshRegexSizeState extends RegexSizeState {
   var regexCache: MemoisationRegex.Cache[Char] = uninitialized
   var zipperCacheUp: MemoisationZipper.CacheUp[Char] = uninitialized
   var zipperCacheDown: MemoisationZipper.CacheDown[Char] = uninitialized
+  var zipperMemSteps: ZipperDerivationStepsMemoized[Char] = uninitialized
 
   @Setup(Level.Iteration)
   def setupCaches(): Unit = {
     regexCache = MemoisationRegex.empty(RegexCharHashable)
     zipperCacheUp = MemoisationZipper.emptyUp(ContextCharHashable)
     zipperCacheDown = MemoisationZipper.emptyDown(RegexContextCharHashable)
+    zipperMemSteps = ZipperDerivationStepsMemoized(zipperCacheUp, zipperCacheDown)
   }
 }
 
@@ -338,9 +331,9 @@ class FreshRegexSizeState extends RegexSizeState {
 class WarmRegexSizeState extends FreshRegexSizeState {
   @Setup(Level.Iteration)
   def warm(): Unit = {
-    assert(matchZipperSequenceMem(RegexBenchmarkUtils.abStar, abStarAcceptingVector)(using zipperCacheUp, zipperCacheDown))
-    assert(matchZipperMem(RegexBenchmarkUtils.abStar, abStarAcceptingList)(using zipperCacheUp, zipperCacheDown))
-    assert(matchZipperSequenceMem(RegexBenchmarkUtils.emailRegex, emailAcceptingVector)(using zipperCacheUp, zipperCacheDown))
+    assert(matchZipperSequenceMem(RegexBenchmarkUtils.abStar, abStarAcceptingVector)(using zipperMemSteps))
+    assert(matchZipperMem(RegexBenchmarkUtils.abStar, abStarAcceptingList)(using zipperMemSteps))
+    assert(matchZipperSequenceMem(RegexBenchmarkUtils.emailRegex, emailAcceptingVector)(using zipperMemSteps))
     assert(matchRMem(RegexBenchmarkUtils.emailRegex, emailAcceptingList)(using regexCache))
   }
 }
@@ -398,11 +391,13 @@ class LexerRegexSizeState {
 class FreshLexerRegexSizeState extends LexerRegexSizeState {
   var zipperCacheUp: MemoisationZipper.CacheUp[Char] = uninitialized
   var zipperCacheDown: MemoisationZipper.CacheDown[Char] = uninitialized
+  var zipperMemSteps: ZipperDerivationStepsMemoized[Char] = uninitialized
 
   @Setup(Level.Iteration)
   def setupCaches(): Unit = {
     zipperCacheUp = MemoisationZipper.emptyUp(ContextCharHashable)
     zipperCacheDown = MemoisationZipper.emptyDown(RegexContextCharHashable)
+    zipperMemSteps = ZipperDerivationStepsMemoized(zipperCacheUp, zipperCacheDown)
   }
 }
 
@@ -410,8 +405,8 @@ class FreshLexerRegexSizeState extends LexerRegexSizeState {
 class WarmLexerRegexSizeState extends FreshLexerRegexSizeState {
   @Setup(Level.Iteration)
   def warm(): Unit = {
-    assert(matchZipperSequenceMem(RegexBenchmarkUtils.singleLineCommentRegex, commentAcceptingVector)(using zipperCacheUp, zipperCacheDown))
-    assert(matchZipperSequenceMem(RegexBenchmarkUtils.multiCommentRegex, commentAcceptingMultilineVector)(using zipperCacheUp, zipperCacheDown))
+    assert(matchZipperSequenceMem(RegexBenchmarkUtils.singleLineCommentRegex, commentAcceptingVector)(using zipperMemSteps))
+    assert(matchZipperSequenceMem(RegexBenchmarkUtils.multiCommentRegex, commentAcceptingMultilineVector)(using zipperMemSteps))
   }
 }
 
@@ -451,8 +446,9 @@ object RegexBenchmarkUtils {
   val abStar_Accepting_strings: Map[Int, Sequence[Char]] = string_sizes.map(n => (n, (1 to n).map(_ => random_a_or_b()).mkString.toStainless)).toMap
   val abStar_Accepting_strings_list: Map[Int, StainlessList[Char]] = string_sizes.map(n => (n, (1 to n).map(_ => random_a_or_b()).mkString.toStainlessList)).toMap
 
-  given zipperCacheUp: MemoisationZipper.CacheUp[Char] = MemoisationZipper.emptyUp(ContextCharHashable)
-  given zipperCacheDown: MemoisationZipper.CacheDown[Char] = MemoisationZipper.emptyDown(RegexContextCharHashable)
+  val zipperCacheUp: MemoisationZipper.CacheUp[Char] = MemoisationZipper.emptyUp(ContextCharHashable)
+  val zipperCacheDown: MemoisationZipper.CacheDown[Char] = MemoisationZipper.emptyDown(RegexContextCharHashable)
+  given zipperMemSteps: ZipperDerivationStepsMemoized[Char] = ZipperDerivationStepsMemoized(zipperCacheUp, zipperCacheDown)
 
   val possibleEmailChars = "abcdedfghijklmnopqrstuvwxyz."
   val emailRegex = possibleEmailChars.anyOf.+ ~ "@".r ~ possibleEmailChars.anyOf.+ ~ ".".r ~ possibleEmailChars.anyOf.+
