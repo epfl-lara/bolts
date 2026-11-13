@@ -1,0 +1,187 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Ziplex rlimit bisection</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<style>
+/* Layout: one narrow lab-sheet column; verdict line, two charts side by side, run log table. */
+:root{
+  --bg:#f7f8f9; --surface:#ffffff; --fg:#14171a; --fg2:#4f5862; --muted:#7c8590; --rule:#dde1e5; --grid:#eceef1;
+  --s1:#2a78d6; --s2:#eb6834; --s3:#1baf7a; --good:#0ca30c; --crit:#d03b3b; --goodink:#006300; --critink:#b02e2e;
+  --sans:"IBM Plex Sans",system-ui,-apple-system,"Segoe UI",sans-serif; --mono:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#121417; --surface:#1a1d21; --fg:#eef0f2; --fg2:#b9c0c8; --muted:#8a939d; --rule:#2c3136; --grid:#24282d;
+  --s1:#3987e5; --s2:#d95926; --s3:#199e70; --goodink:#4cc24c; --critink:#ef7a7a; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#121417; --surface:#1a1d21; --fg:#eef0f2; --fg2:#b9c0c8; --muted:#8a939d; --rule:#2c3136; --grid:#24282d;
+  --s1:#3987e5; --s2:#d95926; --s3:#199e70; --goodink:#4cc24c; --critink:#ef7a7a; color-scheme:dark}
+body{background:var(--bg);color:var(--fg);font:13px/1.45 var(--sans);padding-block:20px 28px;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+main{max-width:980px;margin:0 auto;display:grid;gap:14px}
+h1{font-size:17px;font-weight:600;margin:0;text-wrap:balance}
+.meta{color:var(--muted);font:11px/1.4 var(--mono);margin-top:2px}
+.verdict{display:flex;flex-wrap:wrap;gap:6px 18px;align-items:baseline;padding:10px 12px;background:var(--surface);border:1px solid var(--rule);border-radius:6px}
+.verdict b{font:600 15px var(--mono)}
+.verdict span{color:var(--fg2)}
+.k{font:500 10px var(--sans);text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}
+.charts{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);gap:14px}
+@media (max-width:720px){.charts{grid-template-columns:minmax(0,1fr)}}
+figure{margin:0;background:var(--surface);border:1px solid var(--rule);border-radius:6px;padding:10px 12px;min-width:0;position:relative}
+figcaption{display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;margin-bottom:4px}
+figcaption strong{font-weight:600;font-size:12.5px}
+.legend{display:flex;gap:10px;flex-wrap:wrap;color:var(--fg2);font-size:11px}
+.legend i{display:inline-block;width:10px;height:2px;vertical-align:middle;margin-right:4px}
+.legend i.dot{width:8px;height:8px;border-radius:50%}
+.legend i.x{width:8px;height:8px;background:none!important;border:1.5px solid var(--crit);border-radius:50%}
+svg{display:block;width:100%;height:auto;overflow:visible}
+svg text{font:10px var(--mono);fill:var(--muted)}
+svg .lab{fill:var(--fg2)}
+.tip{position:absolute;pointer-events:none;background:var(--fg);color:var(--bg);font:11px/1.35 var(--mono);padding:5px 7px;border-radius:4px;white-space:nowrap;z-index:2}
+.tbl{overflow-x:auto;background:var(--surface);border:1px solid var(--rule);border-radius:6px}
+table{border-collapse:collapse;width:100%;font:11.5px/1.3 var(--mono);font-variant-numeric:tabular-nums}
+th,td{padding:4px 8px;text-align:left;border-bottom:1px solid var(--grid);white-space:nowrap}
+th{font:500 10px var(--sans);text-transform:uppercase;letter-spacing:.06em;color:var(--muted);background:var(--surface);position:sticky;top:0}
+td.n{text-align:right}
+td.vc{white-space:normal;min-width:16em;color:var(--fg2);font-family:var(--sans)}
+tr.ph td{background:var(--bg);font:500 10px var(--sans);text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}
+.st{font-weight:500}.st.p{color:var(--goodink)}.st.f{color:var(--critink)}
+tr.key td{background:color-mix(in srgb,var(--s1) 8%,transparent)}
+.notes{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:6px 18px;color:var(--fg2);font-size:12px;margin:0;padding:0;list-style:none}
+.notes li{min-width:0}.notes b{color:var(--fg);font-weight:600}
+code{font:11.5px var(--mono)}
+</style>
+<main>
+<header>
+  <h1>Ziplex rlimit bisection</h1>
+  <div class="meta">lexers/regex/ziplex · verify.sh -p 8 · --vc-cache=false · z3 5.4.1 · cvc5 1.4.2 · 40 GiB container · 12 Nov 2026</div>
+</header>
+
+<div class="verdict">
+  <div><div class="k">Minimal pair (×10⁶ units)</div><b>z3 13 · cvc5 75</b></div>
+  <span>z3 lowered first (cvc5 = 100), then cvc5 (z3 = 13). At the edge: 13/75 passed 2 of 3 runs.</span>
+  <span>Suggested with margin: <b style="font-size:13px">z3 20 · cvc5 100</b></span>
+</div>
+
+<div class="charts">
+  <figure id="f1">
+    <figcaption><strong>Runs tried</strong>
+      <span class="legend"><span><i class="dot" style="background:var(--good)"></i>pass</span><span><i class="x"></i>fail</span></span></figcaption>
+    <svg id="scatter" viewBox="0 0 360 250" role="img" aria-label="Pass and fail by z3 and cvc5 resource limit"></svg>
+  </figure>
+  <figure id="f2">
+    <figcaption><strong>Memory, passing run z3 13 · cvc5 75</strong>
+      <span class="legend"><span><i style="background:var(--s1)"></i>container</span><span><i style="background:var(--s2)"></i>JVM</span><span><i style="background:var(--s3)"></i>largest solver</span></span></figcaption>
+    <svg id="mem" viewBox="0 0 520 250" role="img" aria-label="Memory over time in GB"></svg>
+  </figure>
+</div>
+
+<div class="tbl"><table>
+<thead><tr><th>Time</th><th class="n">z3</th><th class="n">cvc5</th><th>Result</th><th>First VC over the limit</th><th class="n">Wall</th><th class="n">Peak GB</th></tr></thead>
+<tbody id="rows"></tbody></table></div>
+
+<ul class="notes">
+  <li><b>Every failure</b> was <i>resource limit reached</i>, all in <code>VerifiedLexer.scala</code> (task 2) except 13/74 (task 3, zipper).</li>
+  <li><b>Not deterministic at the edge.</b> Solvers apply limits per query (checked across reset and push/pop); the SMT Stainless emits varies between runs.</li>
+  <li><b>Memory is the JVM.</b> Passing runs peak at 35–37 GB of 40; the largest solver never passed 0.65 GB, so nothing reached the 25 GB watch.</li>
+  <li><b>Setup:</b> runs need <code>JAVA_OPTS=-Xss1g</code> (StackOverflow in TypeEncoding otherwise). <code>--debug=smt</code> forces a single thread.</li>
+</ul>
+</main>
+<div class="tip" id="tip" hidden></div>
+<script>
+const RUNS=[
+ // [time, z3, cvc5, pass, vc, task, wall_s, peakGB, phase]
+ ["17:13",100,100,1,"",0,1534,36.6,"z3"],
+ ["17:28",10,100,0,"lexTailRecMem @779 · measure decreases",2,883,20.8,"z3"],
+ ["17:54",30,100,1,"",0,1541,36.6,"z3"],
+ ["18:22",17,100,1,"",0,1625,35.4,"z3"],
+ ["18:48",13,100,1,"",0,1563,36.8,"z3"],
+ ["19:01",11,100,0,"lexTailRecV3Mem @1035 · body assertion",2,756,18.8,"z3"],
+ ["19:15",12,100,0,"lexTailRecMem @779 · precondition",2,806,20.0,"z3"],
+ ["19:28",13,10,0,"lexTailRecMem @779 · precondition",2,794,20.7,"cvc5"],
+ ["19:42",13,30,0,"lexTailRecMem @779 · precondition",2,804,20.8,"cvc5"],
+ ["19:55",13,55,0,"lexTailRecMem @779 · precondition",2,788,21.0,"cvc5"],
+ ["20:22",13,75,1,"",0,1607,36.3,"cvc5"],
+ ["20:36",13,65,0,"lexTailRecMem @779 · measure decreases",2,806,20.5,"cvc5"],
+ ["20:49",13,70,0,"lexTailRecMem @779 · measure decreases",2,786,19.3,"cvc5"],
+ ["21:02",13,73,0,"lexTailRecMem @779 · measure decreases",2,780,21.4,"cvc5"],
+ ["21:22",13,74,0,"derivationStepZipperDownMem @1112 · postcondition",3,1207,21.0,"cvc5"],
+ ["21:49",13,75,0,"lexTailRecMem @779 · precondition; lexTailRecV3Mem @1085 · body assertion (2 of 29,786)",2,1590,36.6,"conf"],
+ ["22:17",13,75,1,"",0,1596,36.8,"conf"]];
+const SER=[[0.0, 2.88, 1.57, 0.0], [0.5, 3.33, 2.03, 0.0], [1.0, 4.9, 3.59, 0.0], [1.5, 10.49, 9.08, 0.037], [2.0, 15.13, 13.65, 0.075], [2.5, 16.06, 14.46, 0.179], [3.02, 16.82, 15.24, 0.122], [3.52, 17.2, 15.25, 0.459], [4.02, 17.23, 15.25, 0.503], [4.52, 17.25, 15.25, 0.528], [5.02, 17.25, 15.25, 0.53], [5.52, 17.26, 15.25, 0.537], [6.02, 3.57, 2.29, 0.0], [6.53, 3.69, 2.42, 0.0], [7.03, 4.26, 2.98, 0.0], [7.53, 6.64, 5.37, 0.0], [8.03, 9.78, 8.49, 0.01], [8.53, 11.53, 9.78, 0.082], [9.03, 13.97, 12.56, 0.055], [9.53, 16.61, 14.52, 0.185], [10.03, 16.1, 14.52, 0.08], [10.55, 16.32, 14.67, 0.095], [11.05, 18.77, 16.8, 0.203], [11.55, 19.67, 16.82, 0.644], [12.05, 18.25, 16.84, 0.038], [12.55, 20.34, 17.29, 0.293], [13.05, 20.11, 18.29, 0.452], [13.55, 20.46, 18.89, 0.118], [14.07, 20.83, 18.89, 0.193], [14.57, 20.5, 18.93, 0.136], [15.07, 20.42, 18.93, 0.086], [15.57, 20.49, 18.95, 0.118], [16.07, 20.88, 18.96, 0.128], [16.57, 20.37, 18.96, 0.037], [17.07, 20.61, 19.14, 0.042], [17.57, 20.6, 19.14, 0.052], [18.0, 20.74, 19.18, 0.105], [18.5, 21.04, 19.18, 0.159], [19.0, 20.56, 19.18, 0.03], [19.5, 3.99, 2.7, 0.0], [20.0, 4.09, 2.79, 0.0], [20.5, 8.68, 7.31, 0.038], [21.0, 11.75, 10.37, 0.075], [21.52, 11.85, 10.39, 0.06], [22.02, 16.33, 14.97, 0.041], [22.52, 21.95, 20.6, 0.037], [23.02, 26.82, 25.14, 0.131], [23.52, 30.6, 29.01, 0.101], [24.02, 31.93, 29.66, 0.205], [24.52, 32.32, 30.35, 0.304], [25.03, 35.45, 34.03, 0.038], [25.53, 35.7, 34.04, 0.068], [26.03, 36.26, 34.04, 0.364], [26.53, 33.05, 30.06, 0.365]];
+const NS="http://www.w3.org/2000/svg";
+const el=(n,a,p)=>{const e=document.createElementNS(NS,n);for(const k in a)e.setAttribute(k,a[k]);if(p)p.appendChild(e);return e};
+const tip=document.getElementById("tip");
+function showTip(fig,html,x,y){tip.innerHTML=html;tip.hidden=false;const r=fig.getBoundingClientRect(),w=tip.offsetWidth;
+  let L=r.left+window.scrollX+x+12;if(L+w>window.scrollX+document.documentElement.clientWidth-8)L=r.left+window.scrollX+x-w-12;
+  tip.style.left=L+"px";tip.style.top=(r.top+window.scrollY+y-8)+"px"}
+function hideTip(){tip.hidden=true}
+const fmtW=s=>Math.floor(s/60)+"m"+String(s%60).padStart(2,"0");
+
+/* table */
+const tb=document.getElementById("rows");let ph="";
+const PH={z3:"Phase 1 · lower z3, cvc5 fixed at 100",cvc5:"Phase 2 · lower cvc5, z3 fixed at 13",conf:"Confirmation · limits read from stainless.conf, timeout 220"};
+for(const r of RUNS){
+  if(r[8]!==ph){ph=r[8];tb.insertAdjacentHTML("beforeend",`<tr class="ph"><td colspan="7">${PH[ph]}</td></tr>`)}
+  const key=r[1]===13&&r[2]===75;
+  tb.insertAdjacentHTML("beforeend",`<tr${key?' class="key"':''}><td>${r[0]}</td><td class="n">${r[1]}</td><td class="n">${r[2]}</td>
+  <td class="st ${r[3]?"p":"f"}">${r[3]?"✓ pass":"✗ fail · task "+r[5]}</td><td class="vc">${r[4]||"—"}</td><td class="n">${fmtW(r[6])}</td><td class="n">${r[7].toFixed(1)}</td></tr>`)}
+
+/* scatter: log axes */
+(function(){
+  const svg=document.getElementById("scatter"),fig=document.getElementById("f1");
+  const M={l:40,r:12,t:10,b:30},W=360,H=250,lo=Math.log10(8),hi=Math.log10(120);
+  const X=v=>M.l+(Math.log10(v)-lo)/(hi-lo)*(W-M.l-M.r), Y=v=>H-M.b-(Math.log10(v)-lo)/(hi-lo)*(H-M.t-M.b);
+  for(const t of [10,13,20,30,50,75,100]){
+    el("line",{x1:X(t),x2:X(t),y1:M.t,y2:H-M.b,stroke:"var(--grid)","stroke-width":1},svg);
+    el("line",{x1:M.l,x2:W-M.r,y1:Y(t),y2:Y(t),stroke:"var(--grid)","stroke-width":1},svg);
+    el("text",{x:X(t),y:H-M.b+13,"text-anchor":"middle"},svg).textContent=t;
+    el("text",{x:M.l-6,y:Y(t)+3,"text-anchor":"end"},svg).textContent=t}
+  el("text",{x:(M.l+W-M.r)/2,y:H-3,"text-anchor":"middle",class:"lab"},svg).textContent="z3 rlimit (×10⁶, log)";
+  const yl=el("text",{x:11,y:(M.t+H-M.b)/2,"text-anchor":"middle",class:"lab",transform:`rotate(-90 11 ${(M.t+H-M.b)/2})`},svg);yl.textContent="cvc5 rlimit (×10⁶, log)";
+  // group by coordinate
+  const g={};for(const r of RUNS){const k=r[1]+"/"+r[2];(g[k]=g[k]||[]).push(r)}
+  for(const k in g){const rs=g[k],r=rs[0],x=X(r[1]),y=Y(r[2]);const np=rs.filter(q=>q[3]).length,nf=rs.length-np;
+    const mixed=np&&nf;
+    if(np&&!mixed)el("circle",{cx:x,cy:y,r:5,fill:"var(--good)",stroke:"var(--surface)","stroke-width":2},svg);
+    else if(!np)el("circle",{cx:x,cy:y,r:4.5,fill:"var(--surface)",stroke:"var(--crit)","stroke-width":2},svg);
+    else{el("circle",{cx:x,cy:y,r:6,fill:"var(--surface)",stroke:"var(--crit)","stroke-width":2},svg);el("circle",{cx:x,cy:y,r:3,fill:"var(--good)"},svg)}
+    if(mixed){el("text",{x:x+9,y:y-6,class:"lab"},svg).textContent=`13/75 · ${np} pass, ${nf} fail`}
+    const hit=el("circle",{cx:x,cy:y,r:11,fill:"transparent",tabindex:0},svg);
+    const html=`z3 ${r[1]} · cvc5 ${r[2]}<br>`+rs.map(q=>q[3]?"✓ pass":"✗ fail, task "+q[5]).join("<br>");
+    const on=()=>showTip(fig,html,x/W*svg.getBoundingClientRect().width,y/H*svg.getBoundingClientRect().height);
+    hit.addEventListener("mouseenter",on);hit.addEventListener("focus",on);hit.addEventListener("mouseleave",hideTip);hit.addEventListener("blur",hideTip)}
+})();
+
+/* memory lines */
+(function(){
+  const svg=document.getElementById("mem"),fig=document.getElementById("f2");
+  const M={l:30,r:58,t:10,b:30},W=520,H=250,tmax=SER[SER.length-1][0],ymax=42;
+  const X=t=>M.l+t/tmax*(W-M.l-M.r),Y=v=>H-M.b-v/ymax*(H-M.t-M.b);
+  for(let v=0;v<=40;v+=10){el("line",{x1:M.l,x2:W-M.r,y1:Y(v),y2:Y(v),stroke:"var(--grid)","stroke-width":1},svg);
+    el("text",{x:M.l-6,y:Y(v)+3,"text-anchor":"end"},svg).textContent=v}
+  for(let t=0;t<=tmax;t+=5)el("text",{x:X(t),y:H-M.b+13,"text-anchor":"middle"},svg).textContent=t;
+  el("text",{x:(M.l+W-M.r)/2,y:H-3,"text-anchor":"middle",class:"lab"},svg).textContent="minutes · GB";
+  el("line",{x1:M.l,x2:W-M.r,y1:Y(40),y2:Y(40),stroke:"var(--fg2)","stroke-width":1,"stroke-dasharray":"4 3"},svg);
+  el("text",{x:W-M.r+4,y:Y(40)+3,class:"lab"},svg).textContent="40 limit";
+  el("line",{x1:M.l,x2:W-M.r,y1:Y(25),y2:Y(25),stroke:"var(--muted)","stroke-width":1,"stroke-dasharray":"1 3"},svg);
+  el("text",{x:W-M.r+4,y:Y(25)+3},svg).textContent="25 watch";
+  // task boundaries: JVM drops
+  const tasks=[0];for(let i=1;i<SER.length;i++)if(SER[i-1][2]>5&&SER[i][2]<3)tasks.push(SER[i][0]);
+  tasks.forEach((t,i)=>{if(i)el("line",{x1:X(t),x2:X(t),y1:M.t,y2:H-M.b,stroke:"var(--rule)","stroke-width":1},svg);
+    const end=tasks[i+1]??tmax;el("text",{x:(X(t)+X(end))/2,y:M.t+9,"text-anchor":"middle"},svg).textContent="task "+(i+1)});
+  const cols=["var(--s1)","var(--s2)","var(--s3)"],names=["container","JVM","largest solver"];
+  [1,2,3].forEach((k,i)=>el("path",{d:SER.map((p,j)=>(j?"L":"M")+X(p[0]).toFixed(1)+" "+Y(p[k]).toFixed(1)).join(""),fill:"none",stroke:cols[i],"stroke-width":2,"stroke-linejoin":"round"},svg));
+  const pk=[1,2].map(k=>Math.max(...SER.map(p=>p[k])));
+  el("text",{x:W-M.r+4,y:Y(pk[0])-2,class:"lab"},svg).textContent=pk[0].toFixed(1)+" peak";
+  const cross=el("line",{y1:M.t,y2:H-M.b,stroke:"var(--fg2)","stroke-width":1,visibility:"hidden"},svg);
+  const dots=cols.map(c=>el("circle",{r:4,fill:c,stroke:"var(--surface)","stroke-width":2,visibility:"hidden"},svg));
+  const ov=el("rect",{x:M.l,y:M.t,width:W-M.l-M.r,height:H-M.t-M.b,fill:"transparent"},svg);
+  ov.addEventListener("mousemove",e=>{const b=svg.getBoundingClientRect(),sx=(e.clientX-b.left)/b.width*W;
+    const t=(sx-M.l)/(W-M.l-M.r)*tmax;let best=SER[0];for(const p of SER)if(Math.abs(p[0]-t)<Math.abs(best[0]-t))best=p;
+    const x=X(best[0]);cross.setAttribute("x1",x);cross.setAttribute("x2",x);cross.setAttribute("visibility","visible");
+    dots.forEach((d,i)=>{d.setAttribute("cx",x);d.setAttribute("cy",Y(best[i+1]));d.setAttribute("visibility","visible")});
+    showTip(fig,`${best[0].toFixed(1)} min<br>container ${best[1].toFixed(1)} GB<br>JVM ${best[2].toFixed(1)} GB<br>largest solver ${(best[3]*1024).toFixed(0)} MB`,x/W*b.width,(e.clientY-b.top))});
+  ov.addEventListener("mouseleave",()=>{hideTip();cross.setAttribute("visibility","hidden");dots.forEach(d=>d.setAttribute("visibility","hidden"))});
+})();
+</script>
+</body></html>
