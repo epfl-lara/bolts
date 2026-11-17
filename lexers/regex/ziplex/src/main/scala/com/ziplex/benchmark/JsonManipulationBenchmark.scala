@@ -15,6 +15,7 @@ import com.ziplex.lexer.VerifiedLexer.emptyPrintableTokens
 import com.ziplex.lexer.example.ExampleJsonLexer.JsonLexer
 import com.ziplex.lexer.example.RegexUtils.*
 import com.ziplex.lexer.MemoisationZipper
+import com.ziplex.lexer.ZipperRegex.ZipperDerivationStepsMemoized
 import com.ziplex.lexer.VerifiedRegex.Regex
 import com.mutablemaps.map.Hashable
 import com.ziplex.lexer.ZipperRegex.Context
@@ -48,8 +49,7 @@ class JsonManipulationBenchmark {
   def lexV1(state: FreshLexV1State, bh: Blackhole): Unit = {
     val (tokens, suffix) = Lexer.lexV1Mem(JsonLexer.rules, state.content)(
       using ClassTag.Char,
-      state.zipperCacheUp,
-      state.zipperCacheDown
+      state.zipperMemSteps
     )
     bh.consume(suffix.isEmpty)
   }
@@ -58,8 +58,7 @@ class JsonManipulationBenchmark {
   // def lexV1_Warm(state: WarmLexV1State, bh: Blackhole): Unit = {
   //   val (tokens, suffix) = Lexer.lexV1Mem(JsonLexer.rules, state.content)(
   //     using ClassTag.Char,
-  //     state.zipperCacheUp,
-  //     state.zipperCacheDown
+  //     state.zipperMemSteps
   //   )
   //   bh.consume(suffix.isEmpty)
   // }
@@ -68,8 +67,7 @@ class JsonManipulationBenchmark {
   def lex(state: FreshLexV3State, bh: Blackhole): Unit = {
     val (tokens, suffix) = Lexer.lexMem(JsonLexer.rules, state.content)(
       using ClassTag.Char,
-      state.zipperCacheUp,
-      state.zipperCacheDown,
+      state.zipperMemSteps,
       state.furthestNullableCache
     )
     bh.consume(suffix.isEmpty)
@@ -79,8 +77,7 @@ class JsonManipulationBenchmark {
   def lex_Warm(state: WarmLexV3State, bh: Blackhole): Unit = {
     val (tokens, suffix) = Lexer.lexMem(JsonLexer.rules, state.content)(
       using ClassTag.Char,
-      state.zipperCacheUp,
-      state.zipperCacheDown,
+      state.zipperMemSteps,
       state.furthestNullableCache
     )
     bh.consume(suffix.isEmpty)
@@ -96,13 +93,11 @@ class JsonManipulationBenchmark {
   // def lexAndCheckPrintableV1(state: FreshLexAndPrintableV1State, bh: Blackhole): Unit = {
   //   val (tokens, _) = Lexer.lexV1Mem(JsonLexer.rules, state.content)(
   //     using ClassTag.Char,
-  //     state.zipperCacheUp,
-  //     state.zipperCacheDown
+  //     state.zipperMemSteps
   //   )
   //   val res = printableTokensFromTokensMem(JsonLexer.rules, tokens)(
   //     using ClassTag.Char,
-  //     state.zipperCacheUp,
-  //     state.zipperCacheDown
+  //     state.zipperMemSteps
   //   )
   //   bh.consume(res.isDefined)
   //   bh.consume(res.get.size > 0)
@@ -112,13 +107,11 @@ class JsonManipulationBenchmark {
   // def lexAndCheckPrintableV1_Warm(state: WarmLexAndPrintableV1State, bh: Blackhole): Unit = {
   //   val (tokens, _) = Lexer.lexV1Mem(JsonLexer.rules, state.content)(
   //     using ClassTag.Char,
-  //     state.zipperCacheUp,
-  //     state.zipperCacheDown
+  //     state.zipperMemSteps
   //   )
   //   val res = printableTokensFromTokensMem(JsonLexer.rules, tokens)(
   //     using ClassTag.Char,
-  //     state.zipperCacheUp,
-  //     state.zipperCacheDown
+  //     state.zipperMemSteps
   //   )
   //   bh.consume(res.isDefined)
   //   bh.consume(res.get.size > 0)
@@ -128,14 +121,12 @@ class JsonManipulationBenchmark {
   def lexAndCheckPrintableV3(state: FreshLexAndPrintableV3State, bh: Blackhole): Unit = {
     val (tokens, _) = Lexer.lexMem(JsonLexer.rules, state.content)(
       using ClassTag.Char,
-      state.zipperCacheUp,
-      state.zipperCacheDown,
+      state.zipperMemSteps,
       state.furthestNullableCache
     )
     val res = printableTokensFromTokensMem(JsonLexer.rules, tokens)(
       using ClassTag.Char,
-      state.zipperCacheUp,
-      state.zipperCacheDown
+      state.zipperMemSteps
     )
     bh.consume(res.isDefined)
     bh.consume(res.get.size > 0)
@@ -145,14 +136,12 @@ class JsonManipulationBenchmark {
   def lexAndCheckPrintableV3_Warm(state: WarmLexAndPrintableV3State, bh: Blackhole): Unit = {
     val (tokens, _) = Lexer.lexMem(JsonLexer.rules, state.content)(
       using ClassTag.Char,
-      state.zipperCacheUp,
-      state.zipperCacheDown,
+      state.zipperMemSteps,
       state.furthestNullableCache
     )
     val res = printableTokensFromTokensMem(JsonLexer.rules, tokens)(
       using ClassTag.Char,
-      state.zipperCacheUp,
-      state.zipperCacheDown
+      state.zipperMemSteps
     )
     bh.consume(res.isDefined)
     bh.consume(res.get.size > 0)
@@ -171,8 +160,7 @@ class JsonManipulationBenchmark {
     val tokens = state.printableTokens.tokens
     val res = printableTokensFromTokensMem(JsonLexer.rules, tokens)(
       using ClassTag.Char,
-      state.zipperCacheUp,
-      state.zipperCacheDown
+      state.zipperMemSteps
     )
     bh.consume(res.isDefined)
     bh.consume(res.get.size > 0)
@@ -232,8 +220,7 @@ class JsonManipulationBenchmark {
         singletonSeq(JsonManipulationBenchmarkUtils.rightBracketToken)
     val printable = Lexer.separableTokensMem(withBrackets, JsonLexer.rules)(
       using ClassTag.Char,
-      state.zipperCacheUp,
-      state.zipperCacheDown
+      state.zipperMemSteps
     )
     bh.consume(printable)
   }
@@ -263,8 +250,7 @@ class JsonManipulationBenchmark {
         singletonSeq(JsonManipulationBenchmarkUtils.rightBracketToken)
     val printable = Lexer.separableTokensMem(withBrackets, JsonLexer.rules)(
       using ClassTag.Char,
-      state.zipperCacheUp,
-      state.zipperCacheDown
+      state.zipperMemSteps
     )
     bh.consume(printable)
   }
@@ -305,11 +291,13 @@ class FileStateJsonManipulation {
 class FreshLexV1State extends FileStateJsonManipulation {
   var zipperCacheUp: MemoisationZipper.CacheUp[Char] = uninitialized
   var zipperCacheDown: MemoisationZipper.CacheDown[Char] = uninitialized
+  var zipperMemSteps: ZipperDerivationStepsMemoized[Char] = uninitialized
 
   @Setup(Level.Iteration)
   def setupCaches(): Unit = {
     zipperCacheUp = MemoisationZipper.emptyUp(ContextCharHashable)
     zipperCacheDown = MemoisationZipper.emptyDown(RegexContextCharHashable)
+    zipperMemSteps = ZipperDerivationStepsMemoized(zipperCacheUp, zipperCacheDown)
   }
 }
 
@@ -319,8 +307,7 @@ class WarmLexV1State extends FreshLexV1State {
   def warm(): Unit = {
     val (_, suffix) = Lexer.lexV1Mem(JsonLexer.rules, content)(
       using ClassTag.Char,
-      zipperCacheUp,
-      zipperCacheDown
+      zipperMemSteps
     )
     assert(suffix.isEmpty)
   }
@@ -330,12 +317,14 @@ class WarmLexV1State extends FreshLexV1State {
 class FreshLexV3State extends FileStateJsonManipulation {
   var zipperCacheUp: MemoisationZipper.CacheUp[Char] = uninitialized
   var zipperCacheDown: MemoisationZipper.CacheDown[Char] = uninitialized
+  var zipperMemSteps: ZipperDerivationStepsMemoized[Char] = uninitialized
   var furthestNullableCache: MemoisationZipper.CacheFurthestNullable[Char] = uninitialized
 
   @Setup(Level.Iteration)
   def setupCaches(): Unit = {
     zipperCacheUp = MemoisationZipper.emptyUp(ContextCharHashable)
     zipperCacheDown = MemoisationZipper.emptyDown(RegexContextCharHashable)
+    zipperMemSteps = ZipperDerivationStepsMemoized(zipperCacheUp, zipperCacheDown)
     furthestNullableCache =
       MemoisationZipper.emptyFurthestNullableCache[Char](
         ExampleUtils.ZipperBigIntBigIntHashable,
@@ -351,8 +340,7 @@ class WarmLexV3State extends FreshLexV3State {
   def warm(): Unit = {
     val (_, suffix) = Lexer.lexMem(JsonLexer.rules, content)(
       using ClassTag.Char,
-      zipperCacheUp,
-      zipperCacheDown,
+      zipperMemSteps,
       furthestNullableCache
     )
     assert(suffix.isEmpty)
@@ -363,11 +351,13 @@ class WarmLexV3State extends FreshLexV3State {
 class FreshLexAndPrintableV1State extends FileStateJsonManipulation {
   var zipperCacheUp: MemoisationZipper.CacheUp[Char] = uninitialized
   var zipperCacheDown: MemoisationZipper.CacheDown[Char] = uninitialized
+  var zipperMemSteps: ZipperDerivationStepsMemoized[Char] = uninitialized
 
   @Setup(Level.Iteration)
   def setupCaches(): Unit = {
     zipperCacheUp = MemoisationZipper.emptyUp(ContextCharHashable)
     zipperCacheDown = MemoisationZipper.emptyDown(RegexContextCharHashable)
+    zipperMemSteps = ZipperDerivationStepsMemoized(zipperCacheUp, zipperCacheDown)
   }
 }
 
@@ -377,14 +367,12 @@ class WarmLexAndPrintableV1State extends FreshLexAndPrintableV1State {
   def warm(): Unit = {
     val (tokens, suffix) = Lexer.lexV1Mem(JsonLexer.rules, content)(
       using ClassTag.Char,
-      zipperCacheUp,
-      zipperCacheDown
+      zipperMemSteps
     )
     assert(suffix.isEmpty)
     val res = printableTokensFromTokensMem(JsonLexer.rules, tokens)(
       using ClassTag.Char,
-      zipperCacheUp,
-      zipperCacheDown
+      zipperMemSteps
     )
     assert(res.isDefined)
   }
@@ -394,12 +382,14 @@ class WarmLexAndPrintableV1State extends FreshLexAndPrintableV1State {
 class FreshLexAndPrintableV3State extends FileStateJsonManipulation {
   var zipperCacheUp: MemoisationZipper.CacheUp[Char] = uninitialized
   var zipperCacheDown: MemoisationZipper.CacheDown[Char] = uninitialized
+  var zipperMemSteps: ZipperDerivationStepsMemoized[Char] = uninitialized
   var furthestNullableCache: MemoisationZipper.CacheFurthestNullable[Char] = uninitialized
 
   @Setup(Level.Iteration)
   def setupCaches(): Unit = {
     zipperCacheUp = MemoisationZipper.emptyUp(ContextCharHashable)
     zipperCacheDown = MemoisationZipper.emptyDown(RegexContextCharHashable)
+    zipperMemSteps = ZipperDerivationStepsMemoized(zipperCacheUp, zipperCacheDown)
     furthestNullableCache =
       MemoisationZipper.emptyFurthestNullableCache[Char](
         ExampleUtils.ZipperBigIntBigIntHashable,
@@ -415,15 +405,13 @@ class WarmLexAndPrintableV3State extends FreshLexAndPrintableV3State {
   def warm(): Unit = {
     val (tokens, suffix) = Lexer.lexMem(JsonLexer.rules, content)(
       using ClassTag.Char,
-      zipperCacheUp,
-      zipperCacheDown,
+      zipperMemSteps,
       furthestNullableCache
     )
     assert(suffix.isEmpty)
     val res = printableTokensFromTokensMem(JsonLexer.rules, tokens)(
       using ClassTag.Char,
-      zipperCacheUp,
-      zipperCacheDown
+      zipperMemSteps
     )
     assert(res.isDefined)
   }
@@ -446,16 +434,14 @@ class PrintableTokensState extends FileStateJsonManipulation {
 
     val (tokens, suffix) = Lexer.lexMem(JsonLexer.rules, content)(
       using ClassTag.Char,
-      lexUp,
-      lexDown,
+      ZipperDerivationStepsMemoized(lexUp, lexDown),
       furthestNullableCache
     )
     assert(suffix.isEmpty)
 
     printableTokens = printableTokensFromTokensMem(JsonLexer.rules, tokens)(
       using ClassTag.Char,
-      MemoisationZipper.emptyUp(ContextCharHashable),
-      MemoisationZipper.emptyDown(RegexContextCharHashable)
+      ZipperDerivationStepsMemoized(MemoisationZipper.emptyUp(ContextCharHashable), MemoisationZipper.emptyDown(RegexContextCharHashable))
     ).get
   }
 }
@@ -464,15 +450,16 @@ class PrintableTokensState extends FileStateJsonManipulation {
 class WarmCheckPrintableState extends PrintableTokensState {
   var zipperCacheUp: MemoisationZipper.CacheUp[Char] = uninitialized
   var zipperCacheDown: MemoisationZipper.CacheDown[Char] = uninitialized
+  var zipperMemSteps: ZipperDerivationStepsMemoized[Char] = uninitialized
 
   @Setup(Level.Iteration)
   def setupWarmCache(): Unit = {
     zipperCacheUp = MemoisationZipper.emptyUp(ContextCharHashable)
     zipperCacheDown = MemoisationZipper.emptyDown(RegexContextCharHashable)
+    zipperMemSteps = ZipperDerivationStepsMemoized(zipperCacheUp, zipperCacheDown)
     val res = printableTokensFromTokensMem(JsonLexer.rules, printableTokens.tokens)(
       using ClassTag.Char,
-      zipperCacheUp,
-      zipperCacheDown
+      zipperMemSteps
     )
     assert(res.isDefined)
   }
@@ -502,6 +489,7 @@ class OrderedSlicesTokensState extends OrderedSlicesState {
   var orderedSlicesWithoutIdsJustTokens: Sequence[Sequence[Token[Char]]] = uninitialized
   var zipperCacheUp: MemoisationZipper.CacheUp[Char] = uninitialized
   var zipperCacheDown: MemoisationZipper.CacheDown[Char] = uninitialized
+  var zipperMemSteps: ZipperDerivationStepsMemoized[Char] = uninitialized
 
   @Setup(Level.Iteration)
   def setupTokensAndCaches(): Unit = {
@@ -509,6 +497,7 @@ class OrderedSlicesTokensState extends OrderedSlicesState {
     orderedSlicesWithoutIdsJustTokens = orderedSlicesWithoutIds.map(_.tokens)
     zipperCacheUp = MemoisationZipper.emptyUp(ContextCharHashable)
     zipperCacheDown = MemoisationZipper.emptyDown(RegexContextCharHashable)
+    zipperMemSteps = ZipperDerivationStepsMemoized(zipperCacheUp, zipperCacheDown)
   }
 }
 
@@ -537,8 +526,7 @@ class WarmOrderedSlicesTokensState extends OrderedSlicesTokensState {
         singletonSeq(JsonManipulationBenchmarkUtils.rightBracketToken)
     val printable = Lexer.separableTokensMem(withBrackets, JsonLexer.rules)(
       using ClassTag.Char,
-      zipperCacheUp,
-      zipperCacheDown
+      zipperMemSteps
     )
     assert(printable)
   }
@@ -571,8 +559,9 @@ object JsonManipulationBenchmarkUtils {
     name -> lines
   }.toMap
 
-  given CacheUp[Char] = MemoisationZipper.emptyUp(ContextCharHashable)
-  given CacheDown[Char] = MemoisationZipper.emptyDown(RegexContextCharHashable)
+  val zipperCacheUp: CacheUp[Char] = MemoisationZipper.emptyUp(ContextCharHashable)
+  val zipperCacheDown: CacheDown[Char] = MemoisationZipper.emptyDown(RegexContextCharHashable)
+  given ZipperDerivationStepsMemoized[Char] = ZipperDerivationStepsMemoized(zipperCacheUp, zipperCacheDown)
 
 
   val (commaNewLineSeparator, leftBracketSeparator, rightBracketSeparator) =

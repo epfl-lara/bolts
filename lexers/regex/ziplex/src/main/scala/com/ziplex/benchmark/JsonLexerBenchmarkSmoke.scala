@@ -14,6 +14,7 @@ import com.ziplex.lexer.VerifiedLexer.Lexer
 import com.ziplex.lexer.example.ExampleJsonLexer.JsonLexer
 import com.ziplex.lexer.example.RegexUtils.*
 import com.ziplex.lexer.MemoisationZipper
+import com.ziplex.lexer.ZipperRegex.ZipperDerivationStepsMemoized
 import com.ziplex.lexer.VerifiedRegex.Regex
 import com.mutablemaps.map.Hashable
 import com.ziplex.lexer.ZipperRegex.Context
@@ -38,8 +39,7 @@ class JsonLexerBenchmarkSmoke {
   def lex_ZipperMem(state: FreshLexMemStateSmoke, bh: Blackhole): Unit = {
     val (tokens, suffix) = Lexer.lexMem(JsonLexer.rules, state.content)(
       using ClassTag.Char,
-      state.zipperCacheUp,
-      state.zipperCacheDown,
+      state.zipperMemSteps,
       state.furthestNullableCache
     )
     bh.consume(suffix.isEmpty)
@@ -66,12 +66,14 @@ class FileStateSmoke {
 class FreshLexMemStateSmoke extends FileStateSmoke {
   var zipperCacheUp: MemoisationZipper.CacheUp[Char] = uninitialized
   var zipperCacheDown: MemoisationZipper.CacheDown[Char] = uninitialized
+  var zipperMemSteps: ZipperDerivationStepsMemoized[Char] = uninitialized
   var furthestNullableCache: MemoisationZipper.CacheFurthestNullable[Char] = uninitialized
 
   @Setup(Level.Iteration)
   def setupCaches(): Unit = {
     zipperCacheUp = MemoisationZipper.emptyUp(ContextCharHashable)
     zipperCacheDown = MemoisationZipper.emptyDown(RegexContextCharHashable)
+    zipperMemSteps = ZipperDerivationStepsMemoized(zipperCacheUp, zipperCacheDown)
     furthestNullableCache =
       MemoisationZipper.emptyFurthestNullableCache[Char](
         ExampleUtils.ZipperBigIntBigIntHashable,
