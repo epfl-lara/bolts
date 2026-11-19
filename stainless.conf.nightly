@@ -1,6 +1,7 @@
-timeout = 300
 fail-early = true
 strict-arithmetic = false
 solvers="smt-z3"
 no-colors=true
 compact=true
+# Resource limits in millions of units: 2x the most expensive query over 10 runs, max over the 26 projects using this file (data-structures/trees/concrope); see each project's resource-report.html
+z3-rlimit = 29
