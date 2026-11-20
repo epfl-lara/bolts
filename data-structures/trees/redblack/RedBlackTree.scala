@@ -590,6 +590,8 @@ object RedBlackTree {
         if (x < v) {
           val out = Node(c, del(a, x), v, b)
           assert(deleteSmallerLemma(a.toList, v, b.toList, x))
+          check(isBST(out))
+          check(blackBalanced(out))
           check(isValidPreRotateNode(out))
           check(out.toList == deleteFirst(in.toList, x))
           out
@@ -622,6 +624,8 @@ object RedBlackTree {
         } else {
           val out = Node(c, a, v, del(b, x))
           assert(deleteBiggerLemma(a.toList, v, b.toList, x))
+          check(isBST(out))
+          check(blackBalanced(out))
           check(isValidPreRotateNode(out))
           check(out.toList == deleteFirst(in.toList, x))
           out
