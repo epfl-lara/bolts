@@ -42,14 +42,15 @@ case class ByteArray(private val data: Array[Byte], @ghost private var toList: L
   def update(i: BigInt, v: Byte): Unit = {
     require(valid)
     require(i >= 0 && i < size)
-    ghostExpr({Utils.lemmaSameArrayListContentImpliesSameLength(data, 0, toList)
-      Utils.compareBigIntPreservedByToInt(i, size)
-      Utils.sameArrayListContent(data, 0, toList)
-      Utils.lemmaSameArrayListContentPreservedByUpdated(data, 0, toList, i.toInt, v)
+    ghostExpr({
       Utils.lemmaSameArrayListContentImpliesSameLength(data, 0, toList)
       Utils.lemmaToIntBigIntConversionBothDirections(toList.size, data.length)
-      Utils.compareBigIntPreservedByToInt(i, size)
-      unfold(size)
+      Utils.compareBigIntPreservedByToInt(i, toList.size)
+      Utils.lemmaConversionBackForth(i)
+      assert(i.toInt >= 0 && i.toInt < data.length)
+      Utils.lemmaSameArrayListContentPreservedByUpdated(data, 0, toList, i.toInt, v)
+      assert(BigInt(i.toInt - 0) == i)
+      assert(Utils.sameArrayListContent(data.updated(i.toInt, v), 0, toList.updated(i, v)))
     })
 
     toList = toList.updated(i, v)
@@ -157,6 +158,8 @@ object Utils {
     lemmaToIntBigIntConversionBothDirections(list.size, arr.length - from)
     lemmaToIntBigIntConversionBothDirections(list.size, j)
     assert(j >= 0)
+    assert(arr.length - from == list.size.toInt)
+    assert(j < arr.length - from)
     assert(j < list.size.toInt)
     assert(BigInt(j) >= 0 && BigInt(j) < list.size)
     list match {
