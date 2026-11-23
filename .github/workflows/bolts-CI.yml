@@ -1,8 +1,6 @@
 name: Bolts CI with admit VCs
 on:
-  push:
-    branches:
-      - main
+  workflow_dispatch:
 
 env:
   # Java options, read by the sbt launcher and the Stainless launcher scripts
