@@ -48,7 +48,7 @@ object MutableMapInterface{
     @pure
     def abstractMap: ListLongMap[V] = {
       require(valid)
-      ??? : ListLongMap[V]
+      AbstractMethodBody[ListLongMap[V]]()
     }
 
     @pure
@@ -56,29 +56,29 @@ object MutableMapInterface{
     @pure
     def isEmpty: Boolean = {
       require(valid)
-      ??? : Boolean
+      AbstractMethodBody[Boolean]()
     }
 
     @pure
     def contains(key: Long): Boolean = {
     require(valid)
-    ??? : Boolean
+    AbstractMethodBody[Boolean]()
     }.ensuring(res => valid && (res == abstractMap.contains(key)))
 
     @pure
     def apply(key: Long): V = {
       require(valid)
-      ??? : V
+      AbstractMethodBody[V]()
     }.ensuring(res => valid && (if (contains(key)) then abstractMap.get(key).isDefined && res == abstractMap.get(key).get else res == defaultEntry(key)))
 
     def update(key: Long, v: V): Boolean = {
       require(valid)
-      ??? : Boolean
+      AbstractMethodBody[Boolean]()
     }.ensuring(res => valid && (if (res) then abstractMap.contains(key) && (abstractMap == old(this).abstractMap + (key, v)) else abstractMap == old(this).abstractMap))
     
     def remove(key: Long): Boolean = {
       require(valid)
-      ??? : Boolean
+      AbstractMethodBody[Boolean]()
     }.ensuring(res => valid && (if (res) then abstractMap == old(this).abstractMap - key else abstractMap == old(this).abstractMap))
   }
 
@@ -102,7 +102,7 @@ object MutableMapInterface{
     @pure
     def abstractMap: ListMap[K, V] = {
       require(valid)
-      ??? : ListMap[K, V]
+      AbstractMethodBody[ListMap[K, V]]()
     }
 
     @pure
@@ -110,29 +110,29 @@ object MutableMapInterface{
     @pure
     def isEmpty: Boolean = {
       require(valid)
-      ??? : Boolean
+      AbstractMethodBody[Boolean]()
     }
 
     @pure
     def contains(key: K): Boolean = {
     require(valid)
-    ??? : Boolean
+    AbstractMethodBody[Boolean]()
     }.ensuring(res => valid && (res == abstractMap.contains(key)))
 
     @pure
     def apply(key: K): V = {
       require(valid)
-      ??? : V
+      AbstractMethodBody[V]()
     }.ensuring(res => valid && (if (contains(key)) then abstractMap.get(key).isDefined && res == abstractMap.get(key).get else res == defaultEntry(key)))
 
     def update(key: K, v: V): Boolean = {
       require(valid)
-      ??? : Boolean
+      AbstractMethodBody[Boolean]()
     }.ensuring(res => valid && (if (res) then abstractMap.contains(key) && (abstractMap.eq(old(this).abstractMap + (key, v))) else abstractMap.eq(old(this).abstractMap)))
     
     def remove(key: K): Boolean = {
       require(valid)
-      ??? : Boolean
+      AbstractMethodBody[Boolean]()
     }.ensuring(res => valid && (if (res) then abstractMap.eq(old(this).abstractMap - key) else abstractMap.eq(old(this).abstractMap)))
   }
 }
