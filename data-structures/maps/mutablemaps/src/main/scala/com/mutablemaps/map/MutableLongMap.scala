@@ -39,7 +39,7 @@ object MutableLongMap {
   def getEmptyLongMap[V: ClassTag](defaultEntry: Long => V): LongMap[V] = {
     val m = 15
     assert(validMask(m))
-    LongMap(Cell(LongMapFixedSize.getNewLongMapFixedSize(m, defaultEntry)))
+    LongMap(LongMapFixedSize.getNewLongMapFixedSize(m, defaultEntry))
   }.ensuring (res => res.valid && res.size == 0)
 
   /** Helper method to create a new empty LongMap with a given initial array size WARNING: UNSOUND!!! The given size must be a power of 2 <= 2^30
@@ -51,16 +51,16 @@ object MutableLongMap {
     require(validMask(initialSize - 1))
     val m = initialSize - 1
     assert(validMask(m))
-    LongMap(Cell(LongMapFixedSize.getNewLongMapFixedSize(m, defaultEntry)))
+    LongMap(LongMapFixedSize.getNewLongMapFixedSize(m, defaultEntry))
   }.ensuring (res => res.valid && res.size == 0)
 
   @mutable
   final case class LongMap[V: ClassTag](
-      val underlying: Cell[LongMapFixedSize[V]]
+      var underlying: LongMapFixedSize[V]
   ) extends MutLongMap[V] {
 
     @pure
-    override def defaultEntry: Long => V = underlying.v.defaultEntry
+    override def defaultEntry: Long => V = underlying.defaultEntry
 
     @ghost
     override def abstractMap: ListLongMap[V] = {
@@ -69,31 +69,31 @@ object MutableLongMap {
     }
 
     @pure
-    def imbalanced(): Boolean = (2 * (underlying.v._size + underlying.v._vacant)) > underlying.v.mask || underlying.v._vacant > underlying.v._size
+    def imbalanced(): Boolean = (2 * (underlying._size + underlying._vacant)) > underlying.mask || underlying._vacant > underlying._size
 
     @pure
-    override def size: Int = underlying.v.size
+    override def size: Int = underlying.size
 
     @pure
     override def isEmpty: Boolean = {
       require(valid)
-      underlying.v.isEmpty
+      underlying.isEmpty
     }.ensuring (_ => valid)
       
     @pure
     override def contains(key: Long): Boolean = {
       require(valid)
-      underlying.v.contains(key)
+      underlying.contains(key)
     }.ensuring (res => valid && (res == map.contains(key)))
 
     @pure
     override def apply(key: Long): V = {
       require(valid)
-      underlying.v.apply(key)
+      underlying.apply(key)
     }.ensuring (res =>
       valid
         && (if (contains(key)) res == map.get(key).get
-            else res == underlying.v.defaultEntry(key))
+            else res == underlying.defaultEntry(key))
     )
 
     override def update(key: Long, v: V): Boolean = {
@@ -104,7 +104,7 @@ object MutableLongMap {
         true
       }
       if (repacked) {
-        underlying.v.update(key, v)
+        underlying.update(key, v)
       } else {
         false
       }
@@ -112,7 +112,7 @@ object MutableLongMap {
 
     override def remove(key: Long): Boolean = {
       require(valid)
-      underlying.v.remove(key)
+      underlying.remove(key)
     }.ensuring (res => valid && (if (res) map == old(this).map - key else map == old(this).map))
 
     // require(_size < 268435456) // Smallest size that can trigger a problem with a certain mask
@@ -135,19 +135,19 @@ object MutableLongMap {
     def repack(): Boolean = {
       require(valid)
 
-      val newMask: Int = computeNewMask(underlying.v.mask, underlying.v._vacant, underlying.v._size)
-      val newMapCell: Cell[LongMapFixedSize[V]] = Cell(LongMapFixedSize.getNewLongMapFixedSize(newMask, underlying.v.defaultEntry))
-      val resExtraKeys = if ((underlying.v.extraKeys & 1) != 0 && (underlying.v.extraKeys & 2) != 0) {
+      val newMask: Int = computeNewMask(underlying.mask, underlying._vacant, underlying._size)
+      val newMap: LongMapFixedSize[V] = LongMapFixedSize.getNewLongMapFixedSize(newMask, underlying.defaultEntry)
+      val resExtraKeys = if ((underlying.extraKeys & 1) != 0 && (underlying.extraKeys & 2) != 0) {
         // it means there is a mapping for the key 0 and the Long.MIN_VALUE
-        val u1 = newMapCell.v.update(0L, underlying.v.zeroValue)
-        val u2 = newMapCell.v.update(Long.MinValue, underlying.v.minValue)
+        val u1 = newMap.update(0L, underlying.zeroValue)
+        val u2 = newMap.update(Long.MinValue, underlying.minValue)
         u1 && u2
-      } else if ((underlying.v.extraKeys & 1) != 0 && (underlying.v.extraKeys & 2) == 0) {
+      } else if ((underlying.extraKeys & 1) != 0 && (underlying.extraKeys & 2) == 0) {
         // it means there is a mapping for the key 0
-        newMapCell.v.update(0L, underlying.v.zeroValue)
-      } else if ((underlying.v.extraKeys & 2) != 0 && (underlying.v.extraKeys & 1) == 0) {
+        newMap.update(0L, underlying.zeroValue)
+      } else if ((underlying.extraKeys & 2) != 0 && (underlying.extraKeys & 1) == 0) {
         // it means there is a mapping for the key Long.MIN_VALUE
-        newMapCell.v.update(Long.MinValue, underlying.v.minValue)
+        newMap.update(Long.MinValue, underlying.minValue)
       } else {
         true
       }
@@ -155,13 +155,13 @@ object MutableLongMap {
       if (!resExtraKeys) {
         false
       } else {
-        assert(LongMapFixedSize.validMask(underlying.v.mask))
-        assert(underlying.v._keys.length == underlying.v.mask + 1)
-        assert((underlying.v._keys.length - 1) >= 0)
-        val repackFromRes = repackFrom(newMapCell.v, underlying.v._keys.length - 1)
+        assert(LongMapFixedSize.validMask(underlying.mask))
+        assert(underlying._keys.length == underlying.mask + 1)
+        assert((underlying._keys.length - 1) >= 0)
+        val repackFromRes = repackFrom(newMap, underlying._keys.length - 1)
         if (repackFromRes) {
           // Swap the current underyling with the new one
-          swap(underlying, newMapCell)
+          underlying = newMap
           true
         } else {
           false
@@ -172,26 +172,26 @@ object MutableLongMap {
     // @tailrec
     def repackFrom(newMap: LongMapFixedSize[V], from: Int): Boolean = {
       require(valid)
-      require(from >= 0 && from < underlying.v._keys.length)
+      require(from >= 0 && from < underlying._keys.length)
       require(newMap.valid)
-      require(newMap.mask + 1 >= underlying.v._size)
+      require(newMap.mask + 1 >= underlying._size)
       require(
         LongMapFixedSize.getCurrentListMap(
-          underlying.v._keys,
-          underlying.v._values,
-          underlying.v.mask,
-          underlying.v.extraKeys,
-          underlying.v.zeroValue,
-          underlying.v.minValue,
+          underlying._keys,
+          underlying._values,
+          underlying.mask,
+          underlying.extraKeys,
+          underlying.zeroValue,
+          underlying.minValue,
           from + 1,
-          underlying.v.defaultEntry
+          underlying.defaultEntry
         ) == newMap.map
       )
       decreases(from)
-      val currentKey = underlying.v._keys(from)
+      val currentKey = underlying._keys(from)
       // println(f"RepackFrom: from = $from, key = $currentKey")
 
-      val currentValue = underlying.v._values(from)
+      val currentValue = underlying._values(from)
 
       @ghost val newMapListMapBefore = newMap.map
 
@@ -202,71 +202,71 @@ object MutableLongMap {
 
         ghostExpr(if (newMapListMapBefore.contains(currentKey)) {
           LongMapFixedSize.lemmaListMapContainsThenArrayContainsFrom(
-            underlying.v._keys,
-            underlying.v._values,
-            underlying.v.mask,
-            underlying.v.extraKeys,
-            underlying.v.zeroValue,
-            underlying.v.minValue,
+            underlying._keys,
+            underlying._values,
+            underlying.mask,
+            underlying.extraKeys,
+            underlying.zeroValue,
+            underlying.minValue,
             currentKey,
             from + 1,
-            underlying.v.defaultEntry
+            underlying.defaultEntry
           )
-          LongMapFixedSize.lemmaNoDuplicateFromThenFromBigger(underlying.v._keys, 0, from)
-          LongMapFixedSize.lemmaArrayNoDuplicateFromNotContainsKeysInAcc(underlying.v._keys, from + 1, currentKey, List(currentKey))
+          LongMapFixedSize.lemmaNoDuplicateFromThenFromBigger(underlying._keys, 0, from)
+          LongMapFixedSize.lemmaArrayNoDuplicateFromNotContainsKeysInAcc(underlying._keys, from + 1, currentKey, List(currentKey))
           check(false)
         } else { () })
 
         if (res) {
           if (from > 0) {
 
-            // val underlyingMapFromPOneNXtra = LongMapFixedSize.getCurrentListMapNoExtraKeys(underlying.v._keys,underlying.v._values,underlying.v.mask,underlying.v.extraKeys,underlying.v.zeroValue,underlying.v.minValue,from + 1,underlying.v.defaultEntry)
+            // val underlyingMapFromPOneNXtra = LongMapFixedSize.getCurrentListMapNoExtraKeys(underlying._keys,underlying._values,underlying.mask,underlying.extraKeys,underlying.zeroValue,underlying.minValue,from + 1,underlying.defaultEntry)
             ghostExpr(
               ListLongMapLemmas.addCommutativeForDiffKeys(
                 LongMapFixedSize.getCurrentListMapNoExtraKeys(
-                  underlying.v._keys,
-                  underlying.v._values,
-                  underlying.v.mask,
-                  underlying.v.extraKeys,
-                  underlying.v.zeroValue,
-                  underlying.v.minValue,
+                  underlying._keys,
+                  underlying._values,
+                  underlying.mask,
+                  underlying.extraKeys,
+                  underlying.zeroValue,
+                  underlying.minValue,
                   from + 1,
-                  underlying.v.defaultEntry
+                  underlying.defaultEntry
                 ),
                 currentKey,
                 currentValue,
                 0L,
-                underlying.v.zeroValue
+                underlying.zeroValue
               )
             )
             ghostExpr(
               ListLongMapLemmas.addCommutativeForDiffKeys(
                 LongMapFixedSize.getCurrentListMapNoExtraKeys(
-                  underlying.v._keys,
-                  underlying.v._values,
-                  underlying.v.mask,
-                  underlying.v.extraKeys,
-                  underlying.v.zeroValue,
-                  underlying.v.minValue,
+                  underlying._keys,
+                  underlying._values,
+                  underlying.mask,
+                  underlying.extraKeys,
+                  underlying.zeroValue,
+                  underlying.minValue,
                   from + 1,
-                  underlying.v.defaultEntry
-                ) + (0L, underlying.v.zeroValue),
+                  underlying.defaultEntry
+                ) + (0L, underlying.zeroValue),
                 currentKey,
                 currentValue,
                 Long.MinValue,
-                underlying.v.minValue
+                underlying.minValue
               )
             )
             assert(
               LongMapFixedSize.getCurrentListMap(
-                underlying.v._keys,
-                underlying.v._values,
-                underlying.v.mask,
-                underlying.v.extraKeys,
-                underlying.v.zeroValue,
-                underlying.v.minValue,
+                underlying._keys,
+                underlying._values,
+                underlying.mask,
+                underlying.extraKeys,
+                underlying.zeroValue,
+                underlying.minValue,
                 from,
-                underlying.v.defaultEntry
+                underlying.defaultEntry
               ) == newMap.map
             )
             repackFrom(newMap, from - 1)
@@ -275,37 +275,37 @@ object MutableLongMap {
             ghostExpr(
               ListLongMapLemmas.addCommutativeForDiffKeys(
                 LongMapFixedSize.getCurrentListMapNoExtraKeys(
-                  underlying.v._keys,
-                  underlying.v._values,
-                  underlying.v.mask,
-                  underlying.v.extraKeys,
-                  underlying.v.zeroValue,
-                  underlying.v.minValue,
+                  underlying._keys,
+                  underlying._values,
+                  underlying.mask,
+                  underlying.extraKeys,
+                  underlying.zeroValue,
+                  underlying.minValue,
                   from + 1,
-                  underlying.v.defaultEntry
+                  underlying.defaultEntry
                 ),
                 currentKey,
                 currentValue,
                 0L,
-                underlying.v.zeroValue
+                underlying.zeroValue
               )
             )
             ghostExpr(
               ListLongMapLemmas.addCommutativeForDiffKeys(
                 LongMapFixedSize.getCurrentListMapNoExtraKeys(
-                  underlying.v._keys,
-                  underlying.v._values,
-                  underlying.v.mask,
-                  underlying.v.extraKeys,
-                  underlying.v.zeroValue,
-                  underlying.v.minValue,
+                  underlying._keys,
+                  underlying._values,
+                  underlying.mask,
+                  underlying.extraKeys,
+                  underlying.zeroValue,
+                  underlying.minValue,
                   from + 1,
-                  underlying.v.defaultEntry
-                ) + (0L, underlying.v.zeroValue),
+                  underlying.defaultEntry
+                ) + (0L, underlying.zeroValue),
                 currentKey,
                 currentValue,
                 Long.MinValue,
-                underlying.v.minValue
+                underlying.minValue
               )
             )
             true
@@ -322,16 +322,16 @@ object MutableLongMap {
         }
       }
 
-    }.ensuring (res => if (res) newMap.valid && newMap.map == underlying.v.map else true)
+    }.ensuring (res => if (res) newMap.valid && newMap.map == underlying.map else true)
 
     @ghost
-    def valid: Boolean = underlying.v.valid
+    def valid: Boolean = underlying.valid
 
     @pure
     @ghost
     def map: ListLongMap[V] = {
       require(valid)
-      underlying.v.map
+      underlying.map
     }
 
   }
