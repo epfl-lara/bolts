@@ -15,8 +15,9 @@ object Leftpad {
   def appendCons[T](l1: List[T], l2: List[T], x: T) = {
     l1 ++ (x :: l2) == (l1 :+ x) ++ l2
   } .holds because {
-     ListSpecs.snocIsAppend[T](l1, x) &&
+     ListSpecs.snocIsAppend[T](l1, x)
      ListSpecs.appendAssoc[T](l1, Cons[T](x, Nil[T]()), l2)
+     true
   }
 
   def fillMore[T](n: BigInt, t: T): Boolean = {

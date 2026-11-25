@@ -41,8 +41,7 @@ object VerifiedLexer {
   import VerifiedRegex._
   import ZipperRegex.Zipper
   import VerifiedRegexMatcher._
-  import com.ziplex.lexer.MemoisationZipper.CacheUp
-  import com.ziplex.lexer.MemoisationZipper.CacheDown
+  import ZipperRegex.ZipperDerivationStepsMemoized
   import com.ziplex.lexer.MemoisationZipper.CacheFindLongestMatch
   import com.ziplex.lexer.MemoisationZipper.CacheFurthestNullable
 
@@ -66,7 +65,7 @@ object VerifiedLexer {
     }
   }.ensuring(res => res.isEmpty || (res.get.rules == rules && res.get.tokens == tokens))
 
-  def printableTokensFromTokensMem[C: ClassTag](rules: List[Rule[C]], tokens: Sequence[Token[C]])(using cacheUp: CacheUp[C], cacheDown: CacheDown[C]): Option[PrintableTokens[C]] = {
+  def printableTokensFromTokensMem[C: ClassTag](rules: List[Rule[C]], tokens: Sequence[Token[C]])(using memSteps: ZipperDerivationStepsMemoized[C]): Option[PrintableTokens[C]] = {
     require(!rules.isEmpty)
     require(Lexer.rulesInvariant(rules)) // this should checked at runtime before lexing
     require(Lexer.rulesProduceEachTokenIndividually(rules, tokens)) // this is ensured by lexing
@@ -213,7 +212,7 @@ object VerifiedLexer {
       res == (lex(rs, print(singletonSeq(t)))._1.list == singletonSeq(t).list &&  lex(rs, print(singletonSeq(t)))._2.isEmpty)
     })
 
-    def rulesProduceIndividualTokenMem[C: ClassTag](rs: List[Rule[C]], t: Token[C])(using cacheUp: CacheUp[C], cacheDown: CacheDown[C]): Boolean = {
+    def rulesProduceIndividualTokenMem[C: ClassTag](rs: List[Rule[C]], t: Token[C])(using memSteps: ZipperDerivationStepsMemoized[C]): Boolean = {
       require(!rs.isEmpty)
       require(rulesInvariant(rs))
       val (producedTs, suffix) = lexV1Mem(rs, print(singletonSeq(t)))
@@ -238,7 +237,7 @@ object VerifiedLexer {
       ts.forall(t => rulesProduceIndividualToken(rs, t))
     }.ensuring(res => res == ts.list.forall(t => rulesProduceIndividualToken(rs, t)) && res == rulesProduceEachTokenIndividuallyList(rs, ts.list))
 
-    def rulesProduceEachTokenIndividuallyMem[C: ClassTag](rs: List[Rule[C]], ts: Sequence[Token[C]])(using cacheUp: CacheUp[C], cacheDown: CacheDown[C]): Boolean = {
+    def rulesProduceEachTokenIndividuallyMem[C: ClassTag](rs: List[Rule[C]], ts: Sequence[Token[C]])(using memSteps: ZipperDerivationStepsMemoized[C]): Boolean = {
       require(!rs.isEmpty)
       require(rulesInvariant(rs))
       decreases(ts.size)
@@ -332,7 +331,7 @@ object VerifiedLexer {
 
       tokensListTwoByTwoPredicateSeparable(tokens, from = 0, rules)
 
-    def separableTokensMem[C: ClassTag](tokens: Sequence[Token[C]], rules: List[Rule[C]])(using cacheUp: CacheUp[C], cacheDown: CacheDown[C]): Boolean = { 
+    def separableTokensMem[C: ClassTag](tokens: Sequence[Token[C]], rules: List[Rule[C]])(using memSteps: ZipperDerivationStepsMemoized[C]): Boolean = { 
       require(!rules.isEmpty)
       require(rulesInvariant(rules))
       require(rulesProduceEachTokenIndividually(rules, tokens))
@@ -375,7 +374,7 @@ object VerifiedLexer {
       res == tokensListTwoByTwoPredicateSeparableList(v.dropList(from), rules)
     })
 
-    def tokensListTwoByTwoPredicateSeparableMem[C: ClassTag](v: Sequence[Token[C]], from: BigInt, rules: List[Rule[C]])(using cacheUp: CacheUp[C], cacheDown: CacheDown[C]): Boolean = {
+    def tokensListTwoByTwoPredicateSeparableMem[C: ClassTag](v: Sequence[Token[C]], from: BigInt, rules: List[Rule[C]])(using memSteps: ZipperDerivationStepsMemoized[C]): Boolean = {
       require(from >= 0 && from <= v.size)
       require(!rules.isEmpty)
       require(rulesInvariant(rules))
@@ -420,7 +419,7 @@ object VerifiedLexer {
       !VerifiedRegexMatcher.prefixMatchZipperSequence(rulesRegex(rules), t1.charsOf ++ singletonSeq(t2.charsOf(0)))
     }
 
-    def separableTokensPredicateMem[C: ClassTag](t1: Token[C], t2: Token[C], rules: List[Rule[C]])(using cacheUp: CacheUp[C], cacheDown: CacheDown[C]): Boolean = {
+    def separableTokensPredicateMem[C: ClassTag](t1: Token[C], t2: Token[C], rules: List[Rule[C]])(using memSteps: ZipperDerivationStepsMemoized[C]): Boolean = {
       require(!rules.isEmpty)
       require(rulesInvariant(rules))
       require(rulesProduceIndividualToken(rules, t1))
@@ -641,11 +640,9 @@ object VerifiedLexer {
     def lexV1Mem[C: ClassTag](
         rules: List[Rule[C]],
         input: Sequence[C]
-    )(using cacheUp: CacheUp[C], cacheDown: CacheDown[C]): (Sequence[Token[C]], Sequence[C]) = {
+    )(using memSteps: ZipperDerivationStepsMemoized[C]): (Sequence[Token[C]], Sequence[C]) = {
       require(!rules.isEmpty)
       require(rulesInvariant(rules))
-      require(cacheUp.valid)
-      require(cacheDown.valid)
       decreases(input.size)
 
       lexTailRecMem(
@@ -661,11 +658,9 @@ object VerifiedLexer {
     def lexMem[C: ClassTag](
         rules: List[Rule[C]],
         input: Sequence[C]
-    )(using cacheUp: CacheUp[C], cacheDown: CacheDown[C], cacheFurthestNullable: CacheFurthestNullable[C]): (Sequence[Token[C]], Sequence[C]) = {
+    )(using memSteps: ZipperDerivationStepsMemoized[C], cacheFurthestNullable: CacheFurthestNullable[C]): (Sequence[Token[C]], Sequence[C]) = {
       require(!rules.isEmpty)
       require(rulesInvariant(rules))
-      require(cacheUp.valid)
-      require(cacheDown.valid)
       require(cacheFurthestNullable.valid)
       require(cacheFurthestNullable.totalInput == input)
       decreases(input.size)
@@ -679,21 +674,22 @@ object VerifiedLexer {
       )
     }.ensuring (res => res._1.list == lex(rules, input)._1.list &&& 
                        res._2.list == lex(rules, input)._2.list &&&
-                       cacheFurthestNullable.valid && cacheUp.valid && cacheDown.valid &&&
+                       cacheFurthestNullable.valid &&&
                        cacheFurthestNullable.totalInput == input)
 
     def lexV2Mem[C: ClassTag](
         rules: List[Rule[C]],
         input: Sequence[C]
-    )(using cacheUp: CacheUp[C], cacheDown: CacheDown[C], cacheFindLongestMatch: CacheFindLongestMatch[C]): (Sequence[Token[C]], Sequence[C]) = {
+    )(using memSteps: ZipperDerivationStepsMemoized[C], cacheFindLongestMatch: CacheFindLongestMatch[C]): (Sequence[Token[C]], Sequence[C]) = {
       require(!rules.isEmpty)
       require(rulesInvariant(rules))
-      require(cacheUp.valid)
-      require(cacheDown.valid)
       require(cacheFindLongestMatch.valid)
       require(cacheFindLongestMatch.totalInput == input)
       decreases(input.size)
-
+      ghostExpr({
+        assert(lexRec(rules, emptySeq[C]())._1.list == emptySeq[Token[C]]().list)
+        assert(emptySeq[Token[C]]().list == Nil[Token[C]]())
+      })
       lexTailRecV2Mem(
         rules,
         input,
@@ -703,17 +699,15 @@ object VerifiedLexer {
       )
     }.ensuring (res => res._1.list == lex(rules, input)._1.list &&& 
                        res._2.list == lex(rules, input)._2.list &&&
-                       cacheFindLongestMatch.valid && cacheUp.valid && cacheDown.valid &&&
+                       cacheFindLongestMatch.valid &&&
                        cacheFindLongestMatch.totalInput == input)
 
     def lexV2MemOnlyDeriv[C: ClassTag](
         rules: List[Rule[C]],
         input: Sequence[C]
-    )(using cacheUp: CacheUp[C], cacheDown: CacheDown[C]): (Sequence[Token[C]], Sequence[C]) = {
+    )(using memSteps: ZipperDerivationStepsMemoized[C]): (Sequence[Token[C]], Sequence[C]) = {
       require(!rules.isEmpty)
       require(rulesInvariant(rules))
-      require(cacheUp.valid)
-      require(cacheDown.valid)
       decreases(input.size)
 
       lexTailRecV2MemOnlyDeriv(
@@ -724,8 +718,7 @@ object VerifiedLexer {
         emptySeq[Token[C]]()
       )
     }.ensuring (res => res._1.list == lex(rules, input)._1.list &&& 
-                       res._2.list == lex(rules, input)._2.list &&&
-                       cacheUp.valid && cacheDown.valid)
+                       res._2.list == lex(rules, input)._2.list)
 
     def lexV3[C: ClassTag](
         rules: List[Rule[C]],
@@ -747,11 +740,9 @@ object VerifiedLexer {
     def lexV3MemDeriv[C: ClassTag](
         rules: List[Rule[C]],
         input: Sequence[C]
-    )(using cacheUp: CacheUp[C], cacheDown: CacheDown[C]): (Sequence[Token[C]], Sequence[C]) = {
+    )(using memSteps: ZipperDerivationStepsMemoized[C]): (Sequence[Token[C]], Sequence[C]) = {
       require(!rules.isEmpty)
       require(rulesInvariant(rules))
-      require(cacheUp.valid)
-      require(cacheDown.valid)
       decreases(input.size)
 
       lexTailRecV3MemDeriv(
@@ -762,8 +753,7 @@ object VerifiedLexer {
         emptySeq[Token[C]]()
       )
     }.ensuring (res => res._1.list == lex(rules, input)._1.list &&& 
-                       res._2.list == lex(rules, input)._2.list &&&
-                       cacheUp.valid && cacheDown.valid)
+                       res._2.list == lex(rules, input)._2.list)
 
     // @tailrec
     def lexTailRecMem[C: ClassTag](
@@ -772,12 +762,10 @@ object VerifiedLexer {
         @ghost treated: Sequence[C],
         input: Sequence[C],
         acc: Sequence[Token[C]],
-    )(using cacheUp: CacheUp[C], cacheDown: CacheDown[C]): (Sequence[Token[C]], Sequence[C]) = {
+    )(using memSteps: ZipperDerivationStepsMemoized[C]): (Sequence[Token[C]], Sequence[C]) = {
       decreases(input.size)
       require(!rules.isEmpty)
       require(rulesInvariant(rules))
-      require(cacheUp.valid)
-      require(cacheDown.valid)
       require(totalInput.list == treated.list ++ input.list)
       require(lexRec(rules, treated)._1.list == acc.list)
       require(lexRec(rules, treated)._2.list.isEmpty)
@@ -810,7 +798,7 @@ object VerifiedLexer {
         @ghost treated: Sequence[C],
         input: Sequence[C],
         acc: Sequence[Token[C]],
-    )(using cacheUp: CacheUp[C], cacheDown: CacheDown[C], cacheFindLongestMatch: CacheFindLongestMatch[C]): (Sequence[Token[C]], Sequence[C]) = {
+    )(using memSteps: ZipperDerivationStepsMemoized[C], cacheFindLongestMatch: CacheFindLongestMatch[C]): (Sequence[Token[C]], Sequence[C]) = {
       decreases(input.size)
       require(!rules.isEmpty)
       require(rulesInvariant(rules))
@@ -819,8 +807,6 @@ object VerifiedLexer {
       require(lexRec(rules, treated)._2.list.isEmpty)
       require(lexRec(rules, totalInput)._1.list == (acc ++ lexRec(rules, input)._1).list)
       require(lexRec(rules, totalInput)._2.list == lexRec(rules, input)._2.list)
-      require(cacheUp.valid)
-      require(cacheDown.valid)
       require(cacheFindLongestMatch.valid)
       require(cacheFindLongestMatch.totalInput == totalInput)
       ghostExpr(ListUtils.lemmaConcatTwoListThenFSndIsSuffix(treated.list, input.list))
@@ -866,7 +852,7 @@ object VerifiedLexer {
         }
       }
     }.ensuring (res => res == lexTailRecV2(rules, totalInput, treated, input, acc) &&&
-                       cacheFindLongestMatch.valid && cacheUp.valid && cacheDown.valid &&&
+                       cacheFindLongestMatch.valid &&&
                        cacheFindLongestMatch.totalInput == totalInput)
 
     // @tailrec
@@ -876,7 +862,7 @@ object VerifiedLexer {
         @ghost treated: Sequence[C],
         input: Sequence[C],
         acc: Sequence[Token[C]],
-    )(using cacheUp: CacheUp[C], cacheDown: CacheDown[C]): (Sequence[Token[C]], Sequence[C]) = {
+    )(using memSteps: ZipperDerivationStepsMemoized[C]): (Sequence[Token[C]], Sequence[C]) = {
       decreases(input.size)
       require(!rules.isEmpty)
       require(rulesInvariant(rules))
@@ -885,8 +871,6 @@ object VerifiedLexer {
       require(lexRec(rules, treated)._2.list.isEmpty)
       require(lexRec(rules, totalInput)._1.list == (acc ++ lexRec(rules, input)._1).list)
       require(lexRec(rules, totalInput)._2.list == lexRec(rules, input)._2.list)
-      require(cacheUp.valid)
-      require(cacheDown.valid)
       ghostExpr(ListUtils.lemmaConcatTwoListThenFSndIsSuffix(treated.list, input.list))
       ghostExpr(assert(ListUtils.isSuffix(input.list, totalInput.list)))
 
@@ -929,8 +913,7 @@ object VerifiedLexer {
           (acc, input)
         }
       }
-    }.ensuring (res => res == lexTailRecV2(rules, totalInput, treated, input, acc) &&&
-                       cacheUp.valid && cacheDown.valid)
+    }.ensuring (res => res == lexTailRecV2(rules, totalInput, treated, input, acc))
 
     // @tailrec
     def lexTailRecV3[C: ClassTag](
@@ -985,7 +968,7 @@ object VerifiedLexer {
         @ghost treated: Sequence[C],
         input: Sequence[C],
         acc: Sequence[Token[C]],
-    )(using cacheUp: CacheUp[C], cacheDown: CacheDown[C]): (Sequence[Token[C]], Sequence[C]) = {
+    )(using memSteps: ZipperDerivationStepsMemoized[C]): (Sequence[Token[C]], Sequence[C]) = {
       decreases(input.size)
       require(!rules.isEmpty)
       require(rulesInvariant(rules))
@@ -994,8 +977,6 @@ object VerifiedLexer {
       require(lexRec(rules, treated)._2.list.isEmpty)
       require(lexRec(rules, totalInput)._1.list == (acc ++ lexRec(rules, input)._1).list)
       require(lexRec(rules, totalInput)._2.list == lexRec(rules, input)._2.list)
-      require(cacheUp.valid)
-      require(cacheDown.valid)
       ghostExpr(ListUtils.lemmaConcatTwoListThenFSndIsSuffix(treated.list, input.list))
       ghostExpr(assert(ListUtils.isSuffix(input.list, totalInput.list)))
 
@@ -1010,8 +991,6 @@ object VerifiedLexer {
           @ghost val newTreated = treated ++ token.charsOf
           ghostExpr(ListUtils.lemmaConcatTwoListThenFSndIsSuffix(newTreated.list, suffix.list))
           ghostExpr(assert(ListUtils.isSuffix(suffix.list, totalInput.list)))
-          ghostExpr(assert(cacheUp.valid))
-          ghostExpr(assert(cacheDown.valid))
           lexTailRecV3MemDeriv(
             rules,
             totalInput,
@@ -1025,17 +1004,16 @@ object VerifiedLexer {
         }
       }
     }.ensuring (res => res._1.list == lexRec(rules, totalInput)._1.list &&& 
-                       res._2.list == lexRec(rules, totalInput)._2.list &&&
-                       cacheUp.valid && cacheDown.valid)
+                       res._2.list == lexRec(rules, totalInput)._2.list)
 
-
+    @opaque
     def lexTailRecV3Mem[C: ClassTag](
         rules: List[Rule[C]],
         totalInput: Sequence[C],
         @ghost treated: Sequence[C],
         input: Sequence[C],
         acc: Sequence[Token[C]],
-    )(using cacheUp: CacheUp[C], cacheDown: CacheDown[C], cacheFurthestNullable: CacheFurthestNullable[C]): (Sequence[Token[C]], Sequence[C]) = {
+    )(using memSteps: ZipperDerivationStepsMemoized[C], cacheFurthestNullable: CacheFurthestNullable[C]): (Sequence[Token[C]], Sequence[C]) = {
       decreases(input.size)
       require(!rules.isEmpty)
       require(rulesInvariant(rules))
@@ -1044,15 +1022,22 @@ object VerifiedLexer {
       require(lexRec(rules, treated)._2.list.isEmpty)
       require(lexRec(rules, totalInput)._1.list == (acc ++ lexRec(rules, input)._1).list)
       require(lexRec(rules, totalInput)._2.list == lexRec(rules, input)._2.list)
-      require(cacheUp.valid)
-      require(cacheDown.valid)
       require(cacheFurthestNullable.valid)
       require(cacheFurthestNullable.totalInput == totalInput)
       ghostExpr(ListUtils.lemmaConcatTwoListThenFSndIsSuffix(treated.list, input.list))
+      ghostExpr(assert(ListUtils.isSuffix(input.list, treated.list ++ input.list)))
+      ghostExpr(ListUtils.lemmaIsSuffixForEqualLists(input.list, treated.list ++ input.list, totalInput.list))
       ghostExpr(assert(ListUtils.isSuffix(input.list, totalInput.list)))
 
       maxPrefixZipperSequenceV3Mem(rules, input, totalInput) match {
         case Some((token, suffix)) => {
+          ghostExpr({
+            assert(maxPrefixZipper(rules, input.list).isDefined)
+            assert(maxPrefix(rules, input.list).isDefined)
+            assert(maxPrefix(rules, input.list).get._1 == token)
+            assert(maxPrefix(rules, input.list).get._2 == suffix.list)
+            assert(token.charsOf.list ++ suffix.list == input.list)
+          })
           @ghost val (followingTokens, nextSuffix) = lexRec(rules, suffix)
           ghostExpr(ListUtils.lemmaConcatAssociativity(treated.list, token.charsOf.list, suffix.list))
           ghostExpr(unfold(lexRec(rules, input)))
@@ -1061,10 +1046,32 @@ object VerifiedLexer {
           ghostExpr(unfold(lexRec(rules, treated ++ token.charsOf)))
           @ghost val newTreated = treated ++ token.charsOf
           ghostExpr(ListUtils.lemmaConcatTwoListThenFSndIsSuffix(newTreated.list, suffix.list))
+          ghostExpr({
+            assert(newTreated.list == treated.list ++ token.charsOf.list)
+            assert((treated.list ++ token.charsOf.list) ++ suffix.list == treated.list ++ (token.charsOf.list ++ suffix.list))
+            assert(treated.list ++ (token.charsOf.list ++ suffix.list) == treated.list ++ input.list)
+            assert(newTreated.list ++ suffix.list == totalInput.list)
+            assert(ListUtils.isSuffix(suffix.list, newTreated.list ++ suffix.list))
+            ListUtils.lemmaIsSuffixForEqualLists(suffix.list, newTreated.list ++ suffix.list, totalInput.list)
+          })
           ghostExpr(assert(ListUtils.isSuffix(suffix.list, totalInput.list)))
           ghostExpr(assert(cacheFurthestNullable.valid))
-          ghostExpr(assert(cacheUp.valid))
-          ghostExpr(assert(cacheDown.valid))
+          ghostExpr({
+            // require 6: lexRec(totalInput)._1 == acc.append(token) ++ lexRec(suffix)._1
+            unfold(lexList(rules, input.list))
+            assert(lexList(rules, input.list)._1 == Cons(token, lexList(rules, suffix.list)._1))
+            assert(lexRec(rules, suffix)._1.list == lexList(rules, suffix.list)._1)
+            assert(followingTokens.list == lexList(rules, suffix.list)._1)
+            assert(lexRec(rules, input)._1.list == lexList(rules, input.list)._1)
+            assert(lexRec(rules, input)._1.list == Cons(token, followingTokens.list))
+            assert(lexRec(rules, totalInput)._1.list == acc.list ++ lexRec(rules, input)._1.list)
+            assert(lexRec(rules, totalInput)._1.list == acc.list ++ (List(token) ++ followingTokens.list))
+            assert(lexRec(rules, totalInput)._1.list == (acc.list ++ List(token)) ++ followingTokens.list)
+            assert(acc.append(token).list == acc.list ++ List(token))
+            assert(lexRec(rules, totalInput)._1.list == acc.append(token).list ++ followingTokens.list)
+            check(lexRec(rules, totalInput)._1.list == (acc.append(token) ++ lexRec(rules, suffix)._1).list)
+            check(cacheFurthestNullable.valid && cacheFurthestNullable.totalInput == totalInput)
+          })
           lexTailRecV3Mem(
             rules,
             totalInput,
@@ -1074,12 +1081,23 @@ object VerifiedLexer {
           )
         }
         case None() => {
+          ghostExpr({
+            assert(maxPrefixZipper(rules, input.list).isEmpty)
+            assert(maxPrefixZipperSequence(rules, input).isEmpty)
+            unfold(lexRec(rules, input))
+            assert(lexRec(rules, input)._1.list.isEmpty)
+            assert(lexRec(rules, input)._2 == input)
+            check((acc ++ lexRec(rules, input)._1).list == acc.list)
+            check(lexRec(rules, totalInput)._1.list == acc.list)
+            check(lexRec(rules, totalInput)._2.list == input.list)
+            check(cacheFurthestNullable.valid && cacheFurthestNullable.totalInput == totalInput)
+          })
           (acc, input)
         }
       }
     }.ensuring (res => res._1.list == lexRec(rules, totalInput)._1.list &&& 
                        res._2.list == lexRec(rules, totalInput)._2.list &&&
-                       cacheFurthestNullable.valid && cacheUp.valid && cacheDown.valid &&
+                       cacheFurthestNullable.valid &&
                        cacheFurthestNullable.totalInput == totalInput)
 
 
@@ -1486,11 +1504,9 @@ object VerifiedLexer {
     def maxPrefixZipperSequenceMem[C: ClassTag](
             rulesArg: List[Rule[C]],
             input: Sequence[C]
-        )(using cacheUp: CacheUp[C], cacheDown: CacheDown[C]): Option[(Token[C], Sequence[C])] = {
+        )(using memSteps: ZipperDerivationStepsMemoized[C]): Option[(Token[C], Sequence[C])] = {
           require(rulesValidInductive(rulesArg))
           require(!rulesArg.isEmpty)
-          require(cacheUp.valid)
-          require(cacheDown.valid)
           decreases(rulesArg.size)
 
           ghostExpr(ListUtils.lemmaIsPrefixRefl(input.list, input.list))
@@ -1507,7 +1523,7 @@ object VerifiedLexer {
               }
             }
           }
-        }.ensuring (res => res == maxPrefixZipperSequence(rulesArg, input) && cacheUp.valid && cacheDown.valid)
+        }.ensuring (res => res == maxPrefixZipperSequence(rulesArg, input))
 
     def maxPrefixZipperSequenceV2[C: ClassTag](
         rulesArg: List[Rule[C]],
@@ -1547,11 +1563,11 @@ object VerifiedLexer {
             rulesArg: List[Rule[C]],
             input: Sequence[C],
             totalInput: Sequence[C]
-        )(using cacheUp: CacheUp[C], cacheDown: CacheDown[C], cacheFindLongestMatch: CacheFindLongestMatch[C]): Option[(Token[C], Sequence[C])] = {
+        )(using memSteps: ZipperDerivationStepsMemoized[C], cacheFindLongestMatch: CacheFindLongestMatch[C]): Option[(Token[C], Sequence[C])] = {
           require(rulesValidInductive(rulesArg))
           require(!rulesArg.isEmpty)
           require(ListUtils.isSuffix(input.list, totalInput.list))
-          require(cacheUp.valid && cacheDown.valid && cacheFindLongestMatch.valid)
+          require(cacheFindLongestMatch.valid)
           require(cacheFindLongestMatch.totalInput == totalInput)
 
           decreases(rulesArg.size)
@@ -1571,18 +1587,17 @@ object VerifiedLexer {
             }
           }
         }.ensuring (res => res == maxPrefixZipperSequenceV2(rulesArg, input, totalInput) && 
-                           cacheUp.valid && cacheDown.valid && cacheFindLongestMatch.valid && 
+                           cacheFindLongestMatch.valid && 
                            cacheFindLongestMatch.totalInput == totalInput)
 
     def maxPrefixZipperSequenceV2MemOnlyDeriv[C: ClassTag](
             rulesArg: List[Rule[C]],
             input: Sequence[C],
             totalInput: Sequence[C]
-        )(using cacheUp: CacheUp[C], cacheDown: CacheDown[C]): Option[(Token[C], Sequence[C])] = {
+        )(using memSteps: ZipperDerivationStepsMemoized[C]): Option[(Token[C], Sequence[C])] = {
           require(rulesValidInductive(rulesArg))
           require(!rulesArg.isEmpty)
           require(ListUtils.isSuffix(input.list, totalInput.list))
-          require(cacheUp.valid && cacheDown.valid)
 
           decreases(rulesArg.size)
 
@@ -1600,8 +1615,7 @@ object VerifiedLexer {
               }
             }
           }
-        }.ensuring (res => res == maxPrefixZipperSequenceV2(rulesArg, input, totalInput) && 
-                           cacheUp.valid && cacheDown.valid)
+        }.ensuring (res => res == maxPrefixZipperSequenceV2(rulesArg, input, totalInput))
 
     def maxPrefixZipperSequenceV3[C: ClassTag](
             rulesArg: List[Rule[C]],
@@ -1636,16 +1650,15 @@ object VerifiedLexer {
                           res.get._2.list == maxPrefix(rulesArg, input.list).get._2
                        else true)
                        )
-
+    @opaque 
     def maxPrefixZipperSequenceV3MemDeriv[C: ClassTag](
             rulesArg: List[Rule[C]],
             input: Sequence[C],
             totalInput: Sequence[C]
-        )(using cacheUp: CacheUp[C], cacheDown: CacheDown[C]): Option[(Token[C], Sequence[C])] = {
+        )(using memSteps: ZipperDerivationStepsMemoized[C]): Option[(Token[C], Sequence[C])] = {
           require(rulesValidInductive(rulesArg))
           require(!rulesArg.isEmpty)
           require(ListUtils.isSuffix(input.list, totalInput.list))
-          require(cacheUp.valid && cacheDown.valid)
 
           decreases(rulesArg.size)
 
@@ -1669,18 +1682,17 @@ object VerifiedLexer {
                        else true) && 
                        (if res.isDefined then res.get._1 == maxPrefix(rulesArg, input.list).get._1 && 
                           res.get._2.list == maxPrefix(rulesArg, input.list).get._2
-                       else true) && 
-                      cacheUp.valid && cacheDown.valid)
+                       else true))
 
     def maxPrefixZipperSequenceV3Mem[C: ClassTag](
             rulesArg: List[Rule[C]],
             input: Sequence[C],
             totalInput: Sequence[C]
-        )(using cacheUp: CacheUp[C], cacheDown: CacheDown[C], cacheFurthestNullable: CacheFurthestNullable[C]): Option[(Token[C], Sequence[C])] = {
+        )(using memSteps: ZipperDerivationStepsMemoized[C], cacheFurthestNullable: CacheFurthestNullable[C]): Option[(Token[C], Sequence[C])] = {
           require(rulesValidInductive(rulesArg))
           require(!rulesArg.isEmpty)
           require(ListUtils.isSuffix(input.list, totalInput.list))
-          require(cacheUp.valid && cacheDown.valid && cacheFurthestNullable.valid)
+          require(cacheFurthestNullable.valid)
           require(cacheFurthestNullable.totalInput == totalInput)
 
           decreases(rulesArg.size)
@@ -1705,8 +1717,8 @@ object VerifiedLexer {
                        else true) && 
                        (if res.isDefined then res.get._1 == maxPrefix(rulesArg, input.list).get._1 && 
                           res.get._2.list == maxPrefix(rulesArg, input.list).get._2
-                       else true) && 
-                      cacheUp.valid && cacheDown.valid && cacheFurthestNullable.valid && 
+                       else true) &&& 
+                      cacheFurthestNullable.valid &&& 
                       cacheFurthestNullable.totalInput == totalInput)
 
     /** Finds the biggest prefix matching any rule in the input list of characters If nothing matched a rule, returns None Else, returns the matched
@@ -1802,10 +1814,8 @@ object VerifiedLexer {
     def maxPrefixOneRuleZipperSequenceMem[C: ClassTag](
         rule: Rule[C],
         input: Sequence[C]
-    )(using cacheUp: CacheUp[C], cacheDown: CacheDown[C]): Option[(Token[C], Sequence[C])] = {
+    )(using memSteps: ZipperDerivationStepsMemoized[C]): Option[(Token[C], Sequence[C])] = {
       require(ruleValid(rule))
-      require(cacheUp.valid)
-      require(cacheDown.valid)
 
       val (longestPrefix, suffix) = findLongestMatchWithZipperSequenceMem(rule.regex, input)
       assert((longestPrefix, suffix) == findLongestMatchWithZipperSequence(rule.regex, input))
@@ -1818,7 +1828,7 @@ object VerifiedLexer {
         Some[(Token[C], Sequence[C])]((Token(rule.transformation.apply(longestPrefix), rule, longestPrefix.size, longestPrefix.list), suffix))
       }
 
-    }.ensuring (res => res == maxPrefixOneRuleZipperSequence(rule, input) && cacheUp.valid && cacheDown.valid)
+    }.ensuring (res => res == maxPrefixOneRuleZipperSequence(rule, input))
 
     def maxPrefixOneRuleZipperSequenceV2[C: ClassTag](
         rule: Rule[C],
@@ -1868,10 +1878,8 @@ object VerifiedLexer {
         rule: Rule[C],
         input: Sequence[C],
         totalInput: Sequence[C]
-    )(using cacheUp: CacheUp[C], cacheDown: CacheDown[C], cacheFindLongestMatch: CacheFindLongestMatch[C]): Option[(Token[C], Sequence[C])] = {
+    )(using memSteps: ZipperDerivationStepsMemoized[C], cacheFindLongestMatch: CacheFindLongestMatch[C]): Option[(Token[C], Sequence[C])] = {
       require(ruleValid(rule))
-      require(cacheUp.valid)
-      require(cacheDown.valid)
       require(cacheFindLongestMatch.valid)
       require(ListUtils.isSuffix(input.list, totalInput.list))
       require(cacheFindLongestMatch.totalInput == totalInput)
@@ -1888,17 +1896,15 @@ object VerifiedLexer {
       }
 
     }.ensuring (res => res == maxPrefixOneRuleZipperSequenceV2(rule, input, totalInput) && 
-                       cacheUp.valid && cacheDown.valid && cacheFindLongestMatch.valid && 
+                       cacheFindLongestMatch.valid && 
                        cacheFindLongestMatch.totalInput == totalInput)
 
     def maxPrefixOneRuleZipperSequenceV2MemOnlyDeriv[C: ClassTag](
         rule: Rule[C],
         input: Sequence[C],
         totalInput: Sequence[C]
-    )(using cacheUp: CacheUp[C], cacheDown: CacheDown[C]): Option[(Token[C], Sequence[C])] = {
+    )(using memSteps: ZipperDerivationStepsMemoized[C]): Option[(Token[C], Sequence[C])] = {
       require(ruleValid(rule))
-      require(cacheUp.valid)
-      require(cacheDown.valid)
       require(ListUtils.isSuffix(input.list, totalInput.list))
 
       val (longestPrefix, suffix) = findLongestMatchWithZipperSequenceV2MemOnlyDeriv(rule.regex, input, totalInput)
@@ -1912,9 +1918,9 @@ object VerifiedLexer {
         Some[(Token[C], Sequence[C])]((Token(rule.transformation.apply(longestPrefix), rule, longestPrefix.size, longestPrefix.list), suffix))
       }
 
-    }.ensuring (res => res == maxPrefixOneRuleZipperSequenceV2(rule, input, totalInput) && 
-                       cacheUp.valid && cacheDown.valid)
+    }.ensuring (res => res == maxPrefixOneRuleZipperSequenceV2(rule, input, totalInput))
 
+    @opaque
     def maxPrefixOneRuleZipperSequenceV3[C: ClassTag](
         rule: Rule[C],
         input: Sequence[C],
@@ -1958,14 +1964,13 @@ object VerifiedLexer {
                           res.get._2.list == maxPrefixOneRule(rule, input.list).get._2
                        else true))
 
+    @opaque
     def maxPrefixOneRuleZipperSequenceV3MemDeriv[C: ClassTag](
         rule: Rule[C],
         input: Sequence[C],
         totalInput: Sequence[C]
-    )(using cacheUp: CacheUp[C], cacheDown: CacheDown[C]): Option[(Token[C], Sequence[C])] = {
+    )(using memSteps: ZipperDerivationStepsMemoized[C]): Option[(Token[C], Sequence[C])] = {
       require(ruleValid(rule))
-      require(cacheUp.valid)
-      require(cacheDown.valid)
       require(ListUtils.isSuffix(input.list, totalInput.list))
 
       val (longestPrefix: Sequence[C], suffix: Sequence[C]) = findLongestMatchWithZipperSequenceV3MemDeriv(rule.regex, input, totalInput)
@@ -2001,18 +2006,16 @@ object VerifiedLexer {
     }.ensuring (res => res.isDefined == maxPrefixOneRule(rule, input.list).isDefined && 
                        (if res.isDefined then res.get._1 == maxPrefixOneRule(rule, input.list).get._1 && 
                           res.get._2.list == maxPrefixOneRule(rule, input.list).get._2
-                       else true) &&
-                       cacheUp.valid && cacheDown.valid)
+                       else true))
 
 
+    @opaque
     def maxPrefixOneRuleZipperSequenceV3Mem[C: ClassTag](
         rule: Rule[C],
         input: Sequence[C],
         totalInput: Sequence[C]
-    )(using cacheUp: CacheUp[C], cacheDown: CacheDown[C], cacheFurthestNullable: CacheFurthestNullable[C]): Option[(Token[C], Sequence[C])] = {
+    )(using memSteps: ZipperDerivationStepsMemoized[C], cacheFurthestNullable: CacheFurthestNullable[C]): Option[(Token[C], Sequence[C])] = {
       require(ruleValid(rule))
-      require(cacheUp.valid)
-      require(cacheDown.valid)
       require(cacheFurthestNullable.valid)
       require(ListUtils.isSuffix(input.list, totalInput.list))
       require(cacheFurthestNullable.totalInput == totalInput)
@@ -2051,7 +2054,7 @@ object VerifiedLexer {
                        (if res.isDefined then res.get._1 == maxPrefixOneRule(rule, input.list).get._1 && 
                           res.get._2.list == maxPrefixOneRule(rule, input.list).get._2
                        else true) &&
-                       cacheUp.valid && cacheDown.valid && cacheFurthestNullable.valid &&
+                       cacheFurthestNullable.valid &&
                        cacheFurthestNullable.totalInput == totalInput)
 
     // Proofs --------------------------------------------------------------------------------------------------------------------------------
@@ -3733,10 +3736,10 @@ object VerifiedLexer {
       assert(maxPrefixOneRule(foundRule, input) == Some((foundToken, ListUtils.getSuffix(input, foundToken.charsOf.list))))
       lemmaMaxPrefixThenMatchesRulesRegex(rules, token.charsOf.list, token, rule, Nil())
       assert(matchR(rulesRegex(rules), token.charsOf.list))
-
+      lemmaMaxPrefixThenMatchesRulesRegex(rules, input, foundToken, foundRule, foundSuffix)
+      assert(matchR(rulesRegex(rules), foundToken.charsOf.list))
+  
       if(foundToken.charsOf.size > token.charsOf.size) {
-        lemmaMaxPrefixThenMatchesRulesRegex(rules, input, foundToken, foundRule, foundSuffix)
-        assert(matchR(rulesRegex(rules), foundToken.charsOf.list))
         assert(input == token.charsOf.list ++ suffix)
         ListUtils.lemmaSamePrefixThenSameSuffix(token.charsOf.list, suffix, token.charsOf.list, ListUtils.getSuffix(input, token.charsOf.list), input)
         assert(ListUtils.getSuffix(input, token.charsOf.list) == suffix)
@@ -3766,7 +3769,21 @@ object VerifiedLexer {
           check(false)
         }
         if(ListUtils.getIndex(rules, foundToken.rule) < ListUtils.getIndex(rules, token.rule)) {
-          lemmaMaxPrefNoSmallerRuleMatches(rules, token.rule, token.charsOf.list, token.charsOf.list, foundToken.rule)
+          val tokenChars = token.charsOf.list
+          ListUtils.lemmaIsPrefixRefl(tokenChars, tokenChars)
+          ListUtils.lemmaSamePrefixThenSameSuffix(tokenChars, Nil[C](), tokenChars, ListUtils.getSuffix(tokenChars, tokenChars), tokenChars)
+          assert(ListUtils.getSuffix(tokenChars, tokenChars) == Nil[C]())
+          assert(token.originalCharacters == tokenChars)
+          assert(token.value == token.rule.transformation.apply(seqFromList(token.originalCharacters)))
+          assert(token.value == token.rule.transformation.apply(seqFromList(tokenChars)))
+          token.lemmaCharactersSize()
+          assert(token.size == tokenChars.size)
+          token.rule.transformation.lemmaSemiInverse(seqFromList(tokenChars))
+          assert(token == Token(token.rule.transformation.apply(seqFromList(tokenChars)), token.rule, tokenChars.size, tokenChars))
+          assert(maxPrefix(rules, tokenChars) == Some((token, Nil[C]())))
+          assert(maxPrefix(rules, tokenChars) == Some(Token(token.rule.transformation.apply(seqFromList(tokenChars)), token.rule, tokenChars.size, tokenChars), ListUtils.getSuffix(tokenChars, tokenChars)))
+          assert(matchR(foundToken.rule.regex, tokenChars))
+          lemmaMaxPrefNoSmallerRuleMatches(rules, token.rule, tokenChars, tokenChars, foundToken.rule)
           check(false)
         }
         if(ListUtils.getIndex(rules, foundToken.rule) == ListUtils.getIndex(rules, token.rule)) {

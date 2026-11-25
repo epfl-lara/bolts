@@ -52,7 +52,7 @@ object ConcRopeSeq {
           assert(fromListReversed(ys).toList == ys.reverse)
           assert(fromListReversed(ys).toList ++ Cons(y, Nil[T]()) == ys.reverse ++ Cons(y, Nil[T]()))
           assert(ys.reverse ++ Cons(y, Nil[T]()) == ys.reverse ++ Cons(y, Nil[T]()).reverse)
-          assert(ListSpecs.reverseAppend(Cons(y, Nil[T]()), ys))
+          ListSpecs.reverseAppend(Cons(y, Nil[T]()), ys)
           assert(ys.reverse ++ Cons(y, Nil[T]()).reverse == (Cons(y, Nil[T]() ++ ys).reverse))
           assert((Cons(y, Nil[T]()) ++ ys).reverse == (y :: ys).reverse)
           check(res.toList == xs.reverse)
@@ -374,9 +374,9 @@ object ConcRopeSeq {
     require(0 <= i && i < xs.size)
     xs match {
       case CC(l, r) =>
-        appendIndex(l.toList, r.toList, i)
+        { appendIndex(l.toList, r.toList, i); true }
       case Append(l, r) =>
-        appendIndex(l.toList, r.toList, i)
+        { appendIndex(l.toList, r.toList, i); true }
       case _ => true
     }
   }.holds
@@ -406,9 +406,9 @@ object ConcRopeSeq {
     require(i >= 0 && i < xs.size)
     xs match {
       case CC(l, r) =>
-        appendUpdate(l.toList, r.toList, i, y)
+        { appendUpdate(l.toList, r.toList, i, y); true }
       case Append(l, r) =>
-        appendUpdate(l.toList, r.toList, i, y)
+        { appendUpdate(l.toList, r.toList, i, y); true }
       case _ => true
     }
   }.holds
@@ -504,22 +504,22 @@ object ConcRopeSeq {
   def appendAssocInst[T](xs: Conc[T], ys: Conc[T]): Boolean = {
     (xs match {
       case CC(l, r) =>
-        appendAssoc(l.toList, r.toList, ys.toList) && //instantiation of associativity of concatenation
+        { appendAssoc(l.toList, r.toList, ys.toList); true } && //instantiation of associativity of concatenation
           (r match {
             case CC(rl, rr) =>
-              appendAssoc(rl.toList, rr.toList, ys.toList) &&
-                appendAssoc(l.toList, rl.toList, rr.toList ++ ys.toList)
+              { appendAssoc(rl.toList, rr.toList, ys.toList); true } &&
+                { appendAssoc(l.toList, rl.toList, rr.toList ++ ys.toList); true }
             case _ => true
           })
       case _ => true
     }) &&
       (ys match {
         case CC(l, r) =>
-          appendAssoc(xs.toList, l.toList, r.toList) &&
+          { appendAssoc(xs.toList, l.toList, r.toList); true } &&
             (l match {
               case CC(ll, lr) =>
-                appendAssoc(xs.toList, ll.toList, lr.toList) &&
-                  appendAssoc(xs.toList ++ ll.toList, lr.toList, r.toList)
+                { appendAssoc(xs.toList, ll.toList, lr.toList); true } &&
+                  { appendAssoc(xs.toList ++ ll.toList, lr.toList, r.toList); true }
               case _ => true
             })
         case _ => true
@@ -622,7 +622,7 @@ object ConcRopeSeq {
   def instSplitAxiom[T](xs: Conc[T], n: BigInt): Boolean = {
     xs match {
       case CC(l, r) =>
-        appendTakeDrop(l.toList, r.toList, n)
+        { appendTakeDrop(l.toList, r.toList, n); true }
       case _ => true
     }
   }.holds
@@ -673,9 +673,9 @@ object ConcRopeSeq {
   def appendAssocInst2[T](xs: Conc[T], ys: Conc[T]): Boolean = {
     xs match {
       case CC(l, r) =>
-        appendAssoc(l.toList, r.toList, ys.toList)
+        { appendAssoc(l.toList, r.toList, ys.toList); true }
       case Append(l, r) =>
-        appendAssoc(l.toList, r.toList, ys.toList)
+        { appendAssoc(l.toList, r.toList, ys.toList); true }
       case _ => true
     }
   }.holds

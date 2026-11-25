@@ -377,22 +377,22 @@ object BalanceConcObj:
   def appendAssocInst[T: ClassTag](xs: Conc[T], ys: Conc[T]): Boolean = {
     (xs match {
       case Node(l, r, _, _) =>
-        appendAssoc(l.list, r.list, ys.list) && //instantiation of associativity of concatenation
+        { appendAssoc(l.list, r.list, ys.list); true } && //instantiation of associativity of concatenation
           (r match {
             case Node(rl, rr, _, _) =>
-              appendAssoc(rl.list, rr.list, ys.list) &&
-                appendAssoc(l.list, rl.list, rr.list ++ ys.list)
+              { appendAssoc(rl.list, rr.list, ys.list); true } &&
+                { appendAssoc(l.list, rl.list, rr.list ++ ys.list); true }
             case _ => true
           })
       case _ => true
     }) &&
     (ys match {
         case Node(l, r, _, _) =>
-          appendAssoc(xs.list, l.list, r.list) &&
+          { appendAssoc(xs.list, l.list, r.list); true } &&
             (l match {
               case Node(ll, lr, _, _) =>
-                appendAssoc(xs.list, ll.list, lr.list) &&
-                  appendAssoc(xs.list ++ ll.list, lr.list, r.list)
+                { appendAssoc(xs.list, ll.list, lr.list); true } &&
+                  { appendAssoc(xs.list ++ ll.list, lr.list, r.list); true }
               case _ => true
             })
         case _ => true
