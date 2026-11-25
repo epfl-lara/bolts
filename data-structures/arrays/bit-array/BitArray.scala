@@ -8,26 +8,29 @@ import stainless.lang.StaticChecks.*
 
 /**
   * Represents a bit array, underlined by an array of bytes. The specification is given by a list
-  * of booleans.
-  * The case class carries the size of the array as a ghost variable, which is equal to the length of the list, as it might not be a multiple of 8. If the size is not a multiple of 8, the last bits of the last byte are ignored.
+  * of booleans, `toList`, which is a ghost projection of the content of the array (as `map` in MutableLongMap), not a stored field.
+  * The case class carries the size of the array, as it might not be a multiple of 8. If the size is not a multiple of 8, the last bits of the last byte are ignored.
+  * Bit i of the list is bit i % 8 of byte i / 8, i.e., the one selected by the mask 1 << (i % 8).
+  * The class has no ghost field: the specification (`toList` and `_size`) is computed from the executable state.
   *
   * @param data
-  * @param toList
-  * @param size
+  * @param _lsize
   */
-case class BitArray64BitsIndex(private val data: Array[Byte], private var _lsize: Long, @ghost private var toList: List[Boolean], @ghost private var _size: BigInt) {
+case class BitArray64BitsIndex(private val data: Array[Byte], private var _lsize: Long) {
 
-  // Links the content of the list and the content of the array, and _size with the actual size of the array.
+  /** The size as a BigInt, for the specification. */
+  @ghost @pure def _size: BigInt = BigInt(_lsize)
+
+  // Links the size with the actual size of the array.
   @ghost @pure def valid: Boolean = {
-    0 <= _size && _size <= 8 * BigInt(data.length) &&
-    _size == toList.size && 
-    _lsize == _size.toLong &&
-    BitArray64BitsIndex.sameArrayListContent(0, toList, data, _size)
+    0 <= _lsize && _size <= 8 * BigInt(data.length)
   }
 
- 
-
-  @ghost @pure def getList: List[Boolean] = toList
+  /** The abstract content of the bit array: its first `_size` bits. */
+  @ghost @pure def toList: List[Boolean] = {
+    require(valid)
+    BitArray64BitsIndex.bitsFrom(data, 0, _size)
+  }.ensuring(res => res.size == _size)
 
   @pure @ghost def sizeBigInt: BigInt = {
     require(valid)
@@ -38,7 +41,7 @@ case class BitArray64BitsIndex(private val data: Array[Byte], private var _lsize
 
   @pure def size: Long = {
     require(valid)
-    ghostExpr(Utils.lemmaToLongBigIntConversionBothDirections(_size, 0L))
+    ghostExpr(Utils.lemmaToLongBigIntConversionBothDirections(_size, _lsize))
     _lsize
   }.ensuring(res =>
     valid && res == toList.size.toLong && res >= 0
@@ -48,9 +51,10 @@ case class BitArray64BitsIndex(private val data: Array[Byte], private var _lsize
     require(valid)
     require(i >= 0 && i < size)
     ghostExpr({
+      Utils.lemmaToLongBigIntConversionBothDirections(_size, _lsize)
       Utils.lemmaToLongBigIntConversionBothDirections(_size, i)
       BitArray64BitsIndex.lemmaLongBitIndex(i, data.length)
-      BitArray64BitsIndex.lemmaSameArrayListContentImpliesSameApply(0, toList, data, _size, BigInt(i))
+      BitArray64BitsIndex.lemmaBitsFromApply(data, 0, _size, BigInt(i))
     })
     val byte = data((i / 8).toInt)
     (byte & (1 << (i % 8).toInt)) != 0
@@ -59,7 +63,8 @@ case class BitArray64BitsIndex(private val data: Array[Byte], private var _lsize
   @ghost def apply(ii: BigInt): Boolean = {
     require(valid)
     require(ii >= 0 && ii < _size)
-    BitArray64BitsIndex.lemmaSameArrayListContentImpliesSameApply(0, toList, data, _size, ii)
+    BitArray64BitsIndex.lemmaBitIndexInBounds(ii, data.length)
+    BitArray64BitsIndex.lemmaBitsFromApply(data, 0, _size, ii)
     val byte = data((ii / 8).toInt)
     (byte & (1 << (ii % 8).toInt)) != 0
   }.ensuring(res => valid && res == toList(ii))
@@ -68,31 +73,32 @@ case class BitArray64BitsIndex(private val data: Array[Byte], private var _lsize
     require(valid)
     require(i >= 0 && i < size)
     ghostExpr({
+      Utils.lemmaToLongBigIntConversionBothDirections(_size, _lsize)
       Utils.lemmaToLongBigIntConversionBothDirections(_size, i)
       BitArray64BitsIndex.lemmaLongBitIndex(i, data.length)
     })
+    @ghost val oldList = toList
     val byteIndex = (i / 8).toInt
     val mask = 1 << (i % 8).toInt
     val byte = data(byteIndex)
     val newByte = BitArray64BitsIndex.lowByte(if (v) byte | mask else byte & ~mask)
-    ghostExpr(BitArray64BitsIndex.lemmaSameArrayListContentPreservedByUpdated(0, toList, data, _size, BigInt(i), v, newByte))
-
-    toList = toList.updated(BigInt(i), v)
+    ghostExpr(BitArray64BitsIndex.lemmaBitsFromUpdated(data, 0, _size, BigInt(i), v, newByte))
     data(byteIndex) = newByte
+    ghostExpr(assert(toList == oldList.updated(BigInt(i), v)))
   }.ensuring(_ => valid && old(this).toList.updated(BigInt(i), v) == toList)
 
   @opaque def update(ii: BigInt, v: Boolean): Unit = {
     require(valid)
     require(ii >= 0 && ii < _size)
     ghostExpr(BitArray64BitsIndex.lemmaBitIndexInBounds(ii, data.length))
+    @ghost val oldList = toList
     val byteIndex = (ii / 8).toInt
     val mask = 1 << (ii % 8).toInt
     val byte = data(byteIndex)
     val newByte = BitArray64BitsIndex.lowByte(if (v) byte | mask else byte & ~mask)
-    ghostExpr(BitArray64BitsIndex.lemmaSameArrayListContentPreservedByUpdated(0, toList, data, _size, ii, v, newByte))
-
-    toList = toList.updated(ii, v)
+    ghostExpr(BitArray64BitsIndex.lemmaBitsFromUpdated(data, 0, _size, ii, v, newByte))
     data(byteIndex) = newByte
+    ghostExpr(assert(toList == oldList.updated(ii, v)))
   }.ensuring(_ => valid && old(this).toList.updated(ii, v) == toList)
 }
 
@@ -100,19 +106,29 @@ object BitArray64BitsIndex {
   @ghost @pure def bitIndex(i: BigInt): (BigInt, BigInt) = {
     i / 8 -> i % 8
   }
-  @ghost @pure @opaque def sameArrayListContent(from: BigInt, list: List[Boolean], array: Array[Byte], _size: BigInt): Boolean = {
-    require(_size == list.size)
-    require(_size >= 0 && _size <= BigInt(Int.MaxValue) * 8 && from >= 0 && from <= _size && _size <= 8 * BigInt(array.length))
-    decreases(_size - from)
-    if from == _size then true
-    else {
-      lemmaBitIndexInBounds(from, array.length)
-      val (byteIndex, bIndex) = bitIndex(from)
-      val byte = array(byteIndex.toInt)
-      val bit = (byte & (1 << bIndex.toInt)) != 0
-      bit == list(from) && sameArrayListContent(from + 1, list, array, _size)
-    }
+  /** Bit i of the array. */
+  @ghost @pure def bitAt(array: Array[Byte], i: BigInt): Boolean = {
+    require(0 <= i && i < 8 * BigInt(array.length))
+    lemmaBitIndexInBounds(i, array.length)
+    (array((i / 8).toInt) & (1 << (i % 8).toInt)) != 0
   }
+
+  /** The bits of the array from index `from` to `_size`, as a list. */
+  @ghost @pure def bitsFrom(array: Array[Byte], from: BigInt, _size: BigInt): List[Boolean] = {
+    require(0 <= from && from <= _size && _size <= 8 * BigInt(array.length))
+    decreases(_size - from)
+    if from == _size then Nil[Boolean]()
+    else Cons(bitAt(array, from), bitsFrom(array, from + 1, _size))
+  }.ensuring(res => res.size == _size - from)
+
+  @ghost @opaque @inlineOnce
+  def lemmaBitsFromApply(array: Array[Byte], from: BigInt, _size: BigInt, i: BigInt): Unit = {
+    require(0 <= from && from <= i && i < _size && _size <= 8 * BigInt(array.length))
+    decreases(i - from)
+    if (from < i) {
+      lemmaBitsFromApply(array, from + 1, _size, i)
+    }
+  }.ensuring(_ => bitsFrom(array, from, _size)(i - from) == bitAt(array, i))
 
   /** Narrows x to a byte with the same 8 low bits, i.e., x.toByte without overflowing. */
   @pure @opaque def lowByte(x: Int): Byte = {
@@ -160,31 +176,6 @@ object BitArray64BitsIndex {
     Utils.lemmaToIntBigIntConversionBothDirections(i % 8, 0)
   }.ensuring(_ => bitIndexInBounds(i, length))
 
-  @ghost @opaque @inlineOnce
-  def lemmaSameArrayListContentImpliesSameApply(from: BigInt, list: List[Boolean], array: Array[Byte], _size: BigInt, i: BigInt): Unit = {
-    require(_size == list.size)
-    require(_size >= 0 && _size <= BigInt(Int.MaxValue) * 8 && from >= 0 && from <= _size && _size <= 8 * BigInt(array.length))
-    require(sameArrayListContent(from, list, array, _size))
-    require(from <= i && i < _size)
-    decreases(_size - from)
-    lemmaBitIndexInBounds(i, array.length)
-    unfold(sameArrayListContent(from, list, array, _size))
-    if (from < i) {
-      lemmaSameArrayListContentImpliesSameApply(from + 1, list, array, _size, i)
-    }
-  }.ensuring(_ => bitIndexInBounds(i, array.length) && ((array((i / 8).toInt) & (1 << (i % 8).toInt)) != 0) == list(i))
-
-  @ghost @opaque @inlineOnce
-  def lemmaUpdatedApply[T](list: List[T], i: BigInt, v: T, j: BigInt): Unit = {
-    require(0 <= i && i < list.size)
-    require(0 <= j && j < list.size)
-    decreases(list)
-    list match {
-      case Cons(h, tail) if i != 0 && j != 0 => lemmaUpdatedApply(tail, i - 1, v, j - 1)
-      case _ => ()
-    }
-  }.ensuring(_ => list.updated(i, v)(j) == (if (i == j) v else list(j)))
-
   /** Replacing the byte holding bit i by newByte, i.e., that byte with bit i set to v, changes bit i only. */
   @ghost @opaque @inlineOnce
   def lemmaUpdatedBit(array: Array[Byte], i: BigInt, v: Boolean, newByte: Byte, j: BigInt): Unit = {
@@ -202,31 +193,39 @@ object BitArray64BitsIndex {
       (if (j == i) v else (array((j / 8).toInt) & (1 << (j % 8).toInt)) != 0)
   )
 
-  /** Setting bit i of the array to v in the byte holding it, i.e., replacing that byte by newByte, updates the list at i. */
+  /** Setting bit i of the array to v in the byte holding it, i.e., replacing that byte by newByte, updates the bits at i only. */
   @ghost @opaque @inlineOnce
-  def lemmaSameArrayListContentPreservedByUpdated(from: BigInt, list: List[Boolean], array: Array[Byte], _size: BigInt, i: BigInt, v: Boolean, newByte: Byte): Unit = {
-    require(_size == list.size)
-    require(_size >= 0 && _size <= BigInt(Int.MaxValue) * 8 && from >= 0 && from <= _size && _size <= 8 * BigInt(array.length))
-    require(sameArrayListContent(from, list, array, _size))
+  def lemmaBitsFromUpdated(array: Array[Byte], from: BigInt, _size: BigInt, i: BigInt, v: Boolean, newByte: Byte): Unit = {
+    require(0 <= from && from <= _size && _size <= 8 * BigInt(array.length))
     require(0 <= i && i < _size && bitIndexInBounds(i, array.length))
     require(newByte == lowByte(if (v) array((i / 8).toInt) | (1 << (i % 8).toInt) else array((i / 8).toInt) & ~(1 << (i % 8).toInt)))
     decreases(_size - from)
-    assert(list.updated(i, v).size == _size)
     if (from < _size) {
       lemmaBitIndexInBounds(from, array.length)
       lemmaUpdatedBit(array, i, v, newByte, from)
-      lemmaUpdatedApply(list, i, v, from)
-      unfold(sameArrayListContent(from, list, array, _size))
-      lemmaSameArrayListContentPreservedByUpdated(from + 1, list, array, _size, i, v, newByte)
+      lemmaBitsFromUpdated(array, from + 1, _size, i, v, newByte)
       val newArray = array.updated((i / 8).toInt, newByte)
-      assert(((newArray((from / 8).toInt) & (1 << (from % 8).toInt)) != 0) == list.updated(i, v)(from))
-      unfold(sameArrayListContent(from, list.updated(i, v), newArray, _size))
-    } else {
-      unfold(sameArrayListContent(from, list.updated(i, v), array.updated((i / 8).toInt, newByte), _size))
+      val h = bitAt(array, from)
+      val t = bitsFrom(array, from + 1, _size)
+      val newT = bitsFrom(newArray, from + 1, _size)
+      assert(bitAt(newArray, from) == (if (from == i) v else h))
+      assert(bitsFrom(array, from, _size) == Cons(h, t))
+      assert(bitsFrom(newArray, from, _size) == Cons(bitAt(newArray, from), newT))
+      if (from < i) {
+        assert(newT == t.updated(i - from - 1, v))
+        assert(Cons(h, t).updated(i - from, v) == Cons(h, t.updated(i - from - 1, v)))
+      } else if (from == i) {
+        assert(newT == t)
+        assert(Cons(h, t).updated(i - from, v) == Cons(v, t))
+      } else {
+        assert(newT == t)
+      }
     }
-  }.ensuring(_ => sameArrayListContent(from, list.updated(i, v), array.updated((i / 8).toInt, newByte), _size))
+  }.ensuring(_ =>
+    bitsFrom(array.updated((i / 8).toInt, newByte), from, _size) ==
+      (if (from <= i) bitsFrom(array, from, _size).updated(i - from, v) else bitsFrom(array, from, _size))
+  )
 }
-
 
 object Utils {
   @ghost def sameArrayListContent[T](arr: Array[T], from: Int, list: List[T]): Boolean = {
