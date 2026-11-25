@@ -50,7 +50,7 @@ object ConstFold:
 
   abstract class SoundSimplifier:
     def apply(e: Expr, anyCtx: Env): Expr = {
-      (??? : Expr)
+      AbstractMethodBody[Expr]()
     }.ensuring(evaluate(anyCtx,_) == evaluate(anyCtx,e))
   
   val mirSimp = new SoundSimplifier:
