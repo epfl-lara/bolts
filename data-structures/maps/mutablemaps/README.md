@@ -6,7 +6,7 @@ This project contains a verified implementation of the `LongMap` from the scala 
 
 To run this project, you need to install the Stainless sbt plugin. To do so, follow these steps:
 
-1. Download the following archive: [Stainless SBT plugin download]("https://github.com/epfl-lara/stainless/releases/download/v0.9.8.2/sbt-stainless.zip")
+1. Download the following archive: [Stainless SBT plugin download]("https://github.com/epfl-lara/stainless/releases/download/v0.10.5/sbt-stainless.zip")
 2. Unzip the archive, it should contain a `project` folder and a `stainless` folder.
 3. copy the `project/lib` folder into the `project` of this sbt project.
 4. copy the `stainless` folder into the root of this sbt project.
@@ -34,6 +34,19 @@ If it does not work, please refer to [this manual]("https://epfl-lara.github.io/
 To run benchmarks, run in `sbt`
 
 ```$ Jmh/run -i 10 -wi 10 -f1 -t1 <regex-if-only-some>```
+
+### Comparison with the Scala standard library (CI)
+
+The full suite takes about 48 hours. `./run_benchmarks_ci.sh` runs a time-boxed selection of it (about 2h15): the verified `LongMap` against `scala.collection.mutable.LongMap`, and the verified `HashMap` against `scala.collection.mutable.HashMap` and `scala.collection.immutable.HashMap`, on a few sizes per benchmark. It downloads the Stainless sbt plugin if it is not installed. `--profile smoke` checks the pipeline in about 10 minutes; `--help` lists the options.
+
+```
+$ ./run_benchmarks_ci.sh --output benchmark_results/raw/my_run
+$ python3 benchmark_results/generate_benchmark_report.py benchmark_results/raw/my_run
+```
+
+The second command writes `benchmark-report.html` (charts, ratios and measurements) in the results directory.
+
+The GitHub workflow `MutableMaps Benchmarks` (`.github/workflows/mutablemaps-benchmarks.yml`) runs both on manual dispatch and uploads the report, the JMH JSON results and the logs as the artifact `mutablemaps-benchmarks`.
 
 ## Verification
 

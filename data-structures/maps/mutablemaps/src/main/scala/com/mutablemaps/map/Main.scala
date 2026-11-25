@@ -4,7 +4,7 @@ import com.mutablemaps.map.MutableLongMap
 import com.mutablemaps.map.ListLongMap
 import stainless.collection.List
 import benchmark.BenchmarkUtil.*
-import benchmark.Key
+import benchmark.maps.Key
 import com.mutablemaps.map.MutableHashMap.*
 import com.mutablemaps.map.MutableLongMap.ValueCellFull
 import com.mutablemaps.map.MutableLongMap.EmptyCell
@@ -15,7 +15,7 @@ object Main {
   def main(args: Array[String]): Unit = {
     // check the number of collisions of each levels:
 
-    val mapFilled: MutableHashMap.HashMap[Key, Long] = benchmark.HashMapBenchmarkUtilBig.verifiedHashMapFilledWith2to22Values
+    val mapFilled: MutableHashMap.HashMap[Key, Long] = benchmark.maps.HashMapBenchmarkUtilBig.verifiedHashMapFilledWith2to22Values
     println(f"mapFilled.size = ${mapFilled.size}")
     var bucketSizes: HashMap[BigInt, Int] = HashMap()
     var i = 0
