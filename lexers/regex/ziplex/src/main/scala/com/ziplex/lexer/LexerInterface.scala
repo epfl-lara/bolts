@@ -292,7 +292,7 @@ trait LexerInterface {
     */
   def withSeparatorToken[C: ClassTag](v: Sequence[Token[C]], separatorToken: Token[C]): Sequence[Token[C]] = {
     require(separatorToken.rule.isSeparator)
-    ??? : Sequence[Token[C]]
+    AbstractMethodBody[Sequence[Token[C]]]()
   }.ensuring(res => print(res).list == printWithSeparatorToken(v, separatorToken).list)
 
 

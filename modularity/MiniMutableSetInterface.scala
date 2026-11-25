@@ -4,6 +4,7 @@ package modularity
 import stainless.annotation.mutable
 import stainless.annotation.pure
 import stainless.annotation.law
+import stainless.lang.AbstractMethodBody
 
 
 
@@ -12,7 +13,7 @@ object MiniMutableSetInterface:
   trait iMiniMutableSet[V]:
     @pure def contains(v: V): Boolean
     def add(v: V): Unit = {
-      ??? : Unit
+      AbstractMethodBody[Unit]()
     }.ensuring(_ => contains(v))
 
     // @law @pure @ghost def addContains(v: V): Boolean = {
