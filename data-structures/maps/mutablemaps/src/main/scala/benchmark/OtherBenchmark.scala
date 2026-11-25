@@ -2,6 +2,7 @@ package benchmark
 
 import java.util.concurrent.TimeUnit
 import org.openjdk.jmh.annotations.*
+import org.openjdk.jmh.infra.Blackhole
 import scala.collection.mutable.LongMap
 import scala.collection.mutable.HashMap
 import scala.util.Random
@@ -54,51 +55,49 @@ class ArrayFillBenchmark {
   @Benchmark
   @BenchmarkMode(Array(Mode.AverageTime))
   @OutputTimeUnit(TimeUnit.MICROSECONDS)
-  def fillLong_ArrayFill(): Unit = {
+  def fillLong_ArrayFill(bh: Blackhole): Unit = {
     val a = Array.fill(size.toInt)(0L)
-    val x = a(0) + 1L
+    bh.consume(a)
   }
 
   @Benchmark
   @BenchmarkMode(Array(Mode.AverageTime))
   @OutputTimeUnit(TimeUnit.MICROSECONDS)
-  def fillLong_EfficientFill(): Unit = {
+  def fillLong_EfficientFill(bh: Blackhole): Unit = {
     val a = fillByValueLong(size.toInt)(0L)
-    val x = a(0) + 1L
+    bh.consume(a)
   }
 
   @Benchmark
   @BenchmarkMode(Array(Mode.AverageTime))
   @OutputTimeUnit(TimeUnit.MICROSECONDS)
-  def fillLong_Constructor(): Unit = {
+  def fillLong_Constructor(bh: Blackhole): Unit = {
     val a = new Array[Long](size.toInt)
-    val x = a(0) + 1L
+    bh.consume(a)
   }
 
   @Benchmark
   @BenchmarkMode(Array(Mode.AverageTime))
   @OutputTimeUnit(TimeUnit.MICROSECONDS)
-  def fillValueCell_ArrayFill(): Unit = {
+  def fillValueCell_ArrayFill(bh: Blackhole): Unit = {
     val a = Array.fill(size.toInt)(EmptyCell[Long]())
-    val x = a(0).get(0L) + 1L
+    bh.consume(a)
   }
 
   @Benchmark
   @BenchmarkMode(Array(Mode.AverageTime))
   @OutputTimeUnit(TimeUnit.MICROSECONDS)
-  def fillValueCell_EfficientFill(): Unit = {
+  def fillValueCell_EfficientFill(bh: Blackhole): Unit = {
     val a = fillByValueValueCell(size.toInt)(EmptyCell[Long]())
-    val x = a(0).get(0L) + 1L
+    bh.consume(a)
   }
 
   @Benchmark
   @BenchmarkMode(Array(Mode.AverageTime))
   @OutputTimeUnit(TimeUnit.MICROSECONDS)
-  def fillValueCell_Constructor(): Unit = {
+  def fillValueCell_Constructor(bh: Blackhole): Unit = {
     val a = new Array[ValueCell[Long]](size.toInt)
-    if(a(0) == null){
-      val x = 1L
-    }
+    bh.consume(a)
   }
 }
 
@@ -113,39 +112,39 @@ class LongListMapBenchmark {
   @Benchmark
   @BenchmarkMode(Array(Mode.AverageTime))
   @OutputTimeUnit(TimeUnit.MICROSECONDS)
-  def createUpdateLookup_Verified(): Unit = {
+  def createUpdateLookup_Verified(bh: Blackhole): Unit = {
     val mutableMap = getVerifiedMapEmptyBuffer(16)
     val pairs = getSmallKeyValuePairsList(n)
     for (k, v) <- pairs do mutableMap.update(k, v)
     end for
 
-    for (k, _) <- pairs do mutableMap(k)
+    for (k, _) <- pairs do bh.consume(mutableMap(k))
     end for
   }
 
   @Benchmark
   @BenchmarkMode(Array(Mode.AverageTime))
   @OutputTimeUnit(TimeUnit.MICROSECONDS)
-  def createUpdateLookup_Original(): Unit = {
+  def createUpdateLookup_Original(bh: Blackhole): Unit = {
     val mutableMap = getOriginalMapEmptyBuffer(16)
     val pairs = getSmallKeyValuePairsList(n)
     for (k, v) <- pairs do mutableMap.update(k, v)
     end for
 
-    for (k, _) <- pairs do mutableMap(k)
+    for (k, _) <- pairs do bh.consume(mutableMap(k))
     end for
   }
 
   @Benchmark
   @BenchmarkMode(Array(Mode.AverageTime))
   @OutputTimeUnit(TimeUnit.MICROSECONDS)
-  def createUpdateLookup_ListMap(): Unit = {
+  def createUpdateLookup_ListMap(bh: Blackhole): Unit = {
     var listMap = emptyListMap
     val pairs = getSmallKeyValuePairsList(n)
     for (k, v) <- pairs do listMap = listMap + (k, v)
     end for
 
-    for (k, _) <- pairs do listMap(k)
+    for (k, _) <- pairs do bh.consume(listMap(k))
     end for
   }
 
@@ -154,27 +153,27 @@ class LongListMapBenchmark {
   @Benchmark
   @BenchmarkMode(Array(Mode.AverageTime))
   @OutputTimeUnit(TimeUnit.MICROSECONDS)
-  def lookup_Verified(): Unit = {
+  def lookup_Verified(bh: Blackhole): Unit = {
     val mutableMap = getVerifiedMapFilledWith2toNValues(n)
-    for (k, _) <- getSmallKeyValuePairsList(n) do mutableMap(k)
+    for (k, _) <- getSmallKeyValuePairsList(n) do bh.consume(mutableMap(k))
     end for
   }
 
   @Benchmark
   @BenchmarkMode(Array(Mode.AverageTime))
   @OutputTimeUnit(TimeUnit.MICROSECONDS)
-  def lookup_Original(): Unit = {
+  def lookup_Original(bh: Blackhole): Unit = {
     val mutableMap = getOriginalMapFilledWith2toNValues(n)
-    for (k, _) <- getSmallKeyValuePairsList(n) do mutableMap(k)
+    for (k, _) <- getSmallKeyValuePairsList(n) do bh.consume(mutableMap(k))
     end for
   }
 
   @Benchmark
   @BenchmarkMode(Array(Mode.AverageTime))
   @OutputTimeUnit(TimeUnit.MICROSECONDS)
-  def lookup_ListMap(): Unit = {
+  def lookup_ListMap(bh: Blackhole): Unit = {
     val listMap = getListMapFilledWith2toNValues(n)
-    for (k, _) <- getSmallKeyValuePairsList(n) do listMap(k)
+    for (k, _) <- getSmallKeyValuePairsList(n) do bh.consume(listMap(k))
     end for
   }
 
