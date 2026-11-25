@@ -1,5 +1,6 @@
 name: Bolts CI Verification
 on:
+  pull_request:
   workflow_dispatch:
   push:
     branches:
@@ -18,7 +19,7 @@ jobs:
       uses: ./.github/workflows/setup
       with:
         java-opts: ${{ env.JAVA_OPTS }}
-        java-version: 17
+        java-version: 21
         temp-dir: "/tmp/tmp_${{ github.run_id }}_${{ github.run_attempt }}"
     - name: Bolts Tests with verification
       run: ./run-tests.sh

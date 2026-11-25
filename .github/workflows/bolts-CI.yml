@@ -1,9 +1,6 @@
 name: Bolts CI with admit VCs
 on:
-  pull_request:
-  push:
-    branches:
-      - main
+  workflow_dispatch:
 
 env:
   # Java options, read by the sbt launcher and the Stainless launcher scripts
@@ -19,7 +16,7 @@ jobs:
       uses: ./.github/workflows/setup
       with:
         java-opts: ${{ env.JAVA_OPTS }}
-        java-version: 17
+        java-version: 21
         temp-dir: "/tmp/tmp_${{ github.run_id }}_${{ github.run_attempt }}"
     - name: Bolts admit VCs tests
       run: ./run-tests.sh --admit-vcs

@@ -230,22 +230,22 @@ object BalanceConcArr:
   def appendAssocInst[T: ClassTag](xs: Conc[T], ys: Conc[T]): Boolean = {
     (xs match {
       case Node(l, r, _, _) =>
-        appendAssoc(l.toList, r.toList, ys.toList) && //instantiation of associativity of concatenation
+        { appendAssoc(l.toList, r.toList, ys.toList); true } && //instantiation of associativity of concatenation
           (r match {
             case Node(rl, rr, _, _) =>
-              appendAssoc(rl.toList, rr.toList, ys.toList) &&
-                appendAssoc(l.toList, rl.toList, rr.toList ++ ys.toList)
+              { appendAssoc(rl.toList, rr.toList, ys.toList); true } &&
+                { appendAssoc(l.toList, rl.toList, rr.toList ++ ys.toList); true }
             case _ => true
           })
       case _ => true
     }) &&
     (ys match {
         case Node(l, r, _, _) =>
-          appendAssoc(xs.toList, l.toList, r.toList) &&
+          { appendAssoc(xs.toList, l.toList, r.toList); true } &&
             (l match {
               case Node(ll, lr, _, _) =>
-                appendAssoc(xs.toList, ll.toList, lr.toList) &&
-                  appendAssoc(xs.toList ++ ll.toList, lr.toList, r.toList)
+                { appendAssoc(xs.toList, ll.toList, lr.toList); true } &&
+                  { appendAssoc(xs.toList ++ ll.toList, lr.toList, r.toList); true }
               case _ => true
             })
         case _ => true
