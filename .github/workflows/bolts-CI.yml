@@ -1,14 +1,10 @@
 name: Bolts CI with admit VCs
 on:
-  pull_request:
-  push:
-    branches:
-      - main
+  workflow_dispatch:
 
 env:
-  # define Java options for both official sbt and sbt-extras
+  # Java options, read by the sbt launcher and the Stainless launcher scripts
   JAVA_OPTS: -Dsbt.io.implicit.relative.glob.conversion=allow -Xss512M -Xms1024M -Xmx12G -XX:MaxMetaspaceSize=2G -XX:+UseCodeCacheFlushing -XX:ReservedCodeCacheSize=768M 
-  JVM_OPTS:  -Dsbt.io.implicit.relative.glob.conversion=allow -Xss512M -Xms1024M -Xmx12G -XX:MaxMetaspaceSize=2G -XX:+UseCodeCacheFlushing -XX:ReservedCodeCacheSize=768M 
   JAVA_OPTS_TMP_DIR: /tmp/tmp_${{ github.run_id }}_${{ github.run_attempt }}
 jobs:
   bolts-admit-vcs:
@@ -20,9 +16,11 @@ jobs:
       uses: ./.github/workflows/setup
       with:
         java-opts: ${{ env.JAVA_OPTS }}
-        java-version: 17
+        java-version: 21
         temp-dir: "/tmp/tmp_${{ github.run_id }}_${{ github.run_attempt }}"
     - name: Bolts admit VCs tests
       run: ./run-tests.sh --admit-vcs
     - name: Clean up
-      run: rm -rf $JAVA_OPTS_TMP_DIR
+      # Even after a failure, a timeout or a cancellation, so that jobs don't fill the runners' disk
+      if: always()
+      run: rm -rf "${JAVA_OPTS_TMP_DIR:?}"

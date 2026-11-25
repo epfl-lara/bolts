@@ -686,7 +686,10 @@ object VerifiedLexer {
       require(cacheFindLongestMatch.valid)
       require(cacheFindLongestMatch.totalInput == input)
       decreases(input.size)
-
+      ghostExpr({
+        assert(lexRec(rules, emptySeq[C]())._1.list == emptySeq[Token[C]]().list)
+        assert(emptySeq[Token[C]]().list == Nil[Token[C]]())
+      })
       lexTailRecV2Mem(
         rules,
         input,
@@ -1298,7 +1301,7 @@ object VerifiedLexer {
             }
           }
         }.ensuring (res => res == maxPrefixZipperSequence(rulesArg, input))
-    
+
     def maxPrefixZipperSequenceV2[C: ClassTag](
         rulesArg: List[Rule[C]],
         input: Sequence[C],

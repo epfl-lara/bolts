@@ -26,7 +26,7 @@ object MutableSetInterface{
     @pure
     def abstractSet: Set[V] = {
       require(valid)
-      ??? : Set[V]
+      AbstractMethodBody[Set[V]]()
     }
 
     @pure
@@ -35,23 +35,23 @@ object MutableSetInterface{
     @pure
     def isEmpty: Boolean = {
       require(valid)
-      ??? : Boolean
+      AbstractMethodBody[Boolean]()
     }
 
     @pure
     def contains(v: V): Boolean = {
     require(valid)
-    ??? : Boolean
+    AbstractMethodBody[Boolean]()
     }.ensuring(res => valid && (res == abstractSet.contains(v)))
 
     def update(v: V): Boolean = {
       require(valid)
-      ??? : Boolean
+      AbstractMethodBody[Boolean]()
     }.ensuring(res => valid && (if (res) then abstractSet.contains(v) && (abstractSet == old(this).abstractSet + v) else abstractSet == old(this).abstractSet))
     
     def remove(v: V): Boolean = {
       require(valid)
-      ??? : Boolean
+      AbstractMethodBody[Boolean]()
     }.ensuring(res => valid && (if (res) then abstractSet == old(this).abstractSet - v else abstractSet == old(this).abstractSet))
   }
 }

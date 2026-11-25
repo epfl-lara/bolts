@@ -7,6 +7,10 @@ if [[ "$1" = "--admit-vcs" ]]; then
 fi
 STAINLESS="$1"
 
+# Number of VCs that Stainless checks at a time in the projects without a verify.sh. Without
+# -Dparallel, it checks them one at a time. The verify.sh scripts set their own number.
+PARALLEL=8
+
 function run_tests {
   project=$1
   # One shift for stainless executable, the other for the project folder
@@ -39,12 +43,12 @@ function run_tests {
     status=$?
     cd -
   else
-    echo "Running '$STAINLESS --config-file=$conf $@' on bolts project: $project..."
-    echo "$ find $project -name '*.scala' -exec $STAINLESS --config-file=$conf $@ {} +"
+    echo "Running '$STAINLESS --config-file=$conf -Dparallel=$PARALLEL $@' on bolts project: $project..."
+    echo "$ find $project -name '*.scala' -exec $STAINLESS --config-file=$conf -Dparallel=$PARALLEL $@ {} +"
     if [ "$ADMIT_VCS" = true ]; then
-      find "$project" -name '*.scala' -exec $STAINLESS "--config-file=$conf" "--compact" "--admit-vcs=true" "--debug=stack" "$@" {} +
+      find "$project" -name '*.scala' -exec $STAINLESS "--config-file=$conf" "-Dparallel=$PARALLEL" "--compact" "--admit-vcs=true" "--debug=stack" "$@" {} +
     else
-      find "$project" -name '*.scala' -exec $STAINLESS "--config-file=$conf" "--debug=stack" "$@" {} +
+      find "$project" -name '*.scala' -exec $STAINLESS "--config-file=$conf" "-Dparallel=$PARALLEL" "--debug=stack" "$@" {} +
     fi
     status=$?
   fi

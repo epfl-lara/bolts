@@ -43,13 +43,13 @@ sealed abstract class TweetSet {
   // Helper method for `filter` that propagates accumulated tweets
   def filterAcc(p: Tweet => Boolean, acc: TweetSet): TweetSet = {
     decreases((size, 1))
-    (??? : TweetSet)
+    AbstractMethodBody[TweetSet]()
   }
 
   // A new `TweetSet` that is the union of `this` and `that`
   def union(that: TweetSet): TweetSet = {
     decreases((this, 1))
-    (??? : TweetSet)
+    AbstractMethodBody[TweetSet]()
   }
 
   // Tweet from `this` set with greatest retweet count
@@ -58,7 +58,7 @@ sealed abstract class TweetSet {
   // Auxiliary function for `mostRetweeted`
   def mostRetweetedAcc(acc: Tweet): Tweet = {
     decreases((this, 1))
-    (??? : Tweet)
+    AbstractMethodBody[Tweet]()
   }
 
   /**
@@ -69,7 +69,7 @@ sealed abstract class TweetSet {
   def descendingByRetweet: TweetList = {
     require(isSearchTree)
     decreases((size, 1))
-    (??? : TweetList)
+    AbstractMethodBody[TweetList]()
   }
 
    /**
@@ -80,7 +80,7 @@ sealed abstract class TweetSet {
    */
   def incl(tweet: Tweet): TweetSet = {
     decreases((this, 1))
-    (??? : TweetSet)
+    AbstractMethodBody[TweetSet]()
   }
 
   /**
@@ -88,7 +88,7 @@ sealed abstract class TweetSet {
    */
   def remove(tweet: Tweet): TweetSet = {
     decreases((this, 1))
-    (??? : TweetSet)
+    AbstractMethodBody[TweetSet]()
   }
 
   /**
@@ -96,7 +96,7 @@ sealed abstract class TweetSet {
    */
   def contains(tweet: Tweet): Boolean = {
     decreases((this, 1))
-    (??? : Boolean)
+    AbstractMethodBody[Boolean]()
   }
 
   /**
@@ -104,7 +104,7 @@ sealed abstract class TweetSet {
    */
   def slowContains(tweet: Tweet): Boolean = {
     decreases((this, 1))
-    (??? : Boolean)
+    AbstractMethodBody[Boolean]()
   }
 
   /**
@@ -112,7 +112,7 @@ sealed abstract class TweetSet {
    */
   def foreach(f: Tweet => Unit): Unit = {
     decreases((this, 1))
-    (??? : Unit)
+    AbstractMethodBody[Unit]()
   }
 
   /**
@@ -120,7 +120,7 @@ sealed abstract class TweetSet {
    */
   def forall(f: Tweet => Boolean): Boolean = {
     decreases((this, 1))
-    (??? : Boolean)
+    AbstractMethodBody[Boolean]()
   }
 
   /**
@@ -128,7 +128,7 @@ sealed abstract class TweetSet {
    */
   def size: BigInt = {
     decreases((this, 1))
-    (??? : BigInt)
+    AbstractMethodBody[BigInt]()
   }
 
   /**
@@ -136,7 +136,7 @@ sealed abstract class TweetSet {
    */
   def isSearchTree: Boolean = {
     decreases((this, 1))
-    (??? : Boolean)
+    AbstractMethodBody[Boolean]()
   }
 }
 

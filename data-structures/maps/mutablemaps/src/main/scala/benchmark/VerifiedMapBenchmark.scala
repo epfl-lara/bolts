@@ -2,6 +2,7 @@ package benchmark.maps
 
 import java.util.concurrent.TimeUnit
 import org.openjdk.jmh.annotations.*
+import org.openjdk.jmh.infra.Blackhole
 import scala.collection.mutable.LongMap
 import scala.collection.mutable.HashMap
 import scala.util.Random
@@ -62,207 +63,183 @@ class MutableLongMapBenchmark {
   @Benchmark
   @BenchmarkMode(Array(Mode.AverageTime))
   @OutputTimeUnit(TimeUnit.MICROSECONDS)
-  def lookupN_Verified(): Unit = {
+  def lookupN_Verified(bh: Blackhole): Unit = {
     val m: MutableLongMap.LongMap[Long] = verifiedMapFilledWith2to15Values
     var i = 0
     val n = nKeys.toInt
-    var acc: Long = 1
     while (i < n) do
-      acc *= m(randomArrayOfKeysSize2to16(i))
+      bh.consume(m(randomArrayOfKeysSize2to16(i)))
       i += 1
     end while
-    val temp = acc * 5
   }
 
   @Benchmark
   @BenchmarkMode(Array(Mode.AverageTime))
   @OutputTimeUnit(TimeUnit.MICROSECONDS)
-  def lookupN_Original(): Unit = {
+  def lookupN_Original(bh: Blackhole): Unit = {
     val m: LongMap[Long] = originalMapFilledWith2to15Values
     var i = 0
     val n = nKeys.toInt
-    var acc: Long = 1
     while (i < n) do
-      acc *= m(randomArrayOfKeysSize2to16(i))
+      bh.consume(m(randomArrayOfKeysSize2to16(i)))
       i += 1
     end while
-    val temp = acc * 5
   }
 
   @Benchmark
   @BenchmarkMode(Array(Mode.AverageTime))
   @OutputTimeUnit(TimeUnit.MICROSECONDS)
-  def lookupN_Opti(): Unit = {
+  def lookupN_Opti(bh: Blackhole): Unit = {
     val m: MutableLongMapOpti.LongMapOpti[Long] = verifiedOptiMapFilledWith2to15Values
     var i = 0
     val n = nKeys.toInt
-    var acc: Long = 1
     while (i < n) do
-      acc *= m(randomArrayOfKeysSize2to16(i))
+      bh.consume(m(randomArrayOfKeysSize2to16(i)))
       i += 1
     end while
-    val temp = acc * 5
   }
 
   @Benchmark
   @BenchmarkMode(Array(Mode.AverageTime))
   @OutputTimeUnit(TimeUnit.MICROSECONDS)
-  def lookupN_HashMap(): Unit = {
+  def lookupN_HashMap(bh: Blackhole): Unit = {
     val m: HashMap[Long, Long] = hashMapFilledWith2to15Values
     var i = 0
     val n = nKeys.toInt
-    var acc: Long = 1
     while (i < n) do
-      acc *= m(randomArrayOfKeysSize2to16(i))
+      bh.consume(m(randomArrayOfKeysSize2to16(i)))
       i += 1
     end while
-    val temp = acc * 5
   }
 
   // ------------------------------------------------ UPDATE 2^^15 KEYS THEN LOOKUPS IN MAPS WITH 16 INITIAL BUFFER ----------------------------------------------------------
   @Benchmark
   @BenchmarkMode(Array(Mode.AverageTime))
   @OutputTimeUnit(TimeUnit.MICROSECONDS)
-  def createUpdateLookup_16Buffer_Verified(): Unit = {
+  def createUpdateLookup_16Buffer_Verified(bh: Blackhole): Unit = {
     val m: MutableLongMap.LongMap[Long] = getVerifiedMapEmptyBuffer(16)
     for (k, v) <- random2to15Pairs do m.update(k, v)
     end for
 
     var i = 0
     val n = nKeys.toInt
-    var acc: Long = 1
     while (i < n) do
-      acc *= m(randomArrayOfKeysSize2to16(i))
+      bh.consume(m(randomArrayOfKeysSize2to16(i)))
       i += 1
     end while
-    val temp = acc * 5
   }
 
   @Benchmark
   @BenchmarkMode(Array(Mode.AverageTime))
   @OutputTimeUnit(TimeUnit.MICROSECONDS)
-  def createUpdateLookup_16Buffer_Original(): Unit = {
+  def createUpdateLookup_16Buffer_Original(bh: Blackhole): Unit = {
     val m: LongMap[Long] = getOriginalMapEmptyBuffer(16)
     for (k, v) <- random2to15Pairs do m.update(k, v)
     end for
 
     var i = 0
     val n = nKeys.toInt
-    var acc: Long = 1
     while (i < n) do
-      acc *= m(randomArrayOfKeysSize2to16(i))
+      bh.consume(m(randomArrayOfKeysSize2to16(i)))
       i += 1
     end while
-    val temp = acc * 5
   }
 
   @Benchmark
   @BenchmarkMode(Array(Mode.AverageTime))
   @OutputTimeUnit(TimeUnit.MICROSECONDS)
-  def createUpdateLookup_16Buffer_Opti(): Unit = {
+  def createUpdateLookup_16Buffer_Opti(bh: Blackhole): Unit = {
     val m: LongMapOpti[Long] = getVerifiedOptiMapEmptyBuffer(16)
     for (k, v) <- random2to15Pairs do m.update(k, v)
     end for
 
     var i = 0
     val n = nKeys.toInt
-    var acc: Long = 1
     while (i < n) do
-      acc *= m(randomArrayOfKeysSize2to16(i))
+      bh.consume(m(randomArrayOfKeysSize2to16(i)))
       i += 1
     end while
-    val temp = acc * 5
   }
 
   @Benchmark
   @BenchmarkMode(Array(Mode.AverageTime))
   @OutputTimeUnit(TimeUnit.MICROSECONDS)
-  def createUpdateLookup_16Buffer_HashMap(): Unit = {
+  def createUpdateLookup_16Buffer_HashMap(bh: Blackhole): Unit = {
     val m: HashMap[Long, Long] = getHashMapEmptyBuffer(16)
     for (k, v) <- random2to15Pairs do m.update(k, v)
     end for
 
     var i = 0
     val n = nKeys.toInt
-    var acc: Long = 1
     while (i < n) do
-      acc *= m(randomArrayOfKeysSize2to16(i))
+      bh.consume(m(randomArrayOfKeysSize2to16(i)))
       i += 1
     end while
-    val temp = acc * 5
   }
 
   // ------------------------------------------------ UPDATE 2^^15 KEYS THEN LOOKUPS IN MAPS WITH 2^^17 INITIAL BUFFER ----------------------------------------------------------
   @Benchmark
   @BenchmarkMode(Array(Mode.AverageTime))
   @OutputTimeUnit(TimeUnit.MICROSECONDS)
-  def createUpdateLookup_2to17Buffer_Verified(): Unit = {
+  def createUpdateLookup_2to17Buffer_Verified(bh: Blackhole): Unit = {
     val m: MutableLongMap.LongMap[Long] = getVerifiedMapEmptyBuffer(Math.pow(2, 17).toInt)
     for (k, v) <- random2to15Pairs do m.update(k, v)
     end for
 
     var i = 0
     val n = nKeys.toInt
-    var acc: Long = 1
     while (i < n) do
-      acc *= m(randomArrayOfKeysSize2to16(i))
+      bh.consume(m(randomArrayOfKeysSize2to16(i)))
       i += 1
     end while
-    val temp = acc * 5
   }
 
   @Benchmark
   @BenchmarkMode(Array(Mode.AverageTime))
   @OutputTimeUnit(TimeUnit.MICROSECONDS)
-  def createUpdateLookup_2to17Buffer_Original(): Unit = {
+  def createUpdateLookup_2to17Buffer_Original(bh: Blackhole): Unit = {
     val m: LongMap[Long] = getOriginalMapEmptyBuffer(Math.pow(2, 17).toInt)
     for (k, v) <- random2to15Pairs do m.update(k, v)
     end for
 
     var i = 0
     val n = nKeys.toInt
-    var acc: Long = 1
     while (i < n) do
-      acc *= m(randomArrayOfKeysSize2to16(i))
+      bh.consume(m(randomArrayOfKeysSize2to16(i)))
       i += 1
     end while
-    val temp = acc * 5
   }
 
   @Benchmark
   @BenchmarkMode(Array(Mode.AverageTime))
   @OutputTimeUnit(TimeUnit.MICROSECONDS)
-  def createUpdateLookup_2to17Buffer_Opti(): Unit = {
+  def createUpdateLookup_2to17Buffer_Opti(bh: Blackhole): Unit = {
     val m: MutableLongMapOpti.LongMapOpti[Long] = getVerifiedOptiMapEmptyBuffer(Math.pow(2, 17).toInt)
     for (k, v) <- random2to15Pairs do m.update(k, v)
     end for
 
     var i = 0
     val n = nKeys.toInt
-    var acc: Long = 1
     while (i < n) do
-      acc *= m(randomArrayOfKeysSize2to16(i))
+      bh.consume(m(randomArrayOfKeysSize2to16(i)))
       i += 1
     end while
-    val temp = acc * 5
   }
 
   @Benchmark
   @BenchmarkMode(Array(Mode.AverageTime))
   @OutputTimeUnit(TimeUnit.MICROSECONDS)
-  def createUpdateLookup_2to17Buffer_HashMap(): Unit = {
+  def createUpdateLookup_2to17Buffer_HashMap(bh: Blackhole): Unit = {
     val m: HashMap[Long, Long] = getHashMapEmptyBuffer(Math.pow(2, 17).toInt)
     for (k, v) <- random2to15Pairs do m.update(k, v)
     end for
 
     var i = 0
     val n = nKeys.toInt
-    var acc: Long = 1
     while (i < n) do
-      acc *= m(randomArrayOfKeysSize2to16(i))
+      bh.consume(m(randomArrayOfKeysSize2to16(i)))
       i += 1
     end while
-    val temp = acc * 5
   }
 
   // ------------------------------------------------ UPDATE 2^^15 KEYS THEN REMOVE 2^^14 + 8192 THEN UPDATE AGAIN THEN LOOKUPS ----------------------------------------------------------
@@ -270,7 +247,7 @@ class MutableLongMapBenchmark {
   @Benchmark
   @BenchmarkMode(Array(Mode.AverageTime))
   @OutputTimeUnit(TimeUnit.MICROSECONDS)
-  def createUpdateRemoveUpdateLookup_16Buffer_Verified(): Unit = {
+  def createUpdateRemoveUpdateLookup_16Buffer_Verified(bh: Blackhole): Unit = {
     val m: MutableLongMap.LongMap[Long] = getVerifiedMapEmptyBuffer(Math.pow(2, 17).toInt)
     for (k, v) <- random2to15Pairs do m.update(k, v)
     end for
@@ -287,18 +264,16 @@ class MutableLongMapBenchmark {
 
     var i = 0
     val n = nKeys.toInt
-    var acc: Long = 1
     while (i < n) do
-      acc *= m(randomArrayOfKeysSize2to16(i))
+      bh.consume(m(randomArrayOfKeysSize2to16(i)))
       i += 1
     end while
-    val temp = acc * 5
   }
 
   @Benchmark
   @BenchmarkMode(Array(Mode.AverageTime))
   @OutputTimeUnit(TimeUnit.MICROSECONDS)
-  def createUpdateRemoveUpdateLookup_16Buffer_Original(): Unit = {
+  def createUpdateRemoveUpdateLookup_16Buffer_Original(bh: Blackhole): Unit = {
     val m: LongMap[Long] = getOriginalMapEmptyBuffer(Math.pow(2, 17).toInt)
     for (k, v) <- random2to15Pairs do m.update(k, v)
     end for
@@ -315,18 +290,16 @@ class MutableLongMapBenchmark {
 
     var i = 0
     val n = nKeys.toInt
-    var acc: Long = 1
     while (i < n) do
-      acc *= m(randomArrayOfKeysSize2to16(i))
+      bh.consume(m(randomArrayOfKeysSize2to16(i)))
       i += 1
     end while
-    val temp = acc * 5
   }
 
   @Benchmark
   @BenchmarkMode(Array(Mode.AverageTime))
   @OutputTimeUnit(TimeUnit.MICROSECONDS)
-  def createUpdateRemoveUpdateLookup_16Buffer_Opti(): Unit = {
+  def createUpdateRemoveUpdateLookup_16Buffer_Opti(bh: Blackhole): Unit = {
     val m: MutableLongMapOpti.LongMapOpti[Long] = getVerifiedOptiMapEmptyBuffer(Math.pow(2, 17).toInt)
     for (k, v) <- random2to15Pairs do m.update(k, v)
     end for
@@ -343,19 +316,17 @@ class MutableLongMapBenchmark {
 
     var i = 0
     val n = nKeys.toInt
-    var acc: Long = 1
     while (i < n) do
-      acc *= m(randomArrayOfKeysSize2to16(i))
+      bh.consume(m(randomArrayOfKeysSize2to16(i)))
       i += 1
     end while
-    val temp = acc * 5
 
   }
 
   @Benchmark
   @BenchmarkMode(Array(Mode.AverageTime))
   @OutputTimeUnit(TimeUnit.MICROSECONDS)
-  def createUpdateRemoveUpdateLookup_16Buffer_HashMap(): Unit = {
+  def createUpdateRemoveUpdateLookup_16Buffer_HashMap(bh: Blackhole): Unit = {
     val m: HashMap[Long, Long] = getHashMapEmptyBuffer(Math.pow(2, 17).toInt)
     for (k, v) <- random2to15Pairs do m.update(k, v)
     end for
@@ -372,12 +343,10 @@ class MutableLongMapBenchmark {
 
     var i = 0
     val n = nKeys.toInt
-    var acc: Long = 1
     while (i < n) do
-      acc *= m(randomArrayOfKeysSize2to16(i))
+      bh.consume(m(randomArrayOfKeysSize2to16(i)))
       i += 1
     end while
-    val temp = acc * 5
 
   }
 
@@ -432,208 +401,184 @@ class MutableLongMapBenchmarkBig {
   @Benchmark
   @BenchmarkMode(Array(Mode.AverageTime))
   @OutputTimeUnit(TimeUnit.MICROSECONDS)
-  def lookupN_Verified(): Unit = {
+  def lookupN_Verified(bh: Blackhole): Unit = {
     val m: MutableLongMap.LongMap[Long] = verifiedMapFilledWith2to22Values
     var i = 0
     val n = nKeys.toInt
-    var acc: Long = 1
     while (i < n) do
-      acc *= m(randomArrayOfKeysSize2to23(i))
+      bh.consume(m(randomArrayOfKeysSize2to23(i)))
       i += 1
     end while
-    val temp = acc * 5
 
   }
 
   @Benchmark
   @BenchmarkMode(Array(Mode.AverageTime))
   @OutputTimeUnit(TimeUnit.MICROSECONDS)
-  def lookupN_Original(): Unit = {
+  def lookupN_Original(bh: Blackhole): Unit = {
     val m: LongMap[Long] = originalMapFilledWith2to22Values
     var i = 0
     val n = nKeys.toInt
-    var acc: Long = 1
     while (i < n) do
-      acc *= m(randomArrayOfKeysSize2to23(i))
+      bh.consume(m(randomArrayOfKeysSize2to23(i)))
       i += 1
     end while
-    val temp = acc * 5
   }
 
   @Benchmark
   @BenchmarkMode(Array(Mode.AverageTime))
   @OutputTimeUnit(TimeUnit.MICROSECONDS)
-  def lookupN_Opti(): Unit = {
+  def lookupN_Opti(bh: Blackhole): Unit = {
     val m: MutableLongMapOpti.LongMapOpti[Long] = verifiedOptiMapFilledWith2to22Values
     var i = 0
     val n = nKeys.toInt
-    var acc: Long = 1
     while (i < n) do
-      acc *= m(randomArrayOfKeysSize2to23(i))
+      bh.consume(m(randomArrayOfKeysSize2to23(i)))
       i += 1
     end while
-    val temp = acc * 5
   }
 
   @Benchmark
   @BenchmarkMode(Array(Mode.AverageTime))
   @OutputTimeUnit(TimeUnit.MICROSECONDS)
-  def lookupN_HashMap(): Unit = {
+  def lookupN_HashMap(bh: Blackhole): Unit = {
     val m: HashMap[Long, Long] = hashMapFilledWith2to22Values
     var i = 0
     val n = nKeys.toInt
-    var acc: Long = 1
     while (i < n) do
-      acc *= m(randomArrayOfKeysSize2to23(i))
+      bh.consume(m(randomArrayOfKeysSize2to23(i)))
       i += 1
     end while
-    val temp = acc * 5
   }
 
   // ------------------------------------------------ UPDATE 2^^22 KEYS THEN LOOKUPS IN MAPS WITH 16 INITIAL BUFFER ----------------------------------------------------------
   @Benchmark
   @BenchmarkMode(Array(Mode.AverageTime))
   @OutputTimeUnit(TimeUnit.MICROSECONDS)
-  def createUpdateLookup_16Buffer_Verified(): Unit = {
+  def createUpdateLookup_16Buffer_Verified(bh: Blackhole): Unit = {
     val m: MutableLongMap.LongMap[Long] = getVerifiedMapEmptyBuffer(16)
     for (k, v) <- random2to22Pairs do m.update(k, v)
     end for
 
     var i = 0
     val n = nKeys.toInt
-    var acc: Long = 1
     while (i < n) do
-      acc *= m(randomArrayOfKeysSize2to23(i))
+      bh.consume(m(randomArrayOfKeysSize2to23(i)))
       i += 1
     end while
-    val temp = acc * 5
   }
 
   @Benchmark
   @BenchmarkMode(Array(Mode.AverageTime))
   @OutputTimeUnit(TimeUnit.MICROSECONDS)
-  def createUpdateLookup_16Buffer_Original(): Unit = {
+  def createUpdateLookup_16Buffer_Original(bh: Blackhole): Unit = {
     val m: LongMap[Long] = getOriginalMapEmptyBuffer(16)
     for (k, v) <- random2to22Pairs do m.update(k, v)
     end for
 
     var i = 0
     val n = nKeys.toInt
-    var acc: Long = 1
     while (i < n) do
-      acc *= m(randomArrayOfKeysSize2to23(i))
+      bh.consume(m(randomArrayOfKeysSize2to23(i)))
       i += 1
     end while
-    val temp = acc * 5
   }
 
   @Benchmark
   @BenchmarkMode(Array(Mode.AverageTime))
   @OutputTimeUnit(TimeUnit.MICROSECONDS)
-  def createUpdateLookup_16Buffer_Opti(): Unit = {
+  def createUpdateLookup_16Buffer_Opti(bh: Blackhole): Unit = {
     val m: LongMapOpti[Long] = getVerifiedOptiMapEmptyBuffer(16)
     for (k, v) <- random2to22Pairs do m.update(k, v)
     end for
 
     var i = 0
     val n = nKeys.toInt
-    var acc: Long = 1
     while (i < n) do
-      acc *= m(randomArrayOfKeysSize2to23(i))
+      bh.consume(m(randomArrayOfKeysSize2to23(i)))
       i += 1
     end while
-    val temp = acc * 5
   }
 
   @Benchmark
   @BenchmarkMode(Array(Mode.AverageTime))
   @OutputTimeUnit(TimeUnit.MICROSECONDS)
-  def createUpdateLookup_16Buffer_HashMap(): Unit = {
+  def createUpdateLookup_16Buffer_HashMap(bh: Blackhole): Unit = {
     val m: HashMap[Long, Long] = getHashMapEmptyBuffer(16)
     for (k, v) <- random2to22Pairs do m.update(k, v)
     end for
 
     var i = 0
     val n = nKeys.toInt
-    var acc: Long = 1
     while (i < n) do
-      acc *= m(randomArrayOfKeysSize2to23(i))
+      bh.consume(m(randomArrayOfKeysSize2to23(i)))
       i += 1
     end while
-    val temp = acc * 5
   }
 
   // ------------------------------------------------ UPDATE 2^^22 KEYS THEN LOOKUPS IN MAPS WITH 2^^23 INITIAL BUFFER ----------------------------------------------------------
   @Benchmark
   @BenchmarkMode(Array(Mode.AverageTime))
   @OutputTimeUnit(TimeUnit.MICROSECONDS)
-  def createUpdateLookup_2to17Buffer_Verified(): Unit = {
+  def createUpdateLookup_2to17Buffer_Verified(bh: Blackhole): Unit = {
     val m: MutableLongMap.LongMap[Long] = getVerifiedMapEmptyBuffer(Math.pow(2, 23).toInt)
     for (k, v) <- random2to22Pairs do m.update(k, v)
     end for
 
     var i = 0
     val n = nKeys.toInt
-    var acc: Long = 1
     while (i < n) do
-      acc *= m(randomArrayOfKeysSize2to23(i))
+      bh.consume(m(randomArrayOfKeysSize2to23(i)))
       i += 1
     end while
-    val temp = acc * 5
   }
 
   @Benchmark
   @BenchmarkMode(Array(Mode.AverageTime))
   @OutputTimeUnit(TimeUnit.MICROSECONDS)
-  def createUpdateLookup_2to17Buffer_Original(): Unit = {
+  def createUpdateLookup_2to17Buffer_Original(bh: Blackhole): Unit = {
     val m: LongMap[Long] = getOriginalMapEmptyBuffer(Math.pow(2, 23).toInt)
     for (k, v) <- random2to22Pairs do m.update(k, v)
     end for
 
     var i = 0
     val n = nKeys.toInt
-    var acc: Long = 1
     while (i < n) do
-      acc *= m(randomArrayOfKeysSize2to23(i))
+      bh.consume(m(randomArrayOfKeysSize2to23(i)))
       i += 1
     end while
-    val temp = acc * 5
   }
 
   @Benchmark
   @BenchmarkMode(Array(Mode.AverageTime))
   @OutputTimeUnit(TimeUnit.MICROSECONDS)
-  def createUpdateLookup_2to17Buffer_Opti(): Unit = {
+  def createUpdateLookup_2to17Buffer_Opti(bh: Blackhole): Unit = {
     val m: MutableLongMapOpti.LongMapOpti[Long] = getVerifiedOptiMapEmptyBuffer(Math.pow(2, 23).toInt)
     for (k, v) <- random2to22Pairs do m.update(k, v)
     end for
 
     var i = 0
     val n = nKeys.toInt
-    var acc: Long = 1
     while (i < n) do
-      acc *= m(randomArrayOfKeysSize2to23(i))
+      bh.consume(m(randomArrayOfKeysSize2to23(i)))
       i += 1
     end while
-    val temp = acc * 5
   }
 
   @Benchmark
   @BenchmarkMode(Array(Mode.AverageTime))
   @OutputTimeUnit(TimeUnit.MICROSECONDS)
-  def createUpdateLookup_2to17Buffer_HashMap(): Unit = {
+  def createUpdateLookup_2to17Buffer_HashMap(bh: Blackhole): Unit = {
     val m: HashMap[Long, Long] = getHashMapEmptyBuffer(Math.pow(2, 23).toInt)
     for (k, v) <- random2to22Pairs do m.update(k, v)
     end for
 
     var i = 0
     val n = nKeys.toInt
-    var acc: Long = 1
     while (i < n) do
-      acc *= m(randomArrayOfKeysSize2to23(i))
+      bh.consume(m(randomArrayOfKeysSize2to23(i)))
       i += 1
     end while
-    val temp = acc * 5
   }
 
   // ------------------------------------------------ UPDATE 2^^22 KEYS THEN REMOVE 2097152 (=2^^21) THEN UPDATE AGAIN THEN LOOKUPS, BUFFER 16 ----------------------------------------------------------
@@ -641,7 +586,7 @@ class MutableLongMapBenchmarkBig {
   @Benchmark
   @BenchmarkMode(Array(Mode.AverageTime))
   @OutputTimeUnit(TimeUnit.MICROSECONDS)
-  def createUpdateRemoveUpdateLookup_16Buffer_Verified(): Unit = {
+  def createUpdateRemoveUpdateLookup_16Buffer_Verified(bh: Blackhole): Unit = {
     val m: MutableLongMap.LongMap[Long] = getVerifiedMapEmptyBuffer(16)
     for (k, v) <- random2to22Pairs do m.update(k, v)
     end for
@@ -658,18 +603,16 @@ class MutableLongMapBenchmarkBig {
 
     var i = 0
     val n = nKeys.toInt
-    var acc: Long = 1
     while (i < n) do
-      acc *= m(randomArrayOfKeysSize2to23(i))
+      bh.consume(m(randomArrayOfKeysSize2to23(i)))
       i += 1
     end while
-    val temp = acc * 5
   }
 
   @Benchmark
   @BenchmarkMode(Array(Mode.AverageTime))
   @OutputTimeUnit(TimeUnit.MICROSECONDS)
-  def createUpdateRemoveUpdateLookup_16Buffer_Original(): Unit = {
+  def createUpdateRemoveUpdateLookup_16Buffer_Original(bh: Blackhole): Unit = {
     val m: LongMap[Long] = getOriginalMapEmptyBuffer(16)
     for (k, v) <- random2to22Pairs do m.update(k, v)
     end for
@@ -686,18 +629,16 @@ class MutableLongMapBenchmarkBig {
 
     var i = 0
     val n = nKeys.toInt
-    var acc: Long = 1
     while (i < n) do
-      acc *= m(randomArrayOfKeysSize2to23(i))
+      bh.consume(m(randomArrayOfKeysSize2to23(i)))
       i += 1
     end while
-    val temp = acc * 5
   }
 
   @Benchmark
   @BenchmarkMode(Array(Mode.AverageTime))
   @OutputTimeUnit(TimeUnit.MICROSECONDS)
-  def createUpdateRemoveUpdateLookup_16Buffer_Opti(): Unit = {
+  def createUpdateRemoveUpdateLookup_16Buffer_Opti(bh: Blackhole): Unit = {
     val m: MutableLongMapOpti.LongMapOpti[Long] = getVerifiedOptiMapEmptyBuffer(16)
     for (k, v) <- random2to22Pairs do m.update(k, v)
     end for
@@ -714,18 +655,16 @@ class MutableLongMapBenchmarkBig {
 
     var i = 0
     val n = nKeys.toInt
-    var acc: Long = 1
     while (i < n) do
-      acc *= m(randomArrayOfKeysSize2to23(i))
+      bh.consume(m(randomArrayOfKeysSize2to23(i)))
       i += 1
     end while
-    val temp = acc * 5
   }
 
   @Benchmark
   @BenchmarkMode(Array(Mode.AverageTime))
   @OutputTimeUnit(TimeUnit.MICROSECONDS)
-  def createUpdateRemoveUpdateLookup_16Buffer_HashMap(): Unit = {
+  def createUpdateRemoveUpdateLookup_16Buffer_HashMap(bh: Blackhole): Unit = {
     val m: HashMap[Long, Long] = getHashMapEmptyBuffer(16)
     for (k, v) <- random2to22Pairs do m.update(k, v)
     end for
@@ -742,12 +681,10 @@ class MutableLongMapBenchmarkBig {
 
     var i = 0
     val n = nKeys.toInt
-    var acc: Long = 1
     while (i < n) do
-      acc *= m(randomArrayOfKeysSize2to23(i))
+      bh.consume(m(randomArrayOfKeysSize2to23(i)))
       i += 1
     end while
-    val temp = acc * 5
   }
 
 }

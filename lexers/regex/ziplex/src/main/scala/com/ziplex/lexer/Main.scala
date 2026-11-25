@@ -178,8 +178,7 @@ object Main {
     // With memoization
     val cacheUp = MemoisationZipper.emptyUp(ContextCharHashable)
     val cacheDown = MemoisationZipper.emptyDown(RegexContextCharHashable)
-    val memSteps = ZipperDerivationStepsMemoized(cacheUp, cacheDown)
-    assert(matchZipperSequenceMem(r, input)(using memSteps))
+    assert(matchZipperSequenceMem(r, input)(using ZipperDerivationStepsMemoized(cacheUp, cacheDown)))
 
     // or using the predefined caches in ExampleUtils
     assert(matchZipperSequenceMem(r, input)(using ExampleUtils.zipperMemSteps))
