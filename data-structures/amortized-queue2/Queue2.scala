@@ -58,7 +58,7 @@ object QueueSpecs {
       assert(amortizedQueue(front, Cons(elem, rear)) == Queue2(front, Cons(elem, rear)))
       assert(Queue2(front, Cons(elem, rear)).asList == front ++ Cons(elem, rear).reverse)
       assert(front ++ Cons(elem, rear).reverse == front ++ (rear.reverse ++ Cons(elem, Nil[A]())))
-      assert(appendAssoc(front, rear.reverse, Cons(elem, Nil[A]())))
+      appendAssoc(front, rear.reverse, Cons(elem, Nil[A]()))
       assert(front ++ (rear.reverse ++ Cons(elem, Nil[A]())) == (front ++ rear.reverse) ++ Cons(elem, Nil[A]()))
       assert((front ++ rear.reverse) ++ Cons(elem, Nil[A]()) == queue.asList ++ Cons(elem, Nil[A]()))
 
@@ -69,7 +69,7 @@ object QueueSpecs {
       assert(front ++ Cons(elem, rear).reverse ++ Nil[A]().reverse == front ++ Cons(elem, rear).reverse ++ Nil[A]())
       assert(front ++ Cons(elem, rear).reverse ++ Nil[A]() == front ++ Cons(elem, rear).reverse)
       assert(front ++ Cons(elem, rear).reverse == front ++ (rear.reverse ++ Cons(elem, Nil[A]())))
-      assert(appendAssoc(front, rear.reverse, Cons(elem, Nil[A]())))
+      appendAssoc(front, rear.reverse, Cons(elem, Nil[A]()))
       assert(front ++ (rear.reverse ++ Cons(elem, Nil[A]())) == (front ++ rear.reverse) ++ Cons(elem, Nil[A]()))
       assert((front ++ rear.reverse) ++ Cons(elem, Nil[A]()) == queue.asList ++ Cons(elem, Nil[A]()))
 
@@ -91,7 +91,8 @@ object QueueSpecs {
   def propTail[A](queue: Queue2[A], elem: A) : Unit = {
     require(!queue.isEmpty && queue.isAmortized)
 
-    check(rightUnitAppend(queue.front.tail ++ queue.rear.reverse))
+    rightUnitAppend(queue.front.tail ++ queue.rear.reverse)
+    ()
 
   }.ensuring(_ =>
     queue.asList.tail == queue.tail.asList
