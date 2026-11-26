@@ -37,7 +37,7 @@ To run benchmarks, run in `sbt`
 
 ### Comparison with the Scala standard library (CI)
 
-The full suite takes about 48 hours. `./run_benchmarks_ci.sh` runs a time-boxed selection of it (about 2h15): the verified `LongMap` against `scala.collection.mutable.LongMap`, and the verified `HashMap` against `scala.collection.mutable.HashMap` and `scala.collection.immutable.HashMap`, on a few sizes per benchmark. It downloads the Stainless sbt plugin if it is not installed. `--profile smoke` checks the pipeline in about 10 minutes; `--help` lists the options.
+The full suite takes about 48 hours. `./run_benchmarks_ci.sh` runs a time-boxed selection of it (about 2h15): the verified `LongMap` against `scala.collection.mutable.LongMap`, and the verified `HashMap` against `scala.collection.mutable.HashMap` and `scala.collection.immutable.HashMap`, on a few sizes per benchmark. The maps are compiled with their benchmarking imports, which erase the contracts and the ghost code, and with their `@tailrec` annotations: the script calls `./switch_imports.py benchmark` and restores the verification imports when it finishes (`./switch_imports.py verification` does it by hand, `./switch_imports.py status` shows the current mode). `--stainless` chooses the Stainless the benchmarks are compiled with: `main` (or another branch, tag or commit), built from the sources in a few minutes, or a release `x.y.z`; without it, the installed sbt plugin is used, or `main` if there is none. `--profile smoke` checks the pipeline in about 10 minutes; `--help` lists the options.
 
 ```
 $ ./run_benchmarks_ci.sh --output benchmark_results/raw/my_run
