@@ -18,6 +18,7 @@
   - [Run the main class](#run-the-main-class)
   - [Run benchmarks](#run-benchmarks)
     - [Quick start: one-command pipeline (recommended)](#quick-start-one-command-pipeline-recommended)
+    - [Time-boxed benchmarks and HTML report (CI)](#time-boxed-benchmarks-and-html-report-ci)
     - [Run all Scala benchmarks](#run-all-scala-benchmarks)
       - [Prepare scala files](#prepare-scala-files)
       - [Benchmark smoke test](#benchmark-smoke-test)
@@ -250,6 +251,29 @@ Note: the Coqlex benchmarks (see [Coqlex benchmarks](#coqlex-benchmarks)) are no
 
 The remaining subsections below describe each step individually and are kept as a reference for debugging or for running steps in isolation (for example to re-run only the extraction without re-running the benchmarks, or to launch the smoke test).
 
+### Time-boxed benchmarks and HTML report (CI)
+
+`run_benchmarks_ci.sh` runs a selection of the benchmarks that fits in a CI job (about 2h15), and `benchmark_results/generate_benchmark_report.py` builds a self-contained HTML report from its results:
+
+```bash
+  ./run_benchmarks_ci.sh --output benchmark_results/raw/ci
+  python3 benchmark_results/generate_benchmark_report.py benchmark_results/raw/ci
+```
+
+`./run_benchmarks_ci.sh --profile smoke` checks the whole pipeline in about 10 minutes. Run `./run_benchmarks_ci.sh -h` for the options.
+
+`--stainless` chooses the Stainless whose sbt plugin and library the benchmarks are compiled with: `--stainless x.y.z` downloads the plugin of that release, and `--stainless main` (or another branch, tag or commit) clones the Stainless repository and builds the plugin from the sources, which takes about 10 more minutes. Without the option, the plugin already installed in `project/lib` and `stainless/` is used, or release 0.10.5 if there is none. With the option, the installed plugin is replaced when it is another version. The CI job has the same parameter.
+
+What is measured:
+
+- Regex matching: the patterns of `RegexClementBenchmark`, with and without ranges, with and without memoization; the zipper matcher against the derivative-based matcher and `scala.util.matching.Regex` (`RegexBenchmark`, `LexerRegexBenchmark`).
+- Lexing: the V3 tail-recursive memoized lexer (`Lexer.lexMem`) against Silex, on the `a` and `a*b` grammar, JSON and Amy, and against flex on `a` and `a*b`. The flex comparison needs `flex`, a C compiler and `hyperfine`: the script installs the missing ones with the package manager (as root or with a password-less `sudo`, never prompting; `INSTALL_MISSING_TOOLS=0` disables it), and skips the comparison if they are still missing.
+- The report also shows the Coqlex results kept in `benchmark_results/from_coqlex`. They are not measured by the script and come from another machine.
+
+Unlike `run_benchmarks.sh`, this script needs neither SDKMAN nor a `benchmarks` branch. It downloads the sbt-stainless plugin if it is missing, and it switches the sources to their benchmarking imports with `./switch_imports.py benchmark` (see [Prepare scala files](#prepare-scala-files)), then restores the verification imports when it exits. `./switch_imports.py status` tells which imports are active.
+
+The GitHub workflow `.github/workflows/ziplex-benchmarks.yml` runs the two commands above on manual dispatch, and uploads the report, the JMH results and the logs as the artifact `ziplex-benchmarks`.
+
 ### Run all Scala benchmarks
 
 #### Prepare scala files
@@ -413,6 +437,8 @@ The project is organized around three main parts: verified lexer/regex core logi
   - Top-level one-command pipeline: runs the benchmarks and extracts the data for the analysis notebook. Forwards `[iterations] [warm_iterations]` to `run_benchmarks.sh`.
 - `run_benchmarks.sh`
   - Script that executes the benchmark suites (auto-switches to the `benchmarks` branch and rolls back to `main` on failure).
+- `run_benchmarks_ci.sh`, `switch_imports.py`, `benchmark_results/generate_benchmark_report.py`
+  - Time-boxed benchmark run for CI, the script that switches the sources between verification and benchmarking imports, and the HTML report generator.
 - `run_benchmarks_smoke.sh`
   - Smoke variant of the benchmark script, used to validate the setup.
 - `benchmark_results/`
