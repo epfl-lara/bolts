@@ -451,7 +451,8 @@ object RegexBenchmarkUtils {
   given zipperMemSteps: ZipperDerivationStepsMemoized[Char] = ZipperDerivationStepsMemoized(zipperCacheUp, zipperCacheDown)
 
   val possibleEmailChars = "abcdedfghijklmnopqrstuvwxyz."
-  val emailRegex = possibleEmailChars.anyOf.+ ~ "@".r ~ possibleEmailChars.anyOf.+ ~ ".".r ~ possibleEmailChars.anyOf.+
+  val emailChars = az | ".".r
+  val emailRegex = emailChars.+ ~ "@".r ~ emailChars.+ ~ ".".r ~ emailChars.+
 
   val email_Accepting_strings: Map[Int, Sequence[Char]] = string_sizes.map(n => (n, random_email_strings(n).toStainless)).toMap
   val email_Accepting_strings_list: Map[Int, StainlessList[Char]] = string_sizes.map(n => (n, random_email_strings(n).toStainlessList)).toMap
@@ -476,7 +477,7 @@ object RegexBenchmarkUtils {
 
   val singleLineCommentRegex = "//".r ~ (azAZ | digits | " ".r | "\t".r | specialChars).*
   val multiCommentRegex = "/*".r ~
-    (azAZ | digits | whiteSpaces | anyOf(specialCharsString.replace("/", "").replace("*", "")) | "/".r | ("*".r ~ "*".r.* ~ (azAZ | digits | whiteSpaces | anyOf(specialCharsString.replace("/", "").replace("*", ""))))) .* ~
+    (azAZ | digits | whiteSpaces | specialCharsExcept("/*") | "/".r | ("*".r ~ "*".r.* ~ (azAZ | digits | whiteSpaces | specialCharsExcept("/*")))) .* ~
     "*".r.* ~
     "*/".r
 

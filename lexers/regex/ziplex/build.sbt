@@ -22,6 +22,11 @@ Test / scalacOptions ++= Seq(
   "-Yqualified-types-anf",
 )
 
+// sbt-stainless adds the stainless library sources to Test as well as to Compile. Test already gets them compiled
+// through Compile's classes, and unjarring them from both configurations in parallel races on the same directory
+// (FileAlreadyExistsException on .../stainless-library_3-sources/META-INF/MANIFEST.MF), so Test only keeps its own generators
+Test / managedSources := Defaults.generate(Test / sourceGenerators).value
+
 stainlessEnabled := false
 
 Compile / mainClass := Some("com.ziplex.lexer.Main")

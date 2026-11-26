@@ -517,47 +517,47 @@ object ExampleAmyLexer:
                                     "error".r |
                                     "_".r |
                                     "end".r
-        val keywordRule = Rule(regex = keywordRegex(), tag = "keyword", isSeparator = false, transformation = KeywordValueInjection.injection)
+        val keywordRule = Rule(regex = keywordRegex(), tag = "keyword", transformation = KeywordValueInjection.injection)
 
         @extern def primitivTypeRegex(): Regex[Char] = "Int".r | "Unit".r | "Boolean".r | "String".r
-        val primitivTypeRule = Rule(regex = primitivTypeRegex(), tag = "primitive_type", isSeparator = false, transformation = PrimitiveTypeValueInjection.injection)
+        val primitivTypeRule = Rule(regex = primitivTypeRegex(), tag = "primitive_type", transformation = PrimitiveTypeValueInjection.injection)
         
         @extern def booleanLiteralRegex(): Regex[Char] = "true".r | "false".r
-        val booleanLiteralRule = Rule(regex = booleanLiteralRegex(), tag = "boolean_literal", isSeparator = false, transformation = BooleanLiteralValueInjection.injection)
+        val booleanLiteralRule = Rule(regex = booleanLiteralRegex(), tag = "boolean_literal", transformation = BooleanLiteralValueInjection.injection)
 
         @extern def operatorRegex(): Regex[Char] = anyOf("+-/*%!<>") | "<=".r | ">=".r | "==".r  | "&&".r | "||".r | "++".r    
-        val operatorRule = Rule(regex = operatorRegex(), tag = "operator", isSeparator = false, transformation = OperatorValueInjection.injection)
+        val operatorRule = Rule(regex = operatorRegex(), tag = "operator", transformation = OperatorValueInjection.injection)
 
         @extern def identifierRegex(): Regex[Char] = azAZ ~ (azAZ | digits | "_".r).*
-        val identifierRule = Rule(regex = identifierRegex(), tag = "identifier", isSeparator = false, transformation = IdentifierValueInjection.injection)
+        val identifierRule = Rule(regex = identifierRegex(), tag = "identifier", transformation = IdentifierValueInjection.injection)
         
         @extern def integerLiteralRegex(): Regex[Char] = digits.+
-        val integerLiteralRule = Rule(regex = integerLiteralRegex(), tag = "integer_literal", isSeparator = false, transformation = IntegerValueInjection.injection)
+        val integerLiteralRule = Rule(regex = integerLiteralRegex(), tag = "integer_literal", transformation = IntegerValueInjection.injection)
 
-        @extern def stringLiteralRegex(): Regex[Char] = "\"".r ~ (azAZ | digits | " ".r | "\t".r | specialCharsString.replace("\"", "").anyOf).* ~ "\"".r
-        val stringLiteralRule = Rule(regex = stringLiteralRegex(), tag = "string_literal", isSeparator = false, transformation = StringLiteralValueInjection.injection)
+        @extern def stringLiteralRegex(): Regex[Char] = "\"".r ~ (azAZ | digits | " ".r | "\t".r | specialCharsExcept("\"")).* ~ "\"".r
+        val stringLiteralRule = Rule(regex = stringLiteralRegex(), tag = "string_literal", transformation = StringLiteralValueInjection.injection)
 
         @extern def delimiterRegex(): Regex[Char] = anyOf(".,:;(){}[]=") | "=>".r
-        val delimiterRule = Rule(regex = delimiterRegex(), tag = "delimiter", isSeparator = false, transformation = DelimiterValueInjection.injection)
+        val delimiterRule = Rule(regex = delimiterRegex(), tag = "delimiter", transformation = DelimiterValueInjection.injection)
 
         @extern def whiteSpacesRegex(): Regex[Char] = whiteSpaces.+
-        val whitespaceRule = Rule(regex = whiteSpacesRegex(), tag = "whitespace", isSeparator = true, transformation = WhitespaceValueInjection.injection)
+        val whitespaceRule = Rule(regex = whiteSpacesRegex(), tag = "whitespace", transformation = WhitespaceValueInjection.injection)
 
         @extern def singleCommentRegex(): Regex[Char] = "//".r ~ (azAZ | digits | " ".r | "\t".r | specialChars).*
-        val singleCommentRule = Rule(regex = singleCommentRegex(), tag = "comment", isSeparator = false, transformation = CommentValueInjection.injection)
+        val singleCommentRule = Rule(regex = singleCommentRegex(), tag = "comment", transformation = CommentValueInjection.injection)
         
         @extern def multiCommentRegex(): Regex[Char] = 
             "/*".r ~ 
-                ((azAZ | digits | whiteSpaces | specialCharsString.replace("*", "").anyOf) | (("*".r.+) ~ (azAZ | digits | whiteSpaces | specialCharsString.replace("/", "").replace("*", "").anyOf))).* ~
+                ((azAZ | digits | whiteSpaces | specialCharsExcept("*")) | (("*".r.+) ~ (azAZ | digits | whiteSpaces | specialCharsExcept("/*")))).* ~
                 "*".r.* ~
             "*/".r
-        val multiCommentRule = Rule(regex = multiCommentRegex(), tag = "multiline_comment", isSeparator = false, transformation = CommentValueInjection.injection )
+        val multiCommentRule = Rule(regex = multiCommentRegex(), tag = "multiline_comment", transformation = CommentValueInjection.injection )
 
         @extern def unclosedMultiCommentRegex(): Regex[Char] = 
             "/*".r ~ 
-                ((azAZ | digits | whiteSpaces | specialCharsString.replace("*", "").anyOf) | (("*".r.+) ~ (azAZ | digits | whiteSpaces | specialCharsString.replace("/", "").replace("*", "").anyOf))).* ~
+                ((azAZ | digits | whiteSpaces | specialCharsExcept("*")) | (("*".r.+) ~ (azAZ | digits | whiteSpaces | specialCharsExcept("/*")))).* ~
                 "*".r.* 
-        val unclosedMultiCommentRule = Rule(regex = unclosedMultiCommentRegex(), tag = "unclosed_multiline_comment", isSeparator = false, transformation = CommentValueInjection.injection )
+        val unclosedMultiCommentRule = Rule(regex = unclosedMultiCommentRegex(), tag = "unclosed_multiline_comment", transformation = CommentValueInjection.injection )
 
 
         val rules = stainless.collection.List(
