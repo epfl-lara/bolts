@@ -262,7 +262,7 @@ The remaining subsections below describe each step individually and are kept as 
 
 `./run_benchmarks_ci.sh --profile smoke` checks the whole pipeline in about 10 minutes. Run `./run_benchmarks_ci.sh -h` for the options.
 
-`--stainless` chooses the Stainless whose sbt plugin and library the benchmarks are compiled with: `--stainless x.y.z` downloads the plugin of that release, and `--stainless main` (or another branch, tag or commit) clones the Stainless repository and builds the plugin from the sources, which takes about 10 more minutes. Without the option, the plugin already installed in `project/lib` and `stainless/` is used, or release 0.10.5 if there is none. With the option, the installed plugin is replaced when it is another version. The CI job has the same parameter.
+`--stainless` chooses the Stainless whose sbt plugin and library the benchmarks are compiled with: `--stainless x.y.z` downloads the plugin of that release, and `--stainless main` (or another branch, tag or commit) clones the Stainless repository and builds the plugin from the sources, which takes about 10 more minutes. Without the option, the plugin already installed in `project/lib` and `stainless/` is used, or `main` if there is none. With the option, the installed plugin is replaced when it is another version. The CI job has the same parameter.
 
 What is measured:
 

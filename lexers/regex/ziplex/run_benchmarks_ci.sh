@@ -25,7 +25,7 @@ Options:
                   x.y.z   the release x.y.z (its sbt-stainless.zip is downloaded)
                   main    the main branch of the Stainless repository, cloned and built in target/ci-stainless
                           (about 10 more minutes; any other branch, tag or commit works too)
-                Default: the plugin already installed in project/lib and stainless/, or release 0.10.5 if
+                Default: the plugin already installed in project/lib and stainless/, or main if
                 there is none. With this option, the installed plugin is replaced if it is another version.
   --output DIR  Output directory (default: benchmark_results/raw/results_<dd.mm.yyyy>_ci).
   --groups G    Space-separated groups to run (default: all):
@@ -98,7 +98,7 @@ esac
 : "${HYPERFINE_VERSION:=1.18.0}"
 : "${STAINLESS_VERSION:=}"
 : "${STAINLESS_REPO:=https://github.com/epfl-lara/stainless.git}"
-DEFAULT_STAINLESS_RELEASE="0.10.5" # the release built for the scalaVersion of build.sbt
+DEFAULT_STAINLESS_VERSION="main"
 : "${SBT:=sbt}"
 
 if [ -z "$OUTPUT_DIR" ]; then
@@ -167,7 +167,7 @@ install_stainless_sources() { # $1: branch, tag or commit, $2: commit, $3: what 
 }
 
 if [ -z "$STAINLESS_VERSION" ] && ! has_stainless_plugin; then
-	STAINLESS_VERSION="$DEFAULT_STAINLESS_RELEASE"
+	STAINLESS_VERSION="$DEFAULT_STAINLESS_VERSION"
 fi
 if [ -n "$STAINLESS_VERSION" ]; then
 	INSTALLED="$(cat "$STAINLESS_MARKER" 2> /dev/null)"

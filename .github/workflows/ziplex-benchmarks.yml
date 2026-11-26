@@ -14,9 +14,9 @@ on:
           - smoke
         default: standard
       stainless:
-        description: 'Stainless to compile with: a release (x.y.z), or main (or another branch, tag or commit) to build it from the sources, about 10 more minutes.'
+        description: 'Stainless to compile with: main (or another branch, tag or commit), built from the sources in about 10 minutes, or a release (x.y.z).'
         type: string
-        default: '0.10.5'
+        default: 'main'
 
 # Two benchmark runs on the same machine would disturb each other (same group as the mutablemaps benchmarks)
 concurrency:
