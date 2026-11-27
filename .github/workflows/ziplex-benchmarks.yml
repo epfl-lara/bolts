@@ -1,0 +1,83 @@
+name: Ziplex Benchmarks
+# Benchmarks of lexers/regex/ziplex: regex matching (Clément's patterns with and without ranges, the zipper matcher
+# against the derivative-based one and scala.util.matching.Regex) and lexing (the V3 memoized lexer against Silex and flex).
+# The standard profile takes about 2h15 (the full suite takes about 24 hours and is not run here).
+# The HTML report, the JMH JSON results and the logs are uploaded as the artifact "ziplex-benchmarks".
+on:
+  workflow_dispatch:
+    inputs:
+      profile:
+        description: 'standard: about 2h15. smoke: about 10 minutes, checks the pipeline, not the numbers.'
+        type: choice
+        options:
+          - standard
+          - smoke
+        default: standard
+      stainless:
+        description: 'Stainless to compile with: main (or another branch, tag or commit), built from the sources in about 10 minutes, or a release (x.y.z).'
+        type: string
+        default: 'main'
+
+# Two benchmark runs on the same machine would disturb each other (same group as the mutablemaps benchmarks)
+concurrency:
+  group: mutablemaps-benchmarks
+  cancel-in-progress: false
+
+env:
+  # Java options of sbt. The benchmark JVMs are forked by JMH with their own heap (FORK_HEAP in run_benchmarks_ci.sh).
+  JAVA_OPTS: -Dsbt.io.implicit.relative.glob.conversion=allow -Xss512M -Xms1024M -Xmx8G -XX:MaxMetaspaceSize=2G -XX:+UseCodeCacheFlushing -XX:ReservedCodeCacheSize=768M
+  JAVA_OPTS_TMP_DIR: /tmp/tmp_${{ github.run_id }}_${{ github.run_attempt }}
+  PROJECT_DIR: lexers/regex/ziplex
+  RESULTS_DIR: lexers/regex/ziplex/benchmark_results/raw/ci
+jobs:
+  ziplex-benchmarks:
+    runs-on: [self-hosted, linux]
+    # The standard profile needs about 2h15; the measurements of the groups that finished are still reported after a timeout
+    timeout-minutes: 240
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v6
+    # Stainless and the solvers are not needed to run the benchmarks, only a JDK and sbt:
+    # the sbt-stainless plugin is downloaded, or built from the sources of Stainless, by run_benchmarks_ci.sh
+    - name: Setup JDK
+      uses: actions/setup-java@v4
+      with:
+        distribution: temurin
+        java-version: 21
+    - name: Setup java options, temp folder and sbt
+      run: |
+        rm -rf "$JAVA_OPTS_TMP_DIR" && mkdir -p "$JAVA_OPTS_TMP_DIR"
+        echo "JAVA_OPTS=$JAVA_OPTS -Djava.io.tmpdir=$JAVA_OPTS_TMP_DIR" >> "$GITHUB_ENV"
+        echo "SBT_OPTS=-Djava.io.tmpdir=$JAVA_OPTS_TMP_DIR --sbt-dir $JAVA_OPTS_TMP_DIR" >> "$GITHUB_ENV"
+        wget https://github.com/sbt/sbt/releases/download/v1.10.1/sbt-1.10.1.tgz -O "$JAVA_OPTS_TMP_DIR/sbt.tgz" --no-verbose
+        mkdir -p "$JAVA_OPTS_TMP_DIR/sbt-launcher" && tar xfz "$JAVA_OPTS_TMP_DIR/sbt.tgz" -C "$JAVA_OPTS_TMP_DIR/sbt-launcher"
+        echo "$JAVA_OPTS_TMP_DIR/sbt-launcher/sbt/bin" >> "$GITHUB_PATH"
+    - name: Run benchmarks
+      # Shorter than the timeout of the job, so that the report and the upload steps still have time to run.
+      # The flex comparison needs flex and hyperfine: the script installs them if it can (root or password-less sudo);
+      # otherwise the comparison is skipped and reported as such.
+      timeout-minutes: 225
+      env:
+        PROFILE: ${{ inputs.profile }}
+        STAINLESS_VERSION: ${{ inputs.stainless }}
+      run: |
+        rm -rf "$RESULTS_DIR"
+        "$PROJECT_DIR/run_benchmarks_ci.sh" --profile "$PROFILE" --stainless "$STAINLESS_VERSION" --output "$RESULTS_DIR"
+    - name: Generate report
+      # Also after a failure or a timeout: the groups that finished are reported
+      if: always()
+      run: |
+        python3 "$PROJECT_DIR/benchmark_results/generate_benchmark_report.py" "$RESULTS_DIR" \
+          -o "$RESULTS_DIR/benchmark-report.html" --summary "$RESULTS_DIR/summary.md"
+        cat "$RESULTS_DIR/summary.md" >> "$GITHUB_STEP_SUMMARY"
+    - name: Upload report and results
+      if: always()
+      uses: actions/upload-artifact@v4
+      with:
+        name: ziplex-benchmarks
+        path: ${{ env.RESULTS_DIR }}
+        if-no-files-found: warn
+    - name: Clean up
+      # Even after a failure, a timeout or a cancellation, so that jobs don't fill the runners' disk
+      if: always()
+      run: rm -rf "${JAVA_OPTS_TMP_DIR:?}"
