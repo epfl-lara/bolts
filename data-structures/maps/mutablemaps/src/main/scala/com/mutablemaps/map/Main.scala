@@ -19,10 +19,10 @@ object Main {
     println(f"mapFilled.size = ${mapFilled.size}")
     var bucketSizes: HashMap[BigInt, Int] = HashMap()
     var i = 0
-    while (i < mapFilled.underlying.v.underlying.v.mask + 1) {
-      val key: Long = mapFilled.underlying.v.underlying.v._keys(i)
+    while (i < mapFilled.underlying.v.underlying.mask + 1) {
+      val key: Long = mapFilled.underlying.v.underlying._keys(i)
       if(key != 0 && key != Long.MinValue) {
-        val value: List[(Key, Long)] = mapFilled.underlying.v.underlying.v._values(i)
+        val value: List[(Key, Long)] = mapFilled.underlying.v.underlying._values(i)
         println(value)
       }
       i += 1
