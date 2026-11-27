@@ -56,6 +56,11 @@ while [ $# -gt 0 ]; do
 	esac
 done
 
+# A relative --output is relative to the directory the script is called from, not to the script
+case "$OUTPUT_DIR" in
+	""|/*) ;;
+	*) OUTPUT_DIR="$PWD/$OUTPUT_DIR" ;;
+esac
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 cd "$SCRIPT_DIR" || exit 1
 
@@ -271,6 +276,12 @@ echo "Compiling ..."
 	exit 1
 }
 
+# JMH takes a lock file in java.io.tmpdir, /tmp/jmh.lock by default: on a shared machine it can belong to
+# another user, and JMH then refuses to run. The benchmark JVMs get a temporary directory of this build.
+JMH_TMPDIR="$SCRIPT_DIR/target/ci-jmh-tmp"
+mkdir -p "$JMH_TMPDIR"
+JMH_SETTINGS=("set Jmh / javaOptions += \"-Djava.io.tmpdir=$JMH_TMPDIR\"")
+
 START_ALL=$(date +%s)
 FAILED=""
 GROUPS_JSON=""
@@ -286,7 +297,7 @@ for GROUP in $GROUPS_TO_RUN; do
 	echo "  -wi $WARMUP_ITERATIONS -w $WARMUP_TIME -i $ITERATIONS -r $ITERATION_TIME -f 1 -t 1, heap $FORK_HEAP"
 	echo "  log: $LOG"
 	START=$(date +%s)
-	"$SBT" -batch -no-colors ${SBT_SETTINGS[@]+"${SBT_SETTINGS[@]}"} \
+	"$SBT" -batch -no-colors ${SBT_SETTINGS[@]+"${SBT_SETTINGS[@]}"} "${JMH_SETTINGS[@]}" \
 		"Jmh/run -f 1 -t 1 -wi $WARMUP_ITERATIONS -w $WARMUP_TIME -i $ITERATIONS -r $ITERATION_TIME -p nKeys=$SIZES -jvmArgsAppend -Xms$FORK_HEAP -jvmArgsAppend -Xmx$FORK_HEAP -rf json -rff $RESULT $REGEX" \
 		> "$LOG" 2>&1
 	STATUS=$?
