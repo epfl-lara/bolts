@@ -385,6 +385,7 @@ def render_html(groups: list[dict], info: dict) -> str:
         f'{info["cores"]} cores' if info.get("cores") else "",
         f'{info["memory_gb"]} GB' if info.get("memory_gb") else "",
         info.get("java", ""),
+        f'Stainless {info["stainless"]}' if info.get("stainless") else "",
     ]
     jmh = ""
     if "iterations" in info:
@@ -423,7 +424,8 @@ def render_summary(groups: list[dict], info: dict) -> str:
     lines = ["## mutablemaps benchmarks", ""]
     if info:
         lines += [f'{info.get("profile", "?")} profile · commit `{info.get("commit", "?")}` · total {fmt_duration(info.get("total_seconds"))} · '
-                  f'{info.get("cpu", "")} · {info.get("java", "")}', ""]
+                  f'{info.get("cpu", "")} · {info.get("java", "")}'
+                  + (f' · Stainless {info["stainless"]}' if info.get("stainless") else ""), ""]
     lines += ["Time of the verified map divided by the time of the standard library map (geometric mean over the sizes; above 1 the verified map is slower).", ""]
     for g in groups:
         lines += [f'### {g["title"]}', ""]

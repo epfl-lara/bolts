@@ -13,6 +13,10 @@ on:
           - standard
           - smoke
         default: standard
+      stainless:
+        description: 'Stainless to compile with: main (or another branch, tag or commit), built from the sources in a few minutes, or a release (x.y.z).'
+        type: string
+        default: 'main'
 
 # Two benchmark runs on the same machine would disturb each other
 concurrency:
@@ -34,7 +38,7 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v6
     # Stainless and the solvers are not needed to run the benchmarks, only a JDK and sbt:
-    # the sbt-stainless plugin is downloaded by run_benchmarks_ci.sh
+    # the sbt-stainless plugin is built from the sources of Stainless, or downloaded, by run_benchmarks_ci.sh
     - name: Setup JDK
       uses: actions/setup-java@v4
       with:
@@ -53,9 +57,10 @@ jobs:
       timeout-minutes: 225
       env:
         PROFILE: ${{ inputs.profile }}
+        STAINLESS_VERSION: ${{ inputs.stainless }}
       run: |
         rm -rf "$RESULTS_DIR"
-        "$PROJECT_DIR/run_benchmarks_ci.sh" --profile "$PROFILE" --output "$RESULTS_DIR"
+        "$PROJECT_DIR/run_benchmarks_ci.sh" --profile "$PROFILE" --stainless "$STAINLESS_VERSION" --output "$RESULTS_DIR"
     - name: Generate report
       # Also after a failure or a timeout: the groups that finished are reported
       if: always()
