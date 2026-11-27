@@ -65,6 +65,11 @@ while [ $# -gt 0 ]; do
 	esac
 done
 
+# A relative --output is relative to the directory the script is called from, not to the script
+case "$OUTPUT_DIR" in
+	""|/*) ;;
+	*) OUTPUT_DIR="$PWD/$OUTPUT_DIR" ;;
+esac
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 cd "$SCRIPT_DIR" || exit 1
 
@@ -309,7 +314,10 @@ run_jmh_group() { # run_jmh_group GROUP REGEX; the log goes to $LOG, the results
 	echo "  -wi $WARMUP_ITERATIONS -w $WARMUP_TIME -i $ITERATIONS -r $ITERATION_TIME -f 1 -t 1, heap $FORK_HEAP"
 	# $params is split on purpose: it is empty or "-p name=values"
 	# shellcheck disable=SC2086
-	java -cp "$JMH_CLASSPATH" org.openjdk.jmh.Main \
+	# JMH takes a lock file in java.io.tmpdir, /tmp/jmh.lock by default: on a shared machine it can belong
+	# to another user, and JMH then refuses to run. The benchmark JVMs get a temporary directory of this build.
+	mkdir -p "$SCRIPT_DIR/target/ci-jmh-tmp"
+	java "-Djava.io.tmpdir=$SCRIPT_DIR/target/ci-jmh-tmp" -cp "$JMH_CLASSPATH" org.openjdk.jmh.Main \
 		-f 1 -t 1 -wi "$WARMUP_ITERATIONS" -w "$WARMUP_TIME" -i "$ITERATIONS" -r "$ITERATION_TIME" $params \
 		-jvmArgsAppend "-Xms$FORK_HEAP" -jvmArgsAppend "-Xmx$FORK_HEAP" -rf json -rff "$RESULT" "$2" \
 		> "$LOG" 2>&1 && [ -s "$RESULT" ]
