@@ -1,0 +1,47 @@
+[info] REMEMBER: The numbers below are just data. To gain reusable insights, you need to follow up on
+[info] why the numbers are the way they are. Use profilers (see -prof, -lprof), design factorial
+[info] experiments, perform baseline and negative tests that provide experimental control, make sure
+[info] the benchmarking environment is safe on JVM/OS/HW level, ask for reviews from the domain experts.
+[info] Do not assume the numbers tell you what you want them to tell.
+[info] Benchmark                                                              (size)  Mode  Cnt    Score     Error  Units
+[info] RegexClementNoMemBenchmark.p00_azPlus_Zipper_seq_noRanges                 512  avgt    3   20.928 ±  11.678  us/op
+[info] RegexClementNoMemBenchmark.p00_azPlus_Zipper_seq_ranges                   512  avgt    3   17.972 ±  15.899  us/op
+[info] RegexClementNoMemBenchmark.p01_identifier_Zipper_seq_noRanges             512  avgt    3   21.040 ±   5.388  us/op
+[info] RegexClementNoMemBenchmark.p01_identifier_Zipper_seq_ranges               512  avgt    3   33.121 ±  13.738  us/op
+[info] RegexClementNoMemBenchmark.p02_digitsPlus_Zipper_seq_noRanges             512  avgt    3   20.274 ±  13.612  us/op
+[info] RegexClementNoMemBenchmark.p02_digitsPlus_Zipper_seq_ranges               512  avgt    3   18.688 ±  28.756  us/op
+[info] RegexClementNoMemBenchmark.p03_azDigitsPlus_Zipper_seq_noRanges           512  avgt    3   20.998 ±   6.042  us/op
+[info] RegexClementNoMemBenchmark.p03_azDigitsPlus_Zipper_seq_ranges             512  avgt    3   30.900 ±  33.044  us/op
+[info] RegexClementNoMemBenchmark.p04_email_Zipper_seq_noRanges                  512  avgt    3   23.479 ±   0.809  us/op
+[info] RegexClementNoMemBenchmark.p04_email_Zipper_seq_ranges                    512  avgt    3   22.195 ±   9.697  us/op
+[info] RegexClementNoMemBenchmark.p05_fooBarBazPlus_Zipper_seq_noRanges          512  avgt    3   52.300 ±  92.086  us/op
+[info] RegexClementNoMemBenchmark.p05_fooBarBazPlus_Zipper_seq_ranges            512  avgt    3   44.136 ±  21.368  us/op
+[info] RegexClementNoMemBenchmark.p06_catDogBirdFishPlus_Zipper_seq_noRanges     512  avgt    3   30.669 ±  13.490  us/op
+[info] RegexClementNoMemBenchmark.p06_catDogBirdFishPlus_Zipper_seq_ranges       512  avgt    3   30.460 ±  18.209  us/op
+[info] RegexClementNoMemBenchmark.p07_abcPlus_Zipper_seq_noRanges                512  avgt    3   14.541 ±  50.479  us/op
+[info] RegexClementNoMemBenchmark.p07_abcPlus_Zipper_seq_ranges                  512  avgt    3   15.102 ±   5.462  us/op
+[info] RegexClementNoMemBenchmark.p08_abCdEfPlus_Zipper_seq_noRanges             512  avgt    3   31.965 ±  27.530  us/op
+[info] RegexClementNoMemBenchmark.p08_abCdEfPlus_Zipper_seq_ranges               512  avgt    3   37.441 ±  24.070  us/op
+[info] RegexClementNoMemBenchmark.p09_xyzPlus_Zipper_seq_noRanges                512  avgt    3   46.875 ±  36.950  us/op
+[info] RegexClementNoMemBenchmark.p09_xyzPlus_Zipper_seq_ranges                  512  avgt    3   17.699 ±   1.214  us/op
+[info] RegexClementNoMemBenchmark.p10_aStarBStarCStar_Zipper_seq_noRanges        512  avgt    3   43.729 ±  10.820  us/op
+[info] RegexClementNoMemBenchmark.p10_aStarBStarCStar_Zipper_seq_ranges          512  avgt    3   50.641 ±  49.421  us/op
+[info] RegexClementNoMemBenchmark.p11_union16Plus_Zipper_seq_noRanges            512  avgt    3  292.506 ± 208.654  us/op
+[info] RegexClementNoMemBenchmark.p11_union16Plus_Zipper_seq_ranges              512  avgt    3   18.589 ±  10.138  us/op
+[info] RegexClementNoMemBenchmark.p12_abcdefghijPlus_Zipper_seq_noRanges         512  avgt    3   11.692 ±   5.320  us/op
+[info] RegexClementNoMemBenchmark.p12_abcdefghijPlus_Zipper_seq_ranges           512  avgt    3   18.257 ±  21.433  us/op
+[info] RegexClementNoMemBenchmark.p13_threeRanges_Zipper_seq_noRanges            512  avgt    3   40.716 ±  11.788  us/op
+[info] RegexClementNoMemBenchmark.p13_threeRanges_Zipper_seq_ranges              512  avgt    3   26.807 ±  19.087  us/op
+[info] RegexClementNoMemBenchmark.p14_letterDigitPlus_Zipper_seq_noRanges        512  avgt    3   19.681 ±  12.216  us/op
+[info] RegexClementNoMemBenchmark.p14_letterDigitPlus_Zipper_seq_ranges          512  avgt    3   17.860 ±  34.289  us/op
+[info] RegexClementNoMemBenchmark.p15_aStarStar_Zipper_seq_noRanges              512  avgt    3   30.681 ±  21.754  us/op
+[info] RegexClementNoMemBenchmark.p15_aStarStar_Zipper_seq_ranges                512  avgt    3   30.127 ±  11.936  us/op
+[info] RegexClementNoMemBenchmark.p16_aPlusPlus_Zipper_seq_noRanges              512  avgt    3   37.925 ±   9.373  us/op
+[info] RegexClementNoMemBenchmark.p16_aPlusPlus_Zipper_seq_ranges                512  avgt    3   41.991 ±  61.021  us/op
+[info] RegexClementNoMemBenchmark.p17_aOrAaPlus_Zipper_seq_noRanges              512  avgt    3   59.422 ±  19.548  us/op
+[info] RegexClementNoMemBenchmark.p17_aOrAaPlus_Zipper_seq_ranges                512  avgt    3   64.028 ±  65.034  us/op
+[info] RegexClementNoMemBenchmark.p18_aStarBStarStar_Zipper_seq_noRanges         512  avgt    3   66.774 ±  19.384  us/op
+[info] RegexClementNoMemBenchmark.p18_aStarBStarStar_Zipper_seq_ranges           512  avgt    3   69.138 ±  19.723  us/op
+[info] RegexClementNoMemBenchmark.p19_aPlusPlusPlus_Zipper_seq_noRanges          512  avgt    3   58.114 ±   4.416  us/op
+[info] RegexClementNoMemBenchmark.p19_aPlusPlusPlus_Zipper_seq_ranges            512  avgt    3   70.327 ± 195.953  us/op
+[success] Total time: 1651 s (27:31), completed Nov 2, 2026, 1:04:00 PM

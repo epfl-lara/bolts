@@ -37,6 +37,19 @@ echo "Using GraalVM results: $GRAAL_TXT"
 
 python3 extract_to_coqlex.py "$OPENJDK_TXT" "$GRAAL_TXT" ./from_coqlex/Comparison/JSON/results/CoqLex ./from_coqlex/Comparison/JSON/results/
 
+# RegexClementBenchmark results (regex_clement_benchmark_wi_<wi>_i_<i>.txt) to latest/regex_clement.csv and plots/.
+# Older runs do not have them, so they are skipped with a warning instead of failing.
+REGEX_CLEMENT_TXT=$(find "$LATEST_DIR" -maxdepth 1 -type f \
+    -regex '.*/regex_clement_benchmark_wi_[0-9]+_i_[0-9]+\.txt' \
+    | sort | tail -n 1)
+
+if [ -n "$REGEX_CLEMENT_TXT" ]; then
+    echo "Using RegexClement results: $REGEX_CLEMENT_TXT"
+    python3 extract_regex_clement.py "$REGEX_CLEMENT_TXT" "$LATEST_DIR/regex_clement.csv" --plot-dir ./plots
+else
+    echo "Warning: no regex_clement_benchmark_wi_<wi>_i_<i>.txt found in $LATEST_DIR; skipping RegexClement extraction." >&2
+fi
+
 # extract flex results to latest/flex, we pick the latest date in directory (comparing dates in YYYY-MM-DD format works lexicographically)
 FLEX_DIR="./flex/"
 LATEST_FLEX_DIR=$(ls -d $FLEX_DIR*/ | sort -r | head -n 1)

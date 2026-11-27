@@ -409,6 +409,20 @@ object SetUtils {
     ListUtils.getWitness(s.toList, p)
   }.ensuring(res => p(res) && s.contains(res) && s.exists(p))
 
+  /**
+   * An element of s whose image by f contains b, when s.flatMap(f) contains b.
+   * Stating it with the predicate of flatMapPost itself spares the solver from proving
+   * that two different lambdas are the same predicate.
+   */
+  @opaque
+  @ghost
+  @inlineOnce
+  def flatMapWitness[A, B](s: Set[A], f: A => Set[B], b: B): A = {
+    require(s.flatMap(f).contains(b))
+    unfold(s.flatMapPost(f)(b))
+    getWitness(s, (a: A) => f(a).contains(b))
+  }.ensuring(res => s.contains(res) && f(res).contains(b))
+
   @opaque
   @ghost
   @inlineOnce

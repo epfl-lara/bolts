@@ -19,6 +19,12 @@ import com.mutablemaps.map.MutableHashMap
 import stainless.lang.Quantifiers.Exists
 import stainless.lang.Quantifiers.ExistsThe
 import stainless.lang.Quantifiers.pickWitness
+import stainless.lang.Quantifiers.Forall
+import stainless.lang.Quantifiers.ForallOf
+import stainless.lang.Quantifiers.Forall2
+import stainless.lang.Quantifiers.Forall2of
+import stainless.lang.Quantifiers.Forall3
+import stainless.lang.Quantifiers.Forall3of
 
 import com.ziplex.lexer.Sequence
 import com.ziplex.lexer.emptySeq
@@ -47,6 +53,40 @@ import stainless.proof.check
 //   else dummyReg(x - BigInt(1))
 // }.ensuring( res => res == BigInt(0))
 // END imports for benchmarking ---------------------------------------------
+
+/** Total order on the characters, carried by ElementRange to interpret its bounds
+  */
+// trait Ord[C] {
+//   @pure
+//   def lteq(x: C, y: C): Boolean
+
+//   @law def reflexivity(x: C): Boolean = lteq(x, x)
+//   @law def antisymmetry(x: C, y: C): Boolean = (lteq(x, y) && lteq(y, x)) ==> (x == y)
+//   @law def transitivity(x: C, y: C, z: C): Boolean = (lteq(x, y) && lteq(y, z)) ==> lteq(x, z)
+//   @law def totality(x: C, y: C): Boolean = lteq(x, y) || lteq(y, x)
+// }
+
+object Ord {
+  @ghost @opaque def reflexive[C](lteq: (C, C) => Boolean): Boolean = Forall((x: C) => lteq(x, x))
+  @ghost @opaque def antisymmetric[C](lteq: (C, C) => Boolean): Boolean = Forall2((x: C, y: C) => (lteq(x, y) && lteq(y, x)) ==> (x == y))
+  @ghost @opaque def transitive[C](lteq: (C, C) => Boolean): Boolean = Forall3((x: C, y: C, z: C) => (lteq(x, y) && lteq(y, z)) ==> lteq(x, z))
+  @ghost @opaque def total[C](lteq: (C, C) => Boolean): Boolean = Forall2((x: C, y: C) => lteq(x, y) || lteq(y, x))
+}
+
+case class Ord[C](lteq: (C, C) => Boolean) {
+  require(Ord.reflexive(lteq))
+  require(Ord.antisymmetric(lteq))
+  require(Ord.transitive(lteq))
+  require(Ord.total(lteq))
+}
+
+// For example, for Char
+// object Ord {
+//   case object CharOrd extends Ord[Char] {
+//     @pure
+//     override def lteq(x: Char, y: Char): Boolean = x <= y
+//   }
+// }
 
 object MemoisationRegex {
   import VerifiedRegex._
@@ -520,6 +560,9 @@ object VerifiedRegex {
   end Regex
   case class ElementMatch[C](c: C) extends Regex[C]
   case class ElementSet[C](cs: Set[C]) extends Regex[C]
+  /** Regex that accepts any single character c such that from <= c <= to, according to ord
+    */
+  case class ElementRange[C](from: C, to: C, ord: Ord[C]) extends Regex[C]
   case class Star[C](reg: Regex[C]) extends Regex[C]
   case class Union[C](regOne: Regex[C], regTwo: Regex[C]) extends Regex[C]
   case class Concat[C](regOne: Regex[C], regTwo: Regex[C]) extends Regex[C]
@@ -554,13 +597,14 @@ object VerifiedRegex {
   def validRegex[C](r: Regex[C]): Boolean = {
     decreases(r)
     r match {
-      case ElementMatch(c)    => true
-      case ElementSet(cs)     => true
-      case Star(r)            => !r.nullable && validRegex(r) 
-      case Union(rOne, rTwo)  => validRegex(rOne) && validRegex(rTwo)
-      case Concat(rOne, rTwo) => validRegex(rOne) && validRegex(rTwo)
-      case EmptyExpr()        => true
-      case EmptyLang()        => true
+      case ElementMatch(c)        => true
+      case ElementSet(cs)         => true
+      case ElementRange(from, to, ord) => ord.lteq(from, to)
+      case Star(r)                => !r.nullable && validRegex(r) 
+      case Union(rOne, rTwo)      => validRegex(rOne) && validRegex(rTwo)
+      case Concat(rOne, rTwo)     => validRegex(rOne) && validRegex(rTwo)
+      case EmptyExpr()            => true
+      case EmptyLang()            => true
     }
   }
 
@@ -570,6 +614,7 @@ object VerifiedRegex {
     r match {
       case ElementMatch(c)    => BigInt(1)
       case ElementSet(cs)     => BigInt(1)
+      case ElementRange(_, _, _) => BigInt(1)
       case Star(r)            => BigInt(1) + regexDepth(r)
       case Union(rOne, rTwo)  => BigInt(1) + Utils.maxBigInt(regexDepth(rOne), regexDepth(rTwo))
       case Concat(rOne, rTwo) => BigInt(1) + Utils.maxBigInt(regexDepth(rOne), regexDepth(rTwo))
@@ -591,6 +636,7 @@ object VerifiedRegex {
     r match {
       case ElementMatch(c)    => BigInt(1)
       case ElementSet(cs)     => BigInt(1)
+      case ElementRange(_, _, _) => BigInt(1)
       case Star(r)            => BigInt(1) + regexDepthTotal(r)
       case Union(rOne, rTwo)  => BigInt(1) + regexDepthTotal(rOne) + regexDepthTotal(rTwo)
       case Concat(rOne, rTwo) => BigInt(1) + regexDepthTotal(rOne) + regexDepthTotal(rTwo)
@@ -599,37 +645,13 @@ object VerifiedRegex {
     }
   }.ensuring (res => res > 0)
 
-  extension[C] (r: Regex[C]) @pure @ghost def usedCharacters: List[C] = {
-    r match {
-      case EmptyExpr()        => Nil[C]()
-      case EmptyLang()        => Nil[C]()
-      case ElementMatch(c)    => List(c)
-      case ElementSet(cs)     => cs.toList
-      case Star(r)            => r.usedCharacters
-      case Union(rOne, rTwo)  => rOne.usedCharacters ++ rTwo.usedCharacters
-      case Concat(rOne, rTwo) => rOne.usedCharacters ++ rTwo.usedCharacters
-    }
-  }
-
-  extension[C] (r: Regex[C]) @pure @ghost def firstChars: List[C] = {
-    r match {
-      case EmptyExpr()                           => Nil[C]()
-      case EmptyLang()                           => Nil[C]()
-      case ElementMatch(c)                       => List(c)
-      case ElementSet(cs)                        => cs.toList
-      case Star(r)                               => r.firstChars
-      case Union(rOne, rTwo)                     => rOne.firstChars ++ rTwo.firstChars
-      case Concat(rOne, rTwo) if rOne.nullable   => rOne.firstChars ++ rTwo.firstChars
-      case Concat(rOne, rTwo)                    => rOne.firstChars
-    }
-  }
-
   extension[C] (r: Regex[C]) @pure def nullableFct: Boolean = {
     decreases(r, BigInt(0))
     r match {
       case EmptyExpr()        => true
       case EmptyLang()        => false
       case ElementMatch(c)    => false
+      case ElementRange(_, _, _) => false
       case ElementSet(cs)     => false
       case Star(r)            => true
       case Union(rOne, rTwo)  => rOne.nullable || rTwo.nullable
@@ -643,6 +665,7 @@ object VerifiedRegex {
       case EmptyExpr()        => false
       case EmptyLang()        => true
       case ElementMatch(c)    => false
+      case ElementRange(_, _, _) => false
       case ElementSet(cs)     => cs.isEmpty
       case Star(r)            => false
       case Union(rOne, rTwo)  => rOne.lostCause && rTwo.lostCause
@@ -677,6 +700,10 @@ object VerifiedRegex {
       case ElementSet(cs) =>
         7L
 
+      case ElementRange(from, to, ord) =>
+        // critical: incorporate the range values
+        11L
+
       case Star(r1) =>
         mix1(4L, r1.hash)
 
@@ -702,16 +729,17 @@ object VerifiedRegex {
   def getLanguageWitness[C](r: Regex[C]): Option[List[C]] = {
     decreases(r)
     r match {
-      case EmptyExpr()        => Some(List())
-      case EmptyLang()        => None()
-      case ElementMatch(c)    => Some(List(c))
-      case ElementSet(cs)     => if (cs.isEmpty) None() else Some(List(cs.toList.head))
-      case Star(r)            => Some(List())
-      case Union(rOne, rTwo)  => 
+      case EmptyExpr()            => Some(List())
+      case EmptyLang()            => None()
+      case ElementMatch(c)        => Some(List(c))
+      case ElementSet(cs)         => if (cs.isEmpty) None() else Some(List(cs.toList.head))
+      case ElementRange(from, to, ord) => Some(List(from))
+      case Star(r)                => Some(List())
+      case Union(rOne, rTwo)      => 
         getLanguageWitness(rOne) match
           case Some(v) => Some(v)
           case None() => getLanguageWitness(rTwo)
-      case Concat(rOne, rTwo) => 
+      case Concat(rOne, rTwo)     => 
         getLanguageWitness(rOne) match
           case Some(v) => 
             getLanguageWitness(rTwo) match
@@ -762,6 +790,22 @@ object VerifiedRegex {
     require(isElementSet(r))
     r match {
       case ElementSet(cs) => cs.contains(c)
+    }
+  }
+
+  @ghost
+  def isElementRange[C](r: Regex[C]): Boolean = {
+    r match {
+      case ElementRange(_, _, _) => true
+      case _                  => false
+    }
+  }
+
+  @ghost
+  def elementRangeContainsChar[C](r: Regex[C], c: C): Boolean = {
+    require(isElementRange(r))
+    r match {
+      case ElementRange(from, to, ord) => ord.lteq(from, c) && ord.lteq(c, to)
     }
   }
 
@@ -936,6 +980,7 @@ object ZipperRegex {
     expr match {
       case ElementMatch(c) if c == a => Set(context)
       case ElementSet(cs) if cs.contains(a) => Set(context)
+      case ElementRange(from, to, ord) if ord.lteq(from, a) && ord.lteq(a, to) => Set(context)
       case Union(rOne, rTwo) => derivationStepZipperDown(rOne, context, a) ++ derivationStepZipperDown(rTwo, context, a)
       case Concat(rOne, rTwo) if rOne.nullable => derivationStepZipperDown(rOne, context.prepend(rTwo), a) ++ derivationStepZipperDown(rTwo, context, a)
       case Concat(rOne, rTwo) => derivationStepZipperDown(rOne, context.prepend(rTwo), a)
@@ -1116,6 +1161,7 @@ object ZipperRegex {
           val res: Zipper[C] = expr match {
             case ElementMatch(c) if c == a => Set(context)
             case ElementSet(cs) if cs.contains(a) => Set(context)
+            case ElementRange(from, to, ord) if ord.lteq(from, a) && ord.lteq(a, to) => Set(context)
             case Union(rOne, rTwo) => derivationStepZipperDownMem(rOne, context, a) ++ derivationStepZipperDownMem(rTwo, context, a)
             case Concat(rOne, rTwo) if rOne.nullable => derivationStepZipperDownMem(rOne, context.prepend(rTwo), a) ++ derivationStepZipperDownMem(rTwo, context, a)
             case Concat(rOne, rTwo) => derivationStepZipperDownMem(rOne, context.prepend(rTwo), a)
@@ -1512,6 +1558,7 @@ object ZipperRegex {
               case EmptyLang() => lemmaZipperStartingWithEmptyLangMatchesNothing(z, Context(List(r)), s)
               case ElementMatch(a) => lemmaElementMatchZipperAcceptsOnlyThisChar(z, Context(List(ElementMatch(a))), a, s)
               case ElementSet(as) => lemmaElementSetZipperAcceptsOnlyOneOfTheseChars(z, Context(List(ElementSet(as))), as, s)
+              case ElementRange(from, to, ord) => lemmaElementRangeZipperAcceptsOnlyCharsInRange(z, Context(List(ElementRange(from, to, ord))), from, to, ord, s)
               case Union(r1, r2) => {
                 mainMatchTheorem(r1, s)
                 mainMatchTheorem(r2, s)
@@ -1727,6 +1774,18 @@ object ZipperRegex {
                           check(matchR(r, s) == matchZipper(z, s))
                         }
                         case ElementSet(cs) if cs.contains(shd) => {
+                          assert(zDerivDown == Set(Context(tlExp)))
+                          val zVirt = Set(Context(tlExp))
+                          theoremZipperRegexEquiv(zVirt, List(Context(tlExp)), generalisedConcat(tlExp), stl)
+                          assert(matchR(generalisedConcat(tlExp), stl) == matchZipper(zVirt, stl))
+                          assert(matchR(generalisedConcat(tlExp), stl) == matchZipper(zDerivDown, stl))
+                          assert(matchZipper(z, s) == matchR(r2, stl))
+                          assert(derivativeStep(r1, shd) == EmptyExpr[C]())
+                          lemmaSingleCharRegexConcatMatchesSameAsTail(r1, r2, shd, stl)
+                          assert(matchR(r, s) == matchR(r2, stl))
+                          check(matchR(r, s) == matchZipper(z, s))
+                        }
+                        case ElementRange(from, to, ord) if ord.lteq(from, shd) && ord.lteq(shd, to) => {
                           assert(zDerivDown == Set(Context(tlExp)))
                           val zVirt = Set(Context(tlExp))
                           theoremZipperRegexEquiv(zVirt, List(Context(tlExp)), generalisedConcat(tlExp), stl)
@@ -2479,7 +2538,6 @@ object ZipperRegex {
 
   }.ensuring (_ => matchR(r, s) == matchZipper(z, s))
 
-
   @ghost
   @opaque
   @inlineOnce
@@ -2956,6 +3014,10 @@ object ZipperRegex {
         SetUtils.lemmaMapOnSingletonSet(Set(c), c, f)
         check(derivationStepZipperDown(r, c.concat(auxCtx), a) == appendTo(derivationStepZipperDown(r, c, a), auxCtx))
       }
+      case ElementRange(from, to, ord) if ord.lteq(from, a) && ord.lteq(a, to) => {
+        SetUtils.lemmaMapOnSingletonSet(Set(c), c, f)
+        check(derivationStepZipperDown(r, c.concat(auxCtx), a) == appendTo(derivationStepZipperDown(r, c, a), auxCtx))
+      }
       case Union(rOne, rTwo) => {
         assert(derivationStepZipperDown(r, c.concat(auxCtx), a) == derivationStepZipperDown(rOne, c.concat(auxCtx), a) ++ derivationStepZipperDown(rTwo, c.concat(auxCtx), a))
         lemmaDerivativeStepZipperDownConcatCtxSameAsAppendTo(c, rOne, a, auxCtx)
@@ -3291,11 +3353,12 @@ object ZipperRegex {
         if(deriv != Set(Context[C](List()))) {
           assert(deriv.exists(c => c != Context[C](List())))
           val witness = SetUtils.getWitness(deriv, (c: Context[C]) => c != Context[C](List()))
-          unfold(z.flatMapPost(c => derivationStepZipperUp(c, a))(witness))
           assert(deriv.contains(witness))
-          assert(z.exists(c => derivationStepZipperUp(c, s.head).contains(witness)))
-          val witnessContext = SetUtils.getWitness(z, (c: Context[C]) => derivationStepZipperUp(c, s.head).contains(witness))
-          assert(z.contains(witnessContext))
+          val f: Context[C] => Zipper[C] = ct => derivationStepZipperUp(ct, s.head)
+          assert(z.flatMap(f).contains(witness))
+          val witnessContext = SetUtils.flatMapWitness(z, f, witness)
+          assert(witnessContext == c)
+          assert(derivUp.contains(witness))
           check(false)
         }
         check(deriv == Set(Context[C](List()))) 
@@ -3317,9 +3380,9 @@ object ZipperRegex {
           val f: Context[C] => Zipper[C] = ct => derivationStepZipperUp(ct, shd)
           assert(z.flatMap(f).contains(hd))
           assert(deriv.contains(hd))
-          unfold(z.flatMapPost(f)(hd))
-          assert(z.exists(context => derivationStepZipperUp(context, s.head).contains(hd)))
-          assert(z == Set(c))
+          val witnessContext = SetUtils.flatMapWitness(z, f, hd)
+          assert(witnessContext == c)
+          assert(derivUp.contains(hd))
           check(false)
         }
         assert(deriv.isEmpty)
@@ -3355,11 +3418,12 @@ object ZipperRegex {
         if(deriv != Set(Context[C](List()))) {
           assert(deriv.exists(c => c != Context[C](List())))
           val witness = SetUtils.getWitness(deriv, (c: Context[C]) => c != Context[C](List()))
-          unfold(z.flatMapPost(c => derivationStepZipperUp(c, hd))(witness))
           assert(deriv.contains(witness))
-          assert(z.exists(c => derivationStepZipperUp(c, s.head).contains(witness)))
-          val witnessContext = SetUtils.getWitness(z, (c: Context[C]) => derivationStepZipperUp(c, s.head).contains(witness))
-          assert(z.contains(witnessContext))
+          val f: Context[C] => Zipper[C] = ct => derivationStepZipperUp(ct, s.head)
+          assert(z.flatMap(f).contains(witness))
+          val witnessContext = SetUtils.flatMapWitness(z, f, witness)
+          assert(witnessContext == c)
+          assert(derivUp.contains(witness))
           check(false)
         }
         check(deriv == Set(Context[C](List()))) 
@@ -3381,9 +3445,9 @@ object ZipperRegex {
           val f: Context[C] => Zipper[C] = ct => derivationStepZipperUp(ct, shd)
           assert(z.flatMap(f).contains(hd))
           assert(deriv.contains(hd))
-          unfold(z.flatMapPost(f)(hd))
-          assert(z.exists(context => derivationStepZipperUp(context, s.head).contains(hd)))
-          assert(z == Set(c))
+          val witnessContext = SetUtils.flatMapWitness(z, f, hd)
+          assert(witnessContext == c)
+          assert(derivUp.contains(hd))
           check(false)
         }
         assert(deriv.isEmpty)
@@ -3404,6 +3468,72 @@ object ZipperRegex {
   @ghost
   @opaque
   @inlineOnce
+  def lemmaElementRangeZipperAcceptsOnlyCharsInRange[C](z: Zipper[C], c: Context[C], from: C, to: C, ord: Ord[C], s: List[C]): Unit = {
+    require(z == Set(c)) 
+    require(!c.isEmpty)
+    require(c.head == ElementRange[C](from, to, ord))
+    require(c.tail.isEmpty)
+    s match {
+      case Cons(hd, tl) if ord.lteq(from, hd) && ord.lteq(hd, to) => {
+        val deriv: Zipper[C] = derivationStepZipper(z, hd)
+        val derivUp = derivationStepZipperUp(c, hd)
+        assert(derivUp == Set(Context(List())))
+        unfold(z.flatMapPost(c => derivationStepZipperUp(c, hd))(Context[C](List())))
+        assert(deriv.contains(Context[C](List())))
+        if(deriv != Set(Context[C](List()))) {
+          assert(deriv.exists(c => c != Context[C](List())))
+          val witness = SetUtils.getWitness(deriv, (c: Context[C]) => c != Context[C](List()))
+
+          // assert(z.flatMap(c => derivationStepZipperUp(c, hd)).contains(witness) == z.exists(a => (derivationStepZipperUp(a, hd)).contains(witness)))
+          SetUtils.lemmaFlatMapPost(z, (c: Context[C]) => derivationStepZipperUp(c, hd), witness)
+          assert(deriv.contains(witness))
+          assert(z.exists(c => derivationStepZipperUp(c, hd).contains(witness)))
+          val witnessContext = SetUtils.getWitness(z, (c: Context[C]) => derivationStepZipperUp(c, hd).contains(witness))
+          assert(z.contains(witnessContext))
+          check(false)
+        }
+        check(deriv == Set(Context[C](List()))) 
+        if(tl.isEmpty) {
+          lemmaZipperOfEmptyContextMatchesEmptyString(Set(Context(List())), tl)
+          check(matchZipper(z, s))
+
+        } else {
+          lemmaZipperOfEmptyContextMatchesEmptyString(deriv, tl)
+          check(!matchZipper(z, s))
+        }
+      }
+      case Cons(shd, tl) if !(ord.lteq(from, shd) && ord.lteq(shd, to)) => {
+        val deriv: Zipper[C] = derivationStepZipper(z, shd)
+        val derivUp = derivationStepZipperUp(c, shd)
+        assert(derivUp == Set())
+        if(!deriv.isEmpty){
+          val hd = deriv.toList.head
+          val f: Context[C] => Zipper[C] = ct => derivationStepZipperUp(ct, shd)
+          assert(z.flatMap(f).contains(hd))
+          assert(deriv.contains(hd))
+          val witnessContext = SetUtils.flatMapWitness(z, f, hd)
+          assert(witnessContext == c)
+          assert(derivUp.contains(hd))
+          check(false)
+        }
+        assert(deriv.isEmpty)
+        lemmaEmptyZipperMatchesNothing(deriv, tl)
+        }
+      case Nil() => 
+        check(!nullableContext(c))
+        if (nullableZipper(z)) {
+          val witness = SetUtils.getWitness(z, (ct: Context[C]) => nullableContext(ct))
+          assert(z.contains(witness))
+          assert(witness == c)
+          check(false)
+        }
+        check(!matchZipper(z, s))
+    }
+  }.ensuring(_ => matchZipper(z, s) == (s.size == 1 && ord.lteq(from, s.head) && ord.lteq(s.head, to)))
+
+  @ghost
+  @opaque
+  @inlineOnce
   def lemmaZipperOfEmptyContextMatchesEmptyString[C](z: Zipper[C], s: List[C]): Unit = {
     require(z == Set(Context(List())))
     decreases(s.size)
@@ -3418,9 +3548,9 @@ object ZipperRegex {
           val f: Context[C] => Zipper[C] = ct => derivationStepZipperUp(ct, shd)
           assert(z.flatMap(f).contains(hd))
           assert(deriv.contains(hd))
-          unfold(z.flatMapPost(f)(hd))
-          assert(z.exists(context => derivationStepZipperUp(context, s.head).contains(hd)))
-          assert(z == Set(Context(List())))
+          val witnessContext = SetUtils.flatMapWitness(z, f, hd)
+          assert(witnessContext == Context(List()))
+          assert(derivUp.contains(hd))
           check(false)
         }
         check((deriv.isEmpty))
@@ -3472,9 +3602,9 @@ object ZipperRegex {
         val f: Context[C] => Zipper[C] = ct => derivationStepZipperUp(ct, s.head)
         assert(z.flatMap(f).contains(hd))
         assert(deriv.contains(hd))
-        unfold(z.flatMapPost(f)(hd))
-        assert(z.exists(context => derivationStepZipperUp(context, s.head).contains(hd)))
-        assert(z == Set(c))
+        val witnessContext = SetUtils.flatMapWitness(z, f, hd)
+        assert(witnessContext == c)
+        assert(derivUp.contains(hd))
         check(false)
       }
       assert(deriv.isEmpty)
@@ -3494,6 +3624,9 @@ object ZipperRegex {
       val c = Context(List(EmptyExpr[C]()))
       if (s.isEmpty) {
         check(nullableContext(c))
+        assert(z.contains(c))
+        SetUtils.lemmaContainsThenExists(z, c, (ct: Context[C]) => nullableContext(ct))
+        check(nullableZipper(z))
       } else {
         val deriv: Zipper[C]= derivationStepZipper(z, s.head)
         val derivUp = derivationStepZipperUp(c, s.head)
@@ -3503,9 +3636,9 @@ object ZipperRegex {
           val f: Context[C] => Zipper[C] = ct => derivationStepZipperUp(ct, s.head)
           assert(z.flatMap(f).contains(hd))
           assert(deriv.contains(hd))
-          unfold(z.flatMapPost(f)(hd))
-          assert(z.exists(context => derivationStepZipperUp(context, s.head).contains(hd)))
-          assert(z == Set(c))
+          val witnessContext = SetUtils.flatMapWitness(z, f, hd)
+          assert(witnessContext == c)
+          assert(derivUp.contains(hd))
           check(false)
         }
         lemmaEmptyZipperMatchesNothing(deriv, s.tail)
@@ -3517,6 +3650,9 @@ object ZipperRegex {
       assert(z == Set(c))
       if (s.isEmpty) {
         check(nullableContext(c))
+        assert(z.contains(c))
+        SetUtils.lemmaContainsThenExists(z, c, (ct: Context[C]) => nullableContext(ct))
+        check(nullableZipper(z))
       } else {
         val deriv: Zipper[C]= derivationStepZipper(z, s.head)
         val derivUp = derivationStepZipperUp(c, s.head)
@@ -3526,9 +3662,9 @@ object ZipperRegex {
           val f: Context[C] => Zipper[C] = ct => derivationStepZipperUp(ct, s.head)
           assert(z.flatMap(f).contains(hd))
           assert(deriv.contains(hd))
-          unfold(z.flatMapPost(f)(hd))
-          assert(z.exists(context => derivationStepZipperUp(context, s.head).contains(hd)))
-          assert(z == Set(c))
+          val witnessContext = SetUtils.flatMapWitness(z, f, hd)
+          assert(witnessContext == c)
+          assert(derivUp.contains(hd))
           check(false)
         }
         lemmaEmptyZipperMatchesNothing(deriv, s.tail)
@@ -4687,6 +4823,7 @@ object VerifiedRegexMatcher {
       case EmptyLang()       => EmptyLang()
       case ElementMatch(c)   => if (a == c) EmptyExpr() else EmptyLang()
       case ElementSet(cs)    => if (cs.contains(a)) EmptyExpr() else EmptyLang()
+      case ElementRange(from, to, ord) => if (ord.lteq(from, a) && ord.lteq(a, to)) EmptyExpr() else EmptyLang()
       case Union(rOne, rTwo) => Union(derivativeStep(rOne, a), derivativeStep(rTwo, a))
       case Star(rInner)      => Concat(derivativeStep(rInner, a), Star(rInner))
       case Concat(rOne, rTwo) => {
@@ -4710,6 +4847,7 @@ object VerifiedRegexMatcher {
           case EmptyLang()       => EmptyLang()
           case ElementMatch(c)   => if (a == c) EmptyExpr() else EmptyLang()
           case ElementSet(cs)    => if (cs.contains(a)) EmptyExpr() else EmptyLang()
+          case ElementRange(from, to, ord) => if (ord.lteq(from, a) && ord.lteq(a, to)) EmptyExpr() else EmptyLang()
           case Union(rOne, rTwo) => Union(derivativeStepMem(rOne, a)(using cache), derivativeStepMem(rTwo, a)(using cache))
           case Star(rInner)      => Concat(derivativeStepMem(rInner, a)(using cache), Star(rInner))
           case Concat(rOne, rTwo) => {
@@ -5017,6 +5155,7 @@ object VerifiedRegexMatcher {
       case EmptyLang()     => false
       case ElementMatch(c) => s == List(c)
       case ElementSet(cs)  => s.size == 1 && cs.contains(s.head)
+      case ElementRange(from, to, ord) => s.size == 1 && ord.lteq(from, s.head) && ord.lteq(s.head, to)
       case Union(r1, r2)   => matchRSpec(r1, s) || matchRSpec(r2, s)
       case Star(rInner)    => s.isEmpty || Exists((cut: (List[C], List[C])) => cut._1 ++ cut._2 == s && !cut._1.isEmpty && matchRSpec(rInner, cut._1) && matchRSpec(Star(rInner), cut._2)) // TODO change to use matchRSpec in the exists
       // case Star(rInner)    => s.isEmpty || findConcatSeparation(rInner, Star(rInner), Nil(), s, s).isDefined
@@ -5036,6 +5175,21 @@ object VerifiedRegexMatcher {
       case EmptyLang()     => ()
       case ElementMatch(c) => ()
       case ElementSet(cs) => ()
+      case ElementRange(from, to, ord) => {
+        s match {
+          case Cons(hd, Nil()) =>  
+             if ord.lteq(from, hd) && ord.lteq(hd, to) then 
+                assert(derivativeStep(r, hd) == EmptyExpr[C]())
+                assert(matchR(r, s) == true)
+             else 
+                assert(derivativeStep(r, hd) == EmptyLang[C]())
+                assert(matchR(r, s) == false)
+          case Cons(hd, tl)    => 
+            assert(derivativeStep(derivativeStep(r, hd), tl.head) == EmptyLang[C]())
+            mainMatchTheorem(derivativeStep(r, hd), tl)
+          case Nil()           => ()
+        }
+      }
       case Union(r1, r2) => {
         if (matchR(r, s)) {
           lemmaRegexUnionAcceptsThenOneOfTheTwoAccepts(r1, r2, s)
@@ -5768,6 +5922,7 @@ object VerifiedRegexMatcher {
       case EmptyLang() => EmptyLang()
       case ElementMatch(c) => ElementMatch(c)
       case ElementSet(cs) => ElementSet(cs)
+      case ElementRange(from, to, ord) => ElementRange(from, to, ord)
       case EmptyExpr() => EmptyExpr()
       case Star(rInner) => 
         val simpInner = simplify(rInner)
@@ -6056,6 +6211,7 @@ object VerifiedRegexMatcher {
       case EmptyExpr() => ()
       case ElementMatch(c2) => ()
       case ElementSet(cs) => ()
+      case ElementRange(from, to, ord) => ()
       case Union(r1, r2) => 
           lemmaDerivativeStepFixPointLostCause(r1, c)
           lemmaDerivativeStepFixPointLostCause(r2, c)
@@ -6112,6 +6268,7 @@ object VerifiedRegexMatcher {
         case EmptyExpr() => ()
         case ElementMatch(c) => ()
         case ElementSet(cs) => ()
+        case ElementRange(from, to, ord) => ()
         case Union(r1, r2) => 
             lemmaLostCauseCannotMatch(r1, s)
             lemmaLostCauseCannotMatch(r2, s)
@@ -6151,6 +6308,18 @@ object VerifiedRegexMatcher {
       case EmptyLang()        => ()
       case ElementMatch(c)    => ()
       case ElementSet(cs)    => ()
+      case ElementRange(from, to, ord) => 
+        assert(getLanguageWitness(r).isDefined)
+        assert(getLanguageWitness(r).get == List(from))
+        val witnessL = getLanguageWitness(r).get
+        val witness = witnessL.head
+        assert(witness == from)
+        assert(Ord.reflexive(ord.lteq))
+        unfold(Ord.reflexive(ord.lteq))
+        ForallOf((x: C) => ord.lteq(x, x))(from)
+        assert(ord.lteq(from, witness))
+        assert(ord.lteq(witness, to))
+        assert(matchR(r, witnessL))
       case Star(r)            => ()
       case Union(rOne, rTwo)  => 
         getLanguageWitness(rOne) match
@@ -6605,7 +6774,7 @@ object VerifiedRegexMatcher {
   @inlineOnce
   def lemmaSingleCharRegexConcatMatchesSameAsTail[C](r1: Regex[C], r2: Regex[C], c: C, tl: List[C]): Unit = {
     require(validRegex(r1) && validRegex(r2))
-    require(isElementMatch(r1) || isElementSet(r1))
+    require(isElementMatch(r1) || isElementSet(r1) || isElementRange(r1))
     require(derivativeStep(r1, c) == EmptyExpr[C]())
     val s = Cons(c, tl)
     assert(!r1.nullable)
@@ -6907,294 +7076,6 @@ object VerifiedRegexMatcher {
     }
   }.ensuring (_ => s.isEmpty || matchR(Concat(r, Star(r)), s))
 
-  // usedCharacters lemmas ---------------------------------------------------------------------------------------------------
-
-  @ghost
-  @opaque
-  @inlineOnce
-  def lemmaRegexCannotMatchAStringContainingACharItDoesNotContain[C](r: Regex[C], s: List[C], c: C): Unit = {
-    require(validRegex(r))
-    require(s.contains(c))
-    require(!r.usedCharacters.contains(c))
-    decreases(s)
-
-    s match {
-      case Cons(hd, tl) if hd == c => lemmaRegexCannotMatchAStringStartingWithACharItDoesNotContain(r, s, c)
-      case Cons(hd, tl) if hd != c => {
-        lemmaDerivativeStepDoesNotAddCharToUsedCharacters(r, hd, c)
-        lemmaRegexCannotMatchAStringContainingACharItDoesNotContain(derivativeStep(r, hd), tl, c)
-      }
-      case Nil() => check(false)
-    }
-
-  }.ensuring (_ => !matchR(r, s))
-
-
-  @ghost
-  @opaque
-  @inlineOnce
-  def lemmaRegexCannotMatchAStringStartingWithACharItDoesNotContain[C](r: Regex[C], s: List[C], c: C): Unit = {
-    require(validRegex(r))
-    require(s.contains(c))
-    require(s.head == c)
-    require(!r.usedCharacters.contains(c))
-
-    if (matchR(r, s)) {
-      lemmaMatchRIsSameAsWholeDerivativeAndNil(r, s)
-      lemmaDerivativeAfterDerivativeStepIsNullableThenUsedCharsContainsHead(r, c, s.tail)
-      check(false)
-    }
-
-  }.ensuring (_ => !matchR(r, s))
-
-
-  @ghost
-  @opaque
-  @inlineOnce
-  def lemmaRegexCannotPrefixMatchAStringContainingACharItDoesNotContain[C](r: Regex[C], prefix: List[C], c: C): Unit = {
-    require(validRegex(r))
-    require(prefix.contains(c))
-    require(!r.usedCharacters.contains(c))
-
-    if (prefixMatch(r, prefix)){
-      lemmaPrefixMatchThenExistsStringThatMatches(r, prefix)
-      assert(Exists((s: List[C]) => matchR(r, s) && ListUtils.isPrefix(prefix, s)))
-      val s: List[C] = pickWitness[List[C]]((s: List[C]) => matchR(r, s) && ListUtils.isPrefix(prefix, s))
-      assert(matchR(r, s))
-      assert(ListUtils.isPrefix(prefix, s))
-      val suffix = ListUtils.getSuffix(s, prefix)
-      assert(s == prefix ++ suffix)
-      assert(prefix.contains(c))
-      assert(s.contains(c))
-      lemmaRegexCannotMatchAStringContainingACharItDoesNotContain(r, s, c)
-      check(false)
-    }
-
-  }.ensuring (_ => !prefixMatch(r, prefix))
-
-
-  @ghost
-  @opaque
-  @inlineOnce
-  def lemmaRegexCannotMatchAStringStartingWithACharWhichIsNotInFirstChars[C](r: Regex[C], s: List[C], c: C): Unit = {
-    require(validRegex(r))
-    require(s.contains(c))
-    require(s.head == c)
-    require(!r.firstChars.contains(c))
-
-    if (matchR(r, s)) {
-      lemmaMatchRIsSameAsWholeDerivativeAndNil(r, s)
-      lemmaDerivAfterDerivStepIsNullableThenFirstCharsContainsHead(r, c, s.tail)
-      check(false)
-    }
-
-  }.ensuring (_ => !matchR(r, s))
-
-  // not used
-  @ghost
-  @opaque
-  @inlineOnce
-  def lemmaRIsNotNullableDerivativeStepIsThenUsedCharContainsC[C](r: Regex[C], c: C): Unit = {
-    require(validRegex(r))
-    require(!r.nullable)
-    require(derivativeStep(r, c).nullable)
-    decreases(r)
-
-    r match {
-      case EmptyExpr()     => check(false)
-      case EmptyLang()     => ()
-      case ElementMatch(a) => ()
-      case ElementSet(s)   => ()
-      case Union(rOne, rTwo) => {
-        if (rOne.nullable) {
-          check(false)
-        }
-        if (rTwo.nullable) {
-          check(false)
-        }
-        if (derivativeStep(rOne, c).nullable) {
-          lemmaRIsNotNullableDerivativeStepIsThenUsedCharContainsC(rOne, c)
-        } else {
-          assert(derivativeStep(rTwo, c).nullable)
-          lemmaRIsNotNullableDerivativeStepIsThenUsedCharContainsC(rTwo, c)
-        }
-      }
-      case Star(rInner) => ()
-      case Concat(rOne, rTwo) => {
-        if (rOne.nullable) {
-          if (Concat(derivativeStep(rOne, c), rTwo).nullable) {
-            lemmaRIsNotNullableDerivativeStepIsThenUsedCharContainsC(rOne, c)
-          } else {
-            assert(derivativeStep(rTwo, c).nullable)
-            lemmaRIsNotNullableDerivativeStepIsThenUsedCharContainsC(rTwo, c)
-
-          }
-        } else {
-          lemmaRIsNotNullableDerivativeStepIsThenUsedCharContainsC(rOne, c)
-        }
-      }
-    }
-
-  }.ensuring (_ => r.usedCharacters.contains(c))
-
-  // DONE
-  @ghost
-  @opaque
-  @inlineOnce
-  def lemmaDerivativeAfterDerivativeStepIsNullableThenUsedCharsContainsHead[C](r: Regex[C], c: C, tl: List[C]): Unit = {
-    require(validRegex(r))
-    require(derivative(derivativeStep(r, c), tl).nullable)
-    decreases(r)
-
-    r match {
-      case EmptyExpr() => {
-        assert(derivativeStep(r, c) == EmptyLang[C]())
-        lemmaEmptyLangDerivativeIsAFixPoint(derivativeStep(r, c), tl)
-        check(false)
-      }
-      case EmptyLang() => {
-        assert(derivativeStep(r, c) == EmptyLang[C]())
-        lemmaEmptyLangDerivativeIsAFixPoint(derivativeStep(r, c), tl)
-        check(false)
-      }
-      case ElementMatch(a) => {
-        if (c == a) {
-          assert(derivativeStep(r, c) == EmptyExpr[C]())
-          if (tl.isEmpty) {
-            assert(r.usedCharacters.contains(c))
-            assert(derivative(derivativeStep(r, c), tl).nullable)
-          } else {
-            lemmaEmptyLangDerivativeIsAFixPoint(derivativeStep(derivativeStep(r, c), tl.head), tl.tail)
-            check(false)
-          }
-        } else {
-          assert(derivativeStep(r, c) == EmptyLang[C]())
-          lemmaEmptyLangDerivativeIsAFixPoint(derivativeStep(r, c), tl)
-          check(false)
-        }
-      }
-      case ElementSet(cs) => {
-        if (cs.contains(c)) {
-          assert(derivativeStep(r, c) == EmptyExpr[C]())
-          if (tl.isEmpty) {
-            assert(r.usedCharacters.contains(c))
-            assert(derivative(derivativeStep(r, c), tl).nullable)
-          } else {
-            lemmaEmptyLangDerivativeIsAFixPoint(derivativeStep(derivativeStep(r, c), tl.head), tl.tail)
-            check(false)
-          }
-        } else {
-          assert(derivativeStep(r, c) == EmptyLang[C]())
-          lemmaEmptyLangDerivativeIsAFixPoint(derivativeStep(r, c), tl)
-          check(false)
-        }
-      }
-      case Union(rOne, rTwo) => {
-        if (derivative(derivativeStep(rOne, c), tl).nullable) {
-          lemmaDerivativeAfterDerivativeStepIsNullableThenUsedCharsContainsHead(rOne, c, tl)
-        } else if (derivative(derivativeStep(rTwo, c), tl).nullable) {
-          lemmaDerivativeAfterDerivativeStepIsNullableThenUsedCharsContainsHead(rTwo, c, tl)
-        } else {
-          lemmaMatchRIsSameAsWholeDerivativeAndNil(r, Cons(c, tl))
-          lemmaMatchRIsSameAsWholeDerivativeAndNil(rOne, Cons(c, tl))
-          lemmaMatchRIsSameAsWholeDerivativeAndNil(rTwo, Cons(c, tl))
-          lemmaRegexUnionAcceptsThenOneOfTheTwoAccepts(rOne, rTwo, Cons(c, tl))
-          check(false)
-        }
-      }
-      case Star(rInner) => {
-        assert(derivativeStep(r, c) == Concat(derivativeStep(rInner, c), Star(rInner)))
-        if (derivative(derivativeStep(rInner, c), tl).nullable) {
-          lemmaDerivativeAfterDerivativeStepIsNullableThenUsedCharsContainsHead(rInner, c, tl)
-        } else {
-          lemmaMatchRIsSameAsWholeDerivativeAndNil(derivativeStep(r, c), tl)
-          assert(matchR(derivativeStep(r, c), tl))
-          lemmaConcatAcceptsStringThenFindSeparationIsDefined(derivativeStep(rInner, c), Star(rInner), tl)
-          val (s1, s2) = findConcatSeparation(derivativeStep(rInner, c), Star(rInner), Nil(), tl, tl).get
-          assert(s1 ++ s2 == tl)
-          assert(matchR(Star(rInner), s2))
-
-          assert(matchR(rInner, Cons(c, s1)))
-          assert(matchR(derivativeStep(rInner, c), s1))
-          lemmaMatchRIsSameAsWholeDerivativeAndNil(derivativeStep(rInner, c), s1)
-          lemmaDerivativeAfterDerivativeStepIsNullableThenUsedCharsContainsHead(rInner, c, s1)
-        }
-      }
-      case Concat(rOne, rTwo) => {
-        //  if (rOne.nullable) Union(Concat(derivativeStep(rOne, a), rTwo), derivativeStep(rTwo, a))
-        // else Union(Concat(derivativeStep(rOne, a), rTwo), EmptyLang())
-
-        if (rOne.nullable) {
-          lemmaMatchRIsSameAsWholeDerivativeAndNil(Union(Concat(derivativeStep(rOne, c), rTwo), derivativeStep(rTwo, c)), tl)
-          lemmaRegexUnionAcceptsThenOneOfTheTwoAccepts(Concat(derivativeStep(rOne, c), rTwo), derivativeStep(rTwo, c), tl)
-          if (matchR(Concat(derivativeStep(rOne, c), rTwo), tl)) {
-
-            lemmaConcatAcceptsStringThenFindSeparationIsDefined(derivativeStep(rOne, c), rTwo, tl)
-            val (s1, s2) = findConcatSeparation(derivativeStep(rOne, c), rTwo, Nil(), tl, tl).get
-            assert(s1 ++ s2 == tl)
-            assert(matchR(derivativeStep(rOne, c), s1))
-            assert(matchR(rTwo, s2))
-            assert(matchR(rOne, Cons(c, s1)))
-            lemmaMatchRIsSameAsWholeDerivativeAndNil(derivativeStep(rOne, c), s1)
-            lemmaDerivativeAfterDerivativeStepIsNullableThenUsedCharsContainsHead(rOne, c, s1)
-          } else {
-            lemmaMatchRIsSameAsWholeDerivativeAndNil(derivativeStep(rTwo, c), tl)
-            lemmaDerivativeAfterDerivativeStepIsNullableThenUsedCharsContainsHead(rTwo, c, tl)
-          }
-        } else {
-          lemmaMatchRIsSameAsWholeDerivativeAndNil(Union(Concat(derivativeStep(rOne, c), rTwo), EmptyLang()), tl)
-          lemmaRegexUnionAcceptsThenOneOfTheTwoAccepts(Concat(derivativeStep(rOne, c), rTwo), EmptyLang(), tl)
-          lemmaEmptyLangDerivativeIsAFixPoint(EmptyLang(), tl)
-          assert(matchR(Concat(derivativeStep(rOne, c), rTwo), tl))
-          lemmaConcatAcceptsStringThenFindSeparationIsDefined(derivativeStep(rOne, c), rTwo, tl)
-          val (s1, s2) = findConcatSeparation(derivativeStep(rOne, c), rTwo, Nil(), tl, tl).get
-          assert(s1 ++ s2 == tl)
-          assert(matchR(derivativeStep(rOne, c), s1))
-          assert(matchR(rTwo, s2))
-          assert(matchR(rOne, Cons(c, s1)))
-          lemmaMatchRIsSameAsWholeDerivativeAndNil(derivativeStep(rOne, c), s1)
-          lemmaDerivativeAfterDerivativeStepIsNullableThenUsedCharsContainsHead(rOne, c, s1)
-
-        }
-      }
-    }
-
-  }.ensuring (_ => r.usedCharacters.contains(c))
-
-  @ghost
-  @opaque
-  @inlineOnce
-  def lemmaDerivativeStepDoesNotAddCharToUsedCharacters[C](r: Regex[C], c: C, cNot: C): Unit = {
-    decreases(r)
-    require(validRegex(r))
-    require(!r.usedCharacters.contains(cNot))
-
-    r match {
-      case EmptyExpr()     => ()
-      case EmptyLang()     => ()
-      case ElementMatch(c) => ()
-      case ElementSet(s)   => ()
-      case Union(rOne, rTwo) => {
-        lemmaDerivativeStepDoesNotAddCharToUsedCharacters(rOne, c, cNot)
-        lemmaDerivativeStepDoesNotAddCharToUsedCharacters(rTwo, c, cNot)
-        lemmaConcatTwoListsWhichNotContainThenTotNotContain(derivativeStep(rOne, c).usedCharacters, derivativeStep(rTwo, c).usedCharacters, cNot)
-      }
-      case Star(rInner) => {
-        lemmaDerivativeStepDoesNotAddCharToUsedCharacters(rInner, c, cNot)
-      }
-      case Concat(rOne, rTwo) => {
-        if (rOne.nullable) {
-          lemmaDerivativeStepDoesNotAddCharToUsedCharacters(rOne, c, cNot)
-          lemmaDerivativeStepDoesNotAddCharToUsedCharacters(rTwo, c, cNot)
-          lemmaConcatTwoListsWhichNotContainThenTotNotContain(derivativeStep(rOne, c).usedCharacters, derivativeStep(rTwo, c).usedCharacters, cNot)
-        } else {
-          lemmaDerivativeStepDoesNotAddCharToUsedCharacters(rOne, c, cNot)
-        }
-      }
-    }
-
-  }.ensuring (_ => !derivativeStep(r, c).usedCharacters.contains(cNot))
-
   @ghost
   @opaque
   @inlineOnce
@@ -7207,158 +7088,6 @@ object VerifiedRegexMatcher {
     }
 
   }.ensuring (_ => derivative(r, s) == r)
-
-  @ghost
-  @opaque
-  @inlineOnce
-  def lemmaUsedCharsContainsAllFirstChars[C](r: Regex[C], c: C): Unit = {
-    require(validRegex(r))
-    require(r.firstChars.contains(c))
-    decreases(r)
-    r match {
-      case EmptyExpr()     => ()
-      case EmptyLang()     => ()
-      case ElementMatch(c) => ()
-      case ElementSet(s)   => ()
-      case Star(r)         => lemmaUsedCharsContainsAllFirstChars(r, c)
-      case Union(rOne, rTwo) =>
-        if (rOne.firstChars.contains(c)) {
-          lemmaUsedCharsContainsAllFirstChars(rOne, c)
-        } else {
-          lemmaUsedCharsContainsAllFirstChars(rTwo, c)
-        }
-
-      case Concat(rOne, rTwo) if rOne.nullable =>
-        if (rOne.firstChars.contains(c)) {
-          lemmaUsedCharsContainsAllFirstChars(rOne, c)
-        } else {
-          lemmaUsedCharsContainsAllFirstChars(rTwo, c)
-        }
-
-      case Concat(rOne, rTwo) if !rOne.nullable => lemmaUsedCharsContainsAllFirstChars(rOne, c)
-    }
-
-  }.ensuring (_ => r.usedCharacters.contains(c))
-
-  @ghost
-  @opaque
-  @inlineOnce
-  def lemmaDerivAfterDerivStepIsNullableThenFirstCharsContainsHead[C](r: Regex[C], c: C, tl: List[C]): Unit = {
-    require(validRegex(r))
-    require(derivative(derivativeStep(r, c), tl).nullable)
-    decreases(r)
-
-    r match {
-      case EmptyExpr() => {
-        assert(derivativeStep(r, c) == EmptyLang[C]())
-        lemmaEmptyLangDerivativeIsAFixPoint(derivativeStep(r, c), tl)
-        check(false)
-      }
-      case EmptyLang() => {
-        assert(derivativeStep(r, c) == EmptyLang[C]())
-        lemmaEmptyLangDerivativeIsAFixPoint(derivativeStep(r, c), tl)
-        check(false)
-      }
-      case ElementMatch(a) => {
-        if (c == a) {
-          assert(derivativeStep(r, c) == EmptyExpr[C]())
-          if (tl.isEmpty) {
-            assert(r.firstChars.contains(c))
-            assert(derivative(derivativeStep(r, c), tl).nullable)
-          } else {
-            lemmaEmptyLangDerivativeIsAFixPoint(derivativeStep(derivativeStep(r, c), tl.head), tl.tail)
-            check(false)
-          }
-        } else {
-          assert(derivativeStep(r, c) == EmptyLang[C]())
-          lemmaEmptyLangDerivativeIsAFixPoint(derivativeStep(r, c), tl)
-          check(false)
-        }
-      }
-      case ElementSet(cs) => {
-        if (cs.contains(c)) {
-          assert(derivativeStep(r, c) == EmptyExpr[C]())
-          if (tl.isEmpty) {
-            assert(r.firstChars.contains(c))
-            assert(derivative(derivativeStep(r, c), tl).nullable)
-          } else {
-            lemmaEmptyLangDerivativeIsAFixPoint(derivativeStep(derivativeStep(r, c), tl.head), tl.tail)
-            check(false)
-          }
-        } else {
-          assert(derivativeStep(r, c) == EmptyLang[C]())
-          lemmaEmptyLangDerivativeIsAFixPoint(derivativeStep(r, c), tl)
-          check(false)
-        }
-      }
-      case Union(rOne, rTwo) => {
-        if (derivative(derivativeStep(rOne, c), tl).nullable) {
-          lemmaDerivAfterDerivStepIsNullableThenFirstCharsContainsHead(rOne, c, tl)
-        } else if (derivative(derivativeStep(rTwo, c), tl).nullable) {
-          lemmaDerivAfterDerivStepIsNullableThenFirstCharsContainsHead(rTwo, c, tl)
-        } else {
-          lemmaMatchRIsSameAsWholeDerivativeAndNil(r, Cons(c, tl))
-          lemmaMatchRIsSameAsWholeDerivativeAndNil(rOne, Cons(c, tl))
-          lemmaMatchRIsSameAsWholeDerivativeAndNil(rTwo, Cons(c, tl))
-          lemmaRegexUnionAcceptsThenOneOfTheTwoAccepts(rOne, rTwo, Cons(c, tl))
-          check(false)
-        }
-      }
-      case Star(rInner) => {
-        assert(derivativeStep(r, c) == Concat(derivativeStep(rInner, c), Star(rInner)))
-        if (derivative(derivativeStep(rInner, c), tl).nullable) {
-          lemmaDerivAfterDerivStepIsNullableThenFirstCharsContainsHead(rInner, c, tl)
-        } else {
-          lemmaMatchRIsSameAsWholeDerivativeAndNil(derivativeStep(r, c), tl)
-          assert(matchR(derivativeStep(r, c), tl))
-          lemmaConcatAcceptsStringThenFindSeparationIsDefined(derivativeStep(rInner, c), Star(rInner), tl)
-          val (s1, s2) = findConcatSeparation(derivativeStep(rInner, c), Star(rInner), Nil(), tl, tl).get
-          assert(s1 ++ s2 == tl)
-          assert(matchR(Star(rInner), s2))
-
-          assert(matchR(rInner, Cons(c, s1)))
-          assert(matchR(derivativeStep(rInner, c), s1))
-          lemmaMatchRIsSameAsWholeDerivativeAndNil(derivativeStep(rInner, c), s1)
-          lemmaDerivAfterDerivStepIsNullableThenFirstCharsContainsHead(rInner, c, s1)
-        }
-      }
-      case Concat(rOne, rTwo) => {
-        if (rOne.nullable) {
-          lemmaMatchRIsSameAsWholeDerivativeAndNil(Union(Concat(derivativeStep(rOne, c), rTwo), derivativeStep(rTwo, c)), tl)
-          lemmaRegexUnionAcceptsThenOneOfTheTwoAccepts(Concat(derivativeStep(rOne, c), rTwo), derivativeStep(rTwo, c), tl)
-          if (matchR(Concat(derivativeStep(rOne, c), rTwo), tl)) {
-
-            lemmaConcatAcceptsStringThenFindSeparationIsDefined(derivativeStep(rOne, c), rTwo, tl)
-            val (s1, s2) = findConcatSeparation(derivativeStep(rOne, c), rTwo, Nil(), tl, tl).get
-            assert(s1 ++ s2 == tl)
-            assert(matchR(derivativeStep(rOne, c), s1))
-            assert(matchR(rTwo, s2))
-            assert(matchR(rOne, Cons(c, s1)))
-            lemmaMatchRIsSameAsWholeDerivativeAndNil(derivativeStep(rOne, c), s1)
-            lemmaDerivAfterDerivStepIsNullableThenFirstCharsContainsHead(rOne, c, s1)
-          } else {
-            lemmaMatchRIsSameAsWholeDerivativeAndNil(derivativeStep(rTwo, c), tl)
-            lemmaDerivAfterDerivStepIsNullableThenFirstCharsContainsHead(rTwo, c, tl)
-          }
-        } else {
-          lemmaMatchRIsSameAsWholeDerivativeAndNil(Union(Concat(derivativeStep(rOne, c), rTwo), EmptyLang()), tl)
-          lemmaRegexUnionAcceptsThenOneOfTheTwoAccepts(Concat(derivativeStep(rOne, c), rTwo), EmptyLang(), tl)
-          lemmaEmptyLangDerivativeIsAFixPoint(EmptyLang(), tl)
-          assert(matchR(Concat(derivativeStep(rOne, c), rTwo), tl))
-          lemmaConcatAcceptsStringThenFindSeparationIsDefined(derivativeStep(rOne, c), rTwo, tl)
-          val (s1, s2) = findConcatSeparation(derivativeStep(rOne, c), rTwo, Nil(), tl, tl).get
-          assert(s1 ++ s2 == tl)
-          assert(matchR(derivativeStep(rOne, c), s1))
-          assert(matchR(rTwo, s2))
-          assert(matchR(rOne, Cons(c, s1)))
-          lemmaMatchRIsSameAsWholeDerivativeAndNil(derivativeStep(rOne, c), s1)
-          lemmaDerivAfterDerivStepIsNullableThenFirstCharsContainsHead(rOne, c, s1)
-
-        }
-      }
-    }
-
-  }.ensuring (_ => r.firstChars.contains(c))
 }
 
 object Utils {
